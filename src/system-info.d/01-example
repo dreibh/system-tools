@@ -20,6 +20,9 @@
 
 set -e
 
+
+# ====== Print banner =======================================================
+
 # NOTE:
 # You can produce ASCII text banners with "banner".
 # More advanced, UTF-8-capable tools are e.g. figlet and toilet.
@@ -39,6 +42,7 @@ echo ""
 echo "       You can change this banner in /etc/system-info.d!"
 echo "================================================================="
 echo -e "\x1b[0m"
+
 
 exit 1   # With exit code 1, no further files in /etc/system-info.d are processed!
 

@@ -1,6 +1,6 @@
-system-info (1.0.0~alpha1.2-1ubuntu1) focal; urgency=medium
+system-info (1.0.0~alpha1.3-1ubuntu1) focal; urgency=medium
 
   * New upstream release.
   * debian/control: Updated standards version to 4.5.0.3.
 
- -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Fri, 04 Sep 2020 11:15:51 +0200
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Fri, 04 Sep 2020 12:40:37 +0200

@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	system-info
-PORTVERSION=	1.0.0~alpha1.2
+PORTVERSION=	1.0.0~alpha1.3
 CATEGORIES=	net
 MASTER_SITES=	https://www.uni-due.de/~be0001/system-info/download/
 
