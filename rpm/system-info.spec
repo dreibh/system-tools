@@ -1,5 +1,5 @@
 Name: system-info
-Version: 1.0.0~alpha1.1
+Version: 1.0.0~alpha1.2
 Release: 1
 Summary: System-Info
 Group: Applications/System
