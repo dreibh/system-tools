@@ -9,9 +9,14 @@ Source: https://www.uni-due.de/~be0001/system-info/download/%{name}-%{version}.t
 
 AutoReqProv: on
 BuildRequires: cmake
+BuildRequires: gcc
+BuildRequires: gcc-c++
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 %define _unpackaged_files_terminate_build 0
+
+
+BuildArch: noarch
 
 %description
 This program displays basic status information about the system:
@@ -26,7 +31,7 @@ in, providing the user an up-to-date overview of the system.
 %setup -q
 
 %build
-%cmake -DCMAKE_INSTALL_PREFIX=/usr .
+%cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc .
 make %{?_smp_mflags}
 
 %install
@@ -35,7 +40,7 @@ make DESTDIR=%{buildroot} install
 %files
 %{_bindir}/System-Info
 %{_mandir}/man1/System-Info.1.gz
-%{_sysconfdir}/system-info/01-example
+%{_sysconfdir}/system-info.d/01-example
 
 %post
 if [ ! -e /etc/profile.d/systeminfo.csh ] ; then
