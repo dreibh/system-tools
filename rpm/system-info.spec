@@ -1,7 +1,7 @@
 Name: system-info
 Version: 1.0.0~alpha1.2
 Release: 1
-Summary: System-Info
+Summary: Print basic system information and banners
 Group: Applications/System
 License: GPL-3+
 URL: https://www.uni-due.de/~be0001/system-info/
