@@ -1,0 +1,32 @@
+Source: system-info
+Section: utils
+Priority: optional
+Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
+Homepage: https://www.uni-due.de/~be0001/system-info/
+Build-Depends: cmake (>= 3.0.2) | cmake3,
+               debhelper (>= 9),
+               libfile-fcntllock-perl,
+               pkg-config
+Standards-Version: 4.5.0.2
+Rules-Requires-Root: binary-targets
+Vcs-Git: https://github.com/dreibh/system-info.git
+Vcs-Browser: https://github.com/dreibh/system-info
+
+Package: system-info
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Recommends: iputils-ping,
+            iputils-tracepath,
+            subnetcalc
+Suggests: banner,
+          figlet,
+          toilet
+Description: Print basic system information and banners
+ This program displays basic status information about the system:
+ hostname, uptime, CPU, memory statistics, disk space statistics,
+ SSH public key hashes, and networking information. Furthermore,
+ it can be configured to show one or more banners (for example,
+ a project name).
+ System-Info can be configured to be automatically run when logging
+ in, providing the user an up-to-date overview of the system.

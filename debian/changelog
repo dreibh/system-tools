@@ -1,0 +1,5 @@
+system-info (1.0.0~alpha1.1-1ubuntu1) focal; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Fri, 04 Sep 2020 10:12:19 +0200

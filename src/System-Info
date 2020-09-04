@@ -1,0 +1,213 @@
+#!/usr/bin/env bash
+#
+# System-Info
+# Copyright (C) 2013-2020 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+
+# ###### Main program #######################################################
+echo ""
+echo "System information as of `env LANG=en date`"
+echo ""
+
+
+# ====== Get system information =============================================
+hostnameResult=`hostname -f`
+uptimeResult=`env LANG=en uptime`
+
+system=`uname`
+cpu=`uname -m`
+kernel=`uname -r`
+
+cores=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || grep -c ^processor /compat/linux/proc/cpuinfo 2>/dev/null || echo "1" )
+[ "$cores" -eq "0" ] && cores=1
+systemLoad=`echo "$uptimeResult" | awk -F 'average[s]*:' '{ print $2 }'`
+
+if $(echo "$uptimeResult" | grep -E "min|days" >/dev/null); then
+   uptime=`echo "$uptimeResult" | awk '{ print $3 " "$4 }' | sed 's/,//g'`
+else
+   uptime=`echo "$uptimeResult" | awk '{ print $3 " hours" }' | sed 's/,//g'`
+fi
+
+processes=`ps axue | grep -vE "^USER|grep|ps" | wc -l`
+users=`who | awk ' { print $1 }' | sort -ud | wc -l`
+
+diskRoot=`env LANG=en df -hT /     | grep -vE "^Filesystem|shm" | awk '{ print $6 }'`
+diskHome=`env LANG=en df -hT /home | grep -vE "^Filesystem|shm" | awk '{ print $6 }'`
+
+
+DISTRIB_ID="Unknown"
+DISTRIB_RELEASE="00.00"
+DISTRIB_CODENAME="unknown"
+if [ "$system" == "Linux" ] ; then
+   if [ -e /etc/lsb-release ] ; then
+      . /etc/lsb-release
+   elif [ -e /etc/fedora-release ] ; then
+      DISTRIB_ID=`cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\1/g"`
+      DISTRIB_RELEASE=`cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\2/g"`
+      DISTRIB_CODENAME=`cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\3/g"`
+   fi
+
+   freeOutput="`env LANG=en free -mt`"
+   freeMemOutput="`echo "$freeOutput" | grep "Mem:"`"
+   freeSwapOutput="`echo "$freeOutput" | grep "Swap:"`"
+
+   let memoryUsed=`echo "$freeMemOutput" | awk '{ print $3 }'`
+   let memoryFree=`echo "$freeMemOutput" | awk '{ print $4 }' `
+   let memoryTotal=`echo "$freeMemOutput" | awk '{ print $2 }'`
+   let swapUsed=`echo "$freeSwapOutput" | awk '{ print $3 }'`
+   let swapFree=`echo "$freeSwapOutput" | awk '{ print $4 }'`
+   let swapTotal=`echo "$freeSwapOutput" | awk '{ print $2 }'`
+
+elif  [ "$system" == "FreeBSD" ] ; then
+   DISTRIB_ID="FreeBSD"
+   DISTRIB_RELEASE="`echo "$kernel" | sed -e "s/-[A-Z].*//g"`"
+   DISTRIB_CODENAME=""
+
+   pageSize=`sysctl -n hw.pagesize`
+
+   let vmstatActive=`sysctl -n vm.stats.vm.v_active_count`*pageSize
+   let vmstatInactive=`sysctl -n vm.stats.vm.v_inactive_count`*pageSize
+   let vmstatCache=`sysctl -n vm.stats.vm.v_cache_count`*pageSize
+   let vmstatFree=`sysctl -n vm.stats.vm.v_free_count`*pageSize
+
+   let memoryFree=($vmstatInactive+$vmstatCache+$vmstatFree)/1048576
+   let memoryTotal=`sysctl -n hw.physmem`/1048576
+   let memoryUsed=$memoryTotal-$memoryFree
+
+   let swapTotal=`sysctl -n vm.swap_total`/1048576
+   let swapUsed=`sysctl -n vm.swap_reserved`/1048576
+   let swapFree=$swapTotal-$swapUsed
+
+fi
+
+
+# ====== Print banner =======================================================
+files=`find -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort -r`
+for file in $files ; do
+   $file || break
+done
+
+
+# ====== Print system information ===========================================
+echo -en "\x1b[33m"
+if [ -e /etc/slicename -a /etc/slicefamily ] ; then
+   echo -e "Slice:            `cat /etc/slicename` (`cat /etc/slicefamily`)"
+fi
+echo "Host:             ${hostnameResult}"
+echo "Uptime:           ${uptime}"
+printf "Used Memory:      %d × ${cpu}; %d processes; %d users\n" "${cores}" "${processes}" "${users}"
+codeNameText=""
+if [ "$DISTRIB_CODENAME" != "" ] ; then
+   codeNameText=" (${DISTRIB_CODENAME})"
+fi
+echo "System:           ${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText} with ${kernel}"
+echo "Load:             ${systemLoad}"
+printf "Used Memory:      %5d MiB of %5d MiB (%5d MiB free)\n" ${memoryUsed} ${memoryTotal} ${memoryFree}
+printf "Used Swap:        %5d MiB of %5d MiB (%5d MiB free)\n" ${swapUsed} ${swapTotal} ${swapFree}
+echo "Used Diskspace:   ${diskRoot} on /, ${diskHome} on /home"
+
+keys=`find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort`
+firstKey=1
+for key in $keys ; do
+   if [ $firstKey -eq 1 ] ; then
+      echo -n "SSH Keys:         "
+      firstKey=0
+   else
+      echo -n "                  "
+   fi
+   # ssh-keygen -lf $key | awk '{ print $2 " "; }'
+   ssh-keygen -lf $key | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
+done
+
+
+echo "Network:"
+
+function showAddresses ()
+{
+   if [ "$addressListIPv4" != "" -o "$addressListIPv6" != "" ] ; then
+
+      # ====== Get interface status ===================================
+      if [ $isUp -ne 0 ] ; then
+         echo -en "\x1b[34m"   # up
+      else
+         echo -en "\x1b[37m"   # down
+      fi
+
+      # ====== Print addresses ========================================
+      echo -n "   `printf "%-14s" "${interface}:"` "
+      if [ "$addressListIPv4" != "" ] ; then
+         for address in $addressListIPv4 ; do
+            echo -n "$address   "
+         done
+      else
+         echo -n "(No IPv4)"
+      fi
+      for address in $addressListIPv6 ; do
+         echo -en "\n                  $address "
+      done
+
+      echo ""
+   fi
+}
+
+
+if [ "$system" == "Linux" ] ; then
+   allInterfaces=`ip link show 2>/dev/null | awk '/^([0-9]*:) ([a-zA-Z0-9\-\.@]+):/ { print $2 }' | sed -e "s/@.*//" -e "s/:$//" | sort`
+   for interface in $allInterfaces ; do
+      # ====== Only show non-tunnel interfaces =================================
+      if [ "`ip tunnel show $interface 2>/dev/null`" == "" -a \
+           "`ip -6 tunnel show $interface 2>/dev/null`" == "" ] ; then
+         # ====== Only show non-loopback interfaces ============================
+         if [ "`ip link show dev $interface | head -n1 | grep "^.*<.*LOOPBACK.*>"`" == "" ] ; then
+            # ====== Get status ================================================
+            isUp=0
+            if [ "`ip link show dev $interface | head -n1 | grep "^.*<.*UP.*>"`" != "" ] ; then
+               isUp=1
+            fi
+
+            # ====== Get addresses =============================================
+            addressListIPv4=`ip -4 addr show dev $interface 2>/dev/null | awk '/[ \t]*inet ([0-9]+).([0-9]+).([0-9]+).([0-9]+)\/([0-9]+) / { print $2 }' | sed -e "s/\/[0-9]*//g" | sort`
+            addressListIPv6=`ip -6 addr show dev $interface 2>/dev/null | awk '/[ \t]*inet6 [0-9a-fA-F:]*\/[0-9]+ scope [gsh]/ { print $2 }' | sed -e "s/\/[0-9]*//g" | sort`
+            showAddresses
+         fi
+      fi
+   done
+
+else
+   allInterfaces=`ifconfig | awk '/^([a-zA-Z0-9\-]+):/ { print $1 }'  | sed -e "s/:$//" | sort`
+   for interface in $allInterfaces ; do
+      ifconfigResult="`ifconfig $interface`"
+
+      # ====== Only show non-loopback interfaces ============================
+      if [ "`echo "$ifconfigResult" | head -n1 | grep "^.*<.*LOOPBACK.*>"`" == "" ] ; then
+         # ====== Get status ================================================
+         isUp=0
+         if [ "`echo "$ifconfigResult" | head -n1 | grep "^.*<.*UP.*>"`" != "" ] ; then
+            isUp=1
+         fi
+
+         # ====== Get addresses =============================================
+         addressListIPv4=`echo "$ifconfigResult" | awk '/[ \t]*inet ([0-9]+).([0-9]+).([0-9]+).([0-9]+) / { print $2 }' | sort`
+         addressListIPv6=`echo "$ifconfigResult" | awk '/[ \t]*inet6 [0-9a-fA-F:]* prefixlen ([0-9]+) / { print $2 }' | sort`
+         showAddresses
+      fi
+   done
+
+fi
+
+echo -en "\x1b[0m"

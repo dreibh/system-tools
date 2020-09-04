@@ -1,0 +1,21 @@
+Begin4
+Title:          system-info
+Version:        1.0.0~alpha1.1
+Entered-date:   2020-02-07
+Description:    This program displays basic status information about the
+                system: hostname, uptime, CPU, memory statistics, disk
+                space statistics, SSH public key hashes, and networking
+                information. Furthermore, it can be configured to show
+                one or more banners (for example,  a project name).
+                System-Info can be configured to be automatically run when
+                logging in, providing the user an up-to-date overview of
+                the system.
+Keywords:       System Information
+Author:         dreibh@iem.uni-due.de (Thomas Dreibholz)
+Maintained-by:  dreibh@iem.uni-due.de (Thomas Dreibholz)
+Primary-site:   https://www.uni-due.de/~be0001/system-info
+                71 kB download/system-info-1.0.0~alpha1.1.tar.xz
+Original-site:  https://www.uni-due.de/~be0001/system-info
+Platforms:      Linux, FreeBSD
+Copying-policy: GPL-3+
+End
