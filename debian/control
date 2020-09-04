@@ -16,6 +16,8 @@ Package: system-info
 Architecture: all
 Depends: ${misc:Depends},
          ${shlibs:Depends}
+Breaks: nornet-management (<<1.5.2~alpha1.0)
+Replaces: nornet-management (<<1.5.2~alpha1.0)
 Recommends: iputils-ping,
             iputils-tracepath,
             subnetcalc
