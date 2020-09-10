@@ -1,5 +1,5 @@
 Name: system-info
-Version: 1.0.0~rc1
+Version: 1.0.0~rc2
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
