@@ -1,1 +1,2 @@
 usr/bin/System-Info
+etc/system-info.d/01-example
