@@ -345,15 +345,22 @@ fi
 # ====== Done! ==============================================================
 echo -e "\x1b[34m`date +%FT%H:%M:%S`: Done!\x1b[0m"
 
-# ====== Finally, show NorNet package versions ==============================
-if [ "${Variant}" == "Debian" ] ; then
-   if [ -x /usr/bin/apt-show-versions ] ; then
-      echo "====== Installed NorNet Software ============================================="
-      /usr/bin/apt-show-versions | grep "^nornet-" | grep -v "not installed$" || true
+# ====== Finally, show project package versions =============================
+FILTER=""
+files=`find /etc/system-maintenance.d -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort -r`
+for file in ${files} ; do
+   FILTER="${FILTER} -e `cat ${file}`"
+done
+if [ "${FILTER}" != "" ] ; then
+   if [ "${Variant}" == "Debian" ] ; then
+      if [ -x /usr/bin/apt-show-versions ] ; then
+         echo "====== Installed Project Software ============================================"
+         /usr/bin/apt-show-versions | grep ${FILTER} | grep -v "not installed$" || true
+         echo "=============================================================================="
+      fi
+   elif [ "${Variant}" == "Project" ] ; then
+      echo "====== Installed Project Software ============================================"
+      rpm -qa | grep ${FILTER} | sort || true
       echo "=============================================================================="
    fi
-elif [ "${Variant}" == "Fedora" ] ; then
-   echo "====== Installed NorNet Software ============================================="
-   rpm -qa | grep "^nornet-" | sort || true
-   echo "=============================================================================="
 fi
