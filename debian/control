@@ -1,23 +1,23 @@
-Source: system-info
+Source: td-system-tools
 Section: utils
 Priority: optional
 Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
-Homepage: https://www.uni-due.de/~be0001/system-info/
+Homepage: https://www.uni-due.de/~be0001/system-tools/
 Build-Depends: cmake (>= 3.0.2) | cmake3,
                debhelper (>= 9),
                libfile-fcntllock-perl,
                pkg-config
 Standards-Version: 4.5.0.3
 Rules-Requires-Root: binary-targets
-Vcs-Git: https://github.com/dreibh/system-info.git
-Vcs-Browser: https://github.com/dreibh/system-info
+Vcs-Git: https://github.com/dreibh/system-tools.git
+Vcs-Browser: https://github.com/dreibh/system-tools
 
-Package: system-info
+Package: td-system-info
 Architecture: all
 Depends: ${misc:Depends},
          ${shlibs:Depends}
-Breaks: nornet-management (<<1.5.2~alpha1.0)
-Replaces: nornet-management (<<1.5.2~alpha1.0)
+Breaks: system-info
+Replaces: system-info
 Recommends: iputils-ping,
             iputils-tracepath,
             subnetcalc
@@ -32,3 +32,31 @@ Description: Print basic system information and banners
  a project name).
  System-Info can be configured to be automatically run when logging
  in, providing the user an up-to-date overview of the system.
+
+Package: td-system-maintenance
+Architecture: all
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Breaks: nornet-management (<<1.5.3~alpha1.0)
+Replaces: nornet-management (<<1.5.3~alpha1.0)
+Recommends: iputils-ping,
+            iputils-tracepath,
+            subnetcalc,
+            td-system-info
+Description: Perform basic system maintenance
+ This program runs basic system maintenance tasks:
+ trying to repair broken package management, updating the package
+ management databases, installing all available updates, checking
+ for old kernels and removing them, trim SSD or unmap unused storage.
+
+Package: td-system-tools
+Architecture: all
+Depends: td-system-info,
+         td-system-maintenance,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Breaks: nornet-management (<<1.5.3~alpha1.0)
+Replaces: nornet-management (<<1.5.3~alpha1.0)
+Description: Metapackage for system information and maintenance tools
+ This package is a metapackage for the system information and maintenance
+ tools.
