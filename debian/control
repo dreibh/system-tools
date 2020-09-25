@@ -39,10 +39,7 @@ Depends: ${misc:Depends},
          ${shlibs:Depends}
 Breaks: nornet-management (<<1.5.3~alpha1.0)
 Replaces: nornet-management (<<1.5.3~alpha1.0)
-Recommends: iputils-ping,
-            iputils-tracepath,
-            subnetcalc,
-            td-system-info
+Recommends: td-system-info
 Description: Perform basic system maintenance
  This program runs basic system maintenance tasks:
  trying to repair broken package management, updating the package
