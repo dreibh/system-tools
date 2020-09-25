@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 1.0.0~rc3.1
+Version: 1.0.0~rc3.2
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -97,6 +97,7 @@ for old kernels and removing them, trim SSD or unmap unused storage.
 %files system-maintenance
 %{_bindir}/System-Maintenance
 %{_mandir}/man1/System-Maintenance.1.gz
+%{_sysconfdir}/system-maintenance.d/XX-example
 
 
 %package all

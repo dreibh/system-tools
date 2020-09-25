@@ -1,0 +1,6 @@
+Do let System-Maintenance display a list of important installed project
+packages, add a file [0-9][0-9]-name to /etc/system-maintenance.d.
+
+The file has to contain a filter expression for "grep", e.g.:
+^nornet-
+(displays all installed packages with names nornet-*)
