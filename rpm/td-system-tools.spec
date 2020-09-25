@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 1.0.0~rc3
+Version: 1.0.0~rc4
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -109,6 +109,8 @@ Requires: td-system-tools-system-maintenance
 %description all
 This package is a meta package for the system information and maintenance
 tools.
+
+%files all
 
 
 %changelog
