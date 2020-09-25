@@ -73,7 +73,7 @@ elif [ "${Variant}" = "FreeBSD" ] ; then
    echo -e "\x1b[34m`date +%FT%H:%M:%S`: Updating package repositories ...\x1b[0m"
    sudo env PAGER=cat freebsd-update fetch
    sudo env ASSUME_ALWAYS_YES=yes pkg-static update
-   if [ -e /usr/sbin/portsnap ] ; then
+   if [ -x /usr/sbin/portsnap ] ; then
       sudo portsnap -I fetch
    fi
 fi
@@ -129,7 +129,7 @@ elif [ "${Variant}" = "Fedora" ] ; then
    wait
    cat /tmp/install.log
 elif [ "${Variant}" = "FreeBSD" ] ; then
-   ( sudo freebsd-update install ; sudo env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y ; if [ -e /usr/sbin/portsnap ] ; then sudo portsnap -I update ; fi ) >/tmp/install.log 2>&1 &
+   ( sudo freebsd-update install ; sudo env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y ; if [ -x /usr/sbin/portsnap ] ; then sudo portsnap -I update ; fi ) >/tmp/install.log 2>&1 &
    wait
    cat /tmp/install.log
 fi
@@ -265,13 +265,15 @@ fi
 # Cache updates
 echo -e "\x1b[34m`date +%FT%H:%M:%S`: Updating caches ...\x1b[0m"
 if [ "${Variant}" = "Debian" ] ; then
-   if [ -e /usr/bin/apt-file ] ; then
+   if [ -x /usr/bin/apt-file ] ; then
       sudo /usr/bin/apt-file update >/dev/null
       sudo apt-show-versions -i
    fi
 fi
 if [ "${Variant}" != "FreeBSD" ] ; then
-   sudo updatedb
+   if [ -x /usr/bin/updatedb ] ; then
+      sudo updatedb
+   fi
 else
    sudo /etc/periodic/weekly/310.locate
    if [ -x /usr/local/bin/geoipupdate.sh ] ; then
@@ -335,7 +337,7 @@ if [ -e /etc/ntp.conf ] ; then
 fi
 
 # ====== SSD trimming =======================================================
-if [ -e /sbin/fstrim -o  -e /usr/sbin/fstrim ] ; then
+if [ -x /sbin/fstrim -o -x /usr/sbin/fstrim ] ; then
    echo -e "\x1b[34m`date +%FT%H:%M:%S`: Running fstrim ...\x1b[0m"
    sudo fstrim -a -v 2>/dev/null || ( sudo fstrim -v / && sudo fstrim -v /home ) || true
 fi
@@ -345,7 +347,7 @@ echo -e "\x1b[34m`date +%FT%H:%M:%S`: Done!\x1b[0m"
 
 # ====== Finally, show NorNet package versions ==============================
 if [ "${Variant}" == "Debian" ] ; then
-   if [ -e /usr/bin/apt-show-versions ] ; then
+   if [ -x /usr/bin/apt-show-versions ] ; then
       echo "====== Installed NorNet Software ============================================="
       /usr/bin/apt-show-versions | grep "^nornet-" | grep -v "not installed$" || true
       echo "=============================================================================="
