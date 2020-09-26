@@ -8,7 +8,7 @@ Build-Depends: cmake,
                libfile-fcntllock-perl,
                pkg-config
 Standards-Version: 4.5.0.3
-Rules-Requires-Root: binary-targets
+Rules-Requires-Root: no
 Vcs-Git: https://github.com/dreibh/system-tools.git
 Vcs-Browser: https://github.com/dreibh/system-tools
 
