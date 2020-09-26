@@ -99,8 +99,8 @@ fi
 # ====== Print banner =======================================================
 if [ -d /etc/system-info.d ] ; then
    bannerScripts=`find /etc/system-info.d -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort -r`
-   for bannerScript in $bannerScripts ; do
-      $bannerScript || break
+   for bannerScript in ${bannerScripts} ; do
+      ${bannerScript} || break
    done
 fi
 
