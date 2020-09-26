@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	td-system-tools
-PORTVERSION=	1.0.0~rc3.2
+PORTVERSION=	1.0.0~rc3.8
 CATEGORIES=	net
 MASTER_SITES=	https://www.uni-due.de/~be0001/system-tools/download/
 
@@ -12,8 +12,10 @@ COMMENT=	Printing basic system information and system maintenance
 LICENSE=	GPLv3+
 LICENSE_FILE=	${WRKSRC}/COPYING
 
-USES=		tar:xz cmake
+USES=		cmake tar:xz
 CMAKE_ARGS+=	-DCMAKE_INSTALL_MANDIR=${MANPREFIX}/man
+
+RUN_DEPENDS=	bash:shells/bash
 
 PLIST_FILES=	bin/System-Info \
 		bin/System-Maintenance \
