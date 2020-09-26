@@ -40,11 +40,10 @@ SSD or unmap unused storage.
 
 %build
 %cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc .
-make %{?_smp_mflags}
+%cmake_build
 
 %install
-make DESTDIR=%{buildroot} install
-
+%cmake_install
 
 %package system-info
 Summary: Perform basic system maintenance
