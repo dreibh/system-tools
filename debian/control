@@ -3,7 +3,7 @@ Section: utils
 Priority: optional
 Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
 Homepage: https://www.uni-due.de/~be0001/system-tools/
-Build-Depends: cmake (>= 3.0.2) | cmake3,
+Build-Depends: cmake,
                debhelper (>= 9),
                libfile-fcntllock-perl,
                pkg-config

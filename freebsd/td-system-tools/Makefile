@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	td-system-tools
-PORTVERSION=	1.0.0~rc3.8
+PORTVERSION=	1.0.0~rc3.9
 CATEGORIES=	net
 MASTER_SITES=	https://www.uni-due.de/~be0001/system-tools/download/
 
