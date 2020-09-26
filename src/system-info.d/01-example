@@ -50,7 +50,7 @@ separator ()
       separator="${separator}${separatorCharacter}"
       let i=$i+1
    done
-   center "😀${separator}😀"
+   center "<😀${separator}😀>"
 }
 
 
