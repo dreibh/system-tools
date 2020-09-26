@@ -12,17 +12,16 @@ COMMENT=	Printing basic system information and system maintenance
 LICENSE=	GPLv3+
 LICENSE_FILE=	${WRKSRC}/COPYING
 
+RUN_DEPENDS=	bash:shells/bash
+
 USES=		cmake tar:xz
 CMAKE_ARGS+=	-DCMAKE_INSTALL_MANDIR=${MANPREFIX}/man
-
-RUN_DEPENDS=	bash:shells/bash
 
 PLIST_FILES=	bin/System-Info \
 		bin/System-Maintenance \
 		man/man1/System-Info.1.gz \
-		man/man1/SystemMaintenance.1.gz \
-		etc/system-tools.d/01-example \
+		man/man1/System-Maintenance.1.gz \
+		etc/system-info.d/01-example \
 		etc/system-maintenance.d/XX-example
-
 
 .include <bsd.port.mk>
