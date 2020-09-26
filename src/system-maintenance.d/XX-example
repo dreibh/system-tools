@@ -1,6 +1,33 @@
-Do let System-Maintenance display a list of important installed project
-packages, add a file [0-9][0-9]-name to /etc/system-maintenance.d.
+#!/bin/sh
+#
+# System-Maintenance
+# Copyright (C) 2013-2020 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
 
-The file has to contain a filter expression for "grep", e.g.:
-^nornet-
-(displays all installed packages with names nornet-*)
+
+# To let System-Maintenance display a list of important installed project
+# packages, add a script [0-9][0-9]-name to /etc/system-maintenance.d. The
+# scripts are executed in order of their number, with the first argument
+# being the full list of installed packages.
+
+
+fullPackageList="$1"
+
+echo "====== Installed System-Tools Software ======================================="
+grep "^td-system-" $fullPackageList
+
+exit 0

@@ -346,21 +346,27 @@ fi
 echo -e "\x1b[34m`date +%FT%H:%M:%S`: Done!\x1b[0m"
 
 # ====== Finally, show project package versions =============================
-FILTER=""
-files=`find /etc/system-maintenance.d -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort -r`
-for file in ${files} ; do
-   FILTER="${FILTER} -e `cat ${file}`"
-done
-if [ "${FILTER}" != "" ] ; then
+if [ -d /etc/system-maintenance.d ] ; then
+   filterScripts=`find /etc/system-maintenance.d -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort`
+fi
+if [ "$filterScripts}" != "" ] ; then
+   fullPackageList=`mktemp`
+
    if [ "${Variant}" == "Debian" ] ; then
       if [ -x /usr/bin/apt-show-versions ] ; then
-         echo "====== Installed Project Software ============================================"
-         /usr/bin/apt-show-versions | grep ${FILTER} | grep -v "not installed$" || true
-         echo "=============================================================================="
+         /usr/bin/apt-show-versions | grep -v "not installed$" >${fullPackageList} || true
       fi
-   elif [ "${Variant}" == "Project" ] ; then
-      echo "====== Installed Project Software ============================================"
-      rpm -qa | grep ${FILTER} | sort || true
+   elif [ "${Variant}" == "Fedora" ] ; then
+      rpm -qa | sort >${fullPackageList} || true
+   elif [ "${Variant}" == "FreeBSD" ] ; then
+      pkg info --all | sort  >${fullPackageList}|| true
+   fi
+
+   if [ -e ${fullPackageList} ] ; then
+      for filterScript in ${filterScripts} ; do
+         ${filterScript} ${fullPackageList}
+      done
+      rm -f ${fullPackageList}
       echo "=============================================================================="
    fi
 fi
