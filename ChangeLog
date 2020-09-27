@@ -1,3 +1,225 @@
+commit 29f926a38cae3afe1e504e44705fef7792f20731
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 21:20:28 2020 +0200
+
+    Minor update.
+
+commit a38db7e50d1005063fe7c35e506b006926b04b57
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 19:11:16 2020 +0200
+
+    Improved build script.
+
+commit ba1dff4757cc487ed8d97d35276b831eaeef34d9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 19:11:03 2020 +0200
+
+    RPM spec update for Fedora 33.
+
+commit 785add8f92de36ee2e67adeb17b28e1d6527ab83
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 17:20:09 2020 +0200
+
+    Packaging configuration update.
+
+commit 55be6dfd2d85dc8ad8da253ffa7a1c83b37ae3bc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 14:56:02 2020 +0200
+
+    Minor update.
+
+commit f428427f048fb2192871e3d48ad72a2f92e4e4fa
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 14:55:56 2020 +0200
+
+    Added helper script.
+
+commit b305f90c679ead9c77a4f395041d3a848652187b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 14:20:32 2020 +0200
+
+    Updated packaging files.
+
+commit aec873479b8263b4b7f2a83d6e398e9ad78eea13
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 14:07:47 2020 +0200
+
+    Support build with CMake 2.8.7, for some legacy systems with Ubuntu 12.04 and 14.04.
+
+commit 159d1cfc0fc2ab4954cce8a8c00c49897318122c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 14:07:02 2020 +0200
+
+    Updated FreeBSD packaging files.
+
+commit c2d9aa56c0e790ba0efb8f9d7a46b713b06c8fe2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 14:06:15 2020 +0200
+
+    Some improvements for the example.
+
+commit b096e037e84d9b02e48b8ef31dd486f1540c93f7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 11:57:42 2020 +0200
+
+    Improvements for System-Maintenance.
+
+commit e990620d3c511fefd9d4d235bd983eedfd930bca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 11:57:35 2020 +0200
+
+    Minor clean-up.
+
+commit 0498e1fcab364119d17e01209573e855c95508f4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 11:37:21 2020 +0200
+
+    Some clean-ups.
+
+commit b07fbd50e687ab993ed73b203a81f252409a3399
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 26 11:36:18 2020 +0200
+
+    Bugfix: check, whether /etc/system-info.d exists before trying to look for files.
+
+commit c51cee7f761382feaa3324a246164ceb9715aef4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 25 20:56:14 2020 +0200
+
+    Updated FreeBSD packaging files.
+
+commit b6fa53920a8776ef5a67f2294aa5d1988c913f9a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 25 20:50:18 2020 +0200
+
+    Minor update.
+
+commit 79d7b5675650dc5489133056286a839305db5451
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 25 19:31:01 2020 +0200
+
+    Updated packaging files.
+
+commit 0fcdfc5490b79c9a0c24b5b0b9c3abed60f32c17
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 25 19:22:43 2020 +0200
+
+    Further improvements.
+
+commit 5f3712cd62086f91015965dffe0f598d04401fc7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 25 18:52:37 2020 +0200
+
+    More clean-ups for FreeBSD.
+
+commit e5ac5528dae52b61aba4d81c5e370be045a8d682
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 25 18:51:39 2020 +0200
+
+    Minor clean-ups.
+
+commit 646150f60c91fa06d4d9e4027996117a1b8ecf39
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 25 18:29:22 2020 +0200
+
+    Fixed build script.
+
+commit 9428883ebf865eebfeaeb742b699136b0c8158c0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 25 18:19:49 2020 +0200
+
+    Version bump.
+
+commit a3eac4f1915bbfbf75b1795ee3469a59c049e292
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 25 18:17:48 2020 +0200
+
+    Minor update.
+
+commit 800278599097800ea1db0fe6f1b50e0826da0d27
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 25 18:14:55 2020 +0200
+
+    Added missing file.
+
+commit e3edf4957e3e41622f29b5606f7f4f15afe7e15f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 25 15:15:18 2020 +0200
+
+    Added System-Maintenance script.
+
+commit a8bddc27dcfa3f1642a8d9e98b1e87891b020be8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Sep 10 12:15:48 2020 +0200
+
+    Updated signing key.
+
+commit 9f1452e8d33623378121f1c9f5e2b3db90b371fd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 15:40:40 2020 +0200
+
+    Dependency fix.
+
+commit 5fdfaa41b27451167e5a6d83f50c81e69be4fae6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 14:20:05 2020 +0200
+
+    Minor update.
+
+commit e4828ae3f7b56870a319fa776eb35ae0cb25bd09
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 14:19:58 2020 +0200
+
+    Updated Travis CI configuration
+
+commit 3eb615b6296b5bd3b384b0d068cc889ffa97c0b0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 14:19:58 2020 +0200
+
+    Updated build scripts
+
+commit 6eeb0979f47a175828a1589f0a9774d7e4c2d6af
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 12:42:22 2020 +0200
+
+    Some updates.
+
+commit 79901cb8f0216ccb32296231ab80146783c56301
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 12:15:14 2020 +0200
+
+    Updated build script.
+
+commit 95a19a1acadf8c2d918876345812570bc166c79e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 12:08:15 2020 +0200
+
+    RPM packaging improvements.
+
+commit 683d91bf5d2effec5b50456e30258fc3b7b6d80f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 11:27:53 2020 +0200
+
+    Minor updates.
+
+commit 708128e0ca11e8813d1be3e5d1426a7768616489
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 11:24:40 2020 +0200
+
+    Added Travis CI configuration.
+
+commit b4f8e7c9059f91e4aa4663f620657d8d7a380ac0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 11:21:41 2020 +0200
+
+    Version bump.
+
+commit 23beacf765382c740aff342b6617dfe595b34c25
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 11:15:41 2020 +0200
+
+    A fix.
+
 commit 84c81c50827461f2d64f5f99a251d542a40fbc32
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Sep 4 11:03:32 2020 +0200

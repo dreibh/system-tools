@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 1.0.0~rc3.9
+Version: 1.0.0
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
