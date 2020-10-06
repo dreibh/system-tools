@@ -1,0 +1,160 @@
+#!/usr/bin/env bash
+#
+# GRUB configuration helper
+# Copyright (C) 2020 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+
+if [ $# -lt 1 ] ; then
+   echo >&2 "Usage: $0 grub-defaults-template-file [--input|-o input-grub-defaults-file] [--output|-o output-grub-defaults-file] [--video|-V GRUB_GFXMODE]"
+   exit 1
+fi
+
+
+# ====== Check input files ==================================================
+INPUT_CONFIGURATION="/etc/default/grub"
+TEMPLATE_CONFIGURATION="$1"
+OUTPUT_CONFIGURATION=""
+REPLACE_GRUB_GFXMODE=""
+shift
+while [ $# -gt 0 ] ; do
+   if [ "$1" == "--output" -o "$1" == "-o" ] ; then
+      OUTPUT_CONFIGURATION="$2"
+      shift
+   elif [ "$1" == "--video" -o "$1" == "-V" ] ; then
+      REPLACE_GRUB_GFXMODE="$2"
+      shift
+   elif [ "$1" == "--input" -o "$1" == "-i" ] ; then
+      INPUT_CONFIGURATION="$2"
+      shift
+   else
+      echo >&2 "ERROR: Unknown option $1!"
+      exit 1
+   fi
+   shift
+done
+
+if [ ! -e "${INPUT_CONFIGURATION}" ] ; then
+   echo >&2 "ERROR: Template configuration ${INPUT_CONFIGURATION} not found!"
+   exit 1
+fi
+if [ ! -e "${TEMPLATE_CONFIGURATION}" ] ; then
+   echo >&2 "ERROR: Template configuration ${TEMPLATE_CONFIGURATION} not found!"
+   exit 1
+fi
+if [ "${OUTPUT_CONFIGURATION}" == "" ] ; then
+   OUTPUT_CONFIGURATION="grub-defaults.new"
+fi
+
+
+# ====== Get options ========================================================
+OPTION_DISABLE_BIOSDEVNAME=0
+if grep "biosdevname=0" >/dev/null 2>&1 /proc/cmdline ; then
+   OPTION_DISABLE_BIOSDEVNAME=1
+fi
+OPTION_DISABLE_NETIFNAMES=0
+if grep "net.ifnames=0" >/dev/null 2>&1 /proc/cmdline ; then
+   OPTION_DISABLE_NETIFNAMES=1
+fi
+OPTION_CMDLINE=`grep "^GRUB_CMDLINE_LINUX=" ${INPUT_CONFIGURATION} || true`
+OPTION_ENABLE_CRYPTODISK=`grep "^GRUB_ENABLE_CRYPTODISK=" ${INPUT_CONFIGURATION} || true`
+if [ "${REPLACE_GRUB_GFXMODE}" == "" ] ; then
+   OPTION_GFXMODE=`grep "^GRUB_GFXMODE=" ${INPUT_CONFIGURATION} || true`
+else
+   OPTION_GFXMODE="GRUB_GFXMODE=\"${REPLACE_GRUB_GFXMODE}\""
+fi
+
+if [ ${OPTION_DISABLE_BIOSDEVNAME} -eq 1 ] ; then
+   OPTION_CMDLINE=`echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"biosdevname=0 /g"`
+fi
+if [ ${OPTION_DISABLE_NETIFNAMES} -eq 1 ] ; then
+   OPTION_CMDLINE=`echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"net.ifnames=0 /g"`
+fi
+
+
+# ====== Print configuration ================================================
+echo "Configuration:"
+echo "* Input file:                 ${INPUT_CONFIGURATION}"
+echo "* Template file:              ${TEMPLATE_CONFIGURATION}"
+echo "* Output file:                ${OUTPUT_CONFIGURATION}"
+echo "* OPTION_DISABLE_BIOSDEVNAME: ${OPTION_DISABLE_BIOSDEVNAME}"
+echo "* OPTION_DISABLE_NETIFNAMES:  ${OPTION_DISABLE_NETIFNAMES}"
+echo "* OPTION_CMDLINE:             ${OPTION_CMDLINE}"
+echo "* OPTION_ENABLE_CRYPTODISK:   ${OPTION_ENABLE_CRYPTODISK}"
+echo "* OPTION_GFXMODE:             ${OPTION_GFXMODE}"
+
+
+# ====== Set configuration ==================================================
+awk \
+   -v OPTION_CMDLINE="${OPTION_CMDLINE}" \
+   -v OPTION_GFXMODE="${OPTION_GFXMODE}" \
+   -v OPTION_ENABLE_CRYPTODISK="${OPTION_ENABLE_CRYPTODISK}" \
+'
+   BEGIN {
+      wroteCmdlineOption=0;
+      wroteGfxModeOption=0;
+      wroteCryptodiskOption=0;
+   }
+
+   /^GRUB_CMDLINE_LINUX=/ {
+      print OPTION_CMDLINE;
+      wroteCmdlineOption=1;
+      next;
+   }
+
+   /^GRUB_GFXMODE=/ {
+      print OPTION_GFXMODE;
+      wroteGfxModeOption=1;
+      next;
+   }
+
+   /^GRUB_ENABLE_CRYPTODISK=/ {
+      print OPTION_ENABLE_CRYPTODISK;
+      wroteCryptodiskOption=1;
+      next;
+   }
+
+   /^.*$/ {
+      print $0;
+   }
+
+   END {
+      if( (!wroteCmdlineOption) && (OPTION_CMDLINE != "")) {
+         print OPTION_CMDLINE;
+      }
+      if( (!wroteGfxModeOption) && (OPTION_GFXMODE != "")) {
+         print OPTION_GFXMODE;
+      }
+      if( (!wroteCryptodiskOption) && (OPTION_ENABLE_CRYPTODISK != "")) {
+         print OPTION_ENABLE_CRYPTODISK;
+      }
+   }
+' <${INPUT_CONFIGURATION} >${OUTPUT_CONFIGURATION}.new
+
+echo "Differences between ${INPUT_CONFIGURATION} and ${OUTPUT_CONFIGURATION}:"
+colordiff ${INPUT_CONFIGURATION} ${OUTPUT_CONFIGURATION}.new || true
+mv ${OUTPUT_CONFIGURATION}~ ${OUTPUT_CONFIGURATION}
+
+
+#       cat ${INPUT_CONFIGURATION} | \
+#          ( if grep "biosdevname=0" >/dev/null 2>&1 /proc/cmdline ; then sed "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"biosdevname=0 /g" ; else cat ; fi ) | \
+#          ( if grep "net.ifnames=0" >/dev/null 2>&1 /proc/cmdline ; then sed "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"net.ifnames=0 /g" ; else cat ; fi ) | \
+#          tee /etc/default/grub.new && \
+#       grep "^GRUB_ENABLE_CRYPTODISK=" /etc/default/grub | tee --append /etc/default/grub.new && \
+#       mv /etc/default/grub.new /etc/default/grub
