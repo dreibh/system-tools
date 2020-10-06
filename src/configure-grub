@@ -22,7 +22,7 @@ set -e
 
 
 if [ $# -lt 1 ] ; then
-   echo >&2 "Usage: $0 grub-defaults-template-file [--input|-o input-grub-defaults-file] [--output|-o output-grub-defaults-file] [--video|-V GRUB_GFXMODE]"
+   echo >&2 "Usage: $0 grub-defaults-template-file [--input|-o input-grub-defaults-file] [--output|-o output-grub-defaults-file] [--video|-V GRUB_GFXMODE] [--tune|-T GRUB_INIT_TUNE]"
    exit 1
 fi
 
@@ -32,16 +32,20 @@ INPUT_CONFIGURATION="/etc/default/grub"
 TEMPLATE_CONFIGURATION="$1"
 OUTPUT_CONFIGURATION=""
 REPLACE_GRUB_GFXMODE=""
+REPLACE_GRUB_INIT_TUNE=""
 shift
 while [ $# -gt 0 ] ; do
    if [ "$1" == "--output" -o "$1" == "-o" ] ; then
       OUTPUT_CONFIGURATION="$2"
       shift
+   elif [ "$1" == "--input" -o "$1" == "-i" ] ; then
+      INPUT_CONFIGURATION="$2"
+      shift
    elif [ "$1" == "--video" -o "$1" == "-V" ] ; then
       REPLACE_GRUB_GFXMODE="$2"
       shift
-   elif [ "$1" == "--input" -o "$1" == "-i" ] ; then
-      INPUT_CONFIGURATION="$2"
+   elif [ "$1" == "--tune" -o "$1" == "-T" ] ; then
+      REPLACE_GRUB_INIT_TUNE="$2"
       shift
    else
       echo >&2 "ERROR: Unknown option $1!"
@@ -79,6 +83,11 @@ if [ "${REPLACE_GRUB_GFXMODE}" == "" ] ; then
 else
    OPTION_GFXMODE="GRUB_GFXMODE=\"${REPLACE_GRUB_GFXMODE}\""
 fi
+if [ "${REPLACE_GRUB_INIT_TUNE}" == "" ] ; then
+   OPTION_INIT_TUNE=`grep "^GRUB_INIT_TUNE=" ${INPUT_CONFIGURATION} || true`
+else
+   OPTION_INIT_TUNE="GRUB_INIT_TUNE=\"${REPLACE_GRUB_INIT_TUNE}\""
+fi
 
 if [ ${OPTION_DISABLE_BIOSDEVNAME} -eq 1 ] ; then
    OPTION_CMDLINE=`echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"biosdevname=0 /g"`
@@ -97,6 +106,7 @@ echo "* OPTION_DISABLE_BIOSDEVNAME: ${OPTION_DISABLE_BIOSDEVNAME}"
 echo "* OPTION_DISABLE_NETIFNAMES:  ${OPTION_DISABLE_NETIFNAMES}"
 echo "* OPTION_CMDLINE:             ${OPTION_CMDLINE}"
 echo "* OPTION_ENABLE_CRYPTODISK:   ${OPTION_ENABLE_CRYPTODISK}"
+echo "* OPTION_INIT_TUNE:           ${OPTION_INIT_TUNE}"
 echo "* OPTION_GFXMODE:             ${OPTION_GFXMODE}"
 
 
@@ -104,11 +114,13 @@ echo "* OPTION_GFXMODE:             ${OPTION_GFXMODE}"
 awk \
    -v OPTION_CMDLINE="${OPTION_CMDLINE}" \
    -v OPTION_GFXMODE="${OPTION_GFXMODE}" \
+   -v OPTION_INIT_TUNE="${OPTION_INIT_TUNE}" \
    -v OPTION_ENABLE_CRYPTODISK="${OPTION_ENABLE_CRYPTODISK}" \
 '
    BEGIN {
       wroteCmdlineOption=0;
       wroteGfxModeOption=0;
+      wroteInitTuneOption=0;
       wroteCryptodiskOption=0;
    }
 
@@ -121,6 +133,12 @@ awk \
    /^GRUB_GFXMODE=/ {
       print OPTION_GFXMODE;
       wroteGfxModeOption=1;
+      next;
+   }
+
+   /^GRUB_INIT_TUNE=/ {
+      print OPTION_INIT_TUNE;
+      wroteInitTuneOption=1;
       next;
    }
 
@@ -141,20 +159,15 @@ awk \
       if( (!wroteGfxModeOption) && (OPTION_GFXMODE != "")) {
          print OPTION_GFXMODE;
       }
+      if( (!wroteInitTuneOption) && (OPTION_INIT_TUNE != "")) {
+         print OPTION_INIT_TUNE;
+      }
       if( (!wroteCryptodiskOption) && (OPTION_ENABLE_CRYPTODISK != "")) {
          print OPTION_ENABLE_CRYPTODISK;
       }
    }
-' <${INPUT_CONFIGURATION} >${OUTPUT_CONFIGURATION}.new
+' <${TEMPLATE_CONFIGURATION} >${OUTPUT_CONFIGURATION}.new
 
 echo "Differences between ${INPUT_CONFIGURATION} and ${OUTPUT_CONFIGURATION}:"
 colordiff ${INPUT_CONFIGURATION} ${OUTPUT_CONFIGURATION}.new || true
 mv ${OUTPUT_CONFIGURATION}.new ${OUTPUT_CONFIGURATION}
-
-
-#       cat ${INPUT_CONFIGURATION} | \
-#          ( if grep "biosdevname=0" >/dev/null 2>&1 /proc/cmdline ; then sed "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"biosdevname=0 /g" ; else cat ; fi ) | \
-#          ( if grep "net.ifnames=0" >/dev/null 2>&1 /proc/cmdline ; then sed "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"net.ifnames=0 /g" ; else cat ; fi ) | \
-#          tee /etc/default/grub.new && \
-#       grep "^GRUB_ENABLE_CRYPTODISK=" /etc/default/grub | tee --append /etc/default/grub.new && \
-#       mv /etc/default/grub.new /etc/default/grub
