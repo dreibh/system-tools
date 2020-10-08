@@ -99,12 +99,35 @@ for old kernels and removing them, trim SSD or unmap unused storage.
 %{_sysconfdir}/system-maintenance.d/XX-example
 
 
+%package configure-grub
+Summary: Helper tool to adjust GRUB configuration
+Group: Applications/System
+BuildArch: noarch
+Recommends: td-system-tools-system-info
+
+%description configure-grub
+This program adjusts a GRUB configuration file by applying a configuration
+from a template, and merging the existing configurations settings with
+additional customisations. It can for example be used to set a custom
+screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE
+option).
+Warning: This program is meant to be used by expert users! Do not modify
+a working GRUB configuration without knowing how to boot the system from
+a rescue media to fix a broken configuration!
+
+%files configure-grub
+%{_bindir}/configure-grub
+%{_mandir}/man1/configure-grub.1.gz
+%{_datadir}/configure-grub/grub-defaults
+
+
 %package all
 Summary: Meta package for system information and maintenance tools
 Group: Applications/System
 BuildArch: noarch
 Requires: td-system-tools-system-info
 Requires: td-system-tools-system-maintenance
+Recommends: td-system-tools-configure-grub
 
 %description all
 This package is a meta package for the system information and maintenance

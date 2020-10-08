@@ -46,12 +46,31 @@ Description: Perform basic system maintenance
  management databases, installing all available updates, checking
  for old kernels and removing them, trim SSD or unmap unused storage.
 
+Package: td-system-configure-grub
+Architecture: all
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Breaks: nornet-management (<<1.5.3~alpha1.0)
+Replaces: nornet-management (<<1.5.3~alpha1.0)
+Recommends: grub2-common,
+            td-system-maintenance
+Description: Helper tool to adjust GRUB configuration
+ This program adjusts a GRUB configuration file by applying a configuration
+ from a template, and merging the existing configurations settings with
+ additional customisations. It can for example be used to set a custom
+ screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE
+ option).
+ Warning: This program is meant to be used by expert users! Do not modify
+ a working GRUB configuration without knowing how to boot the system from
+ a rescue media to fix a broken configuration!
+
 Package: td-system-tools
 Architecture: all
 Depends: td-system-info,
          td-system-maintenance,
          ${misc:Depends},
          ${shlibs:Depends}
+Recommends: td-system-configure-grub
 Breaks: nornet-management (<<1.5.3~alpha1.0)
 Replaces: nornet-management (<<1.5.3~alpha1.0)
 Description: Metapackage for system information and maintenance tools
