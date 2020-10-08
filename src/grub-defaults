@@ -1,0 +1,23 @@
+GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+
+# ====== Image selection and automatic timeout ==============================
+GRUB_DEFAULT=0
+GRUB_HIDDEN_TIMEOUT=
+GRUB_TIMEOUT=15
+GRUB_RECORDFAIL_TIMEOUT=15
+
+# ====== Startup tune =======================================================
+# Simple example: "480 440 1"
+# Nice example from https://juliehill.codes/2020/01/20/enterprise.html:
+# "20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192"
+GRUB_INIT_TUNE="20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192"
+
+# ====== Video settings =====================================================
+GRUB_GFXMODE="auto,1920x1080,1024x768"
+
+# ====== Special Linux boot options =========================================
+# Always effective:
+# NOTE: Add net.ifnames=0 biosdevname=0 for old interface naming scheme!
+GRUB_CMDLINE_LINUX="console=tty0 console=ttyS0,115200n8"
+# Effective ONLY during normal boot (NOT during recovery mode):
+GRUB_CMDLINE_LINUX_DEFAULT=""   # "splash quiet"

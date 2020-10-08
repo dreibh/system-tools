@@ -1,0 +1,73 @@
+.\" GRUB configuration helper
+.\" Copyright (C) 2020 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: dreibh@simula.no
+.\"
+.\" ###### Setup ############################################################
+.Dd October 8, 2020
+.Dt configure-grub 1
+.Os configure-grub
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm configure-grub
+.Nd NorNet configure-grub
+.\" ###### Synopsis #########################################################
+.Sh SYNOPSIS
+.Nm configure-grub grub-defaults-template-file
+.Op Fl --input|-o input-grub-defaults-file
+.Op Fl --output|-o output-grub-defaults-file
+.Op Fl --video|-V GRUB_GFXMODE
+.Op Fl --tune|-T GRUB_INIT_TUNE
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm configure-grub
+adjusts a GRUB configuration file by applying a configuration
+from a template, and merging the existing configurations settings with
+additional customisations. It can for example be used to set a custom
+screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE
+option).
+.Pp
+WARNING: This program is meant to be used by expert users! Do not modify
+a working GRUB configuration without knowing how to boot the system from
+a rescue media to fix a broken configuration!
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It Fl --input|-o input-grub-defaults-file
+Set name of input GRUB file (that is, the template to be used).
+.It Fl --output|-o output-grub-defaults-file
+Set name of output GRUB file to write
+.It Fl --video|-V GRUB_GFXMODE
+Replace GRUB_GFXMODE by the provided setting.
+.It Fl --tune|-T GRUB_INIT_TUNE
+Replace GRUB_INIT_TUNE by the provided setting.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It configure-grub /usr/share/configure-grub/grub-defaults \
+   -V 'auto,1920x1080,1024x768' \
+   -T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192'
+.It sudo configure-grub /usr/share/configure-grub/grub-defaults \
+   -V 'auto,1024x768' \
+   -o /etc/default/grub
+.It sudo configure-grub /usr/share/configure-grub/grub-defaults \
+   -V 'auto,1920x1080,1024x768' \
+   -T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192' \
+   -o /etc/default/grub
+.El
