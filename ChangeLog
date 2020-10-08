@@ -1,3 +1,58 @@
+commit eb689720a3aa228af6ad49d21a33b0730ac63531
+Merge: ed76524 2e2d4c6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Oct 8 16:47:57 2020 +0200
+
+    Merge branch 'dreibh/configure-grub'
+
+commit 2e2d4c626cb9fd023d8cf2bddd2daaf722c99971
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Oct 8 14:15:44 2020 +0200
+
+    Updated packaging files.
+
+commit cfca3880cf5814cefb4be301057d7096a55de40a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Oct 8 14:15:08 2020 +0200
+
+    Added manpage.
+
+commit 90e4c9f978503428ff1e2790dc8c22b813681ddd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 6 20:30:02 2020 +0200
+
+    Improved script and example.
+
+commit 8113772254ffc316c1ce9947cd9a510dd8a13a19
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 6 13:57:21 2020 +0200
+
+    A fix.
+
+commit 5b75c01ff818031783d17c15f0da322c75079613
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 6 11:08:51 2020 +0200
+
+    Added script.
+
+commit ed7652425777f400a6d1ee41f09adaf72047b167
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 6 10:01:59 2020 +0200
+
+    Minor header updates.
+
+commit d14a0f7283b1a793cbfb14e995e7748e71926795
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Sep 27 12:22:52 2020 +0200
+
+    Updated LSM entry.
+
+commit 610b9a100ce34df1c48daf54d5bbffc28342052e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Sep 27 12:17:18 2020 +0200
+
+    New release td-system-tools-1.0.0.
+
 commit 29f926a38cae3afe1e504e44705fef7792f20731
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Sep 26 21:20:28 2020 +0200

@@ -1,3 +1,9 @@
+td-system-tools (1.1.0-1ubuntu1) focal; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Thu, 08 Oct 2020 16:48:07 +0200
+
 td-system-tools (1.0.0-1ubuntu1) focal; urgency=medium
 
   * New upstream release.
