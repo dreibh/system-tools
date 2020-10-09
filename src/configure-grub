@@ -76,7 +76,14 @@ OPTION_DISABLE_NETIFNAMES=0
 if grep "net.ifnames=0" >/dev/null 2>&1 /proc/cmdline ; then
    OPTION_DISABLE_NETIFNAMES=1
 fi
-OPTION_CMDLINE=`grep "^GRUB_CMDLINE_LINUX=" ${INPUT_CONFIGURATION} || true`
+OPTION_CMDLINE=`grep "^GRUB_CMDLINE_LINUX=" ${INPUT_CONFIGURATION} | sed -e "s/biosdevname=0[ ]*//g" -e "s/net.ifnames=0[ ]*//g" || true`
+if [ ${OPTION_DISABLE_BIOSDEVNAME} -eq 1 ] ; then
+   OPTION_CMDLINE=`echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"biosdevname=0 /g"`
+fi
+if [ ${OPTION_DISABLE_NETIFNAMES} -eq 1 ] ; then
+   OPTION_CMDLINE=`echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"net.ifnames=0 /g"`
+fi
+
 OPTION_ENABLE_CRYPTODISK=`grep "^GRUB_ENABLE_CRYPTODISK=" ${INPUT_CONFIGURATION} || true`
 if [ "${REPLACE_GRUB_GFXMODE}" == "" ] ; then
    OPTION_GFXMODE=`grep "^GRUB_GFXMODE=" ${INPUT_CONFIGURATION} || true`
@@ -87,13 +94,6 @@ if [ "${REPLACE_GRUB_INIT_TUNE}" == "" ] ; then
    OPTION_INIT_TUNE=`grep "^GRUB_INIT_TUNE=" ${INPUT_CONFIGURATION} || true`
 else
    OPTION_INIT_TUNE="GRUB_INIT_TUNE=\"${REPLACE_GRUB_INIT_TUNE}\""
-fi
-
-if [ ${OPTION_DISABLE_BIOSDEVNAME} -eq 1 ] ; then
-   OPTION_CMDLINE=`echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"biosdevname=0 /g"`
-fi
-if [ ${OPTION_DISABLE_NETIFNAMES} -eq 1 ] ; then
-   OPTION_CMDLINE=`echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"net.ifnames=0 /g"`
 fi
 
 
