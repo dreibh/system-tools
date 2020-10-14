@@ -1,0 +1,41 @@
+#//bin/bash
+
+theme="NorNet Management"
+image="/usr/share/nornet-desktop/Desktop-with-Logo/TimeSrv1"   #  "/boot/NorNet/Management1"
+suffix=".jpeg"
+
+
+# ====== Make a table of all images and their dimensions ====================
+directory=`dirname $image`
+prefix=`basename $image`
+
+ls $directory/$prefix* | (
+   while read imageName ; do
+      imageWidth=`echo "$imageName" | sed -e "s/^.*\/$prefix-\([0-9]*\)x\([0-9]*\).*$/\1/g"`
+      imageHeight=`echo "$imageName" | sed -e "s/^.*\/$prefix-\([0-9]*\)x\([0-9]*\).*$/\2/g"`
+      imageSize=$((imageWidth*imageHeight))
+      imageAspectRatio=$((1000*imageWidth/imageHeight))
+      echo "$imageName $imageAspectRatio $imageSize $imageWidth $imageHeight"
+   done
+) | sort -k 3nr
+
+
+background="$image-1024x768$suffix"   # VGA resolution is fallback
+
+screenResolutions=`grep "^GRUB_GFXMODE=" /etc/default/grub | sed -e "s/GRUB_GFXMODE=//g" -e "s/[,\"]/ /g"`
+for screenResolution in $screenResolutions ; do
+   if [[ "$screenResolution" =~ ^[0-9]*x[0-9]* ]] ; then
+      screenWidth=`echo "$screenResolution" | sed -e "s/\([0-9]*\)x\([0-9]*\).*/\1/g"`
+      screenHeight=`echo "$screenResolution" | sed -e "s/\([0-9]*\)x\([0-9]*\).*/\2/g"`
+      screenAspectRatio=$((1000*screenWidth/screenHeight))
+
+      echo "A=$screenAspectRatio"
+
+      if [ -e "$image-$resolution$suffix" ] ; then
+         background="$image-$resolution$suffix"
+         break
+      fi
+   fi
+done
+
+echo >&2 "Using $theme theme from $background/"
