@@ -71,8 +71,6 @@ Depends: td-system-info,
          ${misc:Depends},
          ${shlibs:Depends}
 Recommends: td-system-configure-grub
-Breaks: nornet-management (<<1.5.3~alpha1.0)
-Replaces: nornet-management (<<1.5.3~alpha1.0)
 Description: Metapackage for system information and maintenance tools
  This package is a metapackage for the system information and maintenance
  tools.
