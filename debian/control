@@ -16,8 +16,8 @@ Package: td-system-info
 Architecture: all
 Depends: ${misc:Depends},
          ${shlibs:Depends}
-Breaks: system-info
-Replaces: system-info
+Breaks: nornet-management (<<1.5.3~alpha1.0)
+Replaces: nornet-management (<<1.5.3~alpha1.0)
 Recommends: iputils-ping,
             iputils-tracepath,
             subnetcalc
@@ -50,8 +50,6 @@ Package: td-system-configure-grub
 Architecture: all
 Depends: ${misc:Depends},
          ${shlibs:Depends}
-Breaks: nornet-management (<<1.5.3~alpha1.0)
-Replaces: nornet-management (<<1.5.3~alpha1.0)
 Recommends: grub2-common,
             td-system-maintenance
 Description: Helper tool to adjust GRUB configuration
