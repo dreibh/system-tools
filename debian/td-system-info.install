@@ -1,2 +1,3 @@
 etc/system-info.d/01-example
 usr/bin/System-Info
+usr/share/man/man1/System-Info.1

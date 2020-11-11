@@ -1,2 +1,3 @@
 usr/bin/configure-grub
 usr/share/configure-grub/grub-defaults
+usr/share/man/man1/configure-grub.1
