@@ -1,3 +1,39 @@
+commit c83061ea94516359e79fd2757110162147bb6163
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Oct 15 14:43:20 2020 +0200
+
+    Another dependency fix.
+
+commit 29bfabeb2f0fa98816bfb26443957f4fb1ad8409
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Oct 15 13:57:59 2020 +0200
+
+    Ubuntu packaging configuration fix.
+
+commit e11e0d8939b2da15034a142c169a6f4dc25bee5e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 9 16:28:57 2020 +0200
+
+    Updated LSM entry.
+
+commit bb5fc6487e985770a97f979d4d98764f8d6079a1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 9 14:11:40 2020 +0200
+
+    New release td-system-tools-1.1.1.
+
+commit 3e221986bbeaddc7d86e8269a048fa8d0eb51f23
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 9 12:02:05 2020 +0200
+
+    Bugfix: prevent adding duplicate net.ifnames=0 or biosdevname=0 options.
+
+commit e418ede9ffd1cfe4764b3f8b6aef406c7b02e449
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Oct 8 16:48:15 2020 +0200
+
+    New release td-system-tools-1.1.0.
+
 commit eb689720a3aa228af6ad49d21a33b0730ac63531
 Merge: ed76524 2e2d4c6
 Author: Thomas Dreibholz <dreibh@simula.no>

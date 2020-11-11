@@ -1,8 +1,22 @@
+<<<<<<< HEAD
 td-system-tools (1.1.1~rc1-1ubuntu1) hirsute; urgency=medium
 
   * New upstream release.
 
  -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Tue, 10 Nov 2020 14:21:05 +0100
+=======
+td-system-tools (1.1.2-1ubuntu1) focal; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Thu, 15 Oct 2020 15:17:15 +0200
+
+td-system-tools (1.1.1-1ubuntu1) focal; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Fri, 09 Oct 2020 14:11:37 +0200
+>>>>>>> master
 
 td-system-tools (1.1.0-1ubuntu1) focal; urgency=medium
 
