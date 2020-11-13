@@ -130,13 +130,13 @@ awk \
       next;
    }
 
-   /^GRUB_GFXMODE=/ {
+   /^[#[:space:]]*GRUB_GFXMODE=/ {
       print OPTION_GFXMODE;
       wroteGfxModeOption=1;
       next;
    }
 
-   /^GRUB_INIT_TUNE=/ {
+   /^[#[:space:]]*GRUB_INIT_TUNE=/ {
       print OPTION_INIT_TUNE;
       wroteInitTuneOption=1;
       next;
