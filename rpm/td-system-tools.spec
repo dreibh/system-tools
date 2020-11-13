@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 1.1.3~rc0
+Version: 1.1.3~rc2
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -118,7 +118,8 @@ a rescue media to fix a broken configuration!
 %files configure-grub
 %{_bindir}/configure-grub
 %{_mandir}/man1/configure-grub.1.gz
-%{_datadir}/configure-grub/grub-defaults
+%{_datadir}/configure-grub/grub-defaults-nornet
+%{_datadir}/configure-grub/grub-defaults-standard
 
 
 %package all

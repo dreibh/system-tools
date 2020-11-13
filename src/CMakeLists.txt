@@ -25,4 +25,5 @@ INSTALL(PROGRAMS system-maintenance.d/XX-example DESTINATION ${CMAKE_INSTALL_FUL
 # EXAMPLES
 #############################################################################
 
-INSTALL(FILES grub-defaults DESTINATION ${CMAKE_INSTALL_DATADIR}/configure-grub)
+INSTALL(FILES grub-defaults-nornet DESTINATION ${CMAKE_INSTALL_DATADIR}/configure-grub)
+INSTALL(FILES grub-defaults-standard DESTINATION ${CMAKE_INSTALL_DATADIR}/configure-grub)
