@@ -22,7 +22,7 @@ set -e
 
 
 if [ $# -lt 1 ] ; then
-   echo >&2 "Usage: $0 grub-defaults-template-file [--input|-o input-grub-defaults-file] [--output|-o output-grub-defaults-file] [--video|-V GRUB_GFXMODE] [--tune|-T GRUB_INIT_TUNE]"
+   echo >&2 "Usage: $0 grub-defaults-template-file [--input|-i input-grub-defaults-file] [--output|-o output-grub-defaults-file] [--video|-V GRUB_GFXMODE] [--tune|-T GRUB_INIT_TUNE]"
    exit 1
 fi
 
