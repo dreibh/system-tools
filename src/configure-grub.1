@@ -49,9 +49,9 @@ a rescue media to fix a broken configuration!
 The following options are available:
 .Bl -tag -width indent
 .It Fl --input|-i input-grub-defaults-file
-Set name of input GRUB file (that is, the template to be used).
+Set name of input GRUB file (default: /etc/default/grub).
 .It Fl --output|-o output-grub-defaults-file
-Set name of output GRUB file to write
+Set name of output GRUB file to write.
 .It Fl --video|-V GRUB_GFXMODE
 Replace GRUB_GFXMODE by the provided setting.
 .It Fl --tune|-T GRUB_INIT_TUNE
@@ -67,6 +67,7 @@ Replace GRUB_INIT_TUNE by the provided setting.
    -V 'auto,1024x768' \
    -o /etc/default/grub
 .It sudo configure-grub /usr/share/configure-grub/grub-defaults-nornet \
+   -i /etc/default/grub \
    -V 'auto,1920x1080,1024x768' \
    -T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192' \
    -o /etc/default/grub
