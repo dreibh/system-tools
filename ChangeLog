@@ -1,3 +1,112 @@
+commit eb1c723da08e7849c8123433a75a94923e65282b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 13 17:16:19 2020 +0100
+
+    Another manpage improvement.
+
+commit f70d9fc022b154ed3b4c5e98b00d047db7ba99dd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 13 17:14:09 2020 +0100
+
+    Another improvement.
+
+commit 6c78d0c836e93f6998876d5ad2d04e5c61a30fe1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 13 17:08:05 2020 +0100
+
+    Packaging updates.
+
+commit 30f451d193b738e1928d8ba8dee9cd726a25a7ab
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 13 17:07:54 2020 +0100
+
+    Improved manpage.
+
+commit 514236b2a11394de5547ac3d7443f0c9c5363330
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 13 16:53:19 2020 +0100
+
+    Fixed typos.
+
+commit 05c040170d5724f1051ebba27535486c22ed6ceb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 13 16:46:22 2020 +0100
+
+    Some improvements.
+
+commit 59a0f1b635fa067b141662afc464927857c32ddc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 13 15:53:36 2020 +0100
+
+    Fixed typo.
+
+commit 9aa2f1ebcce55fb3bd32660856568f05c7e679ef
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 13 10:24:50 2020 +0100
+
+    Updated Travis CI configuration.
+
+commit 04f636ec1fff3ec50b49abde81909ac393238d9c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 11 23:02:59 2020 +0100
+
+    Version bump.
+
+commit 1bfa6a14d2c629533d70d5c2dcb1db9b21bf1b31
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 11 22:28:42 2020 +0100
+
+    Version bump.
+
+commit af83dd4ac0d81cbcb76ca46e2657df0dcfe1716f
+Merge: d4bf6be e328d82
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 11 22:27:28 2020 +0100
+
+    Merge branch 'master' into dreibh/configure-grub
+
+commit d4bf6befc4284fad7143273dfa64a0a0ac1390a9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 11 22:26:10 2020 +0100
+
+    Version bump.
+
+commit dcde5ddd3c1709e791fe138d661390c5ca787ff3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 11 21:42:01 2020 +0100
+
+    Updated build scripts
+
+commit 49d6ce9085b598aa582d786ff4bd0b2c0d789eb2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 11 20:16:25 2020 +0100
+
+    Packaging clean-ups.
+
+commit 5565c53542fe2d580aea90d02efcbf72b3f95232
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 11 13:01:17 2020 +0100
+
+    Updated build scripts
+
+commit 8bb14500a0b882dbf29324e30c0a15797f75c836
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 10 14:50:11 2020 +0100
+
+    Version bump.
+
+commit e328d82db858ab8c75ce91773edb086bedf6cf3d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Nov 5 17:09:54 2020 +0100
+
+    Updated build scripts
+
+commit 454a0ae0f521d256610479a303e17cd24e4dd5cc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Oct 15 15:17:17 2020 +0200
+
+    New release td-system-tools-1.1.2.
+
 commit c83061ea94516359e79fd2757110162147bb6163
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Oct 15 14:43:20 2020 +0200
@@ -9,6 +118,24 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Oct 15 13:57:59 2020 +0200
 
     Ubuntu packaging configuration fix.
+
+commit fc6ee85df0b67dc29928042e737cdd1777a9452c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 14 14:40:34 2020 +0200
+
+    Renamed script.
+
+commit 8070876855ed48c175587b0eec3ccf04785f41b1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 14 14:39:16 2020 +0200
+
+    Improved script.
+
+commit 8d12a394fcdff059986d264438f6b4e9bf7bf717
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 14 14:16:00 2020 +0200
+
+    Added script.
 
 commit e11e0d8939b2da15034a142c169a6f4dc25bee5e
 Author: Thomas Dreibholz <dreibh@simula.no>
