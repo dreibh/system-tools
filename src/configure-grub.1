@@ -60,13 +60,13 @@ Replace GRUB_INIT_TUNE by the provided setting.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It configure-grub /usr/share/configure-grub/grub-defaults \
+.It configure-grub /usr/share/configure-grub/grub-defaults-standard \
    -V 'auto,1920x1080,1024x768' \
    -T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192'
-.It sudo configure-grub /usr/share/configure-grub/grub-defaults \
+.It sudo configure-grub /usr/share/configure-grub/grub-defaults-nornet \
    -V 'auto,1024x768' \
    -o /etc/default/grub
-.It sudo configure-grub /usr/share/configure-grub/grub-defaults \
+.It sudo configure-grub /usr/share/configure-grub/grub-defaults-nornet \
    -V 'auto,1920x1080,1024x768' \
    -T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192' \
    -o /etc/default/grub
