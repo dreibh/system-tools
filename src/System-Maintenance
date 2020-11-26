@@ -39,15 +39,19 @@ while [ $# -gt 0 ] ; do
 done
 
 # ====== Find distribution variant ==========================================
+System=`uname`
 Variant=""
-if [ -e /etc/network/interfaces ] ; then
-   Variant="Debian"
-elif [ -e /etc/sysconfig/network ] ; then
-   Variant="Fedora"
-elif [ -e /etc/freebsd-update.conf ] ; then
+if [ "${System}" == "Linux" ] ; then
+   if [ -e /etc/sysconfig/network ] ; then
+      Variant="Fedora"
+   elif [ -e /etc/apt/sources.list ] ; then
+      Variant="Debian"
+   fi
+elif [ "${System}" == "FreeBSD" ] ; then
    Variant="FreeBSD"
-else
-   echo >&2 "ERROR: Unknown/unsupported operating system? Cannot determine how to configure network!"
+fi
+if [ "${Variant}" == "" ] ; then
+   echo >&2 "ERROR: Unknown/unsupported operating system!"
    exit 1
 fi
 
