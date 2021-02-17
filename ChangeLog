@@ -1,3 +1,51 @@
+commit 7d3c00d0f158e0aa214e0b2d754065737c85fb6c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 17:57:12 2021 +0100
+
+    Cleaned up CMakeLists.txt.
+
+commit c620828db3a79c17095efebdd1922c3ce882a8f3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 15:19:07 2021 +0100
+
+    Updated build scripts
+
+commit 88f6ca50dcf54e52bab35f6c095aae5c4c9ac9c0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 15:19:06 2021 +0100
+
+    Updated build scripts
+
+commit 34c84fa809bc52ff234dcc45080eedc0cdbb71a3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 15:17:37 2021 +0100
+
+    Updated build scripts
+
+commit d00f566bb942c2dc3737aa1c99f992c5d77e2e8a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 15:17:37 2021 +0100
+
+    Updated build scripts
+
+commit 18add7dc7cd8bbb2ca01ff7f3fa536e47e1d2b4d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 15:16:37 2021 +0100
+
+    Header updates.
+
+commit 50506560f04bfe150525b1f466169098f55d8bc0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jan 30 07:39:59 2021 +0100
+
+    Updated Travis CI configuration
+
+commit 2d4023d665a181c349145a2584656c63ccfbf5c1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Nov 26 13:00:25 2020 +0100
+
+    New release td-system-tools-1.1.4.
+
 commit c20984def35bc3c982835e9f8e5bf0ec94cc13d4
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Nov 26 12:57:46 2020 +0100
