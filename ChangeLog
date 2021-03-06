@@ -1,3 +1,69 @@
+commit ca844af2cc7d2f400b1d0ee38b51a5c784aab28a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 6 19:18:10 2021 +0100
+
+    Updated Travis CI configuration.
+
+commit 55e4b15bcda72f2e4067cdf5d84294e6843df858
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 6 19:15:00 2021 +0100
+
+    FreeBSD packaging update.
+
+commit 60c16028fda49220858134114232e918154dd4eb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 6 19:07:19 2021 +0100
+
+    Updated Travis CI configuration.
+
+commit ca2034f709591daa70a3a4561d34ca02cbff8378
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 5 18:52:37 2021 +0100
+
+    Updated Travis CI configuration
+
+commit 940ac112f8db26257c58448c88dbda44d4784595
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 5 16:01:45 2021 +0100
+
+    Updated build scripts
+
+commit 95a999f3b575318ac6af672340c320e42283b555
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 3 19:41:47 2021 +0100
+
+    Updated script.
+
+commit 5a1a07b676c766c457c275e2bff283a1133c58d2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Mar 1 21:20:30 2021 +0100
+
+    Updated build scripts
+
+commit a73d8bb8433553d75d06d2ec9af1bf9474cebfb8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Mar 1 16:30:36 2021 +0100
+
+    Updated build scripts
+
+commit 0f2f37778a1a843a9d86348fe39cf831bb2e7c7b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Mar 1 16:13:22 2021 +0100
+
+    Improved autogen.sh with options for static analysis.
+
+commit 703382eb7a8cd33e79c65be61c8c691525164081
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 18:35:35 2021 +0100
+
+    Updated LSM entry.
+
+commit b1e5de2cb6bda07346c34b71339a385c682079a7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 17 18:32:06 2021 +0100
+
+    New release td-system-tools-1.1.5.
+
 commit 7d3c00d0f158e0aa214e0b2d754065737c85fb6c
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Feb 17 17:57:12 2021 +0100
