@@ -1,7 +1,7 @@
 Begin4
 Title:          system-tools
-Version:        1.1.5
-Entered-date:   2021-02-17
+Version:        1.1.6
+Entered-date:   2021-03-06
 Description:    This package contains programs for printing basic system
                 information and for system maintenance.
                 System-Info displays basic status information about the
