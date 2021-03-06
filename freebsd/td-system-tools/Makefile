@@ -19,9 +19,13 @@ CMAKE_ARGS+=	-DCMAKE_INSTALL_MANDIR=${MANPREFIX}/man
 
 PLIST_FILES=	bin/System-Info \
 		bin/System-Maintenance \
+		bin/configure-grub \
 		man/man1/System-Info.1.gz \
 		man/man1/System-Maintenance.1.gz \
+		man/man1/configure-grub.1.gz \
 		etc/system-info.d/01-example \
-		etc/system-maintenance.d/XX-example
+		etc/system-maintenance.d/XX-example \
+		share/configure-grub/grub-defaults-nornet \
+		share/configure-grub/grub-defaults-standard
 
 .include <bsd.port.mk>
