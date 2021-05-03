@@ -1,3 +1,10 @@
+td-system-tools (1.2.0-1ubuntu1) focal; urgency=medium
+
+  * New upstream release.
+  * Closes Debian ITP bug (Closes: #988010).
+
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Mon, 03 May 2021 19:55:25 +0200
+
 td-system-tools (1.1.6-1ubuntu1) focal; urgency=medium
 
   * New upstream release.

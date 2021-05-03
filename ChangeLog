@@ -1,3 +1,33 @@
+commit f7c56ddc33b0f6c487cf1ecb14734aad2d1fcc63
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 3 19:46:37 2021 +0200
+
+    Updated watch file.
+
+commit 9b6d0bc6ced33bea896636ffc157a1af31967d5c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 3 13:54:25 2021 +0000
+
+    FreeBSD improvements.
+
+commit 368d70426430916166342b580d06edabd2715ce9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 3 15:11:51 2021 +0200
+
+    Updated build scripts
+
+commit 79eda47f355ee85e30549ff04a7afa2f1aaaa288
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Mar 7 00:00:41 2021 +0100
+
+    Updated LSM entry.
+
+commit 7c8a234609705f6327e0905a18caf1eec3f4b6b6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 6 23:40:37 2021 +0100
+
+    New release td-system-tools-1.1.6.
+
 commit ca844af2cc7d2f400b1d0ee38b51a5c784aab28a
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Mar 6 19:18:10 2021 +0100
