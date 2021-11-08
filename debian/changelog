@@ -1,7 +1,14 @@
+td-system-tools (1.2.1~test0-1ubuntu1) focal; urgency=medium
+
+  * New upstream release.
+  * Closes: #988010 (ITP).
+  * debian/control: Updated standards version to 4.6.0.1.
+
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Mon, 08 Nov 2021 12:50:31 +0100
+
 td-system-tools (1.2.0-1ubuntu1) focal; urgency=medium
 
   * New upstream release.
-  * Closes Debian ITP bug (Closes: #988010).
 
  -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Mon, 03 May 2021 19:55:25 +0200
 
