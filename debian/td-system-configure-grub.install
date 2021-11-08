@@ -1,4 +1,3 @@
 usr/bin/configure-grub
 usr/share/configure-grub/grub-defaults-nornet
 usr/share/configure-grub/grub-defaults-standard
-usr/share/man/man1/configure-grub.1
