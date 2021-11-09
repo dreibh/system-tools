@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: System-Info
+Upstream-Name: System-Tools
 Upstream-Contact: Thomas Dreibholz <dreibh@iem.uni-due.de>
-Source: https://www.uni-due.de/~be0001/system-info/
+Source: https://www.uni-due.de/~be0001/system-tools/
 
 Files: *
 Copyright: Copyright (C) 2012-2020 Thomas Dreibholz <dreibh@iem.uni-due.de>
