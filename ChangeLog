@@ -1,3 +1,81 @@
+commit d27bbebff5aa5e09d6d95319bb43b3f1d7d30b4b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 9 10:50:13 2021 +0100
+
+    A fix.
+
+commit 4c78ccd70a80b142f29a5ea349ebbd2ea76c5c24
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 9 10:16:47 2021 +0100
+
+    Version update.
+
+commit f5b16b9e4ef47f505dcb3ea04862001e6b5c95bd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 8 12:52:03 2021 +0100
+
+    Version update.
+
+commit 039080363487f7a42d4249ccc832c9a190345a66
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 8 12:22:55 2021 +0100
+
+    Using dh_installman for the manpages in the Debian/Ubuntu package.
+
+commit 616e38bae0b12d3184ff832324165a095d8b93a9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 8 10:39:22 2021 +0100
+
+    Updated build scripts
+
+commit c6acf9c9a2b547f0183ee66f8ee3b9b6282578ef
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Nov 7 14:27:37 2021 +0100
+
+    Updated build scripts.
+
+commit 2e75a8e951f139b21a0771dd3b28f650a66a8c5d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Nov 7 14:22:52 2021 +0100
+
+    Updated build scripts
+
+commit 8fe97ff34873858a776b7f5e6b0bc8104b507223
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 3 18:24:07 2021 +0100
+
+    Updated build scripts
+
+commit 5f35ab355dd03aa71461aab402b453f0e706cd4f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 3 18:24:03 2021 +0100
+
+    Updated build scripts
+
+commit 874eed578ead6e817a4f2d3f14d6f12f8a19881e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 19 16:11:57 2021 +0200
+
+    Updated build scripts
+
+commit ce12c6a6d15f6fe898130400160e1fef7d3b7e49
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 3 18:41:23 2021 +0000
+
+    Updated FreeBSD package.
+
+commit be62f24854a73915e0eecbbd83dba02ba6bf530f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 3 19:59:51 2021 +0200
+
+    Updated LSM entry.
+
+commit ab55afd1d2d3179f4b2b46f62967be6796c81b48
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 3 19:55:27 2021 +0200
+
+    New release td-system-tools-1.2.0.
+
 commit f7c56ddc33b0f6c487cf1ecb14734aad2d1fcc63
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon May 3 19:46:37 2021 +0200
