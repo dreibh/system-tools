@@ -180,64 +180,84 @@ if [ "${Variant}" = "Debian" ] ; then
    echo "Kernel Boot Version: ${kernelBootVersion}"
    echo "Kernel Disk Version: ${kernelDiskVersion}"
 
-   toBeRemoved=`apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | (
+   packageVersionsFile=`tempfile --prefix=apt-show-versions- --suffix=.list`
+   apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | sort >${packageVersionsFile}
+
+   packagesToRemove="
+      nornet-
+      linux-image-
+      linux-headers-
+      linux-modules-
+      linux-objects-
+"
+   packagesToKeep="
+      nornet-
+
+      linux-headers-${kernelBootVersion}
+      linux-image-${kernelBootVersion}-${kernelType}
+      linux-image-extra-${kernelBootVersion}-${kernelType}
+      linux-modules-${kernelBootVersion}-${kernelType}
+      linux-modules-.*-${kernelBootVersion}-${kernelType}
+      linux-objects-.*-${kernelBootVersion}-${kernelType}
+
+      linux-headers-${kernelDiskVersion}
+      linux-image-${kernelDiskVersion}-${kernelType}
+      linux-image-extra-${kernelDiskVersion}-${kernelType}
+      linux-modules-${kernelDiskVersion}-${kernelType}
+      linux-modules-.*-${kernelDiskVersion}-${kernelType}
+      linux-objects-.*-${kernelDiskVersion}-${kernelType}
+
+      linux-headers-${kernelType}
+      linux-image-${kernelType}
+      linux-image-extra-${kernelType}
+      linux-modules-nvidia-.*-${kernelType}
+"
+
+   toBeRemoved=`cat ${packageVersionsFile} | (
       while read line ; do
-         if [[ $line =~ ^(linux-image-|linux-headers-).*$ ]] ; then
-            if [[ $line =~ ^(linux-image-${kernelBootVersion}-${kernelType}|linux-image-extra-${kernelBootVersion}-${kernelType}|linux-headers-${kernelBootVersion}-${kernelType}|linux-headers-${kernelBootVersion}).*$ ]] ; then
-               #echo >&2 "boot kernel: $line"
-               true
-            elif [[ $line =~ ^(linux-image-${kernelDiskVersion}-${kernelType}|linux-image-extra-${kernelDiskVersion}-${kernelType}|linux-headers-${kernelDiskVersion}-${kernelType}|linux-headers-${kernelDiskVersion}).*$ ]] ; then
-               #echo >&2 "disk kernel: $line"
-               true
-            elif [[ $line =~ ^(linux-image-${kernelType}|linux-image-extra-${kernelType}|linux-headers-${kernelType})$ ]] ; then
-               #echo >&2 "meta: $line"
-               true
-            elif [[ $line =~ ^(linux-image-${kernelType}-lts-|linux-image-extra-${kernelType}-lts-|linux-headers-${kernelType}-lts-).*$ ]] ; then
-               #echo >&2 "LTS meta: $line"
-               true
-            elif [[ $line =~ ^(linux-image-${kernelType}-hwe-|linux-image-extra-${kernelType}-hwe-|linux-headers-${kernelType}-hwe-).*$ ]] ; then
-               #echo >&2 "LTS meta: $line"
-               true
-            else
+         mayBeRemoved=0
+         for packageToRemove in ${packagesToRemove} ; do
+            if [[ $line =~ ^${packageToRemove}.*$ ]] ; then
+               mayBeRemoved=1
+               break
+            fi
+         done
+         if [ ${mayBeRemoved} -eq 1 ] ; then
+            toBeKept=0
+            for packageToKeep in ${packagesToKeep} ; do
+                if [[ $line =~ ^${packageToKeep}.*$ ]] ; then
+                   # echo >&2 "Keep: $line"
+                   echo -n "${line}+ "   # Ensure that this package is KEPT!
+                   toBeKept=1
+                   break
+                fi
+            done
+            if [ ${toBeKept} -eq 0 ] ; then
                echo -n "${line} "
             fi
-         elif [[ $line =~ ^nornet-.*$ ]] ; then
-            echo -n "${line}+ "   # Ensure that this package is KEPT!
-         fi
+        fi
       done
    )`
 
-   ltsImage=`apt-show-versions | grep "^linux-image-.*-lts-.*" | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | sort | tail -n1`
-   ltsImageExtra=`apt-show-versions | grep "^linux-image-extra-.*-lts-.*" | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | sort | tail -n1`
-   ltsHeaders=`apt-show-versions | grep "^linux-headers-.*-lts-.*" | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | sort | tail -n1`
-   if [ "$ltsImage" != "" ] ; then
-      toBeRemoved="${toBeRemoved} ${ltsImage}+"
-   fi
-   if [ "$ltsImageExtra" != "" ] ; then
-      toBeRemoved="${toBeRemoved} ${ltsImageExtra}+"
-   fi
-   if [ "$ltsHeaders" != "" ] ; then
-      toBeRemoved="${toBeRemoved} ${ltsHeaders}+"
-   fi
+   rm -f ${packageVersionsFile}
 
    echo -e "To be removed:\x1b[31m"
-   echo "$toBeRemoved" | xargs -n1 | grep -v ".*+$" | sort -u
+   echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$" || true
+   echo -en "\x1b[0m"
+   echo -e "To be kept:\x1b[32m"
+   echo "${toBeRemoved}" | xargs -n1 | grep ".*+$" | sed -e "s/+$//g" || true
    echo -en "\x1b[0m"
 
    if [ $INTERACTIVE_KERNEL_REMOVAL -eq 0 ] ; then
-      # Needs to run twice, to ensure that the kernel directory is removed after all
-      # modules packages have been removed.
-      for stage in 1 2 ; do
-         sudo DEBIAN_FRONTEND=noninteractive nohup apt-get remove -y -qq --purge \
-            -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-            $toBeRemoved >/tmp/install.log 2>&1 &
-         wait
-      done
+      sudo DEBIAN_FRONTEND=noninteractive nohup apt-get remove -y -qq --purge \
+         -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
+         ${toBeRemoved} >/tmp/install.log 2>&1 &
+      wait
       cat /tmp/install.log
    else
       sudo apt-get remove --purge \
          -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-         $toBeRemoved
+         ${toBeRemoved}
    fi
 fi
 
