@@ -1,3 +1,45 @@
+commit 322d609003dc5a79355bc4ea2a84d27bc9c40390
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Feb 3 17:13:03 2022 +0100
+
+    Further improvements.
+
+commit fe809675be50e4023f69bbe75977c5a48a2d4c52
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Feb 3 16:45:28 2022 +0100
+
+    Improved script.
+
+commit 3751b68e46844b2ca10bbd02f77bca7129e9a032
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Feb 3 16:24:52 2022 +0100
+
+    Improved removal of obsolete Ubuntu/Debian kernels.
+
+commit 67573c4f5af7b01be936005d532e8559776beabb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 30 15:32:51 2021 +0100
+
+    Travis CI is dead. Removed obsolete Travis CI scripts and configuration.
+
+commit e4fd671b0400afc2ebca9999242af391eba1f163
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 30 15:30:37 2021 +0100
+
+    Updated build scripts
+
+commit f3621970bd45e8768753d2f0b7b1c7120725af6d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 30 15:29:58 2021 +0100
+
+    Removed invalid field "Homepage" from debian/upstream/metadata
+
+commit 9c4ce5c0376062d96749d2c96bb108122822ffcc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 12 14:47:01 2021 +0100
+
+    New release td-system-tools-1.2.1.
+
 commit d27bbebff5aa5e09d6d95319bb43b3f1d7d30b4b
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Nov 9 10:50:13 2021 +0100
