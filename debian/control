@@ -35,7 +35,8 @@ Description: Print basic system information and banners
 
 Package: td-system-maintenance
 Architecture: all
-Depends: ${misc:Depends},
+Depends: apt-show-versions,
+         ${misc:Depends},
          ${shlibs:Depends}
 Breaks: nornet-management (<<1.5.3~alpha1.0)
 Replaces: nornet-management (<<1.5.3~alpha1.0)
