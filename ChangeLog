@@ -1,3 +1,21 @@
+commit f1f9827f0065c7a27ac995ded9dc0e98462a837a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 16 12:23:07 2022 +0100
+
+    Dependency fix.
+
+commit 6b4415cc423bf0425eedacf0b1687b2dc24e1c21
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 16 12:22:33 2022 +0100
+
+    Updated build scripts
+
+commit 8a5de4a81f9a16306534e03aff714ae19e56574e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Feb 4 13:00:50 2022 +0100
+
+    New release td-system-tools-1.3.0.
+
 commit 322d609003dc5a79355bc4ea2a84d27bc9c40390
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Feb 3 17:13:03 2022 +0100
