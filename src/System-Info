@@ -207,7 +207,7 @@ else
 
          # ====== Get addresses =============================================
          addressListIPv4=`echo "$ifconfigResult" | awk '/[ \t]*inet ([0-9]+).([0-9]+).([0-9]+).([0-9]+) / { print $2 }' | sort`
-         addressListIPv6=`echo "$ifconfigResult" | awk '/[ \t]*inet6 [0-9a-fA-F:]* prefixlen ([0-9]+) / { print $2 }' | sort`
+         addressListIPv6=`echo "$ifconfigResult" | awk '/[ \t]*inet6 [0-9a-fA-F:]* prefixlen ([0-9]+)/ { print $2 }' | sort`
          showAddresses
       fi
    done
