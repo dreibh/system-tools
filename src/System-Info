@@ -147,22 +147,31 @@ function showAddresses ()
 
       # ====== Get interface status ===================================
       if [ $isUp -ne 0 ] ; then
-         echo -en "\x1b[34m"   # up
+         # Interface is UP
+         colorA="\x1b[34m"
+         colorP="\x1b[94m"
       else
-         echo -en "\x1b[37m"   # down
+         # Interface is DOWN
+         colorA="\x1b[37m"
+         colorP="\x1b[37m"
       fi
+      echo -en "${colorA}"
 
       # ====== Print addresses ========================================
       echo -n "   `printf "%-14s" "${interface}:"` "
       if [ "$addressListIPv4" != "" ] ; then
          for address in $addressListIPv4 ; do
-            echo -n "$address   "
+            a=${address/\/[0-9]*/}
+            p=${address/[0-9]*\//}
+            echo -en "${a} ${colorP}/ ${p}${colorA}   "
          done
       else
          echo -n "(No IPv4)"
       fi
       for address in $addressListIPv6 ; do
-         echo -en "\n                  $address "
+         a=${address/\/[0-9]*/}
+         p=${address/[0-9]*\//}
+         echo -en "\n                  ${a} ${colorP}/ ${p}${colorA} "
       done
 
       echo ""
@@ -173,6 +182,7 @@ function showAddresses ()
 if [ "$system" == "Linux" ] ; then
    allInterfaces=`ip link show 2>/dev/null | awk '/^([0-9]*:) ([a-zA-Z0-9\-\.@]+):/ { print $2 }' | sed -e "s/@.*//" -e "s/:$//" | sort`
    for interface in $allInterfaces ; do
+      # echo "$interface"
       # ====== Only show non-tunnel interfaces =================================
       if [ "`ip tunnel show $interface 2>/dev/null`" == "" -a \
            "`ip -6 tunnel show $interface 2>/dev/null`" == "" ] ; then
@@ -185,8 +195,8 @@ if [ "$system" == "Linux" ] ; then
             fi
 
             # ====== Get addresses =============================================
-            addressListIPv4=`ip -4 addr show dev $interface 2>/dev/null | awk '/[ \t]*inet ([0-9]+).([0-9]+).([0-9]+).([0-9]+)\/([0-9]+) / { print $2 }' | sed -e "s/\/[0-9]*//g" | sort`
-            addressListIPv6=`ip -6 addr show dev $interface 2>/dev/null | awk '/[ \t]*inet6 [0-9a-fA-F:]*\/[0-9]+ scope [gsh]/ { print $2 }' | sed -e "s/\/[0-9]*//g" | sort`
+            addressListIPv4=`ip -4 addr show dev $interface 2>/dev/null | awk '/[ \t]*inet ([0-9]+).([0-9]+).([0-9]+).([0-9]+)\/([0-9]+) / { print $2 }' | sort`
+            addressListIPv6=`ip -6 addr show dev $interface 2>/dev/null | awk '/[ \t]*inet6 [0-9a-fA-F:]*\/[0-9]+ scope [gsh]/ { print $2 }' | sort`
             showAddresses
          fi
       fi
@@ -206,8 +216,8 @@ else
          fi
 
          # ====== Get addresses =============================================
-         addressListIPv4=`echo "$ifconfigResult" | awk '/[ \t]*inet ([0-9]+).([0-9]+).([0-9]+).([0-9]+) / { print $2 }' | sort`
-         addressListIPv6=`echo "$ifconfigResult" | awk '/[ \t]*inet6 [0-9a-fA-F:]* prefixlen ([0-9]+) / { print $2 }' | sort`
+         addressListIPv4=`echo "$ifconfigResult" | awk '/[ \t]*inet ([0-9]+).([0-9]+).([0-9]+).([0-9]+) / { print $2 "/" $4 }' | sort`
+         addressListIPv6=`echo "$ifconfigResult" | awk '/[ \t]*inet6 [0-9a-fA-F:]* prefixlen ([0-9]+)/ { print $2 "/" $4 }' | sort`
          showAddresses
       fi
    done
