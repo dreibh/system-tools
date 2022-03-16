@@ -161,8 +161,8 @@ function showAddresses ()
       echo -n "   `printf "%-14s" "${interface}:"` "
       if [ "$addressListIPv4" != "" ] ; then
          for address in $addressListIPv4 ; do
-            a=${address/\/[0-9]*/}
-            p=${address/[0-9]*\//}
+            a=${address/\/[0-9\]*/}
+            p=${address/[0-9\.]*\//}
             echo -en "${a} ${colorP}/ ${p}${colorA}   "
          done
       else
@@ -170,7 +170,7 @@ function showAddresses ()
       fi
       for address in $addressListIPv6 ; do
          a=${address/\/[0-9]*/}
-         p=${address/[0-9]*\//}
+         p=${address/[0-9a-fA-F\.:]*\//}
          echo -en "\n                  ${a} ${colorP}/ ${p}${colorA} "
       done
 
