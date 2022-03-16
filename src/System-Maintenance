@@ -211,6 +211,10 @@ if [ "${Variant}" = "Debian" ] ; then
       linux-image-${kernelType}
       linux-image-extra-${kernelType}
       linux-modules-nvidia-.*-${kernelType}
+
+      linux-headers-virtual
+      linux-image-virtual
+      linux-image-extra-virtual
 "
 
    toBeRemoved=`cat ${packageVersionsFile} | (
