@@ -19,6 +19,68 @@
 # Contact: dreibh@simula.no
 
 
+# ###### Print addresses ####################################################
+function showAddresses ()
+{
+   lastInterface=""
+   hasIPv4=0
+   while read interface up protocol address prefixlen ; do
+      # ====== Get interface status =========================================
+      if [ "${up}" == "1" ] ; then
+         # Interface is UP
+         colorA="\x1b[34m"
+         colorP="\x1b[94m"
+      else
+         # Interface is DOWN
+         colorA="\x1b[37m"
+         colorP="\x1b[37m"
+      fi
+      echo -en "${colorA}"
+
+      # ====== Print addresses ==============================================
+      if [ "${lastInterface}" != "${interface}" ] ; then
+         if [ "${lastInterface}" != "" ] ; then
+            echo ""
+         fi
+         lastInterface="${interface}"
+         hasIPv4=0
+         printf "   %-14s " "${interface}:"
+      fi
+
+      if [ "${protocol}" == "4" ] ; then
+         echo -en "${address} ${colorP}/ ${prefixlen}${colorA}   "
+         hasIPv4=1
+      elif [ "${protocol}" == "6" ] ; then
+         if [ ${hasIPv4} -eq 0 ] ; then
+            echo -n "(No IPv4)"
+         fi
+         echo -en "\n                  ${address} ${colorP}/ ${prefixlen}${colorA} "
+      fi
+   done <<< "$1"
+   echo -e "\x1b[0m"
+}
+
+
+# ###### Convert FreeBSD hexadecimal netmask to prefix length ###############
+function hex-netmask-to-prefixlen ()
+{
+   local N=$(($1))
+   local prefixlen=0
+   local i=31
+   while [ $i -ge 0 ] ; do
+      local b=$((1<<i))
+      if [ $(($N & $b)) -ne 0 ] ; then
+         let prefixlen=${prefixlen}+1
+      else
+         break
+      fi
+      let i=$i-1
+   done
+   echo "${prefixlen}"
+}
+
+
+
 # ###### Main program #######################################################
 echo ""
 echo "System information as of `env LANG=en date`"
@@ -63,8 +125,8 @@ if [ "${system}" == "Linux" ] ; then
    fi
 
    freeOutput="`env LANG=en free -mt`"
-   freeMemOutput="`echo "${freeOutput}" | grep "Mem:"`"
-   freeSwapOutput="`echo "${freeOutput}" | grep "Swap:"`"
+   freeMemOutput="`echo "${freeOutput}" | grep "^Mem:"`"
+   freeSwapOutput="`echo "${freeOutput}" | grep "^Swap:"`"
 
    let memoryUsed=`echo "${freeMemOutput}" | awk '{ print $3 }'`
    let memoryFree=`echo "${freeMemOutput}" | awk '{ print $4 }' `
@@ -79,7 +141,6 @@ elif  [ "${system}" == "FreeBSD" ] ; then
    DISTRIB_CODENAME=""
 
    pageSize=`sysctl -n hw.pagesize`
-
    let vmstatActive=`sysctl -n vm.stats.vm.v_active_count`*${pageSize}
    let vmstatInactive=`sysctl -n vm.stats.vm.v_inactive_count`*${pageSize}
    let vmstatCache=`sysctl -n vm.stats.vm.v_cache_count`*${pageSize}
@@ -134,112 +195,102 @@ for key in $keys ; do
    else
       echo -n "                  "
    fi
-   # ssh-keygen -lf $key | awk '{ print $2 " "; }'
    ssh-keygen -lf $key | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
 done
 
 
-
-# ====== Print network information ==========================================
-echo "Network:"
-
-function showAddresses ()
-{
-   if [ "$addressListIPv4" != "" -o "$addressListIPv6" != "" ] ; then
-
-      # ====== Get interface status ===================================
-      if [ $isUp -ne 0 ] ; then
-         # Interface is UP
-         colorA="\x1b[34m"
-         colorP="\x1b[94m"
-      else
-         # Interface is DOWN
-         colorA="\x1b[37m"
-         colorP="\x1b[37m"
-      fi
-      echo -en "${colorA}"
-
-      # ====== Print addresses ========================================
-      echo -n "   `printf "%-14s" "${interface}:"` "
-      if [ "$addressListIPv4" != "" ] ; then
-         for address in $addressListIPv4 ; do
-            a=${address/\/[0-9\]*/}
-            p=${address/[0-9\.]*\//}
-            echo -en "${a} ${colorP}/ ${p}${colorA}   "
-         done
-      else
-         echo -n "(No IPv4)"
-      fi
-      for address in $addressListIPv6 ; do
-         a=${address/\/[0-9]*/}
-         p=${address/[0-9a-fA-F\.:]*\//}
-         echo -en "\n                  ${a} ${colorP}/ ${p}${colorA} "
-      done
-
-      echo ""
-   fi
-}
-
-
+# ====== Get Linux network configuration ====================================
 if [ "${system}" == "Linux" ] ; then
-   allInterfaces=`ip link show 2>/dev/null | awk '/^([0-9]*:) ([a-zA-Z0-9\-\.@]+):/ { print $2 }' | sed -e "s/@.*//" -e "s/:$//" | sort`
-   for interface in $allInterfaces ; do
-      # echo "$interface"
-      # ====== Only show non-tunnel interfaces =================================
-      if [ "`ip tunnel show $interface 2>/dev/null`" == "" -a \
-           "`ip -6 tunnel show $interface 2>/dev/null`" == "" ] ; then
-         # ====== Only show non-loopback interfaces ============================
-         if [ "`ip link show dev $interface | head -n1 | grep "^.*<.*LOOPBACK.*>"`" == "" ] ; then
-            # ====== Get status ================================================
-            isUp=0
-            if [ "`ip link show dev $interface | head -n1 | grep "^.*<.*UP.*>"`" != "" ] ; then
-               isUp=1
+   read -r -a allTunnelInterfaces <<< "`(ip -4 tunnel show ; ip -6 tunnel show ) | cut -d':' -f1 | sort -u | xargs`"
+   addressList=`ip addr show | (
+      interface="BAD!"
+      loopback=1
+      tunnel=0
+      up=0
+      while read line ; do
+         # ------ Interface name and flags ----------------------------------
+         if [[ "${line}" =~ ^([0-9]+)(: )([a-zA-Z0-9\.-]+)(@[a-zA-Z0-9\.-]+|)(: <)([^>]*)(>.*)$ ]] ; then
+            interface="${BASH_REMATCH[3]}"
+            flags=(${BASH_REMATCH[6]//,/ })
+            if [[ " ${flags[@]} " =~ UP ]] ; then
+               up=1
+            else
+               up=0
             fi
-
-            # ====== Get addresses =============================================
-            addressListIPv4=`ip -4 addr show dev $interface 2>/dev/null | awk '/[ \t]*inet ([0-9]+).([0-9]+).([0-9]+).([0-9]+)\/([0-9]+) / { print $2 }' | sort`
-            addressListIPv6=`ip -6 addr show dev $interface 2>/dev/null | awk '/[ \t]*inet6 [0-9a-fA-F:]*\/[0-9]+ scope [gsh]/ { print $2 }' | sort`
-            showAddresses
+            if [[ " ${flags[@]} " =~ LOOPBACK ]] ; then
+               loopback=1
+            else
+               loopback=0
+            fi
+            if [[ " ${allTunnelInterfaces[@]} " =~ ${interface} ]] ; then
+               tunnel=1
+            else
+               tunnel=0
+            fi
+         # ------ IPv4 ------------------------------------------------------
+         elif [[ "${line}" =~ ^([ \t]*inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\/([0-9]+)( .*)$ ]] ; then
+            if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
+               echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
+            fi
+         # ------ IPv6 ------------------------------------------------------
+         elif [[ "${line}" =~ ^([ \t]*inet6 )([0-9a-fA-F:]+)\/([0-9]+)( scope [gsh])(.*)$ ]] ; then
+            # This already filters out link local by scope!
+            if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
+               echo -e "${interface}\t${up}\t6\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
+            fi
+         # ------ Not relevant ----------------------------------------------
+         # else
+         #    echo "no match: ${line}"
          fi
-      fi
-   done
+      done
+   ) | sort -k1,2`
 
+# ====== Get FreeBSD network configuration ==================================
 else
-   allInterfaces=`ifconfig | awk '/^([a-zA-Z0-9\-]+):/ { print $1 }'  | sed -e "s/:$//" | sort`
-   for interface in $allInterfaces ; do
-      ifconfigResult="`ifconfig $interface`"
+   addressList=`ifconfig | (
+      interface="BAD!"
+      loopback=1
+      tunnel=0
+      up=0
+      while read line ; do
+         # ------ Interface name and flags ----------------------------------
+         if [[ "${line}" =~ ^([a-zA-Z0-9\.-]+)(@[a-zA-Z0-9\.-]+|())(: flags=[0-9]+<)([^>]*)(>.*)$ ]] ; then
+            interface="${BASH_REMATCH[1]}"
+            flags=(${BASH_REMATCH[5]//,/ })
 
-      # ====== Only show non-loopback interfaces ============================
-      if [ "`echo "$ifconfigResult" | head -n1 | grep "^.*<.*LOOPBACK.*>"`" == "" ] ; then
-         # ====== Get status ================================================
-         isUp=0
-         if [ "`echo "$ifconfigResult" | head -n1 | grep "^.*<.*UP.*>"`" != "" ] ; then
-            isUp=1
+         echo "$interface ${flags[@]}"
+            if [[ " ${flags[@]} " =~ UP ]] ; then
+               up=1
+            else
+               up=0
+            fi
+            if [[ " ${flags[@]} " =~ LOOPBACK ]] ; then
+               loopback=1
+            else
+               loopback=0
+            fi
+         # ------ IPv4 ------------------------------------------------------
+         elif [[ "${line}" =~ ^(inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)( netmask )(0x[0-9a-fA-F]{8})(.*)$ ]] ; then
+            if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
+               netmask=$(hex-netmask-to-prefixlen "${BASH_REMATCH[4]}")
+               echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}\t${netmask}"
+            fi
+         # ------ IPv6 ------------------------------------------------------
+         elif [[ "${line}" =~ ^(inet6 )([0-9a-fA-F:]+)( prefixlen )([0-9]+)(.*)$ ]] ; then
+            # This already filters out link local: fe80:...%<interface>!
+            if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
+               echo -e "${interface}\t${up}\t6\t${BASH_REMATCH[2]}\t${BASH_REMATCH[4]}"
+            fi
+         # ------ Not relevant ----------------------------------------------
+         # else
+         #    echo "no match: ${line}"
          fi
-
-         # ====== Get addresses =============================================
-         addressListIPv4=`echo "$ifconfigResult" | awk '
-function netmask_to_prefixlen(netmask) {
-   prefixlen = 0
-   N = sprintf("%d", netmask)
-   for(i = 31; i >= 0; i--) {
-      if(N < 2**i) {
-         break
-      }
-      prefixlen++
-      N = N - 2**i
-   }
-   return(prefixlen)
-}
-
-/[ \t]*inet ([0-9]+).([0-9]+).([0-9]+).([0-9]+) / {
-   print($2 "/" netmask_to_prefixlen($4))
-}'`
-         addressListIPv6=`echo "$ifconfigResult" | awk '/[ \t]*inet6 [0-9a-fA-F:]* prefixlen ([0-9]+)/ { print $2 "/" $4 }' | sort`
-         showAddresses
-      fi
-   done
+      done
+   ) | sort -k1,2`
 
 fi
 
-echo -en "\x1b[0m"
+
+# ====== Print network information ==========================================
+echo "Network:"
+showAddresses "${addressList}"
