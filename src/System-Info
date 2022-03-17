@@ -25,7 +25,7 @@ echo "System information as of `env LANG=en date`"
 echo ""
 
 
-# ###### Get system information #############################################
+# ====== Get system information =============================================
 hostnameResult=`hostname -f`
 uptimeResult=`env LANG=en uptime`
 
@@ -80,10 +80,10 @@ elif  [ "${system}" == "FreeBSD" ] ; then
 
    pageSize=`sysctl -n hw.pagesize`
 
-   let vmstatActive=`sysctl -n vm.stats.vm.v_active_count`*pageSize
-   let vmstatInactive=`sysctl -n vm.stats.vm.v_inactive_count`*pageSize
-   let vmstatCache=`sysctl -n vm.stats.vm.v_cache_count`*pageSize
-   let vmstatFree=`sysctl -n vm.stats.vm.v_free_count`*pageSize
+   let vmstatActive=`sysctl -n vm.stats.vm.v_active_count`*${pageSize}
+   let vmstatInactive=`sysctl -n vm.stats.vm.v_inactive_count`*${pageSize}
+   let vmstatCache=`sysctl -n vm.stats.vm.v_cache_count`*${pageSize}
+   let vmstatFree=`sysctl -n vm.stats.vm.v_free_count`*${pageSize}
 
    let memoryFree=(${vmstatInactive}+${vmstatCache}+${vmstatFree})/1048576
    let memoryTotal=`sysctl -n hw.physmem`/1048576
@@ -96,7 +96,7 @@ elif  [ "${system}" == "FreeBSD" ] ; then
 fi
 
 
-# ###### Print banner #######################################################
+# ====== Print banner =======================================================
 for directory in /etc/system-info.d /usr/local/etc/system-info.d ; do
    if [ -d ${directory} ] ; then
       bannerScripts=`find ${directory} -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort -r`
@@ -107,7 +107,7 @@ for directory in /etc/system-info.d /usr/local/etc/system-info.d ; do
 done
 
 
-# ###### Print system information ###########################################
+# ====== Print system information ===========================================
 echo -en "\x1b[33m"
 if [ -e /etc/slicename -a /etc/slicefamily ] ; then
    echo -e "Slice:            `cat /etc/slicename` (`cat /etc/slicefamily`)"
@@ -128,7 +128,7 @@ echo "Used Diskspace:   ${diskRoot} on /, ${diskHome} on /home"
 keys=`find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort`
 firstKey=1
 for key in $keys ; do
-   if [ $firstKey -eq 1 ] ; then
+   if [ ${firstKey} -eq 1 ] ; then
       echo -n "SSH Keys:         "
       firstKey=0
    else
@@ -140,7 +140,7 @@ done
 
 
 
-# ###### Print network information ##########################################
+# ====== Print network information ==========================================
 echo "Network:"
 
 function showAddresses ()
