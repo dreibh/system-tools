@@ -25,7 +25,7 @@ echo "System information as of `env LANG=en date`"
 echo ""
 
 
-# ====== Get system information =============================================
+# ###### Get system information #############################################
 hostnameResult=`hostname -f`
 uptimeResult=`env LANG=en uptime`
 
@@ -35,12 +35,12 @@ kernel=`uname -r`
 
 cores=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || grep -c ^processor /compat/linux/proc/cpuinfo 2>/dev/null || echo "1" )
 [ "$cores" -eq "0" ] && cores=1
-systemLoad=`echo "$uptimeResult" | awk -F 'average[s]*:' '{ print $2 }'`
+systemLoad=`echo "${uptimeResult}" | awk -F 'average[s]*:' '{ print $2 }'`
 
-if $(echo "$uptimeResult" | grep -E "min|days" >/dev/null); then
-   uptime=`echo "$uptimeResult" | awk '{ print $3 " "$4 }' | sed 's/,//g'`
+if $(echo "${uptimeResult}" | grep -E "min|days" >/dev/null); then
+   uptime=`echo "${uptimeResult}" | awk '{ print $3 " "$4 }' | sed 's/,//g'`
 else
-   uptime=`echo "$uptimeResult" | awk '{ print $3 " hours" }' | sed 's/,//g'`
+   uptime=`echo "${uptimeResult}" | awk '{ print $3 " hours" }' | sed 's/,//g'`
 fi
 
 processes=`ps axue | grep -vE "^USER|grep|ps" | wc -l`
@@ -63,15 +63,15 @@ if [ "$system" == "Linux" ] ; then
    fi
 
    freeOutput="`env LANG=en free -mt`"
-   freeMemOutput="`echo "$freeOutput" | grep "Mem:"`"
-   freeSwapOutput="`echo "$freeOutput" | grep "Swap:"`"
+   freeMemOutput="`echo "${freeOutput}" | grep "Mem:"`"
+   freeSwapOutput="`echo "${freeOutput}" | grep "Swap:"`"
 
-   let memoryUsed=`echo "$freeMemOutput" | awk '{ print $3 }'`
-   let memoryFree=`echo "$freeMemOutput" | awk '{ print $4 }' `
-   let memoryTotal=`echo "$freeMemOutput" | awk '{ print $2 }'`
-   let swapUsed=`echo "$freeSwapOutput" | awk '{ print $3 }'`
-   let swapFree=`echo "$freeSwapOutput" | awk '{ print $4 }'`
-   let swapTotal=`echo "$freeSwapOutput" | awk '{ print $2 }'`
+   let memoryUsed=`echo "${freeMemOutput}" | awk '{ print $3 }'`
+   let memoryFree=`echo "${freeMemOutput}" | awk '{ print $4 }' `
+   let memoryTotal=`echo "${freeMemOutput}" | awk '{ print $2 }'`
+   let swapUsed=`echo "${freeSwapOutput}" | awk '{ print $3 }'`
+   let swapFree=`echo "${freeSwapOutput}" | awk '{ print $4 }'`
+   let swapTotal=`echo "${freeSwapOutput}" | awk '{ print $2 }'`
 
 elif  [ "$system" == "FreeBSD" ] ; then
    DISTRIB_ID="FreeBSD"
@@ -85,18 +85,18 @@ elif  [ "$system" == "FreeBSD" ] ; then
    let vmstatCache=`sysctl -n vm.stats.vm.v_cache_count`*pageSize
    let vmstatFree=`sysctl -n vm.stats.vm.v_free_count`*pageSize
 
-   let memoryFree=($vmstatInactive+$vmstatCache+$vmstatFree)/1048576
+   let memoryFree=(${vmstatInactive}+${vmstatCache}+${vmstatFree})/1048576
    let memoryTotal=`sysctl -n hw.physmem`/1048576
-   let memoryUsed=$memoryTotal-$memoryFree
+   let memoryUsed=${memoryTotal}-${memoryFree}
 
    let swapTotal=`sysctl -n vm.swap_total`/1048576
    let swapUsed=`sysctl -n vm.swap_reserved`/1048576
-   let swapFree=$swapTotal-$swapUsed
+   let swapFree=${swapTotal}-${swapUsed}
 
 fi
 
 
-# ====== Print banner =======================================================
+# ###### Print banner #######################################################
 for directory in /etc/system-info.d /usr/local/etc/system-info.d ; do
    if [ -d ${directory} ] ; then
       bannerScripts=`find ${directory} -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort -r`
@@ -107,7 +107,7 @@ for directory in /etc/system-info.d /usr/local/etc/system-info.d ; do
 done
 
 
-# ====== Print system information ===========================================
+# ###### Print system information ###########################################
 echo -en "\x1b[33m"
 if [ -e /etc/slicename -a /etc/slicefamily ] ; then
    echo -e "Slice:            `cat /etc/slicename` (`cat /etc/slicefamily`)"
@@ -139,6 +139,8 @@ for key in $keys ; do
 done
 
 
+
+# ###### Print network information ##########################################
 echo "Network:"
 
 function showAddresses ()
