@@ -1,52 +1,100 @@
 #!/bin/bash
 
-read -r -a allTunnelInterfaces <<< "`(ip -4 tunnel show ; ip -6 tunnel show ) | cut -d':' -f1 | sort -u | xargs`"
-addressList=`ip addr show | (
-   interface="BAD!"
-   loopback=1
-   tunnel=0
-   up=0
-   while read line ; do
-      # ------ Interface name and flags -------------------------------------
-      if [[ "${line}" =~ ^([0-9]+)(: )([a-zA-Z0-9\.-]+)(@[[a-zA-Z0-9\.-]+|)(: <)([^>]*)(>.*)$ ]] ; then
-         interface="${BASH_REMATCH[3]}"
-         flags=(${BASH_REMATCH[6]//,/ })
-         if [[ " ${flags[@]} " =~ UP ]] ; then
-            up=1
-         else
-            up=0
-         fi
-         if [[ " ${flags[@]} " =~ LOOPBACK ]] ; then
-            loopback=1
-         else
-            loopback=0
-         fi
-         if [[ " ${allTunnelInterfaces[@]} " =~ ${interface} ]] ; then
-            tunnel=1
-         else
-            tunnel=0
-         fi
-      # ------ IPv4 ---------------------------------------------------------
-      elif [[ "${line}" =~ ^([ \t]*inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\/([0-9]+)( .*)$ ]] ; then
-         if [ ${loopback} -eq 0 -o ${tunnel} -eq 0 ] ; then
-            echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
-         fi
-      # ------ IPv6 ---------------------------------------------------------
-      elif [[ "${line}" =~ ^([ \t]*inet6 ([0-9a-fA-F:]+)\/([0-9]+) scope [gsh])(.*)$ ]] ; then
-         if [ ${loopback} -eq 0 -o ${tunnel} -eq 0 ] ; then
-            echo -e "${interface}\t${up}\t6\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
-         fi
-      # ------ Not relevant -------------------------------------------------
-      # else
-      #    echo "no match: ${line}"
-      fi
-   done
-) | sort -k1,2`
+system=`uname`
 
-# echo "${addressList}"
+# ====== Get Linux network configuration ====================================
+if [ "${system}" == "Linux" ] ; then
+   read -r -a allTunnelInterfaces <<< "`(ip -4 tunnel show ; ip -6 tunnel show ) | cut -d':' -f1 | sort -u | xargs`"
+   addressList=`ip addr show | (
+      interface="BAD!"
+      loopback=1
+      tunnel=0
+      up=0
+      while read line ; do
+         # ------ Interface name and flags ----------------------------------
+         if [[ "${line}" =~ ^([0-9]+)(: )([a-zA-Z0-9\.-]+)(@[[a-zA-Z0-9\.-]+|)(: <)([^>]*)(>.*)$ ]] ; then
+            interface="${BASH_REMATCH[3]}"
+            flags=(${BASH_REMATCH[6]//,/ })
+            if [[ " ${flags[@]} " =~ UP ]] ; then
+               up=1
+            else
+               up=0
+            fi
+            if [[ " ${flags[@]} " =~ LOOPBACK ]] ; then
+               loopback=1
+            else
+               loopback=0
+            fi
+            if [[ " ${allTunnelInterfaces[@]} " =~ ${interface} ]] ; then
+               tunnel=1
+            else
+               tunnel=0
+            fi
+         # ------ IPv4 ------------------------------------------------------
+         elif [[ "${line}" =~ ^([ \t]*inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\/([0-9]+)( .*)$ ]] ; then
+            if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
+               echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
+            fi
+         # ------ IPv6 ------------------------------------------------------
+         elif [[ "${line}" =~ ^([ \t]*inet6 ([0-9a-fA-F:]+)\/([0-9]+) scope [gsh])(.*)$ ]] ; then
+            if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
+               echo -e "${interface}\t${up}\t6\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
+            fi
+         # ------ Not relevant ----------------------------------------------
+         # else
+         #    echo "no match: ${line}"
+         fi
+      done
+   ) | sort -k1,2`
+
+# ====== Get FreeBSD network configuration ==================================
+else
+   addressList=`ip addr show | (
+      interface="BAD!"
+      loopback=1
+      tunnel=0
+      up=0
+      while read line ; do
+         # ------ Interface name and flags ----------------------------------
+         if [[ "${line}" =~ ^([0-9]+)(: )([a-zA-Z0-9\.-]+)(@[[a-zA-Z0-9\.-]+|)(: flags=\d<)([^>]*)(>.*)$ ]] ; then
+            interface="${BASH_REMATCH[3]}"
+            flags=(${BASH_REMATCH[6]//,/ })
+         echo "$interface $flags"
+            if [[ " ${flags[@]} " =~ UP ]] ; then
+               up=1
+            else
+               up=0
+            fi
+            if [[ " ${flags[@]} " =~ LOOPBACK ]] ; then
+               loopback=1
+            else
+               loopback=0
+            fi
+         # ------ IPv4 ------------------------------------------------------
+         elif [[ "${line}" =~ ^([ \t]*inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\/([0-9]+)( .*)$ ]] ; then
+            if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
+               echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
+            fi
+         # ------ IPv6 ------------------------------------------------------
+         elif [[ "${line}" =~ ^([ \t]*inet6 ([0-9a-fA-F:]+)\/([0-9]+) scope [gsh])(.*)$ ]] ; then
+            if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
+               echo -e "${interface}\t${up}\t6\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
+            fi
+         # ------ Not relevant ----------------------------------------------
+         # else
+         #    echo "no match: ${line}"
+         fi
+      done
+   ) | sort -k1,2`
+
+fi
+
+
+echo "${addressList}"
 
 
 
+# ====== Print addresses ====================================================
 function showAddresses ()
 {
    lastInterface=""
@@ -84,6 +132,7 @@ function showAddresses ()
          echo -en "\n                  ${address} ${colorP}/ ${prefixlen}${colorA} "
       fi
    done <<< "$1"
+   echo ""
 }
 
 showAddresses "${addressList}"
