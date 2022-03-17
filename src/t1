@@ -1,0 +1,56 @@
+#!/bin/bash
+
+
+ip addr show | (
+   interface="BAD!"
+   while read line ; do
+      # ------ Interface name and flags -------------------------------------
+      if [[ "${line}" =~ ^([0-9]+)(: )([a-zA-Z0-9\.-]+)(@[[a-zA-Z0-9\.-]+|)(: <)([^>]*)(>.*)$ ]] ; then
+         interface="${BASH_REMATCH[3]}"
+         flags=(${BASH_REMATCH[6]//,/ })
+         if [[ " ${flags[@]} " =~ UP ]] ; then
+            up=1
+         else
+            up=0
+         fi
+         if [[ " ${flags[@]} " =~ LOOPBACK ]] ; then
+            lookback=1
+         else
+            lookback=0
+         fi
+      # ------ IPv4 ---------------------------------------------------------
+      elif [[ "${line}" =~ ^([ \t]*inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\/([0-9]+)( .*)$ ]] ; then
+         echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}/${BASH_REMATCH[3]}"
+      # ------ IPv6 ---------------------------------------------------------
+      elif [[ "${line}" =~ ^([ \t]*inet6 ([0-9a-fA-F:]+)\/([0-9]+) scope [gsh])(.*)$ ]] ; then
+         echo -e "${interface}\t${up}\t6\t${BASH_REMATCH[2]}/${BASH_REMATCH[3]}"
+      # ------ Not relevant -------------------------------------------------
+      # else
+      #    echo "no match: ${line}"
+      fi
+   done
+) | sort -k1,2
+
+
+
+
+#    allInterfaces=`ip link show 2>/dev/null | awk '/^([0-9]*:) ([a-zA-Z0-9\-\.@]+):/ { print $2 }' | sed -e "s/@.*//" -e "s/:$//" | sort`
+#    for interface in $allInterfaces ; do
+#       # echo "$interface"
+#       # ====== Only show non-tunnel interfaces =================================
+#       if [ "`ip tunnel show $interface 2>/dev/null`" == "" -a \
+#            "`ip -6 tunnel show $interface 2>/dev/null`" == "" ] ; then
+#          # ====== Only show non-loopback interfaces ============================
+#          if [ "`ip link show dev $interface | head -n1 | grep "^.*<.*LOOPBACK.*>"`" == "" ] ; then
+#             # ====== Get status ================================================
+#             isUp=0
+#             if [ "`ip link show dev $interface | head -n1 | grep "^.*<.*UP.*>"`" != "" ] ; then
+#                isUp=1
+#             fi
+#
+#             # ====== Get addresses =============================================
+#             addressListIPv4=`ip -4 addr show dev $interface 2>/dev/null | awk '/[ \t]*inet ([0-9]+).([0-9]+).([0-9]+).([0-9]+)\/([0-9]+) / { print $2 }' | sort`
+#             addressListIPv6=`ip -6 addr show dev $interface 2>/dev/null | awk '/[ \t]*inet6 [0-9a-fA-F:]*\/[0-9]+ scope [gsh]/ { print $2 }' | sort`
+#             showAddresses
+#          fi
+#       fi
