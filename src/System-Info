@@ -257,8 +257,6 @@ else
          if [[ "${line}" =~ ^([a-zA-Z0-9\.-]+)(@[a-zA-Z0-9\.-]+|())(: flags=[0-9]+<)([^>]*)(>.*)$ ]] ; then
             interface="${BASH_REMATCH[1]}"
             flags=(${BASH_REMATCH[5]//,/ })
-
-         echo "$interface ${flags[@]}"
             if [[ " ${flags[@]} " =~ UP ]] ; then
                up=1
             else
