@@ -37,7 +37,7 @@ if [ "${system}" == "Linux" ] ; then
                echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
             fi
          # ------ IPv6 ------------------------------------------------------
-         # This filters out link local by scope!
+         # This already filters out link local by scope!
          elif [[ "${line}" =~ ^([ \t]*inet6 )([0-9a-fA-F:]+)\/([0-9]+)( scope [gsh])(.*)$ ]] ; then
             if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
                echo -e "${interface}\t${up}\t6\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
@@ -74,15 +74,16 @@ else
                loopback=0
             fi
          # ------ IPv4 ------------------------------------------------------
-         elif [[ "${line}" =~ ^(inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)( netmask 0x)([0-9a-fA-F]{8})(.*)$ ]] ; then
+         elif [[ "${line}" =~ ^(inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)( netmask )(0x[0-9a-fA-F]{8})(.*)$ ]] ; then
             if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
-               echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}\t${BASH_REMATCH[4]}"
+               netmask=`printf "%d" "${BASH_REMATCH[4]}"`
+               echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}\t${netmask}"
             fi
          # ------ IPv6 ------------------------------------------------------
-         # This filters out link local: fe80:...%<interface>!
+         # This already filters out link local: fe80:...%<interface>!
          elif [[ "${line}" =~ ^(inet6 )([0-9a-fA-F:]+)( prefixlen )([0-9]+)(.*)$ ]] ; then
             if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
-               echo -e "${interface}\t${up}\t6\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
+               echo -e "${interface}\t${up}\t6\t${BASH_REMATCH[2]}\t${BASH_REMATCH[4]}"
             fi
          # ------ Not relevant ----------------------------------------------
          # else
