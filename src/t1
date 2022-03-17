@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 system=`uname`
+system=FreeBSD
 
 # ====== Get Linux network configuration ====================================
 if [ "${system}" == "Linux" ] ; then
@@ -36,7 +37,7 @@ if [ "${system}" == "Linux" ] ; then
                echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
             fi
          # ------ IPv6 ------------------------------------------------------
-         elif [[ "${line}" =~ ^([ \t]*inet6 ([0-9a-fA-F:]+)\/([0-9]+) scope [gsh])(.*)$ ]] ; then
+         elif [[ "${line}" =~ ^([ \t]*inet6 )([0-9a-fA-F:]+)\/([0-9]+)( scope [gsh])(.*)$ ]] ; then
             if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
                echo -e "${interface}\t${up}\t6\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
             fi
@@ -49,17 +50,17 @@ if [ "${system}" == "Linux" ] ; then
 
 # ====== Get FreeBSD network configuration ==================================
 else
-   addressList=`ip addr show | (
+   addressList=`ifconfig | (
       interface="BAD!"
       loopback=1
       tunnel=0
       up=0
       while read line ; do
          # ------ Interface name and flags ----------------------------------
-         if [[ "${line}" =~ ^([0-9]+)(: )([a-zA-Z0-9\.-]+)(@[[a-zA-Z0-9\.-]+|)(: flags=\d<)([^>]*)(>.*)$ ]] ; then
-            interface="${BASH_REMATCH[3]}"
-            flags=(${BASH_REMATCH[6]//,/ })
-         echo "$interface $flags"
+         if [[ "${line}" =~ ^([a-zA-Z0-9\.-]+)(@[[a-zA-Z0-9\.-]+|)(: flags=[0-9]+<)([^>]*)(>.*)$ ]] ; then
+            interface="${BASH_REMATCH[1]}"
+            flags=(${BASH_REMATCH[4]//,/ })
+         echo "$interface ${flags[@]}"
             if [[ " ${flags[@]} " =~ UP ]] ; then
                up=1
             else
@@ -71,12 +72,12 @@ else
                loopback=0
             fi
          # ------ IPv4 ------------------------------------------------------
-         elif [[ "${line}" =~ ^([ \t]*inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\/([0-9]+)( .*)$ ]] ; then
+         elif [[ "${line}" =~ ^(inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\/([0-9]+)( .*)$ ]] ; then
             if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
                echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
             fi
          # ------ IPv6 ------------------------------------------------------
-         elif [[ "${line}" =~ ^([ \t]*inet6 ([0-9a-fA-F:]+)\/([0-9]+) scope [gsh])(.*)$ ]] ; then
+         elif [[ "${line}" =~ ^(inet6 ([0-9a-fA-F:]+)\/([0-9]+) scope [gsh])(.*)$ ]] ; then
             if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
                echo -e "${interface}\t${up}\t6\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
             fi
@@ -101,7 +102,7 @@ function showAddresses ()
    hasIPv4=0
    while read interface up protocol address prefixlen ; do
       # ====== Get interface status =========================================
-      if [ ${up} -ne 0 ] ; then
+      if [ "${up}" == "1" ] ; then
          # Interface is UP
          colorA="\x1b[34m"
          colorP="\x1b[94m"
