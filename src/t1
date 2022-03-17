@@ -1,16 +1,12 @@
 #!/bin/bash
 
 read -r -a allTunnelInterfaces <<< "`(ip -4 tunnel show ; ip -6 tunnel show ) | cut -d':' -f1 | sort -u | xargs`"
-echo "${allTunnelInterfaces[@]}"
-echo "${allTunnelInterfaces[1]}"
-
-ip addr show | (
+addressList=`ip addr show | (
    interface="BAD!"
    loopback=1
    tunnel=0
    up=0
    while read line ; do
-#       echo "$loopback"
       # ------ Interface name and flags -------------------------------------
       if [[ "${line}" =~ ^([0-9]+)(: )([a-zA-Z0-9\.-]+)(@[[a-zA-Z0-9\.-]+|)(: <)([^>]*)(>.*)$ ]] ; then
          interface="${BASH_REMATCH[3]}"
@@ -45,28 +41,49 @@ ip addr show | (
       #    echo "no match: ${line}"
       fi
    done
-) | sort -k1,2
+) | sort -k1,2`
+
+# echo "${addressList}"
 
 
 
+function showAddresses ()
+{
+   lastInterface=""
+   hasIPv4=0
+   while read interface up protocol address prefixlen ; do
+      # ====== Get interface status =========================================
+      if [ ${up} -ne 0 ] ; then
+         # Interface is UP
+         colorA="\x1b[34m"
+         colorP="\x1b[94m"
+      else
+         # Interface is DOWN
+         colorA="\x1b[37m"
+         colorP="\x1b[37m"
+      fi
+      echo -en "${colorA}"
 
-#    allInterfaces=`ip link show 2>/dev/null | awk '/^([0-9]*:) ([a-zA-Z0-9\-\.@]+):/ { print $2 }' | sed -e "s/@.*//" -e "s/:$//" | sort`
-#    for interface in $allInterfaces ; do
-#       # echo "$interface"
-#       # ====== Only show non-tunnel interfaces =================================
-#       if [ "`ip tunnel show $interface 2>/dev/null`" == "" -a \
-#            "`ip -6 tunnel show $interface 2>/dev/null`" == "" ] ; then
-#          # ====== Only show non-loopback interfaces ============================
-#          if [ "`ip link show dev $interface | head -n1 | grep "^.*<.*LOOPBACK.*>"`" == "" ] ; then
-#             # ====== Get status ================================================
-#             isUp=0
-#             if [ "`ip link show dev $interface | head -n1 | grep "^.*<.*UP.*>"`" != "" ] ; then
-#                isUp=1
-#             fi
-#
-#             # ====== Get addresses =============================================
-#             addressListIPv4=`ip -4 addr show dev $interface 2>/dev/null | awk '/[ \t]*inet ([0-9]+).([0-9]+).([0-9]+).([0-9]+)\/([0-9]+) / { print $2 }' | sort`
-#             addressListIPv6=`ip -6 addr show dev $interface 2>/dev/null | awk '/[ \t]*inet6 [0-9a-fA-F:]*\/[0-9]+ scope [gsh]/ { print $2 }' | sort`
-#             showAddresses
-#          fi
-#       fi
+      # ====== Print addresses ==============================================
+      if [ "${lastInterface}" != "${interface}" ] ; then
+         if [ "${lastInterface}" != "" ] ; then
+            echo ""
+         fi
+         lastInterface="${interface}"
+         hasIPv4=0
+         printf "   %-14s " "${interface}:"
+      fi
+
+      if [ "${protocol}" == "4" ] ; then
+         echo -en "${address} ${colorP}/ ${prefixlen}${colorA}   "
+         hasIPv4=1
+      elif [ "${protocol}" == "6" ] ; then
+         if [ ${hasIPv4} -eq 0 ] ; then
+            echo -n "(No IPv4)"
+         fi
+         echo -en "\n                  ${address} ${colorP}/ ${prefixlen}${colorA} "
+      fi
+   done <<< "$1"
+}
+
+showAddresses "${addressList}"
