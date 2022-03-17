@@ -53,7 +53,7 @@ diskHome=`env LANG=en df -hT /home | grep -vE "^Filesystem|shm" | awk '{ print $
 DISTRIB_ID="Unknown"
 DISTRIB_RELEASE="00.00"
 DISTRIB_CODENAME="unknown"
-if [ "$system" == "Linux" ] ; then
+if [ "${system}" == "Linux" ] ; then
    if [ -e /etc/lsb-release ] ; then
       . /etc/lsb-release
    elif [ -e /etc/fedora-release ] ; then
@@ -73,7 +73,7 @@ if [ "$system" == "Linux" ] ; then
    let swapFree=`echo "${freeSwapOutput}" | awk '{ print $4 }'`
    let swapTotal=`echo "${freeSwapOutput}" | awk '{ print $2 }'`
 
-elif  [ "$system" == "FreeBSD" ] ; then
+elif  [ "${system}" == "FreeBSD" ] ; then
    DISTRIB_ID="FreeBSD"
    DISTRIB_RELEASE="`echo "$kernel" | sed -e "s/-[A-Z].*//g"`"
    DISTRIB_CODENAME=""
@@ -181,7 +181,7 @@ function showAddresses ()
 }
 
 
-if [ "$system" == "Linux" ] ; then
+if [ "${system}" == "Linux" ] ; then
    allInterfaces=`ip link show 2>/dev/null | awk '/^([0-9]*:) ([a-zA-Z0-9\-\.@]+):/ { print $2 }' | sed -e "s/@.*//" -e "s/:$//" | sort`
    for interface in $allInterfaces ; do
       # echo "$interface"
