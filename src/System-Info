@@ -301,7 +301,13 @@ echo ""
 
 system=`uname`
 
+# Getting the network information may take a few hundreds of ms on a router
+# => prepare it in background, while printing other information.
+networkInfo=`mktemp`
+print-network-addresses >${networkInfo} &
+
 print-banners
 print-system-information
 print-ssh-key-fingerprints
-print-network-addresses
+wait
+cat ${networkInfo} && rm -f ${networkInfo}
