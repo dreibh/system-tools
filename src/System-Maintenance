@@ -180,7 +180,7 @@ if [ "${variant}" = "Debian" ] ; then
    echo "Kernel Boot Version: ${kernelBootVersion}"
    echo "Kernel Disk Version: ${kernelDiskVersion}"
 
-   packageVersionsFile=`mktemp -t apt-show-versions-XXXXXXXXXXXXXXXX  --suffix=.list`
+   packageVersionsFile=`mktemp`
    apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | sort >${packageVersionsFile}
 
    packagesToRemove="
@@ -386,7 +386,7 @@ for directory in /etc/system-maintenance.d /usr/local/etc/system-maintenance.d ;
    fi
 done
 if [ "$filterScripts}" != "" ] ; then
-   fullPackageList=`mktemp -t apt-show-versions-XXXXXXXXXXXXXXXX  --suffix=.list`
+   fullPackageList=`mktemp`
 
    if [ "${variant}" == "Debian" ] ; then
       if [ -x /usr/bin/apt-show-versions ] ; then
