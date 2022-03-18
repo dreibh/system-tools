@@ -210,12 +210,11 @@ function print-network-addresses ()
       read -r -a allTunnelInterfaces <<< "`(ip -4 tunnel show ; ip -6 tunnel show ) | cut -d':' -f1 | sort -u | xargs`"
       addressList=`ip addr show | (
          interface="BAD!"
-         loopback=1
-         tunnel=0
+         hidden=1
          up=0
          while read line ; do
             # ------ Interface name and flags -------------------------------
-            if [[ "${line}" =~ ^([0-9]+)(: )([a-zA-Z0-9\.-]+)(@[a-zA-Z0-9\.-]+|)(: <)([^>]*)(>.*)$ ]] ; then
+            if [[ "${line}" =~ ^([0-9]+)(: )([a-zA-Z0-9\.-]+)(@[a-zA-Z0-9\.-]+|)(: <)([^>]*)(>) ]] ; then
                interface="${BASH_REMATCH[3]}"
                flags=(${BASH_REMATCH[6]//,/ })
                if [[ " ${flags[@]} " =~ UP ]] ; then
@@ -224,29 +223,24 @@ function print-network-addresses ()
                   up=0
                fi
                if [[ " ${flags[@]} " =~ LOOPBACK ]] ; then
-                  loopback=1
+                  hidden=1
+               elif [[ " ${allTunnelInterfaces[@]} " =~ ${interface} ]] ; then
+                  hidden=1
                else
-                  loopback=0
+                  hidden=0
                fi
-               if [[ " ${allTunnelInterfaces[@]} " =~ ${interface} ]] ; then
-                  tunnel=1
-               else
-                  tunnel=0
-               fi
-            # ------ IPv4 ---------------------------------------------------
-            elif [[ "${line}" =~ ^([ \t]*inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\/([0-9]+)( .*)$ ]] ; then
-               if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
+            elif [ ${hidden} -eq 0 ] ; then
+               # ------ IPv4 ------------------------------------------------
+               if [[ "${line}" =~ ^(inet )([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})\/([0-9]{1,2}) ]] ; then
                   echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
-               fi
-            # ------ IPv6 ---------------------------------------------------
-            elif [[ "${line}" =~ ^([ \t]*inet6 )([0-9a-fA-F:]+)\/([0-9]+)( scope [gsh])(.*)$ ]] ; then
-               # This already filters out link local by scope!
-               if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
+               # ------ IPv6 ---------------------------------------------------
+               elif [[ "${line}" =~ ^(inet6 )([0-9a-f:]+)\/([0-9]{1,3})( scope [gsh]) ]] ; then
+                  # This already filters out link local by scope!
                   echo -e "${interface}\t${up}\t6\t${BASH_REMATCH[2]}\t${BASH_REMATCH[3]}"
                fi
-            # ------ Not relevant -------------------------------------------
-            # else
-            #    echo "no match: ${line}"
+               # ------ Not relevant -------------------------------------------
+               # else
+               #    echo "no match: ${line}"
             fi
          done
       ) | sort -k1,2`
@@ -255,12 +249,11 @@ function print-network-addresses ()
    else
       addressList=`ifconfig | (
          interface="BAD!"
-         loopback=1
-         tunnel=0
+         hidden=1
          up=0
          while read line ; do
             # ------ Interface name and flags -------------------------------
-            if [[ "${line}" =~ ^([a-zA-Z0-9\.-]+)(@[a-zA-Z0-9\.-]+|())(: flags=[0-9]+<)([^>]*)(>.*)$ ]] ; then
+            if [[ "${line}" =~ ^([a-zA-Z0-9\.-]+)(@[a-zA-Z0-9\.-]+|())(: flags=[0-9]+<)([^>]*)(>) ]] ; then
                interface="${BASH_REMATCH[1]}"
                flags=(${BASH_REMATCH[5]//,/ })
                if [[ " ${flags[@]} " =~ UP ]] ; then
@@ -269,25 +262,25 @@ function print-network-addresses ()
                   up=0
                fi
                if [[ " ${flags[@]} " =~ LOOPBACK ]] ; then
-                  loopback=1
+                  hidden=1
+               elif [[ " ${allTunnelInterfaces[@]} " =~ ${interface} ]] ; then
+                  hidden=1
                else
-                  loopback=0
+                  hidden=0
                fi
-            # ------ IPv4 ---------------------------------------------------
-            elif [[ "${line}" =~ ^(inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)( netmask )(0x[0-9a-fA-F]{8})(.*)$ ]] ; then
-               if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
+            elif [ ${hidden} -eq 0 ] ; then
+               # ------ IPv4 ------------------------------------------------
+               if [[ "${line}" =~ ^(inet )([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})( netmask )(0x[0-9a-f]{8}) ]] ; then
                   netmask=$(hex-netmask-to-prefixlen "${BASH_REMATCH[4]}")
                   echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}\t${netmask}"
-               fi
-            # ------ IPv6 ---------------------------------------------------
-            elif [[ "${line}" =~ ^(inet6 )([0-9a-fA-F:]+)( prefixlen )([0-9]+)(.*)$ ]] ; then
-               # This already filters out link local: fe80:...%<interface>!
-               if [ ${loopback} -eq 0 -a ${tunnel} -eq 0 ] ; then
+               # ------ IPv6 ------------------------------------------------
+               elif [[ "${line}" =~ ^(inet6 )([0-9a-f:]+)( prefixlen )([0-9]{1,3}) ]] ; then
+                  # This already filters out link local: fe80:...%<interface>!
                   echo -e "${interface}\t${up}\t6\t${BASH_REMATCH[2]}\t${BASH_REMATCH[4]}"
+               # ------ Not relevant ----------------------------------------
+               # else
+               #    echo "no match: ${line}"
                fi
-            # ------ Not relevant -------------------------------------------
-            # else
-            #    echo "no match: ${line}"
             fi
          done
       ) | sort -k1,2`
