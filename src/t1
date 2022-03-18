@@ -4,6 +4,25 @@ system=`uname`
 # system=FreeBSD
 
 
+# ###### Convert FreeBSD hexadecimal netmask to prefix length ###############
+function hex-netmask-to-prefixlen ()
+{
+   local N=$(($1))
+   local prefixlen=0
+   local i=31
+   while [ $i -ge 0 ] ; do
+      local b=$((1<<i))
+      if [ $(($N & $b)) -ne 0 ] ; then
+         let prefixlen=${prefixlen}+1
+      else
+         break
+      fi
+      let i=$i-1
+   done
+   echo "${prefixlen}"
+}
+
+
 # ###### Print addresses ####################################################
 function showAddresses ()
 {
@@ -114,7 +133,7 @@ function print-network-addresses ()
                fi
             elif [ ${hidden} -eq 0 ] ; then
                # ------ IPv4 ------------------------------------------------
-               elif [[ "${line}" =~ ^(inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)( netmask )(0x[0-9a-fA-F]{8})(.*)$ ]] ; then
+               if [[ "${line}" =~ ^(inet )([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)( netmask )(0x[0-9a-fA-F]{8})(.*)$ ]] ; then
                   netmask=$(hex-netmask-to-prefixlen "${BASH_REMATCH[4]}")
                   echo -e "${interface}\t${up}\t4\t${BASH_REMATCH[2]}\t${netmask}"
                # ------ IPv6 ------------------------------------------------
