@@ -39,18 +39,18 @@ while [ $# -gt 0 ] ; do
 done
 
 # ====== Find distribution variant ==========================================
-System=`uname`
-Variant=""
-if [ "${System}" == "Linux" ] ; then
+system=`uname`
+variant=""
+if [ "${system}" == "Linux" ] ; then
    if [ -e /etc/sysconfig/network ] ; then
-      Variant="Fedora"
+      variant="Fedora"
    elif [ -e /etc/apt/sources.list ] ; then
-      Variant="Debian"
+      variant="Debian"
    fi
-elif [ "${System}" == "FreeBSD" ] ; then
-   Variant="FreeBSD"
+elif [ "${system}" == "FreeBSD" ] ; then
+   variant="FreeBSD"
 fi
-if [ "${Variant}" == "" ] ; then
+if [ "${variant}" == "" ] ; then
    echo >&2 "ERROR: Unknown/unsupported operating system!"
    exit 1
 fi
@@ -62,7 +62,7 @@ if [ -e /etc/init.d/autofs ] ; then
 fi
 
 # ====== dpkg package fixes =================================================
-if [ "${Variant}" = "Debian" ] ; then
+if [ "${variant}" = "Debian" ] ; then
    echo -e "\x1b[34m`date +%FT%H:%M:%S`: Applying package fixes, if necessary ...\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a  >/tmp/install.log 2>&1 &
    wait
@@ -70,10 +70,10 @@ if [ "${Variant}" = "Debian" ] ; then
 fi
 
 # ====== Update package repositories ========================================
-if [ "${Variant}" = "Debian" ] ; then
+if [ "${variant}" = "Debian" ] ; then
    echo -e "\x1b[34m`date +%FT%H:%M:%S`: Updating package repositories ...\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
-elif [ "${Variant}" = "FreeBSD" ] ; then
+elif [ "${variant}" = "FreeBSD" ] ; then
    echo -e "\x1b[34m`date +%FT%H:%M:%S`: Updating package repositories ...\x1b[0m"
    sudo env PAGER=cat freebsd-update fetch
    sudo env ASSUME_ALWAYS_YES=yes pkg-static update
@@ -83,7 +83,7 @@ elif [ "${Variant}" = "FreeBSD" ] ; then
 fi
 
 # ====== apt-get package fixes ==============================================
-if [ "${Variant}" = "Debian" ] ; then
+if [ "${variant}" = "Debian" ] ; then
    echo -e "\x1b[34m`date +%FT%H:%M:%S`: Installing missing dependencies, if necessary ...\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" >/tmp/install.log 2>&1 &
@@ -91,9 +91,9 @@ if [ "${Variant}" = "Debian" ] ; then
    cat /tmp/install.log
 fi
 
-# ====== System update ======================================================
+# ====== system update ======================================================
 echo -e "\x1b[34m`date +%FT%H:%M:%S`: Installing updates ...\x1b[0m"
-if [ "${Variant}" = "Debian" ] ; then
+if [ "${variant}" = "Debian" ] ; then
    # ------ Download --------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -yd -q \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" >/tmp/install.log 2>&1 &
@@ -128,11 +128,11 @@ if [ "${Variant}" = "Debian" ] ; then
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" >>/tmp/install.log 2>&1 &
    wait
    cat /tmp/install.log
-elif [ "${Variant}" = "Fedora" ] ; then
+elif [ "${variant}" = "Fedora" ] ; then
    ( sudo dnf clean all && sudo dnf upgrade -y ) >/tmp/install.log 2>&1 &
    wait
    cat /tmp/install.log
-elif [ "${Variant}" = "FreeBSD" ] ; then
+elif [ "${variant}" = "FreeBSD" ] ; then
    ( sudo freebsd-update install ; sudo env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y ; if [ -x /usr/sbin/portsnap ] ; then sudo /usr/sbin/portsnap -I update ; fi ) >/tmp/install.log 2>&1 &
    wait
    cat /tmp/install.log
@@ -140,7 +140,7 @@ fi
 
 # ====== Auto-remove ========================================================
 echo -e "\x1b[34m`date +%FT%H:%M:%S`: Cleaning up ...\x1b[0m"
-if [ "${Variant}" = "Debian" ] ; then
+if [ "${variant}" = "Debian" ] ; then
    # ------ Remove unnecessary dependencies ---------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -q \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" >/tmp/install.log 2>&1 &
@@ -158,18 +158,18 @@ if [ "${Variant}" = "Debian" ] ; then
 
    # ------ Clean up /var/crash ---------------------------
    find /var/crash/ -name "*.crash" | xargs sudo rm -f
-elif [ "${Variant}" = "Fedora" ] ; then
+elif [ "${variant}" = "Fedora" ] ; then
    sudo DEBIAN_FRONTEND=noninteractive nohup dnf autoremove -y >/tmp/install.log 2>&1 &
    wait
    cat /tmp/install.log
    sudo dnf clean all
-elif [ "${Variant}" = "FreeBSD" ] ; then
+elif [ "${variant}" = "FreeBSD" ] ; then
    sudo env ASSUME_ALWAYS_YES=yes pkg-static autoremove -y
    sudo env ASSUME_ALWAYS_YES=yes pkg-static clean all -y
 fi
 
 # ====== Remove obsolete kernel packages ====================================
-if [ "${Variant}" = "Debian" ] ; then
+if [ "${variant}" = "Debian" ] ; then
    echo -e "\x1b[34m`date +%FT%H:%M:%S`: Removing obsolete kernels ...\x1b[0m"
 
    kernelType=$(uname -r | sed 's/\([0-9]*.[0-9]*.[0-9]*\|[0-9]*.[0-9]*.[0-9]*.-[0-9]*\)-\([a-zA-Z0-9\.+]\)/\2/')
@@ -273,7 +273,7 @@ fi
 
 # ====== Fix bootloader =====================================================
 if [ $DONT_TOUCH_GRUB -eq 0 ] ; then
-   if [ "${Variant}" == "Ubuntu" -o "${Variant}" == "Debian" ] ; then
+   if [ "${variant}" == "Ubuntu" -o "${variant}" == "Debian" ] ; then
       echo -e "\x1b[34m`date +%FT%H:%M:%S`: Ensuring that Grub configuration is up-to-date ...\x1b[0m"
       sudo nohup </dev/null grub-install /dev/sda >/tmp/install.log 2>&1 || true
       if ! sudo nohup </dev/null update-grub >>/tmp/install.log 2>&1 ; then
@@ -282,7 +282,7 @@ if [ $DONT_TOUCH_GRUB -eq 0 ] ; then
          exit 1
       fi
       cat /tmp/install.log
-   elif [ "${Variant}" == "Fedora" ] ; then
+   elif [ "${variant}" == "Fedora" ] ; then
       echo -e "\x1b[34m`date +%FT%H:%M:%S`: Ensuring that Grub configuration is up-to-date ...\x1b[0m"
       sudo nohup </dev/null grub2-mkconfig -o "$(readlink -e /etc/grub2.cfg)" >/tmp/install.log 2>&1 || true
       if ! sudo nohup </dev/null grub2-install /dev/sda >>/tmp/install.log 2>&1 ; then
@@ -298,13 +298,13 @@ fi
 # ====== apt-file cache update ==============================================
 # Cache updates
 echo -e "\x1b[34m`date +%FT%H:%M:%S`: Updating caches ...\x1b[0m"
-if [ "${Variant}" = "Debian" ] ; then
+if [ "${variant}" = "Debian" ] ; then
    if [ -x /usr/bin/apt-file ] ; then
       sudo /usr/bin/apt-file update >/dev/null
       sudo apt-show-versions -i
    fi
 fi
-if [ "${Variant}" != "FreeBSD" ] ; then
+if [ "${variant}" != "FreeBSD" ] ; then
    if [ -x /usr/bin/updatedb ] ; then
       sudo updatedb
    fi
@@ -316,7 +316,7 @@ else
 fi
 
 # ====== Delete /etc/udev/rules.d/70-persistent-net.rules ===================
-if [ "${Variant}" = "Debian" ] ; then
+if [ "${variant}" = "Debian" ] ; then
    if [ $KEEP_INTERFACE_MAPPINGS -eq 0 ] ; then
       echo -e "\x1b[34m`date +%FT%H:%M:%S`: Checking interface mapping ...\x1b[0m"
 
@@ -359,7 +359,7 @@ if [ -e /etc/ntp.conf ] ; then
       true
 
    # Write time to hardware clock
-   if [ "${Variant}" != "FreeBSD" ] ; then
+   if [ "${variant}" != "FreeBSD" ] ; then
       sudo hwclock -w
    else
       sudo date -v +0S
@@ -388,13 +388,13 @@ done
 if [ "$filterScripts}" != "" ] ; then
    fullPackageList=`mktemp -t apt-show-versions-XXXXXXXXXXXXXXXX  --suffix=.list`
 
-   if [ "${Variant}" == "Debian" ] ; then
+   if [ "${variant}" == "Debian" ] ; then
       if [ -x /usr/bin/apt-show-versions ] ; then
          /usr/bin/apt-show-versions | grep -v "not installed$" >${fullPackageList} || true
       fi
-   elif [ "${Variant}" == "Fedora" ] ; then
+   elif [ "${variant}" == "Fedora" ] ; then
       rpm -qa | sort >${fullPackageList} || true
-   elif [ "${Variant}" == "FreeBSD" ] ; then
+   elif [ "${variant}" == "FreeBSD" ] ; then
       pkg info --all | sort  >${fullPackageList}|| true
    fi
 
