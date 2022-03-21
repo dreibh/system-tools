@@ -1,7 +1,7 @@
 # Created by: Thomas Dreibholz <dreibh@iem.uni-due.de>
 
 PORTNAME=	td-system-tools
-PORTVERSION=	1.4.0~rc0
+PORTVERSION=	1.4.0
 CATEGORIES=	net
 MASTER_SITES=	https://www.uni-due.de/~be0001/system-tools/download/
 

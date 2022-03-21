@@ -1,3 +1,184 @@
+commit ebe9fa39c87ac672f6e30e764672cf37721ff91e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 18 13:00:35 2022 +0100
+
+    Collect network addresses in background for improved performance of System-Info output.
+
+commit 3e98bd514366bfb3dfd12ce534fe8f947ad84ed4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 18 12:12:06 2022 +0100
+
+    Further optimisations.
+
+commit 426606ef4bdbf4e8afd7e5d35d4856a1bc8cd748
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 18 10:36:16 2022 +0100
+
+    Using FreeBSD-compatible call to mktemp.
+
+commit a40beb4febcc8f5cde8ff5da43b60fb40551b94d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 18 10:27:58 2022 +0100
+
+    Minor clean-ups.
+
+commit 14bd786f8cf9ab217a9f3ae2e4b2fa571da42e6f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 18 10:19:14 2022 +0100
+
+    Clean-up of System-Info code.
+
+commit ae336597bd054c52f5a827dcebe8109ce5c43d53
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 15:29:27 2022 +0100
+
+    Removed debug code.
+
+commit 71c028440d31c35c7871e8fbbecfed1d1ec5539a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 15:18:48 2022 +0100
+
+    Using new network configuration code.
+
+commit af1b20e223b59444451c7291f0540295129d94b8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 14:00:06 2022 +0100
+
+    Some more clean-ups.
+
+commit c41d0e01f36227ac2cd18f61412c9458541a7546
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 13:57:27 2022 +0100
+
+    FreeBSD update.
+
+commit 04d1a8f053fcada9be48d7dad868fbe8d8b00cb0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 13:52:04 2022 +0100
+
+    Another update.
+
+commit bd8b434317ec9a00b306102705144feb7766df9f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 13:51:58 2022 +0100
+
+    Minor clean-up.
+
+commit 47869a9e07a61e827ac965028d99e98350f971c0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 13:37:56 2022 +0100
+
+    Yet another update.
+
+commit 2c33c950af37314fc88eaf7ed72f85d652465c2f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 13:31:02 2022 +0100
+
+    Another update.
+
+commit 3d972da3523c9dde1689b929337547a75dc91f4b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 13:05:38 2022 +0100
+
+    Another update.
+
+commit 5080d503703d9c65365490a37cc9fb708e65e707
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 12:54:18 2022 +0100
+
+    Some improvements.
+
+commit 65cad9800ef18401b88bb14b63d97e33da5b466b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 12:44:14 2022 +0100
+
+    Some clean-ups.
+
+commit c09cf5aaa57de437c6f1075066cfc5788b223cd4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 12:36:23 2022 +0100
+
+    Another update.
+
+commit 396917f53c1b71c29954d0e54e55c46890e797fb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 12:22:28 2022 +0100
+
+    Updated test script.
+
+commit b980a5d1d8dc1af2b23a780e05090bae59df991a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 17 12:01:28 2022 +0100
+
+    Added test script.
+
+commit 19f8bf29c51370cb80e2a3603f2e0eb289deaa8f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 16 17:22:08 2022 +0100
+
+    Output fix.
+
+commit 1f0cd571c9d7b6292e586d3344085be28796117c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 16 17:15:54 2022 +0100
+
+    Updated CI scripts
+
+commit a4480b19b890b26ee628e4f50a0684338c44ef2d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 16 17:15:40 2022 +0100
+
+    Header updates.
+
+commit 8ba5f0e45e7438470e7df7f604be0a4cb4a04f0d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 16 17:12:33 2022 +0100
+
+    Replaced usage of deprecated tempfile call.
+
+commit 36944647d91b5e73d7a78b7d58e90382639e0dec
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 16 17:05:57 2022 +0100
+
+    Show netmask under FreeBSD as well.
+
+commit 31b6ffed0a313003f81ccbbe558aa122c751e4ed
+Merge: a13be0b 4cf742b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 16 12:28:25 2022 +0100
+
+    Merge branch 'master' of github.com:dreibh/system-info
+
+commit a13be0b62588bd94dd8b8c677c0c75a50a3e47e1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 16 12:27:46 2022 +0100
+
+    Show netmask as well.
+
+commit 4cf742b93a6aac97f0560e2fb3c636551b6a5ed4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 16 12:03:22 2022 +0100
+
+    FreeBSD bugfix: correctly filter IPv6 addresses from ifconfig result.
+
+commit 989bda3b44c4cfdf8f971867a683d8cc35bb763e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 15 12:18:15 2022 +0100
+
+    Bugfix: Prevent removal of "virtual" meta packages upon Ubuntu kernel package clean-up.
+
+commit bcc3a900ae94973c1b1d24c77e058e9a2a3d306c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 16 12:56:41 2022 +0100
+
+    Updated LSM entry.
+
+commit cb027a7fa203aaf9ed44631266fa494d2a3b4dde
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 16 12:28:35 2022 +0100
+
+    New release td-system-tools-1.3.1.
+
 commit f1f9827f0065c7a27ac995ded9dc0e98462a837a
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Feb 16 12:23:07 2022 +0100
