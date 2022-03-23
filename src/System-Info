@@ -197,8 +197,9 @@ function showAddresses ()
          fi
          echo -en "\n                  ${address} ${colorP}/ ${prefixlen}${colorA} "
       fi
+      echo -en "\x1b[0m"
    done <<< "$1"
-   echo -e "\x1b[0m"
+   echo ""
 }
 
 
