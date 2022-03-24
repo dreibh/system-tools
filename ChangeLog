@@ -1,3 +1,27 @@
+commit 1bdf70eed06e5dcdb3e74eab9745d424e5c85a60
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 23 15:07:50 2022 +0100
+
+    Bugfix: Fixed color setting problem in Linux console.
+
+commit 5b2dbcf2d4863838b8263ec76b274e320770b65f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Mar 21 17:22:13 2022 +0100
+
+    Fedora build fix.
+
+commit a98e94e55b27095c0c002dfdbc7783f73ca5c58a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Mar 21 16:48:19 2022 +0100
+
+    Updated LSM entry.
+
+commit 368bb12463b0609a08fbc18d73eed12d3e5bc69c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Mar 21 16:41:53 2022 +0100
+
+    New release td-system-tools-1.4.0.
+
 commit ebe9fa39c87ac672f6e30e764672cf37721ff91e
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Mar 18 13:00:35 2022 +0100
