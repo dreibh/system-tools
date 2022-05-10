@@ -274,14 +274,16 @@ fi
 # ====== Fix bootloader =====================================================
 if [ $DONT_TOUCH_GRUB -eq 0 ] ; then
    if [ "${variant}" == "Ubuntu" -o "${variant}" == "Debian" ] ; then
-      echo -e "\x1b[34m`date +%FT%H:%M:%S`: Ensuring that Grub configuration is up-to-date ...\x1b[0m"
-      sudo nohup </dev/null grub-install /dev/sda >/tmp/install.log 2>&1 || true
-      if ! sudo nohup </dev/null update-grub >>/tmp/install.log 2>&1 ; then
+      if [ -x /usr/sbin/update-grub -a /usr/sbin/grub-install ] ; then
+         echo -e "\x1b[34m`date +%FT%H:%M:%S`: Ensuring that Grub configuration is up-to-date ...\x1b[0m"
+         sudo nohup </dev/null /usr/sbin/grub-install /dev/sda >/tmp/install.log 2>&1 || true
+         if ! sudo nohup </dev/null /usr/sbin/update-grub >>/tmp/install.log 2>&1 ; then
+            cat /tmp/install.log
+            echo >&2 "ERROR: Something went wrong with update-grub!"
+            exit 1
+         fi
          cat /tmp/install.log
-         echo >&2 "ERROR: Something went wrong with update-grub!"
-         exit 1
       fi
-      cat /tmp/install.log
    elif [ "${variant}" == "Fedora" ] ; then
       echo -e "\x1b[34m`date +%FT%H:%M:%S`: Ensuring that Grub configuration is up-to-date ...\x1b[0m"
       sudo nohup </dev/null grub2-mkconfig -o "$(readlink -e /etc/grub2.cfg)" >/tmp/install.log 2>&1 || true
