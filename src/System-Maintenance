@@ -157,7 +157,9 @@ if [ "${variant}" = "Debian" ] ; then
    sudo DEBIAN_FRONTEND=noninteractive apt-get clean
 
    # ------ Clean up /var/crash ---------------------------
-   find /var/crash/ -name "*.crash" | xargs sudo rm -f
+   if [ -d /var/crash/ ] ; then
+      find /var/crash/ -name "*.crash" | xargs sudo rm -f
+   fi
 elif [ "${variant}" = "Fedora" ] ; then
    sudo DEBIAN_FRONTEND=noninteractive nohup dnf autoremove -y >/tmp/install.log 2>&1 &
    wait
