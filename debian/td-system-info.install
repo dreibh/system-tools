@@ -1,2 +1,4 @@
+etc/profile.d/system-info.csh
+etc/profile.d/system-info.sh
 etc/system-info.d/01-example
 usr/bin/System-Info

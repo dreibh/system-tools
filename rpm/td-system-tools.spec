@@ -68,19 +68,9 @@ in, providing the user an up-to-date overview of the system.
 %files system-info
 %{_bindir}/System-Info
 %{_mandir}/man1/System-Info.1.gz
+%{_sysconfdir}/profile.d/system-info.sh
+%{_sysconfdir}/profile.d/system-info.csh
 %{_sysconfdir}/system-info.d/01-example
-
-%post system-info
-if [ ! -e /etc/profile.d/systeminfo.csh ] ; then
-   ln -s /usr/bin/System-Info /etc/profile.d/systeminfo.csh
-fi
-if [ ! -e /etc/profile.d/systeminfo.sh ] ; then
-   ln -s /usr/bin/System-Info /etc/profile.d/systeminfo.sh
-fi
-
-%preun system-info
-rm -f /etc/profile.d/system-info.sh
-rm -f /etc/profile.d/system-info.csh
 
 
 %package system-maintenance
