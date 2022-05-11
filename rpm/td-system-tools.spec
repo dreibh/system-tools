@@ -13,10 +13,9 @@ BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
-%define _unpackaged_files_terminate_build 0
+# Meta-package td-system-tools: install td-system-tools-all => install all sub-packages!
+Requires: %{name}-all
 
-
-BuildArch: noarch
 
 %description
 This package contains programs for printing basic system
@@ -44,6 +43,9 @@ SSD or unmap unused storage.
 
 %install
 %cmake_install
+
+%files
+
 
 %package system-info
 Summary: Perform basic system maintenance
