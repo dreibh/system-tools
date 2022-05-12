@@ -12,8 +12,7 @@ Vcs-Browser: https://github.com/dreibh/system-tools
 
 Package: td-system-info
 Architecture: all
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
+Depends: ${misc:Depends}
 Breaks: nornet-management (<<1.5.3~alpha1.0)
 Replaces: nornet-management (<<1.5.3~alpha1.0)
 Recommends: iputils-ping,
@@ -34,8 +33,7 @@ Description: Print basic system information and banners
 Package: td-system-maintenance
 Architecture: all
 Depends: apt-show-versions,
-         ${misc:Depends},
-         ${shlibs:Depends}
+         ${misc:Depends}
 Breaks: nornet-management (<<1.5.3~alpha1.0)
 Replaces: nornet-management (<<1.5.3~alpha1.0)
 Recommends: td-system-info
@@ -47,8 +45,7 @@ Description: Perform basic system maintenance
 
 Package: td-system-configure-grub
 Architecture: all
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
+Depends: ${misc:Depends}
 Recommends: grub2-common,
             td-system-maintenance
 Description: Helper tool to adjust GRUB configuration
@@ -65,8 +62,7 @@ Package: td-system-tools
 Architecture: all
 Depends: td-system-info,
          td-system-maintenance,
-         ${misc:Depends},
-         ${shlibs:Depends}
+         ${misc:Depends}
 Recommends: td-system-configure-grub
 Description: Metapackage for system information and maintenance tools
  This package is a metapackage for the system information and maintenance
