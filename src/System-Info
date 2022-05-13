@@ -38,7 +38,7 @@ function print-system-information ()
 {
    # ====== Obtain host information =========================================
    hostnameResult=`hostname -f`
-   uptimeResult=`env LANG=en uptime`
+   uptimeResult=`env LANGUAGE=en uptime`
    cpu=`uname -m`
    kernel=`uname -r`
 
@@ -58,8 +58,8 @@ function print-system-information ()
    users=`who | awk ' { print $1 }' | sort -ud | wc -l`
 
    # ====== Obtain disk information =========================================
-   diskRoot=`env LANG=en df -hT /     | grep -vE "^Filesystem|shm" | awk '{ print $6 }'`
-   diskHome=`env LANG=en df -hT /home | grep -vE "^Filesystem|shm" | awk '{ print $6 }'`
+   diskRoot=`env LANGUAGE=en df -hT /     | grep -vE "^Filesystem|shm" | awk '{ print $6 }'`
+   diskHome=`env LANGUAGE=en df -hT /home | grep -vE "^Filesystem|shm" | awk '{ print $6 }'`
 
    # ====== Obtain operating system and memory information ==================
    DISTRIB_ID="Unknown"
@@ -74,7 +74,7 @@ function print-system-information ()
          DISTRIB_CODENAME=`cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\3/g"`
       fi
 
-      freeOutput="`env LANG=en free -mt`"
+      freeOutput="`env LANGUAGE=en free -mt`"
       freeMemOutput="`echo "${freeOutput}" | grep "^Mem:"`"
       freeSwapOutput="`echo "${freeOutput}" | grep "^Swap:"`"
 
@@ -113,7 +113,7 @@ function print-system-information ()
    echo "Uptime:           ${uptime}"
    printf "Used Memory:      %d × ${cpu}; %d processes; %d users\n" "${cores}" "${processes}" "${users}"
    codeNameText=""
-   if [ "$DISTRIB_CODENAME" != "" ] ; then
+   if [ "${DISTRIB_CODENAME}" != "" ] ; then
       codeNameText=" (${DISTRIB_CODENAME})"
    fi
    echo "System:           ${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText} with kernel ${kernel}"
@@ -297,7 +297,7 @@ function print-network-addresses ()
 
 # ###### Main program #######################################################
 echo ""
-echo "System information as of `env LANG=en date`"
+echo "System information as of `env LANGUAGE=en date`"
 echo ""
 
 system=`uname`
