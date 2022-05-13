@@ -1,3 +1,82 @@
+commit 54a2d3bfe4f411b5983f59d5f27b33e1eefc985f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 13 11:13:41 2022 +0200
+
+    Output improvement.
+
+commit 2bff8ecfbb669f026f0b076f5f0ccbe85a561bea
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 13 11:06:54 2022 +0200
+
+    Bugfix: Use /usr/bin/lsb_release queries if /etc/lsb_release does not exist.
+    Bugfix: Fixed label.
+
+commit 9c4a92414984a5016a8606718caca6a822b89e42
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 13 10:57:20 2022 +0200
+
+    Bugfix: Replaced LANG= by LANGUAGE= to obtain system data via df and date.
+
+commit 65f5bb86820138bf64b62741e2379d0ffd07e767
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 12 18:29:24 2022 +0200
+
+    Removed unused ${shlibs:Depends}.
+
+commit ec6ef2bb728f00eddf86e2e4c702a8186a714cf7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 12 15:29:26 2022 +0200
+
+    Updated build scripts
+
+commit c03d8678d44cd2685396d0df2439e83f279b32a4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 12 12:55:00 2022 +0200
+
+    Dependency update.
+
+commit f0f5f32b04e9119cb5b4a91736dcb88ddca0ed09
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 11 09:38:47 2022 +0200
+
+    Bugfix: Raspberry Pi has special kernel configuration.
+
+commit 9826cf499dbb02e1d0d8966ae1a7dea377a7f8b2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 11 09:25:56 2022 +0200
+
+    Bugfix: profile.d/system-info.sh cannot be a symlink to System-Info when sh is used instead of bash. Fixed by profile.d/system-info.sh being an sh script calling System-Info.
+
+commit c026fd4f334929d55ac8a7a37a0377659ec1005f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 11 09:17:12 2022 +0200
+
+    Improved RPM spec.
+
+commit 12696642447d280ec1c3066041e89e70c9fa571c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 10 12:15:20 2022 +0200
+
+    Bugfix: /var/crash does not exist on all systems. Only try to clean it up if it is existing.
+
+commit 591c54a64f0c13f034dc84bf5ec3ac8c7d6a957f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 10 12:13:38 2022 +0200
+
+    Bugfix: Raspberry Pi has no Grub => need to check for Grub.
+
+commit d031461f7992a07165dcb0116bb36c67dfdfa4da
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 24 10:19:20 2022 +0100
+
+    Updated LSM entry.
+
+commit 51fd00dbb4cc700ce928e8b532e1ed214a5951f3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 24 10:16:16 2022 +0100
+
+    New release td-system-tools-1.4.1.
+
 commit 1bdf70eed06e5dcdb3e74eab9745d424e5c85a60
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Mar 23 15:07:50 2022 +0100
