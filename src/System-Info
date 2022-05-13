@@ -45,7 +45,7 @@ function print-system-information ()
    # ====== Obtain CPU information ==========================================
    cores=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || grep -c ^processor /compat/linux/proc/cpuinfo 2>/dev/null || echo "1" )
    [ "$cores" -eq "0" ] && cores=1
-   systemLoad=`echo "${uptimeResult}" | awk -F 'average[s]*:' '{ print $2 }'`
+   systemLoad=`echo "${uptimeResult}" | awk -F 'average[s]*:' '{ gsub(/^[ ]*/, "", $2); print $2 }'`
 
    if $(echo "${uptimeResult}" | grep -E "min|days" >/dev/null); then
       uptime=`echo "${uptimeResult}" | awk '{ print $3 " "$4 }' | sed 's/,//g'`
