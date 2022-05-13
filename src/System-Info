@@ -68,6 +68,10 @@ function print-system-information ()
    if [ "${system}" == "Linux" ] ; then
       if [ -e /etc/lsb-release ] ; then
          . /etc/lsb-release
+      elif [ -x /usr/bin/lsb_release ] ; then
+         DISTRIB_ID=`/usr/bin/lsb_release -is`
+         DISTRIB_RELEASE=`/usr/bin/lsb_release -rs`
+         DISTRIB_CODENAME=`/usr/bin/lsb_release -cs`
       elif [ -e /etc/fedora-release ] ; then
          DISTRIB_ID=`cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\1/g"`
          DISTRIB_RELEASE=`cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\2/g"`
@@ -111,12 +115,12 @@ function print-system-information ()
    fi
    echo "Host:             ${hostnameResult}"
    echo "Uptime:           ${uptime}"
-   printf "Used Memory:      %d × ${cpu}; %d processes; %d users\n" "${cores}" "${processes}" "${users}"
    codeNameText=""
    if [ "${DISTRIB_CODENAME}" != "" ] ; then
       codeNameText=" (${DISTRIB_CODENAME})"
    fi
    echo "System:           ${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText} with kernel ${kernel}"
+   printf "Processor:        %d × ${cpu}; %d processes; %d users\n" "${cores}" "${processes}" "${users}"
    echo "Load:             ${systemLoad}"
    printf "Used Memory:      %5d MiB of %5d MiB (%5d MiB free)\n" ${memoryUsed} ${memoryTotal} ${memoryFree}
    printf "Used Swap:        %5d MiB of %5d MiB (%5d MiB free)\n" ${swapUsed} ${swapTotal} ${swapFree}
