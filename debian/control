@@ -7,8 +7,6 @@ Build-Depends: cmake,
                debhelper (>= 9)
 Standards-Version: 4.6.0.1
 Rules-Requires-Root: no
-Vcs-Git: https://github.com/dreibh/system-tools.git
-Vcs-Browser: https://github.com/dreibh/system-tools
 
 Package: td-system-info
 Architecture: all
