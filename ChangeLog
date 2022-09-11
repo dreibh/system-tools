@@ -1,3 +1,15 @@
+commit 8137be2449cb1338a08d581e37df2f6eba9c1fae
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 31 11:47:32 2022 +0200
+
+    Removed Vcs-* fields from debian/control.
+
+commit d607f278c1ac58fa13a39609fdd029205790e821
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 13 12:38:27 2022 +0200
+
+    New release td-system-tools-1.5.0.
+
 commit 54a2d3bfe4f411b5983f59d5f27b33e1eefc985f
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri May 13 11:13:41 2022 +0200

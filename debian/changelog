@@ -1,7 +1,14 @@
-td-system-tools (1.5.0-1ubuntu1) jammy; urgency=medium
+td-system-tools (1.5.1-1ubuntu1) jammy; urgency=medium
 
   * New upstream release.
   * Closes: #988010 (ITP).
+  * debian/control: Updated standards version to 4.6.1.
+
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Sun, 11 Sep 2022 13:04:24 +0200
+
+td-system-tools (1.5.0-1ubuntu1) jammy; urgency=medium
+
+  * New upstream release.
 
  -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Fri, 13 May 2022 12:38:25 +0200
 
