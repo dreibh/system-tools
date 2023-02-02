@@ -1,8 +1,8 @@
 Source: td-system-tools
 Section: utils
 Priority: optional
-Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
-Homepage: https://www.uni-due.de/~be0001/system-tools/
+Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
+Homepage: https://www.nntb.no/~dreibh/system-tools/
 Build-Depends: cmake,
                debhelper (>= 9)
 Standards-Version: 4.6.1

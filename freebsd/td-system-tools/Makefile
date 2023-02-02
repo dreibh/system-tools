@@ -1,11 +1,11 @@
-# Created by: Thomas Dreibholz <dreibh@iem.uni-due.de>
+# Created by: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 
 PORTNAME=	td-system-tools
 PORTVERSION=	1.5.1
 CATEGORIES=	net
-MASTER_SITES=	https://www.uni-due.de/~be0001/system-tools/download/
+MASTER_SITES=	https://www.nntb.no/~dreibh/system-tools/download/
 
-MAINTAINER=	dreibh@iem.uni-due.de
+MAINTAINER=	thomas.dreibholz@gmail.com
 COMMENT=	Printing basic system information and system maintenance
 
 LICENSE=	GPLv3+

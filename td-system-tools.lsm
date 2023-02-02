@@ -18,11 +18,11 @@ Description:    This package contains programs for printing basic system
                 updates, checking for old kernels and removing them, trim
                 SSD or unmap unused storage.
 Keywords:       System Information
-Author:         dreibh@iem.uni-due.de (Thomas Dreibholz)
-Maintained-by:  dreibh@iem.uni-due.de (Thomas Dreibholz)
-Primary-site:   https://www.uni-due.de/~be0001/system-tools
+Author:         thomas.dreibholz@gmail.com (Thomas Dreibholz)
+Maintained-by:  thomas.dreibholz@gmail.com (Thomas Dreibholz)
+Primary-site:   https://www.nntb.no/~dreibh/system-tools
                 71 kB download/system-tools-1.0.0~alpha1.1.tar.xz
-Original-site:  https://www.uni-due.de/~be0001/system-tools
+Original-site:  https://www.nntb.no/~dreibh/system-tools
 Platforms:      Linux, FreeBSD
 Copying-policy: GPL-3+
 End
