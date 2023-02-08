@@ -1,3 +1,39 @@
+commit 9f3eb32752f2d8ffc99382fde538f539e10e4775
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 8 10:52:43 2023 +0100
+
+    RPM spec update.
+
+commit 1f5a901132833a21ed2ce06fe628db2a74db0cee
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Feb 2 13:23:07 2023 +0100
+
+    URL change from UDE to NNTB.
+
+commit 779ab339f2e3c6ea50c2200b4e27c8f8089c3c3e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Feb 2 12:13:15 2023 +0100
+
+    Updated autogen.sh.
+
+commit da48d19d67a84db8ba4eddbf2c7bd92b9aaec57a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Feb 2 11:52:28 2023 +0100
+
+    Updated CI scripts
+
+commit d5b4862401380fdd49b8496e8ce1cfd6b4590246
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Feb 2 11:52:25 2023 +0100
+
+    Updated build scripts
+
+commit 42adb79fd7cba596b90aa4e82176d25091e954a5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Sep 11 13:04:26 2022 +0200
+
+    New release td-system-tools-1.5.1.
+
 commit 8137be2449cb1338a08d581e37df2f6eba9c1fae
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Aug 31 11:47:32 2022 +0200
