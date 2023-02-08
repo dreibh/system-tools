@@ -4,8 +4,8 @@ Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
 License: GPL-3+
-URL: https://www.uni-due.de/~be0001/system-tools/
-Source: https://www.uni-due.de/~be0001/system-tools/download/%{name}-%{version}.tar.xz
+URL: https://www.nntb.no/~dreibh/system-tools/
+Source: https://www.nntb.no/~dreibh/system-tools/download/%{name}-%{version}.tar.xz
 
 AutoReqProv: on
 BuildRequires: cmake
