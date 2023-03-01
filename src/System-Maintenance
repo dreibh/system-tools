@@ -96,6 +96,7 @@ echo -e "\x1b[34m`date +%FT%H:%M:%S`: Installing updates ...\x1b[0m"
 if [ "${variant}" = "Debian" ] ; then
    # ------ Download --------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -yd -q \
+      -o APT::Get::Always-Include-Phased-Updates=true \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" >/tmp/install.log 2>&1 &
    wait
 
