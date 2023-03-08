@@ -375,6 +375,18 @@ if [ -e /etc/ntp.conf ] ; then
    done
 fi
 
+# ====== Refresh snaps ======================================================
+if [ -x /usr/bin/snap ] ; then
+   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Refreshing snaps ...\x1b[0m"
+   sudo /usr/bin/snap refresh || true
+fi
+
+# ====== Firmware updates ===================================================
+if [ -x /usr/bin/fwupdmgr ] ; then
+   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Checking for firmware updates ...\x1b[0m"
+   sudo /usr/bin/fwupdmgr update || true
+fi
+
 # ====== SSD trimming =======================================================
 if [ -x /sbin/fstrim -o -x /usr/sbin/fstrim ] ; then
    echo -e "\x1b[34m`date +%FT%H:%M:%S`: Running fstrim ...\x1b[0m"
