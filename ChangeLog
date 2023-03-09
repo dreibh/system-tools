@@ -1,3 +1,33 @@
+commit 7b2a6524ba7adc4c69519e2c5380cc0789b003f7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 9 12:25:35 2023 +0100
+
+    Updated build scripts
+
+commit 6c16652c09d22c9e63a119a7ea1e1556781331bf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 8 10:11:45 2023 +0100
+
+    Check for Snap and firmware updates.
+
+commit 8213c2b2a978556b85e3a1a3f73f0d8703f7a9b1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 1 14:02:56 2023 +0100
+
+    Set APT::Get::Always-Include-Phased-Updates=true.
+
+commit 7e624d31b9a4d85a6b7234a12b137ac863aac085
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 8 11:41:42 2023 +0100
+
+    Updated LSM entry.
+
+commit 6748fc21243ffc78641d4fc940433ffbf7dedfd6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 8 11:37:24 2023 +0100
+
+    New release td-system-tools-1.5.2.
+
 commit 9f3eb32752f2d8ffc99382fde538f539e10e4775
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Feb 8 10:52:43 2023 +0100
