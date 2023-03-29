@@ -11,8 +11,6 @@ Rules-Requires-Root: no
 Package: td-system-info
 Architecture: all
 Depends: ${misc:Depends}
-Breaks: nornet-management (<<1.5.3~alpha1.0)
-Replaces: nornet-management (<<1.5.3~alpha1.0)
 Recommends: iputils-ping,
             iputils-tracepath,
             subnetcalc
@@ -32,8 +30,6 @@ Package: td-system-maintenance
 Architecture: all
 Depends: apt-show-versions,
          ${misc:Depends}
-Breaks: nornet-management (<<1.5.3~alpha1.0)
-Replaces: nornet-management (<<1.5.3~alpha1.0)
 Recommends: td-system-info
 Description: Perform basic system maintenance
  This program runs basic system maintenance tasks:
