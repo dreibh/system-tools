@@ -1,3 +1,21 @@
+commit cb24c15d98631dc19d6acb1926a822e7056e1ef0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Apr 19 22:32:13 2023 +0200
+
+    Also install phased updates.
+
+commit 9404cea1fe42da7a3deb0c25dc867ece6cdc9137
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 29 14:38:46 2023 +0200
+
+    Dependency fix.
+
+commit 275ed8851029a5550d63de44f5c8556d90547e1f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 9 15:12:48 2023 +0100
+
+    New release td-system-tools-1.5.3.
+
 commit 7b2a6524ba7adc4c69519e2c5380cc0789b003f7
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Mar 9 12:25:35 2023 +0100
