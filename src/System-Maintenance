@@ -113,6 +113,7 @@ if [ "${variant}" = "Debian" ] ; then
             ) | sudo tee /usr/sbin/policy-rc.d >/dev/null
             sudo chmod +x /usr/sbin/policy-rc.d
             sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
+               -o APT::Get::Always-Include-Phased-Updates=true \
                -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
               $package -y -q >>/tmp/install.log 2>&1 &
             wait
@@ -126,6 +127,7 @@ if [ "${variant}" = "Debian" ] ; then
 
    # ------ Update the rest -------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -y -q \
+      -o APT::Get::Always-Include-Phased-Updates=true \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" >>/tmp/install.log 2>&1 &
    wait
    cat /tmp/install.log
