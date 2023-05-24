@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 Homepage: https://www.nntb.no/~dreibh/system-tools/
 Build-Depends: cmake,
-               debhelper (>= 13)
+               debhelper (>= 12)
 Standards-Version: 4.6.2
 Rules-Requires-Root: no
 
