@@ -302,6 +302,18 @@ if [ $DONT_TOUCH_GRUB -eq 0 ] ; then
    fi
 fi
 
+# ====== Refresh snaps ======================================================
+if [ -x /usr/bin/snap ] ; then
+   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Refreshing snaps ...\x1b[0m"
+   sudo /usr/bin/snap refresh || true
+fi
+
+# ====== Firmware updates ===================================================
+if [ -x /usr/bin/fwupdmgr ] ; then
+   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Checking for firmware updates ...\x1b[0m"
+   sudo /usr/bin/fwupdmgr update || true
+fi
+
 # ====== apt-file cache update ==============================================
 # Cache updates
 echo -e "\x1b[34m`date +%FT%H:%M:%S`: Updating caches ...\x1b[0m"
@@ -375,18 +387,6 @@ if [ -e /etc/ntp.conf ] ; then
    for ntpServiceName in ntp ntpd ; do
       sudo service ${ntpServiceName} start >/dev/null 2>&1 || true
    done
-fi
-
-# ====== Refresh snaps ======================================================
-if [ -x /usr/bin/snap ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Refreshing snaps ...\x1b[0m"
-   sudo /usr/bin/snap refresh || true
-fi
-
-# ====== Firmware updates ===================================================
-if [ -x /usr/bin/fwupdmgr ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Checking for firmware updates ...\x1b[0m"
-   sudo /usr/bin/fwupdmgr update || true
 fi
 
 # ====== SSD trimming =======================================================
