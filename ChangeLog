@@ -1,3 +1,33 @@
+commit dd694275c8bef5057ce78004520687cc6815c7d1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 21 10:21:47 2023 +0200
+
+    Updated build scripts
+
+commit 9d55bd50487ef9f17fef608927db3b5e2b0fd7c8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 21 10:21:07 2023 +0200
+
+    Reordered commands.
+
+commit 91836e1d31e14ee69b68c146fb784dfb12ca666d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 21 10:14:35 2023 +0200
+
+    Bugfix: Fixed incorrect uptime when the uptime string is "1 day".
+
+commit 7f7ce07a5df68d91e3b34201f77e622f3a70c530
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 24 09:35:21 2023 +0200
+
+    Minor update.
+
+commit e9a91f271ead4cdb337c598ab9cc2449a9eb8872
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Apr 19 22:33:35 2023 +0200
+
+    New release td-system-tools-1.5.4.
+
 commit cb24c15d98631dc19d6acb1926a822e7056e1ef0
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Apr 19 22:32:13 2023 +0200

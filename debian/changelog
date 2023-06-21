@@ -1,7 +1,13 @@
-td-system-tools (1.5.4-1ubuntu1) jammy; urgency=medium
+td-system-tools (1.5.5-1ubuntu1) jammy; urgency=medium
 
   * New upstream release.
   * Closes: #988010 (ITP).
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Wed, 21 Jun 2023 10:22:02 +0200
+
+td-system-tools (1.5.4-1ubuntu1) jammy; urgency=medium
+
+  * New upstream release.
 
  -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Wed, 19 Apr 2023 22:33:27 +0200
 
