@@ -11,6 +11,7 @@ AutoReqProv: on
 BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
+BuildArch:     noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 # Meta-package td-system-tools: install td-system-tools-all => install all sub-packages!
@@ -130,3 +131,5 @@ tools.
 
 
 %changelog
+* Wed Nov 15 2023 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.5.6
+- New upstream release.
