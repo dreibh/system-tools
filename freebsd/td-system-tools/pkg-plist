@@ -1,9 +1,9 @@
 bin/System-Info
 bin/System-Maintenance
 bin/configure-grub
-man/man1/System-Info.1.gz
-man/man1/System-Maintenance.1.gz
-man/man1/configure-grub.1.gz
+share/man/man1/System-Info.1.gz
+share/man/man1/System-Maintenance.1.gz
+share/man/man1/configure-grub.1.gz
 etc/system-info.d/01-example
 etc/system-maintenance.d/XX-example
 share/configure-grub/grub-defaults-nornet

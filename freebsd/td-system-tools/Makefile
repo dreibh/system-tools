@@ -15,6 +15,6 @@ LICENSE_FILE=	${WRKSRC}/COPYING
 RUN_DEPENDS=	bash:shells/bash
 
 USES=		cmake tar:xz
-CMAKE_ARGS+=	-DCMAKE_INSTALL_MANDIR=${MANPREFIX}/man
+CMAKE_ARGS+=	-DCMAKE_INSTALL_MANDIR=${MANPREFIX}/share/man
 
 .include <bsd.port.mk>
