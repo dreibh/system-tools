@@ -1,5 +1,3 @@
-# Created by: Thomas Dreibholz <thomas.dreibholz@gmail.com>
-
 PORTNAME=	td-system-tools
 PORTVERSION=	1.5.6
 CATEGORIES=	net
