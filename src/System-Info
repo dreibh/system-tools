@@ -103,8 +103,9 @@ function print-system-information ()
       let memoryTotal=`sysctl -n hw.physmem`/1048576
       let memoryUsed=${memoryTotal}-${memoryFree}
 
-      let swapTotal=`sysctl -n vm.swap_total`/1048576
-      let swapUsed=`sysctl -n vm.swap_reserved`/1048576
+      swap="`swapinfo -k | tail -n1`"   # Summary of swap information
+      let swapTotal=`echo "${swap}" | awk '{ n=int($4/1024+0.5); print n; }'`
+      let swapUsed=`echo "${swap}" | awk '{ n=int($3/1024+0.5); print n; }'`
       let swapFree=${swapTotal}-${swapUsed}
    fi
 
