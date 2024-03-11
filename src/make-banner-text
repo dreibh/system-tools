@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# System-Info
+# Make Banner Text
 # Copyright (C) 2013-2024 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -22,22 +22,22 @@ set -e
 
 bannerText="$1"
 
-bannerFile=`mktemp`
-for sysvbanner in /usr/bin/sysvbanner /usr/local/bin/sysvbanner /usr/bin/banner /usr/bin/echo ] ; do
-   if [ -x ${sysvbanner} ] ; then
-      ${sysvbanner} "${bannerText}" >${bannerFile}
+bannerFile=$(mktemp)
+for sysvbanner in /usr/bin/figlet /usr/local/bin/figlet /usr/bin/sysvbanner /usr/local/bin/sysvbanner /usr/bin/banner /usr/bin/echo ] ; do
+   if [ -x "${sysvbanner}" ] ; then
+      ${sysvbanner} "${bannerText}" >"${bannerFile}"
       break
    fi
 done
 
-maxLineLength=`awk 'BEGIN { maxLineLength = 0; } { if(length($0) > maxLineLength) { maxLineLength = length($0); } } END { print maxLineLength; }' ${bannerFile}`
+maxLineLength=$(awk 'BEGIN { maxLineLength = 0; } { if(length($0) > maxLineLength) { maxLineLength = length($0); } } END { print maxLineLength; }' "${bannerFile}")
 
-cat ${bannerFile} | (
+(
    IFS=""
-   while read line ; do
+   while read -r line ; do
       if [ "${line}" != "" ] ; then
          printf "center \"%-${maxLineLength}s\"\n" "${line}"
       fi
    done
-)
-rm -f ${bannerFile}
+) <"${bannerFile}"
+rm -f "${bannerFile}"
