@@ -21,14 +21,26 @@
 set -e
 
 
+# ###### Get width of UTF-8 string in console characters ####################
+# For some more details, see also:
+# https://unix.stackexchange.com/questions/245013/get-the-display-width-of-a-string-of-characters
+stringwidth()
+{
+   local string="$1"
+   echo "${string}" | wc -L
+}
+
+
 # ###### Center text in console #############################################
-center ()
+function center ()
 {
    local text="$1"
-   local length=${#text}
-   local width=`tput cols`   # Console width
+   local consoleWidth
+   local textLength
 
-   let indent=(${width} - ${length})/2
+   consoleWidth=$(tput cols)   # Console width in characters
+   textLength=$( stringwidth "${text}" )
+   indent=$(( (consoleWidth-textLength) / 2 ))
    if [ ${indent} -lt 0 ] ; then
       indent=0
    fi
@@ -37,20 +49,28 @@ center ()
 
 
 # ###### Print centered separator in console ################################
-separator ()
+function separator ()
 {
+   # This example uses an UTF-8 smiley (😀) as border decoration.
+   # It uses 4 bytes, but needs a space of 2 characters in the output.
+   local separaterLeftBorder=" <😀"
+   local separaterRightBorder="😀> "
    local separatorCharacter="="
    local separator=""
-   local width=`tput cols`   # Console width
+   local consoleWidth
    local separatorWidth
 
-   let separatorWidth=${width}-12
+   consoleWidth=$(tput cols)   # Console width in characters
+   # Calculate width of the borders in characters:
+   borderWidth=$( stringwidth "${separaterLeftBorder}${separaterRightBorder}" )
+   separatorCharacterWidth=$( stringwidth "${separatorCharacter}" )
+   separatorWidth=$(( consoleWidth-borderWidth ))
    local i=0
-   while [ $i -lt ${separatorWidth} ] ; do
+   while [ $(( i+separatorCharacterWidth )) -lt ${separatorWidth} ] ; do
       separator="${separator}${separatorCharacter}"
-      let i=$i+1
+      i=$(( i+separatorCharacterWidth ))
    done
-   center "<😀${separator}😀>"
+   center "${separaterLeftBorder}${separator}${separaterRightBorder}"
 }
 
 
@@ -76,6 +96,9 @@ center "       You can change this banner in /etc/system-info.d!"
 separator
 echo -e "\x1b[0m"
 
-exit 1   # With exit code 1, no further files in /etc/system-info.d are processed!
 
+# ====== Finish =============================================================
+
+# With exit code 1, no further files in /etc/system-info.d are processed!
 # Use exit code 0 to process further files!
+exit 1   # 1 => No further processing
