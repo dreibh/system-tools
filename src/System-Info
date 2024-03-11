@@ -99,7 +99,7 @@ function print-system-information ()
       let vmstatCache=`sysctl -n vm.stats.vm.v_cache_count`*${pageSize}
       let vmstatFree=`sysctl -n vm.stats.vm.v_free_count`*${pageSize}
 
-      let memoryFree=(${vmstatInactive}+${vmstatCache}+${vmstatFree})/1048576
+      memoryFree=$(( (${vmstatInactive}+${vmstatCache}+${vmstatFree})/1048576 ))
       let memoryTotal=`sysctl -n hw.physmem`/1048576
       let memoryUsed=${memoryTotal}-${memoryFree}
 
