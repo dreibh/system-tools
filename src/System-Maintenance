@@ -161,7 +161,7 @@ if [ "${variant}" = "Debian" ] ; then
 
    # ------ Clean up /var/crash ---------------------------
    if [ -d /var/crash/ ] ; then
-      find /var/crash/ -name "*.crash" | xargs sudo rm -f
+      find /var/crash/ -name "*.crash" -exec sudo rm -f {} \;
    fi
 elif [ "${variant}" = "Fedora" ] ; then
    sudo DEBIAN_FRONTEND=noninteractive nohup dnf autoremove -y >/tmp/install.log 2>&1 &
@@ -279,7 +279,7 @@ fi
 # ====== Fix bootloader =====================================================
 if [ $DONT_TOUCH_GRUB -eq 0 ] ; then
    if [ "${variant}" == "Ubuntu" ] || [ "${variant}" == "Debian" ] ; then
-      if [ -x /usr/sbin/update-grub -a /usr/sbin/grub-install ] ; then
+      if [ -x /usr/sbin/update-grub ] && [ -x /usr/sbin/grub-install ] ; then
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): Ensuring that Grub configuration is up-to-date ...\x1b[0m"
          sudo nohup </dev/null /usr/sbin/grub-install /dev/sda >/tmp/install.log 2>&1 || true
          if ! sudo nohup </dev/null /usr/sbin/update-grub >>/tmp/install.log 2>&1 ; then
