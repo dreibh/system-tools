@@ -25,11 +25,11 @@ INTERACTIVE_KERNEL_REMOVAL=0
 DONT_TOUCH_GRUB=0
 KEEP_INTERFACE_MAPPINGS=1
 while [ $# -gt 0 ] ; do
-   if [ "$1" = "-interactive-kernel-removal" -o "$1" = "-k" ] ; then
+   if [ "$1" = "-interactive-kernel-removal" ] || [ "$1" = "-k" ] ; then
       INTERACTIVE_KERNEL_REMOVAL=1
-   elif [ "$1" = "-dont-touch-grub" -o "$1" = "-g" ] ; then
+   elif [ "$1" = "-dont-touch-grub" ] || [ "$1" = "-g" ] ; then
       DONT_TOUCH_GRUB=1
-   elif [ "$1" = "-dont-keep-interface-mappings" -o "$1" = "-M" ] ; then
+   elif [ "$1" = "-dont-keep-interface-mappings" ] || [ "$1" = "-M" ] ; then
       KEEP_INTERFACE_MAPPINGS=0
    else
       echo 2>&1 "Usage: $0 [-interactive-kernel-removal|-k] [-dont-touch-grub|-g] [-dont-keep-interface-mappings|-M]"
@@ -278,7 +278,7 @@ fi
 
 # ====== Fix bootloader =====================================================
 if [ $DONT_TOUCH_GRUB -eq 0 ] ; then
-   if [ "${variant}" == "Ubuntu" -o "${variant}" == "Debian" ] ; then
+   if [ "${variant}" == "Ubuntu" ] || [ "${variant}" == "Debian" ] ; then
       if [ -x /usr/sbin/update-grub -a /usr/sbin/grub-install ] ; then
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): Ensuring that Grub configuration is up-to-date ...\x1b[0m"
          sudo nohup </dev/null /usr/sbin/grub-install /dev/sda >/tmp/install.log 2>&1 || true
@@ -390,7 +390,7 @@ if [ -e /etc/ntp.conf ] ; then
 fi
 
 # ====== SSD trimming =======================================================
-if [ -x /sbin/fstrim -o -x /usr/sbin/fstrim ] ; then
+if [ -x /sbin/fstrim ] || [ -x /usr/sbin/fstrim ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): Running fstrim ...\x1b[0m"
    sudo fstrim -a -v 2>/dev/null || ( sudo fstrim -v / && sudo fstrim -v /home ) || true
 fi
