@@ -61,23 +61,30 @@ function print-system-information ()
    diskRoot=$(env LANGUAGE=en df -hT /     | grep -vE "^Filesystem|shm" | awk '{ print $6 }')
    diskHome=$(env LANGUAGE=en df -hT /home | grep -vE "^Filesystem|shm" | awk '{ print $6 }')
 
-   # ====== Obtain operating system and memory information ==================
+   # ====== Obtain operating system information =============================
    DISTRIB_ID="Unknown"
    DISTRIB_RELEASE="00.00"
-   DISTRIB_CODENAME="unknown"
-   if [ "${system}" == "Linux" ] ; then
-      if [ -e /etc/lsb-release ] ; then
-         . /etc/lsb-release
-      elif [ -x /usr/bin/lsb_release ] ; then
-         DISTRIB_ID=$(/usr/bin/lsb_release -is)
-         DISTRIB_RELEASE=$(/usr/bin/lsb_release -rs)
-         DISTRIB_CODENAME=$(/usr/bin/lsb_release -cs)
-      elif [ -e /etc/fedora-release ] ; then
-         DISTRIB_ID=$(sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\1/g" </etc/fedora-release)
-         DISTRIB_RELEASE=$(sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\2/g" </etc/fedora-release)
-         DISTRIB_CODENAME=$(sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\3/g" </etc/fedora-release)
+   DISTRIB_CODENAME="Unknown"
+
+   # ------ Get information from /etc/os-release ----------------------------
+   if [ -e /etc/os-release ] ; then
+      . /etc/os-release
+      DISTRIB_ID="${NAME}"
+      DISTRIB_RELEASE="${VERSION_ID}"
+      DISTRIB_CODENAME=""
+      if [[ "${VERSION}" =~ ^.*\(([^\(\)]*)\)$ ]] ; then
+         DISTRIB_CODENAME="${BASH_REMATCH[1]}"
       fi
 
+   # ------ Legacy system: try lsb_release ----------------------------------
+   elif [ -x /usr/bin/lsb_release ] ; then
+      DISTRIB_ID=$(/usr/bin/lsb_release -is)
+      DISTRIB_RELEASE=$(/usr/bin/lsb_release -rs)
+      DISTRIB_CODENAME=$(/usr/bin/lsb_release -cs)
+   fi
+
+   # ====== Obtain memory information =======================================
+   if [ "${system}" == "Linux" ] ; then
       freeOutput="$(env LANGUAGE=en free -mt)"
       freeMemOutput="$(echo "${freeOutput}" | grep "^Mem:")"
       freeSwapOutput="$(echo "${freeOutput}" | grep "^Swap:")"
@@ -88,11 +95,8 @@ function print-system-information ()
       swapUsed=$(( $(echo "${freeSwapOutput}" | awk '{ print $3 }') ))
       swapAvailable=$(( $(echo "${freeSwapOutput}" | awk '{ print $4 }') ))
       swapTotal=$(( $(echo "${freeSwapOutput}" | awk '{ print $2 }') ))
-   elif  [ "${system}" == "FreeBSD" ] ; then
-      DISTRIB_ID="FreeBSD"
-      DISTRIB_RELEASE="${kernel/-*//}"
-      DISTRIB_CODENAME=""
 
+   elif  [ "${system}" == "FreeBSD" ] ; then
       # Calculations based on:
       # * https://www.cyberciti.biz/files/scripts/freebsd-memory.pl.txt
       # * https://github.com/ocochard/myscripts/blob/master/FreeBSD/freebsd-memory.sh
