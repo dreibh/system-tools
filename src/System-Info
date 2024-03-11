@@ -52,7 +52,7 @@ function print-system-information ()
    else
       uptime=$(echo "${uptimeResult}" | awk '{ print $3 " hours" }' | sed 's/,//g')
    fi
-   processes=$(ps axue | grep -vE "^USER|grep|ps" | wc -l)
+   processes=$(ps -aex -o pid= | wc -l)
 
    # ====== Obtain user information =========================================
    users=$(who | awk ' { print $1 }' | sort -ud | wc -l)
