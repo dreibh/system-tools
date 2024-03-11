@@ -27,7 +27,23 @@ set -e
 stringwidth()
 {
    local string="$1"
-   wc -Lm <<< "${string}" | awk '{ print $2 }'
+
+   # Unfortunately, this seems to only work under Linux:
+   # wc -Lm <<< "${string}" | awk '{ print $2 }'
+
+   awk '
+      BEGIN {
+         string = ARGV[1]
+         len    = length(string)
+         s1     = ""
+         s2     = ""
+         for (i = 0; i < len; i++) {
+            s1 = s1 ".."     # 2 characters of size 1
+            s2 = s2 "\b\b"   # 2 backspaces
+         }
+         print s1 string s2 s1
+         exit
+      }' "${string}" | col -b | awk '{ print length - 2 * length(ARGV[2]); exit }' - "${string}"
 }
 
 
@@ -59,18 +75,19 @@ function separator ()
    local separator=""
    local consoleWidth
    local separatorWidth
+   local i
 
    consoleWidth=$(tput cols)   # Console width in characters
    # Calculate width of the borders in characters:
    borderWidth=$( stringwidth "${separaterLeftBorder}${separaterRightBorder}" )
    separatorCharacterWidth=$( stringwidth "${separatorCharacter}" )
-   separatorWidth=$(( consoleWidth-borderWidth ))
-   local i=0
-   while [ $(( i+separatorCharacterWidth )) -lt ${separatorWidth} ] ; do
+
+   i=${borderWidth}
+   while [ $(( i+separatorCharacterWidth )) -lt ${consoleWidth} ] ; do
       separator="${separator}${separatorCharacter}"
       i=$(( i+separatorCharacterWidth ))
    done
-   center "${separaterLeftBorder}${separator}${separaterRightBorder}"
+   echo "${separaterLeftBorder}${separator}${separaterRightBorder}"
 }
 
 
