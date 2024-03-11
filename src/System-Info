@@ -103,9 +103,9 @@ function print-system-information ()
 
       pageSize=$(sysctl -n hw.pagesize)
       memPhysical=$(sysctl -n hw.physmem)
-      vmstatAll=$(( $(sysctl -n vm.stats.vm.v_page_count)*pageSize ))
-      vmstatWired=$(( $(sysctl -n vm.stats.vm.v_wire_count)*pageSize ))
-      vmstatActive=$(( $(sysctl -n vm.stats.vm.v_active_count)*pageSize ))
+      # vmstatAll=$(( $(sysctl -n vm.stats.vm.v_page_count)*pageSize ))
+      # vmstatWired=$(( $(sysctl -n vm.stats.vm.v_wire_count)*pageSize ))
+      # vmstatActive=$(( $(sysctl -n vm.stats.vm.v_active_count)*pageSize ))
       vmstatInactive=$(( $(sysctl -n vm.stats.vm.v_inactive_count)*pageSize ))
       vmstatCache=$(( $(sysctl -n vm.stats.vm.v_cache_count)*pageSize ))
       vmstatFree=$(( $(sysctl -n vm.stats.vm.v_free_count)*pageSize ))
@@ -134,8 +134,8 @@ function print-system-information ()
    echo "System:           ${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText} with kernel ${kernel}"
    printf "Processor:        %d × ${cpu}; %d processes; %d users\n" "${cores}" "${processes}" "${users}"
    echo "Load:             ${systemLoad}"
-   printf "Used Memory:      %5d MiB of %5d MiB (%5d MiB available)\n" ${memoryUsed} ${memoryTotal} ${memoryAvailable}
-   printf "Used Swap:        %5d MiB of %5d MiB (%5d MiB available)\n" "${swapUsed}" "${swapTotal}" ${swapAvailable}
+   printf "Used Memory:      %5d MiB of %5d MiB (%5d MiB available)\n" "${memoryUsed}" "${memoryTotal}" "${memoryAvailable}"
+   printf "Used Swap:        %5d MiB of %5d MiB (%5d MiB available)\n" "${swapUsed}" "${swapTotal}" "${swapAvailable}"
    echo "Used Diskspace:   ${diskRoot} on /, ${diskHome} on /home"
 }
 

@@ -399,7 +399,7 @@ if [ -x /sbin/zpool ] || [ -x /usr/sbin/zpool ] ; then
    zpools=$(zpool list -H | cut -f1)
    for zpool in ${zpools} ; do
       echo "${zpool}"
-      sudo zpool trim ${zpool} || true
+      sudo zpool trim "${zpool}" || true
    done
 fi
 
