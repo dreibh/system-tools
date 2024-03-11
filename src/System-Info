@@ -83,30 +83,37 @@ function print-system-information ()
       freeSwapOutput="$(echo "${freeOutput}" | grep "^Swap:")"
 
       memoryUsed=$(( $(echo "${freeMemOutput}" | awk '{ print $3 }') ))
-      memoryFree=$(( $(echo "${freeMemOutput}" | awk '{ print $4 }' ) ))
+      memoryAvailable=$(( $(echo "${freeMemOutput}" | awk '{ print $4 }' ) ))
       memoryTotal=$(( $(echo "${freeMemOutput}" | awk '{ print $2 }') ))
       swapUsed=$(( $(echo "${freeSwapOutput}" | awk '{ print $3 }') ))
-      swapFree=$(( $(echo "${freeSwapOutput}" | awk '{ print $4 }') ))
+      swapAvailable=$(( $(echo "${freeSwapOutput}" | awk '{ print $4 }') ))
       swapTotal=$(( $(echo "${freeSwapOutput}" | awk '{ print $2 }') ))
    elif  [ "${system}" == "FreeBSD" ] ; then
       DISTRIB_ID="FreeBSD"
       DISTRIB_RELEASE="${kernel/-[A-Z].*//}"
       DISTRIB_CODENAME=""
 
+      # Calculations based on:
+      # * https://www.cyberciti.biz/files/scripts/freebsd-memory.pl.txt
+      # * https://github.com/ocochard/myscripts/blob/master/FreeBSD/freebsd-memory.sh
+
       pageSize=$(sysctl -n hw.pagesize)
-      # vmstatActive=$(( $(sysctl -n vm.stats.vm.v_active_count)*pageSize ))
+      memPhysical=$(sysctl -n hw.physmem)
+      vmstatAll=$(( $(sysctl -n vm.stats.vm.v_page_count)*pageSize ))
+      vmstatWired=$(( $(sysctl -n vm.stats.vm.v_wire_count)*pageSize ))
+      vmstatActive=$(( $(sysctl -n vm.stats.vm.v_active_count)*pageSize ))
       vmstatInactive=$(( $(sysctl -n vm.stats.vm.v_inactive_count)*pageSize ))
       vmstatCache=$(( $(sysctl -n vm.stats.vm.v_cache_count)*pageSize ))
       vmstatFree=$(( $(sysctl -n vm.stats.vm.v_free_count)*pageSize ))
 
-      memoryFree=$(( (vmstatInactive+vmstatCache+vmstatFree)/1048576 ))
-      memoryTotal=$(( $(sysctl -n hw.physmem)/1048576 ))
-      memoryUsed=$(( memoryTotal-memoryFree ))
+      memoryTotal=$(( memPhysical/1048576 ))
+      memoryAvailable=$(( (vmstatInactive+vmstatCache+vmstatFree)/1048576 ))
+      memoryUsed=$(( memoryTotal-memoryAvailable ))
 
-      swap="$(swapinfo -k | tail -n1)"   # Summary of swap information
+      swap=$(swapctl -sk)
       swapTotal=$(echo "${swap}" | awk '{ n=int($2/1024+0.5); print n; }')
       swapUsed=$(echo "${swap}" | awk '{ n=int($3/1024+0.5); print n; }')
-      swapFree=$(( swapTotal-swapUsed ))
+      swapAvailable=$(( swapTotal-swapUsed ))
    fi
 
    # ====== Print system information ========================================
@@ -123,8 +130,8 @@ function print-system-information ()
    echo "System:           ${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText} with kernel ${kernel}"
    printf "Processor:        %d × ${cpu}; %d processes; %d users\n" "${cores}" "${processes}" "${users}"
    echo "Load:             ${systemLoad}"
-   printf "Used Memory:      %5d MiB of %5d MiB (%5d MiB free)\n" ${memoryUsed} ${memoryTotal} ${memoryFree}
-   printf "Used Swap:        %5d MiB of %5d MiB (%5d MiB free)\n" "${swapUsed}" "${swapTotal}" ${swapFree}
+   printf "Used Memory:      %5d MiB of %5d MiB (%5d MiB available)\n" ${memoryUsed} ${memoryTotal} ${memoryAvailable}
+   printf "Used Swap:        %5d MiB of %5d MiB (%5d MiB available)\n" "${swapUsed}" "${swapTotal}" ${swapAvailable}
    echo "Used Diskspace:   ${diskRoot} on /, ${diskHome} on /home"
 }
 
