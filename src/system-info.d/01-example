@@ -27,7 +27,7 @@ set -e
 stringwidth()
 {
    local string="$1"
-   echo "${string}" | wc -L
+   wc -Lm <<< "${string}" | awk '{ print $2 }'
 }
 
 
