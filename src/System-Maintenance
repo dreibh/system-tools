@@ -39,7 +39,7 @@ while [ $# -gt 0 ] ; do
 done
 
 # ====== Find distribution variant ==========================================
-system=`uname`
+system=$(uname)
 variant=""
 if [ "${system}" == "Linux" ] ; then
    if [ -e /etc/sysconfig/network ] ; then
@@ -57,13 +57,13 @@ fi
 
 # ====== Stop AutoFS ========================================================
 if [ -e /etc/init.d/autofs ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Stopping AutoFS service ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Stopping AutoFS service ...\x1b[0m"
    sudo service autofs stop >/dev/null 2>&1 || true
 fi
 
 # ====== dpkg package fixes =================================================
 if [ "${variant}" = "Debian" ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Applying package fixes, if necessary ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Applying package fixes, if necessary ...\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a  >/tmp/install.log 2>&1 &
    wait
    cat /tmp/install.log
@@ -71,10 +71,10 @@ fi
 
 # ====== Update package repositories ========================================
 if [ "${variant}" = "Debian" ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Updating package repositories ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Updating package repositories ...\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
 elif [ "${variant}" = "FreeBSD" ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Updating package repositories ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Updating package repositories ...\x1b[0m"
    sudo env PAGER=cat freebsd-update fetch
    sudo env ASSUME_ALWAYS_YES=yes pkg-static update
    if [ -x /usr/sbin/portsnap ] ; then
@@ -84,7 +84,7 @@ fi
 
 # ====== apt-get package fixes ==============================================
 if [ "${variant}" = "Debian" ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Installing missing dependencies, if necessary ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Installing missing dependencies, if necessary ...\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" >/tmp/install.log 2>&1 &
    wait
@@ -92,7 +92,7 @@ if [ "${variant}" = "Debian" ] ; then
 fi
 
 # ====== system update ======================================================
-echo -e "\x1b[34m`date +%FT%H:%M:%S`: Installing updates ...\x1b[0m"
+echo -e "\x1b[34m$(date +%FT%H:%M:%S): Installing updates ...\x1b[0m"
 if [ "${variant}" = "Debian" ] ; then
    # ------ Download --------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -yd -q \
@@ -103,7 +103,7 @@ if [ "${variant}" = "Debian" ] ; then
    # ------ Update special packages -----------------------
    for package in nornet-server nornet-tunnelbox ; do
       if dpkg -l $package >/dev/null 2>&1 ; then
-         if [ "`find /var/cache/apt/archives/ -name "$package*.deb"`" != "" ] ; then
+         if [ "$(find /var/cache/apt/archives/ -name "$package*.deb")" != "" ] ; then
             echo "Updating $package package ..."
             # Do not restart the service on update, in order to avoid
             # unnecessary downtime. Needs a manual restart, if necessary!
@@ -142,7 +142,7 @@ elif [ "${variant}" = "FreeBSD" ] ; then
 fi
 
 # ====== Auto-remove ========================================================
-echo -e "\x1b[34m`date +%FT%H:%M:%S`: Cleaning up ...\x1b[0m"
+echo -e "\x1b[34m$(date +%FT%H:%M:%S): Cleaning up ...\x1b[0m"
 if [ "${variant}" = "Debian" ] ; then
    # ------ Remove unnecessary dependencies ---------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -q \
@@ -175,18 +175,18 @@ fi
 
 # ====== Remove obsolete kernel packages ====================================
 if [ "${variant}" = "Debian" ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Removing obsolete kernels ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Removing obsolete kernels ...\x1b[0m"
 
    kernelType=$(uname -r | sed 's/\([0-9]*.[0-9]*.[0-9]*\|[0-9]*.[0-9]*.[0-9]*.-[0-9]*\)-\([a-zA-Z0-9\.+]\)/\2/')
-   kernelBootVersion=$(uname -r | sed s/-${kernelType}//)
+   kernelBootVersion=$(uname -r | sed s/-"${kernelType}"//)
    kernelDiskVersion=$(find /boot -name "vmlinuz-*-${kernelType}" | sort -rV | head -n1 | sed -e "s/\/boot\/vmlinuz-//" -e "s/-${kernelType}//")
 
    echo "Kernel Type:         ${kernelType}"
    echo "Kernel Boot Version: ${kernelBootVersion}"
    echo "Kernel Disk Version: ${kernelDiskVersion}"
 
-   packageVersionsFile=`mktemp`
-   apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | sort >${packageVersionsFile}
+   packageVersionsFile=$(mktemp)
+   apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | sort >"${packageVersionsFile}"
 
    packagesToRemove="
       nornet-
@@ -222,8 +222,8 @@ if [ "${variant}" = "Debian" ] ; then
       linux-image-extra-virtual
 "
 
-   toBeRemoved=`cat ${packageVersionsFile} | (
-      while read line ; do
+   toBeRemoved=$(cat "${packageVersionsFile}" | (
+      while read -r line ; do
          mayBeRemoved=0
          for packageToRemove in ${packagesToRemove} ; do
             if [[ $line =~ ^${packageToRemove}.*$ ]] ; then
@@ -246,11 +246,11 @@ if [ "${variant}" = "Debian" ] ; then
             fi
         fi
       done
-   )`
+   ))
 
-   rm -f ${packageVersionsFile}
+   rm -f "${packageVersionsFile}"
 
-   if [ "`echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$"`" != "" ] ; then
+   if [ "$(echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$")" != "" ] ; then
 
       echo -e "To be removed:\x1b[31m"
       echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$" || true
@@ -280,7 +280,7 @@ fi
 if [ $DONT_TOUCH_GRUB -eq 0 ] ; then
    if [ "${variant}" == "Ubuntu" -o "${variant}" == "Debian" ] ; then
       if [ -x /usr/sbin/update-grub -a /usr/sbin/grub-install ] ; then
-         echo -e "\x1b[34m`date +%FT%H:%M:%S`: Ensuring that Grub configuration is up-to-date ...\x1b[0m"
+         echo -e "\x1b[34m$(date +%FT%H:%M:%S): Ensuring that Grub configuration is up-to-date ...\x1b[0m"
          sudo nohup </dev/null /usr/sbin/grub-install /dev/sda >/tmp/install.log 2>&1 || true
          if ! sudo nohup </dev/null /usr/sbin/update-grub >>/tmp/install.log 2>&1 ; then
             cat /tmp/install.log
@@ -290,7 +290,7 @@ if [ $DONT_TOUCH_GRUB -eq 0 ] ; then
          cat /tmp/install.log
       fi
    elif [ "${variant}" == "Fedora" ] ; then
-      echo -e "\x1b[34m`date +%FT%H:%M:%S`: Ensuring that Grub configuration is up-to-date ...\x1b[0m"
+      echo -e "\x1b[34m$(date +%FT%H:%M:%S): Ensuring that Grub configuration is up-to-date ...\x1b[0m"
       sudo nohup </dev/null grub2-mkconfig -o "$(readlink -e /etc/grub2.cfg)" >/tmp/install.log 2>&1 || true
       if ! sudo nohup </dev/null grub2-install /dev/sda >>/tmp/install.log 2>&1 ; then
          cat /tmp/install.log
@@ -304,19 +304,19 @@ fi
 
 # ====== Refresh snaps ======================================================
 if [ -x /usr/bin/snap ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Refreshing snaps ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Refreshing snaps ...\x1b[0m"
    sudo /usr/bin/snap refresh || true
 fi
 
 # ====== Firmware updates ===================================================
 if [ -x /usr/bin/fwupdmgr ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Checking for firmware updates ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Checking for firmware updates ...\x1b[0m"
    sudo /usr/bin/fwupdmgr update || true
 fi
 
 # ====== apt-file cache update ==============================================
 # Cache updates
-echo -e "\x1b[34m`date +%FT%H:%M:%S`: Updating caches ...\x1b[0m"
+echo -e "\x1b[34m$(date +%FT%H:%M:%S): Updating caches ...\x1b[0m"
 if [ "${variant}" = "Debian" ] ; then
    if [ -x /usr/bin/apt-file ] ; then
       sudo /usr/bin/apt-file update >/dev/null
@@ -337,7 +337,7 @@ fi
 # ====== Delete /etc/udev/rules.d/70-persistent-net.rules ===================
 if [ "${variant}" = "Debian" ] ; then
    if [ $KEEP_INTERFACE_MAPPINGS -eq 0 ] ; then
-      echo -e "\x1b[34m`date +%FT%H:%M:%S`: Checking interface mapping ...\x1b[0m"
+      echo -e "\x1b[34m$(date +%FT%H:%M:%S): Checking interface mapping ...\x1b[0m"
 
       # Ensure that new interfaces get mapped!
       sudo udevadm trigger --action=add
@@ -352,13 +352,13 @@ fi
 
 # ====== Start AutoFS =======================================================
 if [ -e /etc/init.d/autofs ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Starting AutoFS service ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Starting AutoFS service ...\x1b[0m"
    sudo service autofs start >/dev/null 2>&1 || true
 fi
 
 # ====== Fix time ===========================================================
 if [ -e /etc/ntp.conf ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Synchronising system time ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Synchronising system time ...\x1b[0m"
    for ntpServiceName in ntp ntpd ; do
       sudo service ${ntpServiceName} stop >/dev/null 2>&1 || true
    done
@@ -391,37 +391,37 @@ fi
 
 # ====== SSD trimming =======================================================
 if [ -x /sbin/fstrim -o -x /usr/sbin/fstrim ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Running fstrim ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Running fstrim ...\x1b[0m"
    sudo fstrim -a -v 2>/dev/null || ( sudo fstrim -v / && sudo fstrim -v /home ) || true
 fi
 
 # ====== Done! ==============================================================
-echo -e "\x1b[34m`date +%FT%H:%M:%S`: Done!\x1b[0m"
+echo -e "\x1b[34m$(date +%FT%H:%M:%S): Done!\x1b[0m"
 
 # ====== Finally, show project package versions =============================
 for directory in /etc/system-maintenance.d /usr/local/etc/system-maintenance.d ; do
    if [ -d ${directory} ] ; then
-      filterScripts=`find ${directory} -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort`
+      filterScripts=$(find ${directory} -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort)
    fi
 done
 if [ "$filterScripts}" != "" ] ; then
-   fullPackageList=`mktemp`
+   fullPackageList=$(mktemp)
 
    if [ "${variant}" == "Debian" ] ; then
       if [ -x /usr/bin/apt-show-versions ] ; then
-         /usr/bin/apt-show-versions | grep -v "not installed$" >${fullPackageList} || true
+         /usr/bin/apt-show-versions | grep -v "not installed$" >"${fullPackageList}" || true
       fi
    elif [ "${variant}" == "Fedora" ] ; then
-      rpm -qa | sort >${fullPackageList} || true
+      rpm -qa | sort >"${fullPackageList}" || true
    elif [ "${variant}" == "FreeBSD" ] ; then
-      pkg info --all | sort  >${fullPackageList}|| true
+      pkg info --all | sort  >"${fullPackageList}"|| true
    fi
 
-   if [ -e ${fullPackageList} ] ; then
+   if [ -e "${fullPackageList}" ] ; then
       for filterScript in ${filterScripts} ; do
-         ${filterScript} ${fullPackageList}
+         ${filterScript} "${fullPackageList}"
       done
-      rm -f ${fullPackageList}
+      rm -f "${fullPackageList}"
       echo "=============================================================================="
    fi
 fi
