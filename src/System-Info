@@ -90,7 +90,7 @@ function print-system-information ()
       swapTotal=$(( $(echo "${freeSwapOutput}" | awk '{ print $2 }') ))
    elif  [ "${system}" == "FreeBSD" ] ; then
       DISTRIB_ID="FreeBSD"
-      DISTRIB_RELEASE="${kernel/-[A-Z].*//}"
+      DISTRIB_RELEASE="${kernel/-*//}"
       DISTRIB_CODENAME=""
 
       # Calculations based on:
