@@ -104,7 +104,7 @@ function print-system-information ()
       let memoryUsed=${memoryTotal}-${memoryFree}
 
       swap="`swapinfo -k | tail -n1`"   # Summary of swap information
-      let swapTotal=`echo "${swap}" | awk '{ n=int($4/1024+0.5); print n; }'`
+      let swapTotal=`echo "${swap}" | awk '{ n=int($2/1024+0.5); print n; }'`
       let swapUsed=`echo "${swap}" | awk '{ n=int($3/1024+0.5); print n; }'`
       let swapFree=${swapTotal}-${swapUsed}
    fi
