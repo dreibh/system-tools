@@ -394,6 +394,14 @@ if [ -x /sbin/fstrim ] || [ -x /usr/sbin/fstrim ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): Running fstrim ...\x1b[0m"
    sudo fstrim -a -v 2>/dev/null || ( sudo fstrim -v / && sudo fstrim -v /home ) || true
 fi
+if [ -x /sbin/zpool ] || [ -x /usr/sbin/zpool ] ; then
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Running zpool trim ...\x1b[0m"
+   zpools=$(zpool list -H | cut -f1)
+   for zpool in ${zpools} ; do
+      echo "${zpool}"
+      sudo zpool trim ${zpool} || true
+   done
+fi
 
 # ====== Done! ==============================================================
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): Done!\x1b[0m"
