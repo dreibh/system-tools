@@ -24,7 +24,7 @@ function print-banners ()
 {
    for directory in /etc/system-info.d /usr/local/etc/system-info.d ; do
       if [ -d ${directory} ] ; then
-         bannerScripts=`find ${directory} -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort -r`
+         bannerScripts=$(find ${directory} -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort -r)
          for bannerScript in ${bannerScripts} ; do
             ${bannerScript} || break
          done
@@ -37,29 +37,29 @@ function print-banners ()
 function print-system-information ()
 {
    # ====== Obtain host information =========================================
-   hostnameResult=`hostname -f`
-   uptimeResult=`env LANGUAGE=en uptime`
-   cpu=`uname -m`
-   kernel=`uname -r`
+   hostnameResult=$(hostname -f)
+   uptimeResult=$(env LANGUAGE=en uptime)
+   cpu=$(uname -m)
+   kernel=$(uname -r)
 
    # ====== Obtain CPU information ==========================================
    cores=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || grep -c ^processor /compat/linux/proc/cpuinfo 2>/dev/null || echo "1" )
    [ "$cores" -eq "0" ] && cores=1
-   systemLoad=`echo "${uptimeResult}" | awk -F 'average[s]*:' '{ gsub(/^[ ]*/, "", $2); print $2 }'`
+   systemLoad=$(echo "${uptimeResult}" | awk -F 'average[s]*:' '{ gsub(/^[ ]*/, "", $2); print $2 }')
 
    if $(echo "${uptimeResult}" | grep -E "min|day" >/dev/null); then
-      uptime=`echo "${uptimeResult}" | awk '{ print $3 " "$4 }' | sed 's/,//g'`
+      uptime=$(echo "${uptimeResult}" | awk '{ print $3 " "$4 }' | sed 's/,//g')
    else
-      uptime=`echo "${uptimeResult}" | awk '{ print $3 " hours" }' | sed 's/,//g'`
+      uptime=$(echo "${uptimeResult}" | awk '{ print $3 " hours" }' | sed 's/,//g')
    fi
-   processes=`ps axue | grep -vE "^USER|grep|ps" | wc -l`
+   processes=$(ps axue | grep -vE "^USER|grep|ps" | wc -l)
 
    # ====== Obtain user information =========================================
-   users=`who | awk ' { print $1 }' | sort -ud | wc -l`
+   users=$(who | awk ' { print $1 }' | sort -ud | wc -l)
 
    # ====== Obtain disk information =========================================
-   diskRoot=`env LANGUAGE=en df -hT /     | grep -vE "^Filesystem|shm" | awk '{ print $6 }'`
-   diskHome=`env LANGUAGE=en df -hT /home | grep -vE "^Filesystem|shm" | awk '{ print $6 }'`
+   diskRoot=$(env LANGUAGE=en df -hT /     | grep -vE "^Filesystem|shm" | awk '{ print $6 }')
+   diskHome=$(env LANGUAGE=en df -hT /home | grep -vE "^Filesystem|shm" | awk '{ print $6 }')
 
    # ====== Obtain operating system and memory information ==================
    DISTRIB_ID="Unknown"
@@ -69,50 +69,50 @@ function print-system-information ()
       if [ -e /etc/lsb-release ] ; then
          . /etc/lsb-release
       elif [ -x /usr/bin/lsb_release ] ; then
-         DISTRIB_ID=`/usr/bin/lsb_release -is`
-         DISTRIB_RELEASE=`/usr/bin/lsb_release -rs`
-         DISTRIB_CODENAME=`/usr/bin/lsb_release -cs`
+         DISTRIB_ID=$(/usr/bin/lsb_release -is)
+         DISTRIB_RELEASE=$(/usr/bin/lsb_release -rs)
+         DISTRIB_CODENAME=$(/usr/bin/lsb_release -cs)
       elif [ -e /etc/fedora-release ] ; then
-         DISTRIB_ID=`cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\1/g"`
-         DISTRIB_RELEASE=`cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\2/g"`
-         DISTRIB_CODENAME=`cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\3/g"`
+         DISTRIB_ID=$(cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\1/g")
+         DISTRIB_RELEASE=$(cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\2/g")
+         DISTRIB_CODENAME=$(cat /etc/fedora-release | sed -e "s/^\(.*\) release \([0-9]*\) (\(.*\))$/\3/g")
       fi
 
-      freeOutput="`env LANGUAGE=en free -mt`"
-      freeMemOutput="`echo "${freeOutput}" | grep "^Mem:"`"
-      freeSwapOutput="`echo "${freeOutput}" | grep "^Swap:"`"
+      freeOutput="$(env LANGUAGE=en free -mt)"
+      freeMemOutput="$(echo "${freeOutput}" | grep "^Mem:")"
+      freeSwapOutput="$(echo "${freeOutput}" | grep "^Swap:")"
 
-      let memoryUsed=`echo "${freeMemOutput}" | awk '{ print $3 }'`
-      let memoryFree=`echo "${freeMemOutput}" | awk '{ print $4 }' `
-      let memoryTotal=`echo "${freeMemOutput}" | awk '{ print $2 }'`
-      let swapUsed=`echo "${freeSwapOutput}" | awk '{ print $3 }'`
-      let swapFree=`echo "${freeSwapOutput}" | awk '{ print $4 }'`
-      let swapTotal=`echo "${freeSwapOutput}" | awk '{ print $2 }'`
+      let memoryUsed=$(echo "${freeMemOutput}" | awk '{ print $3 }')
+      let memoryFree=$(echo "${freeMemOutput}" | awk '{ print $4 }' )
+      let memoryTotal=$(echo "${freeMemOutput}" | awk '{ print $2 }')
+      let swapUsed=$(echo "${freeSwapOutput}" | awk '{ print $3 }')
+      let swapFree=$(echo "${freeSwapOutput}" | awk '{ print $4 }')
+      let swapTotal=$(echo "${freeSwapOutput}" | awk '{ print $2 }')
    elif  [ "${system}" == "FreeBSD" ] ; then
       DISTRIB_ID="FreeBSD"
-      DISTRIB_RELEASE="`echo "$kernel" | sed -e "s/-[A-Z].*//g"`"
+      DISTRIB_RELEASE="$(echo "$kernel" | sed -e "s/-[A-Z].*//g")"
       DISTRIB_CODENAME=""
 
-      pageSize=`sysctl -n hw.pagesize`
-      let vmstatActive=`sysctl -n vm.stats.vm.v_active_count`*${pageSize}
-      let vmstatInactive=`sysctl -n vm.stats.vm.v_inactive_count`*${pageSize}
-      let vmstatCache=`sysctl -n vm.stats.vm.v_cache_count`*${pageSize}
-      let vmstatFree=`sysctl -n vm.stats.vm.v_free_count`*${pageSize}
+      pageSize=$(sysctl -n hw.pagesize)
+      let vmstatActive=$(sysctl -n vm.stats.vm.v_active_count)*${pageSize}
+      let vmstatInactive=$(sysctl -n vm.stats.vm.v_inactive_count)*${pageSize}
+      let vmstatCache=$(sysctl -n vm.stats.vm.v_cache_count)*${pageSize}
+      let vmstatFree=$(sysctl -n vm.stats.vm.v_free_count)*${pageSize}
 
       memoryFree=$(( (${vmstatInactive}+${vmstatCache}+${vmstatFree})/1048576 ))
-      let memoryTotal=`sysctl -n hw.physmem`/1048576
+      let memoryTotal=$(sysctl -n hw.physmem)/1048576
       let memoryUsed=${memoryTotal}-${memoryFree}
 
-      swap="`swapinfo -k | tail -n1`"   # Summary of swap information
-      let swapTotal=`echo "${swap}" | awk '{ n=int($2/1024+0.5); print n; }'`
-      let swapUsed=`echo "${swap}" | awk '{ n=int($3/1024+0.5); print n; }'`
+      swap="$(swapinfo -k | tail -n1)"   # Summary of swap information
+      let swapTotal=$(echo "${swap}" | awk '{ n=int($2/1024+0.5); print n; }')
+      let swapUsed=$(echo "${swap}" | awk '{ n=int($3/1024+0.5); print n; }')
       let swapFree=${swapTotal}-${swapUsed}
    fi
 
    # ====== Print system information ========================================
    echo -en "\x1b[33m"
    if [ -e /etc/slicename -a /etc/slicefamily ] ; then
-      echo -e "Slice:            `cat /etc/slicename` (`cat /etc/slicefamily`)"
+      echo -e "Slice:            $(cat /etc/slicename) ($(cat /etc/slicefamily))"
    fi
    echo "Host:             ${hostnameResult}"
    echo "Uptime:           ${uptime}"
@@ -132,7 +132,7 @@ function print-system-information ()
 # ###### Print SSH public key fingerprints ##################################
 function print-ssh-key-fingerprints ()
 {
-   keys=`find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort`
+   keys=$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)
    firstKey=1
    for key in $keys ; do
       if [ ${firstKey} -eq 1 ] ; then
@@ -141,7 +141,7 @@ function print-ssh-key-fingerprints ()
       else
          echo -n "                  "
       fi
-      ssh-keygen -lf $key | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
+      ssh-keygen -lf "$key" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
    done
 }
 
@@ -213,8 +213,8 @@ function print-network-addresses ()
 {
    # ====== Get Linux network configuration =================================
    if [ "${system}" == "Linux" ] ; then
-      read -r -a allTunnelInterfaces <<< "`(ip -4 tunnel show ; ip -6 tunnel show ) | cut -d':' -f1 | sort -u | xargs`"
-      addressList=`ip addr show | (
+      read -r -a allTunnelInterfaces <<< "$((ip -4 tunnel show ; ip -6 tunnel show ) | cut -d':' -f1 | sort -u | xargs)"
+      addressList=$(ip addr show | (
          interface="BAD!"
          hidden=1
          up=0
@@ -249,11 +249,11 @@ function print-network-addresses ()
                #    echo "no match: ${line}"
             fi
          done
-      ) | sort -k1,2`
+      ) | sort -k1,2)
 
    # ====== Get FreeBSD network configuration ===============================
    else
-      addressList=`ifconfig | (
+      addressList=$(ifconfig | (
          interface="BAD!"
          hidden=1
          up=0
@@ -289,7 +289,7 @@ function print-network-addresses ()
                fi
             fi
          done
-      ) | sort -k1,2`
+      ) | sort -k1,2)
 
    fi
 
@@ -302,18 +302,18 @@ function print-network-addresses ()
 
 # ###### Main program #######################################################
 echo ""
-echo "System information as of `env LANGUAGE=en date`"
+echo "System information as of $(env LANGUAGE=en date)"
 echo ""
 
-system=`uname`
+system=$(uname)
 
 # Getting the network information may take a few hundreds of ms on a router
 # => prepare it in background, while printing other information.
-networkInfo=`mktemp`
-print-network-addresses >${networkInfo} &
+networkInfo=$(mktemp)
+print-network-addresses >"${networkInfo}" &
 
 print-banners
 print-system-information
 print-ssh-key-fingerprints
 wait
-cat ${networkInfo} && rm -f ${networkInfo}
+cat "${networkInfo}" && rm -f "${networkInfo}"
