@@ -222,7 +222,7 @@ if [ "${variant}" = "Debian" ] ; then
       linux-image-extra-virtual
 "
 
-   toBeRemoved=$(cat "${packageVersionsFile}" | (
+   toBeRemoved=$(
       while read -r line ; do
          mayBeRemoved=0
          for packageToRemove in ${packagesToRemove} ; do
@@ -245,8 +245,8 @@ if [ "${variant}" = "Debian" ] ; then
                echo -n "${line} "
             fi
         fi
-      done
-   ))
+      done <"${packageVersionsFile}"
+   )
 
    rm -f "${packageVersionsFile}"
 
