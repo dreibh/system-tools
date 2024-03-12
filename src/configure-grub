@@ -78,9 +78,11 @@ if grep "net.ifnames=0" >/dev/null 2>&1 /proc/cmdline ; then
 fi
 OPTION_CMDLINE=$(grep "^GRUB_CMDLINE_LINUX=" "${INPUT_CONFIGURATION}" | sed -e "s/biosdevname=0[ ]*//g" -e "s/net.ifnames=0[ ]*//g" || true)
 if [ ${OPTION_DISABLE_BIOSDEVNAME} -eq 1 ] ; then
+   # shellcheck disable=SC2001
    OPTION_CMDLINE=$(echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"biosdevname=0 /g")
 fi
 if [ ${OPTION_DISABLE_NETIFNAMES} -eq 1 ] ; then
+   # shellcheck disable=SC2001
    OPTION_CMDLINE=$(echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"net.ifnames=0 /g")
 fi
 
