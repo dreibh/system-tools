@@ -18,6 +18,8 @@
 #
 # Contact: dreibh@simula.no
 
+. gettext.sh
+
 
 # ###### Print banners ######################################################
 function print-banners ()
@@ -62,9 +64,9 @@ function print-system-information ()
    diskHome=$(env LANGUAGE=en df -hT /home | grep -vE "^Filesystem|shm" | awk '{ print $6 }')
 
    # ====== Obtain operating system information =============================
-   DISTRIB_ID="Unknown"
+   DISTRIB_ID=$(eval_gettext "Unknown")
    DISTRIB_RELEASE="00.00"
-   DISTRIB_CODENAME="Unknown"
+   DISTRIB_CODENAME=$(eval_gettext "Unknown")
 
    # ------ Get information from /etc/os-release ----------------------------
    if [ -e /etc/os-release ] ; then
@@ -123,20 +125,25 @@ function print-system-information ()
    # ====== Print system information ========================================
    echo -en "\x1b[33m"
    if [ -e /etc/slicename ] && [ -e /etc/slicefamily ] ; then
-      echo -e "Slice:            $(cat /etc/slicename) ($(cat /etc/slicefamily))"
+      echo -e "$(eval_gettext "Slice:            ")$(cat /etc/slicename) ($(cat /etc/slicefamily))"
    fi
-   echo "Host:             ${hostnameResult}"
-   echo "Uptime:           ${uptime}"
+   echo "$(eval_gettext "Host:             ")${hostnameResult}"
+   echo "$(eval_gettext "Uptime:           ")${uptime}"
    codeNameText=""
    if [ "${DISTRIB_CODENAME}" != "" ] ; then
       codeNameText=" (${DISTRIB_CODENAME})"
    fi
-   echo "System:           ${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText} with kernel ${kernel}"
-   printf "Processor:        %d × ${cpu}; %d processes; %d users\n" "${cores}" "${processes}" "${users}"
-   echo "Load:             ${systemLoad}"
-   printf "Used Memory:      %5d MiB of %5d MiB (%5d MiB available)\n" "${memoryUsed}" "${memoryTotal}" "${memoryAvailable}"
-   printf "Used Swap:        %5d MiB of %5d MiB (%5d MiB available)\n" "${swapUsed}" "${swapTotal}" "${swapAvailable}"
-   echo "Used Diskspace:   ${diskRoot} on /, ${diskHome} on /home"
+
+   echo "$(eval_gettext "System:           ")${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText} $(eval_gettext "with kernel") ${kernel}"
+   printf "$(eval_gettext "Processor:        ")%d × ${cpu}; $(eval_gettext "%d processes"); $(eval_npgettext "users" "%d user" "%d users" ${users})\n" "${cores}" "${processes}" "${users}"
+   echo "$(eval_gettext "Load:             ")${systemLoad}"
+
+   of=$(eval_gettext "of")                 # nnn MiB of mmm MiB
+   available=$(eval_gettext "available")   # nnn MiB available
+   on=$(eval_gettext "on")                 # xxx MiB on <mountpoint>
+   printf "$(eval_gettext "Used Memory:      ")%5d MiB ${of} %5d MiB (%5d MiB ${available})\n" "${memoryUsed}" "${memoryTotal}" "${memoryAvailable}"
+   printf "$(eval_gettext "Used Swap:        ")%5d MiB ${of} %5d MiB (%5d MiB ${available})\n" "${swapUsed}" "${swapTotal}" "${swapAvailable}"
+   echo "$(eval_gettext "Used Diskspace:   ")${diskRoot} ${on} /, ${diskHome} ${on} /home"
    echo -en "\x1b[0m"
 }
 
@@ -149,7 +156,7 @@ function print-ssh-key-fingerprints ()
    firstKey=1
    for key in $keys ; do
       if [ ${firstKey} -eq 1 ] ; then
-         echo -n "SSH Keys:         "
+         echo -n "$(eval_gettext "SSH Keys:         ")"
          firstKey=0
       else
          echo -n "                  "
@@ -310,7 +317,7 @@ function print-network-addresses ()
 
    # ====== Print network information =======================================
    echo -en "\x1b[33m"
-   echo "Network:"
+   echo "$(eval_gettext "Network:")"
    showAddresses "${addressList}"
    echo -en "\x1b[0m"
 }
@@ -318,11 +325,12 @@ function print-network-addresses ()
 
 
 # ###### Main program #######################################################
-echo ""
-echo "System information as of $(env LANGUAGE=en date)"
-echo ""
-
 system=$(uname)
+now=$(date)
+
+echo ""
+echo "$(eval_gettext "System information as of \${now}")"
+echo ""
 
 # Getting the network information may take a few hundreds of ms on a router
 # => prepare it in background, while printing other information.
