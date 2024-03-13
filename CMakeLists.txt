@@ -9,7 +9,7 @@ SET(BUILD_VERSION ${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH})
 
 
 #############################################################################
-# INSTALLATION_DIRECTORIES
+#### INSTALLATION_DIRECTORIES                                            ####
 #############################################################################
 
 # See: https://cmake.org/cmake/help/v3.0/module/GNUInstallDirs.html
@@ -17,7 +17,7 @@ INCLUDE(GNUInstallDirs)
 
 
 #############################################################################
-# PACKAGING
+#### PACKAGING                                                           ####
 #############################################################################
 
 SET(CPACK_SOURCE_GENERATOR "TXZ")
@@ -31,7 +31,7 @@ ADD_CUSTOM_TARGET(dist COMMAND ${CMAKE_MAKE_PROGRAM} clean package_source)
 
 
 #############################################################################
-# OS DEPENDENT
+#### OS DEPENDENT                                                        ####
 #############################################################################
 
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -62,7 +62,16 @@ ENDIF()
 
 
 #############################################################################
-# SUBDIRECTORIES
+#### INTERNATIONALISATION (I18N)                                         ####
+#############################################################################
+
+FIND_PROGRAM(XGETTEXT xgettext REQUIRED)
+FIND_PROGRAM(MSGMERGE msgmerge REQUIRED)
+FIND_PROGRAM(MSGFMT   msgfmt   REQUIRED)
+
+
+#############################################################################
+#### SUBDIRECTORIES                                                      ####
 #############################################################################
 
 ADD_SUBDIRECTORY(src)

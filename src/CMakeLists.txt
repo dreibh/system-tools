@@ -1,5 +1,5 @@
 #############################################################################
-# PROGRAMS
+#### PROGRAMS                                                            ####
 #############################################################################
 
 INSTALL(PROGRAMS System-Info DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -13,7 +13,7 @@ INSTALL(FILES configure-grub.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
 
 #############################################################################
-# CONFIGURATION FILES
+#### CONFIGURATION FILES                                                 ####
 #############################################################################
 
 INSTALL(PROGRAMS system-info.d/01-example DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-info.d)
@@ -25,7 +25,7 @@ INSTALL(FILES profile.d/system-info.csh DESTINATION ${CMAKE_INSTALL_FULL_SYSCONF
 
 
 #############################################################################
-# EXAMPLES
+#### EXAMPLES                                                            ####
 #############################################################################
 
 INSTALL(FILES grub-defaults-nornet   DESTINATION ${CMAKE_INSTALL_DATADIR}/configure-grub)
