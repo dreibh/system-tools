@@ -1,0 +1,117 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-03-13 20:19+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: System-Info:67 System-Info:69
+#, sh-format
+msgid "Unknown"
+msgstr ""
+
+#: System-Info:128
+#, sh-format
+msgid "Slice:            "
+msgstr ""
+
+#: System-Info:130
+#, sh-format
+msgid "Host:             "
+msgstr ""
+
+#: System-Info:131
+#, sh-format
+msgid "Uptime:           "
+msgstr ""
+
+#: System-Info:137
+#, sh-format
+msgid "System:           "
+msgstr ""
+
+#: System-Info:137
+#, sh-format
+msgid "with kernel"
+msgstr ""
+
+#: System-Info:138
+#, sh-format
+msgid "Processor:        "
+msgstr ""
+
+#: System-Info:138
+#, sh-format
+msgid "%d processes"
+msgstr ""
+
+#: System-Info:138
+#, sh-format
+msgctxt "users"
+msgid "%d user"
+msgid_plural "%d users"
+msgstr[0] ""
+msgstr[1] ""
+
+#: System-Info:139
+#, sh-format
+msgid "Load:             "
+msgstr ""
+
+#: System-Info:141
+#, sh-format
+msgid "of"
+msgstr ""
+
+#: System-Info:142
+#, sh-format
+msgid "available"
+msgstr ""
+
+#: System-Info:143
+#, sh-format
+msgid "on"
+msgstr ""
+
+#: System-Info:144
+#, sh-format
+msgid "Used Memory:      "
+msgstr ""
+
+#: System-Info:145
+#, sh-format
+msgid "Used Swap:        "
+msgstr ""
+
+#: System-Info:146
+#, sh-format
+msgid "Used Diskspace:   "
+msgstr ""
+
+#: System-Info:159
+#, sh-format
+msgid "SSH Keys:         "
+msgstr ""
+
+#: System-Info:320
+#, sh-format
+msgid "Network:"
+msgstr ""
+
+#: System-Info:332
+#, sh-format
+msgid "System information as of ${now}"
+msgstr ""

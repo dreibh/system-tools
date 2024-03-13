@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -e
+
+mkdir -p LC_MESSAGES
+xgettext --language Shell --from-code utf-8 -o LC_MESSAGES/System-Info.pot System-Info
+sed -e 's/charset=CHARSET/charset=UTF-8/g' -i LC_MESSAGES/System-Info.pot
+
+find LC_MESSAGES -mindepth 2 -maxdepth 2 -name "*.po" | \
+   xargs -r -I{} msgmerge {} System-Info.pot >/dev/null
+
+find LC_MESSAGES -mindepth 2 -maxdepth 2 -name "*.po" | \
+   xargs -r -n1 | sed -e 's/\.po$//g' | \
+   xargs -r -I{} echo msgfmt --output-file={}.mo {}.po
