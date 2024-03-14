@@ -69,8 +69,8 @@ function print-system-information ()
 
    # ====== Obtain operating system information =============================
    DISTRIB_ID=$(eval_gettext "Unknown")
+   DISTRIB_CODENAME="${DISTRIB_ID}"
    DISTRIB_RELEASE="00.00"
-   DISTRIB_CODENAME=$(eval_gettext "Unknown")
 
    # ------ Get information from /etc/os-release ----------------------------
    if [ -e /etc/os-release ] ; then
