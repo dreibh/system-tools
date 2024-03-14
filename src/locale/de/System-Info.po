@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.6\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-14 13:45+0100\n"
+"Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools\"\n"
+"POT-Creation-Date: 2024-03-14 17:14+0100\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language: de\n"
@@ -19,47 +19,49 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: System-Info:71 System-Info:73
+#: src/System-Info:71 src/System-Info:73
+#: /home/dreibh/src/system-tools/src/System-Info:71
+#: /home/dreibh/src/system-tools/src/System-Info:73
 #, sh-format
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: System-Info:132
+#: src/System-Info:132 /home/dreibh/src/system-tools/src/System-Info:132
 #, sh-format
 msgid "Slice:            "
 msgstr "Slice:            "
 
-#: System-Info:134
+#: src/System-Info:134 /home/dreibh/src/system-tools/src/System-Info:134
 #, sh-format
 msgid "Host:             "
 msgstr "Rechner:          "
 
-#: System-Info:135
+#: src/System-Info:135 /home/dreibh/src/system-tools/src/System-Info:135
 #, sh-format
 msgid "Uptime:           "
 msgstr "Betriebszeit:     "
 
-#: System-Info:141
+#: src/System-Info:141 /home/dreibh/src/system-tools/src/System-Info:141
 #, sh-format
 msgid "Operating System: "
 msgstr "Betriebssystem:   "
 
-#: System-Info:141
+#: src/System-Info:141 /home/dreibh/src/system-tools/src/System-Info:141
 #, sh-format
 msgid "with kernel"
 msgstr "mit Kernel"
 
-#: System-Info:142
+#: src/System-Info:142 /home/dreibh/src/system-tools/src/System-Info:142
 #, sh-format
 msgid "Processor:        "
 msgstr "Prozessor         "
 
-#: System-Info:142
+#: src/System-Info:142 /home/dreibh/src/system-tools/src/System-Info:142
 #, sh-format
 msgid "%d processes"
 msgstr "%d Prozesse"
 
-#: System-Info:142
+#: src/System-Info:142 /home/dreibh/src/system-tools/src/System-Info:142
 #, sh-format
 msgctxt "users"
 msgid "%d user"
@@ -67,64 +69,65 @@ msgid_plural "%d users"
 msgstr[0] "%d Benutzer"
 msgstr[1] "%d Benutzer"
 
-#: System-Info:143
+#: src/System-Info:143 /home/dreibh/src/system-tools/src/System-Info:143
 #, sh-format
 msgid "Load:             "
 msgstr "Auslastung:       "
 
-#: System-Info:145
+#: src/System-Info:145 /home/dreibh/src/system-tools/src/System-Info:145
 #, sh-format
 msgid "of"
 msgstr "von"
 
-#: System-Info:146
+#: src/System-Info:146 /home/dreibh/src/system-tools/src/System-Info:146
 #, sh-format
 msgid "available"
 msgstr "verfügbar"
 
-#: System-Info:147
+#: src/System-Info:147 /home/dreibh/src/system-tools/src/System-Info:147
 #, sh-format
 msgid "on"
 msgstr "auf"
 
-#: System-Info:148
+#: src/System-Info:148 /home/dreibh/src/system-tools/src/System-Info:148
 #, sh-format
 msgid "Used Memory:      "
 msgstr "Belegtes RAM:     "
 
-#: System-Info:149
+#: src/System-Info:149 /home/dreibh/src/system-tools/src/System-Info:149
 #, sh-format
 msgid "Used Swap:        "
 msgstr "Belegter Swap:    "
 
-#: System-Info:150
+#: src/System-Info:150 /home/dreibh/src/system-tools/src/System-Info:150
 #, sh-format
 msgid "Used Diskspace:   "
 msgstr "Speicherplatz:    "
 
-#: System-Info:163
+#: src/System-Info:163 /home/dreibh/src/system-tools/src/System-Info:163
 msgid "SSH Keys:         1. "
 msgstr "SSH-Schlüssel:    1. "
 
-#: System-Info:165
+#: src/System-Info:165 /home/dreibh/src/system-tools/src/System-Info:165
 #, sh-format
 msgid "                  ${keyNumber}. "
 msgstr "                  ${keyNumber}. "
 
-#: System-Info:226
+#: src/System-Info:226 /home/dreibh/src/system-tools/src/System-Info:226
 msgid "(No IPv4)"
 msgstr "(Kein IPv4)"
 
-#: System-Info:324
+#: src/System-Info:324 /home/dreibh/src/system-tools/src/System-Info:324
 #, sh-format
 msgid "Network:"
 msgstr "Netzwerk:"
 
-#: System-Info:338
+#: src/System-Info:338 /home/dreibh/src/system-tools/src/System-Info:338
 #, sh-format
 msgid "System information as of ${now}"
 msgstr "Systeminformation am ${now}"
 
-#: system-info.d/01-example:113
+#: src/system-info.d/01-example:113
+#: /home/dreibh/src/system-tools/src/system-info.d/01-example:113
 msgid "You can change this banner in /etc/system-info.d!"
 msgstr "Dieses Banner kann in /etc/system-info.d geändert werden!"
