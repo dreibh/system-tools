@@ -20,6 +20,8 @@
 
 set -e
 
+export TEXTDOMAIN="System-Info"
+
 
 # ###### Get width of UTF-8 string in console characters ####################
 # For some more details, see also:
