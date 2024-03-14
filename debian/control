@@ -10,7 +10,8 @@ Rules-Requires-Root: no
 
 Package: td-system-info
 Architecture: all
-Depends: ${misc:Depends}
+Depends: gettext-base,
+         ${misc:Depends}
 Recommends: iputils-ping,
             iputils-tracepath,
             subnetcalc

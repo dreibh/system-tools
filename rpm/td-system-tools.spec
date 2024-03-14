@@ -52,6 +52,7 @@ SSD or unmap unused storage.
 Summary: Perform basic system maintenance
 Group: Applications/System
 BuildArch: noarch
+Requires: gettext-runtime
 Recommends: subnetcalc
 Suggests: banner
 Suggests: figlet
