@@ -66,7 +66,7 @@ FOREACH(source IN LISTS sources)
                          -p "${CMAKE_CURRENT_SOURCE_DIR}"
                          -o "${potFile}"
                          ${potInputFilesAbsolute}
-                       COMMAND sed -e "s/charset=CHARSET/charset=UTF-8/g" -i "${potFile}"
+                       COMMAND sed -e "s/charset=CHARSET/charset=UTF-8/g" -i~ "${potFile}"
                        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                        DEPENDS ${potInputFilesAbsolute}
                        VERBATIM)
