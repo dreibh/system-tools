@@ -22,7 +22,7 @@ FOREACH(source IN LISTS sources)
 
    MESSAGE("Translation template: ${textdomain}")
    ADD_CUSTOM_COMMAND(OUTPUT "${potFile}"
-                      COMMAND xgettext
+                      COMMAND "${XGETTEXT}"
                          --language Shell
                          --from-code utf-8
                          --default-domain="${textdomain}"
@@ -56,7 +56,7 @@ FOREACH(potFile IN LISTS potFiles)
 
       MESSAGE("Translation update: ${textdomain}, ${language}")
       ADD_CUSTOM_COMMAND(OUTPUT "${poFile}"
-                         COMMAND msgmerge
+                         COMMAND "${MSGMERGE}"
                             --update "${poFile}" "${potFile}"
                          WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                          DEPENDS "${potFile}")
@@ -78,7 +78,7 @@ FOREACH(potFile IN LISTS potFiles)
 
       MESSAGE("Compiling translation: ${textdomain}, ${language} (${poFile} -> ${moFile})")
       ADD_CUSTOM_COMMAND(OUTPUT "${moFile}"
-                         COMMAND msgfmt
+                         COMMAND "${MSGFMT}"
                             --statistics
                             --check
                             --output-file="${moFile}"
