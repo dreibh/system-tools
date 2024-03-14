@@ -67,6 +67,7 @@ ADD_CUSTOM_TARGET(update-po DEPENDS ${poFiles})
 
 
 # ====== Compile PO files (translations) ====================================
+SET(LIST moFiles "")
 FOREACH(potFile IN LISTS potFiles)
    GET_FILENAME_COMPONENT(textdomain "${potFile}" NAME_WE)
    FILE(GLOB_RECURSE poFiles "*/${textdomain}.po")
