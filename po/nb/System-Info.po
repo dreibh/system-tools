@@ -118,12 +118,12 @@ msgstr "Brukt diskplass:  "
 
 #: src/System-Info:163
 msgid "SSH Keys:         #1 "
-msgstr "SSH-nøkler:      №1 "
+msgstr "SSH-nøkler:       №1 "
 
 #: src/System-Info:165
 #, sh-format
 msgid "                  #${keyNumber} "
-msgstr "                 №${keyNumber} "
+msgstr "                  №${keyNumber} "
 
 #: src/System-Info:226
 msgid "(No IPv4)"
