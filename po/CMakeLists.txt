@@ -46,9 +46,7 @@ FOREACH(source IN LISTS sources)
                       COMMAND "${XGETTEXT}"
                          --language Shell
                          --from-code utf-8
-                         --strict
                          --default-domain="${textdomain}"
-                         --add-comments=TRANSLATORS:
                          --package-name="${PROJECT_NAME}"
                          --package-version="${BUILD_VERSION}"
                          --copyright-holder="${copyrightHolder}"
@@ -61,7 +59,7 @@ FOREACH(source IN LISTS sources)
                        DEPENDS ${potInputFilesAbsolute}
                        VERBATIM)
    SET(generate_PotFile "generate_pot_${textdomain}")
-   ADD_CUSTOM_TARGET(${generate_PotFile} DEPENDS ${potFile})
+   ADD_CUSTOM_TARGET(${generate_PotFile} DEPENDS "${potFile}")
 
 
    # ====== Process PO files (translations) =================================
@@ -78,13 +76,12 @@ FOREACH(source IN LISTS sources)
       # => Using a stamp file as placeholder to ensure the dependency.
       ADD_CUSTOM_COMMAND(OUTPUT "${poStampFile}"
                          COMMAND "${MSGMERGE}"
-                            --strict
                             --update "${poFile}" "${potFile}"
                          COMMAND touch "${poStampFile}"
                          WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                          DEPENDS ${generate_PotFile} "${potFile}")
-      SET(generate_PoFile "generate_${textdomain}_${language}")
-      ADD_CUSTOM_TARGET(${generate_PoFile} DEPENDS ${poFile})
+      SET(generate_PoFile "generate_po_${textdomain}_${language}")
+      ADD_CUSTOM_TARGET(${generate_PoFile} DEPENDS "${poStampFile}")
 
 
       # ====== Compile PO file to MO file ===================================
@@ -99,9 +96,9 @@ FOREACH(source IN LISTS sources)
                             --output-file="${moFile}"
                             ${poFile}
                          WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
-                         DEPENDS ${generate_PotFile} "${poFile}")
+                         DEPENDS ${generate_PoFile} "${poFile}")
       SET(generate_MoFile "generate_mo_${textdomain}_${language}")
-      ADD_CUSTOM_TARGET(${generate_MoFile} ALL DEPENDS ${moFile})
+      ADD_CUSTOM_TARGET(${generate_MoFile} ALL DEPENDS "${moFile}")
 
 
       # ====== Install MO file ==============================================
