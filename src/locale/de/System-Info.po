@@ -6,10 +6,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 1.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-14 11:37+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2024-03-14 13:17+0100\n"
+"PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -17,47 +17,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: System-Info:68 System-Info:70
+#: System-Info:71 System-Info:73
 #, sh-format
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: System-Info:129
+#: System-Info:132
 #, sh-format
 msgid "Slice:            "
 msgstr "Slice:             "
 
-#: System-Info:131
+#: System-Info:134
 #, sh-format
 msgid "Host:             "
 msgstr "Rechner:           "
 
-#: System-Info:132
+#: System-Info:135
 #, sh-format
 msgid "Uptime:           "
 msgstr "Betriebszeit:      "
 
-#: System-Info:138
+#: System-Info:141
 #, sh-format
 msgid "System:           "
 msgstr "Betriebssystem:    "
 
-#: System-Info:138
+#: System-Info:141
 #, sh-format
 msgid "with kernel"
 msgstr "mit Kernel"
 
-#: System-Info:139
+#: System-Info:142
 #, sh-format
 msgid "Processor:        "
 msgstr "Prozessor          "
 
-#: System-Info:139
+#: System-Info:142
 #, sh-format
 msgid "%d processes"
 msgstr "%d Prozesse"
 
-#: System-Info:139
+#: System-Info:142
 #, sh-format
 msgctxt "users"
 msgid "%d user"
@@ -65,55 +65,63 @@ msgid_plural "%d users"
 msgstr[0] "%d Benutzer"
 msgstr[1] "%d Benutzer"
 
-#: System-Info:140
+#: System-Info:143
 #, sh-format
 msgid "Load:             "
 msgstr "Auslastung:        "
 
-#: System-Info:142
+#: System-Info:145
 #, sh-format
 msgid "of"
 msgstr ""
 
-#: System-Info:143
+#: System-Info:146
 #, sh-format
 msgid "available"
 msgstr "verfügbar"
 
-#: System-Info:144
+#: System-Info:147
 #, sh-format
 msgid "on"
 msgstr "auf"
 
-#: System-Info:145
+#: System-Info:148
 #, sh-format
 msgid "Used Memory:      "
-msgstr "Belegter Speicher: "
+msgstr "Belegtes RAM:      "
 
-#: System-Info:146
+#: System-Info:149
 #, sh-format
 msgid "Used Swap:        "
-msgstr "Belegter Swap:    "
+msgstr "Belegter Swap:     "
 
-#: System-Info:147
+#: System-Info:150
 #, sh-format
 msgid "Used Diskspace:   "
-msgstr ""
+msgstr "Speicherplatz:     "
 
-#: System-Info:160
+#: System-Info:163
+msgid "SSH Keys:         1. "
+msgstr "SSH-Schlüssel:     1. "
+
+#: System-Info:165
 #, sh-format
-msgid "SSH Keys:         "
-msgstr "SSH-Schlüssel      "
+msgid "                  ${keyNumber}. "
+msgstr "                   ${keyNumber}. "
 
-#: System-Info:321
+#: System-Info:226
+msgid "(No IPv4)"
+msgstr "(Kein IPv4)"
+
+#: System-Info:324
 #, sh-format
 msgid "Network:"
 msgstr "Netzwerk:"
 
-#: System-Info:335
+#: System-Info:338
 #, sh-format
 msgid "System information as of ${now}"
-msgstr "Systeminformation zum"
+msgstr "Systeminformation am ${now}"
 
 #: system-info.d/01-example:111
 msgid "You can change this banner in /etc/system-info.d!"
