@@ -17,22 +17,12 @@
 # Contact: dreibh@simula.no
 
 
-# ###### Create unique target name from file name ###########################
-FUNCTION(makeUniqueTarget target fileName)
-   # STRING(MAKE_C_IDENTIFIER ${fileName} result)
-   SET(result ${fileName})
-   STRING(REGEX REPLACE "[/\\ ]" "-"  result ${result})
-   STRING(REGEX REPLACE "[^a-zA-Z0-9\\.@_+-]" "_X_" result ${result})
-   SET(${target} ${result} PARENT_SCOPE)
-ENDFUNCTION()
-
-
 #############################################################################
 #### TRANSLATIONS                                                        ####
 #############################################################################
 
 SET(copyrightHolder   "Copyright (C) 2013-2024 by Thomas Dreibholz")
-SET(bugTrackerAddress "https://github.com/dreibh/system-tools")
+SET(bugTrackerAddress "https://github.com/dreibh/system-tools/issues")
 
 FILE(GLOB sources "*.sources")
 
@@ -51,26 +41,26 @@ FOREACH(source IN LISTS sources)
       LIST(APPEND potInputFilesAbsolute ${potInputFilesAbsolute} "${PROJECT_SOURCE_DIR}/${file}")
    ENDFOREACH()
 
-   MESSAGE("Translation template: ${textdomain}")
+   MESSAGE("Translation template: ${textdomain} (${potInputFiles} -> ${potFile})")
    ADD_CUSTOM_COMMAND(OUTPUT "${potFile}"
                       COMMAND "${XGETTEXT}"
                          --language Shell
                          --from-code utf-8
+                         --strict
                          --default-domain="${textdomain}"
                          --add-comments=TRANSLATORS:
-                         --files-from "${source}"
                          --package-name="${PROJECT_NAME}"
                          --package-version="${BUILD_VERSION}"
                          --copyright-holder="${copyrightHolder}"
                          --msgid-bugs-address="${bugTrackerAddress}"
                          -p "${CMAKE_CURRENT_SOURCE_DIR}"
                          -o "${potFile}"
-                         ${potInputFilesAbsolute}
+                         ${potInputFiles}
                        COMMAND sed -e "s/charset=CHARSET/charset=UTF-8/g" -i~ "${potFile}"
                        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                        DEPENDS ${potInputFilesAbsolute}
                        VERBATIM)
-   makeUniqueTarget(generate_PotFile "generate_${potFile}")
+   SET(generate_PotFile "generate_pot_${textdomain}")
    ADD_CUSTOM_TARGET(${generate_PotFile} DEPENDS ${potFile})
 
 
@@ -88,11 +78,12 @@ FOREACH(source IN LISTS sources)
       # => Using a stamp file as placeholder to ensure the dependency.
       ADD_CUSTOM_COMMAND(OUTPUT "${poStampFile}"
                          COMMAND "${MSGMERGE}"
+                            --strict
                             --update "${poFile}" "${potFile}"
                          COMMAND touch "${poStampFile}"
                          WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                          DEPENDS ${generate_PotFile} "${potFile}")
-      makeUniqueTarget(generate_PoFile "generate_${poFile}")
+      SET(generate_PoFile "generate_${textdomain}_${language}")
       ADD_CUSTOM_TARGET(${generate_PoFile} DEPENDS ${poFile})
 
 
@@ -109,7 +100,7 @@ FOREACH(source IN LISTS sources)
                             ${poFile}
                          WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                          DEPENDS ${generate_PotFile} "${poFile}")
-      makeUniqueTarget(generate_MoFile "generate_${moFile}")
+      SET(generate_MoFile "generate_mo_${textdomain}_${language}")
       ADD_CUSTOM_TARGET(${generate_MoFile} ALL DEPENDS ${moFile})
 
 

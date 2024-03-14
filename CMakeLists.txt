@@ -93,3 +93,4 @@ FIND_PROGRAM(MSGFMT   msgfmt   REQUIRED)
 #############################################################################
 
 ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(po)
