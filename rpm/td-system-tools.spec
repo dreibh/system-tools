@@ -69,6 +69,7 @@ in, providing the user an up-to-date overview of the system.
 
 %files system-info
 %{_bindir}/System-Info
+%{_datadir}/locale/*/LC_MESSAGES/*.mo
 %{_mandir}/man1/System-Info.1.gz
 %{_sysconfdir}/profile.d/system-info.sh
 %{_sysconfdir}/profile.d/system-info.csh
