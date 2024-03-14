@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # 24-bit XTerm color test:
+# See: https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit
 
 # i=0
 # while [ $i -lt 255 ] ; do
