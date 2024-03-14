@@ -49,10 +49,3 @@ INSTALL(FILES profile.d/system-info.csh DESTINATION ${CMAKE_INSTALL_FULL_SYSCONF
 
 INSTALL(FILES grub-defaults-nornet   DESTINATION ${CMAKE_INSTALL_DATADIR}/configure-grub)
 INSTALL(FILES grub-defaults-standard DESTINATION ${CMAKE_INSTALL_DATADIR}/configure-grub)
-
-
-#############################################################################
-#### SUBDIRECTORIES                                                      ####
-#############################################################################
-
-ADD_SUBDIRECTORY(locale)

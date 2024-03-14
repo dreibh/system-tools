@@ -69,8 +69,8 @@ function print-system-information ()
 
    # ====== Obtain operating system information =============================
    DISTRIB_ID=$(eval_gettext "Unknown")
+   DISTRIB_CODENAME="${DISTRIB_ID}"
    DISTRIB_RELEASE="00.00"
-   DISTRIB_CODENAME=$(eval_gettext "Unknown")
 
    # ------ Get information from /etc/os-release ----------------------------
    if [ -e /etc/os-release ] ; then
@@ -160,9 +160,9 @@ function print-ssh-key-fingerprints ()
    keyNumber=1
    for key in $keys ; do
       if [ ${keyNumber} -eq 1 ] ; then
-         gettext "SSH Keys:         1. "
+         gettext "SSH Keys:         #1 "
       else
-         eval_gettext "                  \${keyNumber}. "
+         eval_gettext "                  #\${keyNumber} "
       fi
       ssh-keygen -lf "$key" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
       keyNumber=$((keyNumber+1))
