@@ -11,6 +11,7 @@ AutoReqProv: on
 BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
+BuildRequires: gettext
 BuildArch:     noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
