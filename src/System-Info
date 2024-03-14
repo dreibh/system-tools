@@ -18,6 +18,9 @@
 #
 # Contact: dreibh@simula.no
 
+export TEXTDOMAIN="System-Info"
+export TEXTDOMAINDIR="${PWD}/LC_MESSAGES"
+
 # shellcheck disable=SC1091
 . gettext.sh
 
