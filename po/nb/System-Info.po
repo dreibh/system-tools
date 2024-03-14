@@ -89,17 +89,17 @@ msgstr "Systembelastning: "
 #: src/System-Info:145
 #, sh-format
 msgid "of"
-msgstr "von"
+msgstr "av"
 
 #: src/System-Info:146
 #, sh-format
 msgid "available"
-msgstr "verfügbar"
+msgstr "tilgjengelig"
 
 #: src/System-Info:147
 #, sh-format
 msgid "on"
-msgstr "auf"
+msgstr "på"
 
 #: src/System-Info:148
 #, sh-format
