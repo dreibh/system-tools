@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.6\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-03-14 17:14+0100\n"
+"POT-Creation-Date: 2024-03-14 21:58+0100\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team: \n"
@@ -117,13 +117,14 @@ msgid "Used Diskspace:   "
 msgstr "Brukt diskplass:  "
 
 #: src/System-Info:163
-msgid "SSH Keys:         1. "
-msgstr "SSH-nøkler:       №1. "
+#, sh-format
+msgid "SSH Keys:         #1 "
+msgstr "SSH-nøkler:      №1 "
 
 #: src/System-Info:165
 #, sh-format
-msgid "                  ${keyNumber}. "
-msgstr "                  №${keyNumber}. "
+msgid "                  #${keyNumber} "
+msgstr "                 №${keyNumber} "
 
 #: src/System-Info:226
 msgid "(No IPv4)"
