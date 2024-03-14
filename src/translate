@@ -3,15 +3,26 @@
 set -e
 
 echo -e "\x1b[34mUpdating template po file ...\x1b[0m"
-mkdir -p LC_MESSAGES
-xgettext --language Shell --from-code utf-8 -o System-Info.pot System-Info system-info.d/??-example
-sed -e 's/charset=CHARSET/charset=UTF-8/g' -i System-Info.pot
+
+xgettext --language Shell --from-code utf-8 -o locale/System-Info.pot System-Info system-info.d/??-example
+sed -e 's/charset=CHARSET/charset=UTF-8/g' -i locale/System-Info.pot
 
 echo -e "\x1b[34mMerging changes into translation po files ...\x1b[0m"
-find LC_MESSAGES -mindepth 2 -maxdepth 2 -name "*.po" -exec \
-   msgmerge --quiet {} System-Info.pot \; >/dev/null
+for language in $(find locale -mindepth 1 -maxdepth 1 -type d -printf "%f") ; do
+   echo "${language} ->"
+   for po in $(find locale/${language} -name "*.po" -printf "%f") ; do
+      echo msgmerge --update "locale/${language}/${po}" locale/System-Info.pot
+      msgmerge --update "locale/${language}/${po}" locale/System-Info.pot
+   done
+done
 
 echo -e "\x1b[34mCompiling translation po files ...\x1b[0m"
-find LC_MESSAGES -mindepth 2 -maxdepth 2 -name "*.po" -print0 | \
-   xargs -0 -r -n1 | sed -e 's/\.po$//g' | \
-   xargs -r -I{} msgfmt --output-file={}.mo {}.po
+for language in $(find locale -mindepth 1 -maxdepth 1 -type d -printf "%f") ; do
+   echo "${language} ->"
+   for po in $(find locale/${language} -name "*.po" -printf "%f") ; do
+      mo=$(echo "${po}" | sed -e 's/\.po$/.mo/g')
+      echo "   ${po} -> ${mo}"
+      mkdir -p "locale/${language}/LC_MESSAGES"
+      msgfmt --output-file="locale/${language}/LC_MESSAGES/${mo}" "locale/${language}/${po}"
+   done
+done
