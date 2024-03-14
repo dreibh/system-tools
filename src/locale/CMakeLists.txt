@@ -1,3 +1,7 @@
+#############################################################################
+#### TRANSLATIONS                                                        ####
+#############################################################################
+
 SET(copyrightHolder   "Copyright (C) 2013-2024 by Thomas Dreibholz")
 SET(bugTrackerAddress "https://github.com/dreibh/system-tools")
 
@@ -49,8 +53,8 @@ FOREACH(potFile IN LISTS potFiles)
    FOREACH(poFile IN LISTS poFiles)
       GET_FILENAME_COMPONENT(languageDirectory "${poFile}" DIRECTORY)
       GET_FILENAME_COMPONENT(language "${languageDirectory}" NAME "${CMAKE_CURRENT_SOURCE_DIR}")
-      MESSAGE("Translation update: ${textdomain}, ${language}")
 
+      MESSAGE("Translation update: ${textdomain}, ${language}")
       ADD_CUSTOM_COMMAND(OUTPUT "${poFile}"
                          COMMAND msgmerge
                             --update "${poFile}" "${potFile}"
@@ -69,10 +73,10 @@ FOREACH(potFile IN LISTS potFiles)
    FOREACH(poFile IN LISTS poFiles)
       GET_FILENAME_COMPONENT(languageDirectory "${poFile}" DIRECTORY)
       GET_FILENAME_COMPONENT(language "${languageDirectory}" NAME "${CMAKE_CURRENT_SOURCE_DIR}")
-      MESSAGE("Compiling translation: ${textdomain}, ${language} (${poFile} -> ${moFile})")
-
       FILE(MAKE_DIRECTORY "${languageDirectory}/LC_MESSAGES")
       SET(moFile "${languageDirectory}/LC_MESSAGES/${textdomain}.mo")
+
+      MESSAGE("Compiling translation: ${textdomain}, ${language} (${poFile} -> ${moFile})")
       ADD_CUSTOM_COMMAND(OUTPUT "${moFile}"
                          COMMAND msgfmt
                             --statistics
@@ -88,27 +92,14 @@ ENDFOREACH()
 ADD_CUSTOM_TARGET(update-mo DEPENDS ${moFiles})
 
 
+#############################################################################
+#### MO FILE INSTALLATION                                                ####
+#############################################################################
 
-  ## msgfmt
-  #foreach(lang ${languages})
-    #add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo"
-                       #COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo"
-                       #COMMAND msgfmt -c --statistics -o "${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo"
-                         #"${CMAKE_CURRENT_SOURCE_DIR}/${lang}.po"
-                       #COMMAND touch "${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo"
-                       #DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${lang}.po"
-                       #VERBATIM)
-    #install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo"
-            #DESTINATION "${SCHROOT_LOCALE_DIR}/${lang}/LC_MESSAGES"
-            #RENAME "${domain}.mo")
-    #set(gmo_files ${gmo_files} "${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo")
-  #endforeach(lang)
+FOREACH(poFile IN LISTS poFiles)
+   GET_FILENAME_COMPONENT(languageDirectory "${poFile}" DIRECTORY)
+   GET_FILENAME_COMPONENT(language "${languageDirectory}" NAME "${CMAKE_CURRENT_SOURCE_DIR}")
 
-#if(GIT_RELEASE_ENABLE)
-  #add_dependencies(git-release update-pot update-po)
-#endif(GIT_RELEASE_ENABLE)
-
-  #add_custom_target(update-gmo ALL DEPENDS ${gmo_files})
-
-  #add_custom_target(po-notify
-                    #COMMAND podebconf-report-po --call --withtranslators --noforce --podir=${CMAKE_CURRENT_SOURCE_DIR})]]
+   SET(moFile "${language}/LC_MESSAGES/${textdomain}.mo")
+   INSTALL(FILES "${moFile}" DESTINATION "${CMAKE_INSTALL_DATADIR}/locale/${moFile}")
+ENDFOREACH()
