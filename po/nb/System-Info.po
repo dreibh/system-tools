@@ -34,7 +34,7 @@ msgstr ""
 "X-Source-Language: en_GB\n"
 
 #: src/System-Info:71
-#, fuzzy, sh-format
+#, sh-format
 msgid "Unknown"
 msgstr "Ukjent"
 
@@ -44,14 +44,14 @@ msgid "Slice:            "
 msgstr "Slice:            "
 
 #: src/System-Info:134
-#, fuzzy, sh-format
+#, sh-format
 msgid "Host:             "
 msgstr "Datamaskin:       "
 
 #: src/System-Info:135
 #, sh-format
 msgid "Uptime:           "
-msgstr "Operasjonstid:    "
+msgstr "Oppetid:          "
 
 #: src/System-Info:141
 #, sh-format
