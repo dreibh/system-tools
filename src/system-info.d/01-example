@@ -108,7 +108,7 @@ center "#  #  #  #       #       #    #  #    #  #    #  #        ###"
 center " ## ##   ######  ######   ####    ####   #    #  ######   ###"
 echo -en "\x1b[1;34m"
 center ""
-center "       You can change this banner in /etc/system-info.d!"
+center "$(gettext "You can change this banner in /etc/system-info.d!")"
 separator
 echo -e "\x1b[0m"
 
