@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# 24-bit XTerm color test:
+
+# i=0
+# while [ $i -lt 255 ] ; do
+#    echo -e "\x1b[38;2;150;150;${i}m${i}: This is a test!\x1b[0m"
+#    i=$((i+16))
+# done
+
+c=0 ; while [ $c -lt 255 ] ; do
+   a=0 ; while [ $a -lt 255 ] ; do
+      b=0 ; while [ $b -lt 255 ] ; do
+         printf "\x1b[38;2;%d;%d;%dm|%02x%02x%02x\x1b[0m" $a $b $c $a $b $c
+         b=$((b+16))
+      done
+      echo ""
+      a=$((a+16))
+   done
+   echo ""
+   c=$((c+16))
+done
