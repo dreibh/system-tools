@@ -1,3 +1,13 @@
+# ###### Create unique target name from file name ###########################
+FUNCTION(makeUniqueTarget target fileName)
+   # STRING(MAKE_C_IDENTIFIER ${fileName} result)
+   SET(result ${fileName})
+   STRING(REGEX REPLACE "[/\\ ]" "-"  result ${result})
+   STRING(REGEX REPLACE "[^a-zA-Z0-9\\.@_+-]" "_X_" result ${result})
+   SET(${target} ${result} PARENT_SCOPE)
+ENDFUNCTION()
+
+
 #############################################################################
 #### TRANSLATIONS                                                        ####
 #############################################################################
@@ -5,14 +15,16 @@
 SET(copyrightHolder   "Copyright (C) 2013-2024 by Thomas Dreibholz")
 SET(bugTrackerAddress "https://github.com/dreibh/system-tools")
 
-# ====== Create POT file (translation template) =============================
 FILE(GLOB sources "*.sources")
 
-SET(LIST potFiles "")
+# ====== Find all text domains ==============================================
 FOREACH(source IN LISTS sources)
+   # The .sources file lists the source files for each text domain:
    STRING(REGEX REPLACE ".sources" ".pot" potFile "${source}")
    GET_FILENAME_COMPONENT(textdomain "${source}" NAME_WE)
 
+
+   # ====== Create POT file (translation template) ==========================
    FILE(READ "${source}" potInputFiles)
    STRING(REGEX REPLACE "\n" ";" potInputFiles "${potInputFiles}")
    SET(LIST potInputFilesAbsolute "")
@@ -39,41 +51,33 @@ FOREACH(source IN LISTS sources)
                        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                        DEPENDS ${potInputFilesAbsolute}
                        VERBATIM)
-
-    LIST(APPEND potFiles "${potFile}")
-ENDFOREACH()
-
-ADD_CUSTOM_TARGET(update-pot DEPENDS ${potFiles})
+   makeUniqueTarget(generate_PotFile "generate_${potFile}")
+   ADD_CUSTOM_TARGET(${generate_PotFile} DEPENDS ${potFile})
 
 
-# ====== Update PO files (translations) =====================================
-FOREACH(potFile IN LISTS potFiles)
-   GET_FILENAME_COMPONENT(textdomain "${potFile}" NAME_WE)
+   # ====== Process PO files (translations) =================================
    FILE(GLOB_RECURSE poFiles "*/${textdomain}.po")
    FOREACH(poFile IN LISTS poFiles)
+
+      # ====== Update PO file (translation) =================================
       GET_FILENAME_COMPONENT(languageDirectory "${poFile}" DIRECTORY)
       GET_FILENAME_COMPONENT(language "${languageDirectory}" NAME "${CMAKE_CURRENT_SOURCE_DIR}")
+      SET(poStampFile "${languageDirectory}/.${textdomain}.po.stamp")
 
-      MESSAGE("Translation update: ${textdomain}, ${language}")
-      ADD_CUSTOM_COMMAND(OUTPUT "${poFile}"
+      MESSAGE("Translation update: ${textdomain}, ${language} (${potFile} -> ${poFile})")
+      # The .po file cannot be OUTPUT, since "make clean" would then delete it
+      # => Using a stamp file as placeholder to ensure the dependency.
+      ADD_CUSTOM_COMMAND(OUTPUT "${poStampFile}"
                          COMMAND "${MSGMERGE}"
                             --update "${poFile}" "${potFile}"
+                         COMMAND touch "${poStampFile}"
                          WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
-                         DEPENDS "${potFile}")
-   ENDFOREACH()
-ENDFOREACH()
-
-ADD_CUSTOM_TARGET(update-po DEPENDS ${poFiles})
+                         DEPENDS ${generate_PotFile} "${potFile}")
+      makeUniqueTarget(generate_PoFile "generate_${poFile}")
+      ADD_CUSTOM_TARGET(${generate_PoFile} DEPENDS ${poFile})
 
 
-# ====== Compile PO files (translations) ====================================
-SET(LIST moFiles "")
-FOREACH(potFile IN LISTS potFiles)
-   GET_FILENAME_COMPONENT(textdomain "${potFile}" NAME_WE)
-   FILE(GLOB_RECURSE poFiles "*/${textdomain}.po")
-   FOREACH(poFile IN LISTS poFiles)
-      GET_FILENAME_COMPONENT(languageDirectory "${poFile}" DIRECTORY)
-      GET_FILENAME_COMPONENT(language "${languageDirectory}" NAME "${CMAKE_CURRENT_SOURCE_DIR}")
+      # ====== Compile PO file to MO file ===================================
       FILE(MAKE_DIRECTORY "${languageDirectory}/LC_MESSAGES")
       SET(moFile "${languageDirectory}/LC_MESSAGES/${textdomain}.mo")
 
@@ -85,22 +89,13 @@ FOREACH(potFile IN LISTS potFiles)
                             --output-file="${moFile}"
                             ${poFile}
                          WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
-                         DEPENDS "${poFile}")
-      LIST(APPEND moFiles "${moFile}")
+                         DEPENDS ${generate_PotFile} "${poFile}")
+      makeUniqueTarget(generate_MoFile "generate_${moFile}")
+      ADD_CUSTOM_TARGET(${generate_MoFile} ALL DEPENDS ${moFile})
+
+
+      # ====== Install MO file ==============================================
+      INSTALL(FILES "${moFile}" DESTINATION "${CMAKE_INSTALL_DATADIR}/locale/${moFile}")
+
    ENDFOREACH()
-ENDFOREACH()
-
-ADD_CUSTOM_TARGET(update-mo DEPENDS ${moFiles})
-
-
-#############################################################################
-#### MO FILE INSTALLATION                                                ####
-#############################################################################
-
-FOREACH(poFile IN LISTS poFiles)
-   GET_FILENAME_COMPONENT(languageDirectory "${poFile}" DIRECTORY)
-   GET_FILENAME_COMPONENT(language "${languageDirectory}" NAME "${CMAKE_CURRENT_SOURCE_DIR}")
-
-   SET(moFile "${language}/LC_MESSAGES/${textdomain}.mo")
-   INSTALL(FILES "${moFile}" DESTINATION "${CMAKE_INSTALL_DATADIR}/locale/${moFile}")
 ENDFOREACH()
