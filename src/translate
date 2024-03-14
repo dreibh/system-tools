@@ -2,13 +2,16 @@
 
 set -e
 
+echo -e "\x1b[34mUpdating template po file ...\x1b[0m"
 mkdir -p LC_MESSAGES
-xgettext --language Shell --from-code utf-8 -o LC_MESSAGES/System-Info.pot System-Info
-sed -e 's/charset=CHARSET/charset=UTF-8/g' -i LC_MESSAGES/System-Info.pot
+xgettext --language Shell --from-code utf-8 -o System-Info.pot System-Info system-info.d/??-example
+sed -e 's/charset=CHARSET/charset=UTF-8/g' -i System-Info.pot
 
-find LC_MESSAGES -mindepth 2 -maxdepth 2 -name "*.po" | \
-   xargs -r -I{} msgmerge {} System-Info.pot >/dev/null
+echo -e "\x1b[34mMerging changes into translation po files ...\x1b[0m"
+find LC_MESSAGES -mindepth 2 -maxdepth 2 -name "*.po" -exec \
+   msgmerge --quiet {} System-Info.pot \; >/dev/null
 
-find LC_MESSAGES -mindepth 2 -maxdepth 2 -name "*.po" | \
-   xargs -r -n1 | sed -e 's/\.po$//g' | \
-   xargs -r -I{} echo msgfmt --output-file={}.mo {}.po
+echo -e "\x1b[34mCompiling translation po files ...\x1b[0m"
+find LC_MESSAGES -mindepth 2 -maxdepth 2 -name "*.po" -print0 | \
+   xargs -0 -r -n1 | sed -e 's/\.po$//g' | \
+   xargs -r -I{} msgfmt --output-file={}.mo {}.po
