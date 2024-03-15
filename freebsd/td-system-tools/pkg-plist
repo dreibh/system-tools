@@ -8,3 +8,4 @@ etc/system-info.d/01-example
 etc/system-maintenance.d/XX-example
 share/configure-grub/grub-defaults-nornet
 share/configure-grub/grub-defaults-standard
+share/locale/*/LC_MESSAGES/*.mo
