@@ -28,9 +28,10 @@ export TEXTDOMAIN="System-Info"
 # ###### Print banners ######################################################
 function print-banners ()
 {
+   # shellcheck disable=SC2068
    for directory in $@ ; do
-      if [ -d ${directory} ] ; then
-         bannerScripts=$(find ${directory} -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort -r)
+      if [ -d "${directory}" ] ; then
+         bannerScripts=$(find "${directory}" -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort -r)
          for bannerScript in ${bannerScripts} ; do
             ${bannerScript} || break
          done
@@ -335,14 +336,14 @@ function print-network-addresses ()
 # shellcheck disable=SC2034
 now=$(date)
 system=$(uname)
-bannerScriptDirectories="/etc/system-info.d /usr/local/etc/system-info.d"
+scriptDirectories="/etc/system-info.d /usr/local/etc/system-info.d"
 
 while [ $# -gt 0 ] ; do
    if [ "$1" == "[--scripts" ] || [ "$1" == "-S" ] ; then
-      bannerScriptDirectories="$2"
+      scriptDirectories="$2"
       shift
    else
-      echo >&2 "Usage: $0 [--scripts|-S script_directory] [--help|-h]"
+      echo >&2 "Usage: $0 [--help|-h] [--scripts|-S scripts_directory]"
       exit 1
    fi
    shift
@@ -359,7 +360,8 @@ echo ""
 # Getting the network information may take a few hundreds of ms on a router
 # => prepare it in background, while printing other information.
 print-network-addresses 2>&1 | (
-   print-banners ${bannerScriptDirectories}
+   # shellcheck disable=SC2086
+   print-banners ${scriptDirectories}
    print-system-information
    print-ssh-key-fingerprints
    wait
