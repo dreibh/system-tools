@@ -8,8 +8,11 @@ xgettext --language Shell --from-code utf-8 -o locale/System-Info.pot System-Inf
 sed -e 's/charset=CHARSET/charset=UTF-8/g' -i locale/System-Info.pot
 
 echo -e "\x1b[34mMerging changes into translation po files ...\x1b[0m"
+# shellcheck disable=SC2044
 for language in $(find locale -mindepth 1 -maxdepth 1 -type d -printf "%f") ; do
    echo "${language} ->"
+   # shellcheck disable=SC2086
+   # shellcheck disable=SC2044
    for po in $(find locale/${language} -name "*.po" -printf "%f") ; do
       echo msgmerge --update "locale/${language}/${po}" locale/System-Info.pot
       msgmerge --update "locale/${language}/${po}" locale/System-Info.pot
@@ -17,9 +20,12 @@ for language in $(find locale -mindepth 1 -maxdepth 1 -type d -printf "%f") ; do
 done
 
 echo -e "\x1b[34mCompiling translation po files ...\x1b[0m"
+# shellcheck disable=SC2044
 for language in $(find locale -mindepth 1 -maxdepth 1 -type d -printf "%f") ; do
    echo "${language} ->"
+   # shellcheck disable=SC2086
    for po in $(find locale/${language} -name "*.po" -printf "%f") ; do
+      # shellcheck disable=SC2001
       mo=$(echo "${po}" | sed -e 's/\.po$/.mo/g')
       echo "   ${po} -> ${mo}"
       mkdir -p "locale/${language}/LC_MESSAGES"

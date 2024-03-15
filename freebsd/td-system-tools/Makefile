@@ -1,5 +1,5 @@
 PORTNAME=	td-system-tools
-PORTVERSION=	1.6.0~beta1
+PORTVERSION=	1.6.0~beta3
 PORTREVISION=	1
 CATEGORIES=	net
 MASTER_SITES=	https://www.nntb.no/~dreibh/system-tools/download/
