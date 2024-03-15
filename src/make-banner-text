@@ -20,24 +20,35 @@
 
 set -e
 
+if [ $# -lt 1 ] ; then
+   echo >&2 "Usage: $0 banner_text"
+   exit 1
+fi
 bannerText="$1"
 
-bannerFile=$(mktemp)
-for sysvbanner in /usr/bin/figlet /usr/local/bin/figlet /usr/bin/sysvbanner /usr/local/bin/sysvbanner /usr/bin/banner /usr/bin/echo ] ; do
-   if [ -x "${sysvbanner}" ] ; then
-      ${sysvbanner} "${bannerText}" >"${bannerFile}"
-      break
-   fi
-done
 
-maxLineLength=$(awk 'BEGIN { maxLineLength = 0; } { if(length($0) > maxLineLength) { maxLineLength = length($0); } } END { print maxLineLength; }' "${bannerFile}")
-
+# ====== Create banner with figlet, toilet or echo as fallback ==============
 (
-   IFS=""
-   while read -r line ; do
-      if [ "${line}" != "" ] ; then
-         printf "center \"%-${maxLineLength}s\"\n" "${line}"
+   figlet -w 256 "${bannerText}" 2>/dev/null || \
+   toilet -w 256 -f standard "${bannerText}" 2>/dev/null || \
+   if [ ${#bannerText} -le 10 ] ; then sysvbanner "${bannerText}" ; else false ; fi || \
+   echo "${bannerText}"
+) | (
+# ====== Compute maximum line length and pad banner lines to this length ====
+   # Array to store the lines of the banner:
+   banner=( )
+
+   # Read lines, and compute the maximum line length
+   maxLineLength=0
+   while IFS= read -r line ; do
+      if [ ${#line} -gt ${maxLineLength} ] ; then
+         maxLineLength=${#line}
       fi
+      banner+=( "${line}" )
    done
-) <"${bannerFile}"
-rm -f "${bannerFile}"
+
+   # Print maximum-length lines padded with spaces
+   for line in "${banner[@]}" ; do
+      printf "%-${maxLineLength}s\n" "${line}"
+   done
+)
