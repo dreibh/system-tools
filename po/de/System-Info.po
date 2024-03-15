@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.6\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-03-14 22:00+0100\n"
+"POT-Creation-Date: 2024-03-15 11:13+0100\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -75,7 +75,6 @@ msgstr "%d Prozesse"
 
 #: src/System-Info:142
 #, sh-format
-msgctxt "users"
 msgid "%d user"
 msgid_plural "%d users"
 msgstr[0] "%d Benutzer"

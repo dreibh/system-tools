@@ -139,7 +139,7 @@ function print-system-information ()
    fi
 
    echo "$(eval_gettext "Operating System: ")${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText} $(eval_gettext "with kernel") ${kernel}"
-   printf "$(eval_gettext "Processor:        ")%d × ${cpu}; $(eval_gettext "%d processes"); $(eval_npgettext "users" "%d user" "%d users" "${users}")\n" "${cores}" "${processes}" "${users}"
+   printf "$(eval_gettext "Processor:        ")%d × ${cpu}; $(eval_gettext "%d processes"); $(eval_ngettext "%d user" "%d users" "${users}")\n" "${cores}" "${processes}" "${users}"
    echo "$(eval_gettext "Load:             ")${systemLoad}"
 
    of=$(eval_gettext "of")                 # nnn MiB of mmm MiB
