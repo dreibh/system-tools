@@ -28,7 +28,7 @@ export TEXTDOMAIN="System-Info"
 # ###### Print banners ######################################################
 function print-banners ()
 {
-   for directory in /etc/system-info.d /usr/local/etc/system-info.d ; do
+   for directory in $@ ; do
       if [ -d ${directory} ] ; then
          bannerScripts=$(find ${directory} -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort -r)
          for bannerScript in ${bannerScripts} ; do
@@ -330,19 +330,36 @@ function print-network-addresses ()
 
 
 # ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
 # shellcheck disable=SC2034
 now=$(date)
 system=$(uname)
+bannerScriptDirectories="/etc/system-info.d /usr/local/etc/system-info.d"
 
+while [ $# -gt 0 ] ; do
+   if [ "$1" == "[--scripts" ] || [ "$1" == "-S" ] ; then
+      bannerScriptDirectories="$2"
+      shift
+   else
+      echo >&2 "Usage: $0 [--scripts|-S script_directory] [--help|-h]"
+      exit 1
+   fi
+   shift
+done
+
+
+# ====== Startup ============================================================
 echo ""
 eval_gettext "System information as of \${now}"
 echo
 echo ""
 
+# ====== Obtain and print information =======================================
 # Getting the network information may take a few hundreds of ms on a router
 # => prepare it in background, while printing other information.
 print-network-addresses 2>&1 | (
-   print-banners
+   print-banners ${bannerScriptDirectories}
    print-system-information
    print-ssh-key-fingerprints
    wait
