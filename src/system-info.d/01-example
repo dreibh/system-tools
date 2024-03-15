@@ -20,76 +20,9 @@
 
 set -e
 
-export TEXTDOMAIN="System-Info"
-
-
-# ###### Get width of UTF-8 string in console characters ####################
-# For some more details, see also:
-# https://unix.stackexchange.com/questions/245013/get-the-display-width-of-a-string-of-characters
-stringwidth()
-{
-   local string="$1"
-
-   # Unfortunately, this seems to only work under Linux:
-   # wc -Lm <<< "${string}" | awk '{ print $2 }'
-
-   awk '
-      BEGIN {
-         string = ARGV[1]
-         len    = length(string)
-         s1     = ""
-         s2     = ""
-         for (i = 0; i < len; i++) {
-            s1 = s1 ".."     # 2 characters of size 1
-            s2 = s2 "\b\b"   # 2 backspaces
-         }
-         print s1 string s2 s1
-         exit
-      }' "${string}" | col -b | awk '{ print length - 2 * length(ARGV[2]); exit }' - "${string}"
-}
-
-
-# ###### Center text in console #############################################
-function center ()
-{
-   local text="$1"
-   local consoleWidth
-   local textLength
-
-   consoleWidth=$(tput cols)   # Console width in characters
-   textLength=$( stringwidth "${text}" )
-   indent=$(( (consoleWidth-textLength) / 2 ))
-   if [ ${indent} -lt 0 ] ; then
-      indent=0
-   fi
-   printf "%${indent}s%s\n" "" "${text}"
-}
-
-
-# ###### Print centered separator in console ################################
-function separator ()
-{
-   # This example uses an UTF-8 smiley (😀) as border decoration.
-   # It uses 4 bytes, but needs a space of 2 characters in the output.
-   local separaterLeftBorder=" <😀"
-   local separaterRightBorder="😀> "
-   local separatorCharacter="="
-   local separator=""
-   local consoleWidth
-   local i
-
-   consoleWidth=$(tput cols)   # Console width in characters
-   # Calculate width of the borders in characters:
-   borderWidth=$( stringwidth "${separaterLeftBorder}${separaterRightBorder}" )
-   separatorCharacterWidth=$( stringwidth "${separatorCharacter}" )
-
-   i=${borderWidth}
-   while [ $(( i+separatorCharacterWidth )) -lt "${consoleWidth}" ] ; do
-      separator="${separator}${separatorCharacter}"
-      i=$(( i+separatorCharacterWidth ))
-   done
-   echo "${separaterLeftBorder}${separator}${separaterRightBorder}"
-}
+# Helper function library -> just return when it is not available.
+# Exit code 0 will let System-Info continue with the next script!
+. "$(dirname $0)"/banner-helper || exit 0
 
 
 # ====== Print banner =======================================================
@@ -99,7 +32,7 @@ function separator ()
 # More advanced, UTF-8-capable tools are e.g. figlet and toilet.
 
 echo -en "\x1b[1;34m"
-separator
+separator " <😀" "=" "😀> "
 echo -en "\x1b[1;31m"
 center "#     #                                                   ###"
 center "#  #  #  ######  #        ####    ####   #    #  ######   ###"
@@ -111,7 +44,7 @@ center " ## ##   ######  ######   ####    ####   #    #  ######   ###"
 echo -en "\x1b[1;34m"
 center ""
 center "$(gettext "You can change this banner in /etc/system-info.d!")"
-separator
+separator " <😀" "=" "😀> "
 echo -e "\x1b[0m"
 
 

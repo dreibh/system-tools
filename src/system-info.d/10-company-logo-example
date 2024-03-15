@@ -18,9 +18,11 @@
 #
 # Contact: dreibh@simula.no
 
+set -e
+
 # Helper function library -> just return when it is not available.
 # Exit code 0 will let System-Info continue with the next script!
-. ./banner-helper || exit 0
+. "$(dirname $0)"/banner-helper || exit 0
 
 
 # ====== Print banner =======================================================
@@ -33,7 +35,7 @@ color2="\x1b[38;2;33;27;87m"    # SimulaMet dark blue: #211B57
 
 # ------ Print top separator ------------------------------------------------
 echo -en "${color1}"
-separator " <💻" "=" "💻> "
+separator "*💻" "=" "💻*"
 echo ""
 center "${color1}-- ${color2}$(gettext "Welcome to") ${color1}--"
 
@@ -58,7 +60,7 @@ fi
 
 # ------ Print bottom separator ---------------------------------------------
 echo -en "${color1}"
-separator " <💻" "=" "💻> "
+separator "*💻" "=" "💻*"
 echo -e "${none}"
 
 
