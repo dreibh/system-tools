@@ -28,7 +28,11 @@ export TEXTDOMAIN="System-Info"
 # https://unix.stackexchange.com/questions/245013/get-the-display-width-of-a-string-of-characters
 stringwidth()
 {
-   local string="$1"
+   local string
+
+   # The ANSI escape sequences for coloring have to be filtered out!
+   # shellcheck disable=SC2001
+   string="$(echo "$1" | sed -e 's/\(\\x1b\[[0-9;:]*m\)//g')"
 
    # Unfortunately, this seems to only work under Linux:
    # wc -Lm <<< "${string}" | awk '{ print $2 }'

@@ -25,19 +25,19 @@
 
 # ====== Print banner =======================================================
 
-SIMULAMET_VERSION=""
-if [ -e /etc/simulamet/simulamet-version ] ; then
-   SIMULAMET_VERSION=`cat /etc/simulamet/simulamet-version`
-fi
-
 none="\x1b[0m"
-# color1="\x1b[38;2;241;71;29m"   # SimulaMet orange: F1471D
-# color2="\x1b[38;2;33;27;87m"    # SimulaMet dark blue: #211B57
-color1="\x1b[34m"
-color2="\x1b[31m"
+color1="\x1b[38;2;241;71;29m"   # SimulaMet orange: F1471D
+color2="\x1b[38;2;33;27;87m"    # SimulaMet dark blue: #211B57
+# color1="\x1b[34m"
+# color2="\x1b[31m"
 
+# ------ Print top separator ------------------------------------------------
 echo -en "${color1}"
 separator " <💻" "=" "💻> "
+echo ""
+center "${color1}-- ${color2}$(gettext "Welcome to") ${color1}--"
+
+# ------ Print the logo -----------------------------------------------------
 echo ""
 center "${color1} #####                                          ${color2}#     #                "
 center "${color1}#     #     #    #    #  #    #  #         ##   ${color2}##   ##  ######   #####"
@@ -48,11 +48,16 @@ center "${color1}#     #     #    #    #  #    #  #       #    # ${color2}#     
 center "${color1} #####      #    #    #   ####   ######  #    # ${color2}#     #  ######     #  "
 echo ""
 center "${none}-- ${color1}Simula Metropolitan Centre ${color2}for Digital Engineering --${none}"
-echo -en "${color1}"
-if [ "${SIMULAMET_VERSION}" != "" ] ; then
-   echo -e "${none}"
-   center "${SIMULAMET_VERSION}"
+
+# ------ Print an additional information line from a file -------------------
+# This could e.g. by a package version of an application
+if [ -e /etc/simulamet/simulamet-version ] ; then
+   echo -e "${color2}"
+   center "$(cat /etc/simulamet/simulamet-version)"
 fi
+
+# ------ Print bottom separator ---------------------------------------------
+echo -en "${color1}"
 separator " <💻" "=" "💻> "
 echo -e "${none}"
 
