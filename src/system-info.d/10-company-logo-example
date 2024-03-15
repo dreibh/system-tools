@@ -27,7 +27,8 @@ set -e
 
 # ====== Print banner =======================================================
 
-none="\x1b[0m"
+# Using 24-bit color codes. This may not work with all terminals!
+reset="\x1b[0m"
 color1="\x1b[38;2;241;71;29m"   # SimulaMet orange: F1471D
 color2="\x1b[38;2;33;27;87m"    # SimulaMet dark blue: #211B57
 # color1="\x1b[34m"
@@ -35,7 +36,7 @@ color2="\x1b[38;2;33;27;87m"    # SimulaMet dark blue: #211B57
 
 # ------ Print top separator ------------------------------------------------
 echo -en "${color1}"
-separator "*💻" "=" "💻*"
+separator " *💻" "=" "💻*"
 echo ""
 center "${color1}-- ${color2}$(gettext "Welcome to") ${color1}--"
 
@@ -49,7 +50,7 @@ center "${color1}      #     #    #    #  #    #  #       ###### ${color2}#     
 center "${color1}#     #     #    #    #  #    #  #       #    # ${color2}#     #  #          #  "
 center "${color1} #####      #    #    #   ####   ######  #    # ${color2}#     #  ######     #  "
 echo ""
-center "${none}-- ${color1}Simula Metropolitan Centre ${color2}for Digital Engineering --${none}"
+center "${color2}-- ${color1}Simula Metropolitan Centre ${color2}for Digital Engineering ${color1}--"
 
 # ------ Print an additional information line from a file -------------------
 # This could e.g. by a package version of an application
@@ -59,9 +60,9 @@ if [ -e /etc/simulamet/simulamet-version ] ; then
 fi
 
 # ------ Print bottom separator ---------------------------------------------
-echo -en "${color1}"
-separator "*💻" "=" "💻*"
-echo -e "${none}"
+echo -en "${reset}${color1}"
+separator " *💻" "=" "💻*"
+echo -e "${reset}"
 
 
 exit 1   # With exit code 1, no further files in /etc/system-info.d are processed!
