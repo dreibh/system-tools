@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.6\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-03-15 16:00+0100\n"
+"POT-Creation-Date: 2024-03-15 17:15+0100\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -138,9 +138,13 @@ msgstr "Netzwerk:"
 msgid "System information as of ${now}"
 msgstr "Systeminformation am ${now}"
 
-#: src/system-info.d/01-example:47
+#: src/system-info.d/01-example:47 src/system-info.d/10-company-logo-example:62
 msgid "You can change this banner in /etc/system-info.d!"
 msgstr "Dieses Banner kann in /etc/system-info.d geändert werden!"
+
+#: src/system-info.d/09-hostname-example:40
+msgid "Welcome on the System"
+msgstr "Willkommen auf dem System"
 
 #: src/system-info.d/10-company-logo-example:42
 msgid "Welcome to"

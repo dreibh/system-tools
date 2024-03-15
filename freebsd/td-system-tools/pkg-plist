@@ -7,6 +7,7 @@ etc/system-info.d/banner-helper
 etc/system-info.d/01-example
 etc/system-maintenance.d/XX-example
 share/System-Info/01-example
+share/System-Info/09-hostname-example
 share/System-Info/10-company-logo-example
 share/System-Info/banner-helper
 share/configure-grub/grub-defaults-nornet

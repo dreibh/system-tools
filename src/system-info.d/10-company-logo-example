@@ -54,10 +54,12 @@ echo ""
 center "${color2}-- ${color1}Simula Metropolitan Centre ${color2}for Digital Engineering ${color1}--"
 
 # ------ Print an additional information line from a file -------------------
-# This could e.g. by a package version of an application
+# This part could e.g. pint a package version of an application:
+echo -e "${color2}"
 if [ -e /etc/simulamet/simulamet-version ] ; then
-   echo -e "${color2}"
    center "$(cat /etc/simulamet/simulamet-version)"
+else
+   center "$(gettext "You can change this banner in /etc/system-info.d!")"
 fi
 
 # ------ Print bottom separator ---------------------------------------------
@@ -66,6 +68,6 @@ separator " *💻" "=" "💻*"
 echo -e "${reset}"
 
 
-exit 1   # With exit code 1, no further files in /etc/system-info.d are processed!
+exit 0   # With exit code 1, no further files in /etc/system-info.d are processed!
 
 # Use exit code 0 to process further files!
