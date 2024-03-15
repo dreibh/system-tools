@@ -53,28 +53,28 @@ ADD_CUSTOM_TARGET(dist COMMAND ${CMAKE_MAKE_PROGRAM} clean package_source)
 #############################################################################
 
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
+   MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
 
 ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
-    MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
-    SET(CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include")
-    SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
-    INCLUDE_DIRECTORIES("/usr/local/include")
+   MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
+   SET(CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include")
+   SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
+   INCLUDE_DIRECTORIES("/usr/local/include")
 
 ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
-    SET(CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include" "/usr/local/opt/openssl/include")
-    SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
-    INCLUDE_DIRECTORIES("/usr/local/include" "/usr/local/opt/openssl/include")
+   MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
+   SET(CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include" "/usr/local/opt/openssl/include")
+   SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
+   INCLUDE_DIRECTORIES("/usr/local/include" "/usr/local/opt/openssl/include")
 
 ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD")
-    MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
-    SET(CMAKE_REQUIRED_INCLUDES "/usr/pkg/include" "/usr/include" "/usr/local/include")
-    SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
-    INCLUDE_DIRECTORIES("/usr/pkg/include" "/usr/local/include")
+   MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
+   SET(CMAKE_REQUIRED_INCLUDES "/usr/pkg/include" "/usr/include" "/usr/local/include")
+   SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
+   INCLUDE_DIRECTORIES("/usr/pkg/include" "/usr/local/include")
 
 ELSE()
-    MESSAGE(FATAL_ERROR ${CMAKE_SYSTEM_NAME} " not supported (yet?)")
+   MESSAGE(FATAL_ERROR ${CMAKE_SYSTEM_NAME} " not supported (yet?)")
 
 ENDIF()
 
