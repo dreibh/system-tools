@@ -56,7 +56,7 @@ FOREACH(source IN LISTS sources)
                          ${potInputFiles}
                        COMMAND sed -e "s/charset=CHARSET/charset=UTF-8/g" -i~ "${potFile}"
                        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
-                       DEPENDS ${potInputFilesAbsolute}
+                       DEPENDS ${potInputFilesAbsolute} "${source}"
                        VERBATIM)
    SET(generate_PotFile "generate_pot_${textdomain}")
    ADD_CUSTOM_TARGET(${generate_PotFile} DEPENDS "${potFile}")

@@ -71,9 +71,14 @@ in, providing the user an up-to-date overview of the system.
 %files system-info
 %{_bindir}/System-Info
 %{_datadir}/locale/*/LC_MESSAGES/*.mo
+%{_datadir}/System-Info/01-example
+%{_datadir}/System-Info/09-hostname-example
+%{_datadir}/System-Info/10-company-logo-example
+%{_datadir}/System-Info/banner-helper
 %{_mandir}/man1/System-Info.1.gz
 %{_sysconfdir}/profile.d/system-info.sh
 %{_sysconfdir}/profile.d/system-info.csh
+%{_sysconfdir}/system-info.d/banner-helper
 %{_sysconfdir}/system-info.d/01-example
 
 
