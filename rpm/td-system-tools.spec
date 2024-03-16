@@ -54,10 +54,9 @@ Summary: Perform basic system maintenance
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
+Requires: (figlet or toilet)
 Recommends: subnetcalc
 Suggests: banner
-Suggests: figlet
-Suggests: toilet
 
 %description system-info
 This program displays basic status information about the system:
