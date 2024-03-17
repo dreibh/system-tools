@@ -10,7 +10,7 @@ Rules-Requires-Root: no
 
 Package: td-system-info
 Architecture: all
-Depends: bsdextrautils,
+Depends: bsdextrautils | bsdmainutils,
          figlet | toilet,
          gettext-base,
          ${misc:Depends}
