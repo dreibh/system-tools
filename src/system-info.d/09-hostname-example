@@ -47,7 +47,7 @@ center "${color1}-- ${color2}$(gettext "Welcome on the System") ${color1}--"
       # Try the hostname only, if the FQDN is too long.
       if ! make-banner "$(hostname -s)" "${maxWidth}" ; then
          # Something went wrong. Just print the hostname as non-banner string.
-         echo "$(hostname -f)"
+         hostname -f
       fi
    fi
 ) | while IFS= read -r line ; do

@@ -116,8 +116,8 @@ function make-banner ()
    fi
 
    # ====== Create banner with figlet, toilet or echo as fallback ===========
-   local banner
-   banner=$(
+   local generatedBanner
+   generatedBanner=$(
       (
          figlet -w 256 -f standard "${bannerText}" 2>/dev/null || \
          toilet -w 256 -f standard "${bannerText}" 2>/dev/null || \
@@ -138,7 +138,7 @@ function make-banner ()
          done
 
          # Return, if output is too wide
-         if [ ${maxLineLength} -gt ${maxWidth} ] ; then
+         if [ "${maxLineLength}" -gt ${maxWidth} ] ; then
             return
          fi
 
@@ -150,9 +150,9 @@ function make-banner ()
    )
 
    # ====== Check resulting banner ==========================================
-   if [ "${banner}" == "" ] ; then
+   if [ "${generatedBanner}" == "" ] ; then
       # Failed -> return error code.
       return 1
    fi
-   echo "${banner}"
+   echo "${generatedBanner}"
 }
