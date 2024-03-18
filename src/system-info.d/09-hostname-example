@@ -41,7 +41,7 @@ center "${color1}-- ${color2}$(gettext "Welcome on the System") ${color1}--"
 
 # ------ Print the hostname FQDN as banner ----------------------------------
 (
-   maxWidth=80 # $(tput cols)   # Console width in characters
+   maxWidth=$(tput cols)   # Console width in characters
    # Try the FQDN hostname as banner first. But it may be too long.
    if ! make-banner "$(hostname -f)" "${maxWidth}" ; then
       # Try the hostname only, if the FQDN is too long.
