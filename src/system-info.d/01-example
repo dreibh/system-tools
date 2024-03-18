@@ -51,6 +51,6 @@ echo -e "\x1b[0m"
 
 # ====== Finish =============================================================
 
-# With exit code 1, no further files in /etc/system-info.d are processed!
-# Use exit code 0 to process further files!
+# With exit code 1, no further files in /etc/system-info.d are processed.
+# Use exit code 0 to continue processing files.
 exit 1   # 1 => No further processing

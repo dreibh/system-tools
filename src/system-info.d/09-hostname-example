@@ -40,7 +40,17 @@ echo ""
 center "${color1}-- ${color2}$(gettext "Welcome on the System") ${color1}--"
 
 # ------ Print the hostname FQDN as banner ----------------------------------
-make-banner "$(hostname -f)" | while IFS= read -r line ; do
+(
+   maxWidth=80 # $(tput cols)   # Console width in characters
+   # Try the FQDN hostname as banner first. But it may be too long.
+   if ! make-banner "$(hostname -f)" "${maxWidth}" ; then
+      # Try the hostname only, if the FQDN is too long.
+      if ! make-banner "$(hostname -s)" "${maxWidth}" ; then
+         # Something went wrong. Just print the hostname as non-banner string.
+         echo "$(hostname -f)"
+      fi
+   fi
+) | while IFS= read -r line ; do
    center "${line}"
 done
 
@@ -50,6 +60,8 @@ separator " *💻" "=" "💻*"
 echo -e "${reset}"
 
 
-exit 1   # With exit code 1, no further files in /etc/system-info.d are processed!
+# ====== Finish =============================================================
 
-# Use exit code 0 to process further files!
+# With exit code 1, no further files in /etc/system-info.d are processed.
+# Use exit code 0 to continue processing files.
+exit 1   # 1 => No further processing
