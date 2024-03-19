@@ -36,14 +36,16 @@
 runs some system maintenance tasks to keep the system clean and up to date.
 These tasks are:
 .Bl -tag -width indent
-.It Ensuring that all packages are configured (dpkg --configure -a),
+.It Ensuring that all packages are configured,
 .It Updating the package repositories,
 .It Removing obsolete kernels,
 .It Installing all available package updates,
 .It Auto-removing unused packages,
 .It Ensuring that Grub (the bootloader) is installed and up-to-date,
 .It Delete network interface mapping (only on request by option, see below),
-.It Updating package and file search caches.
+.It Updating package and file search caches,
+.It Updating firmware,
+.It Trimming SSDs and virual storage.
 .El
 .Pp
 .\" ###### Arguments ########################################################
