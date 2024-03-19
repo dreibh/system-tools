@@ -85,7 +85,7 @@ Please use the issue tracker at https://github.com/dreibh/system-tools/issues to
 The Git repository of the System-Tools sources can be found at https://github.com/dreibh/system-tools:
 
 ```
-git clone <a href="https://github.com/dreibh/system-tools">https://github.com/dreibh/system-tools</a>
+git clone https://github.com/dreibh/system-tools
 cd system-tools
 cmake .
 make
