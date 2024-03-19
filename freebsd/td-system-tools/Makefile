@@ -11,7 +11,7 @@ WWW=		https://www.nntb.no/~dreibh/system-tools/
 LICENSE=	GPLv3+
 LICENSE_FILE=	${WRKSRC}/COPYING
 
-RUN_DEPENDS=	bash:shells/bash
+RUN_DEPENDS=	bash:shells/bash misc/figlet
 
 USES=		cmake gettext tar:xz
 CMAKE_ARGS+=	-DCMAKE_INSTALL_MANDIR=${PREFIX}/share/man
