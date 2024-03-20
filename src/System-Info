@@ -54,7 +54,7 @@ function print-system-information ()
    [ "$cores" -eq "0" ] && cores=1
    systemLoad=$(echo "${uptimeResult}" | awk -F 'average[s]*:' '{ gsub(/^[ ]*/, "", $2); print $2 }')
 
-   if [[ "${uptimeResult}" =~ min|day ]] ; then
+   if [[ "${uptimeResult}" =~ min|day|sec ]] ; then
       uptime=$(echo "${uptimeResult}" | awk '{ print $3 " "$4 }' | sed 's/,//g')
    else
       uptime=$(echo "${uptimeResult}" | awk '{ print $3 " hours" }' | sed 's/,//g')
