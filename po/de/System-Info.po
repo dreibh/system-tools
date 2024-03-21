@@ -117,12 +117,12 @@ msgstr "Speicherplatz:    "
 
 #: src/System-Info:164
 msgid "SSH Keys:         #1 "
-msgstr "SSH-Schlüssel:   1. "
+msgstr "SSH-Schlüssel:    1. "
 
 #: src/System-Info:166
 #, sh-format
 msgid "                  #${keyNumber} "
-msgstr "                 ${keyNumber}. "
+msgstr "                  ${keyNumber}. "
 
 #: src/System-Info:227
 msgid "(No IPv4)"
