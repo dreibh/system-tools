@@ -140,14 +140,21 @@ function print-system-information ()
    fi
 
    echo "$(eval_gettext "Operating System: ")${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText} $(eval_gettext "with kernel") ${kernel}"
-   printf "$(eval_gettext "Processor:        ")%d × ${cpu}; $(eval_gettext "%d processes"); $(eval_ngettext "%d user" "%d users" "${users}")\n" "${cores}" "${processes}" "${users}"
+   printf "$(eval_gettext "Processor:        ")%d × ${cpu}; $(eval_gettext "%'d processes"); $(eval_ngettext "%'d user" "%'d users" "${users}")\n" "${cores}" "${processes}" "${users}"
    echo "$(eval_gettext "Load:             ")${systemLoad}"
 
    of=$(eval_gettext "of")                 # nnn MiB of mmm MiB
    available=$(eval_gettext "available")   # nnn MiB available
    on=$(eval_gettext "on")                 # xxx MiB on <mountpoint>
-   printf "$(eval_gettext "Used Memory:      ")%6d MiB ${of} %6d MiB (%6d MiB ${available})\n" "${memoryUsed}" "${memoryTotal}" "${memoryAvailable}"
-   printf "$(eval_gettext "Used Swap:        ")%6d MiB ${of} %6d MiB (%6d MiB ${available})\n" "${swapUsed}" "${swapTotal}" "${swapAvailable}"
+   printf "$(eval_gettext "Used Memory:      ")%'6d MiB ${of} %'6d MiB (%'6d MiB ${available})\n" "${memoryUsed}" "${memoryTotal}" "${memoryAvailable}"
+   eval_gettext "Used Swap:        "
+   if [ "${swapAvailable}" -gt 0 ] ; then
+      printf "%'6d MiB ${of} %'6d MiB (%'6d MiB ${available})\n" "${swapUsed}" "${swapTotal}" "${swapAvailable}"
+   else
+      echo -en "\x1b[37m"
+      eval_gettext "no swap available!"
+      echo -e "\x1b[33m"
+   fi
    echo "$(eval_gettext "Used Diskspace:   ")${diskRoot} ${on} /, ${diskHome} ${on} /home"
    echo -en "\x1b[0m"
 }
