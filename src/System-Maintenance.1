@@ -17,7 +17,7 @@
 .\" Contact: dreibh@simula.no
 .\"
 .\" ###### Setup ############################################################
-.Dd October 6, 2020
+.Dd March 22, 2024
 .Dt System-Maintenance 1
 .Os System-Maintenance
 .\" ###### Name #############################################################
@@ -28,8 +28,8 @@
 .Sh SYNOPSIS
 .Nm System-Maintenance
 .Op Fl interactive-kernel-removal|-k
-.Op Fl dont-touch-grub|-g
-.Op Fl dont-keep-interface-mappings|-m
+.\" .Op Fl dont-touch-grub|-g
+.\" .Op Fl dont-keep-interface-mappings|-m
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm System-Maintenance
@@ -41,8 +41,8 @@ These tasks are:
 .It Removing obsolete kernels,
 .It Installing all available package updates,
 .It Auto-removing unused packages,
-.It Ensuring that Grub (the bootloader) is installed and up-to-date,
-.It Delete network interface mapping (only on request by option, see below),
+.\" .It Ensuring that Grub (the bootloader) is installed and up-to-date,
+.\" .It Delete network interface mapping (only on request by option, see below),
 .It Updating package and file search caches,
 .It Updating firmware,
 .It Trimming SSDs and virual storage.
@@ -54,8 +54,8 @@ The following options are available:
 .Bl -tag -width indent
 .It Fl interactive-kernel-removal|-k
 Remove obsolete kernels interactively.
-.It Fl dont-touch-grub|-g
-Do not update Grub installation.
+.\" .It Fl dont-touch-grub|-g
+.\" Do not update Grub installation.
 .It Fl dont-keep-interface-mappings|-M
 Delete network interface mapping rules
 (/etc/udev/rules.d/70-persistent-net.rules), if eth0 does not exist. This is
