@@ -59,7 +59,7 @@ FOREACH(source IN LISTS sources)
                        DEPENDS ${potInputFilesAbsolute} "${source}"
                        VERBATIM)
    SET(generate_PotFile "generate_pot_${textdomain}")
-   ADD_CUSTOM_TARGET(${generate_PotFile} DEPENDS "${potFile}")
+   ADD_CUSTOM_TARGET(${generate_PotFile} ALL DEPENDS "${potFile}")
 
 
    # ====== Process PO files (translations) =================================
