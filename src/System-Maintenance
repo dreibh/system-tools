@@ -40,7 +40,7 @@ while [ $# -gt 0 ] ; do
    # elif [ "$1" = "-dont-keep-interface-mappings" ] || [ "$1" = "-M" ] ; then
    #    KEEP_INTERFACE_MAPPINGS=0
    else
-      echo 2>&1 "$(eval_gettext "Usage: ") $0 [-interactive-kernel-removal|-k] [-dont-touch-grub|-g] [-dont-keep-interface-mappings|-M]"
+      echo 2>&1 "$(eval_gettext "Usage:") $0 [-interactive-kernel-removal|-k] [-dont-touch-grub|-g] [-dont-keep-interface-mappings|-M]"
       exit 1
    fi
    shift
