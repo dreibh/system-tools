@@ -69,7 +69,7 @@ in, providing the user an up-to-date overview of the system.
 
 %files system-info
 %{_bindir}/System-Info
-%{_datadir}/locale/*/LC_MESSAGES/*.mo
+%{_datadir}/locale/*/LC_MESSAGES/System-Info.mo
 %{_datadir}/System-Info/01-example
 %{_datadir}/System-Info/09-hostname-example
 %{_datadir}/System-Info/10-company-logo-example
@@ -95,6 +95,7 @@ for old kernels and removing them, trim SSD or unmap unused storage.
 
 %files system-maintenance
 %{_bindir}/System-Maintenance
+%{_datadir}/locale/*/LC_MESSAGES/System-Maintenance.mo
 %{_mandir}/man1/System-Maintenance.1.gz
 %{_sysconfdir}/system-maintenance.d/XX-example
 
