@@ -146,10 +146,10 @@ function print-system-information ()
    of=$(eval_gettext "of")                 # nnn MiB of mmm MiB
    available=$(eval_gettext "available")   # nnn MiB available
    on=$(eval_gettext "on")                 # xxx MiB on <mountpoint>
-   printf "$(eval_gettext "Used Memory:      ")%'6d MiB ${of} %'6d MiB (%'6d MiB ${available})\n" "${memoryUsed}" "${memoryTotal}" "${memoryAvailable}"
+   printf "$(eval_gettext "Used Memory:      ")%'6.0f MiB ${of} %'6.0f MiB (%'6.0f MiB ${available})\n" "${memoryUsed}" "${memoryTotal}" "${memoryAvailable}"
    eval_gettext "Used Swap:        "
    if [ "${swapAvailable}" -gt 0 ] ; then
-      printf "%'6d MiB ${of} %'6d MiB (%'6d MiB ${available})\n" "${swapUsed}" "${swapTotal}" "${swapAvailable}"
+      printf "%'6.0f MiB ${of} %'6.0f MiB (%'6.0f MiB ${available})\n" "${swapUsed}" "${swapTotal}" "${swapAvailable}"
    else
       echo -en "\x1b[37m"
       eval_gettext "no swap available!"
