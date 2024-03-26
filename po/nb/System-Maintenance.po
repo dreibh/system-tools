@@ -9,118 +9,118 @@ msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.6.0~beta3\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
 "POT-Creation-Date: 2024-03-23 19:24+0100\n"
-"PO-Revision-Date: 2024-03-23 19:33+0100\n"
+"PO-Revision-Date: 2024-03-26 15:10+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
-"Language-Team:\n"
-"Language: de\n"
+"Language-Team: \n"
+"Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Language: de\n"
+"X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
 #: src/System-Maintenance:43
 #, sh-format
 msgid "Usage:"
-msgstr "Aufruf:"
+msgstr "Bruk:"
 
 #: src/System-Maintenance:68
 #, sh-format
 msgid "Stopping AutoFS service ..."
-msgstr "Stoppe AutoFS-Dienst ..."
+msgstr "Stopper AutoFS-tjenesten ..."
 
 #: src/System-Maintenance:74
 #, sh-format
 msgid "Applying package fixes, if necessary ..."
-msgstr "Repariere Pakete, falls notwendig ..."
+msgstr "Reparer pakker, om nødvendig ..."
 
 #: src/System-Maintenance:82 src/System-Maintenance:85
 #, sh-format
 msgid "Updating package repositories ..."
-msgstr "Aktualisiere Paketquellen ..."
+msgstr "Oppdaterer pakkelager ..."
 
 #: src/System-Maintenance:95
 #, sh-format
 msgid "Installing missing dependencies, if necessary ..."
-msgstr "Installiere fehlende Abhängigkeiten, falls notwendig ..."
+msgstr "Installerer manglende avhengigheter, om nødvendig ..."
 
 #: src/System-Maintenance:103
 #, sh-format
 msgid "Installing updates ..."
-msgstr "Installiere Aktualisierungen ..."
+msgstr "Installerer oppdateringer ..."
 
 #: src/System-Maintenance:153
 #, sh-format
 msgid "Cleaning up ..."
-msgstr "Räume auf ..."
+msgstr "Rydder opp ..."
 
 #: src/System-Maintenance:186
 #, sh-format
 msgid "Removing obsolete kernels ..."
-msgstr "Entferne obsolete Kernels ..."
+msgstr "Fjerner utdaterte kjerner ..."
 
 #: src/System-Maintenance:192
 #, sh-format
 msgid "Kernel Type:        "
-msgstr "Kernel-Typ:          "
+msgstr "Kjernetype:                 "
 
 #: src/System-Maintenance:193
 #, sh-format
 msgid "Kernel Boot Version:"
-msgstr "Kernel Boot-Version: "
+msgstr "Oppstartsversjon av kjernen:"
 
 #: src/System-Maintenance:194
 #, sh-format
 msgid "Kernel Disk Version:"
-msgstr "Kernel Disk-Version: "
+msgstr "Kjerneversjon på disken:    "
 
 #: src/System-Maintenance:263
 #, sh-format
 msgid "To be removed:"
-msgstr "Zu entfernen:"
+msgstr "Å bli fjernet:"
 
 #: src/System-Maintenance:266
 #, sh-format
 msgid "To be kept:"
-msgstr "Zu behalten:"
+msgstr "Skal oppbevares:"
 
 #: src/System-Maintenance:317
 #, sh-format
 msgid "Refreshing snaps ..."
-msgstr "Aktualisiere Snaps ..."
+msgstr "Oppdaterer snaps ..."
 
 #: src/System-Maintenance:323
 #, sh-format
 msgid "Checking for firmware updates ..."
-msgstr "Prüfe auf Firmwareaktualisierungen ..."
+msgstr "Ser etter fastvareoppdateringer ..."
 
 #: src/System-Maintenance:328
 #, sh-format
 msgid "Updating caches ..."
-msgstr "Aktualisiere Caches ..."
+msgstr "Oppdaterer cacher ..."
 
 #: src/System-Maintenance:364
 #, sh-format
 msgid "Starting AutoFS service ..."
-msgstr "Starte AutoFS-Dienst ..."
+msgstr "Starter AutoFS-tjenesten ..."
 
 #: src/System-Maintenance:370
 #, sh-format
 msgid "Synchronising system time ..."
-msgstr "Synchronisiere Systemzeit ..."
+msgstr "Synkroniserer systemtid ..."
 
 #: src/System-Maintenance:403
 #, sh-format
 msgid "Running fstrim ..."
-msgstr "Führe Trimming durch ..."
+msgstr "Kjører fstrim ..."
 
 #: src/System-Maintenance:407
 #, sh-format
 msgid "Running zpool trim ..."
-msgstr "Führe ZFS-Trimming durch ..."
+msgstr "Kjører zpool trim ..."
 
 #: src/System-Maintenance:416
 #, sh-format
 msgid "Done!"
-msgstr "Fertig!"
+msgstr "Ferdig!"
