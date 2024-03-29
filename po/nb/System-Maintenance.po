@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.6.0~beta3\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-03-23 19:24+0100\n"
+"POT-Creation-Date: 2024-03-29 10:03+0000\n"
 "PO-Revision-Date: 2024-03-26 15:10+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team: \n"
@@ -50,77 +50,77 @@ msgstr "Installerer manglende avhengigheter, om nødvendig ..."
 msgid "Installing updates ..."
 msgstr "Installerer oppdateringer ..."
 
-#: src/System-Maintenance:153
+#: src/System-Maintenance:157
 #, sh-format
 msgid "Cleaning up ..."
 msgstr "Rydder opp ..."
 
-#: src/System-Maintenance:186
+#: src/System-Maintenance:190
 #, sh-format
 msgid "Removing obsolete kernels ..."
 msgstr "Fjerner utdaterte kjerner ..."
 
-#: src/System-Maintenance:192
+#: src/System-Maintenance:196
 #, sh-format
 msgid "Kernel Type:        "
 msgstr "Kjernetype:                 "
 
-#: src/System-Maintenance:193
+#: src/System-Maintenance:197
 #, sh-format
 msgid "Kernel Boot Version:"
 msgstr "Oppstartsversjon av kjernen:"
 
-#: src/System-Maintenance:194
+#: src/System-Maintenance:198
 #, sh-format
 msgid "Kernel Disk Version:"
 msgstr "Kjerneversjon på disken:    "
 
-#: src/System-Maintenance:263
+#: src/System-Maintenance:267
 #, sh-format
 msgid "To be removed:"
 msgstr "Å bli fjernet:"
 
-#: src/System-Maintenance:266
+#: src/System-Maintenance:270
 #, sh-format
 msgid "To be kept:"
 msgstr "Skal oppbevares:"
 
-#: src/System-Maintenance:317
+#: src/System-Maintenance:321
 #, sh-format
 msgid "Refreshing snaps ..."
 msgstr "Oppdaterer snaps ..."
 
-#: src/System-Maintenance:323
+#: src/System-Maintenance:327
 #, sh-format
 msgid "Checking for firmware updates ..."
 msgstr "Ser etter fastvareoppdateringer ..."
 
-#: src/System-Maintenance:328
+#: src/System-Maintenance:332
 #, sh-format
 msgid "Updating caches ..."
 msgstr "Oppdaterer cacher ..."
 
-#: src/System-Maintenance:364
+#: src/System-Maintenance:368
 #, sh-format
 msgid "Starting AutoFS service ..."
 msgstr "Starter AutoFS-tjenesten ..."
 
-#: src/System-Maintenance:370
+#: src/System-Maintenance:374
 #, sh-format
 msgid "Synchronising system time ..."
 msgstr "Synkroniserer systemtid ..."
 
-#: src/System-Maintenance:403
+#: src/System-Maintenance:407
 #, sh-format
 msgid "Running fstrim ..."
 msgstr "Kjører fstrim ..."
 
-#: src/System-Maintenance:407
+#: src/System-Maintenance:411
 #, sh-format
 msgid "Running zpool trim ..."
 msgstr "Kjører zpool trim ..."
 
-#: src/System-Maintenance:416
+#: src/System-Maintenance:420
 #, sh-format
 msgid "Done!"
 msgstr "Ferdig!"
