@@ -373,4 +373,5 @@ print-network-addresses 2>&1 | (
    print-ssh-key-fingerprints
    wait
    cat
-) | buffer -s 16k
+) | \
+( buffer -s 16k || cat)
