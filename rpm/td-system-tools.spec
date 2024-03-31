@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 1.6.0~beta3
+Version: 1.6.0
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -140,6 +140,8 @@ tools.
 
 
 %changelog
+* Sun Mar 31 2024 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.6.0
+- New upstream release.
 * Wed Dec 06 2023 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.5.6
 - New upstream release.
 * Wed Nov 15 2023 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.5.6
