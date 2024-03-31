@@ -11,6 +11,7 @@ Rules-Requires-Root: no
 Package: td-system-info
 Architecture: all
 Depends: bsdextrautils | bsdmainutils,
+         buffer,
          figlet | toilet,
          gettext-base,
          ${misc:Depends}

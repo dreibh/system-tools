@@ -361,16 +361,16 @@ done
 echo ""
 eval_gettext "System information as of \${now}"
 echo
-echo ""
 
 # ====== Obtain and print information =======================================
 # Getting the network information may take a few hundreds of ms on a router
 # => prepare it in background, while printing other information.
 print-network-addresses 2>&1 | (
+   echo ""
    # shellcheck disable=SC2086
    print-banners ${scriptDirectories}
    print-system-information
    print-ssh-key-fingerprints
    wait
    cat
-)
+) | buffer -s 16k
