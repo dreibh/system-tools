@@ -15,4 +15,7 @@ share/configure-grub/grub-defaults-standard
 share/man/man1/configure-grub.1.gz
 share/man/man1/System-Info.1.gz
 share/man/man1/System-Maintenance.1.gz
-share/locale/*/LC_MESSAGES/*.mo
+share/locale/de/LC_MESSAGES/System-Info.mo
+share/locale/nb/LC_MESSAGES/System-Info.mo
+share/locale/de/LC_MESSAGES/System-Maintenance.mo
+share/locale/nb/LC_MESSAGES/System-Maintenance.mo
