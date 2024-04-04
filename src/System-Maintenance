@@ -72,7 +72,7 @@ fi
 # ====== dpkg package fixes =================================================
 if [ "${variant}" = "Debian" ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Applying package fixes, if necessary ...")\x1b[0m"
-   sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a | sudo tee -a /tmp/install.log &
+   sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
 fi
@@ -94,7 +94,7 @@ fi
 if [ "${variant}" = "Debian" ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Installing missing dependencies, if necessary ...")\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" | sudo tee -a /tmp/install.log &
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
 fi
@@ -105,7 +105,7 @@ if [ "${variant}" = "Debian" ] ; then
    # ------ Download --------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -yd -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" | sudo tee -a /tmp/install.log &
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
    wait
 
    # ------ Update special packages -----------------------
@@ -123,7 +123,7 @@ if [ "${variant}" = "Debian" ] ; then
             sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
                -o APT::Get::Always-Include-Phased-Updates=true \
                -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-              $package -y -q | sudo tee -a /tmp/install.log &
+              $package -y -q 2>&1 | sudo tee /tmp/install.log &
             wait
             echo "Updated $package package."
          fi
@@ -136,11 +136,11 @@ if [ "${variant}" = "Debian" ] ; then
    # ------ Update the rest -------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -y -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" | sudo tee -a /tmp/install.log &
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
 elif [ "${variant}" = "Fedora" ] ; then
-   ( sudo dnf clean all && sudo dnf upgrade -y ) | sudo tee -a /tmp/install.log &
+   ( sudo dnf clean all && sudo dnf upgrade -y ) | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
 elif [ "${variant}" = "FreeBSD" ] ; then
@@ -148,7 +148,7 @@ elif [ "${variant}" = "FreeBSD" ] ; then
      if [ -x /usr/sbin/portsnap ] ; then
         sudo /usr/sbin/portsnap -I update
      fi
-   ) | sudo tee -a /tmp/install.log &
+   ) | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
 fi
@@ -158,13 +158,13 @@ echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Cleaning up ...")\x1b[0m"
 if [ "${variant}" = "Debian" ] ; then
    # ------ Remove unnecessary dependencies ---------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -q \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" | sudo tee -a /tmp/install.log &
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
 
    # ------ Purge all previously-removed packages ---------
    dpkg --get-selections | awk '$2=="deinstall" { print $1 }' | xargs --no-run-if-empty sudo DEBIAN_FRONTEND=noninteractive apt-get purge -y \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" | sudo tee -a /tmp/install.log &
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
 
@@ -176,7 +176,7 @@ if [ "${variant}" = "Debian" ] ; then
       find /var/crash/ -name "*.crash" -exec sudo rm -f {} \;
    fi
 elif [ "${variant}" = "Fedora" ] ; then
-   sudo DEBIAN_FRONTEND=noninteractive nohup dnf autoremove -y | sudo tee -a /tmp/install.log &
+   sudo DEBIAN_FRONTEND=noninteractive nohup dnf autoremove -y 2>&1 | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
    sudo dnf clean all
@@ -275,7 +275,7 @@ if [ "${variant}" = "Debian" ] ; then
          # shellcheck disable=SC2086
          sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -qq --purge \
             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-            ${toBeRemoved} | sudo tee -a /tmp/install.log &
+            ${toBeRemoved} 2>&1 | sudo tee /tmp/install.log &
          wait
          cat /tmp/install.log
       else
@@ -295,8 +295,8 @@ fi
 #    if [ "${variant}" == "Ubuntu" ] || [ "${variant}" == "Debian" ] ; then
 #       if [ -x /usr/sbin/update-grub ] && [ -x /usr/sbin/grub-install ] ; then
 #          echo -e "\x1b[34m$(date +%FT%H:%M:%S): Ensuring that Grub configuration is up-to-date ...\x1b[0m"
-#          sudo nohup </dev/null /usr/sbin/grub-install /dev/sda | sudo tee -a /tmp/install.log || true
-#          if ! sudo nohup </dev/null /usr/sbin/update-grub | sudo tee -a /tmp/install.log ; then
+#          sudo nohup </dev/null /usr/sbin/grub-install /dev/sda 2>&1 | sudo tee /tmp/install.log || true
+#          if ! sudo nohup </dev/null /usr/sbin/update-grub 2>&1 | sudo tee /tmp/install.log ; then
 #             cat /tmp/install.log
 #             echo >&2 "ERROR: Something went wrong with update-grub!"
 #             exit 1
@@ -305,8 +305,8 @@ fi
 #       fi
 #    elif [ "${variant}" == "Fedora" ] ; then
 #       echo -e "\x1b[34m$(date +%FT%H:%M:%S): Ensuring that Grub configuration is up-to-date ...\x1b[0m"
-#       sudo nohup </dev/null grub2-mkconfig -o "$(readlink -e /etc/grub2.cfg)" | sudo tee -a /tmp/install.log || true
-#       if ! sudo nohup </dev/null grub2-install /dev/sda | sudo tee -a /tmp/install.log ; then
+#       sudo nohup </dev/null grub2-mkconfig -o "$(readlink -e /etc/grub2.cfg)" 2>&1 | sudo tee /tmp/install.log || true
+#       if ! sudo nohup </dev/null grub2-install /dev/sda 2>&1 | sudo tee /tmp/install.log ; then
 #          cat /tmp/install.log
 #          echo >&2 "ERROR: Something went wrong with grub2-install!"
 #          cat /tmp/install.log
