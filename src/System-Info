@@ -374,4 +374,13 @@ print-network-addresses 2>&1 | (
    wait
    cat
 ) | \
-( buffer -s 16k || cat)
+(
+   # Try output via mbuffer. This is faster for console printing, particularly
+   # with complex banners and long interface lists. If unavailable, try buffer.
+   # Just use cat as fallback, if neither mbuffer nor buffer are available.
+   if ! mbuffer -q -s 16k 2>/dev/null ; then
+      if ! buffer -s 16k 2>/dev/null ; then
+         cat
+      fi
+   fi
+)

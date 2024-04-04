@@ -53,7 +53,7 @@ SSD or unmap unused storage.
 Summary: Perform basic system maintenance
 Group: Applications/System
 BuildArch: noarch
-Requires: buffer
+Requires: (mbuffer or buffer)
 Requires: gettext-runtime
 Requires: (figlet or toilet)
 Recommends: subnetcalc
