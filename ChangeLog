@@ -1,3 +1,57 @@
+commit c5d68033bf3557dfa7f8d2070dc2969111db5d15
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 4 12:29:51 2024 +0200
+
+    System-Maintenance time synchronisation improvement.
+
+commit 1cb588d6b277d386d43e03caed91aae74d9f7fb7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 4 12:10:32 2024 +0200
+
+    Improved nohup handling of log output.
+
+commit cdd1538657ddc775429848bd688df1a64fc6ae31
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 4 09:52:35 2024 +0200
+
+    Updated FreeBSD packaging.
+
+commit 66a8b8b63214860c082ed094314bbd0076d8f4e4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 4 09:46:10 2024 +0200
+
+    Dependency improvement: use mbuffer, if available.
+
+commit e6edf3534e2de6ee7d5bc164860489d3dd92b5eb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Mar 31 20:13:56 2024 +0200
+
+    FreeBSD packaging update.
+
+commit 9de2ae440368f5c2d837b45080c2edf88cccc073
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Mar 31 12:15:21 2024 +0200
+
+    FreeBSD packaging update.
+
+commit b5de90cb7374caab279cac98a84746fb32384093
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Mar 31 12:02:28 2024 +0200
+
+    Updated distinfo.
+
+commit c6323f62e03b7974ac0de847205f51cf16f374bd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Mar 31 12:00:29 2024 +0200
+
+    Updated LSM entry.
+
+commit 629b7589a0cac5b92cf0492e7479dedda224f77b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Mar 31 11:42:05 2024 +0200
+
+    New release td-system-tools-1.6.0.
+
 commit 852e829b5108a169266e970c11078c31246510d4
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun Mar 31 11:14:03 2024 +0200
