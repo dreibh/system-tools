@@ -370,33 +370,32 @@ if [ -e /etc/init.d/autofs ] ; then
 fi
 
 # ====== Fix time ===========================================================
+echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Synchronising system time ...")\x1b[0m"
 if [ -e /etc/ntp.conf ] ; then
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Synchronising system time ...")\x1b[0m"
    for ntpServiceName in ntp ntpd ; do
       sudo service ${ntpServiceName} stop >/dev/null 2>&1 || true
    done
+fi
 
-   # 1. Try ntp1.uio.no via IPv6 (2001:700:100:2::6) first.
-   # 2. Try UiO's servers first, then PTB.
-   # 3. Try noeyaktig.simula.nornet, via IPv6 and IPv4.
-   # 4. Try Simula tunnelbox.
-   sudo ntpdate 2001:700:100:2::6 || \
-      sudo ntpdate ntp2.uio.no || \
-      sudo ntpdate ntp1.uio.no || \
-      sudo ntpdate ntp2.ptb.de || \
-      sudo ntpdate ntp1.ptb.de || \
-      sudo ntpdate 2001:700:4100:101::fa || \
-      sudo ntpdate 10.1.1.250 || \
-      sudo ntpdate 10.1.1.1 || \
-      true
+# Sychronise time from a reliable NTP server:
+# 1. Try Universitetet i Oslo (UiO) NTP servers.
+# 2. Try Physikalisch-Technische Bundesanstalt (PTB) NTP servers.
+# 3. Try ISC NTP server (clock.isc.org).
+# 4. Try Microsoft as last resort, which is likely allowed in a firewall.
+sudo ntpdate ntp2.uio.no || sudo ntpdate ntp1.uio.no || \
+   sudo ntpdate ntp2.ptb.de || sudo ntpdate ntp1.ptb.de || \
+   sudo ntpdate clock.isc.org || \
+   sudo ntpdate time.windows.com || \
+   true
 
-   # Write time to hardware clock
-   if [ "${variant}" != "FreeBSD" ] ; then
-      sudo hwclock -w
-   else
-      sudo date -v +0S
-   fi
+# Write time to hardware clock
+if [ "${variant}" != "FreeBSD" ] ; then
+   sudo hwclock -w
+else
+   sudo date -v +0S
+fi
 
+if [ -e /etc/ntp.conf ] ; then
    for ntpServiceName in ntp ntpd ; do
       sudo service ${ntpServiceName} start >/dev/null 2>&1 || true
    done

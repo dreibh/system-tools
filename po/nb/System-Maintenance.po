@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.6.0~beta3\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-03-29 10:03+0000\n"
+"POT-Creation-Date: 2024-04-04 12:28+0200\n"
 "PO-Revision-Date: 2024-03-26 15:10+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team: \n"
@@ -105,22 +105,22 @@ msgstr "Oppdaterer cacher ..."
 msgid "Starting AutoFS service ..."
 msgstr "Starter AutoFS-tjenesten ..."
 
-#: src/System-Maintenance:374
+#: src/System-Maintenance:373
 #, sh-format
 msgid "Synchronising system time ..."
 msgstr "Synkroniserer systemtid ..."
 
-#: src/System-Maintenance:407
+#: src/System-Maintenance:406
 #, sh-format
 msgid "Running fstrim ..."
 msgstr "Kjører fstrim ..."
 
-#: src/System-Maintenance:411
+#: src/System-Maintenance:410
 #, sh-format
 msgid "Running zpool trim ..."
 msgstr "Kjører zpool trim ..."
 
-#: src/System-Maintenance:420
+#: src/System-Maintenance:419
 #, sh-format
 msgid "Done!"
 msgstr "Ferdig!"
