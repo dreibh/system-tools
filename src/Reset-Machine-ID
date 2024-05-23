@@ -1,0 +1,197 @@
+#!/usr/bin/env bash
+#
+# Reset Machine ID
+# Copyright (C) 2013-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+
+# SSH key settings:
+ECDSA_BITS=521
+RSA_BITS=16384
+# MODULI_BITS=8192
+
+
+# ###### Show host key fingerprints #########################################
+show-keys ()
+{
+   keys=$(find /etc/ssh -name "ssh_host_*.pub" | sort)
+   firstKey=1
+   for key in $keys ; do
+      if [ $firstKey -eq 1 ] ; then
+         echo -n "SSH Keys: "
+         firstKey=0
+      else
+         echo -n "          "
+      fi
+      ssh-keygen -lf "$key" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
+   done
+}
+
+
+
+# ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
+YES_TO_ALL=0
+applyChanges=""
+if [ "$1" == "-yes-to-all-i-am-really-sure" ] || [ "$1" == "--yes-to-all-i-am-really-sure" ] ; then
+   YES_TO_ALL=1
+   applyChanges="yes"
+fi
+
+
+# ====== Reset machine ID ===================================================
+if [ -e /etc/machine-id ] ; then
+   if [ ${YES_TO_ALL} -ne 1 ] ; then
+      echo -en "\x1b[33mThe current machine ID is $(cat /etc/machine-id). Reset it? [yes/no]?\x1b[0m "
+      read -er applyChanges
+   fi
+   if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+      if [ -x /usr/bin/dbus-uuidgen ] ; then
+         /usr/bin/dbus-uuidgen --ensure=/etc/machine-id
+      else
+         # The ID should be reset during the next boot.
+         echo -n | tee /etc/machine-id
+      fi
+      if [ -e /var/lib/dbus/machine-id ] ; then
+         rm /var/lib/dbus/machine-id
+         ln -s /etc/machine-id /var/lib/dbus/machine-id
+      fi
+      echo "The new machine ID is $(cat /etc/machine-id)."
+   fi
+fi
+
+
+# ====== Create new keys ====================================================
+if [ -d /etc/ssh ] ; then
+   if [ ${YES_TO_ALL} -ne 1 ] ; then
+      echo -en "\x1b[33mRemove existing SSH host keys and generate new ones? [yes/no]?\x1b[0m "
+      read -er applyChanges
+   fi
+   if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+      BACKUP_DIRECTORY="backup-$(env LANG=C date +%FT%H:%M:%S)"
+
+      echo "Making backup in ${BACKUP_DIRECTORY} ..."
+      mkdir "${BACKUP_DIRECTORY}/"
+      find . -maxdepth 1 -name "ssh_host_*_key*" | xargs -n1 -I § -r mv § "${BACKUP_DIRECTORY}/"
+      find . -maxdepth 1 -name "ssh_host_key*"   | xargs -n1 -I § -r mv § "${BACKUP_DIRECTORY}/"
+      find . -maxdepth 1 -name "moduli*"         | xargs -n1 -I § -r cp § "${BACKUP_DIRECTORY}/"
+      cp sshd_config "${BACKUP_DIRECTORY}/"
+      cp ssh_config  "${BACKUP_DIRECTORY}/"
+
+      # rm -f moduli.candidates moduli
+      # echo "Generating moduli, step 1 ..."
+      # time ssh-keygen -G moduli.candidates -b $MODULI_BITS
+      # echo "Generating moduli, step 2 ..."
+      # time ssh-keygen -T moduli -f moduli.candidates
+
+      echo "Generating ED25519 key ..."
+      time ssh-keygen -N "" -t ed25519 -f ssh_host_ed25519_key
+      echo "Generating ED25519 key ..."
+      time ssh-keygen -N "" -t ecdsa -b $ECDSA_BITS -f ssh_host_ecdsa_key
+      echo "Generating RSA key ..."
+      time ssh-keygen -N "" -t rsa -b $RSA_BITS -f ssh_host_rsa_key
+
+      echo "Done!"
+
+   else
+      echo "Skipped!"
+   fi
+
+
+   # ====== Suggested sshd_config and ssh_config updates ====================
+   cat >sshd_config.suggested <<EOF
+Protocol 2
+
+# Check supported algorithms with "ssh -Q cipher|kex|key|mac"!
+# The following 3 options require a very new sshd:
+# PubkeyAcceptedKeyTypes    ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
+# HostbasedAcceptedKeyTypes ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
+# HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
+Ciphers                   aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
+MACs                      hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+KexAlgorithms             curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+
+UsePAM                    yes
+X11Forwarding             yes
+TCPKeepAlive              yes
+ClientAliveInterval       60
+ClientAliveCountMax       3
+
+AcceptEnv                 LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION LC_ALL LANGUAGE XMODIFIERS
+EOF
+   for sftp in /usr/lib/openssh/sftp-server /usr/libexec/sftp-server ; do
+      if [ -e "$sftp" ] ; then
+         echo "Subsystem sftp $sftp" >>sshd_config.suggested
+         break
+      fi
+   done
+
+   cat >ssh_config.suggested <<EOF
+Protocol 2
+
+# Check supported algorithms with "ssh -Q cipher|kex|key|mac"!
+Ciphers                   aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr
+# Note: hmac-ripemd160@openssh.com in MACs necessary for old servers!
+MACs                      hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512
+# Note: diffie-hellman-group1-sha1 in KexAlgorithms necessary for old servers!
+KexAlgorithms             curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256
+# To prefer RSA:
+# HostKeyAlgorithms         ssh-rsa-cert-v01@openssh.com,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com
+# To prefer ED25519:
+HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com
+
+VerifyHostKeyDNS          ask
+HashKnownHosts            yes
+GSSAPIAuthentication      yes
+GSSAPIDelegateCredentials no
+
+TCPKeepAlive              yes
+ServerAliveInterval       30
+ServerAliveCountMax       3
+
+SendEnv                   LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION LC_ALL LANGUAGE XMODIFIERS
+EOF
+
+
+   # ====== Make sshd_config and ssh_config updates =========================
+   echo "Suggested sshd_config change:"
+   if ! colordiff sshd_config sshd_config.suggested ; then
+      if [ ${YES_TO_ALL} -ne 1 ] ; then
+         echo -en "\x1b[33mReplace sshd_config? [yes/no]?\x1b[0m "
+         read -er applyChanges
+      fi
+      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+         cp sshd_config.suggested sshd_config
+      else
+         echo "Skipped!"
+      fi
+   fi
+
+   echo "Suggested ssh_config change:"
+   if ! colordiff ssh_config ssh_config.suggested ; then
+      if [ ${YES_TO_ALL} -ne 1 ] ; then
+         echo -en "\x1b[33mReplace ssh_config? [yes/no]?\x1b[0m "
+         read -er applyChanges
+      fi
+      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+         cp ssh_config.suggested ssh_config
+      else
+         echo "Skipped!"
+      fi
+   fi
+fi

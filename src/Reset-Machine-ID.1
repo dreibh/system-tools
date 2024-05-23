@@ -1,0 +1,56 @@
+.\" Reset Machine ID
+.\" Copyright (C) 2013-2024 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: dreibh@simula.no
+.\"
+.\" ###### Setup ############################################################
+.Dd May 23, 2024
+.Dt Reset-Machine-ID 1
+.Os Reset-Machine-ID
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm Reset-Machine-ID
+.\" ###### Synopsis #########################################################
+.Sh SYNOPSIS
+.Nm Reset-Machine-ID
+.Op Fl yes-to-all-i-am-really-sure
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm Reset-Machine-ID
+resets the machine identity state, particularly for a cloned VM, to make it appear as a new machine.
+It performs the following tasks:
+.Bl -tag -width indent
+.It Reset /etc/machine-id,
+.It Reset /var/lib/dbus/machine-id (symlink to /etc/machine-id),
+.It Create new SSH key pair.
+.It Provide hardened settings for SSH client and server.
+.El
+The changes are made interactively on request, unless the \-yes\-to\-all\-i\-am\-really\-sure is used.
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It \-yes\-to\-all\-i\-am\-really\-sure
+Create new keys (delete old ones) as well as replace sshd_config and
+ssh_config without interactively asking for confirmation.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It sudo Reset-Machine-ID
+.It sudo Reset-Machine-ID \-yes\-to\-all\-i\-am\-really\-sure
+.El
