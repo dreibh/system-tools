@@ -61,10 +61,10 @@ if [ -e /etc/machine-id ] ; then
       read -er applyChanges
    fi
    if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
-      if [ -x /usr/bin/dbus-uuidgen ] ; then
+      if [ -x /usr/bin/dbus-uuidgen ] || [ -x /usr/local/bin/dbus-uuidgen ] ; then
          # Generate new ID already now.
          rm -f /etc/machine-id
-         /usr/bin/dbus-uuidgen --ensure=/etc/machine-id
+         dbus-uuidgen --ensure=/etc/machine-id
       else
          # The ID should be reset during the next boot.
          echo -n | tee /etc/machine-id
