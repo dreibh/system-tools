@@ -95,8 +95,10 @@ management databases, installing all available updates, checking
 for old kernels and removing them, trim SSD or unmap unused storage.
 
 %files system-maintenance
+%{_bindir}/Reset-Machine-ID
 %{_bindir}/System-Maintenance
 %{_datadir}/locale/*/LC_MESSAGES/System-Maintenance.mo
+%{_mandir}/man1/Reset-Machine-ID.1.gz
 %{_mandir}/man1/System-Maintenance.1.gz
 %{_sysconfdir}/system-maintenance.d/XX-example
 

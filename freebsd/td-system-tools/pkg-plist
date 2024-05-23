@@ -1,4 +1,5 @@
 bin/configure-grub
+bin/Reset-Machine-ID
 bin/System-Info
 bin/System-Maintenance
 etc/profile.d/system-info.csh
@@ -13,6 +14,7 @@ share/locale/de/LC_MESSAGES/System-Maintenance.mo
 share/locale/nb/LC_MESSAGES/System-Info.mo
 share/locale/nb/LC_MESSAGES/System-Maintenance.mo
 share/man/man1/configure-grub.1.gz
+share/man/man1/Reset-Machine-ID.1.gz
 share/man/man1/System-Info.1.gz
 share/man/man1/System-Maintenance.1.gz
 share/System-Info/01-example
