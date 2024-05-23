@@ -62,6 +62,8 @@ if [ -e /etc/machine-id ] ; then
    fi
    if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
       if [ -x /usr/bin/dbus-uuidgen ] ; then
+         # Generate new ID already now.
+         rm -f /etc/machine-id
          /usr/bin/dbus-uuidgen --ensure=/etc/machine-id
       else
          # The ID should be reset during the next boot.
@@ -78,6 +80,7 @@ fi
 
 # ====== Create new keys ====================================================
 if [ -d /etc/ssh ] ; then
+   cd /etc/ssh
    if [ ${YES_TO_ALL} -ne 1 ] ; then
       echo -en "\x1b[33mRemove existing SSH host keys and generate new ones? [yes/no]?\x1b[0m "
       read -er applyChanges
@@ -132,7 +135,7 @@ TCPKeepAlive              yes
 ClientAliveInterval       60
 ClientAliveCountMax       3
 
-AcceptEnv                 LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION LC_ALL LANGUAGE XMODIFIERS
+AcceptEnv                 LANG LC_*
 EOF
    for sftp in /usr/lib/openssh/sftp-server /usr/libexec/sftp-server ; do
       if [ -e "$sftp" ] ; then
@@ -146,9 +149,7 @@ Protocol 2
 
 # Check supported algorithms with "ssh -Q cipher|kex|key|mac"!
 Ciphers                   aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr
-# Note: hmac-ripemd160@openssh.com in MACs necessary for old servers!
 MACs                      hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512
-# Note: diffie-hellman-group1-sha1 in KexAlgorithms necessary for old servers!
 KexAlgorithms             curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256
 # To prefer RSA:
 # HostKeyAlgorithms         ssh-rsa-cert-v01@openssh.com,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com
@@ -164,13 +165,13 @@ TCPKeepAlive              yes
 ServerAliveInterval       30
 ServerAliveCountMax       3
 
-SendEnv                   LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION LC_ALL LANGUAGE XMODIFIERS
+SendEnv                   LANG LC_*
 EOF
 
 
    # ====== Make sshd_config and ssh_config updates =========================
    echo "Suggested sshd_config change:"
-   if ! colordiff sshd_config sshd_config.suggested ; then
+   if ! diff --color sshd_config sshd_config.suggested ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
          echo -en "\x1b[33mReplace sshd_config? [yes/no]?\x1b[0m "
          read -er applyChanges
@@ -183,7 +184,7 @@ EOF
    fi
 
    echo "Suggested ssh_config change:"
-   if ! colordiff ssh_config ssh_config.suggested ; then
+   if ! diff --color ssh_config ssh_config.suggested ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
          echo -en "\x1b[33mReplace ssh_config? [yes/no]?\x1b[0m "
          read -er applyChanges
