@@ -17,18 +17,18 @@
 .\" Contact: dreibh@simula.no
 .\"
 .\" ###### Setup ############################################################
-.Dd October 6, 2020
+.Dd May 23, 2024
 .Dt System-Info 1
 .Os System-Info
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm System-Info
-.Nd System-Info
-.Op Fl \-\-help|\-h
-.Op Fl \-\-scripts|\-S scripts_directory
+.Nd Show system information and banners
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm System-Info
+.Op Fl \-help|\-h
+.Op Fl \-scripts|\-S scripts_directory
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 System-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System-Info can be configured to be automatically run when logging in, providing the user an up-to-date overview of the system.

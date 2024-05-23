@@ -23,29 +23,32 @@
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm Reset-Machine-ID
-resets the machine identity state.
+.Nd resets the machine identity state
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm Reset-Machine-ID
-.Op Fl yes-to-all-i-am-really-sure
+.Op Fl \-yes\-to\-all\-i\-am\-really\-sure
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Reset-Machine-ID
 resets the machine identity state, particularly for a cloned VM, to make it appear as a new machine.
 It performs the following tasks:
-.Bl -tag -width indent
-.It Reset /etc/machine-id,
-.It Reset /var/lib/dbus/machine-id (symlink to /etc/machine-id),
-.It Create new SSH key pair.
-.It Provide hardened settings for SSH client and server.
-.El
+.br
+* Reset /etc/machine-id,
+.br
+* Reset /var/lib/dbus/machine-id (symlink to /etc/machine-id),
+.br
+* Create new SSH key pair.
+.br
+* Provide hardened settings for SSH client and server.
+.br
 The changes are made interactively on request, unless the \-yes\-to\-all\-i\-am\-really\-sure is used.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It \-yes\-to\-all\-i\-am\-really\-sure
+.It \-\-yes\-to\-all\-i\-am\-really\-sure
 Create new keys (delete old ones) as well as replace sshd_config and
 ssh_config without interactively asking for confirmation.
 .El
@@ -53,5 +56,5 @@ ssh_config without interactively asking for confirmation.
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It sudo Reset-Machine-ID
-.It sudo Reset-Machine-ID \-yes\-to\-all\-i\-am\-really\-sure
+.It sudo Reset-Machine-ID \-\-yes\-to\-all\-i\-am\-really\-sure
 .El

@@ -17,36 +17,38 @@
 .\" Contact: dreibh@simula.no
 .\"
 .\" ###### Setup ############################################################
-.Dd March 22, 2024
+.Dd May 23, 2024
 .Dt System-Maintenance 1
 .Os System-Maintenance
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm System-Maintenance
-.Nd System-Maintenance
+.Nd Perform system maintenance tasks
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm System-Maintenance
 .Op Fl interactive-kernel-removal|-k
-.\" .Op Fl dont-touch-grub|-g
-.\" .Op Fl dont-keep-interface-mappings|-m
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm System-Maintenance
 runs some system maintenance tasks to keep the system clean and up to date.
 These tasks are:
-.Bl -tag -width indent
-.It Ensuring that all packages are configured,
-.It Updating the package repositories,
-.It Removing obsolete kernels,
-.It Installing all available package updates,
-.It Auto-removing unused packages,
-.\" .It Ensuring that Grub (the bootloader) is installed and up-to-date,
-.\" .It Delete network interface mapping (only on request by option, see below),
-.It Updating package and file search caches,
-.It Updating firmware,
-.It Trimming SSDs and virual storage.
-.El
+.br
+* Ensuring that all packages are configured,
+.br
+* Updating the package repositories,
+.br
+* Removing obsolete kernels,
+.br
+* Installing all available package updates,
+.br
+* Auto-removing unused packages,
+.br
+* Updating package and file search caches,
+.br
+* Updating firmware,
+.br
+* Trimming SSDs and virual storage.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -54,8 +56,6 @@ The following options are available:
 .Bl -tag -width indent
 .It Fl interactive-kernel-removal|-k
 Remove obsolete kernels interactively.
-.\" .It Fl dont-touch-grub|-g
-.\" Do not update Grub installation.
 .It Fl dont-keep-interface-mappings|-M
 Delete network interface mapping rules
 (/etc/udev/rules.d/70-persistent-net.rules), if eth0 does not exist. This is
@@ -66,6 +66,6 @@ beginning from eth0 during the next boot.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It System-Maintenance
-.It System-Maintenance -dont-keep-interface-mappings
+.It sudo System-Maintenance
+.It sudo System-Maintenance -dont-keep-interface-mappings
 .El

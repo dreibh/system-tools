@@ -48,7 +48,7 @@ show-keys ()
 # ====== Handle arguments ===================================================
 YES_TO_ALL=0
 applyChanges=""
-if [ "$1" == "-yes-to-all-i-am-really-sure" ] || [ "$1" == "--yes-to-all-i-am-really-sure" ] ; then
+if [ "$1" == "--yes-to-all-i-am-really-sure" ] || [ "$1" == "-yes-to-all-i-am-really-sure" ] ; then
    YES_TO_ALL=1
    applyChanges="yes"
 fi
