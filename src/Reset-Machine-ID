@@ -175,23 +175,36 @@ if [ -d /etc/ssh ] ; then
 
 
    # ====== Suggested sshd_config and ssh_config updates ====================
+   p1=$(grep "^PasswordAuthentication" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
+   p2=$(grep "^KbdInteractiveAuthentication" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
+   if [ "${p1}" != "yes" ] && [ "${p1}" != "no" ]  ; then
+      p1="yes"
+   fi
+   if [ "${p2}" != "yes" ] && [ "${p2}" != "no" ]  ; then
+      p2="yes"
+   fi
    cat >sshd_config.suggested <<EOF
 Protocol 2
 
 # Check supported algorithms with "ssh -Q cipher|kex|key|mac"!
 # The following 3 options require a very new sshd:
-# PubkeyAcceptedKeyTypes    ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
-# HostbasedAcceptedKeyTypes ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
-# HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
-Ciphers                   aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
-MACs                      hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
-KexAlgorithms             curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+# PubkeyAcceptedKeyTypes       ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
+# HostbasedAcceptedKeyTypes    ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
+# HostKeyAlgorithms            ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
+Ciphers                      aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
+MACs                         hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+KexAlgorithms                curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
 
-UsePAM                    yes
-X11Forwarding             yes
-TCPKeepAlive              yes
-ClientAliveInterval       60
-ClientAliveCountMax       3
+UsePAM                       yes
+X11Forwarding                yes
+TCPKeepAlive                 yes
+ClientAliveInterval          60
+ClientAliveCountMax          3
+
+# To disable password usage, set *both* values to "no":
+# KbdInteractiveAuthentication uses PAM, which usually just means using a password.
+PasswordAuthentication       ${p1}
+KbdInteractiveAuthentication ${p2}
 
 AcceptEnv                 LANG LC_*
 EOF
