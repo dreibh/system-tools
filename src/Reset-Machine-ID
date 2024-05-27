@@ -66,7 +66,7 @@ fi
 
 
 # ====== Change hostname ====================================================
-# if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
+if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
 #    if [ ${YES_TO_ALL} -ne 1 ] ; then
 #       echo -en "\x1b[33mChange hostname from ${OLD_HOSTNAME_FQDN} to ${NEW_HOSTNAME_FQDN}? [yes/no]?\x1b[0m "
 #       read -er applyChanges
@@ -109,7 +109,7 @@ fi
       exit 1
 
 #    fi
-# fi
+fi
 
 
 # ====== Reset machine ID ===================================================
@@ -174,7 +174,7 @@ if [ -d /etc/ssh ] ; then
    fi
 
 
-   # ====== Suggested sshd_config and ssh_config updates ====================
+   # ====== Suggest sshd_config updates =====================================
    p1=$(grep "^PasswordAuthentication" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
    p2=$(grep "^KbdInteractiveAuthentication" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
    if [ "${p1}" != "yes" ] && [ "${p1}" != "no" ]  ; then
@@ -215,6 +215,8 @@ EOF
       fi
    done
 
+
+   # ====== Suggest ssh_config updates ======================================
    cat >ssh_config.suggested <<EOF
 Protocol 2
 
@@ -240,7 +242,21 @@ SendEnv                   LANG LC_*
 EOF
 
 
-   # ====== Make sshd_config and ssh_config updates =========================
+   # ====== Apply ssh_config updates ========================================
+   echo "Suggested ssh_config change:"
+   if ! diff --color ssh_config ssh_config.suggested ; then
+      if [ ${YES_TO_ALL} -ne 1 ] ; then
+         echo -en "\x1b[33mReplace ssh_config? [yes/no]?\x1b[0m "
+         read -er applyChanges
+      fi
+      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+         cp ssh_config.suggested ssh_config
+      else
+         echo "Skipped!"
+      fi
+   fi
+
+   # ====== Apply sshd_config updates =======================================
    echo "Suggested sshd_config change:"
    if ! diff --color sshd_config sshd_config.suggested ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
@@ -254,16 +270,19 @@ EOF
       fi
    fi
 
-   echo "Suggested ssh_config change:"
-   if ! diff --color ssh_config ssh_config.suggested ; then
+   # ====== Remove Cloud-Init sshd configuration ============================
+   if [ -e /etc/ssh/sshd_config.d/50-cloud-init.conf ] ; then
+      echo "Suggested removal of /etc/ssh/sshd_config.d/50-cloud-init.conf:"
+      cat /etc/ssh/sshd_config.d/50-cloud-init.conf
       if [ ${YES_TO_ALL} -ne 1 ] ; then
-         echo -en "\x1b[33mReplace ssh_config? [yes/no]?\x1b[0m "
+         echo -en "\x1b[33mRemove /etc/ssh/sshd_config.d/50-cloud-init.conf? [yes/no]?\x1b[0m "
          read -er applyChanges
       fi
       if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
-         cp ssh_config.suggested ssh_config
+         rm /etc/ssh/sshd_config.d/50-cloud-init.conf
       else
          echo "Skipped!"
       fi
    fi
+
 fi
