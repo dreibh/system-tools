@@ -156,7 +156,7 @@ fi
 if [ ${SKIP_SSH_CONFIGURATION} -eq 0 ] && [ -d /etc/ssh ] ; then
 
    cd /etc/ssh || exit
-   echo -en "\x1b[34m$(date +%FT%H:%M:%S): Checking SSH configuration ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Checking SSH configuration ...\x1b[0m"
 
    # ====== Suggest ssh_config updates ======================================
    cat >ssh_config.suggested <<EOF
@@ -312,6 +312,10 @@ EOF
       time ssh-keygen -N "" -t rsa -b $RSA_BITS -f ssh_host_rsa_key
 
       echo "Done!"
+
+      echo "Trying to restart SSH daemon ..."
+      # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
+      service sshd restart 2>/dev/null || service ssh restart 2>/dev/null
 
    else
       echo "Skipped!"
