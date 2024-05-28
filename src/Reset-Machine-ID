@@ -122,17 +122,17 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
          read -er applyChanges
       fi
       if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
-         echo mv /etc/hosts.updated /etc/hosts
+         mv /etc/hosts.updated /etc/hosts
          if [ -e /etc/hostname ] ; then
-            echo mv /etc/hostname.updated /etc/hostname
-
+            mv /etc/hostname.updated /etc/hostname
+            if [ -x /usr/bin/hostnamectl ] ; then
+               /usr/bin/hostnamectl hostname "${NEW_HOSTNAME_FQDN}"
+            fi
          elif [ -e /etc/rc.conf ] ; then
-            echo mv /etc/rc.conf.updated /etc/rc.conf
+            mv /etc/rc.conf.updated /etc/rc.conf
          fi
       fi
    fi
-
-   exit 1
 fi
 
 
