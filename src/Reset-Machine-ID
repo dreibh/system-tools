@@ -259,6 +259,7 @@ EOF
       fi
    done
 
+
    # ====== Suggest removal of Cloud-Init sshd configuration ================
    differences=0
    if [ -e /etc/ssh/sshd_config.d/50-cloud-init.conf ] ; then
@@ -277,24 +278,13 @@ EOF
          read -er applyChanges
       fi
       if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+         rm -f /etc/ssh/sshd_config.d/50-cloud-init.conf
          cp sshd_config sshd_config.old
          mv sshd_config.suggested sshd_config
-      else
-         echo "Skipped!"
-      fi
-   fi
 
-
-   # ====== Remove Cloud-Init sshd configuration ============================
-   if [ -e /etc/ssh/sshd_config.d/50-cloud-init.conf ] ; then
-      echo "Suggested removal of /etc/ssh/sshd_config.d/50-cloud-init.conf:"
-      cat /etc/ssh/sshd_config.d/50-cloud-init.conf
-      if [ ${YES_TO_ALL} -ne 1 ] ; then
-         echo -en "\x1b[34m$(date +%FT%H:%M:%S): Remove /etc/ssh/sshd_config.d/50-cloud-init.conf? [yes/no]?\x1b[0m "
-         read -er applyChanges
-      fi
-      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
-         rm /etc/ssh/sshd_config.d/50-cloud-init.conf
+         echo "Trying to restart SSH daemon ..."
+         # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
+         service sshd restart 2>/dev/null || service ssh restart 2>/dev/null
       else
          echo "Skipped!"
       fi
