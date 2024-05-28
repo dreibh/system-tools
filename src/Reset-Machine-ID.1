@@ -29,6 +29,7 @@
 .Nm Reset-Machine-ID
 .Op Fl \-yes\-to\-all\-i\-am\-really\-sure
 .Op Fl \-skip-ssh-configuration
+.Op Fl \-skip-ssh-key-replacement
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Reset-Machine-ID
@@ -39,9 +40,11 @@ It performs the following tasks:
 .br
 * Reset /var/lib/dbus/machine-id (symlink to /etc/machine-id),
 .br
-* Create new SSH key pair.
+* Change hostname, if a new one is provided (\-\-hostname parameter).
 .br
 * Provide hardened settings for SSH client and server.
+.br
+* Create new SSH key pair.
 .br
 The changes are made interactively on request, unless the \-yes\-to\-all\-i\-am\-really\-sure is used.
 .Pp
@@ -53,7 +56,9 @@ The following options are available:
 Create new keys (delete old ones) as well as replace sshd_config and
 ssh_config without interactively asking for confirmation.
 .It \-\-skip-ssh-configuration
-Do not suggest SSH configuration changes.
+Do not make SSH configuration changes.
+.It \-\-skip-ssh-key-replacement
+Do not replace SSH keys.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -61,5 +66,5 @@ Do not suggest SSH configuration changes.
 .It sudo Reset-Machine-ID
 .It sudo Reset-Machine-ID \-\-yes\-to\-all\-i\-am\-really\-sure
 .It sudo Reset-Machine-ID \-\-hostname dbserver.domain.example
-.It sudo Reset-Machine-ID \-\-yes\-to\-all\-i\-am\-really\-sure \-\-skip-ssh-configuration
+.It sudo Reset-Machine-ID \-\-skip\-ssh\-configuration \-\-skip\-ssh\-key\-replacement
 .El

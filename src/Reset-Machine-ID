@@ -31,6 +31,7 @@ RSA_BITS=16384
 # ====== Handle arguments ===================================================
 YES_TO_ALL=0
 SKIP_SSH_CONFIGURATION=0
+SKIP_SSH_KEY_REPLACEMENT=0
 OLD_HOSTNAME_FQDN="$(hostname -f)"
 OLD_HOSTNAME="${OLD_HOSTNAME_FQDN//.*/}"
 NEW_HOSTNAME_FQDN="${OLD_HOSTNAME_FQDN}"
@@ -50,6 +51,8 @@ while [ $# -gt 0 ] ; do
       shift
    elif [ "$1" == "--skip-ssh-configuration" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-ssh-configuration" ] ; then
       SKIP_SSH_CONFIGURATION=1
+   elif [ "$1" == "--skip-ssh-key-replacement" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-key-replacement" ] ; then
+      SKIP_SSH_KEY_REPLACEMENT=1
    fi
    shift
 done
@@ -276,9 +279,14 @@ EOF
          echo "Skipped!"
       fi
    fi
+fi
 
 
-   # ====== Generate new SSH key pair =======================================
+# ====== Generate new SSH key pair ==========================================
+if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] ; then
+
+   cd /etc/ssh || exit
+
    if [ ${YES_TO_ALL} -ne 1 ] ; then
       echo -en "\x1b[34m$(date +%FT%H:%M:%S): Remove existing SSH host keys and generate new ones? [yes/no]?\x1b[0m "
       read -er applyChanges
