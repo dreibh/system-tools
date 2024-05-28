@@ -87,7 +87,7 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
                newNames="${newNames} ${NEW_HOSTNAME}"
             fi
             for currentName in ${currentNames} ; do
-               if [[ "${currentName}" =~ ^(localhost|localhost[46]|ip6-localhost|ip6-loopback)(\..*|)$ ]] ; then
+               if [[ "${currentName}" =~ ^(localhost|localhost[46]|ip6-localhost|ip6-loopback)(\..*$|$) ]] ; then
                   newNames="${newNames} ${currentName}"
                #else
                   #echo >&2 "${currentName} DDD"
@@ -104,7 +104,7 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
          echo "${line}"
 
       done </etc/hosts >hosts.updated
-      diff --color /etc/hosts hosts.updated
+      diff --color=always /etc/hosts hosts.updated
 
       exit 1
 
@@ -219,7 +219,7 @@ EOF
 
    # ====== Apply ssh_config updates ========================================
    echo "Suggested ssh_config change:"
-   if ! diff --color ssh_config ssh_config.suggested ; then
+   if ! diff --color=always ssh_config ssh_config.suggested ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
          echo -en "\x1b[34m$(date +%FT%H:%M:%S): Replace ssh_config? [yes/no]?\x1b[0m "
          read -er applyChanges
@@ -235,7 +235,7 @@ EOF
 
    # ====== Apply sshd_config updates =======================================
    echo "Suggested sshd_config change:"
-   if ! diff --color sshd_config sshd_config.suggested ; then
+   if ! diff --color=always sshd_config sshd_config.suggested ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
          echo -en "\x1b[34m$(date +%FT%H:%M:%S): Replace sshd_config? [yes/no]?\x1b[0m "
          read -er applyChanges
