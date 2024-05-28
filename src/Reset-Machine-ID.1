@@ -17,7 +17,7 @@
 .\" Contact: dreibh@simula.no
 .\"
 .\" ###### Setup ############################################################
-.Dd May 23, 2024
+.Dd May 28, 2024
 .Dt Reset-Machine-ID 1
 .Os Reset-Machine-ID
 .\" ###### Name #############################################################
@@ -28,6 +28,7 @@
 .Sh SYNOPSIS
 .Nm Reset-Machine-ID
 .Op Fl \-yes\-to\-all\-i\-am\-really\-sure
+.Op Fl \-skip-ssh-configuration
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Reset-Machine-ID
@@ -51,10 +52,14 @@ The following options are available:
 .It \-\-yes\-to\-all\-i\-am\-really\-sure
 Create new keys (delete old ones) as well as replace sshd_config and
 ssh_config without interactively asking for confirmation.
+.It \-\-skip-ssh-configuration
+Do not suggest SSH configuration changes.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It sudo Reset-Machine-ID
 .It sudo Reset-Machine-ID \-\-yes\-to\-all\-i\-am\-really\-sure
+.It sudo Reset-Machine-ID \-\-hostname dbserver.domain.example
+.It sudo Reset-Machine-ID \-\-yes\-to\-all\-i\-am\-really\-sure \-\-skip-ssh-configuration
 .El

@@ -25,44 +25,34 @@ RSA_BITS=16384
 # MODULI_BITS=8192
 
 
-# ###### Show host key fingerprints #########################################
-show-keys ()
-{
-   keys=$(find /etc/ssh -name "ssh_host_*.pub" | sort)
-   firstKey=1
-   for key in $keys ; do
-      if [ $firstKey -eq 1 ] ; then
-         echo -n "SSH Keys: "
-         firstKey=0
-      else
-         echo -n "          "
-      fi
-      ssh-keygen -lf "$key" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
-   done
-}
-
-
 
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
 YES_TO_ALL=0
+SKIP_SSH_CONFIGURATION=0
 OLD_HOSTNAME_FQDN="$(hostname -f)"
 OLD_HOSTNAME="${OLD_HOSTNAME_FQDN//.*/}"
 NEW_HOSTNAME_FQDN="${OLD_HOSTNAME_FQDN}"
 applyChanges=""
-if [ "$1" == "--yes-to-all-i-am-really-sure" ] || [ "$1" == "-yes-to-all-i-am-really-sure" ] ; then
-   YES_TO_ALL=1
-   applyChanges="yes"
-elif [ "$1" == "--hostname" ] || [ "$1" == "-H" ] || [ "$1" == "-hostname" ] ; then
-   if [[ ! "$2" =~ ^([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]+$ ]] ; then
-      echo >&2 "ERROR: Bad hostname $2!"
-      exit 1
+
+while [ $# -gt 0 ] ; do
+   if [ "$1" == "--yes-to-all-i-am-really-sure" ] || [ "$1" == "-yes-to-all-i-am-really-sure" ] ; then
+      YES_TO_ALL=1
+      applyChanges="yes"
+   elif [ "$1" == "--hostname" ] || [ "$1" == "-H" ] || [ "$1" == "-hostname" ] ; then
+      if [[ ! "$2" =~ ^([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]+$ ]] ; then
+         echo >&2 "ERROR: Bad hostname $2!"
+         exit 1
+      fi
+      NEW_HOSTNAME_FQDN="$2"
+      NEW_HOSTNAME="${NEW_HOSTNAME_FQDN//.*/}"
+      shift
+   elif [ "$1" == "--skip-ssh-configuration" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-ssh-configuration" ] ; then
+      SKIP_SSH_CONFIGURATION=1
    fi
-   NEW_HOSTNAME_FQDN="$2"
-   NEW_HOSTNAME="${NEW_HOSTNAME_FQDN//.*/}"
    shift
-fi
+done
 
 
 # ====== Change hostname ====================================================
@@ -163,7 +153,8 @@ fi
 
 
 # ====== SSH configuration ==================================================
-if [ -d /etc/ssh ] ; then
+if [ ${SKIP_SSH_CONFIGURATION} -eq 0 ] && [ -d /etc/ssh ] ; then
+
    cd /etc/ssh || exit
    echo -en "\x1b[34m$(date +%FT%H:%M:%S): Checking SSH configuration ...\x1b[0m"
 
@@ -301,9 +292,9 @@ EOF
 
       echo "Making backup in ${BACKUP_DIRECTORY} ..."
       mkdir "${BACKUP_DIRECTORY}/"
-      find . -maxdepth 1 -name "ssh_host_*_key*" | xargs -n1 -I § -r mv § "${BACKUP_DIRECTORY}/"
-      find . -maxdepth 1 -name "ssh_host_key*"   | xargs -n1 -I § -r mv § "${BACKUP_DIRECTORY}/"
-      find . -maxdepth 1 -name "moduli*"         | xargs -n1 -I § -r cp § "${BACKUP_DIRECTORY}/"
+      find . -maxdepth 1 -name "ssh_host_*_key*" -print0 | xargs -0 -n1 -I § -r mv § "${BACKUP_DIRECTORY}/"
+      find . -maxdepth 1 -name "ssh_host_key*"   -print0 | xargs -0 -n1 -I § -r mv § "${BACKUP_DIRECTORY}/"
+      find . -maxdepth 1 -name "moduli*"         -print0 | xargs -0 -n1 -I § -r cp § "${BACKUP_DIRECTORY}/"
       cp sshd_config "${BACKUP_DIRECTORY}/"
       cp ssh_config  "${BACKUP_DIRECTORY}/"
 
