@@ -43,7 +43,7 @@ while [ $# -gt 0 ] ; do
       applyChanges="yes"
    elif [ "$1" == "--hostname" ] || [ "$1" == "-H" ] || [ "$1" == "-hostname" ] ; then
 
-      if [[ ! "$2" =~ ^([a-zA-Z][a-zA-Z0-9]+\.)*[a-zA-Z][a-zA-Z0-9]*$ ]] ; then
+      if [[ ! "$2" =~ ^([a-zA-Z][a-zA-Z0-9-]+\.)*[a-zA-Z][a-zA-Z0-9-]*$ ]] ; then
          echo >&2 "ERROR: Bad hostname $2!"
          exit 1
       fi
