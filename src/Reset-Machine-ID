@@ -111,7 +111,7 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
          echo -en "\x1b[34m$(date +%FT%H:%M:%S): Update hostname? [yes/no]?\x1b[0m"
          read -er applyChanges
       fi
-      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+      if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
          mv /etc/hosts.updated /etc/hosts
          if [ -e /etc/hostname ] ; then
             mv /etc/hostname.updated /etc/hostname
@@ -134,7 +134,7 @@ if [ -e /etc/machine-id ] ; then
       echo -en "\x1b[34m$(date +%FT%H:%M:%S): The current machine ID is $(cat /etc/machine-id). Reset it? [yes/no]?\x1b[0m "
       read -er applyChanges
    fi
-   if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+   if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
       if [ -x /usr/bin/dbus-uuidgen ] || [ -x /usr/local/bin/dbus-uuidgen ] ; then
          # Generate new ID already now.
          rm -f /etc/machine-id
@@ -191,7 +191,7 @@ EOF
          echo -en "\x1b[34m$(date +%FT%H:%M:%S): Replace ssh_config? [yes/no]?\x1b[0m "
          read -er applyChanges
       fi
-      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+      if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
          cp ssh_config ssh_config.old
          mv ssh_config.suggested ssh_config
       else
@@ -268,7 +268,7 @@ EOF
          echo -en "\x1b[34m$(date +%FT%H:%M:%S): Replace sshd_config? [yes/no]?\x1b[0m "
          read -er applyChanges
       fi
-      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+      if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
          rm -f /etc/ssh/sshd_config.d/50-cloud-init.conf
          cp sshd_config sshd_config.old
          mv sshd_config.suggested sshd_config
@@ -287,7 +287,7 @@ EOF
       echo -en "\x1b[34m$(date +%FT%H:%M:%S): Remove existing SSH host keys and generate new ones? [yes/no]?\x1b[0m "
       read -er applyChanges
    fi
-   if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+   if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
       BACKUP_DIRECTORY="backup-$(env LANG=C date +%FT%H:%M:%S)"
 
       echo "Making backup in ${BACKUP_DIRECTORY} ..."
