@@ -54,6 +54,9 @@ while [ $# -gt 0 ] ; do
       SKIP_SSH_CONFIGURATION=1
    elif [ "$1" == "--skip-ssh-key-replacement" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-key-replacement" ] ; then
       SKIP_SSH_KEY_REPLACEMENT=1
+   else
+      echo >&2 "Usage: $0 [--hostname hostname] [--skip-ssh-configuration] [--skip-ssh-key-replacement]"
+      exit 1
    fi
    shift
 done
