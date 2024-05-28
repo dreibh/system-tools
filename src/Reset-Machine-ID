@@ -67,15 +67,11 @@ fi
 
 # ====== Change hostname ====================================================
 if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
-#    if [ ${YES_TO_ALL} -ne 1 ] ; then
-#       echo -en "\x1b[34m$(date +%FT%H:%M:%S): Change hostname from ${OLD_HOSTNAME_FQDN} to ${NEW_HOSTNAME_FQDN}? [yes/no]?\x1b[0m "
-#       read -er applyChanges
-#    fi
-#    if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
-
-
-      # ====== Update /etc/hostname or /etc/rc.conf =========================
-
+   if [ ${YES_TO_ALL} -ne 1 ] ; then
+      echo -en "\x1b[34m$(date +%FT%H:%M:%S): Change hostname from ${OLD_HOSTNAME_FQDN} to ${NEW_HOSTNAME_FQDN}? [yes/no]?\x1b[0m "
+      read -er applyChanges
+   fi
+   if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
 
       # ====== Update /etc/hosts ============================================
       while read -r line ; do
@@ -95,20 +91,52 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
 
             done
 
+            # shellcheck disable=SC2001
             line="$(echo "${line}" | sed -e "s/\([[:blank:]][[:blank:]]*\).*$/\1${newNames}/g")"
 
          elif [[ "${line}" =~ ^(([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})|((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:)))(%.+)?)[[:blank:]] ]] ; then
+            # shellcheck disable=SC2001
             line="$(echo "${line}" | sed -e "s/${OLD_HOSTNAME_FQDN}/${NEW_HOSTNAME_FQDN}/g")"
          fi
 
          echo "${line}"
 
       done </etc/hosts >hosts.updated
-      diff --color=always /etc/hosts hosts.updated
+      echo "/etc/hosts:"
+      diff --color=always /etc/hosts /etc/hosts.updated
+
+
+      # ====== Update /etc/hostname or /etc/rc.conf =========================
+      if [ -e /etc/hostname ] ; then
+         echo "${NEW_HOSTNAME_FQDN}" >/etc/hostname.updated
+         echo "/etc/hostname:"
+         diff --color=always /etc/hostname /etc/hostname.updated
+      elif [ -e /etc/rc.conf ] ; then
+         echo "/etc/rc.conf:"
+         sed -e "s/^hostname=/hostname=\"${NEW_HOSTNAME_FQDN}\"/g" \
+            </etc/rc.conf >/etc/rc.conf.updated
+         diff --color=always /etc/rc.conf /etc/rc.conf.updated
+      fi
+
+
+      # ====== Apply changes ================================================
+      if [ ${YES_TO_ALL} -ne 1 ] ; then
+         echo -en "\x1b[34m$(date +%FT%H:%M:%S): Apply hostname changes? [yes/no]?\x1b[0m "
+         read -er applyChanges
+      fi
+      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+         echo mv /etc/hosts.updated /etc/hosts
+         if [ -e /etc/hostname ] ; then
+            echo mv /etc/hostname.updated /etc/hostname
+
+         elif [ -e /etc/rc.conf ] ; then
+            echo mv /etc/rc.conf.updated /etc/rc.conf
+         fi
+      fi
 
       exit 1
 
-#    fi
+   fi
 fi
 
 
@@ -138,7 +166,7 @@ fi
 
 # ====== SSH configuration ==================================================
 if [ -d /etc/ssh ] ; then
-   cd /etc/ssh
+   cd /etc/ssh || exit
 
    # ====== Suggest sshd_config updates =====================================
    port=$(grep "^Port[[:blank:]]" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
