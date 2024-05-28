@@ -163,6 +163,49 @@ fi
 # ====== SSH configuration ==================================================
 if [ -d /etc/ssh ] ; then
    cd /etc/ssh || exit
+   echo -en "\x1b[34m$(date +%FT%H:%M:%S): Checking SSH configuration ...\x1b[0m"
+
+   # ====== Suggest ssh_config updates ======================================
+   cat >ssh_config.suggested <<EOF
+Protocol 2
+
+# Check supported algorithms with "ssh -Q cipher|mac|kex|key"!
+Ciphers                   aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr
+MACs                      hmac-sha2-512-etm@openssh.com,hmac-sha2-512,hmac-sha2-256-etm@openssh.com
+KexAlgorithms             curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group-exchange-sha256,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256
+# To prefer RSA:
+# HostKeyAlgorithms         ssh-rsa-cert-v01@openssh.com,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com
+# To prefer ED25519:
+HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com
+
+VerifyHostKeyDNS          ask
+HashKnownHosts            yes
+GSSAPIAuthentication      yes
+GSSAPIDelegateCredentials no
+
+TCPKeepAlive              yes
+ServerAliveInterval       30
+ServerAliveCountMax       3
+
+SendEnv                   LANG LC_*
+EOF
+
+
+   # ====== Apply ssh_config updates ========================================
+   echo "Suggested ssh_config change:"
+   if ! diff --color=always ssh_config ssh_config.suggested ; then
+      if [ ${YES_TO_ALL} -ne 1 ] ; then
+         echo -en "\x1b[34m$(date +%FT%H:%M:%S): Replace ssh_config? [yes/no]?\x1b[0m "
+         read -er applyChanges
+      fi
+      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+         cp ssh_config ssh_config.old
+         mv ssh_config.suggested ssh_config
+      else
+         echo "Skipped!"
+      fi
+   fi
+
 
    # ====== Suggest sshd_config updates =====================================
    port=$(grep "^Port[[:blank:]]" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
@@ -214,52 +257,19 @@ EOF
       fi
    done
 
-
-   # ====== Suggest ssh_config updates ======================================
-   cat >ssh_config.suggested <<EOF
-Protocol 2
-
-# Check supported algorithms with "ssh -Q cipher|mac|kex|key"!
-Ciphers                   aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr
-MACs                      hmac-sha2-512-etm@openssh.com,hmac-sha2-512,hmac-sha2-256-etm@openssh.com
-KexAlgorithms             curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group-exchange-sha256,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256
-# To prefer RSA:
-# HostKeyAlgorithms         ssh-rsa-cert-v01@openssh.com,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com
-# To prefer ED25519:
-HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com
-
-VerifyHostKeyDNS          ask
-HashKnownHosts            yes
-GSSAPIAuthentication      yes
-GSSAPIDelegateCredentials no
-
-TCPKeepAlive              yes
-ServerAliveInterval       30
-ServerAliveCountMax       3
-
-SendEnv                   LANG LC_*
-EOF
-
-
-   # ====== Apply ssh_config updates ========================================
-   echo "Suggested ssh_config change:"
-   if ! diff --color=always ssh_config ssh_config.suggested ; then
-      if [ ${YES_TO_ALL} -ne 1 ] ; then
-         echo -en "\x1b[34m$(date +%FT%H:%M:%S): Replace ssh_config? [yes/no]?\x1b[0m "
-         read -er applyChanges
-      fi
-      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
-         cp ssh_config ssh_config.old
-         mv ssh_config.suggested ssh_config
-      else
-         echo "Skipped!"
-      fi
+   # ====== Suggest removal of Cloud-Init sshd configuration ================
+   differences=0
+   if [ -e /etc/ssh/sshd_config.d/50-cloud-init.conf ] ; then
+      echo "Suggested removal of /etc/ssh/sshd_config.d/50-cloud-init.conf:"
+      cat /etc/ssh/sshd_config.d/50-cloud-init.conf
+      differences=1
    fi
 
 
    # ====== Apply sshd_config updates =======================================
    echo "Suggested sshd_config change:"
-   if ! diff --color=always sshd_config sshd_config.suggested ; then
+   diff --color=always sshd_config sshd_config.suggested || differences=$(( differences+1))
+   if [ ${differences} -gt 0 ] ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
          echo -en "\x1b[34m$(date +%FT%H:%M:%S): Replace sshd_config? [yes/no]?\x1b[0m "
          read -er applyChanges
