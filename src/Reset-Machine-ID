@@ -68,7 +68,7 @@ fi
 # ====== Change hostname ====================================================
 if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
 #    if [ ${YES_TO_ALL} -ne 1 ] ; then
-#       echo -en "\x1b[33mChange hostname from ${OLD_HOSTNAME_FQDN} to ${NEW_HOSTNAME_FQDN}? [yes/no]?\x1b[0m "
+#       echo -en "\x1b[34m$(date +%FT%H:%M:%S): Change hostname from ${OLD_HOSTNAME_FQDN} to ${NEW_HOSTNAME_FQDN}? [yes/no]?\x1b[0m "
 #       read -er applyChanges
 #    fi
 #    if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
@@ -115,7 +115,7 @@ fi
 # ====== Reset machine ID ===================================================
 if [ -e /etc/machine-id ] ; then
    if [ ${YES_TO_ALL} -ne 1 ] ; then
-      echo -en "\x1b[33mThe current machine ID is $(cat /etc/machine-id). Reset it? [yes/no]?\x1b[0m "
+      echo -en "\x1b[34m$(date +%FT%H:%M:%S): The current machine ID is $(cat /etc/machine-id). Reset it? [yes/no]?\x1b[0m "
       read -er applyChanges
    fi
    if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
@@ -136,11 +136,138 @@ if [ -e /etc/machine-id ] ; then
 fi
 
 
-# ====== Create new keys ====================================================
+# ====== SSH configuration ==================================================
 if [ -d /etc/ssh ] ; then
    cd /etc/ssh
+
+   # ====== Suggest sshd_config updates =====================================
+   port=$(grep "^Port[[:blank:]]" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
+   p1=$(grep "^PasswordAuthentication[[:blank:]]" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
+   p2=$(grep "^KbdInteractiveAuthentication[[:blank:]]" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
+   if [[ ! "${port}" =~ ^[0-9]+$ ]] ; then
+      port="22"
+   fi
+   if [ "${p1}" != "yes" ] && [ "${p1}" != "no" ]  ; then
+      p1="yes"
+   fi
+   if [ "${p2}" != "yes" ] && [ "${p2}" != "no" ]  ; then
+      p2="yes"
+   fi
+   cat >sshd_config.suggested <<EOF
+Protocol 2
+
+Port ${port}
+
+# Check supported algorithms with "ssh -Q cipher|mac|kex|key|PubkeyAcceptedAlgorithms|HostbasedAcceptedKeyTypes|HostbasedAcceptedKeyTypes"!
+Ciphers                      aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
+MACs                         hmac-sha2-512-etm@openssh.com
+KexAlgorithms                curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512
+# The following options are only available on up-to-date SSH servers:
+PubkeyAcceptedKeyTypes       ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,rsa-sha2-512-cert-v01@openssh.com,ssh-rsa-cert-v01@openssh.com,rsa-sha2-512
+HostbasedAcceptedKeyTypes    ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
+HostKeyAlgorithms            ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
+
+UsePAM                       yes
+X11Forwarding                yes
+TCPKeepAlive                 yes
+ClientAliveInterval          60
+ClientAliveCountMax          3
+
+# To disable password usage, set *both* values to "no":
+# KbdInteractiveAuthentication uses PAM, which usually just means using a password.
+PasswordAuthentication       ${p1}
+KbdInteractiveAuthentication ${p2}
+
+AcceptEnv                    LANG LC_*
+EOF
+   for sftp in /usr/lib/openssh/sftp-server /usr/libexec/sftp-server ; do
+      if [ -e "$sftp" ] ; then
+         (
+            echo ""
+            echo "Subsystem sftp $sftp"
+         ) >>sshd_config.suggested
+         break
+      fi
+   done
+
+
+   # ====== Suggest ssh_config updates ======================================
+   cat >ssh_config.suggested <<EOF
+Protocol 2
+
+# Check supported algorithms with "ssh -Q cipher|mac|kex|key"!
+Ciphers                   aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr
+MACs                      hmac-sha2-512-etm@openssh.com,hmac-sha2-512,hmac-sha2-256-etm@openssh.com
+KexAlgorithms             curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group-exchange-sha256,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256
+# To prefer RSA:
+# HostKeyAlgorithms         ssh-rsa-cert-v01@openssh.com,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com
+# To prefer ED25519:
+HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com
+
+VerifyHostKeyDNS          ask
+HashKnownHosts            yes
+GSSAPIAuthentication      yes
+GSSAPIDelegateCredentials no
+
+TCPKeepAlive              yes
+ServerAliveInterval       30
+ServerAliveCountMax       3
+
+SendEnv                   LANG LC_*
+EOF
+
+
+   # ====== Apply ssh_config updates ========================================
+   echo "Suggested ssh_config change:"
+   if ! diff --color ssh_config ssh_config.suggested ; then
+      if [ ${YES_TO_ALL} -ne 1 ] ; then
+         echo -en "\x1b[34m$(date +%FT%H:%M:%S): Replace ssh_config? [yes/no]?\x1b[0m "
+         read -er applyChanges
+      fi
+      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+         cp ssh_config ssh_config.old
+         mv ssh_config.suggested ssh_config
+      else
+         echo "Skipped!"
+      fi
+   fi
+
+
+   # ====== Apply sshd_config updates =======================================
+   echo "Suggested sshd_config change:"
+   if ! diff --color sshd_config sshd_config.suggested ; then
+      if [ ${YES_TO_ALL} -ne 1 ] ; then
+         echo -en "\x1b[34m$(date +%FT%H:%M:%S): Replace sshd_config? [yes/no]?\x1b[0m "
+         read -er applyChanges
+      fi
+      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+         cp sshd_config sshd_config.old
+         mv sshd_config.suggested sshd_config
+      else
+         echo "Skipped!"
+      fi
+   fi
+
+
+   # ====== Remove Cloud-Init sshd configuration ============================
+   if [ -e /etc/ssh/sshd_config.d/50-cloud-init.conf ] ; then
+      echo "Suggested removal of /etc/ssh/sshd_config.d/50-cloud-init.conf:"
+      cat /etc/ssh/sshd_config.d/50-cloud-init.conf
+      if [ ${YES_TO_ALL} -ne 1 ] ; then
+         echo -en "\x1b[34m$(date +%FT%H:%M:%S): Remove /etc/ssh/sshd_config.d/50-cloud-init.conf? [yes/no]?\x1b[0m "
+         read -er applyChanges
+      fi
+      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
+         rm /etc/ssh/sshd_config.d/50-cloud-init.conf
+      else
+         echo "Skipped!"
+      fi
+   fi
+
+
+   # ====== Generate new SSH key pair =======================================
    if [ ${YES_TO_ALL} -ne 1 ] ; then
-      echo -en "\x1b[33mRemove existing SSH host keys and generate new ones? [yes/no]?\x1b[0m "
+      echo -en "\x1b[34m$(date +%FT%H:%M:%S): Remove existing SSH host keys and generate new ones? [yes/no]?\x1b[0m "
       read -er applyChanges
    fi
    if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
@@ -171,118 +298,6 @@ if [ -d /etc/ssh ] ; then
 
    else
       echo "Skipped!"
-   fi
-
-
-   # ====== Suggest sshd_config updates =====================================
-   p1=$(grep "^PasswordAuthentication" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
-   p2=$(grep "^KbdInteractiveAuthentication" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
-   if [ "${p1}" != "yes" ] && [ "${p1}" != "no" ]  ; then
-      p1="yes"
-   fi
-   if [ "${p2}" != "yes" ] && [ "${p2}" != "no" ]  ; then
-      p2="yes"
-   fi
-   cat >sshd_config.suggested <<EOF
-Protocol 2
-
-# Check supported algorithms with "ssh -Q cipher|kex|key|mac"!
-# The following 3 options require a very new sshd:
-# PubkeyAcceptedKeyTypes       ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
-# HostbasedAcceptedKeyTypes    ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
-# HostKeyAlgorithms            ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
-Ciphers                      aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
-MACs                         hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
-KexAlgorithms                curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
-
-UsePAM                       yes
-X11Forwarding                yes
-TCPKeepAlive                 yes
-ClientAliveInterval          60
-ClientAliveCountMax          3
-
-# To disable password usage, set *both* values to "no":
-# KbdInteractiveAuthentication uses PAM, which usually just means using a password.
-PasswordAuthentication       ${p1}
-KbdInteractiveAuthentication ${p2}
-
-AcceptEnv                 LANG LC_*
-EOF
-   for sftp in /usr/lib/openssh/sftp-server /usr/libexec/sftp-server ; do
-      if [ -e "$sftp" ] ; then
-         echo "Subsystem sftp $sftp" >>sshd_config.suggested
-         break
-      fi
-   done
-
-
-   # ====== Suggest ssh_config updates ======================================
-   cat >ssh_config.suggested <<EOF
-Protocol 2
-
-# Check supported algorithms with "ssh -Q cipher|kex|key|mac"!
-Ciphers                   aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr
-MACs                      hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512
-KexAlgorithms             curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256
-# To prefer RSA:
-# HostKeyAlgorithms         ssh-rsa-cert-v01@openssh.com,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com
-# To prefer ED25519:
-HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com
-
-VerifyHostKeyDNS          ask
-HashKnownHosts            yes
-GSSAPIAuthentication      yes
-GSSAPIDelegateCredentials no
-
-TCPKeepAlive              yes
-ServerAliveInterval       30
-ServerAliveCountMax       3
-
-SendEnv                   LANG LC_*
-EOF
-
-
-   # ====== Apply ssh_config updates ========================================
-   echo "Suggested ssh_config change:"
-   if ! diff --color ssh_config ssh_config.suggested ; then
-      if [ ${YES_TO_ALL} -ne 1 ] ; then
-         echo -en "\x1b[33mReplace ssh_config? [yes/no]?\x1b[0m "
-         read -er applyChanges
-      fi
-      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
-         cp ssh_config.suggested ssh_config
-      else
-         echo "Skipped!"
-      fi
-   fi
-
-   # ====== Apply sshd_config updates =======================================
-   echo "Suggested sshd_config change:"
-   if ! diff --color sshd_config sshd_config.suggested ; then
-      if [ ${YES_TO_ALL} -ne 1 ] ; then
-         echo -en "\x1b[33mReplace sshd_config? [yes/no]?\x1b[0m "
-         read -er applyChanges
-      fi
-      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
-         cp sshd_config.suggested sshd_config
-      else
-         echo "Skipped!"
-      fi
-   fi
-
-   # ====== Remove Cloud-Init sshd configuration ============================
-   if [ -e /etc/ssh/sshd_config.d/50-cloud-init.conf ] ; then
-      echo "Suggested removal of /etc/ssh/sshd_config.d/50-cloud-init.conf:"
-      cat /etc/ssh/sshd_config.d/50-cloud-init.conf
-      if [ ${YES_TO_ALL} -ne 1 ] ; then
-         echo -en "\x1b[33mRemove /etc/ssh/sshd_config.d/50-cloud-init.conf? [yes/no]?\x1b[0m "
-         read -er applyChanges
-      fi
-      if [ "${applyChanges}" = "yes" ] || [ "${applyChanges}" = "y" ] ; then
-         rm /etc/ssh/sshd_config.d/50-cloud-init.conf
-      else
-         echo "Skipped!"
-      fi
    fi
 
 fi
