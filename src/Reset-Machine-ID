@@ -110,7 +110,7 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
       diff --color=always /etc/hostname /etc/hostname.updated || differences=$(( differences+1))
    elif [ -e /etc/rc.conf ] ; then
       echo "/etc/rc.conf:"
-      sed -e "s/^hostname=/hostname=\"${NEW_HOSTNAME_FQDN}\"/g" \
+      sed -e "s/^hostname=.*$/hostname=\"${NEW_HOSTNAME_FQDN}\"/g" \
          </etc/rc.conf >/etc/rc.conf.updated
       diff --color=always /etc/rc.conf /etc/rc.conf.updated || differences=$(( differences+1))
    fi
@@ -125,11 +125,13 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
          mv /etc/hosts.updated /etc/hosts
          if [ -e /etc/hostname ] ; then
             mv /etc/hostname.updated /etc/hostname
-            if [ -x /usr/bin/hostnamectl ] ; then
-               /usr/bin/hostnamectl hostname "${NEW_HOSTNAME_FQDN}"
-            fi
          elif [ -e /etc/rc.conf ] ; then
             mv /etc/rc.conf.updated /etc/rc.conf
+         fi
+         if [ -x /usr/bin/hostnamectl ] ; then
+            /usr/bin/hostnamectl hostname "${NEW_HOSTNAME_FQDN}"
+         else
+            hostname "${NEW_HOSTNAME_FQDN}"
          fi
       fi
    fi
