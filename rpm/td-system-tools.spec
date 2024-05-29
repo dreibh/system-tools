@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 1.7.0~beta2
+Version: 1.7.0~beta3
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -95,12 +95,42 @@ management databases, installing all available updates, checking
 for old kernels and removing them, trim SSD or unmap unused storage.
 
 %files system-maintenance
-%{_bindir}/Reset-Machine-ID
 %{_bindir}/System-Maintenance
 %{_datadir}/locale/*/LC_MESSAGES/System-Maintenance.mo
-%{_mandir}/man1/Reset-Machine-ID.1.gz
 %{_mandir}/man1/System-Maintenance.1.gz
 %{_sysconfdir}/system-maintenance.d/XX-example
+
+
+%package reset-machine-id
+Summary: Reset machine identity state
+Group: Applications/System
+BuildArch: noarch
+Recommends: td-system-tools-system-info
+Recommends: td-system-tools-system-maintenance
+
+%description reset-machine-id
+This program helps to reset the machine identity state:
+reset machine ID, change hostname, replace SSH keys, suggest hardened
+SSH client and server settings.
+
+%files reset-machine-id
+%{_bindir}/Reset-Machine-ID
+%{_mandir}/man1/Reset-Machine-ID.1.gz
+
+
+%package fingerprint-ssh-keys
+Summary: Reset machine identity state
+Group: Applications/System
+BuildArch: noarch
+Recommends: td-system-tools-system-info
+
+%description fingerprint-ssh-keys
+This program prints the SSH key fingerprints of the local machine
+in different formats: SSH hash, DNS SSHFP RR.
+
+%files fingerprint-ssh-keys
+%{_datadir}/locale/*/LC_MESSAGES/Fingerprint-SSH-Keys.mo
+%{_mandir}/man1/Fingerprint-SSH-Keys.1.gz
 
 
 %package configure-grub
@@ -130,8 +160,10 @@ a rescue media to fix a broken configuration!
 Summary: Meta package for system information and maintenance tools
 Group: Applications/System
 BuildArch: noarch
+Requires: td-system-tools-fingerprint-ssh-keys
 Requires: td-system-tools-system-info
 Requires: td-system-tools-system-maintenance
+Requires: td-system-tools-system-reset-machine-id
 Recommends: td-system-tools-configure-grub
 
 %description all

@@ -1,4 +1,3 @@
 etc/system-maintenance.d/XX-example
-usr/bin/Reset-Machine-ID
 usr/bin/System-Maintenance
 usr/share/locale/*/LC_MESSAGES/System-Maintenance.mo
