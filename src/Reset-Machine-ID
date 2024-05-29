@@ -19,6 +19,13 @@
 # Contact: dreibh@simula.no
 
 
+export TEXTDOMAIN="Reset-Machine-ID"
+# export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
+
+# shellcheck disable=SC1091
+. gettext.sh
+
+
 # SSH key settings:
 ECDSA_BITS=521
 RSA_BITS=16384
@@ -44,7 +51,7 @@ while [ $# -gt 0 ] ; do
    elif [ "$1" == "--hostname" ] || [ "$1" == "-H" ] || [ "$1" == "-hostname" ] ; then
 
       if [[ ! "$2" =~ ^([a-zA-Z][a-zA-Z0-9-]+\.)*[a-zA-Z][a-zA-Z0-9-]*$ ]] ; then
-         echo >&2 "ERROR: Bad hostname $2!"
+         echo >&2 "$(eval_gettext "ERROR: Invalid hostname:") $2!"
          exit 1
       fi
       NEW_HOSTNAME_FQDN="$2"
@@ -55,7 +62,7 @@ while [ $# -gt 0 ] ; do
    elif [ "$1" == "--skip-ssh-key-replacement" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-key-replacement" ] ; then
       SKIP_SSH_KEY_REPLACEMENT=1
    else
-      echo >&2 "Usage: $0 [--hostname hostname] [--skip-ssh-configuration] [--skip-ssh-key-replacement]"
+      echo >&2 "$(eval_gettext "Usage:") $0 [--hostname hostname] [--skip-ssh-configuration] [--skip-ssh-key-replacement]"
       exit 1
    fi
    shift
@@ -115,7 +122,7 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
    # ====== Apply changes ================================================
    if [ ${differences} -gt 0 ] ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
-         echo -en "\x1b[34m$(date +%FT%H:%M:%S): Update hostname? [yes/no]?\x1b[0m "
+         echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Update hostname?") [yes/no]?\x1b[0m "
          read -er applyChanges
       fi
       if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
@@ -138,7 +145,8 @@ fi
 # ====== Reset machine ID ===================================================
 if [ -e /etc/machine-id ] ; then
    if [ ${YES_TO_ALL} -ne 1 ] ; then
-      echo -en "\x1b[34m$(date +%FT%H:%M:%S): The current machine ID is $(cat /etc/machine-id). Reset it? [yes/no]?\x1b[0m "
+      machineID="$(cat /etc/machine-id)"
+      echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "The current machine ID is \${machineID}. Reset it?") [yes/no]?\x1b[0m "
       read -er applyChanges
    fi
    if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
@@ -154,7 +162,8 @@ if [ -e /etc/machine-id ] ; then
          rm /var/lib/dbus/machine-id
          ln -s /etc/machine-id /var/lib/dbus/machine-id
       fi
-      echo "The new machine ID is $(cat /etc/machine-id)."
+      machineID="$(cat /etc/machine-id)"
+      gettext "The new machine ID is ${machineID}."
    fi
 fi
 
@@ -163,7 +172,7 @@ fi
 if [ ${SKIP_SSH_CONFIGURATION} -eq 0 ] && [ -d /etc/ssh ] ; then
 
    cd /etc/ssh || exit
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): Checking SSH configuration ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Checking SSH configuration ...")\x1b[0m"
 
    # ====== Suggest ssh_config updates ======================================
    cat >ssh_config.suggested <<EOF
@@ -188,17 +197,19 @@ EOF
 
 
    # ====== Apply ssh_config updates ========================================
-   echo "Suggested ssh_config change:"
+   gettext "Suggested ssh_config change:"
+   echo ""
    if ! diff --color=always ssh_config ssh_config.suggested ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
-         echo -en "\x1b[34m$(date +%FT%H:%M:%S): Replace ssh_config? [yes/no]?\x1b[0m "
+         echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Apply suggested ssh_config?") [yes/no]?\x1b[0m "
          read -er applyChanges
       fi
       if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
          cp ssh_config ssh_config.old
          mv ssh_config.suggested ssh_config
       else
-         echo "Skipped!"
+         gettext "Skipped!"
+         echo ""
       fi
    fi
 
@@ -257,14 +268,16 @@ EOF
    # ====== Suggest removal of Cloud-Init sshd configuration ================
    differences=0
    if [ -e /etc/ssh/sshd_config.d/50-cloud-init.conf ] ; then
-      echo "Suggested removal of /etc/ssh/sshd_config.d/50-cloud-init.conf:"
+      gettext "Suggested removal of /etc/ssh/sshd_config.d/50-cloud-init.conf:"
+      echo ""
       cat /etc/ssh/sshd_config.d/50-cloud-init.conf
       differences=1
    fi
 
 
    # ====== Apply sshd_config updates =======================================
-   echo "Suggested sshd_config change:"
+   gettext "Suggested sshd_config change:"
+   echo ""
    diff --color=always sshd_config sshd_config.suggested || differences=$(( differences+1))
    if [ ${differences} -gt 0 ] ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
@@ -276,11 +289,13 @@ EOF
          cp sshd_config sshd_config.old
          mv sshd_config.suggested sshd_config
 
-         echo "Trying to restart SSH daemon ..."
+         gettext "Trying to restart SSH daemon ..."
+         echo ""
          # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
          service sshd restart 2>/dev/null || service ssh restart 2>/dev/null
       else
-         echo "Skipped!"
+         gettext "Skipped!"
+         echo ""
       fi
    fi
 fi
@@ -292,13 +307,14 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] ; then
    cd /etc/ssh || exit
 
    if [ ${YES_TO_ALL} -ne 1 ] ; then
-      echo -en "\x1b[34m$(date +%FT%H:%M:%S): Remove existing SSH host keys and generate new ones? [yes/no]?\x1b[0m "
+      echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Remove existing SSH host keys and generate new ones?") [yes/no]?\x1b[0m "
       read -er applyChanges
    fi
    if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
       BACKUP_DIRECTORY="backup-$(env LANG=C date +%FT%H:%M:%S)"
 
-      echo "Making backup in ${BACKUP_DIRECTORY} ..."
+      gettext "Making backup in ${BACKUP_DIRECTORY} ..."
+      echo ""
       mkdir "${BACKUP_DIRECTORY}/"
       find . -maxdepth 1 -name "ssh_host_*_key*" -print0 | xargs -0 -n1 -I § -r mv § "${BACKUP_DIRECTORY}/"
       find . -maxdepth 1 -name "ssh_host_key*"   -print0 | xargs -0 -n1 -I § -r mv § "${BACKUP_DIRECTORY}/"
@@ -312,21 +328,27 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] ; then
       # echo "Generating moduli, step 2 ..."
       # time ssh-keygen -T moduli -f moduli.candidates
 
-      echo "Generating ED25519 key ..."
+      gettext "Generating new ED25519 key ..."
+      echo ""
       time ssh-keygen -N "" -t ed25519 -f ssh_host_ed25519_key
-      echo "Generating ED25519 key ..."
+      gettext "Generating new ECDSA key ..."
+      echo ""
       time ssh-keygen -N "" -t ecdsa -b $ECDSA_BITS -f ssh_host_ecdsa_key
-      echo "Generating RSA key ..."
+      gettext "Generating new RSA key; this may take some time ..."
+      echo ""
       time ssh-keygen -N "" -t rsa -b $RSA_BITS -f ssh_host_rsa_key
 
-      echo "Done!"
+      gettext "Done!"
+      echo ""
 
-      echo "Trying to restart SSH daemon ..."
+      gettext "Trying to restart SSH daemon ..."
+      echo ""
       # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
       service sshd restart 2>/dev/null || service ssh restart 2>/dev/null
 
    else
-      echo "Skipped!"
+      gettext "Skipped!"
+      echo ""
    fi
 
 fi

@@ -1,7 +1,42 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Reset Machine ID
+# Copyright (C) 2013-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
 
+# Bash options:
+set -e
+
+
+export TEXTDOMAIN="Fingerprint-SSH-Keys"
+# export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
+
+# shellcheck disable=SC1091
+. gettext.sh
+
+
+
+# ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
 formats="ssh dns"
 
+
+# ====== Print SSH key fingerprints =========================================
 if [ -d /etc/ssh ] ; then
    hostname="$(hostname -f)"
    keys=$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)
@@ -10,7 +45,7 @@ if [ -d /etc/ssh ] ; then
 
       # ====== Print fingerprints in SSH format =============================
       if [ "${format}" == "ssh" ] ; then
-         echo -e "\x1b[34m$(date +%FT%H:%M:%S): Fingerprints of ${hostname} in SSH format:\x1b[0m"
+         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in SSH format"):\x1b[0m"
          keyNumber=1
          for key in $keys ; do
             echo -n "#${keyNumber}: "
@@ -21,7 +56,7 @@ if [ -d /etc/ssh ] ; then
 
       # ====== Print fingerprints in DNS format =============================
       elif [ "${format}" == "dns" ] ; then
-         echo -e "\x1b[34m$(date +%FT%H:%M:%S): Fingerprints of ${hostname} in DNS RR format:\x1b[0m"
+         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in DNS RR format"):\x1b[0m"
          for key in $keys ; do
             # Filter out ECDSA and DSA keys:
             if [[ ! "${key}" =~ (.ecdsa_key.pub|.dsa_key.pub)$ ]] ; then
