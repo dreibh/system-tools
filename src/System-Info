@@ -75,6 +75,7 @@ function print-system-information ()
 
    # ------ Get information from /etc/os-release ----------------------------
    if [ -e /etc/os-release ] ; then
+      # shellcheck disable=SC1091
       . /etc/os-release
       DISTRIB_ID="${NAME}"
       DISTRIB_RELEASE="${VERSION_ID}"
