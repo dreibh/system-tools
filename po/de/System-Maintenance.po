@@ -123,4 +123,4 @@ msgstr "Führe ZFS-Trimming durch ..."
 #: src/System-Maintenance:423
 #, sh-format
 msgid "Done!"
-msgstr "Fertig!"
+msgstr "Erledigt!"

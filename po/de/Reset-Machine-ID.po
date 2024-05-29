@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR "Copyright (C) 2013-2024 by Thomas Dreibholz"
+# This file is distributed under the same license as the "td-system-tools" package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \"td-system-tools\" \"1.7.0~beta3\"\n"
+"Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
+"POT-Creation-Date: 2024-05-29 14:57+0200\n"
+"PO-Revision-Date: 2024-03-14 13:14+0100\n"
+"Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
+"Language-Team:\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Language: de\n"
+"X-Source-Language: en_GB\n"
+
+#: src/Reset-Machine-ID:55
+#, sh-format
+msgid "ERROR: Invalid hostname ${hostname}!"
+msgstr "FEHLER: Ungültiger hostname ${hostname}!"
+
+#: src/Reset-Machine-ID:65
+#, sh-format
+msgid "Usage:"
+msgstr "Aufruf:"
+
+#: src/Reset-Machine-ID:125
+#, sh-format
+msgid "Update hostname?"
+msgstr "Hostname aktualisieren?"
+
+#: src/Reset-Machine-ID:149
+#, sh-format
+msgid "The current machine ID is ${machineID}. Reset it?"
+msgstr "Die aktuelle Maschinen-ID ist ${machineID}. Zurücksetzen?"
+
+#: src/Reset-Machine-ID:176
+#, sh-format
+msgid "Checking SSH configuration ..."
+msgstr "Überprüfe SSH-Konfiguration ..."
+
+#: src/Reset-Machine-ID:201
+msgid "Suggested ssh_config changes:"
+msgstr "Vorgeschlagene Änderungen in ssh_config:"
+
+#: src/Reset-Machine-ID:205
+#, sh-format
+msgid "Apply suggested ssh_config changes?"
+msgstr "Vorgeschlagene Änderungen in ssh_config durchführen?"
+
+#: src/Reset-Machine-ID:212 src/Reset-Machine-ID:298 src/Reset-Machine-ID:346
+msgid "Skipped!"
+msgstr "Übersprungen!"
+
+#: src/Reset-Machine-ID:272
+msgid "Suggested removal of /etc/ssh/sshd_config.d/50-cloud-init.conf:"
+msgstr "Vorgeschlagene Entfernung von /etc/ssh/sshd_config.d/50-cloud-init.conf:"
+
+#: src/Reset-Machine-ID:280
+msgid "Suggested sshd_config changes:"
+msgstr "Vorgeschlagene Änderungen in sshd_config:"
+
+#: src/Reset-Machine-ID:285
+#, sh-format
+msgid "Apply suggested sshd_config changes?"
+msgstr "Vorgeschlagene Änderungen in sshd_config durchführen?"
+
+#: src/Reset-Machine-ID:293 src/Reset-Machine-ID:340
+#, sh-format
+msgid "Trying to restart SSH daemon ..."
+msgstr "Versuche Restart des SSH-Daemons ..."
+
+#: src/Reset-Machine-ID:311
+#, sh-format
+msgid "Remove existing SSH host keys and generate new ones?"
+msgstr "Existierende SSH-Schlüssel entfernen und neue Schlüssel erstellen?"
+
+#: src/Reset-Machine-ID:317
+#, fuzzy, sh-format
+msgid "Making backup of current keys in ${backupDirectory} ..."
+msgstr "Erstelle Backup der gegenwärtigen Schlüssel in ${backupDirectory} ..."
+
+#: src/Reset-Machine-ID:331
+#, sh-format
+msgid "Generating new ED25519 key ..."
+msgstr "Erstelle neuen ED25519-Schlüssel ..."
+
+#: src/Reset-Machine-ID:333
+#, sh-format
+msgid "Generating new ECDSA key ..."
+msgstr "Erstelle neuen ECDSA-Schlüssel ..."
+
+#: src/Reset-Machine-ID:335
+#, sh-format
+msgid "Generating new RSA key; this may take some time ..."
+msgstr "Erstelle neuen RSA-Schlüssel; dieses kann einen Moment dauern ..."
+
+#: src/Reset-Machine-ID:338
+#, sh-format
+msgid "Done!"
+msgstr "Erledigt!"

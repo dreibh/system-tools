@@ -1,0 +1,104 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR "Copyright (C) 2013-2024 by Thomas Dreibholz"
+# This file is distributed under the same license as the "td-system-tools" package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \"td-system-tools\" \"1.7.0~beta3\"\n"
+"Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
+"POT-Creation-Date: 2024-05-29 14:57+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/Reset-Machine-ID:55
+#, sh-format
+msgid "ERROR: Invalid hostname ${hostname}!"
+msgstr ""
+
+#: src/Reset-Machine-ID:65
+#, sh-format
+msgid "Usage:"
+msgstr ""
+
+#: src/Reset-Machine-ID:125
+#, sh-format
+msgid "Update hostname?"
+msgstr ""
+
+#: src/Reset-Machine-ID:149
+#, sh-format
+msgid "The current machine ID is ${machineID}. Reset it?"
+msgstr ""
+
+#: src/Reset-Machine-ID:176
+#, sh-format
+msgid "Checking SSH configuration ..."
+msgstr ""
+
+#: src/Reset-Machine-ID:201
+msgid "Suggested ssh_config changes:"
+msgstr ""
+
+#: src/Reset-Machine-ID:205
+#, sh-format
+msgid "Apply suggested ssh_config changes?"
+msgstr ""
+
+#: src/Reset-Machine-ID:212 src/Reset-Machine-ID:298 src/Reset-Machine-ID:346
+msgid "Skipped!"
+msgstr ""
+
+#: src/Reset-Machine-ID:272
+msgid "Suggested removal of /etc/ssh/sshd_config.d/50-cloud-init.conf:"
+msgstr ""
+
+#: src/Reset-Machine-ID:280
+msgid "Suggested sshd_config changes:"
+msgstr ""
+
+#: src/Reset-Machine-ID:285
+#, sh-format
+msgid "Apply suggested sshd_config changes?"
+msgstr ""
+
+#: src/Reset-Machine-ID:293 src/Reset-Machine-ID:340
+#, sh-format
+msgid "Trying to restart SSH daemon ..."
+msgstr ""
+
+#: src/Reset-Machine-ID:311
+#, sh-format
+msgid "Remove existing SSH host keys and generate new ones?"
+msgstr ""
+
+#: src/Reset-Machine-ID:317
+#, sh-format
+msgid "Making backup of current keys in ${backupDirectory} ..."
+msgstr ""
+
+#: src/Reset-Machine-ID:331
+#, sh-format
+msgid "Generating new ED25519 key ..."
+msgstr ""
+
+#: src/Reset-Machine-ID:333
+#, sh-format
+msgid "Generating new ECDSA key ..."
+msgstr ""
+
+#: src/Reset-Machine-ID:335
+#, sh-format
+msgid "Generating new RSA key; this may take some time ..."
+msgstr ""
+
+#: src/Reset-Machine-ID:338
+#, sh-format
+msgid "Done!"
+msgstr ""
