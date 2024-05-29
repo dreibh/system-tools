@@ -27,7 +27,7 @@
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm Fingerprint-SSH-Keys
-.\" .Op Fl ...
+.Op Fl \-include-deprecated|\-d
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Fingerprint-SSH-Keys
@@ -37,14 +37,17 @@ prints the SSH key fingerprints of the local machine in different formats:
 .br
 * DNS SSHFP FF format.
 .Pp
-.\" .\" ###### Arguments ########################################################
-.\" .Sh ARGUMENTS
-.\" The following options are available:
-.\" .Bl -tag -width indent
-.\" .It ...
-.\" .El
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It \-\-include-deprecated|\-d
+Also include deprecated key types and hash algorithms in DNS SSHFP RR output.
+.El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It sudo Fingerprint-SSH-Keys
+.It Fingerprint-SSH-Keys
+.It Fingerprint-SSH-Keys \-\-include-deprecated
+.It Fingerprint-SSH-Keys \-d
 .El

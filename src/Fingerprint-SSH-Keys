@@ -33,7 +33,18 @@ export TEXTDOMAIN="Fingerprint-SSH-Keys"
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
-formats="ssh dns"
+FORMATS="ssh dns"
+INCLUDE_DEPRECATED=0
+
+while [ $# -gt 0 ] ; do
+   if [ "$1" == "--include-deprecated" ] || [ "$1" == "-d" ] || [ "$1" == "-include-deprecated" ] ; then
+      INCLUDE_DEPRECATED=1
+   else
+      echo 2>&1 "$(eval_gettext "Usage:") $0 [--include-deprecated|-d]"
+      exit 1
+   fi
+   shift
+done
 
 
 # ====== Print SSH key fingerprints =========================================
@@ -41,7 +52,7 @@ if [ -d /etc/ssh ] ; then
    hostname="$(hostname -f)"
    keys=$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)
 
-   for format in ${formats} ; do
+   for format in ${FORMATS} ; do
 
       # ====== Print fingerprints in SSH format =============================
       if [ "${format}" == "ssh" ] ; then
@@ -58,10 +69,14 @@ if [ -d /etc/ssh ] ; then
       elif [ "${format}" == "dns" ] ; then
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in DNS RR format:")\x1b[0m"
          for key in $keys ; do
-            # Filter out ECDSA and DSA keys:
-            if [[ ! "${key}" =~ (.ecdsa_key.pub|.dsa_key.pub)$ ]] ; then
-               # Filter out deprecated DSS key type or SSH-1 hash:
-               ssh-keygen -r "${key}" | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [13-9] [2-9]' | while read -r in rrType algorithmID hashID fingerprint ; do
+            # Filter out ECDSA and DSA keys, unless requested:
+            if [ ${INCLUDE_DEPRECATED} -eq  1 ] || [[ ! "${key}" =~ (.ecdsa_key.pub|.dsa_key.pub)$ ]] ; then
+               if [ ${INCLUDE_DEPRECATED} -eq 1 ] ; then
+                  ssh-keygen -r "${key}" | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [1-9] [1-9]'
+               else
+                  # Filter out deprecated DSS key type or SSH-1 hash:
+                  ssh-keygen -r "${key}" | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [13-9] [2-9]'
+               fi | while read -r in rrType algorithmID hashID fingerprint ; do
                   echo -e "${hostname}\t${in}\t${rrType}\t${algorithmID}\t${hashID}\t${fingerprint}"
                done
             fi
