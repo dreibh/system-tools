@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.6\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-03-22 15:42+0100\n"
+"POT-Creation-Date: 2024-05-29 13:09+0200\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -38,107 +38,107 @@ msgstr ""
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: src/System-Info:133
+#: src/System-Info:134
 #, sh-format
 msgid "Slice:            "
 msgstr "Slice:            "
 
-#: src/System-Info:135
+#: src/System-Info:136
 #, sh-format
 msgid "Host:             "
 msgstr "Rechner:          "
 
-#: src/System-Info:136
+#: src/System-Info:137
 #, sh-format
 msgid "Uptime:           "
 msgstr "Betriebszeit:     "
 
-#: src/System-Info:142
+#: src/System-Info:143
 #, sh-format
 msgid "Operating System: "
 msgstr "Betriebssystem:   "
 
-#: src/System-Info:142
+#: src/System-Info:143
 #, sh-format
 msgid "with kernel"
 msgstr "mit Kernel"
 
-#: src/System-Info:143
+#: src/System-Info:144
 #, sh-format
 msgid "Processor:        "
 msgstr "Prozessor         "
 
-#: src/System-Info:143
+#: src/System-Info:144
 #, sh-format
 msgid "%'d processes"
 msgstr "%'d Prozesse"
 
-#: src/System-Info:143
+#: src/System-Info:144
 #, sh-format
 msgid "%'d user"
 msgid_plural "%'d users"
 msgstr[0] "%'d Benutzer"
 msgstr[1] "%'d Benutzer"
 
-#: src/System-Info:144
+#: src/System-Info:145
 #, sh-format
 msgid "Load:             "
 msgstr "Auslastung:       "
 
-#: src/System-Info:146
+#: src/System-Info:147
 #, sh-format
 msgid "of"
 msgstr "von"
 
-#: src/System-Info:147
+#: src/System-Info:148
 #, sh-format
 msgid "available"
 msgstr "verfügbar"
 
-#: src/System-Info:148
+#: src/System-Info:149
 #, sh-format
 msgid "on"
 msgstr "auf"
 
-#: src/System-Info:149
+#: src/System-Info:150
 #, sh-format
 msgid "Used Memory:      "
 msgstr "Belegtes RAM:     "
 
-#: src/System-Info:150
+#: src/System-Info:151
 #, sh-format
 msgid "Used Swap:        "
 msgstr "Belegter Swap:    "
 
-#: src/System-Info:155
+#: src/System-Info:156
 #, sh-format
 msgid "no swap available!"
 msgstr "Swap nicht vorhanden!"
 
-#: src/System-Info:158
+#: src/System-Info:159
 #, sh-format
 msgid "Used Diskspace:   "
 msgstr "Speicherplatz:    "
 
-#: src/System-Info:171
+#: src/System-Info:172
 msgid "SSH Keys:         #1 "
 msgstr "SSH-Schlüssel:    1. "
 
-#: src/System-Info:173
+#: src/System-Info:174
 #, sh-format
 msgid "                  #${keyNumber} "
 msgstr "                  ${keyNumber}. "
 
-#: src/System-Info:234
+#: src/System-Info:235
 msgid "(No IPv4)"
 msgstr "(Kein IPv4)"
 
-#: src/System-Info:332
+#: src/System-Info:333
 #, sh-format
 msgid "Network:"
 msgstr "Netzwerk:"
 
-#: src/System-Info:362
+#: src/System-Info:363
 #, sh-format
 msgid "System information as of ${now}"
 msgstr "Systeminformation am ${now}"
