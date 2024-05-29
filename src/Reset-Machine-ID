@@ -164,6 +164,7 @@ if [ -e /etc/machine-id ] ; then
       fi
       machineID="$(cat /etc/machine-id)"
       gettext "The new machine ID is ${machineID}."
+      echo ""
    fi
 fi
 
@@ -292,7 +293,8 @@ EOF
          gettext "Trying to restart SSH daemon ..."
          echo ""
          # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
-         service sshd restart 2>/dev/null || service ssh restart 2>/dev/null
+         service sshd restart 2>/dev/null || \
+            service ssh restart 2>/dev/null
       else
          gettext "Skipped!"
          echo ""
@@ -311,16 +313,16 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] ; then
       read -er applyChanges
    fi
    if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
-      BACKUP_DIRECTORY="backup-$(env LANG=C date +%FT%H:%M:%S)"
+      backupDirectory="backup-$(env LANG=C date +%FT%H:%M:%S)"
 
-      gettext "Making backup in ${BACKUP_DIRECTORY} ..."
+      echo -en "\x1b[32mMaking backup in \${backupDirectory} ...\x1b[0m"
       echo ""
-      mkdir "${BACKUP_DIRECTORY}/"
-      find . -maxdepth 1 -name "ssh_host_*_key*" -print0 | xargs -0 -n1 -I § -r mv § "${BACKUP_DIRECTORY}/"
-      find . -maxdepth 1 -name "ssh_host_key*"   -print0 | xargs -0 -n1 -I § -r mv § "${BACKUP_DIRECTORY}/"
-      find . -maxdepth 1 -name "moduli*"         -print0 | xargs -0 -n1 -I § -r cp § "${BACKUP_DIRECTORY}/"
-      cp sshd_config "${BACKUP_DIRECTORY}/"
-      cp ssh_config  "${BACKUP_DIRECTORY}/"
+      mkdir "${backupDirectory}/"
+      find . -maxdepth 1 -name "ssh_host_*_key*" -print0 | xargs -0 -n1 -I § -r mv § "${backupDirectory}/"
+      find . -maxdepth 1 -name "ssh_host_key*"   -print0 | xargs -0 -n1 -I § -r mv § "${backupDirectory}/"
+      find . -maxdepth 1 -name "moduli*"         -print0 | xargs -0 -n1 -I § -r cp § "${backupDirectory}/"
+      cp sshd_config "${backupDirectory}/"
+      cp ssh_config  "${backupDirectory}/"
 
       # rm -f moduli.candidates moduli
       # echo "Generating moduli, step 1 ..."
@@ -328,23 +330,20 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] ; then
       # echo "Generating moduli, step 2 ..."
       # time ssh-keygen -T moduli -f moduli.candidates
 
-      gettext "Generating new ED25519 key ..."
-      echo ""
+      echo -en "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Generating new ED25519 key ...")\x1b[0m"
       time ssh-keygen -N "" -t ed25519 -f ssh_host_ed25519_key
-      gettext "Generating new ECDSA key ..."
-      echo ""
-      time ssh-keygen -N "" -t ecdsa -b $ECDSA_BITS -f ssh_host_ecdsa_key
-      gettext "Generating new RSA key; this may take some time ..."
-      echo ""
-      time ssh-keygen -N "" -t rsa -b $RSA_BITS -f ssh_host_rsa_key
+      echo -en "\x1b[32m$(eval_gettext "Generating new ECDSA key ...")\x1b[0m"
+      time ssh-keygen -N "" -t ecdsa -b ${ECDSA_BITS} -f ssh_host_ecdsa_key
+      echo -en "\x1b[32m$(eval_gettext "Generating new RSA key; this may take some time ...")\x1b[0m"
+      time ssh-keygen -N "" -t rsa -b ${RSA_BITS} -f ssh_host_rsa_key
 
-      gettext "Done!"
-      echo ""
+      echo -en "\x1b[32m$(eval_gettext "Done!")\x1b[0m"
 
       gettext "Trying to restart SSH daemon ..."
       echo ""
       # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
-      service sshd restart 2>/dev/null || service ssh restart 2>/dev/null
+      service sshd restart 2>/dev/null || \
+         service ssh restart 2>/dev/null
 
    else
       gettext "Skipped!"
