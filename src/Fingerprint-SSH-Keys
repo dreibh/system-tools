@@ -1,0 +1,38 @@
+#!/bin/bash
+
+formats="ssh dns"
+
+if [ -d /etc/ssh ] ; then
+   hostname="$(hostname -f)"
+   keys=$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)
+
+   for format in ${formats} ; do
+
+      # ====== Print fingerprints in SSH format =============================
+      if [ "${format}" == "ssh" ] ; then
+         echo -e "\x1b[34m$(date +%FT%H:%M:%S): Fingerprints of ${hostname} in SSH format:\x1b[0m"
+         keyNumber=1
+         for key in $keys ; do
+            echo -n "#${keyNumber}: "
+            ssh-keygen -lf "${key}" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
+            keyNumber=$((keyNumber+1))
+         done
+         echo ""
+
+      # ====== Print fingerprints in DNS format =============================
+      elif [ "${format}" == "dns" ] ; then
+         echo -e "\x1b[34m$(date +%FT%H:%M:%S): Fingerprints of ${hostname} in DNS RR format:\x1b[0m"
+         for key in $keys ; do
+            # Filter out ECDSA and DSA keys:
+            if [[ ! "${key}" =~ (.ecdsa_key.pub|.dsa_key.pub)$ ]] ; then
+               # Filter out deprecated DSS key type or SSH-1 hash:
+               ssh-keygen -r "${key}" | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [13-9] [2-9]' | while read -r in rrType algorithmID hashID fingerprint ; do
+                  echo -e "${hostname}\t${in}\t${rrType}\t${algorithmID}\t${hashID}\t${fingerprint}"
+               done
+            fi
+         done
+         echo ""
+      fi
+
+   done
+fi
