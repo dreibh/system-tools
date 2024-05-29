@@ -315,7 +315,7 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] ; then
    if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
       backupDirectory="backup-$(env LANG=C date +%FT%H:%M:%S)"
 
-      echo -en "\x1b[32mMaking backup in \${backupDirectory} ...\x1b[0m"
+      echo -e "\x1b[32mMaking backup in \${backupDirectory} ...\x1b[0m"
       echo ""
       mkdir "${backupDirectory}/"
       find . -maxdepth 1 -name "ssh_host_*_key*" -print0 | xargs -0 -n1 -I § -r mv § "${backupDirectory}/"
@@ -330,14 +330,14 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] ; then
       # echo "Generating moduli, step 2 ..."
       # time ssh-keygen -T moduli -f moduli.candidates
 
-      echo -en "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Generating new ED25519 key ...")\x1b[0m"
+      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Generating new ED25519 key ...")\x1b[0m"
       time ssh-keygen -N "" -t ed25519 -f ssh_host_ed25519_key
-      echo -en "\x1b[32m$(eval_gettext "Generating new ECDSA key ...")\x1b[0m"
+      echo -e "\x1b[32m$(eval_gettext "Generating new ECDSA key ...")\x1b[0m"
       time ssh-keygen -N "" -t ecdsa -b ${ECDSA_BITS} -f ssh_host_ecdsa_key
-      echo -en "\x1b[32m$(eval_gettext "Generating new RSA key; this may take some time ...")\x1b[0m"
+      echo -e "\x1b[32m$(eval_gettext "Generating new RSA key; this may take some time ...")\x1b[0m"
       time ssh-keygen -N "" -t rsa -b ${RSA_BITS} -f ssh_host_rsa_key
 
-      echo -en "\x1b[32m$(eval_gettext "Done!")\x1b[0m"
+      echo -e "\x1b[32m$(eval_gettext "Done!")\x1b[0m"
 
       gettext "Trying to restart SSH daemon ..."
       echo ""
