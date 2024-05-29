@@ -45,7 +45,7 @@ if [ -d /etc/ssh ] ; then
 
       # ====== Print fingerprints in SSH format =============================
       if [ "${format}" == "ssh" ] ; then
-         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in SSH format"):\x1b[0m"
+         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in SSH format:")\x1b[0m"
          keyNumber=1
          for key in $keys ; do
             echo -n "#${keyNumber}: "
@@ -56,7 +56,7 @@ if [ -d /etc/ssh ] ; then
 
       # ====== Print fingerprints in DNS format =============================
       elif [ "${format}" == "dns" ] ; then
-         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in DNS RR format"):\x1b[0m"
+         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in DNS RR format:")\x1b[0m"
          for key in $keys ; do
             # Filter out ECDSA and DSA keys:
             if [[ ! "${key}" =~ (.ecdsa_key.pub|.dsa_key.pub)$ ]] ; then

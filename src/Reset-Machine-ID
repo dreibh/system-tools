@@ -314,7 +314,7 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] ; then
    if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
       backupDirectory="backup-$(env LANG=C date +%FT%H:%M:%S)"
 
-      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Making backup in \${backupDirectory} ...")\x1b[0m"
+      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Making backup of keys in \${backupDirectory} ...")\x1b[0m"
       mkdir "${backupDirectory}/"
       find . -maxdepth 1 -name "ssh_host_*_key*" -print0 | xargs -0 -n1 -I § -r mv § "${backupDirectory}/"
       find . -maxdepth 1 -name "ssh_host_key*"   -print0 | xargs -0 -n1 -I § -r mv § "${backupDirectory}/"
