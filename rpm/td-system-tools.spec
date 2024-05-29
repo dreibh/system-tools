@@ -129,6 +129,7 @@ This program prints the SSH key fingerprints of the local machine
 in different formats: SSH hash, DNS SSHFP RR.
 
 %files fingerprint-ssh-keys
+%{_bindir}/Fingerprint-SSH-Keys
 %{_datadir}/locale/*/LC_MESSAGES/Fingerprint-SSH-Keys.mo
 %{_mandir}/man1/Fingerprint-SSH-Keys.1.gz
 
