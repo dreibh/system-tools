@@ -115,7 +115,7 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
    # ====== Apply changes ================================================
    if [ ${differences} -gt 0 ] ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
-         echo -en "\x1b[34m$(date +%FT%H:%M:%S): Update hostname? [yes/no]?\x1b[0m"
+         echo -en "\x1b[34m$(date +%FT%H:%M:%S): Update hostname? [yes/no]?\x1b[0m "
          read -er applyChanges
       fi
       if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
