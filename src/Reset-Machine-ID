@@ -52,6 +52,7 @@ while [ $# -gt 0 ] ; do
       hostname="$2"
       shift
       if [[ ! "$2" =~ ^([a-zA-Z][a-zA-Z0-9-]+\.)*[a-zA-Z][a-zA-Z0-9-]*$ ]] ; then
+         # shellcheck disable=SC2005
          echo >&2 "$(eval_gettext "ERROR: Invalid hostname \${hostname}!")"
          exit 1
       fi
