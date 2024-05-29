@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 1.7.0~beta3
+Version: 1.7.0~beta4
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -115,6 +115,7 @@ SSH client and server settings.
 
 %files reset-machine-id
 %{_bindir}/Reset-Machine-ID
+%{_datadir}/locale/*/LC_MESSAGES/Reset-Machine-ID.mo
 %{_mandir}/man1/Reset-Machine-ID.1.gz
 
 

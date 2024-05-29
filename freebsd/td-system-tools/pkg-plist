@@ -14,6 +14,7 @@ share/locale/de/LC_MESSAGES/Fingerprint-SSH-Keys.mo
 share/locale/de/LC_MESSAGES/System-Info.mo
 share/locale/de/LC_MESSAGES/System-Maintenance.mo
 share/locale/nb/LC_MESSAGES/Fingerprint-SSH-Keys.mo
+share/locale/nb/LC_MESSAGES/Reset-Machine-ID.mo
 share/locale/nb/LC_MESSAGES/System-Info.mo
 share/locale/nb/LC_MESSAGES/System-Maintenance.mo
 share/man/man1/configure-grub.1.gz
