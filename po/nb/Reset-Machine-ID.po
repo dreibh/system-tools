@@ -69,7 +69,7 @@ msgstr "Vil du bruke foreslåtte ssh_config-endringer?"
 
 #: src/Reset-Machine-ID:213 src/Reset-Machine-ID:299 src/Reset-Machine-ID:347
 msgid "Skipped!"
-msgstr "Übersprungen!"
+msgstr "Hoppet over!"
 
 #: src/Reset-Machine-ID:273
 msgid "Suggested removal of /etc/ssh/sshd_config.d/50-cloud-init.conf:"
