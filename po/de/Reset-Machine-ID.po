@@ -1,14 +1,27 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR "Copyright (C) 2013-2024 by Thomas Dreibholz"
-# This file is distributed under the same license as the "td-system-tools" package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# System-Tools
+# Copyright (C) 2013-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.0~beta3\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-05-29 14:57+0200\n"
+"POT-Creation-Date: 2024-05-30 10:30+0200\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -20,88 +33,89 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Reset-Machine-ID:55
+#: src/Reset-Machine-ID:56
 #, sh-format
 msgid "ERROR: Invalid hostname ${hostname}!"
 msgstr "FEHLER: Ungültiger hostname ${hostname}!"
 
-#: src/Reset-Machine-ID:65
+#: src/Reset-Machine-ID:66
 #, sh-format
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Reset-Machine-ID:125
+#: src/Reset-Machine-ID:126
 #, sh-format
 msgid "Update hostname?"
 msgstr "Hostname aktualisieren?"
 
-#: src/Reset-Machine-ID:149
+#: src/Reset-Machine-ID:150
 #, sh-format
 msgid "The current machine ID is ${machineID}. Reset it?"
 msgstr "Die aktuelle Maschinen-ID ist ${machineID}. Zurücksetzen?"
 
-#: src/Reset-Machine-ID:176
+#: src/Reset-Machine-ID:177
 #, sh-format
 msgid "Checking SSH configuration ..."
-msgstr "Überprüfe SSH-Konfiguration ..."
+msgstr "Untersuche SSH-Konfiguration ..."
 
-#: src/Reset-Machine-ID:201
+#: src/Reset-Machine-ID:202
 msgid "Suggested ssh_config changes:"
 msgstr "Vorgeschlagene Änderungen in ssh_config:"
 
-#: src/Reset-Machine-ID:205
+#: src/Reset-Machine-ID:206
 #, sh-format
 msgid "Apply suggested ssh_config changes?"
 msgstr "Vorgeschlagene Änderungen in ssh_config durchführen?"
 
-#: src/Reset-Machine-ID:212 src/Reset-Machine-ID:298 src/Reset-Machine-ID:346
+#: src/Reset-Machine-ID:213 src/Reset-Machine-ID:299 src/Reset-Machine-ID:347
 msgid "Skipped!"
 msgstr "Übersprungen!"
 
-#: src/Reset-Machine-ID:272
+#: src/Reset-Machine-ID:273
 msgid "Suggested removal of /etc/ssh/sshd_config.d/50-cloud-init.conf:"
-msgstr "Vorgeschlagene Entfernung von /etc/ssh/sshd_config.d/50-cloud-init.conf:"
+msgstr ""
+"Vorgeschlagene Entfernung von /etc/ssh/sshd_config.d/50-cloud-init.conf:"
 
-#: src/Reset-Machine-ID:280
+#: src/Reset-Machine-ID:281
 msgid "Suggested sshd_config changes:"
 msgstr "Vorgeschlagene Änderungen in sshd_config:"
 
-#: src/Reset-Machine-ID:285
+#: src/Reset-Machine-ID:286
 #, sh-format
 msgid "Apply suggested sshd_config changes?"
 msgstr "Vorgeschlagene Änderungen in sshd_config durchführen?"
 
-#: src/Reset-Machine-ID:293 src/Reset-Machine-ID:340
+#: src/Reset-Machine-ID:294 src/Reset-Machine-ID:341
 #, sh-format
 msgid "Trying to restart SSH daemon ..."
 msgstr "Versuche Restart des SSH-Daemons ..."
 
-#: src/Reset-Machine-ID:311
+#: src/Reset-Machine-ID:312
 #, sh-format
 msgid "Remove existing SSH host keys and generate new ones?"
 msgstr "Existierende SSH-Schlüssel entfernen und neue Schlüssel erstellen?"
 
-#: src/Reset-Machine-ID:317
+#: src/Reset-Machine-ID:318
 #, fuzzy, sh-format
 msgid "Making backup of current keys in ${backupDirectory} ..."
 msgstr "Erstelle Backup der gegenwärtigen Schlüssel in ${backupDirectory} ..."
 
-#: src/Reset-Machine-ID:331
+#: src/Reset-Machine-ID:332
 #, sh-format
 msgid "Generating new ED25519 key ..."
 msgstr "Erstelle neuen ED25519-Schlüssel ..."
 
-#: src/Reset-Machine-ID:333
+#: src/Reset-Machine-ID:334
 #, sh-format
 msgid "Generating new ECDSA key ..."
 msgstr "Erstelle neuen ECDSA-Schlüssel ..."
 
-#: src/Reset-Machine-ID:335
+#: src/Reset-Machine-ID:336
 #, sh-format
 msgid "Generating new RSA key; this may take some time ..."
 msgstr "Erstelle neuen RSA-Schlüssel; dieses kann einen Moment dauern ..."
 
-#: src/Reset-Machine-ID:338
+#: src/Reset-Machine-ID:339
 #, sh-format
 msgid "Done!"
 msgstr "Erledigt!"
