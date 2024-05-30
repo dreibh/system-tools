@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo "Failed services:"
+sudo systemctl --type=service --state=failed -q
+
+
+echo "SMART:"
+devices=$(find /dev -maxdepth 1 -name "[sv]d*[^0-9]")
+for device in ${devices} ; do
+   echo -en "${device}:\t"
+   sudo smartctl -H ${device} | grep --color=never self-assessment
+done
+
+
+echo "Open TCP ports:"
+sudo lsof -iTCP -sTCP:LISTEN -P -n | egrep -v '(127|::1)'
+
+
+echo "Open UDP ports:"
+sudo lsof -iUDP -P -n | egrep -v '(127|::1)'
