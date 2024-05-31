@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.0~beta2\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-05-29 14:41+0200\n"
+"POT-Creation-Date: 2024-05-31 11:55+0200\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -33,17 +33,22 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Fingerprint-SSH-Keys:43
+#: src/Fingerprint-SSH-Keys:48
 #, sh-format
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Fingerprint-SSH-Keys:59
+#: src/Fingerprint-SSH-Keys:65
+#, sh-format
+msgid "Fingerprints of ${hostname} in raw format:"
+msgstr "Fingeravtrykk av ${hostname} i råformat:"
+
+#: src/Fingerprint-SSH-Keys:92
 #, sh-format
 msgid "Fingerprints of ${hostname} in SSH format:"
 msgstr "Fingeravtrykk av ${hostname} i SSH-format:"
 
-#: src/Fingerprint-SSH-Keys:70
+#: src/Fingerprint-SSH-Keys:103
 #, sh-format
 msgid "Fingerprints of ${hostname} in DNS RR format:"
 msgstr "Fingeravtrykk av ${hostname} i DNS-RR-format:"

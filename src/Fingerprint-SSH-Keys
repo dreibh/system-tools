@@ -33,14 +33,19 @@ export TEXTDOMAIN="Fingerprint-SSH-Keys"
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
-FORMATS="ssh dns"
+FORMATS="raw ssh dns"
 INCLUDE_DEPRECATED=0
+INCLUDE_RAW=0
 
 while [ $# -gt 0 ] ; do
    if [ "$1" == "--include-deprecated" ] || [ "$1" == "-d" ] || [ "$1" == "-include-deprecated" ] ; then
       INCLUDE_DEPRECATED=1
+   elif [ "$1" == "--include-raw" ] || [ "$1" == "-r" ] || [ "$1" == "-include-raw" ] ; then
+      INCLUDE_RAW=1
+   elif [ "$1" == "--include-raw-python" ] || [ "$1" == "-p" ] || [ "$1" == "-include-raw-python" ] ; then
+      INCLUDE_RAW=2
    else
-      echo 2>&1 "$(eval_gettext "Usage:") $0 [--include-deprecated|-d]"
+      echo 2>&1 "$(eval_gettext "Usage:") $0 [--include-deprecated|-d] [--include-raw|r] [--include-python|p]"
       exit 1
    fi
    shift
@@ -55,10 +60,38 @@ if [ -d /etc/ssh ] ; then
    for format in ${FORMATS} ; do
 
       # ====== Print fingerprints in SSH format =============================
-      if [ "${format}" == "ssh" ] ; then
+      if [ "${format}" == "raw" ] ; then
+         if [ ${INCLUDE_RAW} -ne 0 ] ; then
+            echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in raw format:")\x1b[0m"
+            keyNumber=1
+            if [ ${INCLUDE_RAW} -eq 2 ] ; then
+               echo "'public-keys': {"
+            fi
+            for key in ${keys} ; do
+               if [ ${INCLUDE_RAW} -eq 1 ] ; then
+                  echo -n "#${keyNumber}: "
+                  cat "${key}" | cut -d' ' -f1,2
+               else
+                  type="$(cat "${key}" | cut -d' ' -f1)"
+                  key="$(cat "${key}" | cut -d' ' -f2)"
+                  if [ ${keyNumber} -gt 1 ] ; then
+                     echo ","
+                  fi
+                  echo -n "   '${type}': '${key}'"
+               fi
+               keyNumber=$((keyNumber+1))
+            done
+            if [ ${INCLUDE_RAW} -eq 2 ] ; then
+               echo -e "\n}"
+            fi
+            echo ""
+         fi
+
+      # ====== Print fingerprints in SSH format =============================
+      elif [ "${format}" == "ssh" ] ; then
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in SSH format:")\x1b[0m"
          keyNumber=1
-         for key in $keys ; do
+         for key in ${keys} ; do
             echo -n "#${keyNumber}: "
             ssh-keygen -lf "${key}" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
             keyNumber=$((keyNumber+1))
@@ -68,7 +101,7 @@ if [ -d /etc/ssh ] ; then
       # ====== Print fingerprints in DNS format =============================
       elif [ "${format}" == "dns" ] ; then
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in DNS RR format:")\x1b[0m"
-         for key in $keys ; do
+         for key in ${keys} ; do
             if [ ${INCLUDE_DEPRECATED} -eq 1 ] ; then
                ssh-keygen -r "${hostname}" -f "${key}" | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [1-9] [1-9]'
             else

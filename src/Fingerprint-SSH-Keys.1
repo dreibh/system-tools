@@ -28,6 +28,8 @@
 .Sh SYNOPSIS
 .Nm Fingerprint-SSH-Keys
 .Op Fl \-include-deprecated|\-d
+.Op Fl \-include-raw|\-r
+.Op Fl \-include-raw-python|\-p
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Fingerprint-SSH-Keys
@@ -43,6 +45,10 @@ The following options are available:
 .Bl -tag -width indent
 .It \-\-include-deprecated|\-d
 Also include deprecated key types and hash algorithms in DNS SSHFP RR output.
+.It \-include-raw|\-r
+Also include the keys in raw format.
+.It \-include-raw-python|\-p
+Also include the keys in raw format, in Python dictionary format.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
