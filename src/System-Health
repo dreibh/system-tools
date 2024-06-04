@@ -1,20 +1,79 @@
 #!/bin/bash
 
+# ###### Run Ping test ######################################################
+run-ping ()
+{
+   local title="$1"
+   local pingServers="$2"
+
+   good=0
+   bad=0
+   echo -n "${title}"
+   for pingServer in ${pingServers} ; do
+      sudo ping -q -c 3 -i 0.1 -W 2 ${pingServer} >/dev/null && good=$((good+1)) || bad=$((bad+1))
+   done
+   if [ ${bad} -eq 0 ] ; then
+      echo "OK"
+   else
+      echo "FAILED (ok=${good} bad=${bad})"
+   fi
+}
+
+
 echo "Failed services:"
 sudo systemctl --type=service --state=failed -q
 
 
 echo "SMART:"
-devices=$(find /dev -maxdepth 1 -name "[sv]d*[^0-9]")
-for device in ${devices} ; do
-   echo -en "${device}:\t"
-   sudo smartctl -H ${device} | grep --color=never self-assessment
-done
+# devices=$(find /dev -maxdepth 1 -name "[sv]d*[^0-9]")
+# for device in ${devices} ; do
+#    echo -en "${device}:\t"
+#    sudo smartctl -H ${device} | grep --color=never self-assessment
+# done
 
 
+# ===== Open Transport Layer ports ==========================================
 echo "Open TCP ports:"
 sudo lsof -iTCP -sTCP:LISTEN -P -n | egrep -v '(127|::1)'
 
 
+# ???
+sudo sockstat -l | grep '\(\*\|::\):[0-9][0-9]* .* LISTEN$'
+
+
 echo "Open UDP ports:"
 sudo lsof -iUDP -P -n | egrep -v '(127|::1)'
+
+
+# ===== IP checks ===========================================================
+echo "Checking networking ..."
+# CloudFlare public DNS servers
+pingServersIPv4="1.1.1.1 1.0.0.1"
+pingServersIPv6="2606:4700:4700::1111 2606:4700:4700::1001"
+
+run-ping "IPv4:   " "${pingServersIPv4}"
+run-ping "IPv6:   " "${pingServersIPv6}"
+
+
+# ===== DNS checks ===========================================================
+server="www.ietf.org"   # Known to have DNSSEC protection
+
+# ------ DNS resolution -----------------------------------------------------
+echo -n "DNS:    "
+result="$(dig +short ${server} aaaa)"
+if echo "${result}" | grep -q "^[0-9a-fA-F:]*$" ; then
+   echo "OK"
+else
+   echo "FAILED!"
+   echo "${result}"
+fi
+
+# ------ DNSSEC validation --------------------------------------------------
+echo -n "DNSSEC: "
+result="$(delv ${server})"
+if echo "${result}" | grep -q "^; fully validated$" ; then
+   echo "OK"
+else
+   echo "FAILED!"
+   delv +vtrace ${server}
+fi
