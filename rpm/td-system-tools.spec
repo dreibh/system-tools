@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 1.7.0~rc0
+Version: 1.7.0~rc2
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -165,7 +165,7 @@ BuildArch: noarch
 Requires: td-system-tools-fingerprint-ssh-keys
 Requires: td-system-tools-system-info
 Requires: td-system-tools-system-maintenance
-Requires: td-system-tools-system-reset-machine-id
+Requires: td-system-tools-reset-machine-id
 Recommends: td-system-tools-configure-grub
 
 %description all
