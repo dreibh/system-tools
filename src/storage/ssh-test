@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for option in Ciphers MACs KexAlgorithms PubkeyAcceptedKeyTypes HostbasedAcceptedKeyTypes HostKeyAlgorithms ; do
+   echo "$option:"
+   ssh -Q $option
+   echo ""
+done
