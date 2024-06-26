@@ -21,28 +21,34 @@
 # Bash options:
 set -e
 
+export TEXTDOMAIN="System-Maintenance"
+# export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
+
+# shellcheck disable=SC1091
+. gettext.sh
+
+
 trap 'echo "" ; echo "Aborted." ; exit' INT
 
-
 INTERACTIVE_KERNEL_REMOVAL=0
-DONT_TOUCH_GRUB=0
-KEEP_INTERFACE_MAPPINGS=1
+# DONT_TOUCH_GRUB=0
+# KEEP_INTERFACE_MAPPINGS=1
 while [ $# -gt 0 ] ; do
-   if [ "$1" = "-interactive-kernel-removal" -o "$1" = "-k" ] ; then
+   if [ "$1" == "-interactive-kernel-removal" ] || [ "$1" == "-k" ] ; then
       INTERACTIVE_KERNEL_REMOVAL=1
-   elif [ "$1" = "-dont-touch-grub" -o "$1" = "-g" ] ; then
-      DONT_TOUCH_GRUB=1
-   elif [ "$1" = "-dont-keep-interface-mappings" -o "$1" = "-M" ] ; then
-      KEEP_INTERFACE_MAPPINGS=0
+   # elif [ "$1" == "-dont-touch-grub" ] || [ "$1" == "-g" ] ; then
+   #    DONT_TOUCH_GRUB=1
+   # elif [ "$1" == "-dont-keep-interface-mappings" ] || [ "$1" == "-M" ] ; then
+   #    KEEP_INTERFACE_MAPPINGS=0
    else
-      echo 2>&1 "Usage: $0 [-interactive-kernel-removal|-k] [-dont-touch-grub|-g] [-dont-keep-interface-mappings|-M]"
+      echo 2>&1 "$(eval_gettext "Usage:") $0 [-interactive-kernel-removal|-k] [-dont-touch-grub|-g] [-dont-keep-interface-mappings|-M]"
       exit 1
    fi
    shift
 done
 
 # ====== Find distribution variant ==========================================
-system=`uname`
+system=$(uname)
 variant=""
 if [ "${system}" == "Linux" ] ; then
    if [ -e /etc/sysconfig/network ] ; then
@@ -60,25 +66,25 @@ fi
 
 # ====== Stop AutoFS ========================================================
 if [ -e /etc/init.d/autofs ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Stopping AutoFS service ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Stopping AutoFS service ...")\x1b[0m"
    sudo service autofs stop >/dev/null 2>&1 || true
 fi
 
 # ====== dpkg package fixes =================================================
-if [ "${variant}" = "Debian" ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Applying package fixes, if necessary ...\x1b[0m"
-   sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a  >/tmp/install.log 2>&1 &
+if [ "${variant}" == "Debian" ] ; then
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Applying package fixes, if necessary ...")\x1b[0m"
+   sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
 fi
 
 # ====== Update package repositories ========================================
-if [ "${variant}" = "Debian" ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Updating package repositories ...\x1b[0m"
+if [ "${variant}" == "Debian" ] ; then
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Updating package repositories ...")\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
-elif [ "${variant}" = "FreeBSD" ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Updating package repositories ...\x1b[0m"
-   sudo env PAGER=cat freebsd-update fetch
+elif [ "${variant}" == "FreeBSD" ] ; then
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Updating package repositories ...")\x1b[0m"
+   sudo env PAGER=cat freebsd-update fetch || true
    sudo env ASSUME_ALWAYS_YES=yes pkg-static update
    if [ -x /usr/sbin/portsnap ] ; then
       sudo /usr/sbin/portsnap -I fetch
@@ -86,27 +92,27 @@ elif [ "${variant}" = "FreeBSD" ] ; then
 fi
 
 # ====== apt-get package fixes ==============================================
-if [ "${variant}" = "Debian" ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Installing missing dependencies, if necessary ...\x1b[0m"
+if [ "${variant}" == "Debian" ] ; then
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Installing missing dependencies, if necessary ...")\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" >/tmp/install.log 2>&1 &
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
 fi
 
 # ====== system update ======================================================
-echo -e "\x1b[34m`date +%FT%H:%M:%S`: Installing updates ...\x1b[0m"
-if [ "${variant}" = "Debian" ] ; then
+echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Installing updates ...")\x1b[0m"
+if [ "${variant}" == "Debian" ] ; then
    # ------ Download --------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -yd -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" >/tmp/install.log 2>&1 &
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
    wait
 
    # ------ Update special packages -----------------------
    for package in nornet-server nornet-tunnelbox ; do
       if dpkg -l $package >/dev/null 2>&1 ; then
-         if [ "`find /var/cache/apt/archives/ -name "$package*.deb"`" != "" ] ; then
+         if [ "$(find /var/cache/apt/archives/ -name "$package*.deb")" != "" ] ; then
             echo "Updating $package package ..."
             # Do not restart the service on update, in order to avoid
             # unnecessary downtime. Needs a manual restart, if necessary!
@@ -118,7 +124,7 @@ if [ "${variant}" = "Debian" ] ; then
             sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
                -o APT::Get::Always-Include-Phased-Updates=true \
                -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-              $package -y -q >>/tmp/install.log 2>&1 &
+              $package -y -q 2>&1 | sudo tee /tmp/install.log &
             wait
             echo "Updated $package package."
          fi
@@ -131,31 +137,35 @@ if [ "${variant}" = "Debian" ] ; then
    # ------ Update the rest -------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -y -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" >>/tmp/install.log 2>&1 &
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
-elif [ "${variant}" = "Fedora" ] ; then
-   ( sudo dnf clean all && sudo dnf upgrade -y ) >/tmp/install.log 2>&1 &
+elif [ "${variant}" == "Fedora" ] ; then
+   ( sudo dnf clean all && sudo dnf upgrade -y ) | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
-elif [ "${variant}" = "FreeBSD" ] ; then
-   ( sudo freebsd-update install ; sudo env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y ; if [ -x /usr/sbin/portsnap ] ; then sudo /usr/sbin/portsnap -I update ; fi ) >/tmp/install.log 2>&1 &
+elif [ "${variant}" == "FreeBSD" ] ; then
+   ( sudo freebsd-update install ; sudo env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y
+     if [ -x /usr/sbin/portsnap ] ; then
+        sudo /usr/sbin/portsnap -I update
+     fi
+   ) | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
 fi
 
 # ====== Auto-remove ========================================================
-echo -e "\x1b[34m`date +%FT%H:%M:%S`: Cleaning up ...\x1b[0m"
-if [ "${variant}" = "Debian" ] ; then
+echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Cleaning up ...")\x1b[0m"
+if [ "${variant}" == "Debian" ] ; then
    # ------ Remove unnecessary dependencies ---------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -q \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" >/tmp/install.log 2>&1 &
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
 
    # ------ Purge all previously-removed packages ---------
    dpkg --get-selections | awk '$2=="deinstall" { print $1 }' | xargs --no-run-if-empty sudo DEBIAN_FRONTEND=noninteractive apt-get purge -y \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" >/tmp/install.log 2>&1 &
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
 
@@ -164,32 +174,32 @@ if [ "${variant}" = "Debian" ] ; then
 
    # ------ Clean up /var/crash ---------------------------
    if [ -d /var/crash/ ] ; then
-      find /var/crash/ -name "*.crash" | xargs sudo rm -f
+      find /var/crash/ -name "*.crash" -exec sudo rm -f {} \;
    fi
-elif [ "${variant}" = "Fedora" ] ; then
-   sudo DEBIAN_FRONTEND=noninteractive nohup dnf autoremove -y >/tmp/install.log 2>&1 &
+elif [ "${variant}" == "Fedora" ] ; then
+   sudo DEBIAN_FRONTEND=noninteractive nohup dnf autoremove -y 2>&1 | sudo tee /tmp/install.log &
    wait
    cat /tmp/install.log
    sudo dnf clean all
-elif [ "${variant}" = "FreeBSD" ] ; then
+elif [ "${variant}" == "FreeBSD" ] ; then
    sudo env ASSUME_ALWAYS_YES=yes pkg-static autoremove -y
    sudo env ASSUME_ALWAYS_YES=yes pkg-static clean all -y
 fi
 
 # ====== Remove obsolete kernel packages ====================================
-if [ "${variant}" = "Debian" ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Removing obsolete kernels ...\x1b[0m"
+if [ "${variant}" == "Debian" ] ; then
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Removing obsolete kernels ...")\x1b[0m"
 
    kernelType=$(uname -r | sed 's/\([0-9]*.[0-9]*.[0-9]*\|[0-9]*.[0-9]*.[0-9]*.-[0-9]*\)-\([a-zA-Z0-9\.+]\)/\2/')
-   kernelBootVersion=$(uname -r | sed s/-${kernelType}//)
+   kernelBootVersion=$(uname -r | sed s/-"${kernelType}"//)
    kernelDiskVersion=$(find /boot -name "vmlinuz-*-${kernelType}" | sort -rV | head -n1 | sed -e "s/\/boot\/vmlinuz-//" -e "s/-${kernelType}//")
 
-   echo "Kernel Type:         ${kernelType}"
-   echo "Kernel Boot Version: ${kernelBootVersion}"
-   echo "Kernel Disk Version: ${kernelDiskVersion}"
+   echo "$(eval_gettext "Kernel Type:        ") ${kernelType}"
+   echo "$(eval_gettext "Kernel Boot Version:") ${kernelBootVersion}"
+   echo "$(eval_gettext "Kernel Disk Version:") ${kernelDiskVersion}"
 
-   packageVersionsFile=`mktemp`
-   apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | sort >${packageVersionsFile}
+   packageVersionsFile=$(mktemp)
+   apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | sort >"${packageVersionsFile}"
 
    packagesToRemove="
       nornet-
@@ -225,8 +235,8 @@ if [ "${variant}" = "Debian" ] ; then
       linux-image-extra-virtual
 "
 
-   toBeRemoved=`cat ${packageVersionsFile} | (
-      while read line ; do
+   toBeRemoved=$(
+      while read -r line ; do
          mayBeRemoved=0
          for packageToRemove in ${packagesToRemove} ; do
             if [[ $line =~ ^${packageToRemove}.*$ ]] ; then
@@ -248,27 +258,29 @@ if [ "${variant}" = "Debian" ] ; then
                echo -n "${line} "
             fi
         fi
-      done
-   )`
+      done <"${packageVersionsFile}"
+   )
 
-   rm -f ${packageVersionsFile}
+   rm -f "${packageVersionsFile}"
 
-   if [ "`echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$"`" != "" ] ; then
+   if [ "$(echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$")" != "" ] ; then
 
-      echo -e "To be removed:\x1b[31m"
+      echo -e "$(eval_gettext "To be removed:")\x1b[31m"
       echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$" || true
       echo -en "\x1b[0m"
-      echo -e "To be kept:\x1b[32m"
+      echo -e "$(eval_gettext "To be kept:")\x1b[32m"
       echo "${toBeRemoved}" | xargs -n1 | grep ".*+$" | sed -e "s/+$//g" || true
       echo -en "\x1b[0m"
 
       if [ $INTERACTIVE_KERNEL_REMOVAL -eq 0 ] ; then
+         # shellcheck disable=SC2086
          sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -qq --purge \
             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-            ${toBeRemoved} >/tmp/install.log 2>&1 &
+            ${toBeRemoved} 2>&1 | sudo tee /tmp/install.log &
          wait
          cat /tmp/install.log
       else
+         # shellcheck disable=SC2086
          sudo apt-get autoremove --purge \
             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
             ${toBeRemoved}
@@ -280,47 +292,46 @@ if [ "${variant}" = "Debian" ] ; then
 fi
 
 # ====== Fix bootloader =====================================================
-if [ $DONT_TOUCH_GRUB -eq 0 ] ; then
-   if [ "${variant}" == "Ubuntu" -o "${variant}" == "Debian" ] ; then
-      if [ -x /usr/sbin/update-grub -a /usr/sbin/grub-install ] ; then
-         echo -e "\x1b[34m`date +%FT%H:%M:%S`: Ensuring that Grub configuration is up-to-date ...\x1b[0m"
-         sudo nohup </dev/null /usr/sbin/grub-install /dev/sda >/tmp/install.log 2>&1 || true
-         if ! sudo nohup </dev/null /usr/sbin/update-grub >>/tmp/install.log 2>&1 ; then
-            cat /tmp/install.log
-            echo >&2 "ERROR: Something went wrong with update-grub!"
-            exit 1
-         fi
-         cat /tmp/install.log
-      fi
-   elif [ "${variant}" == "Fedora" ] ; then
-      echo -e "\x1b[34m`date +%FT%H:%M:%S`: Ensuring that Grub configuration is up-to-date ...\x1b[0m"
-      sudo nohup </dev/null grub2-mkconfig -o "$(readlink -e /etc/grub2.cfg)" >/tmp/install.log 2>&1 || true
-      if ! sudo nohup </dev/null grub2-install /dev/sda >>/tmp/install.log 2>&1 ; then
-         cat /tmp/install.log
-         echo >&2 "ERROR: Something went wrong with grub2-install!"
-         cat /tmp/install.log
-         exit 1
-      fi
-      cat /tmp/install.log
-   fi
-fi
+# if [ ${DONT_TOUCH_GRUB} -eq 0 ] ; then
+#    if [ "${variant}" == "Ubuntu" ] || [ "${variant}" == "Debian" ] ; then
+#       if [ -x /usr/sbin/update-grub ] && [ -x /usr/sbin/grub-install ] ; then
+#          echo -e "\x1b[34m$(date +%FT%H:%M:%S): Ensuring that Grub configuration is up-to-date ...\x1b[0m"
+#          sudo nohup </dev/null /usr/sbin/grub-install /dev/sda 2>&1 | sudo tee /tmp/install.log || true
+#          if ! sudo nohup </dev/null /usr/sbin/update-grub 2>&1 | sudo tee /tmp/install.log ; then
+#             cat /tmp/install.log
+#             echo >&2 "ERROR: Something went wrong with update-grub!"
+#             exit 1
+#          fi
+#          cat /tmp/install.log
+#       fi
+#    elif [ "${variant}" == "Fedora" ] ; then
+#       echo -e "\x1b[34m$(date +%FT%H:%M:%S): Ensuring that Grub configuration is up-to-date ...\x1b[0m"
+#       sudo nohup </dev/null grub2-mkconfig -o "$(readlink -e /etc/grub2.cfg)" 2>&1 | sudo tee /tmp/install.log || true
+#       if ! sudo nohup </dev/null grub2-install /dev/sda 2>&1 | sudo tee /tmp/install.log ; then
+#          cat /tmp/install.log
+#          echo >&2 "ERROR: Something went wrong with grub2-install!"
+#          cat /tmp/install.log
+#          exit 1
+#       fi
+#       cat /tmp/install.log
+#    fi
+# fi
 
 # ====== Refresh snaps ======================================================
 if [ -x /usr/bin/snap ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Refreshing snaps ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Refreshing snaps ...")\x1b[0m"
    sudo /usr/bin/snap refresh || true
 fi
 
 # ====== Firmware updates ===================================================
 if [ -x /usr/bin/fwupdmgr ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Checking for firmware updates ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Checking for firmware updates ...")\x1b[0m"
    sudo /usr/bin/fwupdmgr update || true
 fi
 
 # ====== apt-file cache update ==============================================
-# Cache updates
-echo -e "\x1b[34m`date +%FT%H:%M:%S`: Updating caches ...\x1b[0m"
-if [ "${variant}" = "Debian" ] ; then
+echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Updating caches ...")\x1b[0m"
+if [ "${variant}" == "Debian" ] ; then
    if [ -x /usr/bin/apt-file ] ; then
       sudo /usr/bin/apt-file update >/dev/null
       sudo apt-show-versions -i
@@ -338,93 +349,105 @@ else
 fi
 
 # ====== Delete /etc/udev/rules.d/70-persistent-net.rules ===================
-if [ "${variant}" = "Debian" ] ; then
-   if [ $KEEP_INTERFACE_MAPPINGS -eq 0 ] ; then
-      echo -e "\x1b[34m`date +%FT%H:%M:%S`: Checking interface mapping ...\x1b[0m"
-
-      # Ensure that new interfaces get mapped!
-      sudo udevadm trigger --action=add
-
-      if ! ifconfig eth0 >/dev/null 2>&1 ; then
-         echo "eth0 does not exist => Deleting /etc/udev/rules.d/70-persistent-net.rules"
-         rm -f /etc/udev/rules.d/70-persistent-net.rules
-         echo "*** Interfaces should be remapping during next boot! ***"
-      fi
-   fi
-fi
+# if [ "${variant}" == "Debian" ] ; then
+#    if [ $KEEP_INTERFACE_MAPPINGS -eq 0 ] ; then
+#       echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Checking interface mapping ...")\x1b[0m"
+#
+#       # Ensure that new interfaces get mapped!
+#       sudo udevadm trigger --action=add
+#
+#       if ! ifconfig eth0 >/dev/null 2>&1 ; then
+#          echo "eth0 does not exist => Deleting /etc/udev/rules.d/70-persistent-net.rules"
+#          rm -f /etc/udev/rules.d/70-persistent-net.rules
+#          echo "*** Interfaces should be remapping during next boot! ***"
+#       fi
+#    fi
+# fi
 
 # ====== Start AutoFS =======================================================
 if [ -e /etc/init.d/autofs ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Starting AutoFS service ...\x1b[0m"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Starting AutoFS service ...")\x1b[0m"
    sudo service autofs start >/dev/null 2>&1 || true
 fi
 
 # ====== Fix time ===========================================================
-if [ -e /etc/ntp.conf ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Synchronising system time ...\x1b[0m"
-   for ntpServiceName in ntp ntpd ; do
-      sudo service ${ntpServiceName} stop >/dev/null 2>&1 || true
-   done
+if [ -x /usr/sbin/ntpdate ] ; then
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Synchronising system time ...")\x1b[0m"
+   if [ -e /etc/ntp.conf ] ; then
+      for ntpServiceName in ntp ntpd ; do
+         sudo service ${ntpServiceName} stop >/dev/null 2>&1 || true
+      done
+   fi
 
-   # 1. Try ntp1.uio.no via IPv6 (2001:700:100:2::6) first.
-   # 2. Try UiO's servers first, then PTB.
-   # 3. Try noeyaktig.simula.nornet, via IPv6 and IPv4.
-   # 4. Try Simula tunnelbox.
-   sudo ntpdate 2001:700:100:2::6 || \
-      sudo ntpdate ntp2.uio.no || \
-      sudo ntpdate ntp1.uio.no || \
-      sudo ntpdate ntp2.ptb.de || \
-      sudo ntpdate ntp1.ptb.de || \
-      sudo ntpdate 2001:700:4100:101::fa || \
-      sudo ntpdate 10.1.1.250 || \
-      sudo ntpdate 10.1.1.1 || \
+   # Sychronise time from a reliable NTP server:
+   # 1. Try Universitetet i Oslo (UiO) NTP servers.
+   # 2. Try Physikalisch-Technische Bundesanstalt (PTB) NTP servers.
+   # 3. Try ISC NTP server (clock.isc.org).
+   # 4. Try Microsoft as last resort, which is likely allowed in a firewall.
+   sudo ntpdate ntp2.uio.no || sudo ntpdate ntp1.uio.no || \
+      sudo ntpdate ntp2.ptb.de || sudo ntpdate ntp1.ptb.de || \
+      sudo ntpdate clock.isc.org || \
+      sudo ntpdate time.windows.com || \
       true
 
    # Write time to hardware clock
    if [ "${variant}" != "FreeBSD" ] ; then
-      sudo hwclock -w
+      if [ -x /usr/sbin/hwclock ] ; then
+         sudo hwclock -w
+      fi
    else
       sudo date -v +0S
    fi
 
-   for ntpServiceName in ntp ntpd ; do
-      sudo service ${ntpServiceName} start >/dev/null 2>&1 || true
-   done
+   if [ -e /etc/ntp.conf ] ; then
+      for ntpServiceName in ntp ntpd ; do
+         sudo service ${ntpServiceName} start >/dev/null 2>&1 || true
+      done
+   fi
 fi
 
 # ====== SSD trimming =======================================================
-if [ -x /sbin/fstrim -o -x /usr/sbin/fstrim ] ; then
-   echo -e "\x1b[34m`date +%FT%H:%M:%S`: Running fstrim ...\x1b[0m"
+if [ -x /sbin/fstrim ] || [ -x /usr/sbin/fstrim ] ; then
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Running fstrim ...")\x1b[0m"
    sudo fstrim -a -v 2>/dev/null || ( sudo fstrim -v / && sudo fstrim -v /home ) || true
+fi
+if [ -x /sbin/zpool ] || [ -x /usr/sbin/zpool ] ; then
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Running zpool trim ...")\x1b[0m"
+   zpools=$(zpool list -H | cut -f1)
+   for zpool in ${zpools} ; do
+      echo "${zpool}"
+      sudo zpool trim "${zpool}" || true
+   done
 fi
 
 # ====== Done! ==============================================================
-echo -e "\x1b[34m`date +%FT%H:%M:%S`: Done!\x1b[0m"
+echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Done!")\x1b[0m"
 
 # ====== Finally, show project package versions =============================
+filterScripts=""
 for directory in /etc/system-maintenance.d /usr/local/etc/system-maintenance.d ; do
    if [ -d ${directory} ] ; then
-      filterScripts=`find ${directory} -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort`
+      filterScripts=$(find ${directory} -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort)
    fi
 done
-if [ "$filterScripts}" != "" ] ; then
-   fullPackageList=`mktemp`
+if [ "${filterScripts}" != "" ] ; then
+   fullPackageList=$(mktemp)
 
    if [ "${variant}" == "Debian" ] ; then
       if [ -x /usr/bin/apt-show-versions ] ; then
-         /usr/bin/apt-show-versions | grep -v "not installed$" >${fullPackageList} || true
+         /usr/bin/apt-show-versions | grep -v "not installed$" >"${fullPackageList}" || true
       fi
    elif [ "${variant}" == "Fedora" ] ; then
-      rpm -qa | sort >${fullPackageList} || true
+      rpm -qa | sort >"${fullPackageList}" || true
    elif [ "${variant}" == "FreeBSD" ] ; then
-      pkg info --all | sort  >${fullPackageList}|| true
+      pkg info --all | sort  >"${fullPackageList}"|| true
    fi
 
-   if [ -e ${fullPackageList} ] ; then
+   if [ -e "${fullPackageList}" ] ; then
       for filterScript in ${filterScripts} ; do
-         ${filterScript} ${fullPackageList}
+         ${filterScript} "${fullPackageList}"
       done
-      rm -f ${fullPackageList}
+      rm -f "${fullPackageList}"
       echo "=============================================================================="
    fi
 fi

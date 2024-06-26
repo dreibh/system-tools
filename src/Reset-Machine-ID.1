@@ -1,4 +1,4 @@
-.\" System-Maintenance
+.\" Reset Machine ID
 .\" Copyright (C) 2013-2024 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
@@ -17,55 +17,54 @@
 .\" Contact: dreibh@simula.no
 .\"
 .\" ###### Setup ############################################################
-.Dd May 23, 2024
-.Dt System-Maintenance 1
-.Os System-Maintenance
+.Dd May 28, 2024
+.Dt Reset-Machine-ID 1
+.Os Reset-Machine-ID
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm System-Maintenance
-.Nd Perform system maintenance tasks
+.Nm Reset-Machine-ID
+.Nd resets the machine identity state
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
-.Nm System-Maintenance
-.Op Fl interactive-kernel-removal|-k
+.Nm Reset-Machine-ID
+.Op Fl \-yes\-to\-all\-i\-am\-really\-sure
+.Op Fl \-skip-ssh-configuration
+.Op Fl \-skip-ssh-key-replacement
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm System-Maintenance
-runs some system maintenance tasks to keep the system clean and up to date.
-These tasks are:
+.Nm Reset-Machine-ID
+resets the machine identity state, particularly for a cloned VM, to make it appear as a new machine.
+It performs the following tasks:
 .br
-* Ensuring that all packages are configured,
+* Reset /etc/machine-id,
 .br
-* Updating the package repositories,
+* Reset /var/lib/dbus/machine-id (symlink to /etc/machine-id),
 .br
-* Removing obsolete kernels,
+* Change hostname, if a new one is provided (\-\-hostname parameter).
 .br
-* Installing all available package updates,
+* Provide hardened settings for SSH client and server.
 .br
-* Auto-removing unused packages,
+* Create new SSH key pair.
 .br
-* Updating package and file search caches,
-.br
-* Updating firmware,
-.br
-* Trimming SSDs and virual storage.
+The changes are made interactively on request, unless the \-yes\-to\-all\-i\-am\-really\-sure is used.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl interactive-kernel-removal|-k
-Remove obsolete kernels interactively.
-.It Fl dont-keep-interface-mappings|-M
-Delete network interface mapping rules
-(/etc/udev/rules.d/70-persistent-net.rules), if eth0 does not exist. This is
-useful for cloned virtual machines, where the new machine gets net MAC
-addresses. By deleting the mappings, the interfaces should be renamed
-beginning from eth0 during the next boot.
+.It \-\-yes\-to\-all\-i\-am\-really\-sure
+Create new keys (delete old ones) as well as replace sshd_config and
+ssh_config without interactively asking for confirmation.
+.It \-\-skip-ssh-configuration
+Do not make SSH configuration changes.
+.It \-\-skip-ssh-key-replacement
+Do not replace SSH keys.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It sudo System-Maintenance
-.It sudo System-Maintenance -dont-keep-interface-mappings
+.It sudo Reset-Machine-ID
+.It sudo Reset-Machine-ID \-\-yes\-to\-all\-i\-am\-really\-sure
+.It sudo Reset-Machine-ID \-\-hostname dbserver.domain.example
+.It sudo Reset-Machine-ID \-\-skip\-ssh\-configuration \-\-skip\-ssh\-key\-replacement
 .El

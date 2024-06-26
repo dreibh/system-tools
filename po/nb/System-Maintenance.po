@@ -1,0 +1,139 @@
+# System-Tools
+# Copyright (C) 2013-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \"td-system-tools\" \"1.6.0~beta3\"\n"
+"Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
+"POT-Creation-Date: 2024-05-29 13:09+0200\n"
+"PO-Revision-Date: 2024-03-26 15:10+0100\n"
+"Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
+"Language-Team:\n"
+"Language: nb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Language: nb\n"
+"X-Source-Language: en_GB\n"
+
+#: src/System-Maintenance:43
+#, sh-format
+msgid "Usage:"
+msgstr "Bruk:"
+
+#: src/System-Maintenance:68
+#, sh-format
+msgid "Stopping AutoFS service ..."
+msgstr "Stopper AutoFS-tjenesten ..."
+
+#: src/System-Maintenance:74
+#, sh-format
+msgid "Applying package fixes, if necessary ..."
+msgstr "Reparer pakker, om nødvendig ..."
+
+#: src/System-Maintenance:82 src/System-Maintenance:85
+#, sh-format
+msgid "Updating package repositories ..."
+msgstr "Oppdaterer pakkelager ..."
+
+#: src/System-Maintenance:95
+#, sh-format
+msgid "Installing missing dependencies, if necessary ..."
+msgstr "Installerer manglende avhengigheter, om nødvendig ..."
+
+#: src/System-Maintenance:103
+#, sh-format
+msgid "Installing updates ..."
+msgstr "Installerer oppdateringer ..."
+
+#: src/System-Maintenance:157
+#, sh-format
+msgid "Cleaning up ..."
+msgstr "Rydder opp ..."
+
+#: src/System-Maintenance:190
+#, sh-format
+msgid "Removing obsolete kernels ..."
+msgstr "Fjerner utdaterte kjerner ..."
+
+#: src/System-Maintenance:196
+#, sh-format
+msgid "Kernel Type:        "
+msgstr "Kjernetype:                 "
+
+#: src/System-Maintenance:197
+#, sh-format
+msgid "Kernel Boot Version:"
+msgstr "Oppstartsversjon av kjernen:"
+
+#: src/System-Maintenance:198
+#, sh-format
+msgid "Kernel Disk Version:"
+msgstr "Kjerneversjon på disken:    "
+
+#: src/System-Maintenance:267
+#, sh-format
+msgid "To be removed:"
+msgstr "Å bli fjernet:"
+
+#: src/System-Maintenance:270
+#, sh-format
+msgid "To be kept:"
+msgstr "Skal oppbevares:"
+
+#: src/System-Maintenance:321
+#, sh-format
+msgid "Refreshing snaps ..."
+msgstr "Oppdaterer snap-pakker ..."
+
+#: src/System-Maintenance:327
+#, sh-format
+msgid "Checking for firmware updates ..."
+msgstr "Ser etter fastvareoppdateringer ..."
+
+#: src/System-Maintenance:332
+#, sh-format
+msgid "Updating caches ..."
+msgstr "Oppdaterer cacher ..."
+
+#: src/System-Maintenance:368
+#, sh-format
+msgid "Starting AutoFS service ..."
+msgstr "Starter AutoFS-tjenesten ..."
+
+#: src/System-Maintenance:374
+#, sh-format
+msgid "Synchronising system time ..."
+msgstr "Synkroniserer systemtid ..."
+
+#: src/System-Maintenance:410
+#, sh-format
+msgid "Running fstrim ..."
+msgstr "Kjører fstrim ..."
+
+#: src/System-Maintenance:414
+#, sh-format
+msgid "Running zpool trim ..."
+msgstr "Kjører zpool trim ..."
+
+#: src/System-Maintenance:423
+#, sh-format
+msgid "Done!"
+msgstr "Ferdig!"

@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+#
+# Print system information
+# Copyright (C) 2013-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+# Helper function library -> just return when it is not available.
+# Exit code 0 will let System-Info continue with the next script!
+# shellcheck disable=SC1091
+. "$(dirname "$0")/banner-helper" || exit 0
+
+
+# ====== Print banner =======================================================
+
+# Using 24-bit color codes. This may not work with all terminals!
+reset="\x1b[0m"
+color1="\x1b[38;2;241;71;29m"   # SimulaMet orange: F1471D
+color2="\x1b[38;2;33;27;87m"    # SimulaMet dark blue: #211B57
+# color1="\x1b[34m"
+# color2="\x1b[31m"
+
+# ------ Print top separator ------------------------------------------------
+echo -en "${color1}"
+separator " *💻" "=" "💻*"
+echo ""
+center "${color1}-- ${color2}$(gettext "Welcome to") ${color1}--"
+
+# ------ Print the logo -----------------------------------------------------
+echo ""
+center "${color1} #####                                          ${color2}#     #                "
+center "${color1}#     #     #    #    #  #    #  #         ##   ${color2}##   ##  ######   #####"
+center "${color1}#           #    ##  ##  #    #  #        #  #  ${color2}# # # #  #          #  "
+center "${color1} #####      #    # ## #  #    #  #       #    # ${color2}#  #  #  #####      #  "
+center "${color1}      #     #    #    #  #    #  #       ###### ${color2}#     #  #          #  "
+center "${color1}#     #     #    #    #  #    #  #       #    # ${color2}#     #  #          #  "
+center "${color1} #####      #    #    #   ####   ######  #    # ${color2}#     #  ######     #  "
+echo ""
+center "${color2}-- ${color1}Simula Metropolitan Centre ${color2}for Digital Engineering ${color1}--"
+
+# ------ Print an additional information line from a file -------------------
+# This part could e.g. pint a package version of an application:
+echo -e "${color2}"
+if [ -e /etc/simulamet/simulamet-version ] ; then
+   center "$(cat /etc/simulamet/simulamet-version)"
+else
+   center "$(gettext "You can change this banner in /etc/system-info.d!")"
+fi
+
+# ------ Print bottom separator ---------------------------------------------
+echo -en "${reset}${color1}"
+separator " *💻" "=" "💻*"
+echo -e "${reset}"
+
+
+# ====== Finish =============================================================
+
+# With exit code 1, no further files in /etc/system-info.d are processed.
+# Use exit code 0 to continue processing files.
+exit 0   # 0 => Continue processing

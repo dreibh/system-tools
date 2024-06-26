@@ -1,0 +1,156 @@
+# System-Tools
+# Copyright (C) 2013-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.6\n"
+"Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
+"POT-Creation-Date: 2024-05-29 13:09+0200\n"
+"PO-Revision-Date: 2024-03-14 13:14+0100\n"
+"Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
+"Language-Team:\n"
+"Language: nb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Language: nb\n"
+"X-Source-Language: en_GB\n"
+
+#: src/System-Info:72
+#, sh-format
+msgid "Unknown"
+msgstr "Ukjent"
+
+#: src/System-Info:134
+#, sh-format
+msgid "Slice:            "
+msgstr "Slice:            "
+
+#: src/System-Info:136
+#, sh-format
+msgid "Host:             "
+msgstr "Datamaskin:       "
+
+#: src/System-Info:137
+#, sh-format
+msgid "Uptime:           "
+msgstr "Oppetid:          "
+
+#: src/System-Info:143
+#, sh-format
+msgid "Operating System: "
+msgstr "Operativsystem:   "
+
+#: src/System-Info:143
+#, sh-format
+msgid "with kernel"
+msgstr "med kjerne"
+
+#: src/System-Info:144
+#, sh-format
+msgid "Processor:        "
+msgstr "Prosessor         "
+
+#: src/System-Info:144
+#, sh-format
+msgid "%'d processes"
+msgstr "%'d prosesser"
+
+#: src/System-Info:144
+#, sh-format
+msgid "%'d user"
+msgid_plural "%'d users"
+msgstr[0] "%'d bruker"
+msgstr[1] "%'d brukere"
+
+#: src/System-Info:145
+#, sh-format
+msgid "Load:             "
+msgstr "Systembelastning: "
+
+#: src/System-Info:147
+#, sh-format
+msgid "of"
+msgstr "av"
+
+#: src/System-Info:148
+#, sh-format
+msgid "available"
+msgstr "tilgjengelig"
+
+#: src/System-Info:149
+#, sh-format
+msgid "on"
+msgstr "på"
+
+#: src/System-Info:150
+#, sh-format
+msgid "Used Memory:      "
+msgstr "Brukt minne:      "
+
+#: src/System-Info:151
+#, sh-format
+msgid "Used Swap:        "
+msgstr "Brukt bytteplass: "
+
+#: src/System-Info:156
+#, sh-format
+msgid "no swap available!"
+msgstr "bytteplass ikke tilgjengelig!"
+
+#: src/System-Info:159
+#, sh-format
+msgid "Used Diskspace:   "
+msgstr "Brukt diskplass:  "
+
+#: src/System-Info:172
+msgid "SSH Keys:         #1 "
+msgstr "SSH-nøkler:       №1 "
+
+#: src/System-Info:174
+#, sh-format
+msgid "                  #${keyNumber} "
+msgstr "                  №${keyNumber} "
+
+#: src/System-Info:235
+msgid "(No IPv4)"
+msgstr "(Ingen IPv4)"
+
+#: src/System-Info:333
+#, sh-format
+msgid "Network:"
+msgstr "Nettverk:"
+
+#: src/System-Info:363
+#, sh-format
+msgid "System information as of ${now}"
+msgstr "Systeminformasjon per ${now}"
+
+#: src/system-info.d/01-example:47 src/system-info.d/10-company-logo-example:62
+msgid "You can change this banner in /etc/system-info.d!"
+msgstr "Du kan endre dette banneret i /etc/system-info.d!"
+
+#: src/system-info.d/09-hostname-example:40
+msgid "Welcome on the System"
+msgstr "Velkommen på systemet"
+
+#: src/system-info.d/10-company-logo-example:42
+msgid "Welcome to"
+msgstr "Velkommen til"

@@ -35,16 +35,16 @@ REPLACE_GRUB_GFXMODE=""
 REPLACE_GRUB_INIT_TUNE=""
 shift
 while [ $# -gt 0 ] ; do
-   if [ "$1" == "--output" -o "$1" == "-o" ] ; then
+   if [ "$1" == "--output" ] || [ "$1" == "-o" ] ; then
       OUTPUT_CONFIGURATION="$2"
       shift
-   elif [ "$1" == "--input" -o "$1" == "-i" ] ; then
+   elif [ "$1" == "--input" ] || [ "$1" == "-i" ] ; then
       INPUT_CONFIGURATION="$2"
       shift
-   elif [ "$1" == "--video" -o "$1" == "-V" ] ; then
+   elif [ "$1" == "--video" ] || [ "$1" == "-V" ] ; then
       REPLACE_GRUB_GFXMODE="$2"
       shift
-   elif [ "$1" == "--tune" -o "$1" == "-T" ] ; then
+   elif [ "$1" == "--tune" ] || [ "$1" == "-T" ] ; then
       REPLACE_GRUB_INIT_TUNE="$2"
       shift
    else
@@ -76,22 +76,24 @@ OPTION_DISABLE_NETIFNAMES=0
 if grep "net.ifnames=0" >/dev/null 2>&1 /proc/cmdline ; then
    OPTION_DISABLE_NETIFNAMES=1
 fi
-OPTION_CMDLINE=`grep "^GRUB_CMDLINE_LINUX=" ${INPUT_CONFIGURATION} | sed -e "s/biosdevname=0[ ]*//g" -e "s/net.ifnames=0[ ]*//g" || true`
+OPTION_CMDLINE=$(grep "^GRUB_CMDLINE_LINUX=" "${INPUT_CONFIGURATION}" | sed -e "s/biosdevname=0[ ]*//g" -e "s/net.ifnames=0[ ]*//g" || true)
 if [ ${OPTION_DISABLE_BIOSDEVNAME} -eq 1 ] ; then
-   OPTION_CMDLINE=`echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"biosdevname=0 /g"`
+   # shellcheck disable=SC2001
+   OPTION_CMDLINE=$(echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"biosdevname=0 /g")
 fi
 if [ ${OPTION_DISABLE_NETIFNAMES} -eq 1 ] ; then
-   OPTION_CMDLINE=`echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"net.ifnames=0 /g"`
+   # shellcheck disable=SC2001
+   OPTION_CMDLINE=$(echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"net.ifnames=0 /g")
 fi
 
-OPTION_ENABLE_CRYPTODISK=`grep "^GRUB_ENABLE_CRYPTODISK=" ${INPUT_CONFIGURATION} || true`
+OPTION_ENABLE_CRYPTODISK=$(grep "^GRUB_ENABLE_CRYPTODISK=" "${INPUT_CONFIGURATION}" || true)
 if [ "${REPLACE_GRUB_GFXMODE}" == "" ] ; then
-   OPTION_GFXMODE=`grep -E "^[#[:space:]]*GRUB_GFXMODE=" ${INPUT_CONFIGURATION} | sed -e "s/#[ ]*GRUB/# GRUB/g" || true`
+   OPTION_GFXMODE=$(grep -E "^[#[:space:]]*GRUB_GFXMODE=" "${INPUT_CONFIGURATION}" | sed -e "s/#[ ]*GRUB/# GRUB/g" || true)
 else
    OPTION_GFXMODE="GRUB_GFXMODE=\"${REPLACE_GRUB_GFXMODE}\""
 fi
 if [ "${REPLACE_GRUB_INIT_TUNE}" == "" ] ; then
-   OPTION_INIT_TUNE=`grep -E "^[#[:space:]]*GRUB_INIT_TUNE=" ${INPUT_CONFIGURATION} | sed -e "s/#[ ]*GRUB/# GRUB/g" || true`
+   OPTION_INIT_TUNE=$(grep -E "^[#[:space:]]*GRUB_INIT_TUNE=" "${INPUT_CONFIGURATION}" | sed -e "s/#[ ]*GRUB/# GRUB/g" || true)
 else
    OPTION_INIT_TUNE="GRUB_INIT_TUNE=\"${REPLACE_GRUB_INIT_TUNE}\""
 fi
@@ -166,8 +168,8 @@ awk \
          print OPTION_ENABLE_CRYPTODISK;
       }
    }
-' <${TEMPLATE_CONFIGURATION} >${OUTPUT_CONFIGURATION}.new
+' <"${TEMPLATE_CONFIGURATION}" >${OUTPUT_CONFIGURATION}.new
 
 echo "Differences between ${INPUT_CONFIGURATION} and ${OUTPUT_CONFIGURATION}:"
-colordiff ${INPUT_CONFIGURATION} ${OUTPUT_CONFIGURATION}.new || true
+diff --color "${INPUT_CONFIGURATION}" ${OUTPUT_CONFIGURATION}.new || true
 mv ${OUTPUT_CONFIGURATION}.new ${OUTPUT_CONFIGURATION}

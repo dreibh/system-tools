@@ -1,0 +1,3 @@
+#!/bin/sh
+
+find . -type f -executable -exec shellcheck -x --color {} \;

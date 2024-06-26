@@ -1,0 +1,398 @@
+#!/usr/bin/env bash
+#
+# Reset Machine ID
+# Copyright (C) 2013-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+
+export TEXTDOMAIN="Reset-Machine-ID"
+# export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
+
+# shellcheck disable=SC1091
+. gettext.sh
+
+
+# SSH key settings:
+ECDSA_BITS=521
+RSA_BITS=16384
+# MODULI_BITS=8192
+
+
+
+# ###### Test SSH options and select supported choices in preferred order ###
+select-ssh-options ()
+{
+   local option="$1"
+   local optionAlt="$2"
+   shift 2
+
+   valueString=$(
+      ( ssh -Q "${option}" 2>/dev/null || if [ "${optionAlt}" != "${option}" ] ; then ssh -Q "${optionAlt}" 2>/dev/null ; fi ) | \
+      while read -r value ; do
+         echo -n ":${value}"
+      done
+      echo ":"
+   )
+   # echo >&2 -e "${option}:\t${valueString}"
+
+   selectedOptions=""
+   while [ $# -gt 0 ] ; do
+      local choice="$1"
+      shift
+
+      if [[ "${valueString}" =~ :${choice}: ]] ; then
+         # echo >&2 "OK ${choice}"
+         if [ "${selectedOptions}" == "" ] ; then
+            selectedOptions="${choice}"
+         else
+            selectedOptions="${selectedOptions},${choice}"
+         fi
+      fi
+   done
+   echo "${selectedOptions}"
+}
+
+sshCiphers=$(select-ssh-options       Ciphers       cipher   aes256-gcm@openssh.com chacha20-poly1305@openssh.com)
+sshMACs=$(select-ssh-options          MACs          mac      hmac-sha2-512-etm@openssh.com)
+sshKexAlgorithms=$(select-ssh-options KexAlgorithms kex      curve25519-sha256@libssh.org diffie-hellman-group16-sha512 diffie-hellman-group18-sha512)
+sshPubkeyAcceptedKeyTypes=$(select-ssh-options       PubkeyAcceptedKeyTypes    PubkeyAcceptedKeyTypes    ssh-ed25519-cert-v01@openssh.com ssh-ed25519 rsa-sha2-512-cert-v01@openssh.com ssh-rsa-cert-v01@openssh.com rsa-sha2-512)
+sshHostbasedAcceptedKeyTypes=$(select-ssh-options    HostbasedAcceptedKeyTypes HostbasedAcceptedKeyTypes ssh-ed25519-cert-v01@openssh.com ssh-ed25519 ssh-rsa-cert-v01@openssh.com ssh-rsa)
+sshHostKeyAlgorithms=$(select-ssh-options            HostKeyAlgorithms         HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com ssh-ed25519 ssh-rsa-cert-v01@openssh.com ssh-rsa)
+if [ "${sshPubkeyAcceptedKeyTypes}" != "" ] ; then
+   newSSH=""
+else
+   newSSH="# "   # SSH version is too old!
+fi
+
+
+
+# ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
+YES_TO_ALL=0
+SKIP_SSH_CONFIGURATION=0
+SKIP_SSH_KEY_REPLACEMENT=0
+OLD_HOSTNAME_FQDN="$(hostname -f)"
+OLD_HOSTNAME="${OLD_HOSTNAME_FQDN//.*/}"
+NEW_HOSTNAME_FQDN="${OLD_HOSTNAME_FQDN}"
+applyChanges=""
+
+while [ $# -gt 0 ] ; do
+   if [ "$1" == "--yes-to-all-i-am-really-sure" ] || [ "$1" == "-yes-to-all-i-am-really-sure" ] ; then
+      YES_TO_ALL=1
+      applyChanges="yes"
+   elif [ "$1" == "--hostname" ] || [ "$1" == "-H" ] || [ "$1" == "-hostname" ] ; then
+      hostname="$2"
+      shift
+      if [[ ! "${hostname}" =~ ^([a-zA-Z][a-zA-Z0-9-]+\.)*[a-zA-Z][a-zA-Z0-9-]*$ ]] ; then
+         # shellcheck disable=SC2005
+         echo >&2 "$(eval_gettext "ERROR: Invalid hostname \${hostname}!")"
+         exit 1
+      fi
+      NEW_HOSTNAME_FQDN="${hostname}"
+      NEW_HOSTNAME="${NEW_HOSTNAME_FQDN//.*/}"
+   elif [ "$1" == "--skip-ssh-configuration" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-ssh-configuration" ] ; then
+      SKIP_SSH_CONFIGURATION=1
+   elif [ "$1" == "--skip-ssh-key-replacement" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-key-replacement" ] ; then
+      SKIP_SSH_KEY_REPLACEMENT=1
+   else
+      echo >&2 "$(eval_gettext "Usage:") $0 [--hostname hostname] [--skip-ssh-configuration] [--skip-ssh-key-replacement]"
+      exit 1
+   fi
+   shift
+done
+
+
+# ====== Change hostname ====================================================
+if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
+
+   # ====== Update /etc/hosts ============================================
+   while read -r line ; do
+
+      if [[ "${line}" =~ ^(127\.0.\0.1|127\.0\.1\.1|::1)[[:blank:]] ]] ; then
+         currentNames="$(echo "${line}" | sed -e 's/^[0-9a-fA-F\.:]*[[:blank:]]*//g' -e 's/[[:blank:]][[:blank:]]*/\n/g' | sort -u)"
+         newNames="${NEW_HOSTNAME_FQDN}"
+         if [ "${NEW_HOSTNAME}" != "${NEW_HOSTNAME_FQDN}" ] ; then
+            newNames="${newNames} ${NEW_HOSTNAME}"
+         fi
+         for currentName in ${currentNames} ; do
+            if [[ "${currentName}" =~ ^(localhost|localhost[46]|ip6-localhost|ip6-loopback)(\..*$|$) ]] ; then
+               newNames="${newNames} ${currentName}"
+            #else
+               #echo >&2 "${currentName} DDD"
+            fi
+
+         done
+
+         # shellcheck disable=SC2001
+         line="$(echo "${line}" | sed -e "s/\([[:blank:]][[:blank:]]*\).*$/\1${newNames}/g")"
+
+      elif [[ "${line}" =~ ^(([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})|((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:)))(%.+)?)[[:blank:]] ]] ; then
+         # shellcheck disable=SC2001
+         line="$(echo "${line}" | sed -e "s/\([[:blank:]]\)\(${OLD_HOSTNAME_FQDN}\)\([[:blank:]]\|$\)/\1${NEW_HOSTNAME_FQDN}\3/g" -e "s/\([[:blank:]]\)\(${OLD_HOSTNAME}\)\([[:blank:]]\|$\)/\1${NEW_HOSTNAME}\3/g")"
+      fi
+
+      echo "${line}"
+
+   differences=0
+
+   done </etc/hosts >/etc/hosts.updated
+   echo "/etc/hosts:"
+   diff --color=always /etc/hosts /etc/hosts.updated || differences=$(( differences+1))
+
+
+   # ====== Update /etc/hostname or /etc/rc.conf =========================
+   if [ -e /etc/hostname ] ; then
+      echo "${NEW_HOSTNAME_FQDN}" >/etc/hostname.updated
+      echo "/etc/hostname:"
+      diff --color=always /etc/hostname /etc/hostname.updated || differences=$(( differences+1))
+   elif [ -e /etc/rc.conf ] ; then
+      echo "/etc/rc.conf:"
+      sed -e "s/^hostname=.*$/hostname=\"${NEW_HOSTNAME_FQDN}\"/g" \
+         </etc/rc.conf >/etc/rc.conf.updated
+      diff --color=always /etc/rc.conf /etc/rc.conf.updated || differences=$(( differences+1))
+   fi
+
+   # ====== Apply changes ================================================
+   if [ ${differences} -gt 0 ] ; then
+      if [ ${YES_TO_ALL} -ne 1 ] ; then
+         echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Update hostname?") [yes/no]?\x1b[0m "
+         read -er applyChanges
+      fi
+      if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
+         mv /etc/hosts.updated /etc/hosts
+         if [ -e /etc/hostname ] ; then
+            mv /etc/hostname.updated /etc/hostname
+         elif [ -e /etc/rc.conf ] ; then
+            mv /etc/rc.conf.updated /etc/rc.conf
+         fi
+         if [ -x /usr/bin/hostnamectl ] ; then
+            /usr/bin/hostnamectl hostname "${NEW_HOSTNAME_FQDN}"
+         else
+            hostname "${NEW_HOSTNAME_FQDN}"
+         fi
+      fi
+   fi
+fi
+
+
+# ====== Reset machine ID ===================================================
+if [ -e /etc/machine-id ] ; then
+   if [ ${YES_TO_ALL} -ne 1 ] ; then
+      machineID="$(cat /etc/machine-id)"
+      echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "The current machine ID is \${machineID}. Reset it?") [yes/no]?\x1b[0m "
+      read -er applyChanges
+   fi
+   if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
+      if [ -x /usr/bin/dbus-uuidgen ] || [ -x /usr/local/bin/dbus-uuidgen ] ; then
+         # Generate new ID already now.
+         rm -f /etc/machine-id
+         dbus-uuidgen --ensure=/etc/machine-id
+      else
+         # The ID should be reset during the next boot.
+         echo -n | tee /etc/machine-id
+      fi
+      if [ -e /var/lib/dbus/machine-id ] ; then
+         rm /var/lib/dbus/machine-id
+         ln -s /etc/machine-id /var/lib/dbus/machine-id
+      fi
+      machineID="$(cat /etc/machine-id)"
+      gettext "The new machine ID is ${machineID}."
+      echo ""
+   fi
+fi
+
+
+# ====== SSH configuration ==================================================
+if [ ${SKIP_SSH_CONFIGURATION} -eq 0 ] && [ -d /etc/ssh ] ; then
+
+   cd /etc/ssh || exit
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Checking SSH configuration ...")\x1b[0m"
+
+   # ====== Suggest ssh_config updates ======================================
+   cat >ssh_config.suggested <<EOF
+Protocol 2
+
+# Check supported algorithms with "ssh -Q cipher|mac|kex|key"!
+Ciphers                   ${sshCiphers}
+MACs                      ${sshMACs}
+KexAlgorithms             ${sshKexAlgorithms}
+
+VerifyHostKeyDNS          ask
+HashKnownHosts            yes
+GSSAPIAuthentication      yes
+GSSAPIDelegateCredentials no
+
+TCPKeepAlive              yes
+ServerAliveInterval       30
+ServerAliveCountMax       3
+
+SendEnv                   LANG LC_*
+EOF
+
+
+   # ====== Apply ssh_config updates ========================================
+   gettext "Suggested ssh_config changes:"
+   echo ""
+   if ! diff --color=always ssh_config ssh_config.suggested ; then
+      if [ ${YES_TO_ALL} -ne 1 ] ; then
+         echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Apply suggested ssh_config changes?") [yes/no]?\x1b[0m "
+         read -er applyChanges
+      fi
+      if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
+         cp ssh_config ssh_config.old
+         mv ssh_config.suggested ssh_config
+      else
+         gettext "Skipped!"
+         echo ""
+      fi
+   fi
+
+
+   # ====== Suggest sshd_config updates =====================================
+   port=$(grep "^Port[[:blank:]]" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
+   p1=$(grep "^PasswordAuthentication[[:blank:]]" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
+   p2=$(grep "^KbdInteractiveAuthentication[[:blank:]]" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
+   if [[ ! "${port}" =~ ^[0-9]+$ ]] ; then
+      port="22"
+   fi
+   if [ "${p1}" != "yes" ] && [ "${p1}" != "no" ]  ; then
+      p1="yes"
+   fi
+   if [ "${p2}" != "yes" ] && [ "${p2}" != "no" ]  ; then
+      p2="yes"
+   fi
+   cat >sshd_config.suggested <<EOF
+Protocol 2
+
+Port ${port}
+
+# Check supported algorithms with "ssh -Q cipher|mac|kex|key|PubkeyAcceptedAlgorithms|HostbasedAcceptedKeyTypes|HostbasedAcceptedKeyTypes"!
+Ciphers                      ${sshCiphers}
+MACs                         ${sshMACs}
+KexAlgorithms                ${sshKexAlgorithms}
+# The following options are only available on up-to-date SSH servers:
+${newSSH}PubkeyAcceptedKeyTypes       ${sshPubkeyAcceptedKeyTypes}
+${newSSH}HostbasedAcceptedKeyTypes    ${sshHostbasedAcceptedKeyTypes}
+${newSSH}HostKeyAlgorithms            ${sshHostKeyAlgorithms}
+
+UsePAM                       yes
+X11Forwarding                yes
+TCPKeepAlive                 yes
+ClientAliveInterval          60
+ClientAliveCountMax          3
+
+# To disable password usage, set *both* values to "no":
+# KbdInteractiveAuthentication uses PAM, which usually just means using a password.
+PasswordAuthentication       ${p1}
+KbdInteractiveAuthentication ${p2}
+
+AcceptEnv                    LANG LC_*
+EOF
+   for sftp in /usr/lib/openssh/sftp-server /usr/libexec/sftp-server ; do
+      if [ -e "$sftp" ] ; then
+         (
+            echo ""
+            echo "Subsystem sftp $sftp"
+         ) >>sshd_config.suggested
+         break
+      fi
+   done
+
+
+   # ====== Suggest removal of Cloud-Init sshd configuration ================
+   differences=0
+   if [ -e /etc/ssh/sshd_config.d/50-cloud-init.conf ] ; then
+      gettext "Suggested removal of /etc/ssh/sshd_config.d/50-cloud-init.conf:"
+      echo ""
+      cat /etc/ssh/sshd_config.d/50-cloud-init.conf
+      differences=1
+   fi
+
+
+   # ====== Apply sshd_config updates =======================================
+   gettext "Suggested sshd_config changes:"
+   echo ""
+   diff --color=always sshd_config sshd_config.suggested || differences=$(( differences+1))
+   if [ ${differences} -gt 0 ] ; then
+      if [ ${YES_TO_ALL} -ne 1 ] ; then
+         echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Apply suggested sshd_config changes?") [yes/no]?\x1b[0m "
+         read -er applyChanges
+      fi
+      if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
+         rm -f /etc/ssh/sshd_config.d/50-cloud-init.conf
+         cp sshd_config sshd_config.old
+         mv sshd_config.suggested sshd_config
+
+         echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Trying to restart SSH daemon ...")\x1b[0m"
+         # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
+         service sshd restart 2>/dev/null || \
+            service ssh restart 2>/dev/null
+      else
+         gettext "Skipped!"
+         echo ""
+      fi
+   fi
+fi
+
+
+# ====== Generate new SSH key pair ==========================================
+if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] ; then
+
+   cd /etc/ssh || exit
+
+   if [ ${YES_TO_ALL} -ne 1 ] ; then
+      echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Remove existing SSH host keys and generate new ones?") [yes/no]?\x1b[0m "
+      read -er applyChanges
+   fi
+   if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
+      backupDirectory="backup-$(env LANG=C date +%FT%H:%M:%S)"
+
+      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Making backup of current keys in \${backupDirectory} ...")\x1b[0m"
+      mkdir "${backupDirectory}/"
+      find . -maxdepth 1 -name "ssh_host_*_key*" -print0 | xargs -0 -n1 -I § -r mv § "${backupDirectory}/"
+      find . -maxdepth 1 -name "ssh_host_key*"   -print0 | xargs -0 -n1 -I § -r mv § "${backupDirectory}/"
+      find . -maxdepth 1 -name "moduli*"         -print0 | xargs -0 -n1 -I § -r cp § "${backupDirectory}/"
+      cp sshd_config "${backupDirectory}/"
+      cp ssh_config  "${backupDirectory}/"
+
+      # rm -f moduli.candidates moduli
+      # echo "Generating moduli, step 1 ..."
+      # time ssh-keygen -G moduli.candidates -b ${MODULI_BITS}
+      # echo "Generating moduli, step 2 ..."
+      # time ssh-keygen -T moduli -f moduli.candidates
+
+      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Generating new ED25519 key ...")\x1b[0m"
+      time ssh-keygen -N "" -t ed25519 -f ssh_host_ed25519_key
+      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Generating new ECDSA key ...")\x1b[0m"
+      time ssh-keygen -N "" -t ecdsa -b ${ECDSA_BITS} -f ssh_host_ecdsa_key
+      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Generating new RSA key; this may take some time ...")\x1b[0m"
+      time ssh-keygen -N "" -t rsa -b ${RSA_BITS} -f ssh_host_rsa_key
+
+      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Done!")\x1b[0m"
+
+      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Trying to restart SSH daemon ...")\x1b[0m"
+      # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
+      service sshd restart 2>/dev/null || \
+         service ssh restart 2>/dev/null
+
+   else
+      gettext "Skipped!"
+      echo ""
+   fi
+
+fi

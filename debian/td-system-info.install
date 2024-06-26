@@ -1,4 +1,10 @@
 etc/profile.d/system-info.csh
 etc/profile.d/system-info.sh
 etc/system-info.d/01-example
+etc/system-info.d/banner-helper
 usr/bin/System-Info
+usr/share/System-Info/01-example
+usr/share/System-Info/09-hostname-example
+usr/share/System-Info/10-company-logo-example
+usr/share/System-Info/banner-helper
+usr/share/locale/*/LC_MESSAGES/System-Info.mo

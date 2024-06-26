@@ -23,14 +23,15 @@ image="/usr/share/nornet-desktop/Desktop-with-Logo/TimeSrv1"   #  "/boot/NorNet/
 
 
 # ====== Make a table of all images and their dimensions ====================
-imageDirectory=`dirname ${image}`
-imagePrefix=`basename ${image}`
+imageDirectory=$(dirname ${image})
+imagePrefix=$(basename ${image})
 
 
-imageTable=$(ls ${imageDirectory}/${imagePrefix}* | (
-   while read imageName ; do
-      imageWidth=`echo "${imageName}" | sed -e "s/^.*\/${imagePrefix}-\([0-9]*\)x\([0-9]*\).*$/\1/g"`
-      imageHeight=`echo "${imageName}" | sed -e "s/^.*\/${imagePrefix}-\([0-9]*\)x\([0-9]*\).*$/\2/g"`
+imageTable=$(find "${imageDirectory}" -name "${imagePrefix}*" | (
+   while read -r imageName ; do
+      # shellcheck disable=SC2001
+      imageWidth=$(echo "${imageName}" | sed -e "s/^.*\/${imagePrefix}-\([0-9]*\)x\([0-9]*\).*$/\1/g")
+      imageHeight=$(echo "${imageName}" | sed -e "s/^.*\/${imagePrefix}-\([0-9]*\)x\([0-9]*\).*$/\2/g")
       imageSize=$((imageWidth*imageHeight))
       imageAspectRatio=$((1000*imageWidth/imageHeight))
       echo "${imageName} ${imageAspectRatio} ${imageSize} ${imageWidth} ${imageHeight}"
@@ -41,14 +42,16 @@ imageTable=$(ls ${imageDirectory}/${imagePrefix}* | (
 
 
 background=""
-screenResolutions=`grep "^GRUB_GFXMODE=" /etc/default/grub | sed -e "s/GRUB_GFXMODE=//g" -e "s/[,\"]/ /g"`
+screenResolutions=$(grep "^GRUB_GFXMODE=" /etc/default/grub | sed -e "s/GRUB_GFXMODE=//g" -e "s/[,\"]/ /g")
 for screenResolution in ${screenResolutions} 1024x768 ; do
    if [[ "${screenResolution}" =~ ^[0-9]*x[0-9]* ]] ; then
-      screenWidth=`echo "${screenResolution}" | sed -e "s/\([0-9]*\)x\([0-9]*\).*/\1/g"`
-      screenHeight=`echo "${screenResolution}" | sed -e "s/\([0-9]*\)x\([0-9]*\).*/\2/g"`
+      # shellcheck disable=SC2001
+      screenWidth=$(echo "${screenResolution}" | sed -e "s/\([0-9]*\)x\([0-9]*\).*/\1/g")
+      # shellcheck disable=SC2001
+      screenHeight=$(echo "${screenResolution}" | sed -e "s/\([0-9]*\)x\([0-9]*\).*/\2/g")
       screenAspectRatio=$((1000*screenWidth/screenHeight))
 
-      imageToUse=$(echo "${imageTable}" | while read imageName imageAspectRatio imageSize imageWidth imageHeight ; do
+      imageToUse=$(echo "${imageTable}" | while read -r imageName imageAspectRatio imageSize imageWidth imageHeight ; do
          if [ "${imageAspectRatio}" = "${screenAspectRatio}" ] ; then
             echo "${imageName}"
             break

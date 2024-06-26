@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 1.5.6
+Version: 1.7.0
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -11,6 +11,7 @@ AutoReqProv: on
 BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
+BuildRequires: gettext
 BuildArch:     noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
@@ -52,10 +53,11 @@ SSD or unmap unused storage.
 Summary: Perform basic system maintenance
 Group: Applications/System
 BuildArch: noarch
+Requires: (mbuffer or buffer)
+Requires: gettext-runtime
+Requires: (figlet or toilet)
 Recommends: subnetcalc
 Suggests: banner
-Suggests: figlet
-Suggests: toilet
 
 %description system-info
 This program displays basic status information about the system:
@@ -68,9 +70,15 @@ in, providing the user an up-to-date overview of the system.
 
 %files system-info
 %{_bindir}/System-Info
+%{_datadir}/locale/*/LC_MESSAGES/System-Info.mo
+%{_datadir}/System-Info/01-example
+%{_datadir}/System-Info/09-hostname-example
+%{_datadir}/System-Info/10-company-logo-example
+%{_datadir}/System-Info/banner-helper
 %{_mandir}/man1/System-Info.1.gz
 %{_sysconfdir}/profile.d/system-info.sh
 %{_sysconfdir}/profile.d/system-info.csh
+%{_sysconfdir}/system-info.d/banner-helper
 %{_sysconfdir}/system-info.d/01-example
 
 
@@ -88,8 +96,43 @@ for old kernels and removing them, trim SSD or unmap unused storage.
 
 %files system-maintenance
 %{_bindir}/System-Maintenance
+%{_datadir}/locale/*/LC_MESSAGES/System-Maintenance.mo
 %{_mandir}/man1/System-Maintenance.1.gz
 %{_sysconfdir}/system-maintenance.d/XX-example
+
+
+%package reset-machine-id
+Summary: Reset machine identity state
+Group: Applications/System
+BuildArch: noarch
+Recommends: td-system-tools-system-info
+Recommends: td-system-tools-system-maintenance
+
+%description reset-machine-id
+This program helps to reset the machine identity state:
+reset machine ID, change hostname, replace SSH keys, suggest hardened
+SSH client and server settings.
+
+%files reset-machine-id
+%{_bindir}/Reset-Machine-ID
+%{_datadir}/locale/*/LC_MESSAGES/Reset-Machine-ID.mo
+%{_mandir}/man1/Reset-Machine-ID.1.gz
+
+
+%package fingerprint-ssh-keys
+Summary: Reset machine identity state
+Group: Applications/System
+BuildArch: noarch
+Recommends: td-system-tools-system-info
+
+%description fingerprint-ssh-keys
+This program prints the SSH key fingerprints of the local machine
+in different formats: SSH hash, DNS SSHFP RR.
+
+%files fingerprint-ssh-keys
+%{_bindir}/Fingerprint-SSH-Keys
+%{_datadir}/locale/*/LC_MESSAGES/Fingerprint-SSH-Keys.mo
+%{_mandir}/man1/Fingerprint-SSH-Keys.1.gz
 
 
 %package configure-grub
@@ -119,8 +162,10 @@ a rescue media to fix a broken configuration!
 Summary: Meta package for system information and maintenance tools
 Group: Applications/System
 BuildArch: noarch
+Requires: td-system-tools-fingerprint-ssh-keys
 Requires: td-system-tools-system-info
 Requires: td-system-tools-system-maintenance
+Requires: td-system-tools-system-reset-machine-id
 Recommends: td-system-tools-configure-grub
 
 %description all
@@ -131,6 +176,12 @@ tools.
 
 
 %changelog
+* Mon Jun 17 2024 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.7.0
+- New upstream release.
+* Thu Apr 04 2024 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.6.1
+- New upstream release.
+* Sun Mar 31 2024 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.6.0
+- New upstream release.
 * Wed Dec 06 2023 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.5.6
 - New upstream release.
 * Wed Nov 15 2023 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.5.6

@@ -10,13 +10,14 @@ Rules-Requires-Root: no
 
 Package: td-system-info
 Architecture: all
-Depends: ${misc:Depends}
+Depends: bsdextrautils | bsdmainutils,
+         figlet | toilet,
+         gettext-base,
+         mbuffer | buffer,
+         ${misc:Depends}
 Recommends: iputils-ping,
             iputils-tracepath,
             subnetcalc
-Suggests: banner,
-          figlet,
-          toilet
 Description: Print basic system information and banners
  This program displays basic status information about the system:
  hostname, uptime, CPU, memory statistics, disk space statistics,
@@ -37,6 +38,24 @@ Description: Perform basic system maintenance
  management databases, installing all available updates, checking
  for old kernels and removing them, trim SSD or unmap unused storage.
 
+Package: td-system-reset-machine-id
+Architecture: all
+Depends: ${misc:Depends}
+Recommends: td-system-info,
+            td-system-maintenance
+Description: Reset machine identity state
+ This program helps to reset the machine identity state:
+ reset machine ID, change hostname, replace SSH keys, suggest hardened
+ SSH client and server settings.
+
+Package: td-system-fingerprint-ssh-keys
+Architecture: all
+Depends: ${misc:Depends}
+Recommends: td-system-info
+Description: Print SSH key fingerprints
+ This program prints the SSH key fingerprints of the local machine
+ in different formats: SSH hash, DNS SSHFP RR.
+
 Package: td-system-configure-grub
 Architecture: all
 Depends: ${misc:Depends}
@@ -54,8 +73,10 @@ Description: Helper tool to adjust GRUB configuration
 
 Package: td-system-tools
 Architecture: all
-Depends: td-system-info,
+Depends: td-system-fingerprint-ssh-keys,
+         td-system-info,
          td-system-maintenance,
+         td-system-reset-machine-id,
          ${misc:Depends}
 Recommends: td-system-configure-grub
 Description: Metapackage for system information and maintenance tools

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# System-Info
+# Print system information
 # Copyright (C) 2013-2024 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -28,25 +28,36 @@ set -e
 
 # ====== Print banner =======================================================
 
-# NOTE:
-# You can produce ASCII text banners with "sysvbanner".
-# More advanced, UTF-8-capable tools are e.g. figlet and toilet.
+# Using 24-bit color codes. This may not work with all terminals!
+reset="\x1b[0m"
+color1="\x1b[34m"
+color2="\x1b[31m"
 
-echo -en "\x1b[1;34m"
-separator " <😀" "=" "😀> "
-echo -en "\x1b[1;31m"
-center "#     #                                                   ###"
-center "#  #  #  ######  #        ####    ####   #    #  ######   ###"
-center "#  #  #  #       #       #    #  #    #  ##  ##  #        ###"
-center "#  #  #  #####   #       #       #    #  # ## #  #####     # "
-center "#  #  #  #       #       #       #    #  #    #  #           "
-center "#  #  #  #       #       #    #  #    #  #    #  #        ###"
-center " ## ##   ######  ######   ####    ####   #    #  ######   ###"
-echo -en "\x1b[1;34m"
-center ""
-center "$(gettext "You can change this banner in /etc/system-info.d!")"
-separator " <😀" "=" "😀> "
-echo -e "\x1b[0m"
+# ------ Print top separator ------------------------------------------------
+echo -en "${color1}"
+separator " *💻" "=" "💻*"
+echo ""
+center "${color1}-- ${color2}$(gettext "Welcome on the System") ${color1}--"
+
+# ------ Print the hostname FQDN as banner ----------------------------------
+(
+   maxWidth=$(tput cols)   # Console width in characters
+   # Try the FQDN hostname as banner first. But it may be too long.
+   if ! make-banner "$(hostname -f)" "${maxWidth}" ; then
+      # Try the hostname only, if the FQDN is too long.
+      if ! make-banner "$(hostname -s)" "${maxWidth}" ; then
+         # Something went wrong. Just print the hostname as non-banner string.
+         hostname -f
+      fi
+   fi
+) | while IFS= read -r line ; do
+   center "${line}"
+done
+
+# ------ Print bottom separator ---------------------------------------------
+echo -en "${reset}${color1}"
+separator " *💻" "=" "💻*"
+echo -e "${reset}"
 
 
 # ====== Finish =============================================================

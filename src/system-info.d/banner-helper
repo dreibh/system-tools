@@ -1,0 +1,158 @@
+#!/usr/bin/env bash
+#
+# System-Info
+# Copyright (C) 2013-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+export TEXTDOMAIN="System-Info"
+
+
+# ###### Get width of UTF-8 string in console characters ####################
+# For some more details, see also:
+# https://unix.stackexchange.com/questions/245013/get-the-display-width-of-a-string-of-characters
+stringwidth()
+{
+   local string
+
+   # The ANSI escape sequences for coloring have to be filtered out!
+   # shellcheck disable=SC2001
+   string="$(echo "$1" | sed -e 's/\(\\x1b\[[0-9;:]*m\)//g')"
+
+   # Unfortunately, this seems to only work under Linux:
+   # wc -Lm <<< "${string}" | awk '{ print $2 }'
+
+   awk '
+      BEGIN {
+         string = ARGV[1]
+         len    = length(string)
+         s1     = ""
+         s2     = ""
+         for (i = 0; i < len; i++) {
+            s1 = s1 ".."     # 2 characters of size 1
+            s2 = s2 "\b\b"   # 2 backspaces
+         }
+         print s1 string s2 s1
+         exit
+      }' "${string}" | col -b | awk '{ print length - 2 * length(ARGV[2]); exit }' - "${string}"
+}
+
+
+# ###### Center text in console #############################################
+function center ()
+{
+   local text="$1"
+   local consoleWidth
+   local textLength
+
+   consoleWidth=$(tput cols)   # Console width in characters
+   textLength=$( stringwidth "${text}" )
+   indent=$(( (consoleWidth-textLength) / 2 ))
+   if [ ${indent} -lt 0 ] ; then
+      indent=0
+   fi
+   printf "%${indent}s"
+   echo -e "${text}"
+}
+
+
+# ###### Print centered separator in console ################################
+# Parameters:
+# $1: separater left border, e.g. " <😀"
+# $2: separator, e.g. "="
+# $3: separater right border, e.g. "😀> "
+# => " <😀====...====😀> "
+function separator ()
+{
+   local separaterLeftBorder="$1"
+   local separatorCharacter="$2"
+   local separaterRightBorder="$3"
+   local separator=""
+   local consoleWidth
+   local i
+
+   # The example uses an UTF-8 smiley (😀) as border decoration.
+   # It uses 4 bytes, but needs a space of 2 characters in the output.
+   consoleWidth=$(tput cols)   # Console width in characters
+   # Calculate width of the borders in characters:
+   borderWidth=$( stringwidth "${separaterLeftBorder}${separaterRightBorder}" )
+   separatorCharacterWidth=$( stringwidth "${separatorCharacter}" )
+
+   i=${borderWidth}
+   while [ $(( i+separatorCharacterWidth )) -lt "${consoleWidth}" ] ; do
+      separator="${separator}${separatorCharacter}"
+      i=$(( i+separatorCharacterWidth ))
+   done
+   echo "${separaterLeftBorder}${separator}${separaterRightBorder}"
+}
+
+
+# ###### Make banner with equal-length lines ################################
+# Parameters:
+# $1: Banner text
+# $2: Maximum length. Default is current console width
+# Return: success/failure
+function make-banner ()
+{
+   local bannerText="$1"
+   local maxWidth="$2"
+   if [ "${maxWidth}" == "" ] ; then
+      maxWidth=80 # $(tput cols)   # Console width in characters
+   fi
+
+   # ====== Create banner with figlet, toilet or echo as fallback ===========
+   local generatedBanner
+   generatedBanner=$(
+      (
+         figlet -w 256 -f standard "${bannerText}" 2>/dev/null || \
+         toilet -w 256 -f standard "${bannerText}" 2>/dev/null || \
+         if [ ${#bannerText} -le 10 ] ; then sysvbanner "${bannerText}" ; else false ; fi || \
+         echo "${bannerText}"
+      ) | (
+      # ====== Compute maximum line length and pad banner lines to this length ====
+         # Array to store the lines of the banner:
+         banner=( )
+
+         # Read lines, and compute the maximum line length
+         maxLineLength=0
+         while IFS= read -r line ; do
+            if [ ${#line} -gt ${maxLineLength} ] ; then
+               maxLineLength=${#line}
+            fi
+            banner+=( "${line}" )
+         done
+
+         # Return, if output is too wide
+         if [ "${maxLineLength}" -gt ${maxWidth} ] ; then
+            return
+         fi
+
+         # Print maximum-length lines padded with spaces
+         for line in "${banner[@]}" ; do
+            printf "%-${maxLineLength}s\n" "${line}"
+         done
+      )
+   )
+
+   # ====== Check resulting banner ==========================================
+   if [ "${generatedBanner}" == "" ] ; then
+      # Failed -> return error code.
+      return 1
+   fi
+   echo "${generatedBanner}"
+}

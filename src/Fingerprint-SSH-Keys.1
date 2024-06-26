@@ -1,4 +1,4 @@
-.\" System-Maintenance
+.\" Reset Machine ID
 .\" Copyright (C) 2013-2024 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
@@ -17,55 +17,43 @@
 .\" Contact: dreibh@simula.no
 .\"
 .\" ###### Setup ############################################################
-.Dd May 23, 2024
-.Dt System-Maintenance 1
-.Os System-Maintenance
+.Dd May 29, 2024
+.Dt Fingerprint-SSH-Keys 1
+.Os Fingerprint-SSH-Keys
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm System-Maintenance
-.Nd Perform system maintenance tasks
+.Nm Fingerprint-SSH-Keys
+.Nd print SSH key fingerprints
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
-.Nm System-Maintenance
-.Op Fl interactive-kernel-removal|-k
+.Nm Fingerprint-SSH-Keys
+.Op Fl \-include-deprecated|\-d
+.Op Fl \-include-raw|\-r
+.Op Fl \-include-raw-python|\-p
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm System-Maintenance
-runs some system maintenance tasks to keep the system clean and up to date.
-These tasks are:
+.Nm Fingerprint-SSH-Keys
+prints the SSH key fingerprints of the local machine in different formats:
 .br
-* Ensuring that all packages are configured,
+* SSH hash format,
 .br
-* Updating the package repositories,
-.br
-* Removing obsolete kernels,
-.br
-* Installing all available package updates,
-.br
-* Auto-removing unused packages,
-.br
-* Updating package and file search caches,
-.br
-* Updating firmware,
-.br
-* Trimming SSDs and virual storage.
+* DNS SSHFP FF format.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl interactive-kernel-removal|-k
-Remove obsolete kernels interactively.
-.It Fl dont-keep-interface-mappings|-M
-Delete network interface mapping rules
-(/etc/udev/rules.d/70-persistent-net.rules), if eth0 does not exist. This is
-useful for cloned virtual machines, where the new machine gets net MAC
-addresses. By deleting the mappings, the interfaces should be renamed
-beginning from eth0 during the next boot.
+.It \-\-include-deprecated|\-d
+Also include deprecated key types and hash algorithms in DNS SSHFP RR output.
+.It \-include-raw|\-r
+Also include the keys in raw format.
+.It \-include-raw-python|\-p
+Also include the keys in raw format, in Python dictionary format.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It sudo System-Maintenance
-.It sudo System-Maintenance -dont-keep-interface-mappings
+.It Fingerprint-SSH-Keys
+.It Fingerprint-SSH-Keys \-\-include-deprecated
+.It Fingerprint-SSH-Keys \-d
 .El
