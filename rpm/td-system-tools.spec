@@ -165,7 +165,7 @@ BuildArch: noarch
 Requires: td-system-tools-fingerprint-ssh-keys
 Requires: td-system-tools-system-info
 Requires: td-system-tools-system-maintenance
-Requires: td-system-tools-system-reset-machine-id
+Requires: td-system-tools-reset-machine-id
 Recommends: td-system-tools-configure-grub
 
 %description all
