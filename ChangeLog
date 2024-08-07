@@ -1,3 +1,40 @@
+commit 704965019a3d7f7125bac9ac213c31194a3d4c0b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 7 21:34:53 2024 +0200
+
+    Makefile update.
+
+commit 83c24d74eb3aef88ce97a67b142b000a5d5d04b8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 10 13:44:16 2024 +0200
+
+    A fix.
+
+commit 4ed1b03ab21ef667b3995d921a38a620bdc1c8a5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 26 13:43:41 2024 +0200
+
+    A small fix.
+
+commit 9386e9d896cd9e1d23aad513b2b176b15b7d7c27
+Merge: 44b8819 0e59b71
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 26 13:42:54 2024 +0200
+
+    Merge branch 'master' of github.com:dreibh/system-tools
+
+commit 44b881915c06aac32a1f25a3d514ebe8a688e046
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 26 13:42:10 2024 +0200
+
+    Minor update.
+
+commit 0e59b7137c8af484de289cefb1cd3ec57e9ac304
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 17 13:38:14 2024 +0200
+
+    New release td-system-tools-1.7.0.
+
 commit 904ebd609b0e11f40a9b47f19d93c9e6888d140b
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon Jun 17 12:16:39 2024 +0200
