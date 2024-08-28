@@ -1,3 +1,45 @@
+commit 5482017bcceb76beb41634375afe53616139f792
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 28 16:15:06 2024 +0200
+
+    Also place .pot files into binary directory.
+
+commit 624f7680fefc3a67cb578c9b9de6636b9f722333
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 28 16:06:36 2024 +0200
+
+    Translations file updates.
+
+commit e39d3f2508831ce4d9a8b7c509b2f2d2325f734d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 28 16:03:31 2024 +0200
+
+    Properly handle a separate binary directory in CMakeLists.txt.
+
+commit 2db06657a9b4f42a12a4b296552f9a7b59c9a899
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 28 15:21:09 2024 +0200
+
+    Debian and Fedora dependency fixes.
+
+commit 08ee8cde390876c14967361c934f9759ccb796c9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 28 15:07:06 2024 +0200
+
+    Bugfix: Do not try to print SSH key fingerprints if there is no SSH configuration available.
+
+commit 4d01d76fb726d19a620267237b2e3b5af81f9832
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 19 16:15:27 2024 +0200
+
+    Fixed options processing.
+
+commit 00d3632e1609e5d93167e0f4b8db4cbbf5fdff11
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 7 21:47:00 2024 +0200
+
+    New release td-system-tools-1.7.1.
+
 commit 704965019a3d7f7125bac9ac213c31194a3d4c0b
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Aug 7 21:34:53 2024 +0200

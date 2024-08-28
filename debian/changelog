@@ -1,7 +1,13 @@
-td-system-tools (1.7.1-1ubuntu1) noble; urgency=medium
+td-system-tools (1.7.2-1ubuntu1) noble; urgency=medium
 
   * New upstream release.
   * Closes: #988010 (ITP).
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Wed, 28 Aug 2024 16:36:07 +0200
+
+td-system-tools (1.7.1-1ubuntu1) noble; urgency=medium
+
+  * New upstream release.
   * debian/control: Updated standards version to 4.7.0.
 
  -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Wed, 07 Aug 2024 21:46:58 +0200

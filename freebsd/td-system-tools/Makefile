@@ -1,5 +1,5 @@
 PORTNAME=	td-system-tools
-DISTVERSION=	1.7.0
+DISTVERSION=	1.7.1
 CATEGORIES=	net
 MASTER_SITES=	https://www.nntb.no/~dreibh/system-tools/download/
 
