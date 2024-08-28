@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.0~beta3\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-05-29 13:09+0200\n"
+"POT-Creation-Date: 2024-08-28 15:37+0200\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -120,25 +120,25 @@ msgstr "Swap nicht vorhanden!"
 msgid "Used Diskspace:   "
 msgstr "Speicherplatz:    "
 
-#: src/System-Info:172
+#: src/System-Info:173
 msgid "SSH Keys:         #1 "
 msgstr "SSH-Schlüssel:    1. "
 
-#: src/System-Info:174
+#: src/System-Info:175
 #, sh-format
 msgid "                  #${keyNumber} "
 msgstr "                  ${keyNumber}. "
 
-#: src/System-Info:235
+#: src/System-Info:237
 msgid "(No IPv4)"
 msgstr "(Kein IPv4)"
 
-#: src/System-Info:333
+#: src/System-Info:335
 #, sh-format
 msgid "Network:"
 msgstr "Netzwerk:"
 
-#: src/System-Info:363
+#: src/System-Info:365
 #, sh-format
 msgid "System information as of ${now}"
 msgstr "Systeminformation am ${now}"
