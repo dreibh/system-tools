@@ -13,7 +13,9 @@ Architecture: all
 Depends: bsdextrautils | bsdmainutils,
          figlet | toilet,
          gettext-base,
+         iproute2,
          mbuffer | buffer,
+         procps,
          ${misc:Depends}
 Recommends: iputils-ping,
             iputils-tracepath,
