@@ -29,7 +29,8 @@ FILE(GLOB sources "*.sources")
 # ====== Find all text domains ==============================================
 FOREACH(source IN LISTS sources)
    # The .sources file lists the source files for each text domain:
-   STRING(REGEX REPLACE ".sources" ".pot" potFile "${source}")
+   GET_FILENAME_COMPONENT(potFile "${source}" NAME_WE)
+   SET(potFile "${CMAKE_CURRENT_BINARY_DIR}/${potFile}.pot")
    GET_FILENAME_COMPONENT(textdomain "${source}" NAME_WE)
 
 
