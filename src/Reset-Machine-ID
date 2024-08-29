@@ -218,7 +218,7 @@ fi
 # ====== Zabbix configuration ===============================================
 if [ "${ZABBIX_SERVER}" != "" ] ; then
    # ------ Prepare configuration -------------------------------------------
-   for zabbixConfig in /etc/zabbix/zabbix_agentd.conf /usr/local/etc/zabbix7/zabbix_agentd.conf ; do
+   for zabbixConfig in /etc/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf /usr/local/etc/zabbix7/zabbix_agentd.conf ; do
       if [ -e "${zabbixConfig}" ] ; then
          break
       fi
