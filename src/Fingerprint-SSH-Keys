@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -e
+set -eu
 
 
 export TEXTDOMAIN="Fingerprint-SSH-Keys"

@@ -18,6 +18,7 @@
 #
 # Contact: dreibh@simula.no
 
+# Bash options:
 set -eu
 
 

@@ -18,6 +18,10 @@
 #
 # Contact: dreibh@simula.no
 
+# Bash options:
+set -eu
+
+
 export TEXTDOMAIN="System-Info"
 # export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
 
