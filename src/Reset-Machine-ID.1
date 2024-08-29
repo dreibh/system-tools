@@ -57,19 +57,19 @@ The changes are made interactively on request, unless the \-yes\-to\-all\-i\-am\
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It \-\-yes\-to\-all\-i\-am\-really\-sure
+.It Fl \-hostname Ar hostname | Fl H Ar hostname
+Set the given hostname.
+.It Fl \-zabbix Ar zabbix_server | Fl Z Ar zabbix_server
+Configure an already-installed Zabbix agent for a given Zabbix server.
+.It Fl \-skip-machine-id | Fl M
+Do not reset the machine ID.
+.It Fl \-skip-ssh-configuration | Fl S
+Do not make SSH configuration changes.
+.It Fl \-skip-ssh-key-replacement | Fl K
+Do not replace SSH keys.
+.It Fl \-yes\-to\-all\-i\-am\-really\-sure
 Create new keys (delete old ones) as well as replace sshd_config and
 ssh_config without interactively asking for confirmation.
-.It \-\-hostname|\-H hostname
-Set the given hostname.
-.It \-\-zabbix|\-Z zabbix_server
-Configure an already-installed Zabbix agent for a given Zabbix server.
-.It \-\-skip-machine-id|-M
-Do not reset the machine ID.
-.It \-\-skip-ssh-configuration
-Do not make SSH configuration changes.
-.It \-\-skip-ssh-key-replacement
-Do not replace SSH keys.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES

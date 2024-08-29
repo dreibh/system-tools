@@ -17,7 +17,7 @@
 .\" Contact: dreibh@simula.no
 .\"
 .\" ###### Setup ############################################################
-.Dd May 23, 2024
+.Dt System-Info 1
 .Dt System-Maintenance 1
 .Os System-Maintenance
 .\" ###### Name #############################################################
@@ -27,7 +27,7 @@
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm System-Maintenance
-.Op Fl interactive-kernel-removal|-k
+.Op Fl interactive-kernel-removal | Fl k
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm System-Maintenance
@@ -54,18 +54,12 @@ These tasks are:
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl interactive-kernel-removal|-k
+.It Fl interactive-kernel-removal | Fl k
 Remove obsolete kernels interactively.
-.It Fl dont-keep-interface-mappings|-M
-Delete network interface mapping rules
-(/etc/udev/rules.d/70-persistent-net.rules), if eth0 does not exist. This is
-useful for cloned virtual machines, where the new machine gets net MAC
-addresses. By deleting the mappings, the interfaces should be renamed
-beginning from eth0 during the next boot.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It sudo System-Maintenance
-.It sudo System-Maintenance -dont-keep-interface-mappings
+.It sudo System-Maintenance \-\-interactive-kernel-removal
 .El
