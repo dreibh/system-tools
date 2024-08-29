@@ -17,7 +17,7 @@
 .\" Contact: dreibh@simula.no
 .\"
 .\" ###### Setup ############################################################
-.Dd May 28, 2024
+.Dd August 29, 2024
 .Dt Reset-Machine-ID 1
 .Os Reset-Machine-ID
 .\" ###### Name #############################################################
@@ -27,9 +27,12 @@
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm Reset-Machine-ID
+.Op Fl \-hostname|\-H hostname
+.Op Fl \-zabbix|\-Z zabbix_server
+.Op Fl \-skip-machine-id|-M
+.Op Fl \-skip-ssh-configuration|\-S
+.Op Fl \-skip-ssh-key-replacement|\-K
 .Op Fl \-yes\-to\-all\-i\-am\-really\-sure
-.Op Fl \-skip-ssh-configuration
-.Op Fl \-skip-ssh-key-replacement
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Reset-Machine-ID
@@ -55,6 +58,12 @@ The following options are available:
 .It \-\-yes\-to\-all\-i\-am\-really\-sure
 Create new keys (delete old ones) as well as replace sshd_config and
 ssh_config without interactively asking for confirmation.
+.It \-\-hostname|\-H hostname
+Set the given hostname.
+.It \-\-zabbix|\-Z zabbix_server
+Configure an already-installed Zabbix agent for a given Zabbix server.
+.It \-\-skip-machine-id|-M
+Do not reset the machine ID.
 .It \-\-skip-ssh-configuration
 Do not make SSH configuration changes.
 .It \-\-skip-ssh-key-replacement
@@ -66,5 +75,6 @@ Do not replace SSH keys.
 .It sudo Reset-Machine-ID
 .It sudo Reset-Machine-ID \-\-yes\-to\-all\-i\-am\-really\-sure
 .It sudo Reset-Machine-ID \-\-hostname dbserver.domain.example
+.It sudo Reset-Machine-ID \-H server.domain.example \-Z zabbix.domain.example
 .It sudo Reset-Machine-ID \-\-skip\-ssh\-configuration \-\-skip\-ssh\-key\-replacement
 .El

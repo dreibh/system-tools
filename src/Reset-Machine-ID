@@ -18,6 +18,8 @@
 #
 # Contact: dreibh@simula.no
 
+set -eu
+
 
 export TEXTDOMAIN="Reset-Machine-ID"
 # export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
@@ -72,11 +74,13 @@ select-ssh-options ()
 
 # ====== Handle arguments ===================================================
 YES_TO_ALL=0
+SKIP_MACHINE_ID=0
 SKIP_SSH_CONFIGURATION=0
 SKIP_SSH_KEY_REPLACEMENT=0
 OLD_HOSTNAME_FQDN="$(hostname -f)"
 OLD_HOSTNAME="${OLD_HOSTNAME_FQDN//.*/}"
 NEW_HOSTNAME_FQDN="${OLD_HOSTNAME_FQDN}"
+ZABBIX_SERVER=""
 applyChanges=""
 
 while [ $# -gt 0 ] ; do
@@ -93,12 +97,17 @@ while [ $# -gt 0 ] ; do
       fi
       NEW_HOSTNAME_FQDN="${hostname}"
       NEW_HOSTNAME="${NEW_HOSTNAME_FQDN//.*/}"
+   elif [ "$1" == "--zabbix" ] || [ "$1" == "-Z" ] || [ "$1" == "-zabbix" ] ; then
+      ZABBIX_SERVER="$2"
+      shift
+   elif [ "$1" == "--skip-machine-id" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-machine-id" ] ; then
+      SKIP_MACHINE_ID=1
    elif [ "$1" == "--skip-ssh-configuration" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-ssh-configuration" ] ; then
       SKIP_SSH_CONFIGURATION=1
-   elif [ "$1" == "--skip-ssh-key-replacement" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-key-replacement" ] ; then
+   elif [ "$1" == "--skip-ssh-key-replacement" ] || [ "$1" == "-K" ] || [ "$1" == "-skip-key-replacement" ] ; then
       SKIP_SSH_KEY_REPLACEMENT=1
    else
-      echo >&2 "$(eval_gettext "Usage:") $0 [--hostname hostname] [--skip-ssh-configuration] [--skip-ssh-key-replacement]"
+      echo >&2 "$(eval_gettext "Usage:") $0 [--hostname|-H hostname] [--zabbix|-Z zabbix_server] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--yes-to-all-i-am-really-sure]"
       exit 1
    fi
    shift
@@ -156,7 +165,7 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
    fi
 
    # ====== Apply changes ================================================
-   if [ ${differences} -gt 0 ] ; then
+   if [ "${differences}" -gt 0 ] ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
          echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Update hostname?") [yes/no]?\x1b[0m "
          read -er applyChanges
@@ -179,7 +188,7 @@ fi
 
 
 # ====== Reset machine ID ===================================================
-if [ -e /etc/machine-id ] ; then
+if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
    if [ ${YES_TO_ALL} -ne 1 ] ; then
       machineID="$(cat /etc/machine-id)"
       echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "The current machine ID is \${machineID}. Reset it?") [yes/no]?\x1b[0m "
@@ -201,6 +210,56 @@ if [ -e /etc/machine-id ] ; then
       machineID="$(cat /etc/machine-id)"
       gettext "The new machine ID is ${machineID}."
       echo ""
+   fi
+fi
+
+
+# ====== Zabbix configuration ===============================================
+if [ "${ZABBIX_SERVER}" != "" ] ; then
+   # ------ Prepare configuration -------------------------------------------
+   for zabbixConfig in /etc/zabbix/zabbix_agentd.conf /usr/local/etc/zabbix7/zabbix_agentd.conf ; do
+      if [ -e "${zabbixConfig}" ] ; then
+         break
+      fi
+   done
+   if [ ! -e "${zabbixConfig}" ] ; then
+      echo >&2 "ERROR: Tried to configure Zabbix Agent, but no configuration file found! Check Zabbix Agent installation!"
+      exit 1
+   fi
+   echo "Trying to reach Zabbix server ${ZABBIX_SERVER} ..."
+   if ! ping -c3 -i0.2 "${ZABBIX_SERVER}" ; then
+      echo >&2 "ERROR: Unable to reach Zabbix server ${ZABBIX_SERVER}!"
+      exit 1
+   fi
+   if [ ! -e "${zabbixConfig}.orig" ] ; then
+      cp "${zabbixConfig}" "${zabbixConfig}.orig"
+   fi
+   zabbixLogFile="$(grep "^LogFile" "${zabbixConfig}")"
+   zabbixPidFile="$(grep "^PidFile=" "${zabbixConfig}")"
+   cat >"${zabbixConfig}.new" <<EOF
+Hostname=
+HostnameItem=system.hostname
+Server=${ZABBIX_SERVER}
+ServerActive=${ZABBIX_SERVER}
+StartAgents=10
+${zabbixLogFile}${zabbixPidFile}
+EOF
+
+   # ------ Apply configuration ---------------------------------------------
+   if ! diff --color "${zabbixConfig}" "${zabbixConfig}.new" ; then
+      if [ ${YES_TO_ALL} -ne 1 ] ; then
+         echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Apply suggested Zabbix Agent changes in ${zabbixConfig}?") [yes/no]?\x1b[0m "
+         read -er applyChanges
+      fi
+      if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
+         cp "${zabbixConfig}" "${zabbixConfig}.old"
+         mv "${zabbixConfig}.new" "${zabbixConfig}"
+         sudo service service zabbix-agent  restart 2>/dev/null || true
+         sudo service service zabbix_agentd restart 2>/dev/null || true
+      else
+         gettext "Skipped!"
+         echo ""
+      fi
    fi
 fi
 
