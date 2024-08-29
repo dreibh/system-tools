@@ -70,10 +70,10 @@ if [ -d /etc/ssh ] ; then
             for key in ${keys} ; do
                if [ ${INCLUDE_RAW} -eq 1 ] ; then
                   echo -n "#${keyNumber}: "
-                  cat "${key}" | cut -d' ' -f1,2
+                  cut -d' ' -f1,2 <"${key}"
                else
-                  type="$(cat "${key}" | cut -d' ' -f1)"
-                  key="$(cat "${key}" | cut -d' ' -f2)"
+                  type="$(cut -d' ' -f1 <"${key}")"
+                  key="$(cut -d' ' -f2 <"${key}")"
                   if [ ${keyNumber} -gt 1 ] ; then
                      echo ","
                   fi
