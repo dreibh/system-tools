@@ -25,13 +25,15 @@
 .Nm Reset-Machine-ID
 .Nd resets the machine identity state
 .\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm Reset-Machine-ID
-.Op Fl \-hostname|\-H hostname
-.Op Fl \-zabbix|\-Z zabbix_server
-.Op Fl \-skip-machine-id|-M
-.Op Fl \-skip-ssh-configuration|\-S
-.Op Fl \-skip-ssh-key-replacement|\-K
+.Op Fl \-hostname Ar hostname | Fl H Ar hostname
+.Op Fl \-zabbix Ar zabbix_server | Fl Z Ar zabbix_server
+.Op Fl \-skip-machine-id | Fl M
+.Op Fl \-skip-ssh-configuration | Fl S
+.Op Fl \-skip-ssh-key-replacement | Fl K
 .Op Fl \-yes\-to\-all\-i\-am\-really\-sure
 .\" ###### Description ######################################################
 .Sh DESCRIPTION

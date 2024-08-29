@@ -17,7 +17,7 @@
 .\" Contact: dreibh@simula.no
 .\"
 .\" ###### Setup ############################################################
-.Dd October 8, 2020
+.Dd August 29, 2024
 .Dt configure-grub 1
 .Os configure-grub
 .\" ###### Name #############################################################
@@ -27,10 +27,10 @@
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm configure-grub grub-defaults-template-file
-.Op Fl --input|-i input-grub-defaults-file
-.Op Fl --output|-o output-grub-defaults-file
-.Op Fl --video|-V GRUB_GFXMODE
-.Op Fl --tune|-T GRUB_INIT_TUNE
+.Op Fl \-input Ar input-grub-defaults-file | Fl i Ar input-grub-defaults-file
+.Op Fl \-output Ar output-grub-defaults-file | Fl o Ar output-grub-defaults-file
+.Op Fl \-video Ar GRUB_GFXMODE | Fl V Ar GRUB_GFXMODE
+.Op Fl \-tune Ar GRUB_INIT_TUNE | Fl T Ar GRUB_INIT_TUNE
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm configure-grub
