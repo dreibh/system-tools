@@ -235,15 +235,14 @@ if [ "${ZABBIX_SERVER}" != "" ] ; then
    if [ ! -e "${zabbixConfig}.orig" ] ; then
       cp "${zabbixConfig}" "${zabbixConfig}.orig"
    fi
-   zabbixLogFile="$(grep "^LogFile" "${zabbixConfig}")"
-   zabbixPidFile="$(grep "^PidFile=" "${zabbixConfig}")"
+   zabbixOptions="$(grep -E "^(LogFile|PidFile=)" "${zabbixConfig}")"
    cat >"${zabbixConfig}.new" <<EOF
-Hostname=
+# Hostname=$(hostname -f)
 HostnameItem=system.hostname
 Server=${ZABBIX_SERVER}
 ServerActive=${ZABBIX_SERVER}
 StartAgents=10
-${zabbixLogFile}${zabbixPidFile}
+${zabbixOptions}
 EOF
 
    # ------ Apply configuration ---------------------------------------------
