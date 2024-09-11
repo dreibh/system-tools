@@ -73,18 +73,20 @@ function print-system-information ()
    diskHome=$(env LANGUAGE=en df -hT /home | grep -vE "^Filesystem|shm" | awk '{ print $6 }')
 
    # ====== Obtain operating system information =============================
-   DISTRIB_ID=$(eval_gettext "Unknown")
-   DISTRIB_CODENAME="${DISTRIB_ID}"
-   DISTRIB_RELEASE="00.00"
+   DISTRIB_ID="$(eval_gettext "Unknown")"   # Unknown, yet.
+   DISTRIB_RELEASE="${DISTRIB_ID}"          # Unknown, yet.
+   DISTRIB_CODENAME="${DISTRIB_ID}"         # Unknown, yet.
 
    # ------ Get information from /etc/os-release ----------------------------
    if [ -e /etc/os-release ] ; then
       # shellcheck disable=SC1091
       . /etc/os-release
       DISTRIB_ID="${NAME}"
-      DISTRIB_RELEASE="${VERSION_ID}"
+      if [ -v VERSION_ID ] ; then
+         DISTRIB_RELEASE="${VERSION_ID}"
+      fi
       DISTRIB_CODENAME=""
-      if [[ "${VERSION}" =~ ^.*\(([^\(\)]*)\)$ ]] ; then
+      if [ -v VERSION ] && [[ "${VERSION}" =~ ^.*\(([^\(\)]*)\)$ ]] ; then
          DISTRIB_CODENAME="${BASH_REMATCH[1]}"
       fi
 
