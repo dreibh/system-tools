@@ -88,6 +88,8 @@ function print-system-information ()
       DISTRIB_CODENAME=""
       if [ -v VERSION ] && [[ "${VERSION}" =~ ^.*\(([^\(\)]*)\)$ ]] ; then
          DISTRIB_CODENAME="${BASH_REMATCH[1]}"
+      elif [ -v VERSION_CODENAME ] ; then
+         DISTRIB_CODENAME="${VERSION_CODENAME}"
       fi
 
    # ------ Legacy system: try lsb_release ----------------------------------
