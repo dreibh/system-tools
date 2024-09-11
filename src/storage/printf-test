@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Formatting bug report:
+# https://debbugs.gnu.org/cgi/bugreport.cgi?bug=69951
+
+for l in "" de_DE en_US nb_NO ; do
+   echo "LC_NUMERIC=$l.UTF-8"
+   if [ "$l" == "" ] ; then
+      unset LC_NUMERIC
+   else
+      LC_NUMERIC=$l.UTF-8
+   fi
+   for n in 1 100 1000 10000 100000 1000000 10000000 ; do
+      printf "A <%'10.0d>\n" $n
+      printf "B <%'10.0f>\n" $n
+   done
+done
