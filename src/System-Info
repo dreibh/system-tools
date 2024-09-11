@@ -150,16 +150,16 @@ function print-system-information ()
    fi
 
    echo "$(eval_gettext "Operating System: ")${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText} $(eval_gettext "with kernel") ${kernel}"
-   printf "$(eval_gettext "Processor:        ")%d × ${cpu}; $(eval_gettext "%'d processes"); $(eval_ngettext "%'d user" "%'d users" "${users}")\n" "${cores}" "${processes}" "${users}"
+   /usr/bin/printf "$(eval_gettext "Processor:        ")%d × ${cpu}; $(eval_gettext "%'d processes"); $(eval_ngettext "%'d user" "%'d users" "${users}")\n" "${cores}" "${processes}" "${users}"
    echo "$(eval_gettext "Load:             ")${systemLoad}"
 
    of=$(eval_gettext "of")                 # nnn MiB of mmm MiB
    available=$(eval_gettext "available")   # nnn MiB available
    on=$(eval_gettext "on")                 # xxx MiB on <mountpoint>
-   printf "$(eval_gettext "Used Memory:      ")%'6.0f MiB ${of} %'6.0f MiB (%'6.0f MiB ${available})\n" "${memoryUsed}" "${memoryTotal}" "${memoryAvailable}"
+   /usr/bin/printf "$(eval_gettext "Used Memory:      ")%'6.0f MiB ${of} %'6.0f MiB (%'6.0f MiB ${available})\n" "${memoryUsed}" "${memoryTotal}" "${memoryAvailable}"
    eval_gettext "Used Swap:        "
    if [ "${swapAvailable}" -gt 0 ] ; then
-      printf "%'6.0f MiB ${of} %'6.0f MiB (%'6.0f MiB ${available})\n" "${swapUsed}" "${swapTotal}" "${swapAvailable}"
+      /usr/bin/printf "%'6.0f MiB ${of} %'6.0f MiB (%'6.0f MiB ${available})\n" "${swapUsed}" "${swapTotal}" "${swapAvailable}"
    else
       echo -en "\x1b[37m"
       eval_gettext "no swap available!"
@@ -238,7 +238,7 @@ function showAddresses ()
          fi
          lastInterface="${interface}"
          hasIPv4=0
-         printf "   %-14s " "${interface}:"
+         /usr/bin/printf "   %-14s " "${interface}:"
       fi
 
       if [ "${protocol}" == "4" ] ; then
