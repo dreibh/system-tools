@@ -3,8 +3,8 @@ Section: utils
 Priority: optional
 Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 Homepage: https://www.nntb.no/~dreibh/system-tools/
-Build-Depends: cmake,
-               debhelper (>= 12)
+Build-Depends: cmake (>= 3.5) | cmake3,
+               debhelper (>= 9)
 Standards-Version: 4.7.0
 Rules-Requires-Root: no
 
