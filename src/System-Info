@@ -75,17 +75,18 @@ function print-system-information ()
    # ====== Obtain operating system information =============================
    DISTRIB_ID="$(eval_gettext "Unknown")"   # Unknown, yet.
    DISTRIB_RELEASE="${DISTRIB_ID}"          # Unknown, yet.
-   DISTRIB_CODENAME="${DISTRIB_ID}"         # Unknown, yet.
+   DISTRIB_CODENAME=""
 
    # ------ Get information from /etc/os-release ----------------------------
    if [ -e /etc/os-release ] ; then
       # shellcheck disable=SC1091
       . /etc/os-release
-      DISTRIB_ID="${NAME}"
+      if [ -v NAME ] ; then
+         DISTRIB_ID="${NAME}"
+      fi
       if [ -v VERSION_ID ] ; then
          DISTRIB_RELEASE="${VERSION_ID}"
       fi
-      DISTRIB_CODENAME=""
       if [ -v VERSION ] && [[ "${VERSION}" =~ ^.*\(([^\(\)]*)\)$ ]] ; then
          DISTRIB_CODENAME="${BASH_REMATCH[1]}"
       elif [ -v VERSION_CODENAME ] ; then
@@ -105,12 +106,12 @@ function print-system-information ()
       freeMemOutput="$(echo "${freeOutput}" | grep "^Mem:")"
       freeSwapOutput="$(echo "${freeOutput}" | grep "^Swap:")"
 
-      memoryUsed=$(( $(echo "${freeMemOutput}" | awk '{ print $3 }') ))
-      memoryAvailable=$(( $(echo "${freeMemOutput}" | awk '{ print $4 }' ) ))
-      memoryTotal=$(( $(echo "${freeMemOutput}" | awk '{ print $2 }') ))
-      swapUsed=$(( $(echo "${freeSwapOutput}" | awk '{ print $3 }') ))
-      swapAvailable=$(( $(echo "${freeSwapOutput}" | awk '{ print $4 }') ))
-      swapTotal=$(( $(echo "${freeSwapOutput}" | awk '{ print $2 }') ))
+      memoryUsed=$(echo "${freeMemOutput}" | awk '{ print $3 }')
+      memoryAvailable=$(echo "${freeMemOutput}" | awk '{ print $4 }')
+      memoryTotal=$(echo "${freeMemOutput}" | awk '{ print $2 }')
+      swapUsed=$(echo "${freeSwapOutput}" | awk '{ print $3 }')
+      swapAvailable=$(echo "${freeSwapOutput}" | awk '{ print $4 }')
+      swapTotal=$(echo "${freeSwapOutput}" | awk '{ print $2 }')
 
    elif  [ "${system}" == "FreeBSD" ] ; then
       # Calculations based on:
