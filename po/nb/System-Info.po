@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.6\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-09-10 10:26+0200\n"
+"POT-Creation-Date: 2024-09-12 08:53+0200\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -38,107 +38,107 @@ msgstr ""
 msgid "Unknown"
 msgstr "Ukjent"
 
-#: src/System-Info:138
+#: src/System-Info:143
 #, sh-format
 msgid "Slice:            "
 msgstr "Slice:            "
 
-#: src/System-Info:140
+#: src/System-Info:145
 #, sh-format
 msgid "Host:             "
 msgstr "Datamaskin:       "
 
-#: src/System-Info:141
+#: src/System-Info:146
 #, sh-format
 msgid "Uptime:           "
 msgstr "Oppetid:          "
 
-#: src/System-Info:147
+#: src/System-Info:152
 #, sh-format
 msgid "Operating System: "
 msgstr "Operativsystem:   "
 
-#: src/System-Info:147
+#: src/System-Info:152
 #, sh-format
 msgid "with kernel"
 msgstr "med kjerne"
 
-#: src/System-Info:148
+#: src/System-Info:153
 #, sh-format
 msgid "Processor:        "
 msgstr "Prosessor         "
 
-#: src/System-Info:148
+#: src/System-Info:153
 #, sh-format
 msgid "%'d processes"
 msgstr "%'d prosesser"
 
-#: src/System-Info:148
+#: src/System-Info:153
 #, sh-format
 msgid "%'d user"
 msgid_plural "%'d users"
 msgstr[0] "%'d bruker"
 msgstr[1] "%'d brukere"
 
-#: src/System-Info:149
+#: src/System-Info:154
 #, sh-format
 msgid "Load:             "
 msgstr "Systembelastning: "
 
-#: src/System-Info:151
+#: src/System-Info:156
 #, sh-format
 msgid "of"
 msgstr "av"
 
-#: src/System-Info:152
+#: src/System-Info:157
 #, sh-format
 msgid "available"
 msgstr "tilgjengelig"
 
-#: src/System-Info:153
+#: src/System-Info:158
 #, sh-format
 msgid "on"
 msgstr "på"
 
-#: src/System-Info:154
+#: src/System-Info:159
 #, sh-format
 msgid "Used Memory:      "
 msgstr "Brukt minne:      "
 
-#: src/System-Info:155
+#: src/System-Info:160
 #, sh-format
 msgid "Used Swap:        "
 msgstr "Brukt bytteplass: "
 
-#: src/System-Info:160
+#: src/System-Info:165
 #, sh-format
 msgid "no swap available!"
 msgstr "bytteplass ikke tilgjengelig!"
 
-#: src/System-Info:163
+#: src/System-Info:168
 #, sh-format
 msgid "Used Diskspace:   "
 msgstr "Brukt diskplass:  "
 
-#: src/System-Info:179
+#: src/System-Info:184
 msgid "SSH Keys:         #1 "
 msgstr "SSH-nøkler:       №1 "
 
-#: src/System-Info:181
+#: src/System-Info:186
 #, sh-format
 msgid "                  #${keyNumber} "
 msgstr "                  №${keyNumber} "
 
-#: src/System-Info:244
+#: src/System-Info:249
 msgid "(No IPv4)"
 msgstr "(Ingen IPv4)"
 
-#: src/System-Info:342
+#: src/System-Info:347
 #, sh-format
 msgid "Network:"
 msgstr "Nettverk:"
 
-#: src/System-Info:372
+#: src/System-Info:377
 #, sh-format
 msgid "System information as of ${now}"
 msgstr "Systeminformasjon per ${now}"
