@@ -70,9 +70,7 @@ trial=0
 while true ; do
    trial=$(( trial+1 ))
    if [ "${VERBOSE}" -eq 1 ] ; then
-      echo -e "\x1b[34m"
-      gettext "Trial ${trial}/${MAX_TRIALS}: $*"
-      echo -e "\x1b[0m"
+      echo -e "\x1b[34m$(eval_gettext "Trial ${trial}/${MAX_TRIALS}: $*")\x1b[0m"
    fi
 
    # shellcheck disable=SC2068
@@ -80,16 +78,12 @@ while true ; do
 
    if [ ${trial} -ge "${MAX_TRIALS}" ] ; then
       if [ "${VERBOSE}" -eq 1 ] ; then
-         echo -e "\x1b[34m"
-         gettext "Tried ${MAX_TRIALS} times -> giving up!"
-         echo -e "\x1b[0m"
+         echo -e "\x1b[34m$(eval_gettext "Tried ${MAX_TRIALS} times -> giving up!")\x1b[0m"
       fi
       exit 1
    fi
    if [ "${VERBOSE}" -eq 1 ] ; then
-      echo -e "\x1b[34m"
-      gettext "Waiting ${DELAY} s before next try ..."
-      echo -e "\x1b[0m"
+      echo -e "\x1b[34m$(eval_gettext "Waiting ${DELAY} s before next try ...")\x1b[0m"
    fi
    sleep "${DELAY}"
 done

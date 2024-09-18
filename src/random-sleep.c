@@ -53,7 +53,8 @@ int main(int argc, char** argv)
 
    // ====== Handle arguments ===============================================
    if(argc < 3) {
-      fprintf(stderr, "Usage: %s min_delay max_delay [-q|--quiet] [-v|--verbose]\n", argv[0]);
+      fprintf(stderr, "%s %s min_delay max_delay [-q|--quiet] [-v|--verbose]\n",
+              gettext("Usage:"), argv[0]);
       return 1;
    }
    delayMin = atof(argv[1]);
