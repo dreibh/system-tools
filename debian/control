@@ -73,11 +73,23 @@ Description: Helper tool to adjust GRUB configuration
  a working GRUB configuration without knowing how to boot the system from
  a rescue media to fix a broken configuration!
 
+Package: td-system-misc
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Miscellaneous tools
+ This package contains two simple tools:
+ try-hard runs a command and retries for a given number of times in case
+ of error, with a delay between the trials.
+ random-sleep waits for a random time, selected from a given interval, with
+ support for fractional seconds.
+
 Package: td-system-tools
 Architecture: all
 Depends: td-system-fingerprint-ssh-keys,
          td-system-info,
          td-system-maintenance,
+         td-system-misc,
          td-system-reset-machine-id,
          ${misc:Depends}
 Recommends: td-system-configure-grub
