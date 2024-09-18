@@ -365,7 +365,7 @@ while [ $# -gt 0 ] ; do
       scriptDirectories="$2"
       shift
    else
-      echo >&2 "Usage: $0 [--help|-h] [--scripts|-S scripts_directory]"
+      echo >&2 "$(eval_gettext "Usage:") $0 [--help|-h] [--scripts|-S scripts_directory]"
       exit 1
    fi
    shift
