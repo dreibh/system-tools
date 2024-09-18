@@ -9,10 +9,13 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/utsname.h>
 
-#ifdef __linux
 // FIXME: For some reasons, IFF_LOWER_UP seems to be undefined here.
+#ifdef __linux
 #define IFF_LOWER_UP (1 << 16)
+#elif __FreeBSD__
+#include <netlink/route/interface.h>
 #endif
 
 
@@ -115,6 +118,43 @@ void printflags(const u_int flags)
 // ###### Main program ######################################################
 int main(void)
 {
+   // ====== Query hostname information =====================================
+   char hostname[256];
+   if(gethostname((char*)&hostname, sizeof(hostname)) == 0) {
+      printf("host.name: %s\n", hostname);
+   }
+   else {
+      hostname[0] = 0x00;
+   }
+   char domainname[256];
+   if(getdomainname((char*)&domainname, sizeof(domainname)) == 0) {
+      printf("host.domain: %s\n", domainname);
+      if(strcmp(domainname, "(none)") == 0) {
+          domainname[0] = 0x00;
+      }
+   }
+   else {
+      domainname[0] = 0x00;
+   }
+   if(domainname[0] != 0x00) {
+      printf("host.fqdn: %s.%s\n", hostname, domainname);
+   }
+   else {
+       printf("host.fqdn: %s\n", hostname);
+   }
+
+
+   // ====== Query uname information ========================================
+   struct utsname sysinfo;
+   if(uname(&sysinfo) == 0) {
+      printf("uname.sysname:  %s\n", sysinfo.sysname);
+      printf("uname.nodename: %s\n", sysinfo.nodename);
+      printf("uname.release:  %s\n", sysinfo.release);
+      printf("uname.version:  %s\n", sysinfo.version);
+      printf("uname.machine:  %s\n", sysinfo.machine);
+   }
+
+
    // ====== Query available interfaces and their addresses =================
    struct ifaddrs* ifaddr;
    if(getifaddrs(&ifaddr) == -1) {
@@ -182,6 +222,7 @@ int main(void)
       lastIfName = ifaArray[i].ifname;
       lastFamily = ifaArray[i].address->sa_family;
    }
+   puts("");
 
    freeifaddrs(ifaddr);
    return 0;
