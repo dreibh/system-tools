@@ -36,7 +36,7 @@ msgstr ""
 #: src/Fingerprint-SSH-Keys:48
 #, sh-format
 msgid "Usage:"
-msgstr ""
+msgstr "Aufruf:"
 
 #: src/Fingerprint-SSH-Keys:65
 #, sh-format
