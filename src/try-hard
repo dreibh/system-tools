@@ -83,7 +83,7 @@ while true ; do
       exit 1
    fi
    if [ "${VERBOSE}" -eq 1 ] ; then
-      echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Waiting \${DELAY} s before next try ...")\x1b[0m"
+      echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Waiting for \${DELAY} s before trying again ...")\x1b[0m"
    fi
    sleep "${DELAY}"
 done

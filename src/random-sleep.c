@@ -74,7 +74,7 @@ int main(int argc, char** argv)
             verboseMode = true;
          }
          else {
-            fprintf(stderr, gettext("ERROR: Invalid argument %s"), argv[i]);
+            fprintf(stderr, gettext("ERROR: Invalid argument %s!"), argv[i]);
             fputs("\n", stderr);
             return 1;
          }
@@ -94,7 +94,7 @@ int main(int argc, char** argv)
    }
 
    if(verboseMode) {
-      printf(gettext("Waiting %1.6f s ..."), delay);
+      printf(gettext("Sleeping for %1.6f s ..."), delay);
       puts("");
    }
    usleep((useconds_t)(1000000.0 * delay));
