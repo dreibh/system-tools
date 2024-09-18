@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.0~beta3\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-09-12 08:53+0200\n"
+"POT-Creation-Date: 2024-09-18 13:03+0200\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -137,6 +137,11 @@ msgstr "(Kein IPv4)"
 #, sh-format
 msgid "Network:"
 msgstr "Netzwerk:"
+
+#: src/System-Info:368
+#, sh-format
+msgid "Usage:"
+msgstr "Aufruf:"
 
 #: src/System-Info:377
 #, sh-format
