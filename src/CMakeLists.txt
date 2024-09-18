@@ -21,6 +21,10 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
+ADD_EXECUTABLE(get-system-info get-system-info.c)
+INSTALL(TARGETS get-system-info DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES get-system-info.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+
 INSTALL(PROGRAMS System-Info DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES System-Info.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
