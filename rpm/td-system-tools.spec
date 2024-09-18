@@ -160,11 +160,32 @@ a rescue media to fix a broken configuration!
 %{_datadir}/configure-grub/grub-defaults-standard
 
 
+%package misc
+Summary: Miscellaneous tools
+Group: Applications/System
+BuildArch: noarch
+Recommends: td-system-tools-misc
+
+%description misc
+This package contains two simple tools:
+try-hard runs a command and retries for a given number of times in case
+of error, with a delay between the trials.
+random-sleep waits for a random time, selected from a given interval, with
+support for fractional seconds.
+
+%files misc
+%{_bindir}/random-sleep
+%{_bindir}/try-hard
+%{_mandir}/man1/random-sleep.mo
+%{_mandir}/man1/try-hard.mo
+
+
 %package all
 Summary: Meta package for system information and maintenance tools
 Group: Applications/System
 BuildArch: noarch
 Requires: td-system-tools-fingerprint-ssh-keys
+Requires: td-system-tools-misc
 Requires: td-system-tools-system-info
 Requires: td-system-tools-system-maintenance
 Requires: td-system-tools-reset-machine-id
