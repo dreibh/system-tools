@@ -1,0 +1,57 @@
+.\" Random Sleep
+.\" Copyright (C) 2024 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: dreibh@simula.no
+.\"
+.\" ###### Setup ############################################################
+.Dd September 18, 2024
+.Dt random-sleep 1
+.Os random-sleep
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm random-sleep
+.Nd waits for a randomly selected time
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm random-sleep
+min_delay
+max_delay
+.Op Fl q | Fl Fl quiet
+.Op Fl v | Fl Fl verbose
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm random-sleep
+waits for a randomly selected time. The sleep time is chosen from the interval
+[min_delay, max_delay] given in seconds. Fractional seconds are supported.
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It Fl q | Fl Fl quiet
+Quiet mode: no output is made.
+.It Fl v | Fl Fl verbose
+Verbose mode: print selected delay and wake-up.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It random-sleep 0 3600
+.It random-sleep 0 300 --verbose
+.It random-sleep 60 120 -v
+.El

@@ -16,6 +16,8 @@
 //
 // Contact: dreibh@simula.no
 
+#include <libintl.h>
+#include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,6 +45,11 @@ int main(int argc, char** argv)
    double delayMin;
    double delayMax;
    bool   verboseMode = false;
+
+   // ====== Initialise i18n support ========================================
+   setlocale(LC_ALL, "");
+   bindtextdomain("random-sleep", "/usr/share/locale");
+   textdomain("random-sleep");
 
    // ====== Handle arguments ===============================================
    if(argc < 3) {
