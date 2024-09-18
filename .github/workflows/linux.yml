@@ -33,7 +33,7 @@ jobs:
         include:
 
           # ====== Ubuntu Linux =============================================
-          - label: "Ubuntu 24.04 (Jammy Jellyfish) with GCC"
+          - label: "Ubuntu 24.04 (Noble Numbat) with GCC"
             image: ubuntu:24.04
             cc: gcc
             cxx: g++
