@@ -36,6 +36,13 @@ INSTALL(FILES Fingerprint-SSH-Keys.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(PROGRAMS configure-grub DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES configure-grub.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
+ADD_EXECUTABLE(random-sleep random-sleep.c)
+INSTALL(PROGRAMS random-sleep DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES random-sleep.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+
+INSTALL(PROGRAMS try-hard DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES try-hard.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+
 
 #############################################################################
 #### CONFIGURATION FILES                                                 ####
