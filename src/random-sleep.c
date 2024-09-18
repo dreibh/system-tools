@@ -29,7 +29,7 @@
 // ###### Generate random number out of [min, max] ##########################
 static double runiform(const double min, const  double max)
 {
-   if(min != max) {
+   if(min == max) {
       // There is no other choice here:
       return min;
    }
@@ -53,14 +53,16 @@ int main(int argc, char** argv)
 
    // ====== Handle arguments ===============================================
    if(argc < 3) {
-      fprintf(stderr, "%s %s min_delay max_delay [-q|--quiet] [-v|--verbose]\n",
+      fprintf(stderr, "%s %s min_delay max_delay [-q|--quiet] [-v|--verbose]",
               gettext("Usage:"), argv[0]);
+      fputs("\n", stderr);
       return 1;
    }
    delayMin = atof(argv[1]);
    delayMax = atof(argv[2]);
    if(delayMin > delayMax) {
-      fputs("ERROR: Invalid min_delay/max_delay\n", stderr);
+      fputs(gettext("ERROR: Invalid min_delay/max_delay"), stderr);
+      fputs("\n", stderr);
       return 1;
    }
    if(argc > 3) {
@@ -72,7 +74,8 @@ int main(int argc, char** argv)
             verboseMode = true;
          }
          else {
-            fprintf(stderr, "ERROR: Invalid argument %s\n", argv[i]);
+            fprintf(stderr, gettext("ERROR: Invalid argument %s"), argv[i]);
+            fputs("\n", stderr);
             return 1;
          }
       }
@@ -91,11 +94,12 @@ int main(int argc, char** argv)
    }
 
    if(verboseMode) {
-      printf("Waiting %1.6f s ...\n", delay);
+      printf(gettext("Waiting %1.6f s ..."), delay);
+      puts("");
    }
    usleep((useconds_t)(1000000.0 * delay));
    if(verboseMode) {
-      puts("Woke up!");
+      puts(gettext("Woke up!"));
    }
 
    return 0;
