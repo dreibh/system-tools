@@ -29,7 +29,7 @@ export TEXTDOMAIN="try-hard"
 . gettext.sh
 
 
-# ====== Find distribution variant ==========================================
+# ====== Handle arguments ===================================================
 if [ $# -lt 4 ] ; then
    echo >&2 "Usage: $0 max_trials delay [-v|--verbose] [-q|--quiet] -- command ..."
    exit 1
@@ -50,17 +50,17 @@ while [ $# -gt 0 ] ; do
    elif  [ "${arg}" == "--" ] ; then
       break
    else
-      echo >&2 "ERROR: Invalid argument ${arg}!"
+      eval_gettext >&2 "ERROR: Invalid argument ${arg}!"
       exit 1
    fi
 done
 
 if [[ ! "${MAX_TRIALS}" =~ ^[0-9]*$ ]] || [ "${MAX_TRIALS}" -lt 1 ] ; then
-   echo >&2 "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
+   eval_gettext >&2 "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
    exit 1
 fi
 if [[ ! "${DELAY}" =~ ^[0-9]+$ ]] ; then
-   echo >&2 "ERROR: Invalid delay ${DELAY}!"
+   eval_gettext >&2 "ERROR: Invalid delay ${DELAY}!"
    exit 1
 fi
 
@@ -70,18 +70,26 @@ trial=0
 while true ; do
    trial=$(( trial+1 ))
    if [ "${VERBOSE}" -eq 1 ] ; then
-      echo -e "\x1b[34mTrial ${trial}/${MAX_TRIALS}: $*\x1b[0m"
+      echo -e "\x1b[34m"
+      gettext "Trial ${trial}/${MAX_TRIALS}: $*"
+      echo -e "\x1b[0m"
    fi
+
    # shellcheck disable=SC2068
    $@ && exit
+
    if [ ${trial} -ge "${MAX_TRIALS}" ] ; then
       if [ "${VERBOSE}" -eq 1 ] ; then
-         echo -e "\x1b[34mTried ${MAX_TRIALS} times -> giving up!\x1b[0m"
+         echo -e "\x1b[34m"
+         gettext "Tried ${MAX_TRIALS} times -> giving up!"
+         echo -e "\x1b[0m"
       fi
       exit 1
    fi
    if [ "${VERBOSE}" -eq 1 ] ; then
-      echo "Waiting ${DELAY} s before next try ..."
+      echo -e "\x1b[34m"
+      gettext "Waiting ${DELAY} s before next try ..."
+      echo -e "\x1b[0m"
    fi
    sleep "${DELAY}"
 done
