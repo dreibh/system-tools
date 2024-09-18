@@ -4,16 +4,22 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <net/if.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 
+#ifdef __linux
+// FIXME: For some reasons, IFF_LOWER_UP seems to be undefined here.
+#define IFF_LOWER_UP (1 << 16)
+#endif
+
 
 struct interfaceaddress {
    const char*            ifname;
    const struct sockaddr* address;
-   unsigned char          prefixlen;
+   unsigned int           prefixlen;
    u_int                  flags;
 };
 
@@ -47,8 +53,26 @@ int compareInterfaceAddresses(const void* a, const void* b)
 }
 
 
+// ###### Count set bits in byte array ######################################
+unsigned int countSetBits(const uint8_t* array, const unsigned int size)
+{
+   unsigned int count = 0;
+   for(unsigned int i = 0; i < size; i++) {
+      unsigned char byte = array[i];
+      while(byte != 0) {
+         if(byte & 1) {
+            count++;
+         }
+         byte = byte >> 1;
+      }
+   }
+   return count;
+}
+
+
 // ###### Print address #####################################################
-void printaddress(const struct sockaddr* address)
+void printaddress(const struct sockaddr* address,
+                  const unsigned int     prefixlen)
 {
    char resolvedHost[NI_MAXHOST];
    int error = getnameinfo(address,
@@ -61,7 +85,29 @@ void printaddress(const struct sockaddr* address)
       fprintf(stderr, "ERROR: getnameinfo() failed: %s\n", gai_strerror(error));
       exit(1);
    }
-   fputs(resolvedHost, stdout);
+   fprintf(stdout, "%s/%u", resolvedHost, prefixlen);
+}
+
+
+// ###### Print interface flags #############################################
+void printflags(const u_int flags)
+{
+   if(flags & IFF_UP) {
+      fputs("UP", stdout);
+   }
+   else {
+      fputs("DOWN", stdout);
+   }
+   if(flags & IFF_LOWER_UP) {
+      fputs(" LOWER_UP", stdout);
+   }
+   if(flags & IFF_LOOPBACK) {
+      fputs(" LOOPBACK", stdout);
+   }
+   if(flags & IFF_POINTOPOINT) {
+      fputs(" POINTOPOINT", stdout);
+   }
+   printf(" (F=0x%x)", flags);
 }
 
 
@@ -81,26 +127,60 @@ int main(void)
    unsigned int n = 0;
    for(struct ifaddrs* ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
       if(ifa->ifa_addr != NULL) {
-        if( (ifa->ifa_addr->sa_family == AF_INET) ||
-            (ifa->ifa_addr->sa_family == AF_INET6) ) {
+         if( (ifa->ifa_addr->sa_family == AF_INET6) ||
+             (ifa->ifa_addr->sa_family == AF_INET) ) {
             if(n >= (sizeof(ifaArray) / sizeof(ifaArray[0]))) {
-                fprintf(stderr, "WARNING: Truncated list of interface addresses!\n");
-                break;
+               fprintf(stderr, "WARNING: Truncated list of interface addresses!\n");
+               break;
             }
-            ifaArray[n].ifname  = ifa->ifa_name;
-            ifaArray[n].address = ifa->ifa_addr;
+            ifaArray[n].ifname    = ifa->ifa_name;
+            ifaArray[n].address   = ifa->ifa_addr;
+            ifaArray[n].flags     = ifa->ifa_flags;
+            if(ifa->ifa_addr->sa_family == AF_INET6) {
+               const uint8_t* netmask =
+                  (const uint8_t*)&((const struct sockaddr_in6*)ifa->ifa_netmask)->sin6_addr.s6_addr;
+               ifaArray[n].prefixlen = countSetBits(netmask, 16);
+            }
+            else {
+               const uint8_t* netmask =
+                  (const uint8_t*)&((const struct sockaddr_in*)ifa->ifa_netmask)->sin_addr;
+               ifaArray[n].prefixlen = countSetBits(netmask, 4);
+            }
             n++;
-        }
+         }
       }
    }
    qsort(&ifaArray, n, sizeof(struct interfaceaddress),
          compareInterfaceAddresses);
 
    // ====== Print interfaces and their addresses ===========================
+   const char* lastIfName = NULL;
+   int         lastFamily = AF_UNSPEC;
    for(unsigned int i = 0; i < n; i++) {
-      printf("%s:\t", ifaArray[i].ifname);
-      printaddress(ifaArray[i].address);
-      puts("");
+      if( (lastIfName == NULL) ||
+          ((strcmp(lastIfName, ifaArray[i].ifname) != 0)) ) {
+         if(lastIfName) {
+            puts("");
+         }
+         printf("netif.%s.flags:\t", ifaArray[i].ifname);
+         printflags(ifaArray[i].flags);
+      }
+
+      if( (lastIfName == NULL) ||
+          ((strcmp(lastIfName, ifaArray[i].ifname) != 0)) ||
+          (lastFamily != ifaArray[i].address->sa_family) ) {
+          printf("\nnetif.%s.ipv%u:\t",
+                 ifaArray[i].ifname,
+                 (ifaArray[i].address->sa_family == AF_INET6) ? 6 : 4);
+      }
+      else {
+         fputs("\t", stdout);
+      }
+
+      printaddress(ifaArray[i].address, ifaArray[i].prefixlen);
+
+      lastIfName = ifaArray[i].ifname;
+      lastFamily = ifaArray[i].address->sa_family;
    }
 
    freeifaddrs(ifaddr);
