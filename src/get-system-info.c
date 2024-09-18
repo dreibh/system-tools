@@ -10,6 +10,9 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
+#ifdef __linux
+#include <sys/sysinfo.h>
+#endif
 
 // FIXME: For some reasons, IFF_LOWER_UP seems to be undefined here.
 #ifdef __linux
@@ -145,14 +148,33 @@ int main(void)
 
 
    // ====== Query uname information ========================================
-   struct utsname sysinfo;
-   if(uname(&sysinfo) == 0) {
-      printf("uname.sysname:  %s\n", sysinfo.sysname);
-      printf("uname.nodename: %s\n", sysinfo.nodename);
-      printf("uname.release:  %s\n", sysinfo.release);
-      printf("uname.version:  %s\n", sysinfo.version);
-      printf("uname.machine:  %s\n", sysinfo.machine);
+   struct utsname kernelInfo;
+   if(uname(&kernelInfo) == 0) {
+      printf("uname.sysname: %s\n", kernelInfo.sysname);
+      printf("uname.nodename: %s\n", kernelInfo.nodename);
+      printf("uname.release: %s\n", kernelInfo.release);
+      printf("uname.version: %s\n", kernelInfo.version);
+      printf("uname.machine: %s\n", kernelInfo.machine);
    }
+
+
+   // ====== Query system information =======================================
+#ifdef __linux
+   struct sysinfo systemInfo;
+   if(sysinfo(&systemInfo) == 0) {
+       const unsigned int days  = systemInfo.uptime / 86400;
+       const unsigned int hours = (systemInfo.uptime / 3600) - (days * 24);
+       const unsigned int mins  = (systemInfo.uptime / 60) - (days * 1440) - (hours * 60);
+       const unsigned int secs  = systemInfo.uptime - (days * 86400) - (hours * 3600) - (mins * 60);
+       printf("system.uptime: %lu (%lu days %lu hours %lu mins %lu secs)\n",
+              systemInfo.uptime, days, hours, mins, secs);
+       printf("system.procs: %lu\n",      systemInfo.procs);
+       printf("system.ram.total: %lu\n",  systemInfo.totalram);
+       printf("system.ram.free: %lu\n",   systemInfo.freeram);
+       printf("system.swap.total: %lu\n", systemInfo.totalswap);
+       printf("system.swap.free: %lu\n",  systemInfo.freeswap);
+   }
+#endif
 
 
    // ====== Query available interfaces and their addresses =================
