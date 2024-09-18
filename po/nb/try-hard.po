@@ -1,0 +1,48 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR "Copyright (C) 2013-2024 by Thomas Dreibholz"
+# This file is distributed under the same license as the "td-system-tools" package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \"td-system-tools\" \"1.7.3~rc2\"\n"
+"Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
+"POT-Creation-Date: 2024-09-18 14:44+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/try-hard:34
+#, sh-format
+msgid "Usage:"
+msgstr "Bruk:"
+
+#: src/try-hard:53
+#, sh-format
+msgid "ERROR: Invalid argument ${arg}!"
+msgstr ""
+
+#: src/try-hard:59
+#, sh-format
+msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
+msgstr ""
+
+#: src/try-hard:63
+#, sh-format
+msgid "ERROR: Invalid delay ${DELAY}!"
+msgstr ""
+
+#: src/try-hard:81
+#, sh-format
+msgid "Tried ${MAX_TRIALS} times -> giving up now!"
+msgstr ""
+
+#: src/try-hard:86
+#, sh-format
+msgid "Waiting ${DELAY} s before next try ..."
+msgstr ""
