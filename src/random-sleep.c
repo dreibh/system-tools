@@ -1,4 +1,4 @@
-// Random sleep
+// Random Sleep
 // Copyright (C) 2024 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
