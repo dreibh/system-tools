@@ -170,6 +170,29 @@ static void showUptimeInformation()
 }
 
 
+// ###### Print load information ############################################
+static void showLoadInformation()
+{
+   const unsigned int cores = sysconf(_SC_NPROCESSORS_ONLN);
+   printf("system.cores=%u\n", cores);
+   const unsigned int pageSize = sysconf(_SC_PAGESIZE);
+   printf("system.pagesize=%u\n", pageSize);
+#ifdef __linux
+   struct sysinfo systemInfo;
+   if(sysinfo(&systemInfo) == 0) {
+      const double fFraction = 1.0 / (1 << SI_LOAD_SHIFT);
+      const double fPercent  = 100.0 * fFraction / cores;   // Percent of CPU
+      printf("system.load.avg1min=%1.6f\n",  (double)systemInfo.loads[0] * fFraction);
+      printf("system.load.avg5min=%1.6f\n",  (double)systemInfo.loads[1] * fFraction);
+      printf("system.load.avg15min=%1.6f\n", (double)systemInfo.loads[2] * fFraction);
+      printf("system.load.avg1minpct=%1.4f\n",  (double)systemInfo.loads[0] * fPercent);
+      printf("system.load.avg5minpct=%1.4f\n",  (double)systemInfo.loads[1] * fPercent);
+      printf("system.load.avg15minpct=%1.4f\n", (double)systemInfo.loads[2] * fPercent);
+   }
+#endif
+}
+
+
 // ###### Print memory information ##########################################
 static void showMemoryInformation()
 {
@@ -183,8 +206,6 @@ static void showMemoryInformation()
 #ifdef __linux
    struct sysinfo systemInfo;
    if(sysinfo(&systemInfo) == 0) {
-      printf("system.procs: %u\n",       systemInfo.procs);
-
       memoryTotal     = systemInfo.totalram;
       memoryAvailable = systemInfo.freeram;
       memoryUsed      = systemInfo.totalram - systemInfo.freeram;
@@ -275,12 +296,12 @@ static void showMemoryInformation()
    }
 #endif
 
-   printf("system.ram.total=%llu\n", memoryTotal);
-   printf("system.ram.used=%llu\n",  memoryUsed);
-   printf("system.ram.free=%llu\n",  memoryAvailable);
+   printf("system.mem.total=%llu\n", memoryTotal);
+   printf("system.mem.used=%llu\n",  memoryUsed);
+   printf("system.mem.free=%llu\n",  memoryAvailable);
    if(memoryTotal > 0) {
-      printf("system.ram.usedpct=%1.1f\n", 100.0 * memoryUsed / memoryTotal);
-      printf("system.ram.freepct=%1.1f\n", 100.0 * memoryAvailable / memoryTotal);
+      printf("system.mem.usedpct=%1.1f\n", 100.0 * memoryUsed / memoryTotal);
+      printf("system.mem.freepct=%1.1f\n", 100.0 * memoryAvailable / memoryTotal);
    }
 
    if(swapTotal > 0) {
@@ -348,6 +369,7 @@ static void showNetworkInformation()
          }
          printf("netif.%s.flags=\"", ifaArray[i].ifname);
          printflags(ifaArray[i].flags);
+         printf("\"");
       }
 
       if( (lastIfName == NULL) ||
@@ -379,6 +401,7 @@ int main(void)
    showHostnameInformation();
    showUptimeInformation();
    showKernelInformation();
+   showLoadInformation();
    showMemoryInformation();
    showNetworkInformation();
 
