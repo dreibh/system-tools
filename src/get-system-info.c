@@ -9,10 +9,12 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include <sys/types.h>
+#include	<sys/types.h>
 #include <sys/utsname.h>
 #ifdef __linux
 #include <sys/sysinfo.h>
+#elif __FreeBSD__
+#include	<sys/sysctl.h>
 #endif
 
 // FIXME: For some reasons, IFF_LOWER_UP seems to be undefined here.
@@ -226,13 +228,12 @@ static void showNetworkInformation()
          }
          printf("netif.%s.flags=\"", ifaArray[i].ifname);
          printflags(ifaArray[i].flags);
-         printf("\"");
       }
 
       if( (lastIfName == NULL) ||
           ((strcmp(lastIfName, ifaArray[i].ifname) != 0)) ||
           (lastFamily != ifaArray[i].address->sa_family) ) {
-          printf("\nnetif.%s.ipv%u=",
+          printf("\nnetif.%s.ipv%u=\"",
                  ifaArray[i].ifname,
                  (ifaArray[i].address->sa_family == AF_INET6) ? 6 : 4);
       }
@@ -245,7 +246,7 @@ static void showNetworkInformation()
       lastIfName = ifaArray[i].ifname;
       lastFamily = ifaArray[i].address->sa_family;
    }
-   puts("");
+   puts("\"");
 
    freeifaddrs(ifaddr);
 }
