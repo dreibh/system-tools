@@ -1,15 +1,16 @@
 #include <ifaddrs.h>
 #include <netdb.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <arpa/inet.h>
 #include <net/if.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
 #include <sys/socket.h>
-#include	<sys/types.h>
+#include <sys/types.h>
 #include <sys/utsname.h>
 #ifdef __linux
 #include <sys/sysinfo.h>
@@ -317,7 +318,7 @@ static void showMemoryInformation()
 
 
 // ###### Print network information #########################################
-static void showNetworkInformation()
+static void showNetworkInformation(const bool filterLocalScope)
 {
    // ====== Query available interfaces and their addresses =================
    struct ifaddrs* ifaddr;
@@ -337,19 +338,29 @@ static void showNetworkInformation()
                fprintf(stderr, "WARNING: Truncated list of interface addresses!\n");
                break;
             }
-            ifaArray[n].ifname    = ifa->ifa_name;
-            ifaArray[n].address   = ifa->ifa_addr;
-            ifaArray[n].flags     = ifa->ifa_flags;
             if(ifa->ifa_addr->sa_family == AF_INET6) {
+
+               if( filterLocalScope &&
+                   ( (IN6_IS_ADDR_LOOPBACK(&((const struct sockaddr_in6*)ifa->ifa_addr)->sin6_addr.s6_addr)) ||
+                     (IN6_IS_ADDR_LINKLOCAL(&((const struct sockaddr_in6*)ifa->ifa_addr)->sin6_addr.s6_addr)) ) ) {
+                  continue;
+               }
                const uint8_t* netmask =
                   (const uint8_t*)&((const struct sockaddr_in6*)ifa->ifa_netmask)->sin6_addr.s6_addr;
                ifaArray[n].prefixlen = countSetBits(netmask, 16);
             }
             else {
+               if( filterLocalScope &&
+                   (ntohl( ((const struct sockaddr_in*)ifa->ifa_addr)->sin_addr.s_addr) == INADDR_LOOPBACK) ) {
+                  continue;
+               }
                const uint8_t* netmask =
                   (const uint8_t*)&((const struct sockaddr_in*)ifa->ifa_netmask)->sin_addr;
                ifaArray[n].prefixlen = countSetBits(netmask, 4);
             }
+            ifaArray[n].ifname    = ifa->ifa_name;
+            ifaArray[n].address   = ifa->ifa_addr;
+            ifaArray[n].flags     = ifa->ifa_flags;
             n++;
          }
       }
@@ -368,13 +379,12 @@ static void showNetworkInformation()
          }
          printf("netif_%s_flags=\"", ifaArray[i].ifname);
          printflags(ifaArray[i].flags);
+         puts("\"");
+         lastFamily = AF_UNSPEC;
       }
-      lastIfName = ifaArray[i].ifname;
 
-      if( (lastIfName == NULL) ||
-          ((strcmp(lastIfName, ifaArray[i].ifname) != 0)) ||
-          (lastFamily != ifaArray[i].address->sa_family) ) {
-         if(lastIfName) {
+      if(lastFamily != ifaArray[i].address->sa_family) {
+         if(lastFamily != AF_UNSPEC) {
             puts("\"");
          }
          printf("netif_%s_ipv%u=\"",
@@ -387,6 +397,7 @@ static void showNetworkInformation()
 
       printaddress(ifaArray[i].address, ifaArray[i].prefixlen);
 
+      lastIfName = ifaArray[i].ifname;
       lastFamily = ifaArray[i].address->sa_family;
    }
    puts("\"");
@@ -419,6 +430,6 @@ int main(void)
    showKernelInformation();
    showLoadInformation();
    showMemoryInformation();
-   showNetworkInformation();
+   showNetworkInformation(true);
    return 0;
 }

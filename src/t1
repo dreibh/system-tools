@@ -109,7 +109,7 @@ function print-system-information ()
 
    # ------ Memory ---------------------------------------------------------
    # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-   /usr/bin/printf "%-${indent}s$(eval_gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available, %'5.1f %%)")\n" \
+   /usr/bin/printf "%-${indent}s$(eval_gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
       "$(eval_gettext "Used Memory:")"  \
       "$((system_mem_used  / 1048576))" \
       "$((system_mem_total / 1048576))" \
@@ -117,7 +117,7 @@ function print-system-information ()
       "${system_mem_freepct}"
    if [ ${system_swap_total} -gt 0 ] ; then
       # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-      /usr/bin/printf "%-${indent}s$(eval_gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available, %'5.1f %%)")\n" \
+      /usr/bin/printf "%-${indent}s$(eval_gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
       "$(eval_gettext "Used Swap:")"  \
       "$((system_swap_used  / 1048576))" \
       "$((system_swap_total / 1048576))" \
@@ -172,6 +172,7 @@ function print-system-information ()
          ipv6="${ipv6//\//${colorP}\/}"
          ipv6="${ipv6// /\\n${indentString}}"
          ipv6="${ipv6//\// \/ }"
+         ipv6="${ipv6//%/%%}"
          ipv6="\n${indentString}${ipv6}"
       else
          ipv6=""
