@@ -102,7 +102,7 @@ static void printaddress(const struct sockaddr* address,
 // ###### Print interface flags #############################################
 static void printflags(const u_int flags)
 {
-   printf("F=0x%x: <%s>", flags, (flags & IFF_UP) ? "UP" : "DOWN");
+   printf("0x%x: <%s>", flags, (flags & IFF_UP) ? "UP" : "DOWN");
    if(flags & IFF_LOWER_UP) {
       fputs(" <LOWER_UP>", stdout);
    }
@@ -127,12 +127,12 @@ static void showHostnameInformation()
    if(domainname != NULL) {
       domainname[0] = 0x00;
       domainname++;
-      printf("hostname.long=\"%s.%s\"\n", hostname, domainname);
+      printf("hostname_long=\"%s.%s\"\n", hostname, domainname);
    }
    else {
-       printf("hostname.long=\"%s\"\n", hostname);
+       printf("hostname_long=\"%s\"\n", hostname);
    }
-   printf("hostname.short=\"%s\"\n", hostname);
+   printf("hostname_short=\"%s\"\n", hostname);
 }
 
 
@@ -141,11 +141,11 @@ static void showKernelInformation()
 {
    struct utsname kernelInfo;
    if(uname(&kernelInfo) == 0) {
-      printf("system.sysname=\"%s\"\n",  kernelInfo.sysname);
-      printf("system.nodename=\"%s\"\n", kernelInfo.nodename);
-      printf("system.release=\"%s\"\n",  kernelInfo.release);
-      printf("system.version=\"%s\"\n",  kernelInfo.version);
-      printf("system.machine=\"%s\"\n",  kernelInfo.machine);
+      printf("system_sysname=\"%s\"\n",  kernelInfo.sysname);
+      printf("system_nodename=\"%s\"\n", kernelInfo.nodename);
+      printf("system_release=\"%s\"\n",  kernelInfo.release);
+      printf("system_version=\"%s\"\n",  kernelInfo.version);
+      printf("system_machine=\"%s\"\n",  kernelInfo.machine);
    }
 }
 
@@ -159,13 +159,13 @@ static void showUptimeInformation()
       const unsigned int hours = (ts.tv_sec / 3600) - (days * 24);
       const unsigned int mins  = (ts.tv_sec / 60) - (days * 1440) - (hours * 60);
       const unsigned int secs  = ts.tv_sec - (days * 86400) - (hours * 3600) - (mins * 60);
-      printf("uptime.total=%1.9f\n",
+      printf("uptime_total=%1.9f\n",
              (double)ts.tv_sec + ((double)ts.tv_nsec / 1000000000.0));
-      printf("uptime.days=%u\n",   days);
-      printf("uptime.hours=%u\n",  hours);
-      printf("uptime.mins=%u\n",   mins);
-      printf("uptime.secs=%u\n",   secs);
-      printf("uptime.nsecs=%lu\n", ts.tv_nsec);
+      printf("uptime_days=%u\n",   days);
+      printf("uptime_hours=%u\n",  hours);
+      printf("uptime_mins=%u\n",   mins);
+      printf("uptime_secs=%u\n",   secs);
+      printf("uptime_nsecs=%lu\n", ts.tv_nsec);
    }
 }
 
@@ -174,20 +174,20 @@ static void showUptimeInformation()
 static void showLoadInformation()
 {
    const unsigned int cores = sysconf(_SC_NPROCESSORS_ONLN);
-   printf("system.cores=%u\n", cores);
+   printf("system_cores=%u\n", cores);
    const unsigned int pageSize = sysconf(_SC_PAGESIZE);
-   printf("system.pagesize=%u\n", pageSize);
+   printf("system_pagesize=%u\n", pageSize);
 #ifdef __linux
    struct sysinfo systemInfo;
    if(sysinfo(&systemInfo) == 0) {
       const double fFraction = 1.0 / (1 << SI_LOAD_SHIFT);
       const double fPercent  = 100.0 * fFraction / cores;   // Percent of CPU
-      printf("system.load.avg1min=%1.6f\n",  (double)systemInfo.loads[0] * fFraction);
-      printf("system.load.avg5min=%1.6f\n",  (double)systemInfo.loads[1] * fFraction);
-      printf("system.load.avg15min=%1.6f\n", (double)systemInfo.loads[2] * fFraction);
-      printf("system.load.avg1minpct=%1.4f\n",  (double)systemInfo.loads[0] * fPercent);
-      printf("system.load.avg5minpct=%1.4f\n",  (double)systemInfo.loads[1] * fPercent);
-      printf("system.load.avg15minpct=%1.4f\n", (double)systemInfo.loads[2] * fPercent);
+      printf("system_load_avg1min=%1.6f\n",  (double)systemInfo.loads[0] * fFraction);
+      printf("system_load_avg5min=%1.6f\n",  (double)systemInfo.loads[1] * fFraction);
+      printf("system_load_avg15min=%1.6f\n", (double)systemInfo.loads[2] * fFraction);
+      printf("system_load_avg1minpct=%1.4f\n",  (double)systemInfo.loads[0] * fPercent);
+      printf("system_load_avg5minpct=%1.4f\n",  (double)systemInfo.loads[1] * fPercent);
+      printf("system_load_avg15minpct=%1.4f\n", (double)systemInfo.loads[2] * fPercent);
    }
 #endif
 }
@@ -268,7 +268,6 @@ static void showMemoryInformation()
    memoryAvailable = vmstatInactive + vmstatCache + vmstatFree;
    memoryUsed      = memoryTotal - memoryAvailable;
 
-
    // ------ Get information about swap -------------------------------------
    // Based on: https://cgit.freebsd.org/src/tree/sbin/swapon/swapon.c
    int mib[16];
@@ -296,23 +295,23 @@ static void showMemoryInformation()
    }
 #endif
 
-   printf("system.mem.total=%llu\n", memoryTotal);
-   printf("system.mem.used=%llu\n",  memoryUsed);
-   printf("system.mem.free=%llu\n",  memoryAvailable);
+   printf("system_mem_total=%llu\n", memoryTotal);
+   printf("system_mem_used=%llu\n",  memoryUsed);
+   printf("system_mem_free=%llu\n",  memoryAvailable);
    if(memoryTotal > 0) {
-      printf("system.mem.usedpct=%1.1f\n", 100.0 * memoryUsed / memoryTotal);
-      printf("system.mem.freepct=%1.1f\n", 100.0 * memoryAvailable / memoryTotal);
+      printf("system_mem_usedpct=%1.1f\n", 100.0 * memoryUsed / memoryTotal);
+      printf("system_mem_freepct=%1.1f\n", 100.0 * memoryAvailable / memoryTotal);
    }
 
    if(swapTotal > 0) {
-      printf("system.swap.total=%llu\n", swapTotal);
-      printf("system.swap.used=%llu\n",  swapUsed);
-      printf("system.swap.free=%llu\n",  swapAvailable);
-      printf("system.swap.usedpct=%1.1f\n", 100.0 * swapUsed / swapTotal);
-      printf("system.swap.freepct=%1.1f\n", 100.0 * swapAvailable / swapTotal);
+      printf("system_swap_total=%llu\n", swapTotal);
+      printf("system_swap_used=%llu\n",  swapUsed);
+      printf("system_swap_free=%llu\n",  swapAvailable);
+      printf("system_swap_usedpct=%1.1f\n", 100.0 * swapUsed / swapTotal);
+      printf("system_swap_freepct=%1.1f\n", 100.0 * swapAvailable / swapTotal);
    }
    else {
-      puts("system.swap.total=NA");
+      puts("system_swap_total=NA");
    }
 }
 
@@ -365,19 +364,22 @@ static void showNetworkInformation()
       if( (lastIfName == NULL) ||
           ((strcmp(lastIfName, ifaArray[i].ifname) != 0)) ) {
          if(lastIfName) {
-            puts("");
+            puts("\"");
          }
-         printf("netif.%s.flags=\"", ifaArray[i].ifname);
+         printf("netif_%s_flags=\"", ifaArray[i].ifname);
          printflags(ifaArray[i].flags);
-         printf("\"");
       }
+      lastIfName = ifaArray[i].ifname;
 
       if( (lastIfName == NULL) ||
           ((strcmp(lastIfName, ifaArray[i].ifname) != 0)) ||
           (lastFamily != ifaArray[i].address->sa_family) ) {
-          printf("\nnetif.%s.ipv%u=\"",
-                 ifaArray[i].ifname,
-                 (ifaArray[i].address->sa_family == AF_INET6) ? 6 : 4);
+         if(lastIfName) {
+            puts("\"");
+         }
+         printf("netif_%s_ipv%u=\"",
+                ifaArray[i].ifname,
+                (ifaArray[i].address->sa_family == AF_INET6) ? 6 : 4);
       }
       else {
          fputs(" ", stdout);
@@ -385,8 +387,22 @@ static void showNetworkInformation()
 
       printaddress(ifaArray[i].address, ifaArray[i].prefixlen);
 
-      lastIfName = ifaArray[i].ifname;
       lastFamily = ifaArray[i].address->sa_family;
+   }
+   puts("\"");
+
+   // ====== Print interfaces list ==========================================
+   lastIfName = NULL;
+   printf("netif_all=\"");
+   for(unsigned int i = 0; i < n; i++) {
+      if( (lastIfName == NULL) ||
+          ((strcmp(lastIfName, ifaArray[i].ifname) != 0)) ) {
+         if(lastIfName != NULL) {
+            fputs(" ", stdout);
+         }
+         fputs(ifaArray[i].ifname, stdout);
+      }
+      lastIfName = ifaArray[i].ifname;
    }
    puts("\"");
 
@@ -404,9 +420,5 @@ int main(void)
    showLoadInformation();
    showMemoryInformation();
    showNetworkInformation();
-
-
-   // ====== Query system information =======================================
-
    return 0;
 }
