@@ -267,13 +267,71 @@ int main(void)
 #ifdef __linux
    struct sysinfo systemInfo;
    if(sysinfo(&systemInfo) == 0) {
-       printf("system.procs: %u\n",       systemInfo.procs);
-       printf("system.ram.total: %lu\n",  systemInfo.totalram);
-       printf("system.ram.free: %lu\n",   systemInfo.freeram);
-       printf("system.swap.total: %lu\n", systemInfo.totalswap);
-       printf("system.swap.free: %lu\n",  systemInfo.freeswap);
+      printf("system.procs: %u\n",       systemInfo.procs);
+
+      printf("system.ram.total=%lu\n",     systemInfo.totalram);
+      printf("system.ram.used=%lu\n",      systemInfo.totalram - systemInfo.freeram);
+      printf("system.ram.free=%lu\n",      systemInfo.freeram);
+      printf("system.ram.freepct=%1.1f\n", 100.0 * systemInfo.freeram / systemInfo.totalram);
    }
 #elif __FreeBSD__
+   // ====== Query system information via sysctl ============================
+   // Documentation: https://man.freebsd.org/cgi/man.cgi?query=sysctl&sektion=3
+
+   // ------ Query hw.pagesize ----------------------------------------------
+   unsigned int pageSize;
+   size_t len = sizeof(pageSize);
+   if(sysctlbyname("hw.pagesize", &pageSize, &len, NULL, 0) != 0) {
+      perror("sysctl(hw.pagesize)");
+      return 1;
+   }
+
+   // ------ Query hw.physmem -----------------------------------------------
+   unsigned long physMem;
+   len = sizeof(physMem);
+   if(sysctlbyname("hw.physmem", &physMem, &len, NULL, 0) != 0) {
+      perror("sysctl(hw.physmem)");
+      return 1;
+   }
+
+   // ------ Query vm.stats.vm.v_inactive_count -----------------------------
+   unsigned int vInactiveCount;
+   len = sizeof(vInactiveCount);
+   if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &len, NULL, 0) != 0) {
+      perror("sysctl(vm.stats.vm.v_inactive_count)");
+      return 1;
+   }
+
+   // ------ Query vm.stats.vm.v_cache_count -----------------------------
+   unsigned int vCacheCount;
+   len = sizeof(vCacheCount);
+   if(sysctlbyname("vm.stats.vm.v_cache_count", &vCacheCount, &len, NULL, 0) != 0) {
+      perror("sysctl(vm.stats.vm.v_cache_count)");
+      return 1;
+   }
+
+   // ------ Query vm.stats.vm.v_free_count -----------------------------
+   unsigned int vFreeCount;
+   len = sizeof(vFreeCount);
+   if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &len, NULL, 0) != 0) {
+      perror("sysctl(vm.stats.vm.v_free_count)");
+      return 1;
+   }
+
+   // ------ Calculations ---------------------------------------------------
+   const unsigned long vmstatInactive  = vInactiveCount * pageSize;
+   const unsigned long vmstatCache     = vCacheCount * pageSize;
+   const unsigned long vmstatFree      = vFreeCount *  pageSize;
+
+   const unsigned long memoryTotal     = physMem;
+   const unsigned long memoryAvailable = vmstatInactive + vmstatCache + vmstatFree;
+   const unsigned long memoryUsed      = memoryTotal - memoryAvailable;
+
+   printf("system.ram.total=%lu\n",     memoryTotal);
+   printf("system.ram.used=%lu\n",      memoryUsed);
+   printf("system.ram.free=%lu\n",      memoryAvailable);
+   printf("system.ram.freepct=%1.1f\n", 100.0 * memoryAvailable / memoryTotal);
+
 /*
       pageSize=$(sysctl -n hw.pagesize)
       memPhysical=$(sysctl -n hw.physmem)
