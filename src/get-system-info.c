@@ -208,7 +208,7 @@ static void showMemoryInformation()
    if(sysinfo(&systemInfo) == 0) {
       memoryTotal     = systemInfo.totalram;
       memoryAvailable = systemInfo.freeram;
-      memoryUsed      = systemInfo.totalram - systemInfo.freeram;
+      memoryUsed      = systemInfo.totalram - systemInfo.freeram - systemInfo.bufferram - systemInfo.sharedram; // FIXME!
 
       swapTotal       = systemInfo.totalswap;
       swapAvailable   = systemInfo.freeswap;
