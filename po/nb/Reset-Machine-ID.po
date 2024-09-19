@@ -96,7 +96,7 @@ msgid "Remove existing SSH host keys and generate new ones?"
 msgstr "Vil du fjerne eksisterende SSH-vertsnøkler og generere nye?"
 
 #: src/Reset-Machine-ID:433
-#, fuzzy, sh-format
+#, sh-format
 msgid "Making backup of current keys in ${backupDirectory} ..."
 msgstr "Ta sikkerhetskopi av gjeldende nøkler i ${backupDirectory} ..."
 
