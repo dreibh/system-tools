@@ -166,16 +166,46 @@ int main(void)
        const unsigned int hours = (systemInfo.uptime / 3600) - (days * 24);
        const unsigned int mins  = (systemInfo.uptime / 60) - (days * 1440) - (hours * 60);
        const unsigned int secs  = systemInfo.uptime - (days * 86400) - (hours * 3600) - (mins * 60);
-       printf("system.uptime: %lu (%lu days %lu hours %lu mins %lu secs)\n",
+       printf("system.uptime: %lu (%u days %u hours %u mins %u secs)\n",
               systemInfo.uptime, days, hours, mins, secs);
-       printf("system.procs: %lu\n",      systemInfo.procs);
+       printf("system.procs: %u\n",       systemInfo.procs);
        printf("system.ram.total: %lu\n",  systemInfo.totalram);
        printf("system.ram.free: %lu\n",   systemInfo.freeram);
        printf("system.swap.total: %lu\n", systemInfo.totalswap);
        printf("system.swap.free: %lu\n",  systemInfo.freeswap);
    }
-#endif
+#elif __FreeBSD__
+   struct timeval tv;
+   getmicrouptime(&tv);
+   const unsigned int days  = tv.tv_sec / 86400;
+   const unsigned int hours = (tv.tv_sec / 3600) - (days * 24);
+   const unsigned int mins  = (tv.tv_sec / 60) - (days * 1440) - (hours * 60);
+   const unsigned int secs  = tv.tv_sec - (days * 86400) - (hours * 3600) - (mins * 60);
+   printf("system.uptime: %lu (%u days %u hours %u mins %u secs)\n",
+         tv.tv_sec, days, hours, mins, secs);
 
+   print
+
+/*
+      pageSize=$(sysctl -n hw.pagesize)
+      memPhysical=$(sysctl -n hw.physmem)
+      # vmstatAll=$(( $(sysctl -n vm.stats.vm.v_page_count)*pageSize ))
+      # vmstatWired=$(( $(sysctl -n vm.stats.vm.v_wire_count)*pageSize ))
+      # vmstatActive=$(( $(sysctl -n vm.stats.vm.v_active_count)*pageSize ))
+      vmstatInactive=$(( $(sysctl -n vm.stats.vm.v_inactive_count)*pageSize ))
+      vmstatCache=$(( $(sysctl -n vm.stats.vm.v_cache_count)*pageSize ))
+      vmstatFree=$(( $(sysctl -n vm.stats.vm.v_free_count)*pageSize ))
+
+      memoryTotal=$(( memPhysical/1048576 ))
+      memoryAvailable=$(( (vmstatInactive+vmstatCache+vmstatFree)/1048576 ))
+      memoryUsed=$(( memoryTotal-memoryAvailable ))
+
+      swap=$(swapctl -sk)
+      swapTotal=$(echo "${swap}" | awk '{ n=int($2/1024+0.5); print n; }')
+      swapUsed=$(echo "${swap}" | awk '{ n=int($3/1024+0.5); print n; }')
+      swapAvailable=$(( swapTotal-swapUsed ))
+*/
+#endif
 
    // ====== Query available interfaces and their addresses =================
    struct ifaddrs* ifaddr;
