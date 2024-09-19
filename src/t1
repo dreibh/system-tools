@@ -1,0 +1,163 @@
+#!/bin/bash
+
+# Bash options:
+set -eu
+
+
+export TEXTDOMAIN="System-Info"
+# export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
+
+# shellcheck disable=SC1091
+. gettext.sh
+
+
+# ###### Print system information ###########################################
+function print-system-information ()
+{
+   eval $(./get-system-info)
+
+#    # ====== Obtain host information =========================================
+#    hostnameResult=$(hostname -f)
+#    uptimeResult=$(env LANGUAGE=en uptime)
+#    cpu=$(uname -m)
+#    kernel=$(uname -r)
+#
+#    # ====== Obtain CPU information ==========================================
+#    cores=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || grep -c ^processor /compat/linux/proc/cpuinfo 2>/dev/null || echo "1" )
+#    [ "$cores" -eq "0" ] && cores=1
+#    systemLoad=$(echo "${uptimeResult}" | awk -F 'average[s]*:' '{ gsub(/^[ ]*/, "", $2); print $2 }')
+#
+#    if [[ "${uptimeResult}" =~ min|day|sec ]] ; then
+#       uptime=$(echo "${uptimeResult}" | awk '{ print $3 " "$4 }' | sed 's/,//g')
+#    else
+#       uptime=$(echo "${uptimeResult}" | awk '{ print $3 " hours" }' | sed 's/,//g')
+#    fi
+#    processes=$(ps -aex -o pid= | wc -l)
+#
+#    # ====== Obtain user information =========================================
+#    users=$(who | awk ' { print $1 }' | sort -ud | wc -l)
+#
+#    # ====== Obtain disk information =========================================
+#    diskRoot=$(env LANGUAGE=en df -hT /     | grep -vE "^Filesystem|shm" | awk '{ print $6 }')
+#    diskHome=$(env LANGUAGE=en df -hT /home | grep -vE "^Filesystem|shm" | awk '{ print $6 }')
+#
+   # ====== Obtain operating system information =============================
+   DISTRIB_ID="$(eval_gettext "Unknown")"   # Unknown, yet.
+   DISTRIB_RELEASE="${DISTRIB_ID}"          # Unknown, yet.
+   DISTRIB_CODENAME=""
+
+   # ------ Get information from /etc/os-release ----------------------------
+   if [ -e /etc/os-release ] ; then
+      # shellcheck disable=SC1091
+      . /etc/os-release
+      if [ -v NAME ] ; then
+         DISTRIB_ID="${NAME}"
+      fi
+      if [ -v VERSION_ID ] ; then
+         DISTRIB_RELEASE="${VERSION_ID}"
+      fi
+      if [ -v VERSION ] && [[ "${VERSION}" =~ ^.*\(([^\(\)]*)\)$ ]] ; then
+         DISTRIB_CODENAME="${BASH_REMATCH[1]}"
+      elif [ -v VERSION_CODENAME ] ; then
+         DISTRIB_CODENAME="${VERSION_CODENAME}"
+      fi
+
+   # ------ Legacy system: try lsb_release ----------------------------------
+   elif [ -x /usr/bin/lsb_release ] ; then
+      DISTRIB_ID=$(/usr/bin/lsb_release -is)
+      DISTRIB_RELEASE=$(/usr/bin/lsb_release -rs)
+      DISTRIB_CODENAME=$(/usr/bin/lsb_release -cs)
+   fi
+
+#    # ====== Obtain memory information =======================================
+#    if [ "${system}" == "Linux" ] ; then
+#       freeOutput="$(env LANGUAGE=en free -mt)"
+#       freeMemOutput="$(echo "${freeOutput}" | grep "^Mem:")"
+#       freeSwapOutput="$(echo "${freeOutput}" | grep "^Swap:")"
+#
+#       memoryUsed=$(echo "${freeMemOutput}" | awk '{ print $3 }')
+#       memoryAvailable=$(echo "${freeMemOutput}" | awk '{ print $4 }')
+#       memoryTotal=$(echo "${freeMemOutput}" | awk '{ print $2 }')
+#       swapUsed=$(echo "${freeSwapOutput}" | awk '{ print $3 }')
+#       swapAvailable=$(echo "${freeSwapOutput}" | awk '{ print $4 }')
+#       swapTotal=$(echo "${freeSwapOutput}" | awk '{ print $2 }')
+#
+#    elif  [ "${system}" == "FreeBSD" ] ; then
+#       # Calculations based on:
+#       # * https://www.cyberciti.biz/files/scripts/freebsd-memory.pl.txt
+#       # * https://github.com/ocochard/myscripts/blob/master/FreeBSD/freebsd-memory.sh
+#
+#       pageSize=$(sysctl -n hw.pagesize)
+#       memPhysical=$(sysctl -n hw.physmem)
+#       # vmstatAll=$(( $(sysctl -n vm.stats.vm.v_page_count)*pageSize ))
+#       # vmstatWired=$(( $(sysctl -n vm.stats.vm.v_wire_count)*pageSize ))
+#       # vmstatActive=$(( $(sysctl -n vm.stats.vm.v_active_count)*pageSize ))
+#       vmstatInactive=$(( $(sysctl -n vm.stats.vm.v_inactive_count)*pageSize ))
+#       vmstatCache=$(( $(sysctl -n vm.stats.vm.v_cache_count)*pageSize ))
+#       vmstatFree=$(( $(sysctl -n vm.stats.vm.v_free_count)*pageSize ))
+#
+#       memoryTotal=$(( memPhysical/1048576 ))
+#       memoryAvailable=$(( (vmstatInactive+vmstatCache+vmstatFree)/1048576 ))
+#       memoryUsed=$(( memoryTotal-memoryAvailable ))
+#
+#       swap=$(swapctl -sk)
+#       swapTotal=$(echo "${swap}" | awk '{ n=int($2/1024+0.5); print n; }')
+#       swapUsed=$(echo "${swap}" | awk '{ n=int($3/1024+0.5); print n; }')
+#       swapAvailable=$(( swapTotal-swapUsed ))
+#    fi
+
+   # ====== Print system information ========================================
+   echo -en "\x1b[33m"
+   indent=20
+
+   # ------ Hostname -------------------------------------------------------
+   printf "%-${indent}s%s\n" \
+      "$(eval_gettext "Host:")" \
+      "${hostname_long}"
+
+   # ------ Uptime ----------------------------------------------------------
+   printf "%-${indent}s$(eval_ngettext "%'d day" "%'d days" "${uptime_days}") $(eval_ngettext "%'d hour" "%'d hours" "${uptime_hours}") $(eval_ngettext "%'d minute" "%'d minutes" "${uptime_mins}") $(eval_ngettext "%'d second" "%'d seconds" "${uptime_secs}") \n" \
+      "$(eval_gettext "Uptime:")" \
+      "${uptime_days}" \
+      "${uptime_hours}" \
+      "${uptime_mins}" \
+      "${uptime_secs}"
+
+   # ------ Operating System ------------------------------------------------
+   printf "%-${indent}s$(eval_ngettext "%'d day" "%'d days" "${uptime_days}") $(eval_ngettext "%'d hour" "%'d hours" "${uptime_hours}") $(eval_ngettext "%'d minute" "%'d minutes" "${uptime_mins}") $(eval_ngettext "%'d second" "%'d seconds" "${uptime_secs}") \n" \
+      "$(eval_gettext "Operating System:")" \
+      "${uptime_days}" \
+      "${uptime_hours}" \
+      "${uptime_mins}" \
+      "${uptime_secs}"
+
+
+exit 1
+
+   codeNameText=""
+   if [ "${DISTRIB_CODENAME}" != "" ] ; then
+      codeNameText=" (${DISTRIB_CODENAME})"
+   fi
+
+   echo "$(eval_gettext "Operating System: ")${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText} $(eval_gettext "with kernel") ${kernel}"
+   /usr/bin/printf "$(eval_gettext "Processor:        ")%d × ${cpu}; $(eval_gettext "%'d processes"); $(eval_ngettext "%'d user" "%'d users" "${users}")\n" "${cores}" "${processes}" "${users}"
+   echo "$(eval_gettext "Load:             ")${systemLoad}"
+
+   of=$(eval_gettext "of")                 # nnn MiB of mmm MiB
+   available=$(eval_gettext "available")   # nnn MiB available
+   on=$(eval_gettext "on")                 # xxx MiB on <mountpoint>
+   /usr/bin/printf "$(eval_gettext "Used Memory:      ")%'6.0f MiB ${of} %'6.0f MiB (%'6.0f MiB ${available})\n" "${memoryUsed}" "${memoryTotal}" "${memoryAvailable}"
+   eval_gettext "Used Swap:        "
+   if [ "${swapAvailable}" -gt 0 ] ; then
+      /usr/bin/printf "%'6.0f MiB ${of} %'6.0f MiB (%'6.0f MiB ${available})\n" "${swapUsed}" "${swapTotal}" "${swapAvailable}"
+   else
+      echo -en "\x1b[37m"
+      eval_gettext "no swap available!"
+      echo -e "\x1b[33m"
+   fi
+   echo "$(eval_gettext "Used Diskspace:   ")${diskRoot} ${on} /, ${diskHome} ${on} /home"
+   echo -en "\x1b[0m"
+}
+
+
+print-system-information
