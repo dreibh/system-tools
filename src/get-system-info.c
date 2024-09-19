@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 #include <net/if.h>
 #include <netinet/in.h>
@@ -31,7 +32,7 @@ struct interfaceaddress {
 
 
 // ###### Comparison function for interfaceaddress type #####################
-int compareInterfaceAddresses(const void* a, const void* b)
+static int compareInterfaceAddresses(const void* a, const void* b)
 {
    const struct interfaceaddress* ifa1 = (const struct interfaceaddress*)a;
    const struct interfaceaddress* ifa2 = (const struct interfaceaddress*)b;
@@ -77,8 +78,8 @@ unsigned int countSetBits(const uint8_t* array, const unsigned int size)
 
 
 // ###### Print address #####################################################
-void printaddress(const struct sockaddr* address,
-                  const unsigned int     prefixlen)
+static void printaddress(const struct sockaddr* address,
+                         const unsigned int     prefixlen)
 {
    char resolvedHost[NI_MAXHOST];
    int error = getnameinfo(address,
@@ -96,126 +97,95 @@ void printaddress(const struct sockaddr* address,
 
 
 // ###### Print interface flags #############################################
-void printflags(const u_int flags)
+static void printflags(const u_int flags)
 {
-   if(flags & IFF_UP) {
-      fputs("UP", stdout);
-   }
-   else {
-      fputs("DOWN", stdout);
-   }
+   printf("F=0x%x: <%s>", flags, (flags & IFF_UP) ? "UP" : "DOWN");
    if(flags & IFF_LOWER_UP) {
-      fputs(" LOWER_UP", stdout);
+      fputs(" <LOWER_UP>", stdout);
    }
    if(flags & IFF_LOOPBACK) {
-      fputs(" LOOPBACK", stdout);
+      fputs(" <LOOPBACK>", stdout);
    }
    if(flags & IFF_POINTOPOINT) {
-      fputs(" POINTOPOINT", stdout);
+      fputs(" <POINTOPOINT>", stdout);
    }
-   printf(" (F=0x%x)", flags);
 }
 
 
-
-// ###### Main program ######################################################
-int main(void)
+// ###### Print hostname information ########################################
+static void showHostnameInformation()
 {
-   // ====== Query hostname information =====================================
    char hostname[256];
-   if(gethostname((char*)&hostname, sizeof(hostname)) == 0) {
-      printf("host.name: %s\n", hostname);
+   if(gethostname((char*)&hostname, sizeof(hostname)) != 0) {
+      strcpy((char*)&hostname, "localhost");
    }
-   else {
-      hostname[0] = 0x00;
-   }
-   char domainname[256];
-   if(getdomainname((char*)&domainname, sizeof(domainname)) == 0) {
-      printf("host.domain: %s\n", domainname);
-      if(strcmp(domainname, "(none)") == 0) {
-          domainname[0] = 0x00;
-      }
-   }
-   else {
+
+   char* domainname = strchr(hostname, '.');
+   if(domainname != NULL) {
       domainname[0] = 0x00;
-   }
-   if(domainname[0] != 0x00) {
-      printf("host.fqdn: %s.%s\n", hostname, domainname);
+      domainname++;
+      printf("hostname.long=\"%s.%s\"\n", hostname, domainname);
    }
    else {
-       printf("host.fqdn: %s\n", hostname);
+       printf("hostname.long=\"%s\"\n", hostname);
    }
+   printf("hostname.short=\"%s\"\n", hostname);
+}
 
 
-   // ====== Query uname information ========================================
+// ###### Print kernel information ##########################################
+static void showKernelInformation()
+{
    struct utsname kernelInfo;
    if(uname(&kernelInfo) == 0) {
-      printf("uname.sysname: %s\n", kernelInfo.sysname);
+      printf("uname.sysname: %s\n",  kernelInfo.sysname);
       printf("uname.nodename: %s\n", kernelInfo.nodename);
-      printf("uname.release: %s\n", kernelInfo.release);
-      printf("uname.version: %s\n", kernelInfo.version);
-      printf("uname.machine: %s\n", kernelInfo.machine);
+      printf("uname.release: %s\n",  kernelInfo.release);
+      printf("uname.version: %s\n",  kernelInfo.version);
+      printf("uname.machine: %s\n",  kernelInfo.machine);
    }
+}
 
 
-   // ====== Query system information =======================================
-#ifdef __linux
-   struct sysinfo systemInfo;
-   if(sysinfo(&systemInfo) == 0) {
-       const unsigned int days  = systemInfo.uptime / 86400;
-       const unsigned int hours = (systemInfo.uptime / 3600) - (days * 24);
-       const unsigned int mins  = (systemInfo.uptime / 60) - (days * 1440) - (hours * 60);
-       const unsigned int secs  = systemInfo.uptime - (days * 86400) - (hours * 3600) - (mins * 60);
-       printf("system.uptime: %lu (%u days %u hours %u mins %u secs)\n",
-              systemInfo.uptime, days, hours, mins, secs);
-       printf("system.procs: %u\n",       systemInfo.procs);
-       printf("system.ram.total: %lu\n",  systemInfo.totalram);
-       printf("system.ram.free: %lu\n",   systemInfo.freeram);
-       printf("system.swap.total: %lu\n", systemInfo.totalswap);
-       printf("system.swap.free: %lu\n",  systemInfo.freeswap);
+// ###### Print uptime information ##########################################
+static void showUptimeInformation()
+{
+   struct timespec ts;
+   if(clock_gettime(CLOCK_BOOTTIME, &ts) == 0) {
+      const unsigned int days  = ts.tv_sec / 86400;
+      const unsigned int hours = (ts.tv_sec / 3600) - (days * 24);
+      const unsigned int mins  = (ts.tv_sec / 60) - (days * 1440) - (hours * 60);
+      const unsigned int secs  = ts.tv_sec - (days * 86400) - (hours * 3600) - (mins * 60);
+      printf("system.uptime.total=%1.9f\n",
+             (double)ts.tv_sec + ((double)ts.tv_nsec / 1000000000.0));
+      printf("system.uptime.d=%u\n",   days);
+      printf("system.uptime.h=%u\n",   hours);
+      printf("system.uptime.m=%u\n",   mins);
+      printf("system.uptime.s=%u\n",   secs);
+      printf("system.uptime.ns=%lu\n", ts.tv_nsec);
    }
-#elif __FreeBSD__
-   struct timeval tv;
-   getmicrouptime(&tv);
-   const unsigned int days  = tv.tv_sec / 86400;
-   const unsigned int hours = (tv.tv_sec / 3600) - (days * 24);
-   const unsigned int mins  = (tv.tv_sec / 60) - (days * 1440) - (hours * 60);
-   const unsigned int secs  = tv.tv_sec - (days * 86400) - (hours * 3600) - (mins * 60);
-   printf("system.uptime: %lu (%u days %u hours %u mins %u secs)\n",
-         tv.tv_sec, days, hours, mins, secs);
+}
 
-   print
 
-/*
-      pageSize=$(sysctl -n hw.pagesize)
-      memPhysical=$(sysctl -n hw.physmem)
-      # vmstatAll=$(( $(sysctl -n vm.stats.vm.v_page_count)*pageSize ))
-      # vmstatWired=$(( $(sysctl -n vm.stats.vm.v_wire_count)*pageSize ))
-      # vmstatActive=$(( $(sysctl -n vm.stats.vm.v_active_count)*pageSize ))
-      vmstatInactive=$(( $(sysctl -n vm.stats.vm.v_inactive_count)*pageSize ))
-      vmstatCache=$(( $(sysctl -n vm.stats.vm.v_cache_count)*pageSize ))
-      vmstatFree=$(( $(sysctl -n vm.stats.vm.v_free_count)*pageSize ))
+// ###### Print system information ##########################################
+static void showSystemInformation()
+{
 
-      memoryTotal=$(( memPhysical/1048576 ))
-      memoryAvailable=$(( (vmstatInactive+vmstatCache+vmstatFree)/1048576 ))
-      memoryUsed=$(( memoryTotal-memoryAvailable ))
+}
 
-      swap=$(swapctl -sk)
-      swapTotal=$(echo "${swap}" | awk '{ n=int($2/1024+0.5); print n; }')
-      swapUsed=$(echo "${swap}" | awk '{ n=int($3/1024+0.5); print n; }')
-      swapAvailable=$(( swapTotal-swapUsed ))
-*/
-#endif
 
+// ###### Print network information #########################################
+static void showNetworkInformation()
+{
    // ====== Query available interfaces and their addresses =================
    struct ifaddrs* ifaddr;
    if(getifaddrs(&ifaddr) == -1) {
       perror("getifaddrs()");
-      return 1;
+      return;
    }
 
    // ====== Build list of interfaces and their addresses ==================
-   struct interfaceaddress ifaArray[16384];
+   struct interfaceaddress ifaArray[4096];
    unsigned int n = 0;
    for(struct ifaddrs* ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
       if(ifa->ifa_addr != NULL) {
@@ -254,19 +224,20 @@ int main(void)
          if(lastIfName) {
             puts("");
          }
-         printf("netif.%s.flags:\t", ifaArray[i].ifname);
+         printf("netif.%s.flags=\"", ifaArray[i].ifname);
          printflags(ifaArray[i].flags);
+         printf("\"");
       }
 
       if( (lastIfName == NULL) ||
           ((strcmp(lastIfName, ifaArray[i].ifname) != 0)) ||
           (lastFamily != ifaArray[i].address->sa_family) ) {
-          printf("\nnetif.%s.ipv%u:\t",
+          printf("\nnetif.%s.ipv%u=",
                  ifaArray[i].ifname,
                  (ifaArray[i].address->sa_family == AF_INET6) ? 6 : 4);
       }
       else {
-         fputs("\t", stdout);
+         fputs(" ", stdout);
       }
 
       printaddress(ifaArray[i].address, ifaArray[i].prefixlen);
@@ -277,5 +248,52 @@ int main(void)
    puts("");
 
    freeifaddrs(ifaddr);
+}
+
+
+
+// ###### Main program ######################################################
+int main(void)
+{
+   showHostnameInformation();
+   showKernelInformation();
+   showUptimeInformation();
+   showSystemInformation();
+   showNetworkInformation();
+
+
+   // ====== Query system information =======================================
+#ifdef __linux
+   struct sysinfo systemInfo;
+   if(sysinfo(&systemInfo) == 0) {
+       printf("system.procs: %u\n",       systemInfo.procs);
+       printf("system.ram.total: %lu\n",  systemInfo.totalram);
+       printf("system.ram.free: %lu\n",   systemInfo.freeram);
+       printf("system.swap.total: %lu\n", systemInfo.totalswap);
+       printf("system.swap.free: %lu\n",  systemInfo.freeswap);
+   }
+#elif __FreeBSD__
+/*
+      pageSize=$(sysctl -n hw.pagesize)
+      memPhysical=$(sysctl -n hw.physmem)
+      # vmstatAll=$(( $(sysctl -n vm.stats.vm.v_page_count)*pageSize ))
+      # vmstatWired=$(( $(sysctl -n vm.stats.vm.v_wire_count)*pageSize ))
+      # vmstatActive=$(( $(sysctl -n vm.stats.vm.v_active_count)*pageSize ))
+      vmstatInactive=$(( $(sysctl -n vm.stats.vm.v_inactive_count)*pageSize ))
+      vmstatCache=$(( $(sysctl -n vm.stats.vm.v_cache_count)*pageSize ))
+      vmstatFree=$(( $(sysctl -n vm.stats.vm.v_free_count)*pageSize ))
+
+      memoryTotal=$(( memPhysical/1048576 ))
+      memoryAvailable=$(( (vmstatInactive+vmstatCache+vmstatFree)/1048576 ))
+      memoryUsed=$(( memoryTotal-memoryAvailable ))
+
+      swap=$(swapctl -sk)
+      swapTotal=$(echo "${swap}" | awk '{ n=int($2/1024+0.5); print n; }')
+      swapUsed=$(echo "${swap}" | awk '{ n=int($3/1024+0.5); print n; }')
+      swapAvailable=$(( swapTotal-swapUsed ))
+*/
+#endif
+
+
    return 0;
 }
