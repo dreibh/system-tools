@@ -238,9 +238,9 @@ static void showMemoryInformation()
    }
 
    // ------ Calculations ---------------------------------------------------
-   const unsigned long vmstatInactive  = vInactiveCount * pageSize;
-   const unsigned long vmstatCache     = vCacheCount * pageSize;
-   const unsigned long vmstatFree      = vFreeCount *  pageSize;
+   const unsigned long vmstatInactive = vInactiveCount * pageSize;
+   const unsigned long vmstatCache    = vCacheCount * pageSize;
+   const unsigned long vmstatFree     = vFreeCount *  pageSize;
 
    memoryTotal     = physMem;
    memoryAvailable = vmstatInactive + vmstatCache + vmstatFree;
