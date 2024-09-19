@@ -140,11 +140,11 @@ static void showKernelInformation()
 {
    struct utsname kernelInfo;
    if(uname(&kernelInfo) == 0) {
-      printf("uname.sysname: %s\n",  kernelInfo.sysname);
-      printf("uname.nodename: %s\n", kernelInfo.nodename);
-      printf("uname.release: %s\n",  kernelInfo.release);
-      printf("uname.version: %s\n",  kernelInfo.version);
-      printf("uname.machine: %s\n",  kernelInfo.machine);
+      printf("system.sysname=\"%s\"\n",  kernelInfo.sysname);
+      printf("system.nodename=\"%s\"\n", kernelInfo.nodename);
+      printf("system.release=\"%s\"\n",  kernelInfo.release);
+      printf("system.version=\"%s\"\n",  kernelInfo.version);
+      printf("system.machine=\"%s\"\n",  kernelInfo.machine);
    }
 }
 
@@ -158,21 +158,130 @@ static void showUptimeInformation()
       const unsigned int hours = (ts.tv_sec / 3600) - (days * 24);
       const unsigned int mins  = (ts.tv_sec / 60) - (days * 1440) - (hours * 60);
       const unsigned int secs  = ts.tv_sec - (days * 86400) - (hours * 3600) - (mins * 60);
-      printf("system.uptime.total=%1.9f\n",
+      printf("uptime.total=%1.9f\n",
              (double)ts.tv_sec + ((double)ts.tv_nsec / 1000000000.0));
-      printf("system.uptime.d=%u\n",   days);
-      printf("system.uptime.h=%u\n",   hours);
-      printf("system.uptime.m=%u\n",   mins);
-      printf("system.uptime.s=%u\n",   secs);
-      printf("system.uptime.ns=%lu\n", ts.tv_nsec);
+      printf("uptime.days=%u\n",   days);
+      printf("uptime.hours=%u\n",  hours);
+      printf("uptime.mins=%u\n",   mins);
+      printf("uptime.secs=%u\n",   secs);
+      printf("uptime.nsecs=%lu\n", ts.tv_nsec);
    }
 }
 
 
-// ###### Print system information ##########################################
-static void showSystemInformation()
+// ###### Print memory information ##########################################
+static void showMemoryInformation()
 {
+   unsigned long memoryTotal     = 0;
+   unsigned long memoryAvailable = 0;
+   unsigned long memoryUsed      = 0;
+   unsigned long swapTotal       = 0;
+   unsigned long swapAvailable   = 0;
+   unsigned long swapUsed        = 0;
 
+#ifdef __linux
+   struct sysinfo systemInfo;
+   if(sysinfo(&systemInfo) == 0) {
+      printf("system.procs: %u\n",       systemInfo.procs);
+
+      memoryTotal     = systemInfo.totalram;
+      memoryAvailable = systemInfo.freeram;
+      memoryUsed      = systemInfo.totalram - systemInfo.freeram;
+
+      swapTotal       = systemInfo.totalswap;
+      swapAvailable   = systemInfo.freeswap;
+      swapUsed        = systemInfo.totalswap - systemInfo.freeswap;
+   }
+
+#elif __FreeBSD__
+   // ====== Query system information via sysctl ============================
+   // Documentation: https://man.freebsd.org/cgi/man.cgi?query=sysctl&sektion=3
+
+   // ------ Query hw.pagesize ----------------------------------------------
+   unsigned int pageSize;
+   size_t len = sizeof(pageSize);
+   if(sysctlbyname("hw.pagesize", &pageSize, &len, NULL, 0) != 0) {
+      perror("sysctl(hw.pagesize)");
+      return 1;
+   }
+
+   // ------ Query hw.physmem -----------------------------------------------
+   unsigned long physMem;
+   len = sizeof(physMem);
+   if(sysctlbyname("hw.physmem", &physMem, &len, NULL, 0) != 0) {
+      perror("sysctl(hw.physmem)");
+      return 1;
+   }
+
+   // ------ Query vm.stats.vm.v_inactive_count -----------------------------
+   unsigned int vInactiveCount;
+   len = sizeof(vInactiveCount);
+   if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &len, NULL, 0) != 0) {
+      perror("sysctl(vm.stats.vm.v_inactive_count)");
+      return 1;
+   }
+
+   // ------ Query vm.stats.vm.v_cache_count -----------------------------
+   unsigned int vCacheCount;
+   len = sizeof(vCacheCount);
+   if(sysctlbyname("vm.stats.vm.v_cache_count", &vCacheCount, &len, NULL, 0) != 0) {
+      perror("sysctl(vm.stats.vm.v_cache_count)");
+      return 1;
+   }
+
+   // ------ Query vm.stats.vm.v_free_count -----------------------------
+   unsigned int vFreeCount;
+   len = sizeof(vFreeCount);
+   if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &len, NULL, 0) != 0) {
+      perror("sysctl(vm.stats.vm.v_free_count)");
+      return 1;
+   }
+
+   // ------ Calculations ---------------------------------------------------
+   const unsigned long vmstatInactive  = vInactiveCount * pageSize;
+   const unsigned long vmstatCache     = vCacheCount * pageSize;
+   const unsigned long vmstatFree      = vFreeCount *  pageSize;
+
+   memoryTotal     = physMem;
+   memoryAvailable = vmstatInactive + vmstatCache + vmstatFree;
+   memoryUsed      = memoryTotal - memoryAvailable;
+
+/*
+      pageSize=$(sysctl -n hw.pagesize)
+      memPhysical=$(sysctl -n hw.physmem)
+      # vmstatAll=$(( $(sysctl -n vm.stats.vm.v_page_count)*pageSize ))
+      # vmstatWired=$(( $(sysctl -n vm.stats.vm.v_wire_count)*pageSize ))
+      # vmstatActive=$(( $(sysctl -n vm.stats.vm.v_active_count)*pageSize ))
+      vmstatInactive=$(( $(sysctl -n vm.stats.vm.v_inactive_count)*pageSize ))
+      vmstatCache=$(( $(sysctl -n vm.stats.vm.v_cache_count)*pageSize ))
+      vmstatFree=$(( $(sysctl -n vm.stats.vm.v_free_count)*pageSize ))
+
+      memoryTotal=$(( memPhysical/1048576 ))
+      memoryAvailable=$(( (vmstatInactive+vmstatCache+vmstatFree)/1048576 ))
+      memoryUsed=$(( memoryTotal-memoryAvailable ))
+
+      swap=$(swapctl -sk)
+      swapTotal=$(echo "${swap}" | awk '{ n=int($2/1024+0.5); print n; }')
+      swapUsed=$(echo "${swap}" | awk '{ n=int($3/1024+0.5); print n; }')
+      swapAvailable=$(( swapTotal-swapUsed ))
+*/
+#endif
+
+   printf("system.ram.total=%lu\n", memoryTotal);
+   printf("system.ram.used=%lu\n",  memoryUsed);
+   printf("system.ram.free=%lu\n",  memoryAvailable);
+   if(memoryTotal > 0) {
+      printf("system.ram.usedpct=%1.1f\n", 100.0 * memoryUsed / memoryTotal);
+      printf("system.ram.freepct=%1.1f\n", 100.0 * memoryAvailable / memoryTotal);
+   }
+
+   printf("system.swap.total=%lu\n", swapTotal);
+   printf("system.swap.used=%lu\n",  swapUsed);
+   printf("system.swap.free=%lu\n",  swapAvailable);
+   if(swapTotal > 0) {
+      printf("system.swap.usedpct=%1.1f\n", 100.0 * swapUsed / swapTotal);
+      printf("system.swap.freepct=%1.1f\n", 100.0 * swapAvailable / swapTotal);
+   }
 }
 
 
@@ -257,102 +366,13 @@ static void showNetworkInformation()
 int main(void)
 {
    showHostnameInformation();
-   showKernelInformation();
    showUptimeInformation();
-   showSystemInformation();
+   showKernelInformation();
+   showMemoryInformation();
    showNetworkInformation();
 
 
    // ====== Query system information =======================================
-#ifdef __linux
-   struct sysinfo systemInfo;
-   if(sysinfo(&systemInfo) == 0) {
-      printf("system.procs: %u\n",       systemInfo.procs);
-
-      printf("system.ram.total=%lu\n",     systemInfo.totalram);
-      printf("system.ram.used=%lu\n",      systemInfo.totalram - systemInfo.freeram);
-      printf("system.ram.free=%lu\n",      systemInfo.freeram);
-      printf("system.ram.freepct=%1.1f\n", 100.0 * systemInfo.freeram / systemInfo.totalram);
-   }
-#elif __FreeBSD__
-   // ====== Query system information via sysctl ============================
-   // Documentation: https://man.freebsd.org/cgi/man.cgi?query=sysctl&sektion=3
-
-   // ------ Query hw.pagesize ----------------------------------------------
-   unsigned int pageSize;
-   size_t len = sizeof(pageSize);
-   if(sysctlbyname("hw.pagesize", &pageSize, &len, NULL, 0) != 0) {
-      perror("sysctl(hw.pagesize)");
-      return 1;
-   }
-
-   // ------ Query hw.physmem -----------------------------------------------
-   unsigned long physMem;
-   len = sizeof(physMem);
-   if(sysctlbyname("hw.physmem", &physMem, &len, NULL, 0) != 0) {
-      perror("sysctl(hw.physmem)");
-      return 1;
-   }
-
-   // ------ Query vm.stats.vm.v_inactive_count -----------------------------
-   unsigned int vInactiveCount;
-   len = sizeof(vInactiveCount);
-   if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &len, NULL, 0) != 0) {
-      perror("sysctl(vm.stats.vm.v_inactive_count)");
-      return 1;
-   }
-
-   // ------ Query vm.stats.vm.v_cache_count -----------------------------
-   unsigned int vCacheCount;
-   len = sizeof(vCacheCount);
-   if(sysctlbyname("vm.stats.vm.v_cache_count", &vCacheCount, &len, NULL, 0) != 0) {
-      perror("sysctl(vm.stats.vm.v_cache_count)");
-      return 1;
-   }
-
-   // ------ Query vm.stats.vm.v_free_count -----------------------------
-   unsigned int vFreeCount;
-   len = sizeof(vFreeCount);
-   if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &len, NULL, 0) != 0) {
-      perror("sysctl(vm.stats.vm.v_free_count)");
-      return 1;
-   }
-
-   // ------ Calculations ---------------------------------------------------
-   const unsigned long vmstatInactive  = vInactiveCount * pageSize;
-   const unsigned long vmstatCache     = vCacheCount * pageSize;
-   const unsigned long vmstatFree      = vFreeCount *  pageSize;
-
-   const unsigned long memoryTotal     = physMem;
-   const unsigned long memoryAvailable = vmstatInactive + vmstatCache + vmstatFree;
-   const unsigned long memoryUsed      = memoryTotal - memoryAvailable;
-
-   printf("system.ram.total=%lu\n",     memoryTotal);
-   printf("system.ram.used=%lu\n",      memoryUsed);
-   printf("system.ram.free=%lu\n",      memoryAvailable);
-   printf("system.ram.freepct=%1.1f\n", 100.0 * memoryAvailable / memoryTotal);
-
-/*
-      pageSize=$(sysctl -n hw.pagesize)
-      memPhysical=$(sysctl -n hw.physmem)
-      # vmstatAll=$(( $(sysctl -n vm.stats.vm.v_page_count)*pageSize ))
-      # vmstatWired=$(( $(sysctl -n vm.stats.vm.v_wire_count)*pageSize ))
-      # vmstatActive=$(( $(sysctl -n vm.stats.vm.v_active_count)*pageSize ))
-      vmstatInactive=$(( $(sysctl -n vm.stats.vm.v_inactive_count)*pageSize ))
-      vmstatCache=$(( $(sysctl -n vm.stats.vm.v_cache_count)*pageSize ))
-      vmstatFree=$(( $(sysctl -n vm.stats.vm.v_free_count)*pageSize ))
-
-      memoryTotal=$(( memPhysical/1048576 ))
-      memoryAvailable=$(( (vmstatInactive+vmstatCache+vmstatFree)/1048576 ))
-      memoryUsed=$(( memoryTotal-memoryAvailable ))
-
-      swap=$(swapctl -sk)
-      swapTotal=$(echo "${swap}" | awk '{ n=int($2/1024+0.5); print n; }')
-      swapUsed=$(echo "${swap}" | awk '{ n=int($3/1024+0.5); print n; }')
-      swapAvailable=$(( swapTotal-swapUsed ))
-*/
-#endif
-
 
    return 0;
 }
