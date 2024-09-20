@@ -183,9 +183,9 @@ static void showLoadInformation()
    if(sysinfo(&systemInfo) == 0) {
       const double fFraction = 1.0 / (1 << SI_LOAD_SHIFT);
       const double fPercent  = 100.0 * fFraction / cores;   // Percent of CPU
-      printf("system_load_avg1min=%1.6f\n",  (double)systemInfo.loads[0] * fFraction);
-      printf("system_load_avg5min=%1.6f\n",  (double)systemInfo.loads[1] * fFraction);
-      printf("system_load_avg15min=%1.6f\n", (double)systemInfo.loads[2] * fFraction);
+      printf("system_load_avg1min=%1.6f\n",     (double)systemInfo.loads[0] * fFraction);
+      printf("system_load_avg5min=%1.6f\n",     (double)systemInfo.loads[1] * fFraction);
+      printf("system_load_avg15min=%1.6f\n",    (double)systemInfo.loads[2] * fFraction);
       printf("system_load_avg1minpct=%1.4f\n",  (double)systemInfo.loads[0] * fPercent);
       printf("system_load_avg5minpct=%1.4f\n",  (double)systemInfo.loads[1] * fPercent);
       printf("system_load_avg15minpct=%1.4f\n", (double)systemInfo.loads[2] * fPercent);
@@ -205,16 +205,36 @@ static void showMemoryInformation()
    unsigned long long swapUsed        = 0;
 
 #ifdef __linux
-   struct sysinfo systemInfo;
-   if(sysinfo(&systemInfo) == 0) {
-      memoryTotal     = systemInfo.totalram;
-      memoryAvailable = systemInfo.freeram;
-      memoryUsed      = systemInfo.totalram - systemInfo.freeram - systemInfo.bufferram - systemInfo.sharedram; // FIXME!
-
-      swapTotal       = systemInfo.totalswap;
-      swapAvailable   = systemInfo.freeswap;
-      swapUsed        = systemInfo.totalswap - systemInfo.freeswap;
+   // ====== Query memory information via /proc =============================
+   FILE* fh = fopen("/proc/meminfo", "r");
+   if(fh != NULL) {
+      char line[256];
+      while(fgets(line, sizeof(line) ,fh)) {
+         if(strncmp(line, "Mem", 3) == 0) {
+            if(sscanf(line, "MemTotal: %llu", &memoryTotal) == 1) {
+               continue;
+            }
+            else if(sscanf(line, "MemAvailable: %llu", &memoryAvailable) == 1) {
+               continue;
+            }
+         }
+         if(strncmp(line, "Swap", 4) == 0) {
+            if(sscanf(line, "SwapTotal: %llu", &swapTotal) == 1) {
+               continue;
+            }
+            else if(sscanf(line, "SwapFree: %llu", &swapAvailable) == 1) {
+               continue;
+            }
+         }
+      }
+      fclose(fh);
    }
+   memoryTotal     *= 1024;
+   memoryAvailable *= 1024;
+   memoryUsed = memoryTotal - memoryAvailable;
+   swapTotal       *= 1024;
+   swapAvailable   *= 1024;
+   swapUsed = swapTotal - swapAvailable;
 
 #elif __FreeBSD__
    // ====== Query system information via sysctl ============================
