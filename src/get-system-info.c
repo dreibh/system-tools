@@ -1,4 +1,5 @@
 #include <ifaddrs.h>
+#include <libintl.h>
 #include <netdb.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -178,6 +179,7 @@ static void showLoadInformation()
    printf("system_cores=%u\n", cores);
    const unsigned int pageSize = sysconf(_SC_PAGESIZE);
    printf("system_pagesize=%u\n", pageSize);
+
 #ifdef __linux
    struct sysinfo systemInfo;
    if(sysinfo(&systemInfo) == 0) {
@@ -189,6 +191,17 @@ static void showLoadInformation()
       printf("system_load_avg1minpct=%1.4f\n",  (double)systemInfo.loads[0] * fPercent);
       printf("system_load_avg5minpct=%1.4f\n",  (double)systemInfo.loads[1] * fPercent);
       printf("system_load_avg15minpct=%1.4f\n", (double)systemInfo.loads[2] * fPercent);
+   }
+
+#elif __FreeBSD__
+   double loadavg[3];
+   if(getloadavg(loadavg, 3) == 3) {
+      printf("system_load_avg1min=%1.6f\n",  loadavg[0]);
+      printf("system_load_avg5min=%1.6f\n",  loadavg[1]);
+      printf("system_load_avg15min=%1.6f\n", loadavg[2]);
+      printf("system_load_avg1minpct=%1.6f\n",  100.0 * loadavg[0]);
+      printf("system_load_avg5minpct=%1.6f\n",  100.0 * loadavg[1]);
+      printf("system_load_avg15minpct=%1.6f\n", 100.0 * loadavg[2]);
    }
 #endif
 }
@@ -445,6 +458,10 @@ static void showNetworkInformation(const bool filterLocalScope)
 // ###### Main program ######################################################
 int main(void)
 {
+   // ====== Initialise i18n support ========================================
+   setlocale(LC_ALL, "");
+
+   // ====== Show system information in machine-readable form ===============
    showHostnameInformation();
    showUptimeInformation();
    showKernelInformation();
