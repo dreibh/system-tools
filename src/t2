@@ -1,0 +1,51 @@
+#/bin/bash
+
+test1 ()
+{
+   for i in 1 2 3 4 5 ; do
+    date
+    sleep 1
+   done
+}
+
+test2 ()
+{
+   for i in 1 2 3 ; do
+    echo "$i"
+    sleep 1
+   done
+}
+
+
+test3 ()
+{
+   echo "Start!"
+   exec 3> >(cat)
+   exec 4> >(cat)
+
+  ( test1 | mbuffer -q) >&3 2>&3 </dev/null &
+  pid1=$!
+  echo "pid1=$pid1"
+
+  ( test2 | mbuffer -q ) >&4 2>&4 </dev/null &
+  pid2=$!
+  echo "pid2=$pid2"
+
+#   echo "Wait"
+#   wait
+
+  echo "Wait 1"
+  wait $pid1
+  echo >&3 "Done 1"
+  exec 3>&-
+  echo "---"
+  sleep 1
+
+  echo "Wait 2"
+  wait $pid2
+  echo >&4 "Done 2"
+  exec 4>&-
+}
+
+
+test3
