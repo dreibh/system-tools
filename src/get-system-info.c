@@ -361,8 +361,8 @@ static void showNetworkInformation(const bool filterLocalScope)
             if(ifa->ifa_addr->sa_family == AF_INET6) {
 
                if( filterLocalScope &&
-                   ( (IN6_IS_ADDR_LOOPBACK(&((const struct sockaddr_in6*)ifa->ifa_addr)->sin6_addr.s6_addr)) ||
-                     (IN6_IS_ADDR_LINKLOCAL(&((const struct sockaddr_in6*)ifa->ifa_addr)->sin6_addr.s6_addr)) ) ) {
+                   ( (IN6_IS_ADDR_LOOPBACK(&((const struct sockaddr_in6*)ifa->ifa_addr)->sin6_addr)) ||
+                     (IN6_IS_ADDR_LINKLOCAL(&((const struct sockaddr_in6*)ifa->ifa_addr)->sin6_addr)) ) ) {
                   continue;
                }
                const uint8_t* netmask =
