@@ -76,12 +76,12 @@ function print-system-information ()
       "${hostname_long}"
 
    # ------ Uptime ----------------------------------------------------------
-   printf "%-${indent}s$(eval_ngettext "%'d day" "%'d days" "${uptime_days}") $(eval_ngettext "%'d hour" "%'d hours" "${uptime_hours}") $(eval_ngettext "%'d minute" "%'d minutes" "${uptime_mins}") $(eval_ngettext "%'d second" "%'d seconds" "${uptime_secs}") \n" \
+   printf "%-${indent}s$(eval_gettext "%s, %s, %s, and %s")\n" \
       "$(eval_gettext "Uptime:")" \
-      "${uptime_days}" \
-      "${uptime_hours}" \
-      "${uptime_mins}" \
-      "${uptime_secs}"
+      "$(printf "$(eval_ngettext "%'d day" "%'d days" "${uptime_days}")" "${uptime_days}")" \
+      "$(printf "$(eval_ngettext "%'d hour" "%'d hours" "${uptime_hours}")" "${uptime_hours}")" \
+      "$(printf "$(eval_ngettext "%'d minute" "%'d minutes" "${uptime_mins}")" "${uptime_mins}")" \
+      "$(printf "$(eval_ngettext "%'d second" "%'d seconds" "${uptime_secs}")" "${uptime_secs}")"
 
    # ------ Operating System ------------------------------------------------
    printf "%-${indent}s%s $(eval_gettext "with kernel") %s\n" \
@@ -124,7 +124,7 @@ function print-system-information ()
       "$((system_swap_free  / 1048576))" \
       "${system_swap_freepct}"
    else
-      printf "%-${indent}s" "$(eval_gettext "Used Memory:")"
+      printf "%-${indent}s" "$(eval_gettext "Used Swap:")"
       echo -en "${colorInactive}"
       eval_gettext "no swap available!"
       echo -e "${colorBasic}"
