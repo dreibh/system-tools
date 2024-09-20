@@ -1,5 +1,7 @@
 #include <ifaddrs.h>
 #include <libintl.h>
+#include <locale.h>
+
 #include <netdb.h>
 #include <stdbool.h>
 #include <stdio.h>
