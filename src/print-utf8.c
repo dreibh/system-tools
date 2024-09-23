@@ -8,14 +8,21 @@
 #include <sys/ioctl.h>
 
 
+// ###### Obtain console size ###############################################
+static void ioctlTIOCGWINSZ(struct winsize* w)
+{
+   if(ioctl(0, TIOCGWINSZ, w) != 0) {
+      perror("ioctl(TIOCGWINSZ)");
+      exit(1);
+   }
+}
+
+
 // ###### Obtain console width ##############################################
 static int consolewidth()
 {
    struct winsize w;
-   if(ioctl(0, TIOCGWINSZ, &w) != 0) {
-      perror("ioctl(TIOCGWINSZ)");
-      exit(1);
-   }
+   ioctlTIOCGWINSZ(&w);
    return w.ws_col;
 }
 
@@ -97,9 +104,11 @@ int main (int argc, char** argv)
 {
    // ====== Handle arguments ===============================================
    enum mode_t {
-      Indent    = 1,
-      Center    = 2,
-      Separator = 3
+      Indent       = 1,
+      Center       = 2,
+      Separator    = 3,
+      Width        = 4,
+      TerminalInfo = 5
    };
    enum mode_t  mode        = Indent;
    int          indentWidth = 0;
@@ -110,6 +119,12 @@ int main (int argc, char** argv)
    for(int i = 1; i <argc; i++) {
       if( (strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--center") == 0) ) {
          mode = Center;
+      }
+      else if( (strcmp(argv[i], "-w") == 0) || (strcmp(argv[i], "--width") == 0) ) {
+         mode = Width;
+      }
+      else if( (strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "--terminal-info") == 0) ) {
+         mode = TerminalInfo;
       }
       else if( (strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--indent") == 0) ) {
          if(i + 1 < argc) {
@@ -139,7 +154,7 @@ int main (int argc, char** argv)
          newline = true;
       }
       else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) ) {
-         fprintf(stderr, "Usage: %s [-n|--newline] [-i indentation string|--ident indentation string] [-c string|--center string] [-s border_left separator border_right|--separator border_left separator border_right]\n", argv[0]);
+         fprintf(stderr, "Usage: %s [-n|--newline] [-i indentation string|--ident indentation string] [-c string|--center string] [-s border_left separator border_right|--separator border_left separator border_right] [-w string|--width string] [-t|--terminal-info]\n", argv[0]);
          return 1;
       }
       else {
@@ -148,41 +163,9 @@ int main (int argc, char** argv)
       }
    }
 
-
+   // ====== Handle command =================================================
    // Set locale to handle UTF-8 multibyte characters
    setlocale(LC_ALL, "");
-
-   /*
-   // ====== Convert UTF-8 string to wide string ============================
-   const char* utf8_string = "Test öäüÆØÅ 托马斯博士 💻";
-
-   // ====== Get console width ==============================================
-   struct winsize w;
-   if(ioctl(0, TIOCGWINSZ, &w) != 0) {
-      perror("ioctl(TIOCGWINSZ)");
-      return 1;
-   }
-   // printf("lines:   %d\n", w.ws_row);
-   // printf("columns: %d\n", w.ws_col);
-
-   // ------ Center ---------------------------------------------------------
-   separator("<😀", "=", "😀>");
-   fputs("\n", stdout);
-
-   center(utf8_string);
-   fputs("\n", stdout);
-
-   separator("<😀", "=", "😀>");
-   fputs("\n", stdout);
-
-   indented(-30, utf8_string);
-   fputs("Test\n", stdout);
-   indented(30, utf8_string);
-   fputs("Test\n", stdout);
-
-   separator("<😀", "=", "😀>");
-   fputs("\n", stdout);
-   */
 
    switch(mode) {
       case Indent:
@@ -193,6 +176,14 @@ int main (int argc, char** argv)
        break;
       case Separator:
          separator(borderLeft, utf8String, borderRight);
+       break;
+      case Width:
+         printf("%d\n", stringwidth(utf8String), utf8String);
+       break;
+      case TerminalInfo:
+         struct winsize w;
+         ioctlTIOCGWINSZ(&w);
+         printf("%u %u\n", (unsigned int)w.ws_col, (unsigned int)w.ws_row);
        break;
    }
    if(newline) {

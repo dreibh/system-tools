@@ -37,6 +37,11 @@
 .Op Fl c Ar string | Fl Fl center Ar string
 .br
 .Op Fl s Ar border_left Ar separator Ar border_right | Fl Fl separator Ar border_left Ar separator Ar border_right
+.br
+.Op Fl w Ar string | Fl Fl width Ar string
+.br
+.Op Fl t | Fl Fl terminal-info
+Print current width and height of the console.
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 print-utf8 is a simple program to print UTF-8 strings in the console with
@@ -56,6 +61,10 @@ Indent the string by the given number of characters (columns in the console). A 
 Center the string, using indentation based on the current console width.
 .It Fl s Ar border_left Ar separator Ar border_right | Fl Fl separator Ar border_left Ar separator Ar border_right
 Make a separator, consisting of a border_left, a variable number of separator string occurrences, as well as a border_right.
+.It Fl w Ar string | Fl Fl width Ar string
+Just printf the width (columns in the console) of the string.
+.It Fl t | Fl Fl terminal-info
+Print current width and height of the console.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -68,5 +77,9 @@ Make a separator, consisting of a border_left, a variable number of separator st
 .It print-utf8 --indent +32 'Right: ' && echo '1234'
 .It print-utf8 --separator --newline '<*' '=' '*>'
 .It print-utf8 -n -s '<💻😀' '=' '😀💻>'
+.It print-utf8 --width 'Test'
+.It print-utf8 --width 'Test äöü'
+.It print-utf8 - '😀 Test 😀'
+.It print-utf8 --terminal-info
 .It
 .El
