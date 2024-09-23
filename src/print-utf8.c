@@ -71,8 +71,8 @@ static void unescape(const char*  originalString,
          unescapedString[j++] = originalString[i];
       }
       else {
-         i++;
-         if(i < original_string_length) {
+         if(i + 1 < original_string_length) {
+            i++;
             switch(originalString[i]) {
                case 'n':
                   unescapedString[j++] = '\n';
@@ -156,9 +156,13 @@ static void unescape(const char*  originalString,
                   unescapedString[j++] = '\v';
                 break;
                default:
+                  unescapedString[j++] = '\\';
                   unescapedString[j++] = originalString[i];
                 break;
             }
+         }
+         else {
+            unescapedString[j++] = originalString[i];
          }
       }
       i++;
