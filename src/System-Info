@@ -57,7 +57,11 @@ function print-banners ()
 function print-system-information ()
 {
    # ====== Obtain system information =======================================
-   eval $(./get-system-info)
+   if ! which get-system-info >/dev/null ; then
+      echo >&2 "$(gettext "ERROR: get-system-info not found in search path!")"
+      exit 1
+   fi
+   eval $(get-system-info)
 
    # ====== Obtain user information =========================================
    local users="$(who | cut -d' ' -f1 | sort -ud | wc -l)"
