@@ -1,9 +1,11 @@
 #define _XOPEN_SOURCE 1
 #include <ctype.h>
+#include <fcntl.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <wchar.h>
 #include <locale.h>
 #include <sys/ioctl.h>
@@ -12,8 +14,16 @@
 // ###### Obtain console size ###############################################
 static void ioctlTIOCGWINSZ(struct winsize* w)
 {
-   if(ioctl(0, TIOCGWINSZ, w) != 0) {
-      perror("ioctl(TIOCGWINSZ)");
+   int fd = open("/dev/tty", O_RDWR);
+   if(fd >= 0) {
+      if(ioctl(fd, TIOCGWINSZ, w) != 0) {
+         perror("ioctl(TIOCGWINSZ)");
+         exit(1);
+      }
+      close(fd);
+   }
+   else {
+      perror("open() failed for /dev/tty");
       exit(1);
    }
 }
