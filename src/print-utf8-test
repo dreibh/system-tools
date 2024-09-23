@@ -1,0 +1,22 @@
+#!/bin/bash
+
+./print-utf8 -n -s '<*' '=' '*>'
+for indent in -20 +20 ; do
+   echo "Indented ${indent}:"
+   ./print-utf8 -i ${indent} "Test: "
+   echo "*"
+   ./print-utf8 -i ${indent} "Test äöüß ÆØÅ: "
+   echo "*"
+   ./print-utf8 -i ${indent} "托马斯博士: "
+   echo "*"
+   ./print-utf8 -i ${indent} "😀💻: "
+   echo "*"
+done
+
+./print-utf8 -n -s '<😀' '=' '😀>'
+echo "Centered:"
+./print-utf8 -n -c "Test"
+./print-utf8 -n -c "äöüß"
+./print-utf8 -n -c "托马斯博士"
+
+./print-utf8 -n -s '<💻😀' '=' '😀💻>'
