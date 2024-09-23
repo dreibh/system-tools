@@ -23,11 +23,6 @@ set -eu
 export TEXTDOMAIN="System-Info"
 
 
-# This library requires:
-# - tput: for obtaining the console width (Ubuntu: ncurses-bin)
-# - col:  for computing the display width of a string (Ubuntu: bsdextrautils)
-
-
 # ###### Get current width of the console ###################################
 consolewidth()
 {
@@ -38,6 +33,15 @@ consolewidth()
       echo "80"
    fi
    echo "${width}"
+
+   # # Requires:
+   # # tput: for obtaining the console width (Ubuntu: ncurses-bin)
+   # if [ ! -v TERM ] || [ "${TERM}" == "" ] ; then
+   #    # TERM is not defined => assume a standard width of 80:
+   #    echo "80"
+   # else
+   #    tput cols
+   # fi
 }
 
 
@@ -48,31 +52,31 @@ stringwidth()
 {
    print-utf8 -w "$1"
 
-#    local string="$(echo "$1" | sed -e 's/\(\\x1b\[[0-9;:]*m\)//g')"
-#    print-utf8 -w "${string}"
-
-#    local string
-#
-#    # The ANSI escape sequences for coloring have to be filtered out!
-#    # shellcheck disable=SC2001
-#    string="$(echo "$1" | sed -e 's/\(\\x1b\[[0-9;:]*m\)//g')"
-#
-#    # Unfortunately, this seems to only work under Linux:
-#    # wc -Lm <<< "${string}" | awk '{ print $2 }'
-#
-#    awk '
-#       BEGIN {
-#          string = ARGV[1]
-#          len    = length(string)
-#          s1     = ""
-#          s2     = ""
-#          for (i = 0; i < len; i++) {
-#             s1 = s1 ".."     # 2 characters of size 1
-#             s2 = s2 "\b\b"   # 2 backspaces
-#          }
-#          print s1 string s2 s1
-#          exit
-#       }' "${string}" | col -b | awk '{ print length - 2 * length(ARGV[2]); exit }' - "${string}"
+   # local string
+   #
+   # # The ANSI escape sequences for coloring have to be filtered out!
+   # # shellcheck disable=SC2001
+   # string="$(echo "$1" | sed -e 's/\(\\x1b\[[0-9;:]*m\)//g')"
+   #
+   # # Unfortunately, this seems to only work under Linux:
+   # # wc -Lm <<< "${string}" | awk '{ print $2 }'
+   #
+   # Requires:
+   # col:  for computing the display width of a string (Ubuntu: bsdextrautils)
+   #
+   # awk '
+   #    BEGIN {
+   #       string = ARGV[1]
+   #       len    = length(string)
+   #       s1     = ""
+   #       s2     = ""
+   #       for (i = 0; i < len; i++) {
+   #          s1 = s1 ".."     # 2 characters of size 1
+   #          s2 = s2 "\b\b"   # 2 backspaces
+   #       }
+   #       print s1 string s2 s1
+   #       exit
+   #    }' "${string}" | col -b | awk '{ print length - 2 * length(ARGV[2]); exit }' - "${string}"
 }
 
 
@@ -81,18 +85,18 @@ function center ()
 {
    print-utf8 --newline --center "$1"
 
-#    local text="$1"
-#    local consoleWidth
-#    local textLength
-#
-#    consoleWidth=$(consolewidth)   # Console width in characters
-#    textLength=$( stringwidth "${text}" )
-#    indent=$(( (consoleWidth-textLength) / 2 ))
-#    if [ ${indent} -lt 0 ] ; then
-#       indent=0
-#    fi
-#    printf "%${indent}s"
-#    echo -e "${text}"
+   # local text="$1"
+   # local consoleWidth
+   # local textLength
+   #
+   # consoleWidth="$(consolewidth)"   # Console width in characters
+   # textLength=$( stringwidth "${text}" )
+   # indent=$(( (consoleWidth-textLength) / 2 ))
+   # if [ ${indent} -lt 0 ] ; then
+   #    indent=0
+   # fi
+   # printf "%${indent}s"
+   # echo -e "${text}"
 }
 
 
@@ -106,26 +110,26 @@ function separator ()
 {
    print-utf8 --newline --separator "$1" "$2" "$3"
 
-#    local separaterLeftBorder="$1"
-#    local separatorCharacter="$2"
-#    local separaterRightBorder="$3"
-#    local separator=""
-#    local consoleWidth
-#    local i
-#
-#    # The example uses an UTF-8 smiley (😀) as border decoration.
-#    # It uses 4 bytes, but needs a space of 2 characters in the output.
-#    consoleWidth=$(consolewidth)   # Console width in characters
-#    # Calculate width of the borders in characters:
-#    borderWidth=$( stringwidth "${separaterLeftBorder}${separaterRightBorder}" )
-#    separatorCharacterWidth=$( stringwidth "${separatorCharacter}" )
-#
-#    i=${borderWidth}
-#    while [ $(( i+separatorCharacterWidth )) -lt "${consoleWidth}" ] ; do
-#       separator="${separator}${separatorCharacter}"
-#       i=$(( i+separatorCharacterWidth ))
-#    done
-#    echo "${separaterLeftBorder}${separator}${separaterRightBorder}"
+   # local separaterLeftBorder="$1"
+   # local separatorCharacter="$2"
+   # local separaterRightBorder="$3"
+   # local separator=""
+   # local consoleWidth
+   # local i
+   #
+   # # The example uses an UTF-8 smiley (😀) as border decoration.
+   # # It uses 4 bytes, but needs a space of 2 characters in the output.
+   # consoleWidth=$(consolewidth)   # Console width in characters
+   # # Calculate width of the borders in characters:
+   # borderWidth=$( stringwidth "${separaterLeftBorder}${separaterRightBorder}" )
+   # separatorCharacterWidth=$( stringwidth "${separatorCharacter}" )
+   #
+   # i=${borderWidth}
+   # while [ $(( i+separatorCharacterWidth )) -lt "${consoleWidth}" ] ; do
+   #    separator="${separator}${separatorCharacter}"
+   #    i=$(( i+separatorCharacterWidth ))
+   # done
+   # echo "${separaterLeftBorder}${separator}${separaterRightBorder}"
 }
 
 
@@ -151,7 +155,7 @@ function make-banner ()
          if [ ${#bannerText} -le 10 ] ; then sysvbanner "${bannerText}" ; else false ; fi || \
          echo "${bannerText}"
       ) | (
-      # ====== Compute maximum line length and pad banner lines to this length ====
+         # ====== Compute maximum line length and pad banner lines ==========
          # Array to store the lines of the banner:
          banner=( )
 
