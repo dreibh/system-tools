@@ -174,14 +174,58 @@ static void showUptimeInformation()
 }
 
 
+// ###### Query information via shell #######################################
+static bool query(const char* command, char* result, size_t resultMaxSize)
+{
+   FILE* pipeFH = popen(command, "r");
+   if(pipeFH != NULL) {
+      size_t resultSize = 0;
+      char*  r;
+      do {
+         r = fgets((char*)&result[resultSize], resultMaxSize - resultSize, pipeFH);
+         if(r == NULL) {
+            break;
+         }
+         resultSize += strlen(r);
+      }
+      while(resultSize < resultMaxSize);
+      pclose(pipeFH);
+      return true;
+   }
+   return false;
+}
+
+
 // ###### Print load information ############################################
 static void showLoadInformation()
 {
+   // ====== Cores and page size ============================================
    const unsigned int cores = sysconf(_SC_NPROCESSORS_ONLN);
    printf("system_cores=%u\n", cores);
    const unsigned int pageSize = sysconf(_SC_PAGESIZE);
    printf("system_pagesize=%u\n", pageSize);
 
+   // ====== Number of running processes ====================================
+   char         buffer[64];
+   unsigned int value;
+   if( (query("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
+       (sscanf(buffer, "%u", &value) == 1) ) {
+      printf("system_procs=%u\n", value);
+   }
+   else {
+      printf("system_procs=0");
+   }
+
+   // ====== Number of users ================================================
+   if( (query("who | cut -d' ' -f1 | sort -ud | wc -l", (char*)&buffer, sizeof(buffer))) &&
+       (sscanf(buffer, "%u", &value) == 1) ) {
+      printf("system_users=%u\n", value);
+   }
+   else {
+      printf("system_users=0");
+   }
+
+   // ====== Load averages ==================================================
 #ifdef __linux
    struct sysinfo systemInfo;
    if(sysinfo(&systemInfo) == 0) {
