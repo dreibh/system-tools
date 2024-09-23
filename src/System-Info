@@ -256,8 +256,7 @@ function print-ssh-key-fingerprints ()
 
 # ====== Handle arguments ===================================================
 # shellcheck disable=SC2034
-now=$(date)
-system=$(uname)
+now="$(date)"
 scriptDirectories="/etc/system-info.d /usr/local/etc/system-info.d"
 
 while [ $# -gt 0 ] ; do
