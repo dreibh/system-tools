@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set  -eu
+
 ./print-utf8 -n -s '<*' '=' '*>'
 for indent in -20 +20 ; do
    echo "Indented ${indent}:"
@@ -16,6 +18,7 @@ done
 ./print-utf8 -n -s '<😀' '=' '😀>'
 echo "Centered:"
 ./print-utf8 -n -c "Test"
+./print-utf8 -n -c "\x1b[38;2;241;71;29mTest\x1b[0m"
 ./print-utf8 -n -c "äöüß"
 ./print-utf8 -n -c "托马斯博士"
 
