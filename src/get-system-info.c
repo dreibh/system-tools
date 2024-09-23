@@ -175,21 +175,43 @@ static void showUptimeInformation()
 
 
 // ###### Query information via shell #######################################
-static bool query(const char* command, char* result, size_t resultMaxSize)
+static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 {
-   FILE* pipeFH = popen(command, "r");
-   if(pipeFH != NULL) {
+   FILE* fh = popen(command, "r");
+   if(fh != NULL) {
       size_t resultSize = 0;
       char*  r;
       do {
-         r = fgets((char*)&result[resultSize], resultMaxSize - resultSize, pipeFH);
+         r = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
          if(r == NULL) {
             break;
          }
          resultSize += strlen(r);
       }
       while(resultSize < resultMaxSize);
-      pclose(pipeFH);
+      pclose(fh);
+      return true;
+   }
+   return false;
+}
+
+
+// ###### Query information from file #######################################
+static bool queryFile(const char* file, char* result, size_t resultMaxSize)
+{
+   FILE* fh = fopen(file, "r");
+   if(fh != NULL) {
+      size_t resultSize = 0;
+      char*  r;
+      do {
+         r = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
+         if(r == NULL) {
+            break;
+         }
+         resultSize += strlen(r);
+      }
+      while(resultSize < resultMaxSize);
+      fclose(fh);
       return true;
    }
    return false;
@@ -208,7 +230,7 @@ static void showLoadInformation()
    // ====== Number of running processes ====================================
    char         buffer[64];
    unsigned int value;
-   if( (query("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
+   if( (queryPipe("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
        (sscanf(buffer, "%u", &value) == 1) ) {
       printf("system_procs=%u\n", value);
    }
@@ -217,7 +239,7 @@ static void showLoadInformation()
    }
 
    // ====== Number of users ================================================
-   if( (query("who | cut -d' ' -f1 | sort -ud | wc -l", (char*)&buffer, sizeof(buffer))) &&
+   if( (queryPipe("who | cut -d' ' -f1 | sort -ud | wc -l", (char*)&buffer, sizeof(buffer))) &&
        (sscanf(buffer, "%u", &value) == 1) ) {
       printf("system_users=%u\n", value);
    }
@@ -250,6 +272,52 @@ static void showLoadInformation()
       printf("system_load_avg15minpct=%1.6f\n", 100.0 * loadavg[2]);
    }
 #endif
+}
+
+
+// ###### Print battery information #########################################
+static void showBatteryInformation()
+{
+   unsigned int batteries=0;
+#ifdef __linux
+   for(unsigned int i = 0; i < 2; i++) {
+      char capacityFileName[64];
+      char capacityBuffer[64];
+      unsigned int capacity;
+      snprintf((char*)&capacityFileName, sizeof(capacityFileName), "/sys/class/power_supply/BAT%u/capacity", i);
+      if( (queryFile(capacityFileName, (char*)&capacityBuffer, sizeof(capacityBuffer))) &&
+          (sscanf(capacityBuffer, "%u", &capacity) == 1) ) {
+         char  statusFileName[64];
+         char  statusBuffer[64];
+         char* statusEnd;
+         snprintf((char*)&statusFileName, sizeof(statusFileName), "/sys/class/power_supply/BAT%u/status", i);
+         if( (queryFile(statusFileName, (char*)&statusBuffer, sizeof(statusBuffer))) &&
+             (statusEnd = index(statusBuffer, '\n')) ) {
+            *statusEnd = 0x00;
+            int status = 0;
+            if(strcmp(statusBuffer, "Not charging") == 0) {
+               status = 1;
+            }
+            else if(strcmp(statusBuffer, "Charging") == 0) {
+               status = 2;
+            }
+            else if(strcmp(statusBuffer, "Discharging") == 0) {
+               status = 3;
+            }
+            printf("battery_%u_status=%u\n", batteries, status);
+            printf("battery_%u_capacity=%u\n", batteries, capacity);
+            batteries++;
+         }
+      }
+   }
+
+#elif __FreeBSD__
+   for(unsigned int i = 0; i < 2; i++) {
+
+   }
+
+#endif
+   printf("battery_count=%u\n", batteries);
 }
 
 
@@ -512,6 +580,7 @@ int main(void)
    showUptimeInformation();
    showKernelInformation();
    showLoadInformation();
+   showBatteryInformation();
    showMemoryInformation();
    showNetworkInformation(true);
    return 0;
