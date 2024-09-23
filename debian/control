@@ -16,6 +16,7 @@ Depends: bsdextrautils | bsdmainutils,
          iproute2,
          mbuffer | buffer,
          procps,
+         td-get-system-info (>= ${source:Version}),
          ${misc:Depends}
 Recommends: iputils-ping,
             iputils-tracepath,
@@ -49,6 +50,16 @@ Description: Reset machine identity state
  This program helps to reset the machine identity state:
  reset machine ID, change hostname, replace SSH keys, suggest hardened
  SSH client and server settings.
+
+Package: td-get-system-info
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Obtain basic system information
+ This small program obtains basic status information about the system:
+ hostname, uptime, CPU, memory statistics, and networking information.
+ The output is printed in machine-readable form, which can be used
+ with evaluation in shell scripts for further processing.
 
 Package: td-system-fingerprint-ssh-keys
 Architecture: all
