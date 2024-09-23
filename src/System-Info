@@ -30,7 +30,7 @@ export TEXTDOMAIN="System-Info"
 
 
 # ###### Settings ###########################################################
-indent=20
+indent=-20
 colorBasic="\x1b[33m"
 colorNetwork="\x1b[34m"
 colorPrefix="\x1b[94m"
@@ -62,10 +62,6 @@ function print-system-information ()
       exit 1
    fi
    eval $(get-system-info)
-
-   # ====== Obtain user information =========================================
-   local users="$(who | cut -d' ' -f1 | sort -ud | wc -l)"
-   local processes="$(ps -aex -o pid= | wc -l)"
 
    # ====== Obtain disk information =========================================
    local diskRoot=$(env LANGUAGE=en df -hT /     | grep -vE "^Filesystem|shm" | awk '{ print $6 }' | tr -d '%')
@@ -110,69 +106,66 @@ function print-system-information ()
    echo -en "${colorBasic}"
 
    # ------ Hostname -------------------------------------------------------
-   printf "%-${indent}s%s\n" \
-      "$(eval_gettext "Host:")" \
-      "${hostname_long}"
+   print-utf8 -i "${indent}" "$(eval_gettext "Host:")"
+   echo "${hostname_long}"
 
    # ------ Uptime ----------------------------------------------------------
-   printf "%-${indent}s$(eval_gettext "%s, %s, %s, and %s")\n" \
-      "$(eval_gettext "Uptime:")" \
+   print-utf8 -i "${indent}" "$(eval_gettext "Uptime:")"
+   printf "$(eval_gettext "%s, %s, %s, and %s")\n" \
       "$(printf "$(eval_ngettext "%'d day" "%'d days" "${uptime_days}")" "${uptime_days}")" \
       "$(printf "$(eval_ngettext "%'d hour" "%'d hours" "${uptime_hours}")" "${uptime_hours}")" \
       "$(printf "$(eval_ngettext "%'d minute" "%'d minutes" "${uptime_mins}")" "${uptime_mins}")" \
       "$(printf "$(eval_ngettext "%'d second" "%'d seconds" "${uptime_secs}")" "${uptime_secs}")"
 
    # ------ Operating System ------------------------------------------------
-   printf "%-${indent}s%s $(eval_gettext "with kernel") %s\n" \
-      "$(eval_gettext "Operating System:")" \
+   print-utf8 -i "${indent}" "$(eval_gettext "Operating System:")"
+   printf "%s $(eval_gettext "with kernel") %s\n" \
       "${os_label}" \
       "${system_release}"
 
    # ------ Processor -------------------------------------------------------
+   print-utf8 -i "${indent}" "$(eval_gettext "Processor:")"
    processesString="$(eval_gettext "%'d processes")"
-   usersString="$(eval_ngettext "%'d user" "%'d users" "${users}")"
-   printf "%-${indent}s$(eval_gettext "%d × %s; ${processesString}; ${usersString}")\n" \
-      "$(eval_gettext "Processor:")" \
+   usersString="$(eval_ngettext "%'d user" "%'d users" "${system_users}")"
+   printf "$(eval_gettext "%d × %s; ${processesString}; ${usersString}")\n" \
       "${system_cores}" \
       "${system_machine}" \
-      "${processes}" \
-      "${users}"
+      "${system_procs}" \
+      "${system_users}"
 
    # ------ Load ------------------------------------------------------------
+   print-utf8 -i "${indent}" "$(eval_gettext "Load (1/5/15 min):")"
    # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-   /usr/bin/printf "%-${indent}s$(eval_gettext "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
-      "$(eval_gettext "Load (1/5/15 min):")" \
+   /usr/bin/printf "$(eval_gettext "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
       "${system_load_avg1min}" \
       "${system_load_avg5min}" \
       "${system_load_avg15min}"
 
    # ------ Memory ---------------------------------------------------------
+   print-utf8 -i "${indent}" "$(eval_gettext "Used Memory:")"
    # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-   /usr/bin/printf "%-${indent}s$(eval_gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
-      "$(eval_gettext "Used Memory:")"  \
+   /usr/bin/printf "$(eval_gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
       "$((system_mem_used  / 1048576))" \
       "$((system_mem_total / 1048576))" \
       "$((system_mem_free  / 1048576))" \
       "${system_mem_freepct}"
    if [ ${system_swap_total} -gt 0 ] ; then
+      print-utf8 -i "${indent}" "$(eval_gettext "Used Swap:")"
       # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-      /usr/bin/printf "%-${indent}s$(eval_gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
-      "$(eval_gettext "Used Swap:")"  \
+      /usr/bin/printf "$(eval_gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
       "$((system_swap_used  / 1048576))" \
       "$((system_swap_total / 1048576))" \
       "$((system_swap_free  / 1048576))" \
       "${system_swap_freepct}"
    else
-      printf "%-${indent}s" "$(eval_gettext "Used Swap:")"
-      echo -en "${colorInactive}"
-      eval_gettext "no swap available!"
-      echo -e "${colorBasic}"
+      print-utf8 -i "${indent}" "$(eval_gettext "Used Swap:")"
+      echo -e "${colorInactive}$(eval_gettext "no swap available!")${colorBasic}"
    fi
 
    # ------ Storage ---------------------------------------------------------
+   print-utf8 -i "${indent}" "$(eval_gettext "Used Diskspace:")"
    # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-   /usr/bin/printf "%-${indent}s$(eval_gettext "%1.0f %% on /, %1.0f %% on /home")\n" \
-      "$(eval_gettext "Used Diskspace:")" \
+   /usr/bin/printf "$(eval_gettext "%1.0f %% on /, %1.0f %% on /home")\n" \
       "${diskRoot}" \
       "${diskHome}"
 
@@ -180,8 +173,9 @@ function print-system-information ()
    print-ssh-key-fingerprints
 
    # ------ Network ---------------------------------------------------------
-   printf "%-${indent}s\n" "$(eval_gettext "Network:")"
-   local indentString="$(printf "%-${indent}s" "")"
+   echo -en "${colorBasic}"
+   print-utf8 -n -i "${indent}" "$(eval_gettext "Network:")"
+   local indentString="$(print-utf8 -i "${indent}" "")"
    for interface in ${netif_all} ; do
       local flagsVariable="netif_${interface}_flags"
       local ipv4Variable="netif_${interface}_ipv4"
@@ -220,7 +214,8 @@ function print-system-information ()
          ipv6=""
       fi
 
-      printf "${colorA}%-${indent}s${colorA}${ipv4}${colorA}${ipv6}${colorA}\n"   "   ${interface}:"
+      print-utf8 -i "${indent}" "   ${colorA}${interface}:"
+      echo -e "${ipv4}${colorA}${ipv6}${colorA}"
 
    done
 
@@ -244,8 +239,8 @@ function print-ssh-key-fingerprints ()
             else
                label=""
             fi
-            printf "%-${indent}s%s%s %s\n" \
-               "${label}" \
+            print-utf8 -i "${indent}" "${label}"
+            printf "%s%s %s\n" \
                "$(eval_gettext "#\${keyNumber} " "${keyNumber}")" \
                "${keyInfo}"
             keyNumber=$((keyNumber+1))
