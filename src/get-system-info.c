@@ -294,15 +294,15 @@ static void showBatteryInformation()
          if( (queryFile(statusFileName, (char*)&statusBuffer, sizeof(statusBuffer))) &&
              (statusEnd = index(statusBuffer, '\n')) ) {
             *statusEnd = 0x00;
-            int status = 0;
+            int status = 0;   // Unknown
             if(strcmp(statusBuffer, "Not charging") == 0) {
-               status = 1;
+               status = 1;    // Not charging
             }
             else if(strcmp(statusBuffer, "Charging") == 0) {
-               status = 2;
+               status = 2;    // Charging
             }
             else if(strcmp(statusBuffer, "Discharging") == 0) {
-               status = 3;
+               status = 3;    // Discharging
             }
             printf("battery_%u_status=%u\n", batteries, status);
             printf("battery_%u_capacity=%u\n", batteries, capacity);
