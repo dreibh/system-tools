@@ -301,8 +301,11 @@ static void showBatteryInformation()
             else if(strcmp(statusBuffer, "Charging") == 0) {
                status = 2;    // Charging
             }
+            else if(strcmp(statusBuffer, "Full") == 0) {
+               status = 3;    // Full
+            }
             else if(strcmp(statusBuffer, "Discharging") == 0) {
-               status = 3;    // Discharging
+               status = 4;    // Discharging
             }
             printf("battery_%u_status=%u\n", batteries, status);
             printf("battery_%u_capacity=%u\n", batteries, capacity);
