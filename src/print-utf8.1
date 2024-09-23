@@ -1,0 +1,72 @@
+.\" print-utf8
+.\" Copyright (C) 2013-2024 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: dreibh@simula.no
+.\"
+.\" ###### Setup ############################################################
+.Dd September 23, 2024
+.Dt print-utf8 1
+.Os print-utf8
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm print-utf8
+.Nd Obtain system information
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm print-utf8
+.Op Fl \-help | Fl h
+.Op Fl n | Fl Fl newline
+.br
+.Op Fl i Ar indentation Ar string | Fl Fl indent Ar indentation Ar string
+.br
+.Op Fl c Ar string | Fl Fl center Ar string
+.br
+.Op Fl s Ar border_left Ar separator Ar border_right | Fl Fl separator Ar border_left Ar separator Ar border_right
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+print-utf8 is a simple program to print UTF-8 strings in the console with
+options for indentation, centering and separator.
+It is mainly intended for being used by System-Info.
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It  Fl \-help | Fl h
+Prints command-line parameters.
+.It Fl n | Fl Fl newline
+Add a newline to the output. Default: off.
+.It Fl i Ar indentation Ar string | Fl Fl indent Ar indentation Ar string
+Indent the string by the given number of characters (columns in the console). A negative number leads to left-justified text, a positive number leads to right-justified text.
+.It Fl c Ar string | Fl Fl center Ar string
+Center the string, using indentation based on the current console width.
+.It Fl s Ar border_left Ar separator Ar border_right | Fl Fl separator Ar border_left Ar separator Ar border_right
+Make a separator, consisting of a border_left, a variable number of separator string occurrences, as well as a border_right.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It print-utf8 -h
+.It print-utf8 --help
+.It print-utf8 --newline --center 'This line is centered!'
+.It print-utf8 -n -c '😀😀😀 This line is centered! 😀😀😀'
+.It print-utf8 --indent -32 'Left: ' && echo '1234'
+.It print-utf8 --indent +32 'Right: ' && echo '1234'
+.It print-utf8 --separator --newline '<*' '=' '*>'
+.It print-utf8 -n -s '<💻😀' '=' '😀💻>'
+.It
+.El
