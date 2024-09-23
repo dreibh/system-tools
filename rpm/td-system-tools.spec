@@ -53,6 +53,7 @@ SSD or unmap unused storage.
 Summary: Perform basic system maintenance
 Group: Applications/System
 BuildArch: noarch
+Requires: td-system-tools-get-system-info = %{version}-%{release}
 Requires: (figlet or toilet)
 Requires: gettext-runtime
 Requires: iproute
@@ -158,6 +159,22 @@ a rescue media to fix a broken configuration!
 %{_mandir}/man1/configure-grub.1.gz
 %{_datadir}/configure-grub/grub-defaults-nornet
 %{_datadir}/configure-grub/grub-defaults-standard
+
+
+%package get-system-info
+Summary: Obtain basic system information
+Group: Applications/System
+BuildArch: any
+
+%description get-system-info
+This small program obtains basic status information about the system:
+hostname, uptime, CPU, memory statistics, and networking information.
+The output is printed in machine-readable form, which can be used
+with evaluation in shell scripts for further processing.
+
+%files get-system-info
+%{_bindir}/get-system-info
+%{_mandir}/man1/get-system-info.1.gz
 
 
 %package all

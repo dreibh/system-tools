@@ -51,16 +51,6 @@ Description: Reset machine identity state
  reset machine ID, change hostname, replace SSH keys, suggest hardened
  SSH client and server settings.
 
-Package: td-get-system-info
-Architecture: any
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Description: Obtain basic system information
- This small program obtains basic status information about the system:
- hostname, uptime, CPU, memory statistics, and networking information.
- The output is printed in machine-readable form, which can be used
- with evaluation in shell scripts for further processing.
-
 Package: td-system-fingerprint-ssh-keys
 Architecture: all
 Depends: ${misc:Depends}
@@ -83,6 +73,16 @@ Description: Helper tool to adjust GRUB configuration
  Warning: This program is meant to be used by expert users! Do not modify
  a working GRUB configuration without knowing how to boot the system from
  a rescue media to fix a broken configuration!
+
+Package: td-get-system-info
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Obtain basic system information
+ This small program obtains basic status information about the system:
+ hostname, uptime, CPU, memory statistics, and networking information.
+ The output is printed in machine-readable form, which can be used
+ with evaluation in shell scripts for further processing.
 
 Package: td-system-tools
 Architecture: all
