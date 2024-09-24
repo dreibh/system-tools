@@ -12,7 +12,6 @@ BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: gettext
-BuildArch:     noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 # Meta-package td-system-tools: install td-system-tools-all => install all sub-packages!
@@ -164,7 +163,6 @@ a rescue media to fix a broken configuration!
 %package get-system-info
 Summary: Obtain basic system information
 Group: Applications/System
-BuildArch: any
 
 %description get-system-info
 This small program obtains basic status information about the system:
@@ -180,7 +178,6 @@ with evaluation in shell scripts for further processing.
 %package print-utf8
 Summary: Print UTF-8 strings and obtain size/length/width information
 Group: Applications/System
-BuildArch: noarch
 
 %description print-utf8
 print-utf8 is a simple program to print UTF-8 strings in the console with
@@ -189,13 +186,12 @@ information.
 
 %files print-utf8
 %{_bindir}/print-utf8
-%{_mandir}/man1/print-utf8.mo
+%{_mandir}/man1/print-utf8.1.gz
 
 
 %package misc
 Summary: Miscellaneous tools
 Group: Applications/System
-BuildArch: noarch
 Recommends: td-system-tools-print-utf8
 
 %description misc
@@ -208,8 +204,10 @@ support for fractional seconds.
 %files misc
 %{_bindir}/random-sleep
 %{_bindir}/try-hard
-%{_mandir}/man1/random-sleep.mo
-%{_mandir}/man1/try-hard.mo
+%{_datadir}/locale/*/LC_MESSAGES/random-sleep.mo
+%{_datadir}/locale/*/LC_MESSAGES/try-hard.mo
+%{_mandir}/man1/random-sleep.1.gz
+%{_mandir}/man1/try-hard.1.gz
 
 
 %package all
