@@ -30,7 +30,7 @@ static void ioctlTIOCGWINSZ(struct winsize* w)
 
 
 // ###### Obtain console width ##############################################
-static int consolewidth()
+static int getConsoleWidth()
 {
    struct winsize w;
    ioctlTIOCGWINSZ(&w);
@@ -56,14 +56,15 @@ static unsigned int hexDigitToNumber(const char digit)
 
 
 // ###### Unescape string ###################################################
-static void unescape(const char*  originalString,
-                     char*        unescapedString,
-                     const size_t maxLength)
+static char* unescape(const char* originalString)
 {
    size_t original_string_length = strlen(originalString);
-   if(original_string_length > maxLength - 1) {
-      original_string_length = maxLength - 1;
+   char*  unescapedString        = malloc(original_string_length + 1);
+   if(unescapedString == NULL) {
+      fputs("ERROR: malloc() failed!\n", stderr);
+      exit(1);
    }
+
    size_t i = 0;
    size_t j = 0;
    while(i < original_string_length) {
@@ -168,24 +169,31 @@ static void unescape(const char*  originalString,
       i++;
    }
    unescapedString[j] = 0x00;
+
+   return unescapedString;
 }
 
 
-// ###### Obtain console printing widthq of UTF-8 string #####################
-static int stringwidth(const char* originalString)
+// ###### Convert UTF-8 string to wide string without ANSI sequences ########
+wchar_t* convertToWideStringWithoutANSI(const char* originalString,
+                                        const bool  removeANSISequences,
+                                        size_t*     utf8Size,
+                                        size_t*     wideLength)
 {
+   const size_t original_string_length = strlen(originalString);
 
    // ====== Copy string, but filter out ANSI colouring sequences ===========
-   char   utf8String[8192];
-   size_t original_string_length = strlen(originalString);
-   if(original_string_length > sizeof(utf8String) - 1) {
-      original_string_length = sizeof(utf8String) - 1;
+   char* utf8String = malloc(original_string_length + 1);
+   if(utf8String == NULL) {
+      fputs("ERROR: malloc() failed!\n", stderr);
+      exit(1);
    }
+
    bool   inANSISequence = false;
    size_t j = 0;
    for(size_t i = 0; i < original_string_length; i++) {
       if(!inANSISequence) {
-         if(originalString[i] == 0x1b) {
+         if((originalString[i] == 0x1b) || (!removeANSISequences)) {
             inANSISequence = true;
          }
          else {
@@ -201,14 +209,75 @@ static int stringwidth(const char* originalString)
    utf8String[j] = 0x00;
 
    // ====== Get string width ===============================================
-   wchar_t wide_string[sizeof(utf8String)];
-   const size_t wide_string_length = mbstowcs((wchar_t*)&wide_string, utf8String,
-                                              sizeof(wide_string) / sizeof(wide_string[0]));
-   if(wide_string_length < 0) {
-      perror("mbstowcs");
+   wchar_t* wide_string = (wchar_t*)malloc(sizeof(wchar_t) * (j + 1));
+   if(wide_string == NULL) {
+      fputs("ERROR: malloc() failed!\n", stderr);
       exit(1);
    }
-   return wcswidth(wide_string, wide_string_length);
+   const size_t wide_string_length = mbstowcs(wide_string, utf8String, j);
+   if(wide_string_length < 0) {
+      fputs("ERROR: mbstowcs() failed!\n", stderr);
+      exit(1);
+   }
+
+   if(utf8Size) {
+      *utf8Size = j;
+   }
+   if(wideLength) {
+      *wideLength = wide_string_length;
+   }
+
+   free(utf8String);
+   return wide_string;
+}
+
+
+// ###### Obtain console printing width of UTF-8 string ######################
+static int stringwidth(const char* originalString,
+                       const bool  removeANSISequences)
+{
+   size_t   wide_string_length;
+   wchar_t* wide_string = convertToWideStringWithoutANSI(
+                             originalString, removeANSISequences,
+                             NULL, &wide_string_length);
+   const int width = wcswidth(wide_string, wide_string_length);
+   free(wide_string);
+   return width;
+}
+
+
+// ###### Obtain length of UTF-8 string in bytes ############################
+static void stringSizeLengthWidth(const char* originalString,
+                                  const bool  removeANSISequences,
+                                  const bool  showSize,
+                                  const bool  showLength,
+                                  const bool  showWidth)
+{
+   size_t   wide_string_length;
+   size_t   utf8_string_size;
+   wchar_t* wide_string = convertToWideStringWithoutANSI(
+                             originalString, removeANSISequences,
+                             &utf8_string_size, &wide_string_length);
+   if(showSize) {
+      printf(" %zd", utf8_string_size);
+   }
+   if(showLength) {
+      printf(" %zd", wide_string_length);
+   }
+   if(showWidth) {
+      const int width = wcswidth(wide_string, wide_string_length);
+      printf(" %d", wcswidth(wide_string, wide_string_length));
+   }
+   puts("");
+}
+
+
+// ###### Get terminal information ##########################################
+static int terminalInfo()
+{
+   struct winsize w;
+   ioctlTIOCGWINSZ(&w);
+   printf("%u %u\n", (unsigned int)w.ws_col, (unsigned int)w.ws_row);
 }
 
 
@@ -231,11 +300,11 @@ static void indented(const int   totalIndent,
                      const char* utf8String)
 {
    if(totalIndent > 0) {
-      indent( totalIndent - stringwidth(utf8String) );
+      indent( totalIndent - stringwidth(utf8String, true) );
    }
    fputs(utf8String, stdout);
    if(totalIndent < 0) {
-      indent( (-totalIndent) - stringwidth(utf8String) );
+      indent( (-totalIndent) - stringwidth(utf8String, true) );
    }
 }
 
@@ -243,7 +312,7 @@ static void indented(const int   totalIndent,
 // ###### Center ############################################################
 static void centered(const char* utf8String)
 {
-   indent( (consolewidth() - stringwidth(utf8String)) / 2 );
+   indent( (getConsoleWidth() - stringwidth(utf8String, true)) / 2 );
    fputs(utf8String, stdout);
 }
 
@@ -253,10 +322,10 @@ static void separator(const char* separaterLeftBorder,
                       const char* separatorString,
                       const char* separaterRightBorder)
 {
-   const int separaterLeftWidth   = stringwidth(separaterLeftBorder);
-   const int separatorStringWidth = stringwidth(separatorString);
-   const int separaterRightWidth  = stringwidth(separaterRightBorder);
-   const int consoleWidth         = consolewidth();
+   const int separaterLeftWidth   = stringwidth(separaterLeftBorder, true);
+   const int separatorStringWidth = stringwidth(separatorString, true);
+   const int separaterRightWidth  = stringwidth(separaterRightBorder, true);
+   const int consoleWidth         = getConsoleWidth();
 
    int i = separaterLeftWidth + separaterRightWidth;   // Border width
    fputs(separaterLeftBorder, stdout);
@@ -269,33 +338,29 @@ static void separator(const char* separaterLeftBorder,
 
 
 
-
 // ###### Main program ######################################################
 int main (int argc, char** argv)
 {
    // ====== Handle arguments ===============================================
    enum mode_t {
-      Indent       = 1,
-      Center       = 2,
-      Separator    = 3,
-      Width        = 4,
-      TerminalInfo = 5
+      Indent          = 1,
+      Center          = 2,
+      Separator       = 3,
+      Width           = 4,
+      TerminalInfo    = 5,
+      Length          = 6,
+      Size            = 7,
+      SizeLengthWidth = 8
    };
-   enum mode_t  mode        = Indent;
-   int          indentWidth = 0;
-   const char   utf8String[8192];
-   const char   borderLeft[8192];
-   const char   borderRight[8192];
-   bool         newline     = false;
+   enum mode_t mode        = Indent;
+   int         indentWidth = 0;
+   char*       utf8String  = NULL;
+   char*       borderLeft  = NULL;
+   char*       borderRight = NULL;
+   bool        newline     = false;
    for(int i = 1; i <argc; i++) {
       if( (strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--center") == 0) ) {
          mode = Center;
-      }
-      else if( (strcmp(argv[i], "-w") == 0) || (strcmp(argv[i], "--width") == 0) ) {
-         mode = Width;
-      }
-      else if( (strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "--terminal-info") == 0) ) {
-         mode = TerminalInfo;
       }
       else if( (strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--indent") == 0) ) {
          if(i + 1 < argc) {
@@ -310,9 +375,9 @@ int main (int argc, char** argv)
       }
       else if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--separator") == 0) ) {
          if(i + 3 < argc) {
-            unescape(argv[i + 1], (char*)&borderLeft,  sizeof(borderLeft));
-            unescape(argv[i + 2], (char*)&utf8String,  sizeof(utf8String));
-            unescape(argv[i + 3], (char*)&borderRight, sizeof(borderRight));
+            borderLeft  = unescape(argv[i + 1]);
+            utf8String  = unescape(argv[i + 2]);
+            borderRight = unescape(argv[i + 3]);
          }
          else {
             fputs("ERROR: Invalid separator setting!\n", stderr);
@@ -324,12 +389,27 @@ int main (int argc, char** argv)
       else if( (strcmp(argv[i], "-n") == 0) || (strcmp(argv[i], "--newline") == 0) ) {
          newline = true;
       }
+      else if( (strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "--terminal-info") == 0) ) {
+         mode = TerminalInfo;
+      }
+      else if( (strcmp(argv[i], "-w") == 0) || (strcmp(argv[i], "--width") == 0) ) {
+         mode = Width;
+      }
+      else if( (strcmp(argv[i], "-l") == 0) || (strcmp(argv[i], "--length") == 0) ) {
+         mode = Length;
+      }
+      else if( (strcmp(argv[i], "-b") == 0) || (strcmp(argv[i], "--size") == 0) ) {
+         mode = Size;
+      }
+      else if( (strcmp(argv[i], "-a") == 0) || (strcmp(argv[i], "--size-length-width") == 0) ) {
+         mode = SizeLengthWidth;
+      }
       else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) ) {
-         fprintf(stderr, "Usage: %s [-n|--newline] [-i indentation string|--ident indentation string] [-c string|--center string] [-s border_left separator border_right|--separator border_left separator border_right] [-w string|--width string] [-t|--terminal-info]\n", argv[0]);
+         fprintf(stderr, "Usage: %s [-n|--newline] [-i indentation string|--ident indentation string] [-c string|--center string] [-s border_left separator border_right|--separator border_left separator border_right] [-s string|--size string] [-l string|--length string] [-w string|--width string] [-a string|--size-length-width string] [-t|--terminal-info]\n", argv[0]);
          return 1;
       }
       else {
-         unescape(argv[i], (char*)&utf8String, sizeof(utf8String));
+         utf8String = unescape(argv[i]);
          break;
       }
    }
@@ -349,16 +429,33 @@ int main (int argc, char** argv)
          separator(borderLeft, utf8String, borderRight);
        break;
       case Width:
-         printf("%d\n", stringwidth(utf8String));
+         stringSizeLengthWidth(utf8String, true, false, false, true);
+       break;
+      case Length:
+         stringSizeLengthWidth(utf8String, true, false, true, false);
+       break;
+      case Size:
+         stringSizeLengthWidth(utf8String, true, true, false, false);
+       break;
+      case SizeLengthWidth:
+         stringSizeLengthWidth(utf8String, true, true, true, true);
        break;
       case TerminalInfo:
-         struct winsize w;
-         ioctlTIOCGWINSZ(&w);
-         printf("%u %u\n", (unsigned int)w.ws_col, (unsigned int)w.ws_row);
+         terminalInfo();
        break;
    }
    if(newline) {
       fputs("\n", stdout);
+   }
+
+   if(utf8String) {
+      free(utf8String);
+   }
+   if(borderLeft) {
+      free(borderLeft);
+   }
+   if(borderRight) {
+      free(borderRight);
    }
 
    return 0;

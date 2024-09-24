@@ -2,24 +2,28 @@
 
 set  -eu
 
-./print-utf8 -n -s '<*' '=' '*>'
+make print-utf8
+PRINT="./print-utf8"
+PRINT="valgrind --tool=memcheck ./print-utf8"
+
+${PRINT} -n -s '<*' '=' '*>'
 for indent in -20 +20 ; do
    echo "Indented ${indent}:"
-   ./print-utf8 -i ${indent} "Test: "
+   ${PRINT} -i ${indent} "Test: "
    echo "*"
-   ./print-utf8 -i ${indent} "Test äöüß ÆØÅ: "
+   ${PRINT} -i ${indent} "Test äöüß ÆØÅ: "
    echo "*"
-   ./print-utf8 -i ${indent} "托马斯博士: "
+   ${PRINT} -i ${indent} "托马斯博士: "
    echo "*"
-   ./print-utf8 -i ${indent} "😀💻: "
+   ${PRINT} -i ${indent} "😀💻: "
    echo "*"
 done
 
-./print-utf8 -n -s '<😀' '=' '😀>'
+${PRINT} -n -s '<😀' '=' '😀>'
 echo "Centered:"
-./print-utf8 -n -c "Test"
-./print-utf8 -n -c "\x1b[38;2;241;71;29mTest\x1b[0m"
-./print-utf8 -n -c "äöüß"
-./print-utf8 -n -c "托马斯博士"
+${PRINT} -n -c "Test"
+${PRINT} -n -c "\x1b[38;2;241;71;29mTest\x1b[0m"
+${PRINT} -n -c "äöüß"
+${PRINT} -n -c "托马斯博士"
 
-./print-utf8 -n -s '<💻😀' '=' '😀💻>'
+${PRINT} -n -s '<💻😀' '=' '😀💻>'

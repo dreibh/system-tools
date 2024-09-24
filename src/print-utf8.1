@@ -38,15 +38,21 @@
 .br
 .Op Fl s Ar border_left Ar separator Ar border_right | Fl Fl separator Ar border_left Ar separator Ar border_right
 .br
+.Op Fl s Ar string | Fl Fl size Ar string
+.br
+.Op Fl w Ar length | Fl Fl l Ar string
+.br
 .Op Fl w Ar string | Fl Fl width Ar string
+.br
+.Op Fl a Ar string | Fl Fl size-length-width Ar string
 .br
 .Op Fl t | Fl Fl terminal-info
 Print current width and height of the console.
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 print-utf8 is a simple program to print UTF-8 strings in the console with
-options for indentation, centering and separator.
-It is mainly intended for being used by System-Info.
+options for indentation, centering, separator as well as size/length/width
+information.
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
@@ -61,8 +67,14 @@ Indent the string by the given number of characters (columns in the console). A 
 Center the string, using indentation based on the current console width.
 .It Fl s Ar border_left Ar separator Ar border_right | Fl Fl separator Ar border_left Ar separator Ar border_right
 Make a separator, consisting of a border_left, a variable number of separator string occurrences, as well as a border_right.
+.It Fl s Ar string | Fl Fl size Ar string
+Print the size (bytes) of the string without ANSI control sequences.
+.It Fl w Ar length | Fl Fl l Ar string
+Print the length (in UTF-8 characters) of the string without ANSI control sequences.
 .It Fl w Ar string | Fl Fl width Ar string
-Just printf the width (columns in the console) of the string.
+Print the width (columns in the console) of the string without ANSI control sequences.
+.It Fl a Ar string | Fl Fl size-length-width Ar string
+Printf the size, length and width of the string without ANSI control sequences.
 .It Fl t | Fl Fl terminal-info
 Print current width and height of the console.
 .El
@@ -81,7 +93,10 @@ Print current width and height of the console.
 .It print-utf8 -n -s '<💻😀' '=' '😀💻>'
 .It print-utf8 --width 'Test'
 .It print-utf8 --width 'Test äöü'
-.It print-utf8 - '😀 Test 😀'
+.It print-utf8 -s '😀 Test 😀'
+.It print-utf8 -l '😀 Test 😀'
+.It print-utf8 -w '😀 Test 😀'
+.It print-utf8 -a '😀 Test 😀'
 .It print-utf8 --terminal-info
 .It
 .El
