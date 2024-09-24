@@ -175,7 +175,7 @@ function make-banner ()
 
          # Print maximum-length lines padded with spaces
          for line in "${banner[@]}" ; do
-            printf "%-${maxLineLength}s\n" "${line}"
+            print-utf8 -n -i "-${maxLineLength}" "${line}"
          done
       )
    )
