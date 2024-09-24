@@ -58,14 +58,35 @@ function print-system-information ()
 {
    # ====== Obtain system information =======================================
    if ! which get-system-info >/dev/null ; then
-      echo >&2 "$(gettext "ERROR: get-system-info not found in search path!")"
+      gettext >&2 "ERROR: get-system-info not found in search path!"
+      echo >&2
       exit 1
    fi
-   eval $(get-system-info)
-
-   # ====== Obtain disk information =========================================
-   local diskRoot=$(env LANGUAGE=en df -hT /     | grep -vE "^Filesystem|shm" | awk '{ print $6 }' | tr -d '%')
-   local diskHome=$(env LANGUAGE=en df -hT /home | grep -vE "^Filesystem|shm" | awk '{ print $6 }' | tr -d '%')
+   # For ShellCheck:
+   hostname_long=
+   uptime_days=
+   uptime_hours=
+   uptime_mins=
+   uptime_secs=
+   system_release=
+   system_users=
+   system_cores=
+   system_machine=
+   system_procs=
+   system_load_avg1min=
+   system_load_avg5min=
+   system_load_avg15min=
+   system_mem_used=
+   system_mem_total=
+   system_mem_free=
+   system_mem_freepct=
+   system_swap_total=
+   system_swap_used=
+   system_swap_free=
+   system_swap_freepct=
+   netif_all=
+   # Set the variables:
+   eval "$(get-system-info)"
 
    # ====== Obtain operating system information =============================
    DISTRIB_ID="$(eval_gettext "Unknown")"   # Unknown, yet.
@@ -111,6 +132,7 @@ function print-system-information ()
 
    # ------ Uptime ----------------------------------------------------------
    print-utf8 -i "${indent}" "$(eval_gettext "Uptime:")"
+   # shellcheck disable=SC2059
    printf "$(eval_gettext "%s, %s, %s, and %s")\n" \
       "$(printf "$(eval_ngettext "%'d day" "%'d days" "${uptime_days}")" "${uptime_days}")" \
       "$(printf "$(eval_ngettext "%'d hour" "%'d hours" "${uptime_hours}")" "${uptime_hours}")" \
@@ -127,6 +149,7 @@ function print-system-information ()
    print-utf8 -i "${indent}" "$(eval_gettext "Processor:")"
    processesString="$(eval_gettext "%'d processes")"
    usersString="$(eval_ngettext "%'d user" "%'d users" "${system_users}")"
+   # shellcheck disable=SC2059
    printf "$(eval_gettext "%d × %s; ${processesString}; ${usersString}")\n" \
       "${system_cores}" \
       "${system_machine}" \
@@ -141,6 +164,49 @@ function print-system-information ()
       "${system_load_avg5min}" \
       "${system_load_avg15min}"
 
+   # ------ Battery ---------------------------------------------------------
+   batteries="0 1 2 3 4"
+   battery_0_status=0
+   battery_0_capacity=55
+   battery_1_status=1
+   battery_1_capacity=55
+   battery_2_status=2
+   battery_2_capacity=55
+   battery_3_status=3
+   battery_3_capacity=55
+   battery_4_status=4
+   battery_4_capacity=55
+   if [ "${batteries}" != "" ] ; then
+      print-utf8 -i "${indent}" "$(eval_gettext "Battery:")"
+      number=0
+      for battery in ${batteries} ; do
+         let number=$((number+1))
+         if [ ${number} -gt 1 ] ; then
+            echo -n " / "
+         fi
+         statusVariable="battery_${battery}_status"
+         capacityVariable="battery_${battery}_capacity"
+         status="$(gettext "unknown")"
+         if [[ "${!statusVariable}" =~ ^[0-9]+$ ]] ; then
+            if [ "${!statusVariable}" -eq 1 ] ; then
+               status="$(gettext "not charging")"
+            elif [ "${!statusVariable}" -eq 2 ] ; then
+               status="$(gettext "charging")"
+            elif [ "${!statusVariable}" -eq 3 ] ; then
+               status="$(gettext "full")"
+            elif [ "${!statusVariable}" -eq 4 ] ; then
+               status="$(gettext "discharging")"
+            fi
+         fi
+         capacity="${!capacityVariable}"
+         /usr/bin/printf "$(eval_gettext "#%u %s, %u %%")" \
+            "${number}" \
+            "${status}" \
+            "${capacity}"
+      done
+      echo
+   fi
+
    # ------ Memory ---------------------------------------------------------
    print-utf8 -i "${indent}" "$(eval_gettext "Used Memory:")"
    # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
@@ -149,7 +215,7 @@ function print-system-information ()
       "$((system_mem_total / 1048576))" \
       "$((system_mem_free  / 1048576))" \
       "${system_mem_freepct}"
-   if [ ${system_swap_total} -gt 0 ] ; then
+   if [ "${system_swap_total}" -gt 0 ] ; then
       print-utf8 -i "${indent}" "$(eval_gettext "Used Swap:")"
       # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
       /usr/bin/printf "$(eval_gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
@@ -164,10 +230,20 @@ function print-system-information ()
 
    # ------ Storage ---------------------------------------------------------
    print-utf8 -i "${indent}" "$(eval_gettext "Used Diskspace:")"
-   # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-   /usr/bin/printf "$(eval_gettext "%1.0f %% on /, %1.0f %% on /home")\n" \
-      "${diskRoot}" \
-      "${diskHome}"
+   for mountPoint in / /home ; do
+      mountPointName="${mountPoint//\//}"
+      if [ "${mountPointName}" == "" ] ; then
+         mountPointName="root"
+      else
+         echo -n ", "
+      fi
+      mountPointVariable="disk_${mountPointName}_pct"
+      # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
+      /usr/bin/printf "$(gettext "%1.0f %% on %s")" \
+         "${!mountPointVariable}" \
+         "${mountPoint}"
+   done
+   echo
 
    # ------ SSH Key Fingerprints --------------------------------------------
    print-ssh-key-fingerprints
@@ -175,7 +251,8 @@ function print-system-information ()
    # ------ Network ---------------------------------------------------------
    echo -en "${colorBasic}"
    print-utf8 -n -i "${indent}" "$(eval_gettext "Network:")"
-   local indentString="$(print-utf8 -i "${indent}" "")"
+   local indentString
+   indentString="$(print-utf8 -i "${indent}" "")"
    for interface in ${netif_all} ; do
       local flagsVariable="netif_${interface}_flags"
       local ipv4Variable="netif_${interface}_ipv4"
@@ -228,9 +305,10 @@ function print-ssh-key-fingerprints ()
 {
    if [ -d /etc/ssh ] ; then
       echo -en "${colorBasic}"
-      local keys=$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)
       local number=1
       local label=""
+      local keys
+      keys="$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)"
       for key in $keys ; do
          keyInfo="$(ssh-keygen -lf "$key" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g")"
          if [[ "${keyInfo}" =~ ^[A-Z]+ ]] ; then
@@ -240,8 +318,8 @@ function print-ssh-key-fingerprints ()
                label=""
             fi
             print-utf8 -i "${indent}" "${label}"
-            printf "%s%s %s\n" \
-               "$(eval_gettext "#\${number} " "${number}")" \
+            printf "$(gettext "#%u %s")\n" \
+               "${number}" \
                "${keyInfo}"
             number=$((number+1))
          fi
@@ -272,7 +350,7 @@ done
 
 
 # ====== Startup ============================================================
-echo -e "\n$(eval_gettext "System information as of \${now}")\n"
+printf "\n$(gettext "System information as of %s")\n\n" "${now}"
 
 # ====== Obtain and print information =======================================
 # Getting the network information may take a few hundreds of ms on a router

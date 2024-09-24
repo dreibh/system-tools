@@ -476,6 +476,25 @@ static void showMemoryInformation()
 }
 
 
+// ###### Print disk information ############################################
+static void showDiskInformation()
+{
+   char         buffer[64];
+   unsigned int value;
+
+   if( (queryPipe("env LANGUAGE=en df -hT / | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
+                  (char*)&buffer, sizeof(buffer))) &&
+       (sscanf(buffer, "%u", &value) == 1) ) {
+      printf("disk_root_pct=%u\n", value);
+   }
+   if( (queryPipe("env LANGUAGE=en df -hT /home | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
+                  (char*)&buffer, sizeof(buffer))) &&
+       (sscanf(buffer, "%u", &value) == 1) ) {
+      printf("disk_home_pct=%u\n", value);
+   }
+}
+
+
 // ###### Print network information #########################################
 static void showNetworkInformation(const bool filterLocalScope)
 {
@@ -594,6 +613,7 @@ int main(void)
    showLoadInformation();
    showBatteryInformation();
    showMemoryInformation();
+   showDiskInformation();
    showNetworkInformation(true);
    return 0;
 }
