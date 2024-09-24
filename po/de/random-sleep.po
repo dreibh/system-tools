@@ -47,7 +47,7 @@ msgid "ERROR: Invalid argument %s!"
 msgstr "FEHLER: Ungültiges Argument %s!"
 
 #: src/random-sleep.c:97
-#, fuzzy, c-format
+#, c-format
 msgid "Sleeping for %1.6f s ..."
 msgstr "Schlafe für %1.6f s ..."
 
