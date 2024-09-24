@@ -92,6 +92,8 @@ ENDIF()
 #### INTERNATIONALISATION (I18N)                                         ####
 #############################################################################
 
+FIND_LIBRARY(Intl_LIBRARY NAMES libintl intl)
+
 FIND_PROGRAM(XGETTEXT xgettext REQUIRED)
 FIND_PROGRAM(MSGMERGE msgmerge REQUIRED)
 FIND_PROGRAM(MSGFMT   msgfmt   REQUIRED)
