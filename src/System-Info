@@ -36,6 +36,11 @@ colorNetwork="\x1b[34m"
 colorPrefix="\x1b[94m"
 colorInactive="\x1b[37m"
 colorNone="\x1b[0m"
+colorBatteryFull="\x1b[33m"
+colorBatteryCharging="\x1b[31m"
+colorBatteryNotCharging="\x1b[38m"
+colorBatteryFull="\x1b[32m"
+colorBatteryDischarging="\x1b[35m"
 
 
 # ###### Print banners ######################################################
@@ -187,19 +192,24 @@ function print-system-information ()
          statusVariable="battery_${battery}_status"
          capacityVariable="battery_${battery}_capacity"
          status="$(gettext "unknown")"
+         colorBattery="${colorInactive}"
          if [[ "${!statusVariable}" =~ ^[0-9]+$ ]] ; then
             if [ "${!statusVariable}" -eq 1 ] ; then
                status="$(gettext "not charging")"
+               colorBattery="${colorBatteryNotCharging}"
             elif [ "${!statusVariable}" -eq 2 ] ; then
                status="$(gettext "charging")"
+               colorBattery="${colorBatteryCharging}"
             elif [ "${!statusVariable}" -eq 3 ] ; then
                status="$(gettext "full")"
+               colorBattery="${colorBatteryFull}"
             elif [ "${!statusVariable}" -eq 4 ] ; then
                status="$(gettext "discharging")"
+               colorBattery="${colorBatteryDischarging}"
             fi
          fi
          capacity="${!capacityVariable}"
-         /usr/bin/printf "$(eval_gettext "#%u %s, %u %%")" \
+         /usr/bin/printf "${colorBattery}$(eval_gettext "#%u %s, %u %%")${colorBasic}" \
             "${number}" \
             "${status}" \
             "${capacity}"
