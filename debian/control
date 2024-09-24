@@ -3,9 +3,9 @@ Section: utils
 Priority: optional
 Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 Homepage: https://www.nntb.no/~dreibh/system-tools/
-Build-Depends: cmake,
-               debhelper (>= 12)
-Standards-Version: 4.6.2
+Build-Depends: cmake (>= 3.5) | cmake3,
+               debhelper (>= 9)
+Standards-Version: 4.7.0
 Rules-Requires-Root: no
 
 Package: td-system-info
@@ -13,7 +13,9 @@ Architecture: all
 Depends: bsdextrautils | bsdmainutils,
          figlet | toilet,
          gettext-base,
+         iproute2,
          mbuffer | buffer,
+         procps,
          ${misc:Depends}
 Recommends: iputils-ping,
             iputils-tracepath,

@@ -19,8 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -e
-
+set -eu
 
 export TEXTDOMAIN="System-Maintenance"
 # export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
@@ -29,18 +28,14 @@ export TEXTDOMAIN="System-Maintenance"
 . gettext.sh
 
 
+trap 'echo "" ; echo "Aborted." ; exit' INT
+
 INTERACTIVE_KERNEL_REMOVAL=0
-# DONT_TOUCH_GRUB=0
-# KEEP_INTERFACE_MAPPINGS=1
 while [ $# -gt 0 ] ; do
    if [ "$1" == "-interactive-kernel-removal" ] || [ "$1" == "-k" ] ; then
       INTERACTIVE_KERNEL_REMOVAL=1
-   # elif [ "$1" == "-dont-touch-grub" ] || [ "$1" == "-g" ] ; then
-   #    DONT_TOUCH_GRUB=1
-   # elif [ "$1" == "-dont-keep-interface-mappings" ] || [ "$1" == "-M" ] ; then
-   #    KEEP_INTERFACE_MAPPINGS=0
    else
-      echo 2>&1 "$(eval_gettext "Usage:") $0 [-interactive-kernel-removal|-k] [-dont-touch-grub|-g] [-dont-keep-interface-mappings|-M]"
+      echo 2>&1 "$(eval_gettext "Usage:") $0 [-interactive-kernel-removal|-k]"
       exit 1
    fi
    shift
@@ -290,32 +285,6 @@ if [ "${variant}" == "Debian" ] ; then
    fi
 fi
 
-# ====== Fix bootloader =====================================================
-# if [ ${DONT_TOUCH_GRUB} -eq 0 ] ; then
-#    if [ "${variant}" == "Ubuntu" ] || [ "${variant}" == "Debian" ] ; then
-#       if [ -x /usr/sbin/update-grub ] && [ -x /usr/sbin/grub-install ] ; then
-#          echo -e "\x1b[34m$(date +%FT%H:%M:%S): Ensuring that Grub configuration is up-to-date ...\x1b[0m"
-#          sudo nohup </dev/null /usr/sbin/grub-install /dev/sda 2>&1 | sudo tee /tmp/install.log || true
-#          if ! sudo nohup </dev/null /usr/sbin/update-grub 2>&1 | sudo tee /tmp/install.log ; then
-#             cat /tmp/install.log
-#             echo >&2 "ERROR: Something went wrong with update-grub!"
-#             exit 1
-#          fi
-#          cat /tmp/install.log
-#       fi
-#    elif [ "${variant}" == "Fedora" ] ; then
-#       echo -e "\x1b[34m$(date +%FT%H:%M:%S): Ensuring that Grub configuration is up-to-date ...\x1b[0m"
-#       sudo nohup </dev/null grub2-mkconfig -o "$(readlink -e /etc/grub2.cfg)" 2>&1 | sudo tee /tmp/install.log || true
-#       if ! sudo nohup </dev/null grub2-install /dev/sda 2>&1 | sudo tee /tmp/install.log ; then
-#          cat /tmp/install.log
-#          echo >&2 "ERROR: Something went wrong with grub2-install!"
-#          cat /tmp/install.log
-#          exit 1
-#       fi
-#       cat /tmp/install.log
-#    fi
-# fi
-
 # ====== Refresh snaps ======================================================
 if [ -x /usr/bin/snap ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Refreshing snaps ...")\x1b[0m"
@@ -346,22 +315,6 @@ else
       sudo /usr/local/bin/geoipupdate.sh
    fi
 fi
-
-# ====== Delete /etc/udev/rules.d/70-persistent-net.rules ===================
-# if [ "${variant}" == "Debian" ] ; then
-#    if [ $KEEP_INTERFACE_MAPPINGS -eq 0 ] ; then
-#       echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Checking interface mapping ...")\x1b[0m"
-#
-#       # Ensure that new interfaces get mapped!
-#       sudo udevadm trigger --action=add
-#
-#       if ! ifconfig eth0 >/dev/null 2>&1 ; then
-#          echo "eth0 does not exist => Deleting /etc/udev/rules.d/70-persistent-net.rules"
-#          rm -f /etc/udev/rules.d/70-persistent-net.rules
-#          echo "*** Interfaces should be remapping during next boot! ***"
-#       fi
-#    fi
-# fi
 
 # ====== Start AutoFS =======================================================
 if [ -e /etc/init.d/autofs ] ; then

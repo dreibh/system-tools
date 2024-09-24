@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 1.7.0~rc2
+Version: 1.7.3~rc2
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -53,9 +53,11 @@ SSD or unmap unused storage.
 Summary: Perform basic system maintenance
 Group: Applications/System
 BuildArch: noarch
-Requires: (mbuffer or buffer)
-Requires: gettext-runtime
 Requires: (figlet or toilet)
+Requires: gettext-runtime
+Requires: iproute
+Requires: (mbuffer or buffer)
+Requires: procps
 Recommends: subnetcalc
 Suggests: banner
 
@@ -176,6 +178,12 @@ tools.
 
 
 %changelog
+* Wed Aug 28 2024 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.7.2
+- New upstream release.
+* Wed Aug 07 2024 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.7.1
+- New upstream release.
+* Mon Jun 17 2024 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.7.0
+- New upstream release.
 * Thu Apr 04 2024 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.6.1
 - New upstream release.
 * Sun Mar 31 2024 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.6.0

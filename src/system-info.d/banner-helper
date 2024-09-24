@@ -18,9 +18,26 @@
 #
 # Contact: dreibh@simula.no
 
-set -e
+set -eu
 
 export TEXTDOMAIN="System-Info"
+
+
+# This library requires:
+# - tput: for obtaining the console width (Ubuntu: ncurses-bin)
+# - col:  for computing the display width of a string (Ubuntu: bsdextrautils)
+
+
+# ###### Get current width of the console ###################################
+consolewidth()
+{
+   if [ ! -v TERM ] || [ "${TERM}" == "" ] ; then
+      # TERM is not defined => assume a standard width of 80:
+      echo "80"
+   else
+      tput cols
+   fi
+}
 
 
 # ###### Get width of UTF-8 string in console characters ####################
@@ -60,7 +77,7 @@ function center ()
    local consoleWidth
    local textLength
 
-   consoleWidth=$(tput cols)   # Console width in characters
+   consoleWidth=$(consolewidth)   # Console width in characters
    textLength=$( stringwidth "${text}" )
    indent=$(( (consoleWidth-textLength) / 2 ))
    if [ ${indent} -lt 0 ] ; then
@@ -88,7 +105,7 @@ function separator ()
 
    # The example uses an UTF-8 smiley (😀) as border decoration.
    # It uses 4 bytes, but needs a space of 2 characters in the output.
-   consoleWidth=$(tput cols)   # Console width in characters
+   consoleWidth=$(consolewidth)   # Console width in characters
    # Calculate width of the borders in characters:
    borderWidth=$( stringwidth "${separaterLeftBorder}${separaterRightBorder}" )
    separatorCharacterWidth=$( stringwidth "${separatorCharacter}" )
@@ -112,7 +129,7 @@ function make-banner ()
    local bannerText="$1"
    local maxWidth="$2"
    if [ "${maxWidth}" == "" ] ; then
-      maxWidth=80 # $(tput cols)   # Console width in characters
+      maxWidth=$(consolewidth)   # Console width in characters
    fi
 
    # ====== Create banner with figlet, toilet or echo as fallback ===========

@@ -18,7 +18,7 @@
 #
 # Contact: dreibh@simula.no
 
-set -e
+set -eu
 
 # Helper function library -> just return when it is not available.
 # Exit code 0 will let System-Info continue with the next script!

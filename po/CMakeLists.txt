@@ -29,7 +29,8 @@ FILE(GLOB sources "*.sources")
 # ====== Find all text domains ==============================================
 FOREACH(source IN LISTS sources)
    # The .sources file lists the source files for each text domain:
-   STRING(REGEX REPLACE ".sources" ".pot" potFile "${source}")
+   GET_FILENAME_COMPONENT(potFile "${source}" NAME_WE)
+   SET(potFile "${CMAKE_CURRENT_BINARY_DIR}/${potFile}.pot")
    GET_FILENAME_COMPONENT(textdomain "${source}" NAME_WE)
 
 
@@ -69,7 +70,7 @@ FOREACH(source IN LISTS sources)
       # ====== Update PO file (translation) =================================
       GET_FILENAME_COMPONENT(languageDirectory "${poFile}" DIRECTORY)
       GET_FILENAME_COMPONENT(language "${languageDirectory}" NAME "${CMAKE_CURRENT_SOURCE_DIR}")
-      SET(poStampFile "${languageDirectory}/.${textdomain}.po.stamp")
+      SET(poStampFile "${CMAKE_CURRENT_BINARY_DIR}/${language}/.${textdomain}.po.stamp")
 
       MESSAGE("Translation update: ${textdomain}, ${language} (${potFile} -> ${poFile})")
       # The .po file cannot be OUTPUT, since "make clean" would then delete it
@@ -85,8 +86,8 @@ FOREACH(source IN LISTS sources)
 
 
       # ====== Compile PO file to MO file ===================================
-      FILE(MAKE_DIRECTORY "${languageDirectory}/LC_MESSAGES")
-      SET(moFile "${languageDirectory}/LC_MESSAGES/${textdomain}.mo")
+      FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${language}/LC_MESSAGES")
+      SET(moFile "${CMAKE_CURRENT_BINARY_DIR}/${language}/LC_MESSAGES/${textdomain}.mo")
 
       MESSAGE("Compiling translation: ${textdomain}, ${language} (${poFile} -> ${moFile})")
       ADD_CUSTOM_COMMAND(OUTPUT "${moFile}"

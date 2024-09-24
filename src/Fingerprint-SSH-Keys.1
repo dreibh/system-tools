@@ -17,7 +17,7 @@
 .\" Contact: dreibh@simula.no
 .\"
 .\" ###### Setup ############################################################
-.Dd May 29, 2024
+.Dd August 29, 2024
 .Dt Fingerprint-SSH-Keys 1
 .Os Fingerprint-SSH-Keys
 .\" ###### Name #############################################################
@@ -25,11 +25,13 @@
 .Nm Fingerprint-SSH-Keys
 .Nd print SSH key fingerprints
 .\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm Fingerprint-SSH-Keys
-.Op Fl \-include-deprecated|\-d
-.Op Fl \-include-raw|\-r
-.Op Fl \-include-raw-python|\-p
+.Op Fl \-include-deprecated | Fl d
+.Op Fl \-include-raw | Fl r
+.Op Fl \-include-raw-python | Fl p
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Fingerprint-SSH-Keys
@@ -37,18 +39,20 @@ prints the SSH key fingerprints of the local machine in different formats:
 .br
 * SSH hash format,
 .br
-* DNS SSHFP FF format.
+* DNS SSHFP FF format,
+.br
+* Python dictionary.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It \-\-include-deprecated|\-d
+.It Fl \-include-deprecated | Fl d
 Also include deprecated key types and hash algorithms in DNS SSHFP RR output.
-.It \-include-raw|\-r
+.It Fl \-include-raw | Fl r
 Also include the keys in raw format.
-.It \-include-raw-python|\-p
-Also include the keys in raw format, in Python dictionary format.
+.It Fl \-include-raw-python | Fl p
+Also include the keys in raw format as Python dictionary.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES

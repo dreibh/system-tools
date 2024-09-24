@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+# for option in Ciphers MACs KexAlgorithms PubkeyAcceptedKeyTypes HostbasedAcceptedKeyTypes HostKeyAlgorithms ; do
+#    echo "$option:"
+#    ssh -Q $option
+#    echo ""
+# done
+
+
+# ###### Test SSH options and select supported choices in preferred order ###
+select-ssh-options ()
+{
+   local option="$1"
+   local optionAlt="$2"
+   shift 2
+
+   valueString=$(
+      ( ssh -Q "${option}" 2>/dev/null || if [ "${optionAlt}" != "${option}" ] ; then ssh -Q "${optionAlt}" 2>/dev/null ; fi ) | \
+      while read -r value ; do
+         echo -n ":${value}"
+      done
+      echo ":"
+   )
+   # echo >&2 -e "${option}:\t${valueString}"
+
+   selectedOptions=""
+   while [ $# -gt 0 ] ; do
+      local choice="$1"
+      shift
+
+      if [[ "${valueString}" =~ :${choice}: ]] ; then
+         # echo >&2 "OK ${choice}"
+         if [ "${selectedOptions}" == "" ] ; then
+            selectedOptions="${choice}"
+         else
+            selectedOptions="${selectedOptions},${choice}"
+         fi
+      fi
+   done
+   echo "${selectedOptions}"
+}
+
+sshCiphers=$(select-ssh-options       Ciphers       cipher   aes256-gcm@openssh.com chacha20-poly1305@openssh.com)
+sshMACs=$(select-ssh-options          MACs          mac      hmac-sha2-512-etm@openssh.com)
+sshKexAlgorithms=$(select-ssh-options KexAlgorithms kex      curve25519-sha256@libssh.org diffie-hellman-group16-sha512 diffie-hellman-group18-sha512)
+sshPubkeyAcceptedKeyTypes=$(select-ssh-options       PubkeyAcceptedKeyTypes    PubkeyAcceptedKeyTypes    ssh-ed25519-cert-v01@openssh.com ssh-ed25519 rsa-sha2-512-cert-v01@openssh.com ssh-rsa-cert-v01@openssh.com rsa-sha2-512)
+sshHostbasedAcceptedKeyTypes=$(select-ssh-options    HostbasedAcceptedKeyTypes HostbasedAcceptedKeyTypes ssh-ed25519-cert-v01@openssh.com ssh-ed25519 ssh-rsa-cert-v01@openssh.com ssh-rsa)
+sshHostKeyAlgorithms=$(select-ssh-options            HostKeyAlgorithms         HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com ssh-ed25519 ssh-rsa-cert-v01@openssh.com ssh-rsa)
+if [ "${sshPubkeyAcceptedKeyTypes}" != "" ] ; then
+   newSSH=""
+else
+   newSSH="# "   # SSH version is too old!
+fi
+
+cat <<EOF
+# Check supported algorithms with "ssh -Q cipher|mac|kex|key|PubkeyAcceptedAlgorithms|HostbasedAcceptedKeyTypes|HostbasedAcceptedKeyTypes"!
+Ciphers                      ${sshCiphers}
+MACs                         ${sshMACs}
+KexAlgorithms                ${sshKexAlgorithms}
+# The following options are only available on up-to-date SSH servers:
+${newSSH}PubkeyAcceptedKeyTypes       ${sshPubkeyAcceptedKeyTypes}
+${newSSH}HostbasedAcceptedKeyTypes    ${sshHostbasedAcceptedKeyTypes}
+${newSSH}HostKeyAlgorithms            ${sshHostKeyAlgorithms}
+EOF

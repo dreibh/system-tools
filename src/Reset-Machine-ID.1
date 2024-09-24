@@ -17,7 +17,7 @@
 .\" Contact: dreibh@simula.no
 .\"
 .\" ###### Setup ############################################################
-.Dd May 28, 2024
+.Dd August 29, 2024
 .Dt Reset-Machine-ID 1
 .Os Reset-Machine-ID
 .\" ###### Name #############################################################
@@ -25,11 +25,16 @@
 .Nm Reset-Machine-ID
 .Nd resets the machine identity state
 .\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm Reset-Machine-ID
+.Op Fl \-hostname Ar hostname | Fl H Ar hostname
+.Op Fl \-zabbix Ar zabbix_server | Fl Z Ar zabbix_server
+.Op Fl \-skip-machine-id | Fl M
+.Op Fl \-skip-ssh-configuration | Fl S
+.Op Fl \-skip-ssh-key-replacement | Fl K
 .Op Fl \-yes\-to\-all\-i\-am\-really\-sure
-.Op Fl \-skip-ssh-configuration
-.Op Fl \-skip-ssh-key-replacement
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Reset-Machine-ID
@@ -52,13 +57,19 @@ The changes are made interactively on request, unless the \-yes\-to\-all\-i\-am\
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It \-\-yes\-to\-all\-i\-am\-really\-sure
+.It Fl \-hostname Ar hostname | Fl H Ar hostname
+Set the given hostname.
+.It Fl \-zabbix Ar zabbix_server | Fl Z Ar zabbix_server
+Configure an already-installed Zabbix agent for a given Zabbix server.
+.It Fl \-skip-machine-id | Fl M
+Do not reset the machine ID.
+.It Fl \-skip-ssh-configuration | Fl S
+Do not make SSH configuration changes.
+.It Fl \-skip-ssh-key-replacement | Fl K
+Do not replace SSH keys.
+.It Fl \-yes\-to\-all\-i\-am\-really\-sure
 Create new keys (delete old ones) as well as replace sshd_config and
 ssh_config without interactively asking for confirmation.
-.It \-\-skip-ssh-configuration
-Do not make SSH configuration changes.
-.It \-\-skip-ssh-key-replacement
-Do not replace SSH keys.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -66,5 +77,6 @@ Do not replace SSH keys.
 .It sudo Reset-Machine-ID
 .It sudo Reset-Machine-ID \-\-yes\-to\-all\-i\-am\-really\-sure
 .It sudo Reset-Machine-ID \-\-hostname dbserver.domain.example
+.It sudo Reset-Machine-ID \-H server.domain.example \-Z zabbix.domain.example
 .It sudo Reset-Machine-ID \-\-skip\-ssh\-configuration \-\-skip\-ssh\-key\-replacement
 .El

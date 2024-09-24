@@ -18,6 +18,10 @@
 #
 # Contact: dreibh@simula.no
 
+# Bash options:
+set -eu
+
+
 export TEXTDOMAIN="System-Info"
 # export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
 
@@ -69,19 +73,24 @@ function print-system-information ()
    diskHome=$(env LANGUAGE=en df -hT /home | grep -vE "^Filesystem|shm" | awk '{ print $6 }')
 
    # ====== Obtain operating system information =============================
-   DISTRIB_ID=$(eval_gettext "Unknown")
-   DISTRIB_CODENAME="${DISTRIB_ID}"
-   DISTRIB_RELEASE="00.00"
+   DISTRIB_ID="$(eval_gettext "Unknown")"   # Unknown, yet.
+   DISTRIB_RELEASE="${DISTRIB_ID}"          # Unknown, yet.
+   DISTRIB_CODENAME=""
 
    # ------ Get information from /etc/os-release ----------------------------
    if [ -e /etc/os-release ] ; then
       # shellcheck disable=SC1091
       . /etc/os-release
-      DISTRIB_ID="${NAME}"
-      DISTRIB_RELEASE="${VERSION_ID}"
-      DISTRIB_CODENAME=""
-      if [[ "${VERSION}" =~ ^.*\(([^\(\)]*)\)$ ]] ; then
+      if [ -v NAME ] ; then
+         DISTRIB_ID="${NAME}"
+      fi
+      if [ -v VERSION_ID ] ; then
+         DISTRIB_RELEASE="${VERSION_ID}"
+      fi
+      if [ -v VERSION ] && [[ "${VERSION}" =~ ^.*\(([^\(\)]*)\)$ ]] ; then
          DISTRIB_CODENAME="${BASH_REMATCH[1]}"
+      elif [ -v VERSION_CODENAME ] ; then
+         DISTRIB_CODENAME="${VERSION_CODENAME}"
       fi
 
    # ------ Legacy system: try lsb_release ----------------------------------
@@ -97,12 +106,12 @@ function print-system-information ()
       freeMemOutput="$(echo "${freeOutput}" | grep "^Mem:")"
       freeSwapOutput="$(echo "${freeOutput}" | grep "^Swap:")"
 
-      memoryUsed=$(( $(echo "${freeMemOutput}" | awk '{ print $3 }') ))
-      memoryAvailable=$(( $(echo "${freeMemOutput}" | awk '{ print $4 }' ) ))
-      memoryTotal=$(( $(echo "${freeMemOutput}" | awk '{ print $2 }') ))
-      swapUsed=$(( $(echo "${freeSwapOutput}" | awk '{ print $3 }') ))
-      swapAvailable=$(( $(echo "${freeSwapOutput}" | awk '{ print $4 }') ))
-      swapTotal=$(( $(echo "${freeSwapOutput}" | awk '{ print $2 }') ))
+      memoryUsed=$(echo "${freeMemOutput}" | awk '{ print $3 }')
+      memoryAvailable=$(echo "${freeMemOutput}" | awk '{ print $4 }')
+      memoryTotal=$(echo "${freeMemOutput}" | awk '{ print $2 }')
+      swapUsed=$(echo "${freeSwapOutput}" | awk '{ print $3 }')
+      swapAvailable=$(echo "${freeSwapOutput}" | awk '{ print $4 }')
+      swapTotal=$(echo "${freeSwapOutput}" | awk '{ print $2 }')
 
    elif  [ "${system}" == "FreeBSD" ] ; then
       # Calculations based on:
@@ -141,16 +150,16 @@ function print-system-information ()
    fi
 
    echo "$(eval_gettext "Operating System: ")${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText} $(eval_gettext "with kernel") ${kernel}"
-   printf "$(eval_gettext "Processor:        ")%d × ${cpu}; $(eval_gettext "%'d processes"); $(eval_ngettext "%'d user" "%'d users" "${users}")\n" "${cores}" "${processes}" "${users}"
+   /usr/bin/printf "$(eval_gettext "Processor:        ")%d × ${cpu}; $(eval_gettext "%'d processes"); $(eval_ngettext "%'d user" "%'d users" "${users}")\n" "${cores}" "${processes}" "${users}"
    echo "$(eval_gettext "Load:             ")${systemLoad}"
 
    of=$(eval_gettext "of")                 # nnn MiB of mmm MiB
    available=$(eval_gettext "available")   # nnn MiB available
    on=$(eval_gettext "on")                 # xxx MiB on <mountpoint>
-   printf "$(eval_gettext "Used Memory:      ")%'6.0f MiB ${of} %'6.0f MiB (%'6.0f MiB ${available})\n" "${memoryUsed}" "${memoryTotal}" "${memoryAvailable}"
+   /usr/bin/printf "$(eval_gettext "Used Memory:      ")%'6.0f MiB ${of} %'6.0f MiB (%'6.0f MiB ${available})\n" "${memoryUsed}" "${memoryTotal}" "${memoryAvailable}"
    eval_gettext "Used Swap:        "
    if [ "${swapAvailable}" -gt 0 ] ; then
-      printf "%'6.0f MiB ${of} %'6.0f MiB (%'6.0f MiB ${available})\n" "${swapUsed}" "${swapTotal}" "${swapAvailable}"
+      /usr/bin/printf "%'6.0f MiB ${of} %'6.0f MiB (%'6.0f MiB ${available})\n" "${swapUsed}" "${swapTotal}" "${swapAvailable}"
    else
       echo -en "\x1b[37m"
       eval_gettext "no swap available!"
@@ -164,19 +173,24 @@ function print-system-information ()
 # ###### Print SSH public key fingerprints ##################################
 function print-ssh-key-fingerprints ()
 {
-   echo -en "\x1b[33m"
-   keys=$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)
-   keyNumber=1
-   for key in $keys ; do
-      if [ ${keyNumber} -eq 1 ] ; then
-         gettext "SSH Keys:         #1 "
-      else
-         eval_gettext "                  #\${keyNumber} "
-      fi
-      ssh-keygen -lf "$key" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
-      keyNumber=$((keyNumber+1))
-   done
-   echo -en "\x1b[0m"
+   if [ -d /etc/ssh ] ; then
+      echo -en "\x1b[33m"
+      keys=$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)
+      keyNumber=1
+      for key in $keys ; do
+         keyInfo="$(ssh-keygen -lf "$key" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g")"
+         if [[ "${keyInfo}" =~ ^[A-Z]+ ]] ; then
+             if [ ${keyNumber} -eq 1 ] ; then
+               gettext "SSH Keys:         #1 "
+            else
+               eval_gettext "                  #\${keyNumber} "
+            fi
+            echo "${keyInfo}"
+            keyNumber=$((keyNumber+1))
+         fi
+      done
+      echo -en "\x1b[0m"
+   fi
 }
 
 
@@ -224,7 +238,7 @@ function showAddresses ()
          fi
          lastInterface="${interface}"
          hasIPv4=0
-         printf "   %-14s " "${interface}:"
+         /usr/bin/printf "   %-14s " "${interface}:"
       fi
 
       if [ "${protocol}" == "4" ] ; then
@@ -351,7 +365,7 @@ while [ $# -gt 0 ] ; do
       scriptDirectories="$2"
       shift
    else
-      echo >&2 "Usage: $0 [--help|-h] [--scripts|-S scripts_directory]"
+      echo >&2 "$(eval_gettext "Usage:") $0 [--help|-h] [--scripts|-S scripts_directory]"
       exit 1
    fi
    shift
