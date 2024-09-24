@@ -84,11 +84,23 @@ Description: Obtain basic system information
  The output is printed in machine-readable form, which can be used
  with evaluation in shell scripts for further processing.
 
+Package: td-system-misc
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Miscellaneous tools
+ This package contains two simple tools:
+ try-hard runs a command and retries for a given number of times in case
+ of error, with a delay between the trials.
+ random-sleep waits for a random time, selected from a given interval, with
+ support for fractional seconds.
+
 Package: td-system-tools
 Architecture: all
 Depends: td-system-fingerprint-ssh-keys,
          td-system-info,
          td-system-maintenance,
+         td-system-misc,
          td-system-reset-machine-id,
          ${misc:Depends}
 Recommends: td-system-configure-grub

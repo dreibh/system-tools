@@ -21,7 +21,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.0~beta3\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2024-09-23 12:15+0200\n"
+=======
+"POT-Creation-Date: 2024-09-18 13:03+0200\n"
+>>>>>>> dreibh/misc
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -42,28 +46,45 @@ msgstr "FEHLER: get-system-info nicht im Suchpfad gefunden!"
 msgid "Unknown"
 msgstr "Unbekannt"
 
+<<<<<<< HEAD
 #: src/System-Info:114
+=======
+#: src/System-Info:143
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "Host:"
 msgstr "Rechner:"
 
+<<<<<<< HEAD
 #: src/System-Info:118
+=======
+#: src/System-Info:145
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "%s, %s, %s, and %s"
 msgstr "%s, %s, %s und %s"
 
+<<<<<<< HEAD
 #: src/System-Info:119
+=======
+#: src/System-Info:146
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "Uptime:"
 msgstr "Betriebszeit:"
 
+<<<<<<< HEAD
 #: src/System-Info:120
+=======
+#: src/System-Info:152
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "%'d day"
 msgid_plural "%'d days"
 msgstr[0] "%'d Tag"
 msgstr[1] "%'d Tage"
 
+<<<<<<< HEAD
 #: src/System-Info:121
 #, sh-format
 msgid "%'d hour"
@@ -86,33 +107,56 @@ msgstr[0] "%'d Sekunde"
 msgstr[1] "%'d Sekunden"
 
 #: src/System-Info:126
+=======
+#: src/System-Info:152
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "with kernel"
 msgstr "mit Kernel"
 
+<<<<<<< HEAD
 #: src/System-Info:127
+=======
+#: src/System-Info:153
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "Operating System:"
 msgstr "Betriebssystem:"
 
+<<<<<<< HEAD
 #: src/System-Info:132
+=======
+#: src/System-Info:153
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "%'d processes"
 msgstr "%'d Prozesse"
 
+<<<<<<< HEAD
 #: src/System-Info:133
+=======
+#: src/System-Info:153
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "%'d user"
 msgid_plural "%'d users"
 msgstr[0] "%'d Benutzer"
 msgstr[1] "%'d Benutzer"
 
+<<<<<<< HEAD
 #: src/System-Info:135
+=======
+#: src/System-Info:154
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "Processor:"
 msgstr "Prozessor:"
 
+<<<<<<< HEAD
 #: src/System-Info:143
+=======
+#: src/System-Info:156
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "%1.1f %% / %1.1f %% / %1.1f %%"
 msgstr "%1.1f %% / %1.1f %% / %1.1f %%"
@@ -127,36 +171,75 @@ msgstr "Auslastung (1/5/15 Min.):"
 msgid "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)"
 msgstr "%'6.0f MiB von %'6.0f MiB (%'6.0f MiB verfügbar: %'5.1f %%)"
 
-#: src/System-Info:152
+#: src/System-Info:157
 #, sh-format
 msgid "Used Memory:"
 msgstr "Belegtes RAM:"
 
+<<<<<<< HEAD
 #: src/System-Info:160 src/System-Info:166
+=======
+#: src/System-Info:158
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "Used Swap:"
 msgstr "Belegter Swap:"
 
+<<<<<<< HEAD
 #: src/System-Info:168
+=======
+#: src/System-Info:159
+#, sh-format
+msgid "Used Memory:      "
+msgstr "Belegtes RAM:     "
+
+#: src/System-Info:160
+#, sh-format
+msgid "Used Swap:        "
+msgstr "Belegter Swap:    "
+
+#: src/System-Info:165
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "no swap available!"
 msgstr "Swap nicht vorhanden!"
 
+<<<<<<< HEAD
 #: src/System-Info:174
+=======
+#: src/System-Info:168
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "%1.0f %% on /, %1.0f %% on /home"
 msgstr "%1.0f %% unter /, %1.0f %% unter /home"
 
+<<<<<<< HEAD
 #: src/System-Info:175
+=======
+#: src/System-Info:184
+msgid "SSH Keys:         #1 "
+msgstr "SSH-Schlüssel:    1. "
+
+#: src/System-Info:186
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "Used Diskspace:"
 msgstr "Speicherplatz:"
 
+<<<<<<< HEAD
 #: src/System-Info:183
+=======
+#: src/System-Info:249
+msgid "(No IPv4)"
+msgstr "(Kein IPv4)"
+
+#: src/System-Info:347
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "Network:"
 msgstr "Netzwerk:"
 
+<<<<<<< HEAD
 #: src/System-Info:209
 #, sh-format
 msgid "(No IPv4)"
@@ -172,6 +255,14 @@ msgid "#${keyNumber} "
 msgstr "${keyNumber}. "
 
 #: src/System-Info:281
+=======
+#: src/System-Info:368
+#, sh-format
+msgid "Usage:"
+msgstr "Aufruf:"
+
+#: src/System-Info:377
+>>>>>>> dreibh/misc
 #, sh-format
 msgid "System information as of ${now}"
 msgstr "Systeminformation am ${now}"
