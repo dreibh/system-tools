@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.3~rc2\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-09-24 16:05+0200\n"
+"POT-Creation-Date: 2024-09-24 17:24+0200\n"
 "PO-Revision-Date: 2024-09-18 14:49+0200\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -42,22 +42,22 @@ msgstr "Aufruf:"
 msgid "ERROR: Invalid argument ${arg}!"
 msgstr "FEHLER: Ungültiges Argument ${arg}!"
 
-#: src/try-hard:59
+#: src/try-hard:60
 #, sh-format
 msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
 msgstr "FEHLER: Ungültige maximale Anzahl an Versuchen ${MAX_TRIALS}!"
 
-#: src/try-hard:63
+#: src/try-hard:65
 #, sh-format
 msgid "ERROR: Invalid delay ${DELAY}!"
 msgstr "FEHLER: Ungültige Verzögerung ${DELAY}!"
 
-#: src/try-hard:81
+#: src/try-hard:84
 #, sh-format
 msgid "Tried ${MAX_TRIALS} times -> giving up now!"
 msgstr "${MAX_TRIALS} Mal versucht -> gebe jetzt auf!"
 
-#: src/try-hard:86
+#: src/try-hard:89
 #, sh-format
 msgid "Waiting for ${DELAY} s before trying again ..."
 msgstr "Warte ${DELAY} s vor einem erneuten Versuch ..."

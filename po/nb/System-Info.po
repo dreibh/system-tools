@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.6\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-09-24 16:05+0200\n"
+"POT-Creation-Date: 2024-09-24 17:24+0200\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -131,55 +131,55 @@ msgstr "fulladet"
 msgid "discharging"
 msgstr "lades ut"
 
-#: src/System-Info:217
+#: src/System-Info:218
 msgid "#%u %s, %u %%"
 msgstr "№%u %s, %u %%"
 
-#: src/System-Info:226
+#: src/System-Info:227
 msgid "Used Memory:"
 msgstr "Brukt minne:"
 
-#: src/System-Info:228 src/System-Info:236
+#: src/System-Info:229 src/System-Info:237
 msgid "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)"
 msgstr "%'6.0f MiB av %'6.0f MiB (%'6.0f MiB tilgjengelig: %'5.1f %%)"
 
-#: src/System-Info:234 src/System-Info:242
+#: src/System-Info:235 src/System-Info:243
 msgid "Used Swap:"
 msgstr "Brukt bytteplass:"
 
-#: src/System-Info:243
+#: src/System-Info:244
 msgid "no swap available!"
 msgstr "bytteplass ikke tilgjengelig!"
 
-#: src/System-Info:247
+#: src/System-Info:248
 msgid "Used Diskspace:"
 msgstr "Brukt diskplass:"
 
-#: src/System-Info:257
+#: src/System-Info:259
 msgid "%1.0f %% on %s"
 msgstr "%1.0f %% på %s"
 
-#: src/System-Info:268
+#: src/System-Info:271
 msgid "Network:"
 msgstr "Nettverk:"
 
-#: src/System-Info:295
+#: src/System-Info:298
 msgid "(No IPv4)"
 msgstr "(Ingen IPv4)"
 
-#: src/System-Info:331
+#: src/System-Info:334
 msgid "SSH Keys:"
 msgstr "SSH-nøkler:"
 
-#: src/System-Info:337
+#: src/System-Info:340
 msgid "#%u %s"
 msgstr "№%u %s"
 
-#: src/System-Info:361
+#: src/System-Info:364
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/System-Info:370
+#: src/System-Info:373
 msgid "System information as of %s"
 msgstr "Systeminformasjon per %s"
 

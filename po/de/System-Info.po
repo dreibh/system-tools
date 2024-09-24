@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.0~beta3\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-09-24 16:05+0200\n"
+"POT-Creation-Date: 2024-09-24 17:24+0200\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -131,55 +131,55 @@ msgstr "vollständig aufgeladen"
 msgid "discharging"
 msgstr "entlädt"
 
-#: src/System-Info:217
+#: src/System-Info:218
 msgid "#%u %s, %u %%"
 msgstr "%u. %s, %u %%"
 
-#: src/System-Info:226
+#: src/System-Info:227
 msgid "Used Memory:"
 msgstr "Belegtes RAM:"
 
-#: src/System-Info:228 src/System-Info:236
+#: src/System-Info:229 src/System-Info:237
 msgid "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)"
 msgstr "%'6.0f MiB von %'6.0f MiB (%'6.0f MiB verfügbar: %'5.1f %%)"
 
-#: src/System-Info:234 src/System-Info:242
+#: src/System-Info:235 src/System-Info:243
 msgid "Used Swap:"
 msgstr "Belegter Swap:"
 
-#: src/System-Info:243
+#: src/System-Info:244
 msgid "no swap available!"
 msgstr "Swap nicht vorhanden!"
 
-#: src/System-Info:247
+#: src/System-Info:248
 msgid "Used Diskspace:"
 msgstr "Speicherplatz:"
 
-#: src/System-Info:257
+#: src/System-Info:259
 msgid "%1.0f %% on %s"
 msgstr "%1.0f %% auf %s"
 
-#: src/System-Info:268
+#: src/System-Info:271
 msgid "Network:"
 msgstr "Netzwerk:"
 
-#: src/System-Info:295
+#: src/System-Info:298
 msgid "(No IPv4)"
 msgstr "(Kein IPv4)"
 
-#: src/System-Info:331
+#: src/System-Info:334
 msgid "SSH Keys:"
 msgstr "SSH-Schlüssel:"
 
-#: src/System-Info:337
+#: src/System-Info:340
 msgid "#%u %s"
 msgstr "%u. %s"
 
-#: src/System-Info:361
+#: src/System-Info:364
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/System-Info:370
+#: src/System-Info:373
 msgid "System information as of %s"
 msgstr "Systeminformation am %s"
 
