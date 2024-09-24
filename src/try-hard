@@ -50,17 +50,20 @@ while [ $# -gt 0 ] ; do
    elif  [ "${arg}" == "--" ] ; then
       break
    else
-      echo >&2 "$(eval_gettext "ERROR: Invalid argument \${arg}!")"
+      eval_gettext >&2 "ERROR: Invalid argument \${arg}!"
+      echo >&2
       exit 1
    fi
 done
 
 if [[ ! "${MAX_TRIALS}" =~ ^[0-9]*$ ]] || [ "${MAX_TRIALS}" -lt 1 ] ; then
-   echo >&2 "$(eval_gettext "ERROR: Invalid maximum trials \${MAX_TRIALS}!")"
+   eval_gettext >&2 "ERROR: Invalid maximum trials \${MAX_TRIALS}!"
+   echo >&2
    exit 1
 fi
 if [[ ! "${DELAY}" =~ ^[0-9]+$ ]] ; then
-   echo >&2 "$(eval_gettext "ERROR: Invalid delay \${DELAY}!")"
+   eval_gettext >&2 "ERROR: Invalid delay \${DELAY}!"
+   echo >&2
    exit 1
 fi
 

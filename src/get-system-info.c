@@ -325,7 +325,7 @@ static void showBatteryInformation()
    }
 #endif
 
-   fputs("batteries=\"", stdout);
+   fputs("battery_list=\"", stdout);
    for(unsigned int i = 0; i < batteries; i++) {
       printf((i > 0) ? " %u" : "%u", batteryIDs[i]);
    }
@@ -582,7 +582,7 @@ static void showNetworkInformation(const bool filterLocalScope)
 
    // ====== Print interfaces list ==========================================
    lastIfName = NULL;
-   printf("netif_all=\"");
+   printf("netif_list=\"");
    for(unsigned int i = 0; i < n; i++) {
       if( (lastIfName == NULL) ||
           ((strcmp(lastIfName, ifaArray[i].ifname) != 0)) ) {

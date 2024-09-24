@@ -83,7 +83,7 @@ function print-system-information ()
    system_load_avg1min=
    system_load_avg5min=
    system_load_avg15min=
-   batteries=
+   battery_list=
    system_mem_used=
    system_mem_total=
    system_mem_free=
@@ -92,7 +92,7 @@ function print-system-information ()
    system_swap_used=
    system_swap_free=
    system_swap_freepct=
-   netif_all=
+   netif_list=
    # Set the variables:
    eval "$(get-system-info)"
 
@@ -166,6 +166,7 @@ function print-system-information ()
 
    # ------ Load ------------------------------------------------------------
    print-utf8 -i "${indent}" "$(gettext "Load (1/5/15 min):")"
+   # shellcheck disable=SC2059
    printf "$(gettext "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
       "${system_load_avg1min}" \
       "${system_load_avg5min}" \
@@ -173,7 +174,7 @@ function print-system-information ()
 
    # ------ Battery ---------------------------------------------------------
    # --- TEST ---------------------------
-   # batteries="0 1 2 3 4"
+   # battery_list="0 1 2 3 4"
    # battery_0_status=0
    # battery_0_capacity=55
    # battery_1_status=1
@@ -185,10 +186,10 @@ function print-system-information ()
    # battery_4_status=4
    # battery_4_capacity=55
    # --- TEST ---------------------------
-   if [ "${batteries}" != "" ] ; then
+   if [ "${battery_list}" != "" ] ; then
       print-utf8 -i "${indent}" "$(gettext "Battery:")"
       number=0
-      for battery in ${batteries} ; do
+      for battery in ${battery_list} ; do
          number=$((number+1))
          if [ ${number} -gt 1 ] ; then
             echo -n " / "
@@ -213,6 +214,7 @@ function print-system-information ()
             fi
          fi
          capacity="${!capacityVariable}"
+         # shellcheck disable=SC2059
          printf "${colorBattery}$(gettext "#%u %s, %u %%")${colorBasic}" \
             "${number}" \
             "${status}" \
@@ -223,13 +225,15 @@ function print-system-information ()
 
    # ------ Memory ---------------------------------------------------------
    print-utf8 -i "${indent}" "$(gettext "Used Memory:")"
+   # shellcheck disable=SC2059
    printf "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
       "$((system_mem_used  / 1048576))" \
       "$((system_mem_total / 1048576))" \
       "$((system_mem_free  / 1048576))" \
       "${system_mem_freepct}"
-   if [ "${system_swap_total}" -gt 0 ] ; then
+   if [ "${system_swap_total}" != "" ] && [ "${system_swap_total}" -gt 0 ] ; then
       print-utf8 -i "${indent}" "$(gettext "Used Swap:")"
+      # shellcheck disable=SC2059
       printf "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
       "$((system_swap_used  / 1048576))" \
       "$((system_swap_total / 1048576))" \
@@ -250,9 +254,12 @@ function print-system-information ()
          echo -n ", "
       fi
       mountPointVariable="disk_${mountPointName}_pct"
-      printf "$(gettext "%1.0f %% on %s")" \
-         "${!mountPointVariable}" \
-         "${mountPoint}"
+      if [ -v "${mountPointVariable}" ] ; then
+         # shellcheck disable=SC2059
+         printf "$(gettext "%1.0f %% on %s")" \
+            "${!mountPointVariable}" \
+            "${mountPoint}"
+      fi
    done
    echo
 
@@ -264,7 +271,7 @@ function print-system-information ()
    print-utf8 -n -i "${indent}" "$(gettext "Network:")"
    local indentString
    indentString="$(print-utf8 -i "${indent}" "")"
-   for interface in ${netif_all} ; do
+   for interface in ${netif_list} ; do
       local flagsVariable="netif_${interface}_flags"
       local ipv4Variable="netif_${interface}_ipv4"
       local ipv6Variable="netif_${interface}_ipv6"
