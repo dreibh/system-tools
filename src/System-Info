@@ -97,8 +97,8 @@ function print-system-information ()
    eval "$(get-system-info)"
 
    # ====== Obtain operating system information =============================
-   DISTRIB_ID="$(eval_gettext "Unknown")"   # Unknown, yet.
-   DISTRIB_RELEASE="${DISTRIB_ID}"          # Unknown, yet.
+   DISTRIB_ID="$(gettext "Unknown")"   # Unknown, yet.
+   DISTRIB_RELEASE="${DISTRIB_ID}"     # Unknown, yet.
    DISTRIB_CODENAME=""
 
    # ------ Get information from /etc/os-release ----------------------------
@@ -135,39 +135,39 @@ function print-system-information ()
    echo -en "${colorBasic}"
 
    # ------ Hostname -------------------------------------------------------
-   print-utf8 -i "${indent}" "$(eval_gettext "Host:")"
+   print-utf8 -i "${indent}" "$(gettext "Host:")"
    echo "${hostname_long}"
 
    # ------ Uptime ----------------------------------------------------------
-   print-utf8 -i "${indent}" "$(eval_gettext "Uptime:")"
+   print-utf8 -i "${indent}" "$(gettext "Uptime:")"
    # shellcheck disable=SC2059
-   printf "$(eval_gettext "%s, %s, %s, and %s")\n" \
-      "$(printf "$(eval_ngettext "%'d day" "%'d days" "${uptime_days}")" "${uptime_days}")" \
-      "$(printf "$(eval_ngettext "%'d hour" "%'d hours" "${uptime_hours}")" "${uptime_hours}")" \
-      "$(printf "$(eval_ngettext "%'d minute" "%'d minutes" "${uptime_mins}")" "${uptime_mins}")" \
-      "$(printf "$(eval_ngettext "%'d second" "%'d seconds" "${uptime_secs}")" "${uptime_secs}")"
+   printf "$(gettext "%s, %s, %s, and %s")\n" \
+      "$(printf "$(ngettext "%'d day" "%'d days" "${uptime_days}")" "${uptime_days}")" \
+      "$(printf "$(ngettext "%'d hour" "%'d hours" "${uptime_hours}")" "${uptime_hours}")" \
+      "$(printf "$(ngettext "%'d minute" "%'d minutes" "${uptime_mins}")" "${uptime_mins}")" \
+      "$(printf "$(ngettext "%'d second" "%'d seconds" "${uptime_secs}")" "${uptime_secs}")"
 
    # ------ Operating System ------------------------------------------------
-   print-utf8 -i "${indent}" "$(eval_gettext "Operating System:")"
-   printf "%s $(eval_gettext "with kernel") %s\n" \
+   print-utf8 -i "${indent}" "$(gettext "Operating System:")"
+   printf "%s $(gettext "with kernel") %s\n" \
       "${os_label}" \
       "${system_release}"
 
    # ------ Processor -------------------------------------------------------
-   print-utf8 -i "${indent}" "$(eval_gettext "Processor:")"
-   processesString="$(eval_gettext "%'d processes")"
-   usersString="$(eval_ngettext "%'d user" "%'d users" "${system_users}")"
+   print-utf8 -i "${indent}" "$(gettext "Processor:")"
+   processesString="$(gettext "%'d processes")"
+   usersString="$(ngettext "%'d user" "%'d users" "${system_users}")"
    # shellcheck disable=SC2059
-   printf "$(eval_gettext "%d × %s; ${processesString}; ${usersString}")\n" \
+   printf "$(gettext "%d × %s; ${processesString}; ${usersString}")\n" \
       "${system_cores}" \
       "${system_machine}" \
       "${system_procs}" \
       "${system_users}"
 
    # ------ Load ------------------------------------------------------------
-   print-utf8 -i "${indent}" "$(eval_gettext "Load (1/5/15 min):")"
+   print-utf8 -i "${indent}" "$(gettext "Load (1/5/15 min):")"
    # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-   /usr/bin/printf "$(eval_gettext "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
+   /usr/bin/printf "$(gettext "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
       "${system_load_avg1min}" \
       "${system_load_avg5min}" \
       "${system_load_avg15min}"
@@ -187,7 +187,7 @@ function print-system-information ()
    # battery_4_capacity=55
    # --- TEST ---------------------------
    if [ "${batteries}" != "" ] ; then
-      print-utf8 -i "${indent}" "$(eval_gettext "Battery:")"
+      print-utf8 -i "${indent}" "$(gettext "Battery:")"
       number=0
       for battery in ${batteries} ; do
          number=$((number+1))
@@ -214,7 +214,7 @@ function print-system-information ()
             fi
          fi
          capacity="${!capacityVariable}"
-         /usr/bin/printf "${colorBattery}$(eval_gettext "#%u %s, %u %%")${colorBasic}" \
+         /usr/bin/printf "${colorBattery}$(gettext "#%u %s, %u %%")${colorBasic}" \
             "${number}" \
             "${status}" \
             "${capacity}"
@@ -223,28 +223,28 @@ function print-system-information ()
    fi
 
    # ------ Memory ---------------------------------------------------------
-   print-utf8 -i "${indent}" "$(eval_gettext "Used Memory:")"
+   print-utf8 -i "${indent}" "$(gettext "Used Memory:")"
    # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-   /usr/bin/printf "$(eval_gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
+   /usr/bin/printf "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
       "$((system_mem_used  / 1048576))" \
       "$((system_mem_total / 1048576))" \
       "$((system_mem_free  / 1048576))" \
       "${system_mem_freepct}"
    if [ "${system_swap_total}" -gt 0 ] ; then
-      print-utf8 -i "${indent}" "$(eval_gettext "Used Swap:")"
+      print-utf8 -i "${indent}" "$(gettext "Used Swap:")"
       # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-      /usr/bin/printf "$(eval_gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
+      /usr/bin/printf "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
       "$((system_swap_used  / 1048576))" \
       "$((system_swap_total / 1048576))" \
       "$((system_swap_free  / 1048576))" \
       "${system_swap_freepct}"
    else
-      print-utf8 -i "${indent}" "$(eval_gettext "Used Swap:")"
-      echo -e "${colorInactive}$(eval_gettext "no swap available!")${colorBasic}"
+      print-utf8 -i "${indent}" "$(gettext "Used Swap:")"
+      echo -e "${colorInactive}$(gettext "no swap available!")${colorBasic}"
    fi
 
    # ------ Storage ---------------------------------------------------------
-   print-utf8 -i "${indent}" "$(eval_gettext "Used Diskspace:")"
+   print-utf8 -i "${indent}" "$(gettext "Used Diskspace:")"
    for mountPoint in / /home ; do
       mountPointName="${mountPoint//\//}"
       if [ "${mountPointName}" == "" ] ; then
@@ -265,7 +265,7 @@ function print-system-information ()
 
    # ------ Network ---------------------------------------------------------
    echo -en "${colorBasic}"
-   print-utf8 -n -i "${indent}" "$(eval_gettext "Network:")"
+   print-utf8 -n -i "${indent}" "$(gettext "Network:")"
    local indentString
    indentString="$(print-utf8 -i "${indent}" "")"
    for interface in ${netif_all} ; do
@@ -292,7 +292,7 @@ function print-system-information ()
          ipv4="${ipv4// /   }"
          ipv4="${ipv4//\// \/ }"
       else
-         ipv4="$(eval_gettext "(No IPv4)")"
+         ipv4="$(gettext "(No IPv4)")"
       fi
       if [ -v "${ipv6Variable}" ] ; then
          ipv6="${!ipv6Variable}"
@@ -358,7 +358,7 @@ while [ $# -gt 0 ] ; do
       scriptDirectories="$2"
       shift
    else
-      echo >&2 "$(eval_gettext "Usage:") $0 [--help|-h] [--scripts|-S scripts_directory]"
+      echo >&2 "$(gettext "Usage:") $0 [--help|-h] [--scripts|-S scripts_directory]"
       exit 1
    fi
    shift
