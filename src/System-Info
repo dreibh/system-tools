@@ -166,8 +166,7 @@ function print-system-information ()
 
    # ------ Load ------------------------------------------------------------
    print-utf8 -i "${indent}" "$(gettext "Load (1/5/15 min):")"
-   # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-   /usr/bin/printf "$(gettext "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
+   printf "$(gettext "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
       "${system_load_avg1min}" \
       "${system_load_avg5min}" \
       "${system_load_avg15min}"
@@ -214,7 +213,7 @@ function print-system-information ()
             fi
          fi
          capacity="${!capacityVariable}"
-         /usr/bin/printf "${colorBattery}$(gettext "#%u %s, %u %%")${colorBasic}" \
+         printf "${colorBattery}$(gettext "#%u %s, %u %%")${colorBasic}" \
             "${number}" \
             "${status}" \
             "${capacity}"
@@ -224,16 +223,14 @@ function print-system-information ()
 
    # ------ Memory ---------------------------------------------------------
    print-utf8 -i "${indent}" "$(gettext "Used Memory:")"
-   # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-   /usr/bin/printf "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
+   printf "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
       "$((system_mem_used  / 1048576))" \
       "$((system_mem_total / 1048576))" \
       "$((system_mem_free  / 1048576))" \
       "${system_mem_freepct}"
    if [ "${system_swap_total}" -gt 0 ] ; then
       print-utf8 -i "${indent}" "$(gettext "Used Swap:")"
-      # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-      /usr/bin/printf "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
+      printf "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
       "$((system_swap_used  / 1048576))" \
       "$((system_swap_total / 1048576))" \
       "$((system_swap_free  / 1048576))" \
@@ -253,8 +250,7 @@ function print-system-information ()
          echo -n ", "
       fi
       mountPointVariable="disk_${mountPointName}_pct"
-      # NOTE: Using /usr/bin/printf here, not the buggy built-in function!
-      /usr/bin/printf "$(gettext "%1.0f %% on %s")" \
+      printf "$(gettext "%1.0f %% on %s")" \
          "${!mountPointVariable}" \
          "${mountPoint}"
    done
