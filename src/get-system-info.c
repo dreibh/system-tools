@@ -15,17 +15,19 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
-#ifdef __linux
+#if defined(__linux)
 #include <sys/sysinfo.h>
-#elif __FreeBSD__
+#elif defined(__FreeBSD__)
 #include <sys/sysctl.h>
 #include <vm/vm_param.h>
+#else
+#error Unknown system! The system-specific code parts need an update!
 #endif
 
 // FIXME: For some reasons, IFF_LOWER_UP seems to be undefined here.
-#ifdef __linux
+#if defined(__linux)
 #define IFF_LOWER_UP (1 << 16)
-#elif __FreeBSD__
+#elif defined(__FreeBSD__)
 #include <netlink/route/interface.h>
 #endif
 
@@ -248,7 +250,7 @@ static void showLoadInformation()
    }
 
    // ====== Load averages ==================================================
-#ifdef __linux
+#if defined(__linux)
    struct sysinfo systemInfo;
    if(sysinfo(&systemInfo) == 0) {
       const double fFraction = 1.0 / (1 << SI_LOAD_SHIFT);
@@ -261,7 +263,7 @@ static void showLoadInformation()
       printf("system_load_avg15minpct=%1.4f\n", (double)systemInfo.loads[2] * fPercent);
    }
 
-#elif __FreeBSD__
+#elif defined(__FreeBSD__)
    double loadavg[3];
    if(getloadavg(loadavg, 3) == 3) {
       printf("system_load_avg1min=%1.6f\n",  loadavg[0]);
@@ -278,9 +280,12 @@ static void showLoadInformation()
 // ###### Print battery information #########################################
 static void showBatteryInformation()
 {
-   unsigned int batteries=0;
-#ifdef __linux
-   for(unsigned int i = 0; i < 2; i++) {
+   const unsigned int maxBatteries = 2;
+   unsigned int       batteries    = 0;
+   unsigned int       batteryIDs[maxBatteries];
+
+#if defined(__linux)
+   for(unsigned int i = 0; i < maxBatteries; i++) {
       char capacityFileName[64];
       char capacityBuffer[64];
       unsigned int capacity;
@@ -307,20 +312,24 @@ static void showBatteryInformation()
             else if(strcmp(statusBuffer, "Discharging") == 0) {
                status = 4;    // Discharging
             }
-            printf("battery_%u_status=%u\n", batteries, status);
-            printf("battery_%u_capacity=%u\n", batteries, capacity);
-            batteries++;
+            printf("battery_%u_status=%u\n",   i, status);
+            printf("battery_%u_capacity=%u\n", i, capacity);
+            batteryIDs[batteries++] = i;
          }
       }
    }
 
-#elif __FreeBSD__
-   for(unsigned int i = 0; i < 2; i++) {
+#elif defined(__FreeBSD__)
+   for(unsigned int i = 0; i < maxBatteries; i++) {
 
    }
-
 #endif
-   printf("battery_count=%u\n", batteries);
+
+   fputs("batteries=\"", stdout);
+   for(unsigned int i = 0; i < batteries; i++) {
+      printf((i > 0) ? " %u" : "%u", batteryIDs[i]);
+   }
+   puts("\"");
 }
 
 
@@ -334,7 +343,7 @@ static void showMemoryInformation()
    unsigned long long swapAvailable   = 0;
    unsigned long long swapUsed        = 0;
 
-#ifdef __linux
+#if defined(__linux)
    // ====== Query memory information via /proc =============================
    FILE* fh = fopen("/proc/meminfo", "r");
    if(fh != NULL) {
@@ -366,7 +375,7 @@ static void showMemoryInformation()
    swapAvailable   *= 1024;
    swapUsed = swapTotal - swapAvailable;
 
-#elif __FreeBSD__
+#elif defined(__FreeBSD__)
    // ====== Query system information via sysctl ============================
    // Documentation: https://man.freebsd.org/cgi/man.cgi?query=sysctl&sektion=3
 
