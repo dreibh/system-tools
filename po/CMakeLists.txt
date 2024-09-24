@@ -40,7 +40,7 @@ FOREACH(source IN LISTS sources)
    SET(LIST potInputFilesAbsolute "")
    SET(potSourceLanguageOption "--language=Shell")   # Assume Shell scripts
    FOREACH(file ${potInputFiles})
-      GET_FILENAME_COMPONENT(sourceExtension ${file} LAST_EXT)
+      GET_FILENAME_COMPONENT(sourceExtension ${file} EXT)
       # Source is C/C++ -> remove --language=Shell option!
       IF ( ("${sourceExtension}" STREQUAL ".c") OR ("${sourceExtension}" STREQUAL ".c") )
          SET(potSourceLanguageOption "")
