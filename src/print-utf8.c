@@ -193,7 +193,7 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
    size_t j = 0;
    for(size_t i = 0; i < original_string_length; i++) {
       if(!inANSISequence) {
-         if((originalString[i] == 0x1b) || (!removeANSISequences)) {
+         if((originalString[i] == '\e') || (!removeANSISequences)) {
             inANSISequence = true;
          }
          else {
@@ -265,10 +265,11 @@ static void stringSizeLengthWidth(const char* originalString,
       printf(" %zd", wide_string_length);
    }
    if(showWidth) {
-      const int width = wcswidth(wide_string, wide_string_length);
       printf(" %d", wcswidth(wide_string, wide_string_length));
    }
    puts("");
+
+   free(wide_string);
 }
 
 
@@ -376,8 +377,11 @@ int main (int argc, char** argv)
       else if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--separator") == 0) ) {
          if(i + 3 < argc) {
             borderLeft  = unescape(argv[i + 1]);
-            utf8String  = unescape(argv[i + 2]);
             borderRight = unescape(argv[i + 3]);
+            if(utf8String) {
+               free(utf8String);
+            }
+            utf8String  = unescape(argv[i + 2]);
          }
          else {
             fputs("ERROR: Invalid separator setting!\n", stderr);
@@ -409,6 +413,9 @@ int main (int argc, char** argv)
          return 1;
       }
       else {
+         if(utf8String) {
+            free(utf8String);
+         }
          utf8String = unescape(argv[i]);
          break;
       }
@@ -418,31 +425,33 @@ int main (int argc, char** argv)
    // Set locale to handle UTF-8 multibyte characters
    setlocale(LC_ALL, "");
 
-   switch(mode) {
-      case Indent:
-         indented(indentWidth, utf8String);
-       break;
-      case Center:
-         centered(utf8String);
-       break;
-      case Separator:
-         separator(borderLeft, utf8String, borderRight);
-       break;
-      case Width:
-         stringSizeLengthWidth(utf8String, true, false, false, true);
-       break;
-      case Length:
-         stringSizeLengthWidth(utf8String, true, false, true, false);
-       break;
-      case Size:
-         stringSizeLengthWidth(utf8String, true, true, false, false);
-       break;
-      case SizeLengthWidth:
-         stringSizeLengthWidth(utf8String, true, true, true, true);
-       break;
-      case TerminalInfo:
-         terminalInfo();
-       break;
+   if( (utf8String) || (mode ==  TerminalInfo) ) {
+      switch(mode) {
+         case Indent:
+            indented(indentWidth, utf8String);
+          break;
+         case Center:
+            centered(utf8String);
+          break;
+         case Separator:
+            separator(borderLeft, utf8String, borderRight);
+          break;
+         case Width:
+            stringSizeLengthWidth(utf8String, true, false, false, true);
+          break;
+         case Length:
+            stringSizeLengthWidth(utf8String, true, false, true, false);
+          break;
+         case Size:
+            stringSizeLengthWidth(utf8String, true, true, false, false);
+          break;
+         case SizeLengthWidth:
+            stringSizeLengthWidth(utf8String, true, true, true, true);
+          break;
+         case TerminalInfo:
+            terminalInfo();
+          break;
+      }
    }
    if(newline) {
       fputs("\n", stdout);
