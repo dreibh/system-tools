@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.0~beta3\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-09-10 10:26+0200\n"
+"POT-Creation-Date: 2024-09-24 16:05+0200\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -39,12 +39,10 @@ msgid "ERROR: Invalid hostname ${hostname}!"
 msgstr "FEHLER: Ungültiger hostname ${hostname}!"
 
 #: src/Reset-Machine-ID:111
-#, sh-format
 msgid "Usage:"
 msgstr "Aufruf:"
 
 #: src/Reset-Machine-ID:171
-#, sh-format
 msgid "Update hostname?"
 msgstr "Hostname aktualisieren?"
 
@@ -53,13 +51,17 @@ msgstr "Hostname aktualisieren?"
 msgid "The current machine ID is ${machineID}. Reset it?"
 msgstr "Die aktuelle Maschinen-ID ist ${machineID}. Zurücksetzen?"
 
+#: src/Reset-Machine-ID:251
+#, sh-format
+msgid "Apply suggested Zabbix Agent changes in ${zabbixConfig}?"
+msgstr "Vorgeschlagene Änderungen für Zabbix-Agent in ${zabbixConfig} durchführen?"
+
 #: src/Reset-Machine-ID:260 src/Reset-Machine-ID:328 src/Reset-Machine-ID:414
 #: src/Reset-Machine-ID:462
 msgid "Skipped!"
 msgstr "Übersprungen!"
 
 #: src/Reset-Machine-ID:292
-#, sh-format
 msgid "Checking SSH configuration ..."
 msgstr "Untersuche SSH-Konfiguration ..."
 
@@ -68,7 +70,6 @@ msgid "Suggested ssh_config changes:"
 msgstr "Vorgeschlagene Änderungen in ssh_config:"
 
 #: src/Reset-Machine-ID:321
-#, sh-format
 msgid "Apply suggested ssh_config changes?"
 msgstr "Vorgeschlagene Änderungen in ssh_config durchführen?"
 
@@ -82,17 +83,14 @@ msgid "Suggested sshd_config changes:"
 msgstr "Vorgeschlagene Änderungen in sshd_config:"
 
 #: src/Reset-Machine-ID:401
-#, sh-format
 msgid "Apply suggested sshd_config changes?"
 msgstr "Vorgeschlagene Änderungen in sshd_config durchführen?"
 
 #: src/Reset-Machine-ID:409 src/Reset-Machine-ID:456
-#, sh-format
 msgid "Trying to restart SSH daemon ..."
 msgstr "Versuche Restart des SSH-Daemons ..."
 
 #: src/Reset-Machine-ID:427
-#, sh-format
 msgid "Remove existing SSH host keys and generate new ones?"
 msgstr "Existierende SSH-Schlüssel entfernen und neue Schlüssel erstellen?"
 
@@ -102,21 +100,17 @@ msgid "Making backup of current keys in ${backupDirectory} ..."
 msgstr "Erstelle Backup der gegenwärtigen Schlüssel in ${backupDirectory} ..."
 
 #: src/Reset-Machine-ID:447
-#, sh-format
 msgid "Generating new ED25519 key ..."
 msgstr "Erstelle neuen ED25519-Schlüssel ..."
 
 #: src/Reset-Machine-ID:449
-#, sh-format
 msgid "Generating new ECDSA key ..."
 msgstr "Erstelle neuen ECDSA-Schlüssel ..."
 
 #: src/Reset-Machine-ID:451
-#, sh-format
 msgid "Generating new RSA key; this may take some time ..."
 msgstr "Erstelle neuen RSA-Schlüssel; dieses kann einen Moment dauern ..."
 
 #: src/Reset-Machine-ID:454
-#, sh-format
 msgid "Done!"
 msgstr "Erledigt!"

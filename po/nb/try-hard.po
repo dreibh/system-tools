@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.3~rc2\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-09-18 14:58+0200\n"
+"POT-Creation-Date: 2024-09-24 16:05+0200\n"
 "PO-Revision-Date: 2024-09-18 14:53+0200\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -34,7 +34,6 @@ msgstr ""
 "X-Source-Language: en_GB\n"
 
 #: src/try-hard:34
-#, sh-format
 msgid "Usage:"
 msgstr "Bruk:"
 

@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.0~beta3\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-09-10 10:26+0200\n"
+"POT-Creation-Date: 2024-09-24 16:05+0200\n"
 "PO-Revision-Date: 2024-03-23 19:33+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -34,106 +34,85 @@ msgstr ""
 "X-Source-Language: en_GB\n"
 
 #: src/System-Maintenance:38
-#, sh-format
 msgid "Usage:"
 msgstr "Aufruf:"
 
 #: src/System-Maintenance:63
-#, sh-format
 msgid "Stopping AutoFS service ..."
 msgstr "Stoppe AutoFS-Dienst ..."
 
 #: src/System-Maintenance:69
-#, sh-format
 msgid "Applying package fixes, if necessary ..."
 msgstr "Repariere Pakete, falls notwendig ..."
 
 #: src/System-Maintenance:77 src/System-Maintenance:80
-#, sh-format
 msgid "Updating package repositories ..."
 msgstr "Aktualisiere Paketquellen ..."
 
 #: src/System-Maintenance:90
-#, sh-format
 msgid "Installing missing dependencies, if necessary ..."
 msgstr "Installiere fehlende Abhängigkeiten, falls notwendig ..."
 
 #: src/System-Maintenance:98
-#, sh-format
 msgid "Installing updates ..."
 msgstr "Installiere Aktualisierungen ..."
 
 #: src/System-Maintenance:152
-#, sh-format
 msgid "Cleaning up ..."
 msgstr "Räume auf ..."
 
 #: src/System-Maintenance:185
-#, sh-format
 msgid "Removing obsolete kernels ..."
 msgstr "Entferne obsolete Kernels ..."
 
 #: src/System-Maintenance:191
-#, sh-format
 msgid "Kernel Type:        "
 msgstr "Kernel-Typ:          "
 
 #: src/System-Maintenance:192
-#, sh-format
 msgid "Kernel Boot Version:"
 msgstr "Kernel Boot-Version: "
 
 #: src/System-Maintenance:193
-#, sh-format
 msgid "Kernel Disk Version:"
 msgstr "Kernel Disk-Version: "
 
 #: src/System-Maintenance:262
-#, sh-format
 msgid "To be removed:"
 msgstr "Zu entfernen:"
 
 #: src/System-Maintenance:265
-#, sh-format
 msgid "To be kept:"
 msgstr "Zu behalten:"
 
 #: src/System-Maintenance:290
-#, sh-format
 msgid "Refreshing snaps ..."
 msgstr "Aktualisiere Snaps ..."
 
 #: src/System-Maintenance:296
-#, sh-format
 msgid "Checking for firmware updates ..."
 msgstr "Prüfe auf Firmwareaktualisierungen ..."
 
 #: src/System-Maintenance:301
-#, sh-format
 msgid "Updating caches ..."
 msgstr "Aktualisiere Caches ..."
 
 #: src/System-Maintenance:321
-#, sh-format
 msgid "Starting AutoFS service ..."
 msgstr "Starte AutoFS-Dienst ..."
 
 #: src/System-Maintenance:327
-#, sh-format
 msgid "Synchronising system time ..."
 msgstr "Synchronisiere Systemzeit ..."
 
 #: src/System-Maintenance:363
-#, sh-format
 msgid "Running fstrim ..."
 msgstr "Führe Trimming durch ..."
 
 #: src/System-Maintenance:367
-#, sh-format
 msgid "Running zpool trim ..."
 msgstr "Führe ZFS-Trimming durch ..."
 
 #: src/System-Maintenance:376
-#, sh-format
 msgid "Done!"
 msgstr "Erledigt!"
