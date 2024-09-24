@@ -177,11 +177,26 @@ with evaluation in shell scripts for further processing.
 %{_mandir}/man1/get-system-info.1.gz
 
 
+%package print-utf8
+Summary: Print UTF-8 strings and obtain size/length/width information
+Group: Applications/System
+BuildArch: noarch
+
+%description print-utf8
+print-utf8 is a simple program to print UTF-8 strings in the console with
+options for indentation, centering, separator as well as size/length/width
+information.
+
+%files print-utf8
+%{_bindir}/print-utf8
+%{_mandir}/man1/print-utf8.mo
+
+
 %package misc
 Summary: Miscellaneous tools
 Group: Applications/System
 BuildArch: noarch
-Recommends: td-system-tools-misc
+Recommends: td-system-tools-print-utf8
 
 %description misc
 This package contains two simple tools:

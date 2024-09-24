@@ -10,7 +10,7 @@ Rules-Requires-Root: no
 
 Package: td-system-info
 Architecture: all
-Depends: bsdextrautils | bsdmainutils,
+Depends: print-utf8 (>= ${source:Version}),
          figlet | toilet,
          gettext-base,
          iproute2,
@@ -84,10 +84,20 @@ Description: Obtain basic system information
  The output is printed in machine-readable form, which can be used
  with evaluation in shell scripts for further processing.
 
+Package: print-utf8
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Print UTF-8 strings and obtain size/length/width information
+ print-utf8 is a simple program to print UTF-8 strings in the console with
+ options for indentation, centering, separator as well as size/length/width
+ information.
+
 Package: td-system-misc
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
+Recommends: print-utf8
 Description: Miscellaneous tools
  This package contains two simple tools:
  try-hard runs a command and retries for a given number of times in case
