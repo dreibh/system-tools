@@ -31,11 +31,13 @@ export TEXTDOMAIN="System-Info"
 
 # ###### Settings ###########################################################
 indent=-20
+
 colorBasic="\x1b[33m"
 colorNetwork="\x1b[34m"
 colorPrefix="\x1b[94m"
 colorInactive="\x1b[37m"
 colorNone="\x1b[0m"
+
 colorBatteryFull="\x1b[33m"
 colorBatteryCharging="\x1b[31m"
 colorBatteryNotCharging="\x1b[38m"
@@ -81,6 +83,7 @@ function print-system-information ()
    system_load_avg1min=
    system_load_avg5min=
    system_load_avg15min=
+   batteries=
    system_mem_used=
    system_mem_total=
    system_mem_free=
@@ -170,22 +173,24 @@ function print-system-information ()
       "${system_load_avg15min}"
 
    # ------ Battery ---------------------------------------------------------
-   batteries="0 1 2 3 4"
-   battery_0_status=0
-   battery_0_capacity=55
-   battery_1_status=1
-   battery_1_capacity=55
-   battery_2_status=2
-   battery_2_capacity=55
-   battery_3_status=3
-   battery_3_capacity=55
-   battery_4_status=4
-   battery_4_capacity=55
+   # --- TEST ---------------------------
+   # batteries="0 1 2 3 4"
+   # battery_0_status=0
+   # battery_0_capacity=55
+   # battery_1_status=1
+   # battery_1_capacity=55
+   # battery_2_status=2
+   # battery_2_capacity=55
+   # battery_3_status=3
+   # battery_3_capacity=55
+   # battery_4_status=4
+   # battery_4_capacity=55
+   # --- TEST ---------------------------
    if [ "${batteries}" != "" ] ; then
       print-utf8 -i "${indent}" "$(eval_gettext "Battery:")"
       number=0
       for battery in ${batteries} ; do
-         let number=$((number+1))
+         number=$((number+1))
          if [ ${number} -gt 1 ] ; then
             echo -n " / "
          fi
@@ -328,6 +333,7 @@ function print-ssh-key-fingerprints ()
                label=""
             fi
             print-utf8 -i "${indent}" "${label}"
+            # shellcheck disable=SC2059
             printf "$(gettext "#%u %s")\n" \
                "${number}" \
                "${keyInfo}"
@@ -360,6 +366,7 @@ done
 
 
 # ====== Startup ============================================================
+# shellcheck disable=SC2059
 printf "\n$(gettext "System information as of %s")\n\n" "${now}"
 
 # ====== Obtain and print information =======================================
