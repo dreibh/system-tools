@@ -229,21 +229,21 @@ function print-ssh-key-fingerprints ()
    if [ -d /etc/ssh ] ; then
       echo -en "${colorBasic}"
       local keys=$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)
-      local keyNumber=1
+      local number=1
       local label=""
       for key in $keys ; do
          keyInfo="$(ssh-keygen -lf "$key" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g")"
          if [[ "${keyInfo}" =~ ^[A-Z]+ ]] ; then
-             if [ ${keyNumber} -eq 1 ] ; then
+             if [ ${number} -eq 1 ] ; then
                label="$(gettext "SSH Keys:")"
             else
                label=""
             fi
             print-utf8 -i "${indent}" "${label}"
             printf "%s%s %s\n" \
-               "$(eval_gettext "#\${keyNumber} " "${keyNumber}")" \
+               "$(eval_gettext "#\${number} " "${number}")" \
                "${keyInfo}"
-            keyNumber=$((keyNumber+1))
+            number=$((number+1))
          fi
       done
       echo -en "${colorNone}"
