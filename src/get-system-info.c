@@ -184,13 +184,14 @@ static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
       size_t resultSize = 0;
       char*  r;
       do {
-         r = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
+         r = fgets((char*)&result[resultSize], resultMaxSize - 1 - resultSize, fh);
          if(r == NULL) {
             break;
          }
          resultSize += strlen(r);
       }
-      while(resultSize < resultMaxSize);
+      while(resultSize < resultMaxSize- 1);
+      result[resultSize] = 0x00;
       pclose(fh);
       return true;
    }
@@ -320,8 +321,19 @@ static void showBatteryInformation()
    }
 
 #elif defined(__FreeBSD__)
+   char batteryInfoQuery[64];
+   char batteryInfo[4096];
    for(unsigned int i = 0; i < maxBatteries; i++) {
-
+      snprintf((char*)&batteryInfoQuery, sizeof(batteryInfoQuery),
+               "acpiconf -i%u 2>/dev/null", i);
+      if( queryPipe(batteryInfoQuery, (char*)&batteryInfo, sizeof(batteryInfo)) ) {
+         const char* r = (const char*)&batteryInfo;
+         do {
+            printf("x");
+            r = index(r, '\n');
+         } while(r++ != NULL);
+         batteryIDs[batteries++] = i;
+      }
    }
 #endif
 
