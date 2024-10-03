@@ -10,13 +10,13 @@ Rules-Requires-Root: no
 
 Package: td-system-info
 Architecture: all
-Depends: td-system-print-utf8 (>= ${source:Version}),
-         figlet | toilet,
+Depends: figlet | toilet,
          gettext-base,
          iproute2,
          mbuffer | buffer,
          procps,
          td-get-system-info (>= ${source:Version}),
+         td-print-utf8 (>= ${source:Version}),
          ${misc:Depends}
 Recommends: iputils-ping,
             iputils-tracepath,
@@ -41,7 +41,7 @@ Description: Perform basic system maintenance
  management databases, installing all available updates, checking
  for old kernels and removing them, trim SSD or unmap unused storage.
 
-Package: td-system-reset-machine-id
+Package: td-reset-machine-id
 Architecture: all
 Depends: ${misc:Depends}
 Recommends: td-system-info,
@@ -51,7 +51,7 @@ Description: Reset machine identity state
  reset machine ID, change hostname, replace SSH keys, suggest hardened
  SSH client and server settings.
 
-Package: td-system-fingerprint-ssh-keys
+Package: td-fingerprint-ssh-keys
 Architecture: all
 Depends: ${misc:Depends}
 Recommends: td-system-info
@@ -84,7 +84,7 @@ Description: Obtain basic system information
  The output is printed in machine-readable form, which can be used
  with evaluation in shell scripts for further processing.
 
-Package: td-system-print-utf8
+Package: td-print-utf8
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
@@ -93,11 +93,11 @@ Description: Print UTF-8 strings and obtain size/length/width information
  options for indentation, centering, separator as well as size/length/width
  information.
 
-Package: td-system-misc
+Package: td-misc
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
-Recommends: td-system-print-utf8
+Recommends: td-print-utf8
 Description: Miscellaneous tools
  This package contains two simple tools:
  try-hard runs a command and retries for a given number of times in case
@@ -107,12 +107,15 @@ Description: Miscellaneous tools
 
 Package: td-system-tools
 Architecture: all
-Depends: td-system-fingerprint-ssh-keys,
+Depends: td-fingerprint-ssh-keys,
+         td-misc,
+         td-reset-machine-id,
          td-system-info,
          td-system-maintenance,
-         td-system-misc,
-         td-system-reset-machine-id,
          ${misc:Depends}
+Provides: td-system-reset-machine-id
+Breaks: td-system-reset-machine-id
+Replaces: td-system-reset-machine-id
 Recommends: td-system-configure-grub
 Description: Metapackage for system information and maintenance tools
  This package is a metapackage for the system information and maintenance
