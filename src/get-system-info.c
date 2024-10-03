@@ -621,8 +621,10 @@ static void showNetworkInformation(const bool filterLocalScope)
 // ###### Main program ######################################################
 int main(void)
 {
-   // ====== Initialise i18n support ========================================
-   setlocale(LC_ALL, "");
+   // ====== Initialise locale support ======================================
+   if(setlocale(LC_ALL, "") == NULL) {
+      setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
+   }
 
    // ====== Show system information in machine-readable form ===============
    showHostnameInformation();

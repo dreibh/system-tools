@@ -47,8 +47,10 @@ int main(int argc, char** argv)
    bool   verboseMode = false;
 
    // ====== Initialise i18n support ========================================
-   setlocale(LC_ALL, "");
-   bindtextdomain("random-sleep", "/usr/share/locale");
+   if(setlocale(LC_ALL, "") == NULL) {
+      setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
+   }
+   bindtextdomain("random-sleep", NULL);
    textdomain("random-sleep");
 
    // ====== Handle arguments ===============================================

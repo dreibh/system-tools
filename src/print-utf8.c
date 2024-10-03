@@ -342,6 +342,11 @@ static void separator(const char* separaterLeftBorder,
 // ###### Main program ######################################################
 int main (int argc, char** argv)
 {
+   // ====== Initialise locale support ======================================
+   if(setlocale(LC_ALL, "") == NULL) {
+      setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
+   }
+
    // ====== Handle arguments ===============================================
    enum mode_t {
       Indent          = 1,
@@ -422,9 +427,6 @@ int main (int argc, char** argv)
    }
 
    // ====== Handle command =================================================
-   // Set locale to handle UTF-8 multibyte characters
-   setlocale(LC_ALL, "");
-
    if( (utf8String) || (mode ==  TerminalInfo) ) {
       switch(mode) {
          case Indent:
