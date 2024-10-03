@@ -497,14 +497,19 @@ static void showDiskInformation()
    if( (queryPipe("env LANGUAGE=en df -hT / | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
                   (char*)&buffer, sizeof(buffer))) &&
        (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("disk_root_pct=%u\n", value);
+      printf("disk_root_pct=%1.1f\n", (double)value);
    }
    if( (queryPipe("env LANGUAGE=en df -hT /home | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
                   (char*)&buffer, sizeof(buffer))) &&
        (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("disk_home_pct=%u\n", value);
+      printf("disk_home_pct=%1.1f\n", (double)value);
    }
-   fputs("disk_list=\"root home\"\n", stdout);
+   if( (queryPipe("env LANGUAGE=en df -hT /tmp | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
+                  (char*)&buffer, sizeof(buffer))) &&
+       (sscanf(buffer, "%u", &value) == 1) ) {
+      printf("disk_tmp_pct=%1.1f\n", (double)value);
+   }
+   fputs("disk_list=\"root home tmp\"\n", stdout);
 }
 
 
