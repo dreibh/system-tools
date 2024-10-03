@@ -193,13 +193,13 @@ function print-system-information ()
    # --- TEST ---------------------------
    if [ "${battery_list}" != "" ] ; then
       print-utf8 -i "${indent}" "$(gettext "Battery:")"
-      local number
       local battery
       local statusVariable
       local capacityVariable
       local status
       local colorBattery
-      number=0
+      local capacity
+      local number=0
       for battery in ${battery_list} ; do
          number=$((number+1))
          if [ ${number} -gt 1 ] ; then
@@ -296,6 +296,7 @@ function print-system-information ()
    local indentString
    indentString="$(print-utf8 -i "${indent}" "")"
    for interface in ${netif_list} ; do
+      local nameVariable="netif_${interface}_name"
       local flagsVariable="netif_${interface}_flags"
       local ipv4Variable="netif_${interface}_ipv4"
       local ipv6Variable="netif_${interface}_ipv6"
@@ -333,7 +334,7 @@ function print-system-information ()
          ipv6=""
       fi
 
-      print-utf8 -i "${indent}" "   ${colorA}${interface}:"
+      print-utf8 -i "${indent}" "   ${colorA}${!nameVariable}:"
       echo -e "${ipv4}${colorA}${ipv6}${colorA}"
 
    done

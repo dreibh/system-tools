@@ -565,15 +565,16 @@ static void showNetworkInformation(const bool filterLocalScope)
          compareInterfaceAddresses);
 
    // ====== Print interfaces and their addresses ===========================
-   const char* lastIfName = NULL;
-   int         lastFamily = AF_UNSPEC;
+   unsigned int lastIfIndex = 0;
+   int          lastFamily = AF_UNSPEC;
    for(unsigned int i = 0; i < n; i++) {
-      if( (lastIfName == NULL) ||
-          ((strcmp(lastIfName, ifaArray[i].ifname) != 0)) ) {
-         if(lastIfName) {
+      const unsigned int ifIndex = if_nametoindex(ifaArray[i].ifname);
+      if( (lastIfIndex == 0) || (lastIfIndex != ifIndex) ) {
+         if(lastIfIndex != 0) {
             puts("\"");
          }
-         printf("netif_%s_flags=\"", ifaArray[i].ifname);
+         printf("netif_%u_name=\"%s\"\n", ifIndex, ifaArray[i].ifname);
+         printf("netif_%u_flags=\"", ifIndex);
          printflags(ifaArray[i].flags);
          puts("\"");
          lastFamily = AF_UNSPEC;
@@ -583,9 +584,8 @@ static void showNetworkInformation(const bool filterLocalScope)
          if(lastFamily != AF_UNSPEC) {
             puts("\"");
          }
-         printf("netif_%s_ipv%u=\"",
-                ifaArray[i].ifname,
-                (ifaArray[i].address->sa_family == AF_INET6) ? 6 : 4);
+         printf("netif_%u_ipv%u=\"",
+                ifIndex, (ifaArray[i].address->sa_family == AF_INET6) ? 6 : 4);
       }
       else {
          fputs(" ", stdout);
@@ -593,23 +593,23 @@ static void showNetworkInformation(const bool filterLocalScope)
 
       printaddress(ifaArray[i].address, ifaArray[i].prefixlen);
 
-      lastIfName = ifaArray[i].ifname;
-      lastFamily = ifaArray[i].address->sa_family;
+      lastIfIndex = ifIndex;
+      lastFamily  = ifaArray[i].address->sa_family;
    }
    puts("\"");
 
    // ====== Print interfaces list ==========================================
-   lastIfName = NULL;
+   lastIfIndex = 0;
    printf("netif_list=\"");
    for(unsigned int i = 0; i < n; i++) {
-      if( (lastIfName == NULL) ||
-          ((strcmp(lastIfName, ifaArray[i].ifname) != 0)) ) {
-         if(lastIfName != NULL) {
+      const unsigned int ifIndex = if_nametoindex(ifaArray[i].ifname);
+      if( (lastIfIndex == 0) || (lastIfIndex != ifIndex) ) {
+         if(lastIfIndex != 0) {
             fputs(" ", stdout);
          }
-         fputs(ifaArray[i].ifname, stdout);
+         printf("%u", if_nametoindex(ifaArray[i].ifname));
       }
-      lastIfName = ifaArray[i].ifname;
+      lastIfIndex = ifIndex;
    }
    puts("\"");
 
