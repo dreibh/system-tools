@@ -483,7 +483,7 @@ static void showMemoryInformation()
       printf("system_swap_freepct=%1.1f\n", 100.0 * swapAvailable / swapTotal);
    }
    else {
-      puts("system_swap_total=NA");
+      puts("system_swap_total=0");
    }
 }
 
