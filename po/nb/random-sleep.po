@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.3~rc2\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-09-18 14:56+0200\n"
+"POT-Creation-Date: 2024-10-03 16:20+0200\n"
 "PO-Revision-Date: 2024-09-18 14:53+0200\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -33,24 +33,24 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/random-sleep.c:57
+#: src/random-sleep.c:59
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/random-sleep.c:64
+#: src/random-sleep.c:66
 msgid "ERROR: Invalid min_delay/max_delay"
 msgstr "FEIL: Ugyldig min_delay/max_delay"
 
-#: src/random-sleep.c:77
+#: src/random-sleep.c:79
 #, c-format
 msgid "ERROR: Invalid argument %s!"
 msgstr "FEIL: Ugyldig argument %s!"
 
-#: src/random-sleep.c:97
+#: src/random-sleep.c:99
 #, c-format
 msgid "Sleeping for %1.6f s ..."
 msgstr "Sover i %1.6f s ..."
 
-#: src/random-sleep.c:102
+#: src/random-sleep.c:104
 msgid "Woke up!"
 msgstr "Våknet!"

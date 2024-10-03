@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.0~beta3\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-09-24 17:24+0200\n"
+"POT-Creation-Date: 2024-10-03 16:20+0200\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -33,153 +33,153 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/System-Info:68
+#: src/System-Info:72
 msgid "ERROR: get-system-info not found in search path!"
 msgstr "FEHLER: get-system-info nicht im Suchpfad gefunden!"
 
-#: src/System-Info:100
+#: src/System-Info:105
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: src/System-Info:138
+#: src/System-Info:143
 msgid "Host:"
 msgstr "Rechner:"
 
-#: src/System-Info:142
+#: src/System-Info:147
 msgid "Uptime:"
 msgstr "Betriebszeit:"
 
-#: src/System-Info:144
+#: src/System-Info:149
 msgid "%s, %s, %s, and %s"
 msgstr "%s, %s, %s und %s"
 
-#: src/System-Info:145
+#: src/System-Info:150
 msgid "%'d day"
 msgid_plural "%'d days"
 msgstr[0] "%'d Tag"
 msgstr[1] "%'d Tage"
 
-#: src/System-Info:146
+#: src/System-Info:151
 msgid "%'d hour"
 msgid_plural "%'d hours"
 msgstr[0] "%'d Stunde"
 msgstr[1] "%'d Stunden"
 
-#: src/System-Info:147
+#: src/System-Info:152
 msgid "%'d minute"
 msgid_plural "%'d minutes"
 msgstr[0] "%'d Minute"
 msgstr[1] "%'d Minuten"
 
-#: src/System-Info:148
+#: src/System-Info:153
 msgid "%'d second"
 msgid_plural "%'d seconds"
 msgstr[0] "%'d Sekunde"
 msgstr[1] "%'d Sekunden"
 
-#: src/System-Info:151
+#: src/System-Info:156
 msgid "Operating System:"
 msgstr "Betriebssystem:"
 
-#: src/System-Info:152
+#: src/System-Info:157
 msgid "with kernel"
 msgstr "mit Kernel"
 
-#: src/System-Info:157
+#: src/System-Info:162
 msgid "Processor:"
 msgstr "Prozessor:"
 
-#: src/System-Info:158
+#: src/System-Info:163
 msgid "%'d processes"
 msgstr "%'d Prozesse"
 
-#: src/System-Info:159
+#: src/System-Info:164
 msgid "%'d user"
 msgid_plural "%'d users"
 msgstr[0] "%'d Benutzer"
 msgstr[1] "%'d Benutzer"
 
-#: src/System-Info:168
+#: src/System-Info:173
 msgid "Load (1/5/15 min):"
 msgstr "Last (1/5/15 Min.):"
 
-#: src/System-Info:170
+#: src/System-Info:175
 msgid "%1.1f %% / %1.1f %% / %1.1f %%"
 msgstr "%1.1f %% / %1.1f %% / %1.1f %%"
 
-#: src/System-Info:190
+#: src/System-Info:195
 msgid "Battery:"
 msgstr "Batterie:"
 
-#: src/System-Info:199
+#: src/System-Info:210
 msgid "unknown"
 msgstr "unbekannt"
 
-#: src/System-Info:203
+#: src/System-Info:214
 msgid "not charging"
 msgstr "lädt nicht"
 
-#: src/System-Info:206
+#: src/System-Info:217
 msgid "charging"
 msgstr "lädt"
 
-#: src/System-Info:209
+#: src/System-Info:220
 msgid "full"
 msgstr "vollständig aufgeladen"
 
-#: src/System-Info:212
+#: src/System-Info:223
 msgid "discharging"
 msgstr "entlädt"
 
-#: src/System-Info:218
+#: src/System-Info:229
 msgid "#%u %s, %u %%"
 msgstr "%u. %s, %u %%"
 
-#: src/System-Info:227
+#: src/System-Info:238
 msgid "Used Memory:"
 msgstr "Belegtes RAM:"
 
-#: src/System-Info:229 src/System-Info:237
+#: src/System-Info:240 src/System-Info:248
 msgid "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)"
 msgstr "%'6.0f MiB von %'6.0f MiB (%'6.0f MiB verfügbar: %'5.1f %%)"
 
-#: src/System-Info:235 src/System-Info:243
+#: src/System-Info:246 src/System-Info:254
 msgid "Used Swap:"
 msgstr "Belegter Swap:"
 
-#: src/System-Info:244
+#: src/System-Info:255
 msgid "no swap available!"
 msgstr "Swap nicht vorhanden!"
 
-#: src/System-Info:248
+#: src/System-Info:259
 msgid "Used Diskspace:"
 msgstr "Speicherplatz:"
 
-#: src/System-Info:259
+#: src/System-Info:283
 msgid "%1.0f %% on %s"
 msgstr "%1.0f %% auf %s"
 
-#: src/System-Info:271
+#: src/System-Info:295
 msgid "Network:"
 msgstr "Netzwerk:"
 
-#: src/System-Info:298
+#: src/System-Info:323
 msgid "(No IPv4)"
 msgstr "(Kein IPv4)"
 
-#: src/System-Info:334
+#: src/System-Info:359
 msgid "SSH Keys:"
 msgstr "SSH-Schlüssel:"
 
-#: src/System-Info:340
+#: src/System-Info:365
 msgid "#%u %s"
 msgstr "%u. %s"
 
-#: src/System-Info:364
+#: src/System-Info:389
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/System-Info:373
+#: src/System-Info:398
 msgid "System information as of %s"
 msgstr "Systeminformation am %s"
 
