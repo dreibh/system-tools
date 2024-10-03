@@ -32,17 +32,21 @@ export TEXTDOMAIN="System-Info"
 # ###### Settings ###########################################################
 indent=-20
 
-colorBasic="\x1b[33m"
-colorNetwork="\x1b[34m"
-colorPrefix="\x1b[94m"
-colorInactive="\x1b[37m"
-colorNone="\x1b[0m"
+colorBasic="\e[33m"
+colorNetwork="\e[34m"
+colorPrefix="\e[94m"
+colorInactive="\e[37m"
+colorNone="\e[0m"
 
-colorBatteryFull="\x1b[33m"
-colorBatteryCharging="\x1b[31m"
-colorBatteryNotCharging="\x1b[38m"
-colorBatteryFull="\x1b[32m"
-colorBatteryDischarging="\x1b[35m"
+colorBatteryFull="\e[33m"
+colorBatteryCharging="\e[31m"
+colorBatteryNotCharging="\e[38m"
+colorBatteryFull="\e[32m"
+colorBatteryDischarging="\e[35m"
+
+colorDiskNormal="\e[32m"
+colorDisk80="\e[33m"
+colorDisk95="\e[31m"
 
 
 # ###### Print banners ######################################################
@@ -92,6 +96,7 @@ function print-system-information ()
    system_swap_used=
    system_swap_free=
    system_swap_freepct=
+   disk_list=
    netif_list=
    # Set the variables:
    eval "$(get-system-info)"
@@ -188,6 +193,12 @@ function print-system-information ()
    # --- TEST ---------------------------
    if [ "${battery_list}" != "" ] ; then
       print-utf8 -i "${indent}" "$(gettext "Battery:")"
+      local number
+      local battery
+      local statusVariable
+      local capacityVariable
+      local status
+      local colorBattery
       number=0
       for battery in ${battery_list} ; do
          number=$((number+1))
@@ -246,17 +257,30 @@ function print-system-information ()
 
    # ------ Storage ---------------------------------------------------------
    print-utf8 -i "${indent}" "$(gettext "Used Diskspace:")"
-   for mountPoint in / /home ; do
-      mountPointName="${mountPoint//\//}"
-      if [ "${mountPointName}" == "" ] ; then
-         mountPointName="root"
+   local mountPointVariable
+   local mountPointName
+   local mountPoint
+   local percentage
+   local colorDisk
+   for mountPointName in ${disk_list} ; do
+      if [ "${mountPointName}" == "root" ] ; then
+         mountPoint="/"
       else
+         mountPoint="/${mountPointName}"
          echo -n ", "
       fi
       mountPointVariable="disk_${mountPointName}_pct"
-      if [ -v "${mountPointVariable}" ] ; then
+      if [ -v "${mountPointVariable}" ] && [[ "${!mountPointVariable}" =~ ^[0-9]+ ]]; then
+         percentage="${!mountPointVariable//[^0-9]*/}"
+         if [ "${percentage}" -ge 95 ] ; then
+            colorDisk="${colorDisk95}"
+         elif [ "${percentage}" -ge 80 ] ; then
+            colorDisk="${colorDisk80}"
+         else
+            colorDisk="${colorDiskNormal}"
+         fi
          # shellcheck disable=SC2059
-         printf "$(gettext "%1.0f %% on %s")" \
+         printf "${colorDisk}$(gettext "%1.0f %% on %s")${colorBasic}" \
             "${!mountPointVariable}" \
             "${mountPoint}"
       fi
