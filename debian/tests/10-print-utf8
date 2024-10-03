@@ -20,7 +20,7 @@
 #
 
 # Bash options:
-set -exu
+set -eu
 
 print-utf8 -n -s '<*' '=' '*>'
 for indent in -20 +20 ; do

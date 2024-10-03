@@ -20,7 +20,7 @@
 #
 
 # Bash options:
-set -exu
+set -eu
 
 get-system-info
 

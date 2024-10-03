@@ -20,7 +20,7 @@
 #
 
 # Bash options:
-set -exu
+set -eu
 
 LANGUAGE=de_DE.UTF-8 System-Info
 LANGUAGE=nb_NO.UTF-8 System-Info
