@@ -504,6 +504,7 @@ static void showDiskInformation()
        (sscanf(buffer, "%u", &value) == 1) ) {
       printf("disk_home_pct=%u\n", value);
    }
+   fputs("disk_list=\"root home\"\n", stdout);
 }
 
 
