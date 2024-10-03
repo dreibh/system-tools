@@ -1,1 +1,1 @@
-Tests: 10-print-utf8 20-get-system-info 50-system-info-i18n 51-system-info-i18n
+Tests: 10-print-utf8 20-get-system-info 50-system-info-run 51-system-info-i18n
