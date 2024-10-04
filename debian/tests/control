@@ -4,5 +4,19 @@ Depends: td-print-utf8
 Tests: 20-get-system-info
 Depends: td-get-system-info
 
+Tests: 30-system-maintenance
+Depends: td-system-maintenance
+Restrictions: needs-root, allow-stderr
+
+Tests: 31-reset-machine-id
+Depends: td-reset-machine-id
+Restrictions: needs-root, breaks-testbed
+
+Tests: 40-fingerprint-ssh-keys
+Depends: td-fingerprint-ssh-keys
+
+Tests: 41-misc
+Depends: td-misc
+
 Tests: 50-system-info-run, 51-system-info-i18n
 Depends: td-system-info
