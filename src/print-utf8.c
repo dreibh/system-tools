@@ -12,20 +12,17 @@
 
 
 // ###### Obtain console size ###############################################
-static void ioctlTIOCGWINSZ(struct winsize* w)
+static bool ioctlTIOCGWINSZ(struct winsize* w)
 {
    int fd = open("/dev/tty", O_RDWR);
    if(fd >= 0) {
-      if(ioctl(fd, TIOCGWINSZ, w) != 0) {
-         perror("ioctl(TIOCGWINSZ)");
-         exit(1);
+      if(ioctl(fd, TIOCGWINSZ, w) == 0) {
+         close(fd);
+         return true;
       }
       close(fd);
    }
-   else {
-      perror("open() failed for /dev/tty");
-      exit(1);
-   }
+   return false;
 }
 
 
@@ -33,8 +30,10 @@ static void ioctlTIOCGWINSZ(struct winsize* w)
 static int getConsoleWidth()
 {
    struct winsize w;
-   ioctlTIOCGWINSZ(&w);
-   return w.ws_col;
+   if(ioctlTIOCGWINSZ(&w)) {
+      return w.ws_col;
+   }
+   return 80;   // Use default!
 }
 
 
@@ -277,7 +276,11 @@ static void stringSizeLengthWidth(const char* originalString,
 static int terminalInfo()
 {
    struct winsize w;
-   ioctlTIOCGWINSZ(&w);
+   if(!ioctlTIOCGWINSZ(&w)) {
+      // Use defaults!
+      w.ws_col = 80;
+      w.ws_row = 24;
+   }
    printf("%u %u\n", (unsigned int)w.ws_col, (unsigned int)w.ws_row);
 }
 

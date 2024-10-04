@@ -53,6 +53,8 @@ Print current width and height of the console.
 print-utf8 is a simple program to print UTF-8 strings in the console with
 options for indentation, centering, separator as well as size/length/width
 information.
+If /dev/tty is not available to obtain the terminal width and height, the
+default of 80x24 is assumed.
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
@@ -77,6 +79,7 @@ Print the width (columns in the console) of the string without ANSI control sequ
 Printf the size, length and width of the string without ANSI control sequences.
 .It Fl t | Fl Fl terminal-info
 Print current width and height of the console.
+Note that if /dev/tty is not available, the default of 80x24 is returned!
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
