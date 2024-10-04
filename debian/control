@@ -31,6 +31,8 @@ Description: Print basic system information and banners
 Package: td-system-maintenance
 Architecture: all
 Depends: apt-show-versions,
+         gettext-base,
+         sudo,
          ${misc:Depends}
 Recommends: td-system-info
 Description: Perform basic system maintenance
@@ -41,7 +43,8 @@ Description: Perform basic system maintenance
 
 Package: td-reset-machine-id
 Architecture: all
-Depends: ${misc:Depends}
+Depends: gettext-base,
+         ${misc:Depends}
 Recommends: td-system-info,
             td-system-maintenance
 Description: Reset machine identity state
@@ -51,7 +54,8 @@ Description: Reset machine identity state
 
 Package: td-fingerprint-ssh-keys
 Architecture: all
-Depends: ${misc:Depends}
+Depends: gettext-base,
+         ${misc:Depends}
 Recommends: td-system-info
 Description: Print SSH key fingerprints
  This program prints the SSH key fingerprints of the local machine
@@ -59,7 +63,8 @@ Description: Print SSH key fingerprints
 
 Package: td-system-configure-grub
 Architecture: all
-Depends: ${misc:Depends}
+Depends: gettext-base,
+         ${misc:Depends}
 Recommends: grub2-common,
             td-system-maintenance
 Description: Helper tool to adjust GRUB configuration
@@ -94,7 +99,8 @@ Description: Print UTF-8 strings and obtain size/length/width information
 
 Package: td-misc
 Architecture: any
-Depends: ${misc:Depends},
+Depends: gettext-base,
+         ${misc:Depends},
          ${shlibs:Depends}
 Recommends: td-print-utf8
 Description: Miscellaneous tools
