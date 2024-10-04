@@ -257,14 +257,18 @@ static void stringSizeLengthWidth(const char* originalString,
    wchar_t* wide_string = convertToWideStringWithoutANSI(
                              originalString, removeANSISequences,
                              &utf8_string_size, &wide_string_length);
+   const unsigned char* space = "";
    if(showSize) {
-      printf(" %zd", utf8_string_size);
+      printf("%zd", utf8_string_size);
+      space = " ";
    }
    if(showLength) {
-      printf(" %zd", wide_string_length);
+      printf("%s%zd", space, wide_string_length);
+      space = " ";
    }
    if(showWidth) {
-      printf(" %d", wcswidth(wide_string, wide_string_length));
+      printf("%s%d", space, wcswidth(wide_string, wide_string_length));
+      // space = " ";
    }
    puts("");
 
