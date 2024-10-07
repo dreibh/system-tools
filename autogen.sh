@@ -81,16 +81,21 @@ done
 
 # ====== Configure with CMake ===============================================
 rm -f CMakeCache.txt
-echo "CMake options:${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=/usr $@ ."
-${COMMAND} cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=/usr $@ .
+if [ "$(uname)" == "freebsd" ] ; then
+   installPrefix="/usr"
+else
+   installPrefix="/usr/local"
+fi
+echo "CMake options:${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=\"${installPrefix}\" $* ."
+${COMMAND} cmake "${CMAKE_OPTIONS}" -DCMAKE_INSTALL_PREFIX="${installPrefix}" "$*" .
 
 # ------ Obtain number of cores ---------------------------------------------
 # Try Linux
 if [ "${CORES}" == "" ] ; then
-   CORES=`getconf _NPROCESSORS_ONLN 2>/dev/null || true`
+   CORES=$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)
    if [ "${CORES}" == "" ] ; then
       # Try FreeBSD
-      CORES=`sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || true`
+      CORES=$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || true)
    fi
    if [ "${CORES}" == "" ] ; then
       CORES="1"
@@ -99,4 +104,4 @@ if [ "${CORES}" == "" ] ; then
 fi
 
 # ====== Build ==============================================================
-${COMMAND} make -j${CORES}
+${COMMAND} make -j"${CORES}"
