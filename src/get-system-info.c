@@ -566,7 +566,7 @@ static void showNetworkInformation(const bool filterLocalScope)
 
    // ====== Print interfaces and their addresses ===========================
    unsigned int lastIfIndex = 0;
-   int          lastFamily = AF_UNSPEC;
+   int          lastFamily  = AF_UNSPEC;
    for(unsigned int i = 0; i < n; i++) {
       const unsigned int ifIndex = if_nametoindex(ifaArray[i].ifname);
       if( (lastIfIndex == 0) || (lastIfIndex != ifIndex) ) {

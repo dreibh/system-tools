@@ -68,7 +68,8 @@ int main(int argc, char** argv)
       return 1;
    }
    if(argc > 3) {
-      for(int i = 3; i < argc; i++) {
+      int i;
+      for(i = 3; i < argc; i++) {
          if( (strcmp(argv[i], "-q") == 0) || (strcmp(argv[i], "--quiet") == 0) ) {
             verboseMode = false;
          }
