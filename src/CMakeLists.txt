@@ -21,10 +21,6 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
-ADD_EXECUTABLE(get-system-info get-system-info.c)
-INSTALL(TARGETS get-system-info DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES get-system-info.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-
 INSTALL(PROGRAMS System-Info DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES System-Info.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
@@ -39,6 +35,22 @@ INSTALL(FILES Fingerprint-SSH-Keys.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
 INSTALL(PROGRAMS configure-grub DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES configure-grub.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+
+ADD_EXECUTABLE(get-system-info get-system-info.c)
+INSTALL(TARGETS get-system-info DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES get-system-info.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+
+ADD_EXECUTABLE(print-utf8 print-utf8.c)
+INSTALL(TARGETS print-utf8 DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES print-utf8.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+
+ADD_EXECUTABLE(random-sleep random-sleep.c)
+TARGET_LINK_LIBRARIES(random-sleep ${Intl_LIBRARIES})
+INSTALL(TARGETS random-sleep DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES random-sleep.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+
+INSTALL(PROGRAMS try-hard DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES try-hard.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
 
 #############################################################################

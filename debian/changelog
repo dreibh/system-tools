@@ -1,9 +1,9 @@
-td-system-tools (1.7.3~rc2-1ubuntu1) noble; urgency=medium
+td-system-tools (2.0.0~rc0-1ubuntu1) noble; urgency=medium
 
   * New upstream release.
   * Closes: #988010 (ITP).
 
- -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Thu, 12 Sep 2024 08:53:56 +0200
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Thu, 03 Oct 2024 17:41:52 +0200
 
 td-system-tools (1.7.2-1ubuntu1) noble; urgency=medium
 

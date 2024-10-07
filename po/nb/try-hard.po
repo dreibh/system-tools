@@ -19,10 +19,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \"td-system-tools\" \"1.7.0~beta2\"\n"
+"Project-Id-Version: \"td-system-tools\" \"1.7.3~rc2\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-09-24 16:05+0200\n"
-"PO-Revision-Date: 2024-03-14 13:14+0100\n"
+"POT-Creation-Date: 2024-09-24 17:24+0200\n"
+"PO-Revision-Date: 2024-09-18 14:53+0200\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
 "Language: nb\n"
@@ -33,21 +33,31 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Fingerprint-SSH-Keys:48
+#: src/try-hard:34
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Fingerprint-SSH-Keys:65
+#: src/try-hard:53
 #, sh-format
-msgid "Fingerprints of ${hostname} in raw format:"
-msgstr "Fingeravtrykk av ${hostname} i råformat:"
+msgid "ERROR: Invalid argument ${arg}!"
+msgstr "FEIL: Ugyldig argument ${arg}!"
 
-#: src/Fingerprint-SSH-Keys:92
+#: src/try-hard:60
 #, sh-format
-msgid "Fingerprints of ${hostname} in SSH format:"
-msgstr "Fingeravtrykk av ${hostname} i SSH-format:"
+msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
+msgstr "FEIL: Ugyldige maksimale prøveperioder ${MAX_TRIALS}!"
 
-#: src/Fingerprint-SSH-Keys:103
+#: src/try-hard:65
 #, sh-format
-msgid "Fingerprints of ${hostname} in DNS RR format:"
-msgstr "Fingeravtrykk av ${hostname} i DNS-RR-format:"
+msgid "ERROR: Invalid delay ${DELAY}!"
+msgstr "FEIL: Ugyldig forsinkelse ${DELAY}!"
+
+#: src/try-hard:84
+#, sh-format
+msgid "Tried ${MAX_TRIALS} times -> giving up now!"
+msgstr "Prøvde ${MAX_TRIALS} ganger -> gir opp nå!"
+
+#: src/try-hard:89
+#, sh-format
+msgid "Waiting for ${DELAY} s before trying again ..."
+msgstr "Venter på ${DELAY} s før å prøve igjen ..."

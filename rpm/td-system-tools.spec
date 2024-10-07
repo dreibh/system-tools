@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 1.7.3~rc2
+Version: 2.0.0~rc0
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -12,7 +12,6 @@ BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: gettext
-BuildArch:     noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 # Meta-package td-system-tools: install td-system-tools-all => install all sub-packages!
@@ -53,6 +52,7 @@ SSD or unmap unused storage.
 Summary: Perform basic system maintenance
 Group: Applications/System
 BuildArch: noarch
+Requires: td-system-tools-get-system-info = %{version}-%{release}
 Requires: (figlet or toilet)
 Requires: gettext-runtime
 Requires: iproute
@@ -160,11 +160,62 @@ a rescue media to fix a broken configuration!
 %{_datadir}/configure-grub/grub-defaults-standard
 
 
+%package get-system-info
+Summary: Obtain basic system information
+Group: Applications/System
+
+%description get-system-info
+This small program obtains basic status information about the system:
+hostname, uptime, CPU, memory statistics, and networking information.
+The output is printed in machine-readable form, which can be used
+with evaluation in shell scripts for further processing.
+
+%files get-system-info
+%{_bindir}/get-system-info
+%{_mandir}/man1/get-system-info.1.gz
+
+
+%package print-utf8
+Summary: Print UTF-8 strings and obtain size/length/width information
+Group: Applications/System
+
+%description print-utf8
+print-utf8 is a simple program to print UTF-8 strings in the console with
+options for indentation, centering, separator as well as size/length/width
+information.
+
+%files print-utf8
+%{_bindir}/print-utf8
+%{_mandir}/man1/print-utf8.1.gz
+
+
+%package misc
+Summary: Miscellaneous tools
+Group: Applications/System
+Recommends: td-system-tools-print-utf8
+
+%description misc
+This package contains two simple tools:
+try-hard runs a command and retries for a given number of times in case
+of error, with a delay between the trials.
+random-sleep waits for a random time, selected from a given interval, with
+support for fractional seconds.
+
+%files misc
+%{_bindir}/random-sleep
+%{_bindir}/try-hard
+%{_datadir}/locale/*/LC_MESSAGES/random-sleep.mo
+%{_datadir}/locale/*/LC_MESSAGES/try-hard.mo
+%{_mandir}/man1/random-sleep.1.gz
+%{_mandir}/man1/try-hard.1.gz
+
+
 %package all
 Summary: Meta package for system information and maintenance tools
 Group: Applications/System
 BuildArch: noarch
 Requires: td-system-tools-fingerprint-ssh-keys
+Requires: td-system-tools-misc
 Requires: td-system-tools-system-info
 Requires: td-system-tools-system-maintenance
 Requires: td-system-tools-reset-machine-id

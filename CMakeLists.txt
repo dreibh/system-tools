@@ -20,9 +20,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 PROJECT(td-system-tools)
 ENABLE_LANGUAGE(C)
 
-SET(BUILD_MAJOR "1")
-SET(BUILD_MINOR "7")
-SET(BUILD_PATCH "3~rc2")
+SET(BUILD_MAJOR "2")
+SET(BUILD_MINOR "0")
+SET(BUILD_PATCH "0~rc0")
 SET(BUILD_VERSION ${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH})
 
 
@@ -49,6 +49,21 @@ ADD_CUSTOM_TARGET(dist COMMAND ${CMAKE_MAKE_PROGRAM} clean package_source)
 
 
 #############################################################################
+#### UNINSTALL                                                           ####
+#############################################################################
+
+IF(NOT TARGET uninstall)
+   CONFIGURE_FILE(
+      "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+      IMMEDIATE @ONLY)
+
+   ADD_CUSTOM_TARGET(uninstall
+      COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+ENDIF()
+
+
+#############################################################################
 #### OS DEPENDENT                                                        ####
 #############################################################################
 
@@ -67,12 +82,6 @@ ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
    SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
    INCLUDE_DIRECTORIES("/usr/local/include" "/usr/local/opt/openssl/include")
 
-ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD")
-   MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
-   SET(CMAKE_REQUIRED_INCLUDES "/usr/pkg/include" "/usr/include" "/usr/local/include")
-   SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
-   INCLUDE_DIRECTORIES("/usr/pkg/include" "/usr/local/include")
-
 ELSE()
    MESSAGE(FATAL_ERROR ${CMAKE_SYSTEM_NAME} " not supported (yet?)")
 
@@ -82,6 +91,18 @@ ENDIF()
 #############################################################################
 #### INTERNATIONALISATION (I18N)                                         ####
 #############################################################################
+
+FIND_PACKAGE (Intl)
+IF (Intl_FOUND)
+   MESSAGE(STATUS "Internationalization (i18n) found:")
+   MESSAGE(STATUS " INTL_INCLUDE_DIRS: ${Intl_INCLUDE_DIRS}")
+   MESSAGE(STATUS " INTL_LIBRARIES: ${Intl_LIBRARIES}")
+   MESSAGE(STATUS " Version: ${Intl_VERSION}")
+   INCLUDE_DIRECTORIES(${Intl_INCLUDE_DIRS})
+   LINK_DIRECTORIES(${Intl_LIBRARY_DIRS})
+ELSE()
+   MESSAGE(STATUS "Internationalization (i18n) not found!")
+ENDIF()
 
 FIND_PROGRAM(XGETTEXT xgettext REQUIRED)
 FIND_PROGRAM(MSGMERGE msgmerge REQUIRED)

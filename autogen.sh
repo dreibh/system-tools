@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-#
 # Build Scripts
-# Copyright (C) 2002-2024 by Thomas Dreibholz
+
+# Copyrig@t (C) 2002-2024 by Thomas Dreibholz
 #
+
 # This program is free software: you can redistribute it and/or modify
+# shellcheck disable=SC2048
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -44,8 +46,8 @@ while [ $# -gt 0 ] ; do
       export CC=gcc
    elif [[ "$1" =~ ^(-|--)use-gcc-analyzer$ ]] ; then
       # Use these settings for GCC:
-      export CXX=g++-10
-      export CC=gcc-10
+      export CXX=g++
+      export CC=gcc
       export CFLAGS=-fanalyzer
       export CXXFLAGS=-fanalyzer
       CMAKE_OPTIONS="$CMAKE_OPTIONS -DCMAKE_VERBOSE_MAKEFILE=ON"
@@ -81,16 +83,22 @@ done
 
 # ====== Configure with CMake ===============================================
 rm -f CMakeCache.txt
-echo "CMake options:${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=/usr $@ ."
-${COMMAND} cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=/usr $@ .
+if [ "$(uname)" != "FreeBSD" ] ; then
+   installPrefix="/usr"
+else
+   installPrefix="/usr/local"
+fi
+echo "CMake options:${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=\"${installPrefix}\" $* ."
+# shellcheck disable=SC2048,SC2086
+${COMMAND} cmake "${CMAKE_OPTIONS}" -DCMAKE_INSTALL_PREFIX="${installPrefix}" $* .
 
 # ------ Obtain number of cores ---------------------------------------------
 # Try Linux
 if [ "${CORES}" == "" ] ; then
-   CORES=`getconf _NPROCESSORS_ONLN 2>/dev/null || true`
+   CORES=$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)
    if [ "${CORES}" == "" ] ; then
       # Try FreeBSD
-      CORES=`sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || true`
+      CORES=$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || true)
    fi
    if [ "${CORES}" == "" ] ; then
       CORES="1"
@@ -99,4 +107,4 @@ if [ "${CORES}" == "" ] ; then
 fi
 
 # ====== Build ==============================================================
-${COMMAND} make -j${CORES}
+${COMMAND} make -j"${CORES}"

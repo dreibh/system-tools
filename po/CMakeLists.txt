@@ -38,15 +38,21 @@ FOREACH(source IN LISTS sources)
    FILE(READ "${source}" potInputFiles)
    STRING(REGEX REPLACE "\n" ";" potInputFiles "${potInputFiles}")
    SET(LIST potInputFilesAbsolute "")
+   SET(potSourceLanguageOption "--language=Shell")   # Assume Shell scripts
    FOREACH(file ${potInputFiles})
+      GET_FILENAME_COMPONENT(sourceExtension ${file} EXT)
+      # Source is C/C++ -> remove --language=Shell option!
+      IF ( ("${sourceExtension}" STREQUAL ".c") OR ("${sourceExtension}" STREQUAL ".c") )
+         SET(potSourceLanguageOption "")
+      ENDIF()
       LIST(APPEND potInputFilesAbsolute ${potInputFilesAbsolute} "${PROJECT_SOURCE_DIR}/${file}")
    ENDFOREACH()
 
    MESSAGE("Translation template: ${textdomain} (${potInputFiles} -> ${potFile})")
    ADD_CUSTOM_COMMAND(OUTPUT "${potFile}"
                       COMMAND "${XGETTEXT}"
-                         --language Shell
-                         --from-code utf-8
+                         ${potSourceLanguageOption}
+                         --from-code=utf-8
                          --default-domain="${textdomain}"
                          --package-name="${PROJECT_NAME}"
                          --package-version="${BUILD_VERSION}"

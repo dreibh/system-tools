@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+#
+# Try a command multiple times, in case of error
+# Copyright (C) 2013-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -eu
+
+
+export TEXTDOMAIN="try-hard"
+# export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
+
+# shellcheck disable=SC1091
+. gettext.sh
+
+
+# ====== Handle arguments ===================================================
+if [ $# -lt 4 ] ; then
+   echo >&2 "$(gettext "Usage:") $0 max_trials delay [-v|--verbose] [-q|--quiet] -- command ..."
+   exit 1
+fi
+
+MAX_TRIALS="$1"
+DELAY="$2"
+VERBOSE=0
+shift 2
+
+while [ $# -gt 0 ] ; do
+   arg="$1"
+   shift
+   if [ "${arg}" == "-q" ] || [ "${arg}" == "--quiet" ] ; then
+      VERBOSE=0
+   elif [ "${arg}" == "-v" ] || [ "${arg}" == "--verbose" ] ; then
+      VERBOSE=1
+   elif  [ "${arg}" == "--" ] ; then
+      break
+   else
+      eval_gettext >&2 "ERROR: Invalid argument \${arg}!"
+      echo >&2
+      exit 1
+   fi
+done
+
+if [[ ! "${MAX_TRIALS}" =~ ^[0-9]*$ ]] || [ "${MAX_TRIALS}" -lt 1 ] ; then
+   eval_gettext >&2 "ERROR: Invalid maximum trials \${MAX_TRIALS}!"
+   echo >&2
+   exit 1
+fi
+if [[ ! "${DELAY}" =~ ^[0-9]+$ ]] ; then
+   eval_gettext >&2 "ERROR: Invalid delay \${DELAY}!"
+   echo >&2
+   exit 1
+fi
+
+
+# ====== Run loop ===========================================================
+trial=0
+while true ; do
+   trial=$(( trial+1 ))
+   if [ "${VERBOSE}" -eq 1 ] ; then
+      echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS}: \x1b[37m$*")\x1b[0m"
+   fi
+
+   # shellcheck disable=SC2068
+   $@ && exit
+
+   if [ ${trial} -ge "${MAX_TRIALS}" ] ; then
+      if [ "${VERBOSE}" -eq 1 ] ; then
+         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Tried \${MAX_TRIALS} times -> giving up now!")\x1b[0m"
+      fi
+      exit 1
+   fi
+   if [ "${VERBOSE}" -eq 1 ] ; then
+      echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Waiting for \${DELAY} s before trying again ...")\x1b[0m"
+   fi
+   sleep "${DELAY}"
+done

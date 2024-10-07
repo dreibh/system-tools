@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.6\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-09-18 13:03+0200\n"
+"POT-Creation-Date: 2024-10-03 16:20+0200\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -33,120 +33,155 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/System-Info:76
-#, sh-format
+#: src/System-Info:72
+msgid "ERROR: get-system-info not found in search path!"
+msgstr "FEIL: get-system-info ikke funnet i søkebanen!"
+
+#: src/System-Info:105
 msgid "Unknown"
 msgstr "Ukjent"
 
 #: src/System-Info:143
-#, sh-format
-msgid "Slice:            "
-msgstr "Slice:            "
+msgid "Host:"
+msgstr "Datamaskin:"
 
-#: src/System-Info:145
-#, sh-format
-msgid "Host:             "
-msgstr "Datamaskin:       "
+#: src/System-Info:147
+msgid "Uptime:"
+msgstr "Oppetid:"
 
-#: src/System-Info:146
-#, sh-format
-msgid "Uptime:           "
-msgstr "Oppetid:          "
+#: src/System-Info:149
+msgid "%s, %s, %s, and %s"
+msgstr "%s, %s, %s og %s"
+
+#: src/System-Info:150
+msgid "%'d day"
+msgid_plural "%'d days"
+msgstr[0] "%'d dag"
+msgstr[1] "%'d dager"
+
+#: src/System-Info:151
+msgid "%'d hour"
+msgid_plural "%'d hours"
+msgstr[0] "%'d time"
+msgstr[1] "%'d timer"
 
 #: src/System-Info:152
-#, sh-format
-msgid "Operating System: "
-msgstr "Operativsystem:   "
+msgid "%'d minute"
+msgid_plural "%'d minutes"
+msgstr[0] "%'d minutt"
+msgstr[1] "%'d minutter"
 
-#: src/System-Info:152
-#, sh-format
+#: src/System-Info:153
+msgid "%'d second"
+msgid_plural "%'d seconds"
+msgstr[0] "%'d sekund"
+msgstr[1] "%'d sekunder"
+
+#: src/System-Info:156
+msgid "Operating System:"
+msgstr "Operativsystem:"
+
+#: src/System-Info:157
 msgid "with kernel"
 msgstr "med kjerne"
 
-#: src/System-Info:153
-#, sh-format
-msgid "Processor:        "
-msgstr "Prosessor         "
+#: src/System-Info:162
+msgid "Processor:"
+msgstr "Prosessor:"
 
-#: src/System-Info:153
-#, sh-format
+#: src/System-Info:163
 msgid "%'d processes"
 msgstr "%'d prosesser"
 
-#: src/System-Info:153
-#, sh-format
+#: src/System-Info:164
 msgid "%'d user"
 msgid_plural "%'d users"
 msgstr[0] "%'d bruker"
 msgstr[1] "%'d brukere"
 
-#: src/System-Info:154
-#, sh-format
-msgid "Load:             "
-msgstr "Systembelastning: "
+#: src/System-Info:173
+msgid "Load (1/5/15 min):"
+msgstr "Last (1/5/15 min.):"
 
-#: src/System-Info:156
-#, sh-format
-msgid "of"
-msgstr "av"
+#: src/System-Info:175
+msgid "%1.1f %% / %1.1f %% / %1.1f %%"
+msgstr "%1.1f %% / %1.1f %% / %1.1f %%"
 
-#: src/System-Info:157
-#, sh-format
-msgid "available"
-msgstr "tilgjengelig"
+#: src/System-Info:195
+msgid "Battery:"
+msgstr "Batteri:"
 
-#: src/System-Info:158
-#, sh-format
-msgid "on"
-msgstr "på"
+#: src/System-Info:210
+msgid "unknown"
+msgstr "ukjent"
 
-#: src/System-Info:159
-#, sh-format
-msgid "Used Memory:      "
-msgstr "Brukt minne:      "
+#: src/System-Info:214
+msgid "not charging"
+msgstr "lades ikke"
 
-#: src/System-Info:160
-#, sh-format
-msgid "Used Swap:        "
-msgstr "Brukt bytteplass: "
+#: src/System-Info:217
+msgid "charging"
+msgstr "lades"
 
-#: src/System-Info:165
-#, sh-format
+#: src/System-Info:220
+msgid "full"
+msgstr "fulladet"
+
+#: src/System-Info:223
+msgid "discharging"
+msgstr "lades ut"
+
+#: src/System-Info:229
+msgid "#%u %s, %u %%"
+msgstr "№%u %s, %u %%"
+
+#: src/System-Info:238
+msgid "Used Memory:"
+msgstr "Brukt minne:"
+
+#: src/System-Info:240 src/System-Info:248
+msgid "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)"
+msgstr "%'6.0f MiB av %'6.0f MiB (%'6.0f MiB tilgjengelig: %'5.1f %%)"
+
+#: src/System-Info:246 src/System-Info:254
+msgid "Used Swap:"
+msgstr "Brukt bytteplass:"
+
+#: src/System-Info:255
 msgid "no swap available!"
 msgstr "bytteplass ikke tilgjengelig!"
 
-#: src/System-Info:168
-#, sh-format
-msgid "Used Diskspace:   "
-msgstr "Brukt diskplass:  "
+#: src/System-Info:259
+msgid "Used Diskspace:"
+msgstr "Brukt diskplass:"
 
-#: src/System-Info:184
-msgid "SSH Keys:         #1 "
-msgstr "SSH-nøkler:       №1 "
+#: src/System-Info:283
+msgid "%1.0f %% on %s"
+msgstr "%1.0f %% på %s"
 
-#: src/System-Info:186
-#, sh-format
-msgid "                  #${keyNumber} "
-msgstr "                  №${keyNumber} "
-
-#: src/System-Info:249
-msgid "(No IPv4)"
-msgstr "(Ingen IPv4)"
-
-#: src/System-Info:347
-#, sh-format
+#: src/System-Info:295
 msgid "Network:"
 msgstr "Nettverk:"
 
-#: src/System-Info:368
-#, sh-format
+#: src/System-Info:323
+msgid "(No IPv4)"
+msgstr "(Ingen IPv4)"
+
+#: src/System-Info:359
+msgid "SSH Keys:"
+msgstr "SSH-nøkler:"
+
+#: src/System-Info:365
+msgid "#%u %s"
+msgstr "№%u %s"
+
+#: src/System-Info:389
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/System-Info:377
-#, sh-format
-msgid "System information as of ${now}"
-msgstr "Systeminformasjon per ${now}"
+#: src/System-Info:398
+msgid "System information as of %s"
+msgstr "Systeminformasjon per %s"
 
 #: src/system-info.d/01-example:47 src/system-info.d/10-company-logo-example:62
 msgid "You can change this banner in /etc/system-info.d!"

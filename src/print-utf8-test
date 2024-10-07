@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set  -eu
+
+make print-utf8
+PRINT="./print-utf8"
+PRINT="valgrind --tool=memcheck ./print-utf8"
+
+${PRINT} -n -s '<*' '=' '*>'
+for indent in -20 +20 ; do
+   echo "Indented ${indent}:"
+   ${PRINT} -i ${indent} "Test: "
+   echo "*"
+   ${PRINT} -i ${indent} "Test äöüß ÆØÅ: "
+   echo "*"
+   ${PRINT} -i ${indent} "托马斯博士: "
+   echo "*"
+   ${PRINT} -i ${indent} "😀💻: "
+   echo "*"
+done
+
+${PRINT} -n -s '<😀' '=' '😀>'
+echo "Centered:"
+${PRINT} -n -c "Test"
+${PRINT} -n -c "\x1b[38;2;241;71;29mTest\x1b[0m"
+${PRINT} -n -c "äöüß"
+${PRINT} -n -c "托马斯博士"
+
+${PRINT} -n -s '<💻😀' '=' '😀💻>'
+
+${PRINT} -l '<💻😀' '=' '😀💻>'
+${PRINT} -s '<💻😀' '=' '😀💻>'
+${PRINT} -w '<💻😀' '=' '😀💻>'
+${PRINT} -a '<💻😀' '=' '😀💻>'

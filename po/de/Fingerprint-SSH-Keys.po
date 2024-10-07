@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.0~beta2\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-05-31 11:55+0200\n"
+"POT-Creation-Date: 2024-09-24 16:05+0200\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -34,7 +34,6 @@ msgstr ""
 "X-Source-Language: en_GB\n"
 
 #: src/Fingerprint-SSH-Keys:48
-#, sh-format
 msgid "Usage:"
 msgstr "Aufruf:"
 

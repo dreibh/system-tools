@@ -1,0 +1,60 @@
+.\" Try Hard
+.\" Copyright (C) 2024 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: dreibh@simula.no
+.\"
+.\" ###### Setup ############################################################
+.Dd September 18, 2024
+.Dt try-hard 1
+.Os try-hard
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm try-hard
+.Nd retry a command multiple times in case of failure
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm try-hard
+max_trials
+delay
+.Op Fl q | Fl Fl quiet
+.Op Fl v | Fl Fl verbose
+--
+command ...
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm try-hard
+tries to run a command up to a given number of trials. In case of failure,
+a given delay time is waited before the next trial.
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It Fl q | Fl Fl quiet
+Quiet mode: no output is made.
+.It Fl v | Fl Fl verbose
+Verbose mode: print selected delay and wake-up.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It try-hard 10 60 --verbose -- git clone https://dreibh@github.com/dreibh/rserpooldemo.git
+.It try-hard 3 300 -q -- git clone https://git.freebsd.org/ports.git
+.It try-hard 3 60 -- wget -O example.tar.gz https://www.example.net/example.tar.gz
+.It try-hard 100 1 -v -- false
+.El

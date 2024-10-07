@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# System-Info
+# System-Tools
 # Copyright (C) 2002-2024 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -20,8 +20,10 @@
 #
 
 # Bash options:
-set -e
+set -eu
 
-System-Info
+random-sleep 1 3 --verbose
+
+try-hard 3 1 --verbose -- false || try-hard 3 1 --verbose -- true
 
 echo "Test passed!"
