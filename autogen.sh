@@ -81,13 +81,14 @@ done
 
 # ====== Configure with CMake ===============================================
 rm -f CMakeCache.txt
-if [ "$(uname)" == "freebsd" ] ; then
+if [ "$(uname)" != "freebsd" ] ; then
    installPrefix="/usr"
 else
    installPrefix="/usr/local"
 fi
 echo "CMake options:${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=\"${installPrefix}\" $* ."
-${COMMAND} cmake "${CMAKE_OPTIONS}" -DCMAKE_INSTALL_PREFIX="${installPrefix}" "$*" .
+# shellcheck disable=SC2048,SC2086
+${COMMAND} cmake "${CMAKE_OPTIONS}" -DCMAKE_INSTALL_PREFIX="${installPrefix}" $* .
 
 # ------ Obtain number of cores ---------------------------------------------
 # Try Linux
