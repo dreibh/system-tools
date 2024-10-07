@@ -47,8 +47,8 @@ Depends: gettext-base,
          sudo,
          ${misc:Depends}
 Provides: td-system-reset-machine-id
-Breaks: td-system-reset-machine-id
 Replaces: td-system-reset-machine-id
+Breaks: td-system-reset-machine-id (<< ${source:Version})
 Recommends: td-system-info,
             td-system-maintenance
 Description: Reset machine identity state
@@ -61,8 +61,8 @@ Architecture: all
 Depends: gettext-base,
          ${misc:Depends}
 Provides: td-system-fingerprint-ssh-keys
-Breaks: td-system-fingerprint-ssh-keys
 Replaces: td-system-fingerprint-ssh-keys
+Breaks: td-system-fingerprint-ssh-keys (<< ${source:Version})
 Recommends: td-system-info
 Description: Print SSH key fingerprints
  This program prints the SSH key fingerprints of the local machine
@@ -119,15 +119,15 @@ Description: Miscellaneous tools
 
 Package: td-system-tools
 Architecture: all
-Depends: td-fingerprint-ssh-keys,
-         td-misc,
-         td-reset-machine-id,
-         td-system-info,
-         td-system-maintenance,
+Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
+         td-misc (>= ${source:Version}),
+         td-reset-machine-id  (>= ${source:Version}),
+         td-system-info (>= ${source:Version}),
+         td-system-maintenance (>= ${source:Version}),
          ${misc:Depends}
 Provides: td-system-reset-machine-id
-Breaks: td-system-reset-machine-id
 Replaces: td-system-reset-machine-id
+Breaks: td-system-reset-machine-id (<< ${source:Version})
 Recommends: td-system-configure-grub
 Description: Metapackage for system information and maintenance tools
  This package is a metapackage for the system information and maintenance
