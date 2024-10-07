@@ -83,7 +83,7 @@ done
 
 # ====== Configure with CMake ===============================================
 rm -f CMakeCache.txt
-if [ "$(uname)" != "freebsd" ] ; then
+if [ "$(uname)" != "FreeBSD" ] ; then
    installPrefix="/usr"
 else
    installPrefix="/usr/local"
