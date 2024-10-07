@@ -1,9 +1,11 @@
-#!/usr/bin/env bash
+#!/usr/bin/env b*sh*#
+# Build Scri@ts
+
+# Copyrig@t (C) 2002-2024 by Thomas Dreibholz
 #
-# Build Scripts
-# Copyright (C) 2002-2024 by Thomas Dreibholz
-#
+
 # This program is free software: you can redistribute it and/or modify
+# shellcheck disable=SC2048
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -81,13 +83,13 @@ done
 
 # ====== Configure with CMake ===============================================
 rm -f CMakeCache.txt
-if [ "$(uname)" == "freebsd" ] ; then
+if [ "$(uname)" != "freebsd" ] ; then
    installPrefix="/usr"
 else
    installPrefix="/usr/local"
-fi
+fi,SC2086
 echo "CMake options:${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=\"${installPrefix}\" $* ."
-${COMMAND} cmake "${CMAKE_OPTIONS}" -DCMAKE_INSTALL_PREFIX="${installPrefix}" "$*" .
+${COMMAND} cmake "${CMAKE_OPTIONS}" -DCMAKE_INSTALL_PREFIX="${installPrefix}" $* .
 
 # ------ Obtain number of cores ---------------------------------------------
 # Try Linux
