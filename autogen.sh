@@ -1,5 +1,5 @@
-#!/usr/bin/env b*sh*#
-# Build Scri@ts
+#!/usr/bin/env bash
+# Build Scripts
 
 # Copyrig@t (C) 2002-2024 by Thomas Dreibholz
 #
