@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"1.7.0~beta3\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-10-07 09:37+0200\n"
+"POT-Creation-Date: 2024-10-07 09:53+0200\n"
 "PO-Revision-Date: 2024-03-23 19:33+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -38,8 +38,8 @@ msgid "Usage:"
 msgstr "Aufruf:"
 
 #: src/System-Maintenance:46
-msgid "ERROR: /etc/os-release does not exist!"
-msgstr ""
+msgid "ERROR: /etc/os-release not found!"
+msgstr "FEHLER: /etc/os-release nicht gefunden!"
 
 #: src/System-Maintenance:54
 msgid "Stopping AutoFS service ..."

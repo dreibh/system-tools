@@ -43,7 +43,7 @@ done
 
 # ====== Find distribution variant ==========================================
 if [ ! -e /etc/os-release ] ; then
-   gettext >&2 "ERROR: /etc/os-release does not exist!"
+   gettext >&2 "ERROR: /etc/os-release not found!"
    echo >&2
    exit 1
 fi
