@@ -87,12 +87,9 @@ if [ "$(uname)" != "freebsd" ] ; then
    installPrefix="/usr"
 else
    installPrefix="/usr/local"
-fi,SC2086
+fi
 echo "CMake options:${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=\"${installPrefix}\" $* ."
-<<<<<<< HEAD
-=======
 # shellcheck disable=SC2048,SC2086
->>>>>>> 214d3f02258d1ef44c3ce1050a7861ca716fa239
 ${COMMAND} cmake "${CMAKE_OPTIONS}" -DCMAKE_INSTALL_PREFIX="${installPrefix}" $* .
 
 # ------ Obtain number of cores ---------------------------------------------
