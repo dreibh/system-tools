@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.0.0~rc0
+Version: 2.0.0~rc1.1
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -53,11 +53,10 @@ Summary: Perform basic system maintenance
 Group: Applications/System
 BuildArch: noarch
 Requires: td-system-tools-get-system-info = %{version}-%{release}
+Requires: td-system-tools-print-utf8 = %{version}-%{release}
 Requires: (figlet or toilet)
 Requires: gettext-runtime
-Requires: iproute
 Requires: (mbuffer or buffer)
-Requires: procps
 Recommends: subnetcalc
 Suggests: banner
 
@@ -88,6 +87,8 @@ in, providing the user an up-to-date overview of the system.
 Summary: Perform basic system maintenance tasks
 Group: Applications/System
 BuildArch: noarch
+Requires: gettext-runtime
+Requires: sudo
 Recommends: td-system-tools-system-info
 
 %description system-maintenance
@@ -107,6 +108,8 @@ for old kernels and removing them, trim SSD or unmap unused storage.
 Summary: Reset machine identity state
 Group: Applications/System
 BuildArch: noarch
+Requires: gettext-runtime
+Requires: sudo
 Recommends: td-system-tools-system-info
 Recommends: td-system-tools-system-maintenance
 
@@ -125,6 +128,7 @@ SSH client and server settings.
 Summary: Reset machine identity state
 Group: Applications/System
 BuildArch: noarch
+Requires: gettext-runtime
 Recommends: td-system-tools-system-info
 
 %description fingerprint-ssh-keys
@@ -141,6 +145,7 @@ in different formats: SSH hash, DNS SSHFP RR.
 Summary: Helper tool to adjust GRUB configuration
 Group: Applications/System
 BuildArch: noarch
+Requires: gettext-runtime
 Recommends: td-system-tools-system-info
 
 %description configure-grub
@@ -163,6 +168,7 @@ a rescue media to fix a broken configuration!
 %package get-system-info
 Summary: Obtain basic system information
 Group: Applications/System
+Requires: procps
 
 %description get-system-info
 This small program obtains basic status information about the system:

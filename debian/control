@@ -44,6 +44,7 @@ Description: Perform basic system maintenance
 Package: td-reset-machine-id
 Architecture: all
 Depends: gettext-base,
+         sudo,
          ${misc:Depends}
 Recommends: td-system-info,
             td-system-maintenance
