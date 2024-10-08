@@ -50,20 +50,20 @@ while [ $# -gt 0 ] ; do
       export CC=gcc
       export CFLAGS=-fanalyzer
       export CXXFLAGS=-fanalyzer
-      CMAKE_OPTIONS="$CMAKE_OPTIONS -DCMAKE_VERBOSE_MAKEFILE=ON"
+      CMAKE_OPTIONS="${CMAKE_OPTIONS} -DCMAKE_VERBOSE_MAKEFILE=ON"
       CORES=1   # The analyzer takes a *huge* amount of memory!
    elif [[ "$1" =~ ^(-|--)debug$ ]] ; then
       # Enable debugging build:
-      CMAKE_OPTIONS="$CMAKE_OPTIONS -DCMAKE_BUILD_TYPE=Debug"
+      CMAKE_OPTIONS="${CMAKE_OPTIONS} -DCMAKE_BUILD_TYPE=Debug"
    elif [[ "$1" =~ ^(-|--)release$ ]] ; then
       # Enable debugging build:
-      CMAKE_OPTIONS="$CMAKE_OPTIONS -DCMAKE_BUILD_TYPE=Release"
+      CMAKE_OPTIONS="${CMAKE_OPTIONS} -DCMAKE_BUILD_TYPE=Release"
    elif [[ "$1" =~ ^(-|--)release-with-debinfo$ ]] ; then
       # Enable debugging build:
-      CMAKE_OPTIONS="$CMAKE_OPTIONS -DCMAKE_BUILD_TYPE=RelWithDebInfo"
+      CMAKE_OPTIONS="${CMAKE_OPTIONS} -DCMAKE_BUILD_TYPE=RelWithDebInfo"
    elif [[ "$1" =~ ^(-|--)verbose$ ]] ; then
       # Enable verbose Makefile:
-      CMAKE_OPTIONS="$CMAKE_OPTIONS -DCMAKE_VERBOSE_MAKEFILE=ON"
+      CMAKE_OPTIONS="${CMAKE_OPTIONS} -DCMAKE_VERBOSE_MAKEFILE=ON"
    elif [[ "$1" =~ ^(-|--)cores ]] ; then
       if [[ ! "$2" =~ ^[0-9]*$ ]] ; then
          echo >&2 "ERROR: Number of cores must be an integer number!"
@@ -88,9 +88,13 @@ if [ "$(uname)" != "FreeBSD" ] ; then
 else
    installPrefix="/usr/local"
 fi
-echo "CMake options:${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=\"${installPrefix}\" $* ."
+if [ "$*" != "" ] ; then
+echo "x"
+   CMAKE_OPTIONS="${CMAKE_OPTIONS} $*"
+fi
+echo "CMake options:${CMAKE_OPTIONS} . -DCMAKE_INSTALL_PREFIX=\"${installPrefix}\""
 # shellcheck disable=SC2048,SC2086
-${COMMAND} cmake "${CMAKE_OPTIONS}" -DCMAKE_INSTALL_PREFIX="${installPrefix}" $* .
+${COMMAND} cmake ${CMAKE_OPTIONS} . -DCMAKE_INSTALL_PREFIX="${installPrefix}"
 
 # ------ Obtain number of cores ---------------------------------------------
 # Try Linux
