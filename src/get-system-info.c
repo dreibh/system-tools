@@ -115,7 +115,7 @@ static void printaddress(const struct sockaddr* address,
    }
 #elif defined(__FreeBSD__)
    else if(address->sa_family == AF_LINK) {
-      const uint8_t* macAddress = (unsigned char *)LLADDR((struct sockaddr_dl *)(ifaptr)->ifa_addr);
+      const uint8_t* macAddress = (unsigned char *)LLADDR((const struct sockaddr_dl*)address);
       for(unsigned int i = 0; i < 6; i++) {
          printf("%s%02x", (i > 0) ? ":" : "", macAddress[i]);
       }
