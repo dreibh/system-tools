@@ -17,7 +17,9 @@
 #include <sys/utsname.h>
 #if defined(__linux)
 #include <sys/sysinfo.h>
+#include <netpacket/packet.h>
 #elif defined(__FreeBSD__)
+#include <net/if_dl.h>
 #include <sys/sysctl.h>
 #include <vm/vm_param.h>
 #else
@@ -90,18 +92,35 @@ unsigned int countSetBits(const uint8_t* array, const unsigned int size)
 static void printaddress(const struct sockaddr* address,
                          const unsigned int     prefixlen)
 {
-   char resolvedHost[NI_MAXHOST];
-   int error = getnameinfo(address,
-                           (address->sa_family == AF_INET6) ?
-                              sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in),
-                           (char*)&resolvedHost, sizeof(resolvedHost),
-                           NULL, 0,
-                           NI_NUMERICHOST);
-   if(error != 0) {
-      fprintf(stderr, "ERROR: getnameinfo() failed: %s\n", gai_strerror(error));
-      exit(1);
+   if( (address->sa_family == AF_INET6) || (address->sa_family == AF_INET) ) {
+      char resolvedHost[NI_MAXHOST];
+      int error = getnameinfo(address,
+                              (address->sa_family == AF_INET6) ?
+                                 sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in),
+                              (char*)&resolvedHost, sizeof(resolvedHost),
+                              NULL, 0,
+                              NI_NUMERICHOST);
+      if(error != 0) {
+         fprintf(stderr, "ERROR: getnameinfo() failed: %s\n", gai_strerror(error));
+         exit(1);
+      }
+      printf("%s/%u", resolvedHost, prefixlen);
    }
-   fprintf(stdout, "%s/%u", resolvedHost, prefixlen);
+#if defined(__linux)
+   else if(address->sa_family == AF_PACKET) {
+      const struct sockaddr_ll* macAddress = (const struct sockaddr_ll*)address;
+      for(unsigned int i = 0; i < 6; i++) {
+         printf("%s%02x", (i > 0) ? ":" : "", macAddress->sll_addr[i]);
+      }
+   }
+#elif defined(__FreeBSD__)
+   else if(address->sa_family == AF_LINK) {
+      const uint8_t* macAddress = (unsigned char *)LLADDR((struct sockaddr_dl *)(ifaptr)->ifa_addr);
+      for(unsigned int i = 0; i < 6; i++) {
+         printf("%s%02x", (i > 0) ? ":" : "", macAddress[i]);
+      }
+   }
+#endif
 }
 
 
@@ -559,6 +578,16 @@ static void showNetworkInformation(const bool filterLocalScope)
             ifaArray[n].flags     = ifa->ifa_flags;
             n++;
          }
+#if defined(__linux)
+         else if(ifa->ifa_addr->sa_family == AF_PACKET) {
+#elif defined(__FreeBSD__)
+         else if(ifa->ifa_addr->sa_family == AF_LINK) {
+#endif
+            ifaArray[n].ifname  = ifa->ifa_name;
+            ifaArray[n].address = ifa->ifa_addr;
+            ifaArray[n].flags   = ifa->ifa_flags;
+            n++;
+         }
       }
    }
    qsort(&ifaArray, n, sizeof(struct interfaceaddress),
@@ -584,8 +613,23 @@ static void showNetworkInformation(const bool filterLocalScope)
          if(lastFamily != AF_UNSPEC) {
             puts("\"");
          }
-         printf("netif_%u_ipv%u=\"",
-                ifIndex, (ifaArray[i].address->sa_family == AF_INET6) ? 6 : 4);
+         switch(ifaArray[i].address->sa_family) {
+            case AF_INET6:
+               printf("netif_%u_ipv6=\"", ifIndex);
+             break;
+            case AF_INET:
+               printf("netif_%u_ipv4=\"", ifIndex);
+             break;
+#if defined(__linux)
+            case AF_PACKET:
+#elif defined(__FreeBSD__)
+            case AF_LINK:
+#endif
+               printf("netif_%u_mac=\"", ifIndex);
+             break;
+            default:
+             break;
+         }
       }
       else {
          fputs(" ", stdout);

@@ -301,41 +301,45 @@ function print-system-information ()
       local ipv4Variable="netif_${interface}_ipv4"
       local ipv6Variable="netif_${interface}_ipv6"
 
-      if [[ "${!flagsVariable}" =~ (<UP>) ]] ; then
-         # Interface is UP
-         colorA="${colorNetwork}"
-         colorP="${colorPrefix}"
-      else
-         # Interface is DOWN
-         colorA="${colorInactive}"
-         colorP="${colorInactive}"
-      fi
+      if [ -v "${ipv4Variable}" ] || [ -v "${ipv6Variable}" ] ; then
 
-      local ipv4
-      local ipv6
-      if [ -v "${ipv4Variable}" ] ; then
-         ipv4="${!ipv4Variable}"
-         ipv4="${ipv4// /${colorA} }"
-         ipv4="${ipv4//\//${colorP}\/}"
-         ipv4="${ipv4// /   }"
-         ipv4="${ipv4//\// \/ }"
-      else
-         ipv4="$(gettext "(No IPv4)")"
-      fi
-      if [ -v "${ipv6Variable}" ] ; then
-         ipv6="${!ipv6Variable}"
-         ipv6="${ipv6// /${colorA} }"
-         ipv6="${ipv6//\//${colorP}\/}"
-         ipv6="${ipv6// /\\n${indentString}}"
-         ipv6="${ipv6//\// \/ }"
-         ipv6="${ipv6//%/%%}"
-         ipv6="\n${indentString}${ipv6}"
-      else
-         ipv6=""
-      fi
+         if [[ "${!flagsVariable}" =~ (<UP>) ]] ; then
+            # Interface is UP
+            colorA="${colorNetwork}"
+            colorP="${colorPrefix}"
+         else
+            # Interface is DOWN
+            colorA="${colorInactive}"
+            colorP="${colorInactive}"
+         fi
 
-      print-utf8 -i "${indent}" "   ${colorA}${!nameVariable}:"
-      echo -e "${ipv4}${colorA}${ipv6}${colorA}"
+         local ipv4
+         local ipv6
+         if [ -v "${ipv4Variable}" ] ; then
+            ipv4="${!ipv4Variable}"
+            ipv4="${ipv4// /${colorA} }"
+            ipv4="${ipv4//\//${colorP}\/}"
+            ipv4="${ipv4// /   }"
+            ipv4="${ipv4//\// \/ }"
+         else
+            ipv4="$(gettext "(No IPv4)")"
+         fi
+         if [ -v "${ipv6Variable}" ] ; then
+            ipv6="${!ipv6Variable}"
+            ipv6="${ipv6// /${colorA} }"
+            ipv6="${ipv6//\//${colorP}\/}"
+            ipv6="${ipv6// /\\n${indentString}}"
+            ipv6="${ipv6//\// \/ }"
+            ipv6="${ipv6//%/%%}"
+            ipv6="\n${indentString}${ipv6}"
+         else
+            ipv6=""
+         fi
+
+         print-utf8 -i "${indent}" "   ${colorA}${!nameVariable}:"
+         echo -e "${ipv4}${colorA}${ipv6}${colorA}"
+
+      fi
 
    done
 
