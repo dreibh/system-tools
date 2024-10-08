@@ -19,7 +19,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \"td-system-tools\" \"1.7.3~rc2\"\n"
+"Project-Id-Version: \"td-system-tools\" \"2.0.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
 "POT-Creation-Date: 2024-10-07 12:44+0200\n"
 "PO-Revision-Date: 2024-09-18 14:53+0200\n"
