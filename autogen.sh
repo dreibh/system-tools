@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
-# Build Scripts
-
-# Copyrig@t (C) 2002-2024 by Thomas Dreibholz
 #
-
+# Build Scripts
+# Copyright (C) 2002-2024 by Thomas Dreibholz
+#
 # This program is free software: you can redistribute it and/or modify
-# shellcheck disable=SC2048
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -21,7 +19,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -e
+set -eu
 
 
 CMAKE_OPTIONS=""
