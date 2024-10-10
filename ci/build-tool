@@ -1306,6 +1306,7 @@ def makeSourceDeb(packageInfo, codenames, skipPackageSigning, summaryFile):
       for fileName in [ dscFileName, buildinfoName, changesName, controlTarballName ] :
          shutil.copyfile(workdir + '/' + fileName, fileName)
 
+      # ====== Add files to summary =========================================
       if summaryFile != None:
          summaryFile.write('debSourceDscFile: '            + workdir + '/' + dscFileName        + ' ' + codename + '\n')
          summaryFile.write('debSourceBuildinfoFile: '      + workdir + '/' + buildinfoName      + ' ' + codename + '\n')
@@ -1424,9 +1425,6 @@ def buildDeb(packageInfo, codenames, architectures, skipPackageSigning, summaryF
             sys.stderr.write('Found changes files: ' + str(foundChangesFiles) + '\n')
             sys.exit(1)
 
-         if summaryFile != None:
-            summaryFile.write('debBuildChangesFile: ' + foundChangesFiles[0] + ' ' + codename + ' ' + buildArchitecture + '\n')
-
          # ====== Run BLHC ==================================================
          # FIXME: BLHC < 0.14 does not properly handle D_FORTIFY_SOURCE=3!
          if shutil.which('blhc') != None:
@@ -1450,7 +1448,7 @@ def buildDeb(packageInfo, codenames, architectures, skipPackageSigning, summaryF
             printSubsection('Running Lintian')
             print('=> ' + lintianCommand)
             try:
-               subprocess.run(blhcCommand, check=False, shell=True)
+               subprocess.run(lintianCommand, check=False, shell=True)
             except Exception as e:
                sys.stderr.write('ERROR: Lintian run failed: ' + str(e) + '\n')
                sys.exit(1)
@@ -1469,6 +1467,10 @@ def buildDeb(packageInfo, codenames, architectures, skipPackageSigning, summaryF
                sys.exit(1)
          else:
             sys.stderr.write('NOTE: LRC is not installed -> checks skipped!\n')
+
+         # ====== Add Changes file to summary ===============================
+         if summaryFile != None:
+            summaryFile.write('debBuildChangesFile: ' + foundChangesFiles[0] + ' ' + codename + ' ' + buildArchitecture + '\n')
 
    return True
 
@@ -1545,6 +1547,10 @@ def makeSourceRPM(packageInfo, skipPackageSigning, summaryFile):
       except Exception as e:
          sys.stderr.write('ERROR: RPMSign run failed: ' + str(e) + '\n')
          sys.exit(1)
+
+   # ====== Add SRPM file to summary ========================================
+   if summaryFile != None:
+      summaryFile.write('rpmSourceFile: ' + srpmFile + '\n')
 
 
 # ###### Build RPM binary package ###########################################
@@ -1638,6 +1644,10 @@ def buildRPM(packageInfo, releases, architectures, skipPackageSigning, summaryFi
             except Exception as e:
                sys.stderr.write('ERROR: RPMSign run failed: ' + str(e) + '\n')
                sys.exit(1)
+
+         # ====== Add RPM file to summary ===================================
+         if summaryFile != None:
+            summaryFile.write('rpmFile: ' + rpmFile + ' ' + release + ' ' + buildArchitecture + '\n')
 
 
 
