@@ -1443,7 +1443,7 @@ def buildDeb(packageInfo, codenames, architectures, skipPackageSigning, summaryF
 
          # ====== Run Lintian ===============================================
          if shutil.which('lintian') != None:
-            lintianCommand = 'lintian -v i -I -E --pedantic' + \
+            lintianCommand = 'lintian -v -i -I -E --pedantic' + \
                                 ' --profile ' + lintianProfile + \
                                 ' --suppress-tags malformed-deb-archive,bad-distribution-in-changes-file' + \
                                 ' ' + foundChangesFiles[0]
