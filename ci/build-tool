@@ -1432,7 +1432,7 @@ def buildDeb(packageInfo, codenames, architectures, skipPackageSigning, summaryF
          if shutil.which('blhc') != None:
             blhcCommand = 'blhc ' + buildlog + ' | grep -v "^CPPFLAGS missing (-D_FORTIFY_SOURCE=2).*-D_FORTIFY_SOURCE=3.*"  | grep -v "^NONVERBOSE BUILD:"'
             printSubsection('Running BLHC')
-            print(blhcCommand)
+            print('=> ' + blhcCommand)
             try:
                subprocess.run(blhcCommand, check=False, shell=True)
             except Exception as e:
@@ -1443,15 +1443,14 @@ def buildDeb(packageInfo, codenames, architectures, skipPackageSigning, summaryF
 
          # ====== Run Lintian ===============================================
          if shutil.which('lintian') != None:
-            lintianCommand = [ 'lintian',
-                                 '-v', '-i', '-I', '-E', '--pedantic',
-                                 '--profile', lintianProfile,
-                                 '--suppress-tags', 'malformed-deb-archive,bad-distribution-in-changes-file',
-                                 foundChangesFiles[0] ]
+            lintianCommand = 'lintian -v i -I -E --pedantic' + \
+                                ' --profile ' + lintianProfile + \
+                                ' --suppress-tags malformed-deb-archive,bad-distribution-in-changes-file' + \
+                                ' ' + foundChangesFiles[0]
             printSubsection('Running Lintian')
-            print(lintianCommand)
+            print('=> ' + lintianCommand)
             try:
-               subprocess.run(lintianCommand, check=True)
+               subprocess.run(blhcCommand, check=False, shell=True)
             except Exception as e:
                sys.stderr.write('ERROR: Lintian run failed: ' + str(e) + '\n')
                sys.exit(1)
@@ -1462,7 +1461,7 @@ def buildDeb(packageInfo, codenames, architectures, skipPackageSigning, summaryF
          if shutil.which('lrc') != None:
             lrcCommand = 'lrc -t'
             printSubsection('Running LRC')
-            print(lrcCommand)
+            print('=> ' + lrcCommand)
             try:
                subprocess.run(lrcCommand, check=False, shell=True)
             except Exception as e:
