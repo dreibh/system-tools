@@ -3,7 +3,7 @@ Version: 2.0.0~rc1.5
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
-License: GPL-3+
+License: GPL-3.0-or-later
 URL: https://www.nntb.no/~dreibh/system-tools/
 Source: https://www.nntb.no/~dreibh/system-tools/download/%{name}-%{version}.tar.xz
 
@@ -14,8 +14,12 @@ BuildRequires: gcc-c++
 BuildRequires: gettext
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
-# Meta-package td-system-tools: install td-system-tools-all => install all sub-packages!
-Requires: %{name}-all
+Requires: td-system-tools-fingerprint-ssh-keys = %{version}-%{release}
+Requires: td-system-tools-misc = %{version}-%{release}
+Requires: td-system-tools-system-info = %{version}-%{release}
+Requires: td-system-tools-system-maintenance = %{version}-%{release}
+Requires: td-system-tools-reset-machine-id = %{version}-%{release}
+Recommends: td-system-tools-configure-grub = %{version}-%{release}
 
 
 %description
@@ -214,24 +218,6 @@ support for fractional seconds.
 %{_datadir}/locale/*/LC_MESSAGES/try-hard.mo
 %{_mandir}/man1/random-sleep.1.gz
 %{_mandir}/man1/try-hard.1.gz
-
-
-%package all
-Summary: Meta package for system information and maintenance tools
-Group: Applications/System
-BuildArch: noarch
-Requires: td-system-tools-fingerprint-ssh-keys
-Requires: td-system-tools-misc
-Requires: td-system-tools-system-info
-Requires: td-system-tools-system-maintenance
-Requires: td-system-tools-reset-machine-id
-Recommends: td-system-tools-configure-grub
-
-%description all
-This package is a meta package for the system information and maintenance
-tools.
-
-%files all
 
 
 %changelog
