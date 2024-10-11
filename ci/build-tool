@@ -119,10 +119,10 @@ def readPackagingConfiguration():
 
    # ====== Initialise ======================================================
    packageInfo = {}
-   packageInfo['packaging_maintainer']      = None
-   packageInfo['packaging_maintainer_key']  = None
-   packageInfo['packaging_make_dist']       = None
-   packageInfo['packaging_config_name']     = 'packaging.conf'
+   packageInfo['packaging_maintainer']     = None
+   packageInfo['packaging_maintainer_key'] = None
+   packageInfo['packaging_make_dist']      = None
+   packageInfo['packaging_config_name']    = 'packaging.conf'
 
    # ====== Obtain package configuration ====================================
    re_package_maintainer     = re.compile(r'^(MAINTAINER=\")(.*)(\".*$)')
@@ -1548,6 +1548,19 @@ def makeSourceRPM(packageInfo, skipPackageSigning, summaryFile):
          sys.stderr.write('ERROR: RPMSign run failed: ' + str(e) + '\n')
          sys.exit(1)
 
+   # ====== Run RPM Lint ====================================================
+   if shutil.which('rpmlint') != None:
+      rpmlintCommand = 'rpmlint -P ' + srpmFile
+      printSubsection('Running RPM Lint')
+      print('=> ' + rpmlintCommand)
+      try:
+         subprocess.run(rpmlintCommand, check=False, shell=True)
+      except Exception as e:
+         sys.stderr.write('ERROR: RPM Lint run failed: ' + str(e) + '\n')
+         sys.exit(1)
+   else:
+      sys.stderr.write('NOTE: RPM Lint is not installed -> checks skipped!\n')
+
    # ====== Add SRPM file to summary ========================================
    if summaryFile != None:
       summaryFile.write('rpmSourceFile: ' + srpmFile + '\n')
@@ -1644,6 +1657,19 @@ def buildRPM(packageInfo, releases, architectures, skipPackageSigning, summaryFi
             except Exception as e:
                sys.stderr.write('ERROR: RPMSign run failed: ' + str(e) + '\n')
                sys.exit(1)
+
+         # ====== Run RPM Lint ==============================================
+         if shutil.which('rpmlint') != None:
+            rpmlintCommand = 'rpmlint -P ' + rpmFile
+            printSubsection('Running RPM Lint')
+            print('=> ' + rpmlintCommand)
+            try:
+               subprocess.run(rpmlintCommand, check=False, shell=True)
+            except Exception as e:
+               sys.stderr.write('ERROR: RPM Lint run failed: ' + str(e) + '\n')
+               sys.exit(1)
+         else:
+            sys.stderr.write('NOTE: RPM Lint is not installed -> checks skipped!\n')
 
          # ====== Add RPM file to summary ===================================
          if summaryFile != None:
