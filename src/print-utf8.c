@@ -257,7 +257,7 @@ static void stringSizeLengthWidth(const char* originalString,
    wchar_t* wide_string = convertToWideStringWithoutANSI(
                              originalString, removeANSISequences,
                              &utf8_string_size, &wide_string_length);
-   const unsigned char* space = "";
+   const char* space = "";
    if(showSize) {
       printf("%zd", utf8_string_size);
       space = " ";
@@ -277,7 +277,7 @@ static void stringSizeLengthWidth(const char* originalString,
 
 
 // ###### Get terminal information ##########################################
-static int terminalInfo()
+static void terminalInfo()
 {
    struct winsize w;
    if(!ioctlTIOCGWINSZ(&w)) {
