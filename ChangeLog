@@ -1,3 +1,39 @@
+commit f293689bce2848ed726bc2bf0b954b340ec81683
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 25 09:58:48 2024 +0200
+
+    Updated workflows.
+
+commit 716f6ce10792c267f33f66513764460dfb81da2e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 19 23:02:35 2024 +0200
+
+    Improved CMakeLists.txt.
+
+commit b5aafa7a3ab076f21b77ba421ddac30686cff904
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 19 16:22:20 2024 +0200
+
+    Updated CI scripts.
+
+commit a236910f8816dbf31c4779e9e54031804240a7e1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Oct 13 19:22:25 2024 +0200
+
+    Updated distinfo.
+
+commit d0725f7c1b1da1530a0f85a7746a838e4a914ab3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Oct 13 19:22:18 2024 +0200
+
+    Some clean-ups.
+
+commit 90118688bd929ebefcef5e09ce9b17b62195bcfb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 11 13:41:47 2024 +0200
+
+    New release td-system-tools-2.0.0.
+
 commit eb526e45fad3ea973030fb7fd37a66b60832e7dc
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Oct 11 12:52:33 2024 +0200
