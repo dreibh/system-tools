@@ -1,3 +1,27 @@
+commit 1ad36785c2a208c397daf8e691f4f39d88208300
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 2 14:39:59 2024 +0100
+
+    Work-around for build-in printf issue in Bash 5.2.
+
+commit 631b46a458b7f792bc736f89bcbee36c69cf233e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 1 14:15:23 2024 +0100
+
+    Build fix for legacy systems.
+
+commit 7448075031d93e05d910455e4efd52e0e6b7402b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Oct 31 10:55:46 2024 +0100
+
+    Updated CI script.
+
+commit e3d14427fd69e641297ed5ad874b488ed23e2e3b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 25 10:08:43 2024 +0200
+
+    New release td-system-tools-2.0.1.
+
 commit f293689bce2848ed726bc2bf0b954b340ec81683
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Oct 25 09:58:48 2024 +0200
