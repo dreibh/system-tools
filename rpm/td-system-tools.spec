@@ -168,9 +168,10 @@ a rescue media to fix a broken configuration!
 
 %files configure-grub
 %{_bindir}/configure-grub
-%{_mandir}/man1/configure-grub.1.gz
+%{_datadir}/bash-completion/completions/configure-grub
 %{_datadir}/configure-grub/grub-defaults-nornet
 %{_datadir}/configure-grub/grub-defaults-standard
+%{_mandir}/man1/configure-grub.1.gz
 
 
 %package get-system-info

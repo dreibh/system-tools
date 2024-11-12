@@ -27,7 +27,7 @@
 .\" Contact: dreibh@simula.no
 .\"
 .\" ###### Setup ############################################################
-.Dd August 29, 2024
+.Dd November 12, 2024
 .Dt configure-grub 1
 .Os configure-grub
 .\" ###### Name #############################################################
@@ -37,10 +37,10 @@
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm configure-grub grub-defaults-template-file
-.Op Fl \-input Ar input-grub-defaults-file | Fl i Ar input-grub-defaults-file
-.Op Fl \-output Ar output-grub-defaults-file | Fl o Ar output-grub-defaults-file
-.Op Fl \-video Ar GRUB_GFXMODE | Fl V Ar GRUB_GFXMODE
-.Op Fl \-tune Ar GRUB_INIT_TUNE | Fl T Ar GRUB_INIT_TUNE
+.Op Fl i Ar input-grub-defaults-file | Fl Fl input Ar input-grub-defaults-file
+.Op Fl o Ar output-grub-defaults-file | Fl Fl output Ar output-grub-defaults-file
+.Op Fl V Ar GRUB_GFXMODE | Fl Fl video Ar GRUB_GFXMODE
+.Op Fl T Ar GRUB_INIT_TUNE | Fl Fl tune Ar GRUB_INIT_TUNE
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm configure-grub
@@ -58,13 +58,13 @@ a rescue media to fix a broken configuration!
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl --input|-i input-grub-defaults-file
+.It Fl i Ar input-grub-defaults-file | Fl Fl input Ar input-grub-defaults-file
 Set name of input GRUB file (default: /etc/default/grub).
-.It Fl --output|-o output-grub-defaults-file
+.It Fl o Ar output-grub-defaults-file | Fl Fl output Ar output-grub-defaults-file
 Set name of output GRUB file to write.
-.It Fl --video|-V GRUB_GFXMODE
+.It Fl V Ar GRUB_GFXMODE | Fl Fl video Ar GRUB_GFXMODE
 Replace GRUB_GFXMODE by the provided setting.
-.It Fl --tune|-T GRUB_INIT_TUNE
+.It Fl T Ar GRUB_INIT_TUNE | Fl Fl tune Ar GRUB_INIT_TUNE
 Replace GRUB_INIT_TUNE by the provided setting.
 .El
 .\" ###### Examples #########################################################

@@ -68,6 +68,9 @@ INSTALL(FILES       Fingerprint-SSH-Keys.bash-completion
 
 INSTALL(PROGRAMS configure-grub DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES configure-grub.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       configure-grub.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      configure-grub)
 
 ADD_EXECUTABLE(get-system-info get-system-info.c)
 SET_PROPERTY(TARGET get-system-info PROPERTY C_STANDARD 11)

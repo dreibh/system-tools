@@ -1,3 +1,4 @@
 usr/bin/configure-grub
 usr/share/configure-grub/grub-defaults-nornet
 usr/share/configure-grub/grub-defaults-standard
+usr/share/bash-completion/completions/configure-grub
