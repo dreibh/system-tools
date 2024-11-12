@@ -104,7 +104,7 @@ for old kernels and removing them, trim SSD or unmap unused storage.
 
 %files system-maintenance
 %{_bindir}/System-Maintenance
-%{_datadir}/bash-completion/completions/System-Maintenace
+%{_datadir}/bash-completion/completions/System-Maintenance
 %{_datadir}/locale/*/LC_MESSAGES/System-Maintenance.mo
 %{_mandir}/man1/System-Maintenance.1.gz
 %{_sysconfdir}/system-maintenance.d/XX-example
