@@ -1,23 +1,33 @@
-.\" print-utf8
-.\" Copyright (C) 2013-2024 by Thomas Dreibholz
+.\"        ____            _                     _____           _
+.\"       / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"       \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"        ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"       |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"              |___/
+.\"                            --- System-Tools ---
+.\"                 https://www.nntb.no/~dreibh/system-tools/
+.\"==========================================================================
 .\"
-.\" This program is free software: you can redistribute it and/or modify
-.\" it under the terms of the GNU General Public License as published by
-.\" the Free Software Foundation, either version 3 of the License, or
-.\" (at your option) any later version.
+.\"print-utf8
+.\"Copyright (C) 2024-2025 by Thomas Dreibholz
 .\"
-.\" This program is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
+.\"This program is free software: you can redistribute it and/or modify
+.\"it under the terms of the GNU General Public License as published by
+.\"the Free Software Foundation, either version 3 of the License, or
+.\"(at your option) any later version.
 .\"
-.\" You should have received a copy of the GNU General Public License
-.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"This program is distributed in the hope that it will be useful,
+.\"but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"GNU General Public License for more details.
 .\"
-.\" Contact: dreibh@simula.no
+.\"You should have received a copy of the GNU General Public License
+.\"along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\"Contact: dreibh@simula.no
 .\"
 .\" ###### Setup ############################################################
-.Dd October 7, 2024
+.Dd November 12, 2024
 .Dt print-utf8 1
 .Os print-utf8
 .\" ###### Name #############################################################
@@ -29,13 +39,16 @@
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm print-utf8
-.Op Fl \-help | Fl h
+.Op Fl h | Fl Fl help
+.Op Fl v | Fl Fl version
 .Op Fl n | Fl Fl newline
 .br
 .Op Fl i Ar indentation Ar string | Fl Fl indent Ar indentation Ar string
 .br
+.Op Fl x Ar console_width | Fl Fl columns Ar console_width
 .Op Fl c Ar string | Fl Fl center Ar string
 .br
+.Op Fl x Ar console_width | Fl Fl columns Ar console_width
 .Op Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
 .br
 .Op Fl s Ar string | Fl Fl size Ar string
@@ -58,8 +71,10 @@ default of 80x24 is assumed.
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It  Fl \-help | Fl h
+.It  Fl Fl help | Fl h
 Prints command-line parameters.
+.It Fl v | Fl version
+Just print program version.
 .It Fl n | Fl Fl newline
 Add a newline to the output. Default: off.
 .It Fl i Ar indentation Ar string | Fl Fl indent Ar indentation Ar string
@@ -68,6 +83,10 @@ Indent the string by the given number of characters (columns in the console). A 
 Center the string, using indentation based on the current console width.
 .It Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
 Make a separator, consisting of a left part, a variable number of separator string occurrences, as well as a right part.
+.Op Fl x Ar console_width | Fl Fl columns Ar console_width
+Set number of columns (console width) for "center" and "separator" functions
+(see above). If below 1, the current console width (or 80 if unknown) is used.
+Default: current console width.
 .It Fl s Ar string | Fl Fl size Ar string
 Print the size (bytes) of the string without ANSI control sequences.
 .It Fl w Ar length | Fl Fl l Ar string
@@ -85,13 +104,16 @@ Note that if /dev/tty is not available, the default of 80x24 is returned!
 .Bl -tag -width indent
 .It print-utf8 -h
 .It print-utf8 --help
-.It print-utf8 --newline --center 'This line is centered!'
+.It print-utf8 --version
+.It print-utf8 --newline --center 'This line is centered in console width!'
+.It print-utf8 --newline --columns 80 --center 'This line is centered in 80 columns!'
 .It print-utf8 --newline --center '\ex1b[38;2;241;71;29mThis line is centered!\ee[0m'
-.It print-utf8 -n -c '😀😀😀 This line is centered! 😀😀😀'
-.It print-utf8 -n -c '😀😀😀 This line is centered! 😀😀😀'
+.It print-utf8 -n -c '😀😀😀 This line is centered in console width! 😀😀😀'
+.It print-utf8 -n -x 80 -c '😀😀😀 This line is centered in 80 columns! 😀😀😀'
 .It print-utf8 --indent -32 'Left: ' && echo '1234'
 .It print-utf8 --indent +32 'Right: ' && echo '1234'
 .It print-utf8 --separator --newline '<*' '=' '*>'
+.It print-utf8 --separator --columns 80 --newline '<*' '=' '*>'
 .It print-utf8 -n -s '<💻😀' '=' '😀💻>'
 .It print-utf8 --width 'Test'
 .It print-utf8 --width 'Test äöü'

@@ -1,3 +1,31 @@
+//         ____            _                     _____           _
+//        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+//        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+//        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+//               |___/
+//                             --- System-Tools ---
+//                  https://www.nntb.no/~dreibh/system-tools/
+// ==========================================================================
+//
+// print-utf8
+// Copyright (C) 2024-2025 by Thomas Dreibholz
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Contact: dreibh@simula.no
+
 #define _XOPEN_SOURCE 1
 #include <ctype.h>
 #include <fcntl.h>
@@ -9,6 +37,8 @@
 #include <wchar.h>
 #include <locale.h>
 #include <sys/ioctl.h>
+
+#include "package-version.h"
 
 
 // ###### Obtain console size ###############################################
@@ -289,7 +319,7 @@ static void terminalInfo()
 }
 
 
-// ###### Center ############################################################
+// ###### Indent with given number of spaces ################################
 static void indent(const int indentWidth)
 {
    if(indentWidth > 0) {
@@ -303,7 +333,7 @@ static void indent(const int indentWidth)
 }
 
 
-// ###### Center ############################################################
+// ###### Indent ############################################################
 static void indented(const int   totalIndent,
                      const char* utf8String)
 {
@@ -318,9 +348,10 @@ static void indented(const int   totalIndent,
 
 
 // ###### Center ############################################################
-static void centered(const char* utf8String)
+static void centered(const char* utf8String,
+                     const int   consoleWidth)
 {
-   indent( (getConsoleWidth() - stringwidth(utf8String, true)) / 2 );
+   indent( (consoleWidth - stringwidth(utf8String, true)) / 2 );
    fputs(utf8String, stdout);
 }
 
@@ -328,12 +359,12 @@ static void centered(const char* utf8String)
 // ###### Center ############################################################
 static void separator(const char* separaterLeftBorder,
                       const char* separatorString,
-                      const char* separaterRightBorder)
+                      const char* separaterRightBorder,
+                      const int   consoleWidth)
 {
    const int separaterLeftWidth   = stringwidth(separaterLeftBorder, true);
    const int separatorStringWidth = stringwidth(separatorString, true);
    const int separaterRightWidth  = stringwidth(separaterRightBorder, true);
-   const int consoleWidth         = getConsoleWidth();
 
    int i = separaterLeftWidth + separaterRightWidth;   // Border width
    fputs(separaterLeftBorder, stdout);
@@ -365,12 +396,15 @@ int main (int argc, char** argv)
       Size            = 7,
       SizeLengthWidth = 8
    };
-   enum mode_t mode        = Indent;
-   int         indentWidth = 0;
-   char*       utf8String  = NULL;
-   char*       borderLeft  = NULL;
-   char*       borderRight = NULL;
-   bool        newline     = false;
+   enum mode_t mode                = Indent;
+   int         indentWidth         = 0;
+   char*       utf8String          = NULL;
+   char*       borderLeft          = NULL;
+   char*       borderRight         = NULL;
+   bool        newline             = false;
+   const int   defaultConsoleWidth = getConsoleWidth();
+   int         consoleWidth        = defaultConsoleWidth;
+
    for(int i = 1; i <argc; i++) {
       if( (strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--center") == 0) ) {
          mode = Center;
@@ -408,6 +442,19 @@ int main (int argc, char** argv)
       else if( (strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "--terminal-info") == 0) ) {
          mode = TerminalInfo;
       }
+      else if( (strcmp(argv[i], "-x") == 0) || (strcmp(argv[i], "--columns") == 0) ) {
+         if(i + 1 < argc) {
+            consoleWidth = atol(argv[i + 1]);
+            if( consoleWidth < 1) {
+               consoleWidth = defaultConsoleWidth;
+            }
+            if (consoleWidth > 4096) {
+               fprintf(stderr, "ERROR: Invalid console width %u!\n", consoleWidth);
+               return 1;
+            }
+         }
+         i += 1;
+      }
       else if( (strcmp(argv[i], "-w") == 0) || (strcmp(argv[i], "--width") == 0) ) {
          mode = Width;
       }
@@ -421,8 +468,12 @@ int main (int argc, char** argv)
          mode = SizeLengthWidth;
       }
       else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) ) {
-         fprintf(stderr, "Usage: %s [-n|--newline] [-i indentation string|--ident indentation string] [-c string|--center string] [-s border_left separator border_right|--separator border_left separator border_right] [-s string|--size string] [-l string|--length string] [-w string|--width string] [-a string|--size-length-width string] [-t|--terminal-info]\n", argv[0]);
+         fprintf(stderr, "Usage: %s [-n|--newline] [-i indentation string|--ident indentation string] [-c string|--center string] [-s border_left separator border_right|--separator border_left separator border_right] [-c columns|--columns columns] [-s string|--size string] [-l string|--length string] [-w string|--width string] [-a string|--size-length-width string] [-t|--terminal-info] [-h|--help] [-v|--version]\n", argv[0]);
          return 1;
+      }
+      else if( (strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--version") == 0) ) {
+         printf("printf-utf8 %s\n", SYSTEMTOOLS_VERSION);
+         return 0;
       }
       else {
          if(utf8String) {
@@ -440,10 +491,10 @@ int main (int argc, char** argv)
             indented(indentWidth, utf8String);
           break;
          case Center:
-            centered(utf8String);
+            centered(utf8String, consoleWidth);
           break;
          case Separator:
-            separator(borderLeft, utf8String, borderRight);
+            separator(borderLeft, utf8String, borderRight, consoleWidth);
           break;
          case Width:
             stringSizeLengthWidth(utf8String, true, false, false, true);
