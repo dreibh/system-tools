@@ -33,6 +33,8 @@
 #include <netlink/route/interface.h>
 #endif
 
+#include "package-version.h"
+
 
 struct interfaceaddress {
    const char*            ifname;
@@ -663,11 +665,23 @@ static void showNetworkInformation(const bool filterLocalScope)
 
 
 // ###### Main program ######################################################
-int main(void)
+int main(int argc, char** argv)
 {
    // ====== Initialise locale support ======================================
    if(setlocale(LC_ALL, "") == NULL) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
+   }
+
+   // ====== Handle arguments ===============================================
+   for(int i = 1; i <argc; i++) {
+      if( (strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--version") == 0) ) {
+         printf("get-system-info %s\n", SYSTEMTOOLS_VERSION);
+         return 0;
+      }
+      else /* if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) ) */ {
+         fprintf(stderr, "Usage: %s [-h|--help] [-v|--version]\n", argv[0]);
+         return 1;
+      }
    }
 
    // ====== Show system information in machine-readable form ===============

@@ -29,21 +29,26 @@
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm get-system-info
+.Op Fl h | Fl Fl help
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 get-system-info obtains system information in machine-readable form. It is
 mainly intended for being used by System-Info.
-.\" ###### Arguments ########################################################
-.\" .Sh ARGUMENTS
-.\" The following options are available:
-.\" .Bl -tag -width indent
-.\" .It  Fl \-help | Fl h
-.\" Prints command-line parameters.
-.\" .El
+###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.It Fl v | Fl version
+Prints program version.
+.El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It get-system-info
 .It LANGUAGE=de_AT get-system-info
 .It LANGUAGE=nb get-system-info
+.It get-system-info --version
 .El
