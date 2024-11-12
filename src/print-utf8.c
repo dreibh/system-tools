@@ -8,7 +8,7 @@
 //                  https://www.nntb.no/~dreibh/system-tools/
 // ==========================================================================
 //
-// print-utf8
+// Print UTF8
 // Copyright (C) 2024-2025 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
