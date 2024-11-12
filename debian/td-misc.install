@@ -1,4 +1,6 @@
 usr/bin/random-sleep
 usr/bin/try-hard
+usr/share/bash-completion/completions/random-sleep
+usr/share/bash-completion/completions/try-hard
 usr/share/locale/*/LC_MESSAGES/random-sleep.mo
 usr/share/locale/*/LC_MESSAGES/try-hard.mo

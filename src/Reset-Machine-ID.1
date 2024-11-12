@@ -39,12 +39,12 @@
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm Reset-Machine-ID
-.Op Fl \-hostname Ar hostname | Fl H Ar hostname
-.Op Fl \-zabbix Ar zabbix_server | Fl Z Ar zabbix_server
-.Op Fl \-skip-machine-id | Fl M
-.Op Fl \-skip-ssh-configuration | Fl S
-.Op Fl \-skip-ssh-key-replacement | Fl K
-.Op Fl \-yes\-to\-all\-i\-am\-really\-sure
+.Op Fl H Ar hostname | Fl Fl hostname Ar hostname
+.Op Fl Z Ar zabbix_server | Fl Fl zabbix Ar zabbix_server
+.Op Fl M | Fl Fl skip-machine-id
+.Op Fl S | Fl Fl skip-ssh-configuration
+.Op Fl K | Fl Fl skip-ssh-key-replacement
+.Op Fl Fl yes-to-all-i-am-really-sure
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Reset-Machine-ID
@@ -61,23 +61,23 @@ It performs the following tasks:
 .br
 * Create new SSH key pair.
 .br
-The changes are made interactively on request, unless the \-yes\-to\-all\-i\-am\-really\-sure is used.
+The changes are made interactively on request, unless the option --yes-to-all-i-am-really-sure is used.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl \-hostname Ar hostname | Fl H Ar hostname
+.It Fl H Ar hostname | Fl Fl hostname Ar hostname
 Set the given hostname.
-.It Fl \-zabbix Ar zabbix_server | Fl Z Ar zabbix_server
+.It Fl Z Ar zabbix_server | Fl Fl zabbix Ar zabbix_server
 Configure an already-installed Zabbix agent for a given Zabbix server.
-.It Fl \-skip-machine-id | Fl M
+.It Fl M | Fl Fl skip-machine-id
 Do not reset the machine ID.
-.It Fl \-skip-ssh-configuration | Fl S
+.It Fl S | Fl Fl skip-ssh-configuration
 Do not make SSH configuration changes.
-.It Fl \-skip-ssh-key-replacement | Fl K
+.It Fl K | Fl Fl skip-ssh-key-replacement
 Do not replace SSH keys.
-.It Fl \-yes\-to\-all\-i\-am\-really\-sure
+.It Fl Fl yes-to-all-i-am-really-sure
 Create new keys (delete old ones) as well as replace sshd_config and
 ssh_config without interactively asking for confirmation.
 .El
@@ -85,8 +85,8 @@ ssh_config without interactively asking for confirmation.
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It sudo Reset-Machine-ID
-.It sudo Reset-Machine-ID \-\-yes\-to\-all\-i\-am\-really\-sure
-.It sudo Reset-Machine-ID \-\-hostname dbserver.domain.example
-.It sudo Reset-Machine-ID \-H server.domain.example \-Z zabbix.domain.example
-.It sudo Reset-Machine-ID \-\-skip\-ssh\-configuration \-\-skip\-ssh\-key\-replacement
+.It sudo Reset-Machine-ID --yes-to-all-i-am-really-sure
+.It sudo Reset-Machine-ID --hostname dbserver.domain.example
+.It sudo Reset-Machine-ID -H server.domain.example -Z zabbix.domain.example
+.It sudo Reset-Machine-ID --skip-ssh-configuration --skip-ssh-key-replacement
 .El

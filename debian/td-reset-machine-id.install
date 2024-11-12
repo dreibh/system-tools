@@ -1,2 +1,3 @@
 usr/bin/Reset-Machine-ID
+usr/share/bash-completion/completions/Reset-Machine-ID
 usr/share/locale/*/LC_MESSAGES/Reset-Machine-ID.mo

@@ -197,6 +197,7 @@ information.
 %files print-utf8
 %{_bindir}/print-utf8
 %{_mandir}/man1/print-utf8.1.gz
+%{_datadir}/bash-completion/completions/print-utf8
 
 
 %package misc
@@ -214,6 +215,8 @@ support for fractional seconds.
 %files misc
 %{_bindir}/random-sleep
 %{_bindir}/try-hard
+%{_datadir}/bash-completion/completions/random-sleep
+%{_datadir}/bash-completion/completions/try-hard
 %{_datadir}/locale/*/LC_MESSAGES/random-sleep.mo
 %{_datadir}/locale/*/LC_MESSAGES/try-hard.mo
 %{_mandir}/man1/random-sleep.1.gz

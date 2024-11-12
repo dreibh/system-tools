@@ -9,8 +9,8 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# System-Tools
-# Copyright (C) 2013-2025 by Thomas Dreibholz
+# Reset-Machine-ID
+# Copyright (C) 2024-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,8 +28,8 @@
 # Contact: dreibh@simula.no
 
 
-# ###### Bash completion for print-utf8 #####################################
-_print_utf8()
+# ###### Bash completion for Reset-Machine-ID #####################################
+_Reset_Machine_ID()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -48,48 +48,28 @@ _print_utf8()
 
    case "${prev}" in
       #  ====== Generic value ===============================================
-      -i | --indent            | \
-      -x | --columns           | \
-      -c | --center            | \
-      -s | --separator         | \
-      -b | --size              | \
-      -l | --length            | \
-      -w | --width             | \
-      -a | --size-length-width | \
-      -x | --columns)
+      -H | --hostname | \
+      -Z | --zabbix)
          return
          ;;
    esac
 
    # ====== All options =====================================================
    local opts="
--h
---help
--v
---version
--n
---newline
--i
---indent
--x
---columns
--c
---center
--s
---separator
--b
---size
--l
---length
--w
---width
--a
---size-length-width
--t
---terminal-info
+-H
+--hostname
+-Z
+--zabbix
+-M
+--skip-machine-id
+-S
+--skip-ssh-configuration
+-K
+--skip-ssh-key-replacement
+--yes-to-all-i-am-really-sure
 "
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
    return 0
 }
 
-complete -F _print_utf8 print-utf8
+complete -F _Reset_Machine_ID Reset-Machine-ID
