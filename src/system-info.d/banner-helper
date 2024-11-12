@@ -35,7 +35,8 @@ export TEXTDOMAIN="System-Info"
 # ###### Get current width of the console ###################################
 consolewidth()
 {
-   local terminalInfo="$(print-utf8 --terminal-info)"
+   local terminalInfo
+   terminalInfo="$(print-utf8 --terminal-info)"
    local width="${terminalInfo// [0-9]*/}"
    if [[ ! "${width}" =~ ^[0-9]+$ ]] ; then
       # Assume a standard width of 80:
@@ -178,7 +179,7 @@ function make-banner ()
          done
 
          # Return, if output is too wide
-         if [ "${maxLineLength}" -gt ${maxWidth} ] ; then
+         if [ "${maxLineLength}" -gt "${maxWidth}" ] ; then
             return
          fi
 
