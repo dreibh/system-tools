@@ -27,7 +27,7 @@
 #
 # Contact: dreibh@simula.no
 
-set -e
+set -eu
 
 
 # ###### Make banner with equal-length lines ################################
@@ -70,7 +70,7 @@ if [ $# -lt 1 ] ; then
 fi
 while [ $# -gt 0 ] ; do
    make-banner "$1" | while IFS= read -r line ; do
-      ./print-utf8 --newline --columns 76 --center "${line}"
+      ./print-utf8 --newline --columns 0 --center "${line}"
    done
    shift
 done
