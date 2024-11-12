@@ -37,7 +37,7 @@
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm System-Maintenance
-.Op Fl interactive-kernel-removal | Fl k
+.Op Fl k | Fl Fl interactive-kernel-removal
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm System-Maintenance
@@ -64,12 +64,12 @@ These tasks are:
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl interactive-kernel-removal | Fl k
+.It Fl k | Fl Fl interactive-kernel-removal
 Remove obsolete kernels interactively.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It sudo System-Maintenance
-.It sudo System-Maintenance \-\-interactive-kernel-removal
+.It sudo System-Maintenance --interactive-kernel-removal
 .El

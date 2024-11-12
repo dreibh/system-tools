@@ -7,4 +7,5 @@ usr/share/System-Info/01-example
 usr/share/System-Info/09-hostname-example
 usr/share/System-Info/10-company-logo-example
 usr/share/System-Info/banner-helper
+usr/share/bash-completion/completions/System-Info
 usr/share/locale/*/LC_MESSAGES/System-Info.mo

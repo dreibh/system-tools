@@ -9,7 +9,7 @@
 .\" ==========================================================================
 .\"
 .\" Fingerprint SSH Keys
-.\" Copyright (C) 2024-2025 by Thomas Dreibholz
+.\" Copyright (C) 2013-2025 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -39,9 +39,9 @@
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm Fingerprint-SSH-Keys
-.Op Fl \-include-deprecated | Fl d
-.Op Fl \-include-raw | Fl r
-.Op Fl \-include-raw-python | Fl p
+.Op Fl d | Fl Fl include-deprecated
+.Op Fl r | Fl Fl include-raw
+.Op Fl p | Fl Fl include-raw-python
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Fingerprint-SSH-Keys
@@ -57,17 +57,17 @@ prints the SSH key fingerprints of the local machine in different formats:
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl \-include-deprecated | Fl d
+.It Fl d | Fl Fl include-deprecated
 Also include deprecated key types and hash algorithms in DNS SSHFP RR output.
-.It Fl \-include-raw | Fl r
+.It Fl r | Fl Fl include-raw
 Also include the keys in raw format.
-.It Fl \-include-raw-python | Fl p
+.It Fl p | Fl Fl include-raw-python
 Also include the keys in raw format as Python dictionary.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It Fingerprint-SSH-Keys
-.It Fingerprint-SSH-Keys \-\-include-deprecated
-.It Fingerprint-SSH-Keys \-d
+.It Fingerprint-SSH-Keys --include-deprecated
+.It Fingerprint-SSH-Keys -d
 .El

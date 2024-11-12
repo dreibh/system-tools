@@ -44,9 +44,15 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 INSTALL(PROGRAMS System-Info DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES System-Info.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       System-Info.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      System-Info)
 
 INSTALL(PROGRAMS System-Maintenance DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES System-Maintenance.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       System-Maintenance.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      System-Maintenance)
 
 INSTALL(PROGRAMS Reset-Machine-ID DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES Reset-Machine-ID.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
@@ -56,6 +62,9 @@ INSTALL(FILES       Reset-Machine-ID.bash-completion
 
 INSTALL(PROGRAMS Fingerprint-SSH-Keys DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES Fingerprint-SSH-Keys.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       Fingerprint-SSH-Keys.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      Fingerprint-SSH-Keys)
 
 INSTALL(PROGRAMS configure-grub DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES configure-grub.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
@@ -64,6 +73,9 @@ ADD_EXECUTABLE(get-system-info get-system-info.c)
 SET_PROPERTY(TARGET get-system-info PROPERTY C_STANDARD 11)
 INSTALL(TARGETS get-system-info DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES get-system-info.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       get-system-info.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      get-system-info)
 
 ADD_EXECUTABLE(print-utf8 print-utf8.c)
 SET_PROPERTY(TARGET print-utf8 PROPERTY C_STANDARD 11)

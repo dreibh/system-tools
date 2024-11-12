@@ -75,6 +75,7 @@ in, providing the user an up-to-date overview of the system.
 
 %files system-info
 %{_bindir}/System-Info
+%{_datadir}/bash-completion/completions/System-Info
 %{_datadir}/locale/*/LC_MESSAGES/System-Info.mo
 %{_datadir}/System-Info/01-example
 %{_datadir}/System-Info/09-hostname-example
@@ -103,6 +104,7 @@ for old kernels and removing them, trim SSD or unmap unused storage.
 
 %files system-maintenance
 %{_bindir}/System-Maintenance
+%{_datadir}/bash-completion/completions/System-Maintenace
 %{_datadir}/locale/*/LC_MESSAGES/System-Maintenance.mo
 %{_mandir}/man1/System-Maintenance.1.gz
 %{_sysconfdir}/system-maintenance.d/XX-example
@@ -124,6 +126,7 @@ SSH client and server settings.
 
 %files reset-machine-id
 %{_bindir}/Reset-Machine-ID
+%{_datadir}/bash-completion/completions/Reset-Machine-ID
 %{_datadir}/locale/*/LC_MESSAGES/Reset-Machine-ID.mo
 %{_mandir}/man1/Reset-Machine-ID.1.gz
 
@@ -141,6 +144,7 @@ in different formats: SSH hash, DNS SSHFP RR.
 
 %files fingerprint-ssh-keys
 %{_bindir}/Fingerprint-SSH-Keys
+%{_datadir}/bash-completion/completions/Fingerprint-SSH-Keys
 %{_datadir}/locale/*/LC_MESSAGES/Fingerprint-SSH-Keys.mo
 %{_mandir}/man1/Fingerprint-SSH-Keys.1.gz
 
@@ -182,6 +186,7 @@ with evaluation in shell scripts for further processing.
 
 %files get-system-info
 %{_bindir}/get-system-info
+%{_datadir}/bash-completion/completions/get-system-info
 %{_mandir}/man1/get-system-info.1.gz
 
 
