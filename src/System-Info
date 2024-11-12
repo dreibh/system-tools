@@ -416,7 +416,7 @@ done
 
 # ====== Startup ============================================================
 # shellcheck disable=SC2059
-printf "\n$(gettext "System information as of %s")\n\n" "${now}"
+printf "\n$(gettext "System information on %s")\n\n" "${now}"
 
 # ====== Obtain and print information =======================================
 # Getting the network information may take a few hundreds of ms on a router

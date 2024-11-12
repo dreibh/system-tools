@@ -41,8 +41,11 @@ _Fingerprint_SSH_Keys()
       # Manual initialization for older bash completion versions:
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
+      # shellcheck disable=SC2034
       prev="${COMP_WORDS[COMP_CWORD-1]}"
-      words="${COMP_WORDS}"
+      # shellcheck disable=SC2034,SC2124
+      words="${COMP_WORDS[@]}"
+      # shellcheck disable=SC2034
       cword="${COMP_CWORD}"
    fi
 
@@ -55,6 +58,7 @@ _Fingerprint_SSH_Keys()
 -p
 --include-raw-python
 "
+   # shellcheck disable=SC2207
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
    return 0
 }
