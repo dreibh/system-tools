@@ -51,9 +51,9 @@
 .Op Fl x Ar console_width | Fl Fl columns Ar console_width
 .Op Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
 .br
-.Op Fl s Ar string | Fl Fl size Ar string
+.Op Fl b Ar string | Fl Fl size Ar string
 .br
-.Op Fl w Ar length | Fl Fl l Ar string
+.Op Fl l Ar string | Fl Fl length Ar string
 .br
 .Op Fl w Ar string | Fl Fl width Ar string
 .br
@@ -83,13 +83,13 @@ Indent the string by the given number of characters (columns in the console). A 
 Center the string, using indentation based on the current console width.
 .It Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
 Make a separator, consisting of a left part, a variable number of separator string occurrences, as well as a right part.
-.Op Fl x Ar console_width | Fl Fl columns Ar console_width
+.It Fl x Ar console_width | Fl Fl columns Ar console_width
 Set number of columns (console width) for "center" and "separator" functions
 (see above). If below 1, the current console width (or 80 if unknown) is used.
 Default: current console width.
-.It Fl s Ar string | Fl Fl size Ar string
+.It Fl b Ar string | Fl Fl size Ar string
 Print the size (bytes) of the string without ANSI control sequences.
-.It Fl w Ar length | Fl Fl l Ar string
+.It Fl l Ar string | Fl Fl length Ar string
 Print the length (in UTF-8 characters) of the string without ANSI control sequences.
 .It Fl w Ar string | Fl Fl width Ar string
 Print the width (columns in the console) of the string without ANSI control sequences.

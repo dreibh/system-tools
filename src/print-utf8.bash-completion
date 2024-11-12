@@ -51,13 +51,12 @@ _print_utf8()
       -i | --indent            | \
       -x | --columns           | \
       -c | --center            | \
-      -x | --columns           | \
       -s | --separator         | \
       -b | --size              | \
       -l | --length            | \
       -w | --width             | \
       -a | --size-length-width | \
-      -x | --columns)(
+      -x | --columns)
          return
          ;;
    esac
@@ -76,8 +75,6 @@ _print_utf8()
 --columns
 -c
 --center
--x
---columns
 -s
 --separator
 -b
@@ -90,8 +87,6 @@ _print_utf8()
 --size-length-width
 -t
 --terminal-info
--x
---columns
 "
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
    return 0
