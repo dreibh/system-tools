@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.0.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-11-12 12:59+0100\n"
+"POT-Creation-Date: 2024-11-12 20:10+0100\n"
 "PO-Revision-Date: 2024-03-14 13:14+0100\n"
 "Last-Translator: Thomas Dreibholz <dreibh@simula.no>\n"
 "Language-Team:\n"
@@ -180,7 +180,7 @@ msgid "Usage:"
 msgstr "Aufruf:"
 
 #: src/System-Info:419
-msgid "System information as of %s"
+msgid "System information on %s"
 msgstr "Systeminformation am %s"
 
 #: src/system-info.d/01-example:56 src/system-info.d/10-company-logo-example:71

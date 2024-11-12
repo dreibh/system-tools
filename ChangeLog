@@ -1,3 +1,96 @@
+commit f244af8d667a600abff8f8f560b76bfb43c3b255
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 20:35:18 2024 +0100
+
+    Improved Bash completions.
+
+commit 7b8e4b6a73c8ba68ddbeda36b9d1ff418d19b65b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 20:06:43 2024 +0100
+
+    Fixed typo in RPM sepc file.
+
+commit 60a42b655881d0eb4d16dbe85119daa0da2bb23c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 20:02:10 2024 +0100
+
+    Added the last missing Bash completion.
+
+commit dee131897e76a58e5ad6fddb26cfc07cc4ab0cc4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 19:55:26 2024 +0100
+
+    Added further Bash completions.
+
+commit 00ff9ddd5659eaea0ae32ffe1142eec3671f05b3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 19:39:01 2024 +0100
+
+    Bash completion updates.
+
+commit af49ddf9b161ec56dc130921c85b65b1037432bd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 19:30:26 2024 +0100
+
+    Added some more Bash completions.
+
+commit ebb518d1cb1eb660eb30339187344e05cc759729
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 19:15:49 2024 +0100
+
+    Some fixes.
+
+commit 5e5522d6bf50f1229d61d1d310e7da152a3f0978
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 19:13:19 2024 +0100
+
+    Added bash completion for print-utf8.
+
+commit 980c445fd206adec64cb01923ebf0bcee0a7df0b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 13:14:53 2024 +0100
+
+    Further clean-ups.
+
+commit 4e2cc17c25d2793ead41c7ffe4714ef943637b63
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 13:07:47 2024 +0100
+
+    Added option for printing version to get-system-info.
+
+commit 722b7706f424f30b34f8bbf55a5c4e69cf755466
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 12:58:42 2024 +0100
+
+    ShellCheck clean-ups.
+
+commit 26774b541ce1adabfd3d40eee7a1ea7200445514
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 12:57:52 2024 +0100
+
+    Header clean-ups.
+
+commit a25b3542ccdc6d4e80cfa863c366270912fa12a5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 12:49:26 2024 +0100
+
+    Improved print-utf8:
+    * Option for setting the console width manually.
+    * Option for printing the program version.
+    * Manpage improvements.
+
+commit ea03771326e1ab23a93ddd70ad63eb81abc0e1e3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 2 16:33:42 2024 +0100
+
+    Updated CI script.
+
+commit 0327b20ae02d25f987529d9f0394f3fb1da07218
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 2 14:44:46 2024 +0100
+
+    New release td-system-tools-2.0.2.
+
 commit 1ad36785c2a208c397daf8e691f4f39d88208300
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Nov 2 14:39:59 2024 +0100
