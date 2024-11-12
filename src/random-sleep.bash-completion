@@ -9,7 +9,7 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# Print-UTF8
+# Random-Sleep
 # Copyright (C) 2024-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@
 # Contact: dreibh@simula.no
 
 
-# ###### Bash completion for print-utf8 #####################################
-_print_utf8()
+# ###### Bash completion for random-sleep ###################################
+_random_sleep()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -46,50 +46,19 @@ _print_utf8()
       cword="${COMP_CWORD}"
    fi
 
-   case "${prev}" in
-      #  ====== Generic value ===============================================
-      -i | --indent            | \
-      -x | --columns           | \
-      -c | --center            | \
-      -s | --separator         | \
-      -b | --size              | \
-      -l | --length            | \
-      -w | --width             | \
-      -a | --size-length-width | \
-      -x | --columns)
-         return
-         ;;
-   esac
+   if [ "${cword}" -lt 3 ] ; then
+      return
+   fi
 
    # ====== All options =====================================================
    local opts="
--h
---help
+-q
+--quiet
 -v
---version
--n
---newline
--i
---indent
--x
---columns
--c
---center
--s
---separator
--b
---size
--l
---length
--w
---width
--a
---size-length-width
--t
---terminal-info
+--verbose
 "
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
    return 0
 }
 
-complete -F _print_utf8 print-utf8
+complete -F _random_sleep random-sleep

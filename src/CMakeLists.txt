@@ -65,15 +65,24 @@ INSTALL(FILES get-system-info.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 ADD_EXECUTABLE(print-utf8 print-utf8.c)
 SET_PROPERTY(TARGET print-utf8 PROPERTY C_STANDARD 11)
 INSTALL(TARGETS print-utf8 DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES print-utf8.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES print-utf8.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES              print-utf8.bash-completion
+        DESTINATION        ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME             print-utf8)
 
 ADD_EXECUTABLE(random-sleep random-sleep.c)
 TARGET_LINK_LIBRARIES(random-sleep ${Intl_LIBRARIES})
-INSTALL(TARGETS random-sleep DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES random-sleep.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(TARGETS     random-sleep DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES       random-sleep.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       random-sleep.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      random-sleep)
 
-INSTALL(PROGRAMS try-hard DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES try-hard.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(PROGRAMS    try-hard DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES       try-hard.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       try-hard.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      try-hard)
 
 
 #############################################################################
