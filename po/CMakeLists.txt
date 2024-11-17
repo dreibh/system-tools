@@ -24,14 +24,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Contact: dreibh@simula.no
+# Contact: thomas.dreibholz@gmail.com
 
 
 #############################################################################
 #### TRANSLATIONS                                                        ####
 #############################################################################
 
-SET(copyrightHolder   "Copyright (C) 2013-2024 by Thomas Dreibholz")
+SET(copyrightHolder   "Copyright (C) 2013-2025 by Thomas Dreibholz")
 SET(bugTrackerAddress "https://github.com/dreibh/system-tools/issues")
 
 FILE(GLOB sources "*.sources")
