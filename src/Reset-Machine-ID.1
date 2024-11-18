@@ -73,7 +73,7 @@ Set the given hostname.
 .It Fl Z Ar zabbix_server | Fl Fl zabbix Ar zabbix_server
 Configure an already-installed Zabbix Agent for a given Zabbix server.
 .It Fl A | Fl Fl install-zabbix-agent
-Try to install Zabbix Agent, if necessary, when a Zabbix server is given but no Zabbix Agent is installed. This will add the current Zabbix PPA on Debian/Ubuntu/Fedora systems. On FreeBSD, the Zabbix Agent is installed from the FreeBSD Ports Collection.
+Try to install Zabbix Agent, if necessary, when a Zabbix server is given but no Zabbix Agent is installed. This will add the current Zabbix PPA on Debian/Ubuntu/Fedora systems. Note that a Zabbix PPA may not be available for the used distribution! On FreeBSD, the Zabbix Agent is installed from the FreeBSD Ports Collection.
 .It Fl M | Fl Fl skip-machine-id
 Do not reset the machine ID.
 .It Fl S | Fl Fl skip-ssh-configuration
