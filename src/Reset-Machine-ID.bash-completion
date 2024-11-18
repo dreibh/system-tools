@@ -63,6 +63,8 @@ _Reset_Machine_ID()
 --hostname
 -Z
 --zabbix
+-A
+--install-zabbix-agent
 -M
 --skip-machine-id
 -S
