@@ -81,7 +81,7 @@ INSTALL(FILES       get-system-info.bash-completion
         RENAME      get-system-info)
 
 ADD_EXECUTABLE(print-utf8 print-utf8.c)
-SET_PROPERTY(TARGET print-utf8 PROPERTY C_STANDARD 11)
+#SET_PROPERTY(TARGET print-utf8 PROPERTY C_STANDARD 11)
 INSTALL(TARGETS print-utf8 DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES print-utf8.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES              print-utf8.bash-completion

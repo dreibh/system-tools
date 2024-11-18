@@ -26,7 +26,7 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-#define _XOPEN_SOURCE 1
+#define _XOPEN_SOURCE 500
 #include <ctype.h>
 #include <fcntl.h>
 #include <stdbool.h>
@@ -349,30 +349,102 @@ static void indented(const int   totalIndent,
 
 // ###### Center ############################################################
 static void centered(const char* utf8String,
-                     const int   consoleWidth)
+                     const int   consoleWidth,
+                     const bool  padding)
 {
-   indent( (consoleWidth - stringwidth(utf8String, true)) / 2 );
+   const int additionalSpacing = consoleWidth - stringwidth(utf8String, true);
+   const int indentation       = additionalSpacing / 2;
+
+   indent(indentation);
    fputs(utf8String, stdout);
+   if(padding) {
+      // NOTE: Uneven values of additionalSpacing needs to be handled here,
+      //       i.e. compute the
+      indent(additionalSpacing - indentation);
+   }
 }
 
 
 // ###### Center ############################################################
-static void separator(const char* separaterLeftBorder,
+static void separator(const char* separaterBorderLeft,
                       const char* separatorString,
-                      const char* separaterRightBorder,
+                      const char* separaterBorderRight,
                       const int   consoleWidth)
 {
-   const int separaterLeftWidth   = stringwidth(separaterLeftBorder, true);
+   const int separaterLeftWidth   = stringwidth(separaterBorderLeft, true);
    const int separatorStringWidth = stringwidth(separatorString, true);
-   const int separaterRightWidth  = stringwidth(separaterRightBorder, true);
+   const int separaterRightWidth  = stringwidth(separaterBorderRight, true);
 
    int i = separaterLeftWidth + separaterRightWidth;   // Border width
-   fputs(separaterLeftBorder, stdout);
+   fputs(separaterBorderLeft, stdout);
    while(i + separatorStringWidth <= consoleWidth) {
       fputs(separatorString, stdout);
       i += separatorStringWidth;
    }
-   fputs(separaterRightBorder, stdout);
+   fputs(separaterBorderRight, stdout);
+}
+
+
+// ###### Multi-Line Center #################################################
+static void doMultiLineCenter(const char* borderLeft,
+                              const char* borderRight,
+                              int         consoleWidth)
+{
+   char*        lineArray[1024];
+   unsigned int lineLength[1024];
+   unsigned int lines = 0;
+
+   // ====== Read lines from stdin ==========================================
+   char*        s;
+   char         buffer[8192];
+   unsigned int maxLength = 0;
+   while( (s = fgets((char*)&buffer, sizeof(buffer), stdin)) != NULL ) {
+      buffer[strcspn(buffer, "\r\n")] = 0x00;   // Remove newline
+      lineArray[lines] = strdup(s);
+      if(lineArray[lines] == NULL) {
+         exit(1);
+      }
+      lineLength[lines] = strlen(lineArray[lines]);
+      if(lineLength[lines]  > maxLength) {
+         maxLength = lineLength[lines] ;
+      }
+      lines++;
+      if(lines >= sizeof(lineArray) / sizeof(lineArray[0])) {
+         break;
+      }
+   }
+
+   // ====== Obtain left and right border widths ============================
+   size_t   wll;
+   wchar_t* wsl = convertToWideStringWithoutANSI(borderLeft, true, NULL, &wll);
+   if(wsl) {
+      const int borderLeftWidth = wcswidth(wsl, wll);
+      if(borderLeftWidth > 0) {
+         consoleWidth -= borderLeftWidth;
+      }
+      free(wsl);
+   }
+   size_t   wlr;
+   wchar_t* wsr = convertToWideStringWithoutANSI(borderRight, true, NULL, &wlr);
+   if(wsr) {
+      const int borderRightWidth = wcswidth(wsr, wlr);
+      if(borderRightWidth > 0) {
+         consoleWidth -= borderRightWidth;
+      }
+      free(wsr);
+   }
+
+   // ====== Print result ===================================================
+   for(unsigned int i = 0; i < lines; i++) {
+      fputs(borderLeft, stdout);
+      centered(lineArray[i], consoleWidth, true);
+      fputs(borderRight, stdout);
+      if(i + 1 < lines) {
+         puts("");
+      }
+      free(lineArray[i]);
+      lineArray[i] = NULL;
+   }
 }
 
 
@@ -389,12 +461,13 @@ int main (int argc, char** argv)
    enum mode_t {
       Indent          = 1,
       Center          = 2,
-      Separator       = 3,
-      Width           = 4,
-      TerminalInfo    = 5,
-      Length          = 6,
-      Size            = 7,
-      SizeLengthWidth = 8
+      MultiLineCenter = 3,
+      Separator       = 4,
+      Width           = 5,
+      TerminalInfo    = 6,
+      Length          = 7,
+      Size            = 8,
+      SizeLengthWidth = 9
    };
    enum mode_t mode                = Indent;
    int         indentWidth         = 0;
@@ -408,6 +481,13 @@ int main (int argc, char** argv)
    for(int i = 1; i <argc; i++) {
       if( (strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--center") == 0) ) {
          mode = Center;
+      }
+      else if( (strcmp(argv[i], "-m") == 0) || (strcmp(argv[i], "--multiline-center") == 0) ) {
+         mode = MultiLineCenter;
+         if(i + 2 < argc) {
+            borderLeft  = unescape(argv[i + 1]);
+            borderRight = unescape(argv[i + 2]);
+         }
       }
       else if( (strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--indent") == 0) ) {
          if(i + 1 < argc) {
@@ -445,8 +525,8 @@ int main (int argc, char** argv)
       else if( (strcmp(argv[i], "-x") == 0) || (strcmp(argv[i], "--columns") == 0) ) {
          if(i + 1 < argc) {
             consoleWidth = atol(argv[i + 1]);
-            if( consoleWidth < 1) {
-               consoleWidth = defaultConsoleWidth;
+            if( consoleWidth <= 0) {
+               consoleWidth = defaultConsoleWidth + consoleWidth;   // subtract!
             }
             if (consoleWidth > 4096) {
                fprintf(stderr, "ERROR: Invalid console width %u!\n", consoleWidth);
@@ -491,7 +571,10 @@ int main (int argc, char** argv)
             indented(indentWidth, utf8String);
           break;
          case Center:
-            centered(utf8String, consoleWidth);
+            centered(utf8String, consoleWidth, false);
+          break;
+         case MultiLineCenter:
+            doMultiLineCenter(borderLeft, borderRight, consoleWidth);
           break;
          case Separator:
             separator(borderLeft, utf8String, borderRight, consoleWidth);

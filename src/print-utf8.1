@@ -49,6 +49,9 @@
 .Op Fl c Ar string | Fl Fl center Ar string
 .br
 .Op Fl x Ar console_width | Fl Fl columns Ar console_width
+.Op Fl m Ar left Ar right | Fl Fl multiline-center Ar left Ar right
+.br
+.Op Fl x Ar console_width | Fl Fl columns Ar console_width
 .Op Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
 .br
 .Op Fl b Ar string | Fl Fl size Ar string
@@ -81,12 +84,17 @@ Add a newline to the output. Default: off.
 Indent the string by the given number of characters (columns in the console). A negative number leads to left-justified text, a positive number leads to right-justified text.
 .It Fl c Ar string | Fl Fl center Ar string
 Center the string, using indentation based on the current console width.
+.It Fl m Ar left Ar right | Fl Fl multiline-center Ar left Ar right
+Reads multiple lines from stdin, pads them to the same length, and prints them centered with given borders on left and right side.
 .It Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
 Make a separator, consisting of a left part, a variable number of separator string occurrences, as well as a right part.
 .It Fl x Ar console_width | Fl Fl columns Ar console_width
-Set number of columns (console width) for "center" and "separator" functions
-(see above). If below 1, the current console width (or 80 if unknown) is used.
-Default: current console width.
+Set number of columns (console width) for "center", "multiline-center", and
+"separator" functions (see above).
+For console_width=0, the current console width (or from 80, if unknown) is used.
+For console_width<0, the current console width (or from 80, if unknown) plus
+console_width (subtraction, since it is negative!) is used.
+Default: 0, i.e. current console width.
 .It Fl b Ar string | Fl Fl size Ar string
 Print the size (bytes) of the string without ANSI control sequences.
 .It Fl l Ar string | Fl Fl length Ar string
@@ -108,6 +116,9 @@ Note that if /dev/tty is not available, the default of 80x24 is returned!
 .It print-utf8 --newline --center 'This line is centered in console width!'
 .It print-utf8 --newline --columns 80 --center 'This line is centered in 80 columns!'
 .It print-utf8 --newline --center '\ex1b[38;2;241;71;29mThis line is centered!\ee[0m'
+.It figlet "This is a test!" | print-utf8 --newline -multiline-center "<🏁" "🏁>"
+.It figlet "This is another test!" | print-utf8 -x -8 -n -m "<🏁" "🏁>"
+.It date +"%d. %m.  %Y %H:%M:%S" | figlet -w 128 | ./print-utf8 -n -m "[🕑" "🕑]"
 .It print-utf8 -n -c '😀😀😀 This line is centered in console width! 😀😀😀'
 .It print-utf8 -n -x 80 -c '😀😀😀 This line is centered in 80 columns! 😀😀😀'
 .It print-utf8 --indent -32 'Left: ' && echo '1234'
