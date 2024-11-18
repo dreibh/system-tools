@@ -79,6 +79,56 @@ select-ssh-options ()
 }
 
 
+# ###### Install Zabbix Agent ###############################################
+install-zabbix-agent()
+{
+   if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
+
+      # ------ Add Zabbix Official Repository ----------------------------------
+      local zabbixVersion="7.0"
+      cat >/etc/apt/sources.list.d/zabbix.list <<EOF
+deb https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${VERSION_CODENAME} main
+# deb-src https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${VERSION_CODENAME} main
+EOF
+      rm -f /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
+      curl -fsSL https://repo.zabbix.com/zabbix-official-repo.key | \
+         gpg --batch --dearmor -o /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
+      /usr/bin/apt-get update
+
+      # ------ Install ---------------------------------------------------------
+      packages="zabbix-agent"
+
+      # shellcheck disable=SC2086
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+
+      systemctl enable zabbix-agent
+      systemctl start  zabbix-agent
+
+   # ------ Fedora -------------------------------------------------------------
+   elif [ "${ID}" == "fedora" ] ; then
+
+      packages="zabbix-agent"
+
+      # shellcheck disable=SC2086
+      /usr/bin/dnf install -y ${packages}
+
+      systemctl enable zabbix-agent
+      systemctl start  zabbix-agent
+
+   # ------ FreeBSD ------------------------------------------------------------
+   elif [ "${ID}" == "freebsd" ] ; then
+
+      packages="zabbix7-agent"
+      # shellcheck disable=SC2086
+      /usr/sbin/pkg install -y ${packages}
+
+      sysrc zabbix_agentd_enable="YES"
+      service zabbix_agentd start
+
+   fi
+}
+
+
 
 # ###### Main program #######################################################
 
@@ -91,6 +141,7 @@ OLD_HOSTNAME_FQDN="$(hostname -f)"
 OLD_HOSTNAME="${OLD_HOSTNAME_FQDN//.*/}"
 NEW_HOSTNAME_FQDN="${OLD_HOSTNAME_FQDN}"
 ZABBIX_SERVER=""
+INSTALL_ZABBIX_AGENT=0
 applyChanges=""
 
 while [ $# -gt 0 ] ; do
@@ -110,6 +161,8 @@ while [ $# -gt 0 ] ; do
    elif [ "$1" == "--zabbix" ] || [ "$1" == "-Z" ] || [ "$1" == "-zabbix" ] ; then
       ZABBIX_SERVER="$2"
       shift
+   elif [ "$1" == "--install-zabbix-agent" ] || [ "$1" == "-A" ] || [ "$1" == "-install-zabbix-agent" ] ; then
+      INSTALL_ZABBIX_AGENT=1
    elif [ "$1" == "--skip-machine-id" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-machine-id" ] ; then
       SKIP_MACHINE_ID=1
    elif [ "$1" == "--skip-ssh-configuration" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-ssh-configuration" ] ; then
@@ -117,7 +170,7 @@ while [ $# -gt 0 ] ; do
    elif [ "$1" == "--skip-ssh-key-replacement" ] || [ "$1" == "-K" ] || [ "$1" == "-skip-key-replacement" ] ; then
       SKIP_SSH_KEY_REPLACEMENT=1
    else
-      echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--zabbix|-Z zabbix_server] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--yes-to-all-i-am-really-sure]"
+      echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--zabbix|-Z zabbix_server [--install-zabbix-agent|-A] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--yes-to-all-i-am-really-sure]"
       exit 1
    fi
    shift
@@ -227,15 +280,23 @@ fi
 # ====== Zabbix configuration ===============================================
 if [ "${ZABBIX_SERVER}" != "" ] ; then
    # ------ Prepare configuration -------------------------------------------
-   for zabbixConfig in /etc/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf /usr/local/etc/zabbix7/zabbix_agentd.conf ; do
-      if [ -e "${zabbixConfig}" ] ; then
-         break
+   for stage in 1 2 ; do
+      for zabbixConfig in /etc/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf /usr/local/etc/zabbix7/zabbix_agentd.conf ; do
+         if [ -e "${zabbixConfig}" ] ; then
+            break
+         fi
+      done
+      if [ ! -e "${zabbixConfig}" ] ; then
+         if [ ${stage} -eq 1 ] ; then
+            if [ ${INSTALL_ZABBIX_AGENT} -eq 1 ] ; then
+               install-zabbix-agent
+            fi
+         else
+            echo >&2 "ERROR: Tried to configure Zabbix Agent, but no configuration file found! Check Zabbix Agent installation!"
+            exit 1
+         fi
       fi
    done
-   if [ ! -e "${zabbixConfig}" ] ; then
-      echo >&2 "ERROR: Tried to configure Zabbix Agent, but no configuration file found! Check Zabbix Agent installation!"
-      exit 1
-   fi
    echo "Trying to reach Zabbix server ${ZABBIX_SERVER} ..."
    if ! ping -c3 -i0.2 "${ZABBIX_SERVER}" ; then
       echo >&2 "ERROR: Unable to reach Zabbix server ${ZABBIX_SERVER}!"
@@ -263,8 +324,10 @@ EOF
       if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
          cp "${zabbixConfig}" "${zabbixConfig}.old"
          mv "${zabbixConfig}.new" "${zabbixConfig}"
-         sudo service service zabbix-agent  restart 2>/dev/null || true
-         sudo service service zabbix_agentd restart 2>/dev/null || true
+         for mode in enable restart start ; do
+            sudo service service zabbix-agent  ${mode} 2>/dev/null || true
+            sudo service service zabbix_agentd ${mode} 2>/dev/null || true
+         done
       else
          gettext "Skipped!"
          echo ""

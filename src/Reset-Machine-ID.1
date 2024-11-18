@@ -41,6 +41,7 @@
 .Nm Reset-Machine-ID
 .Op Fl H Ar hostname | Fl Fl hostname Ar hostname
 .Op Fl Z Ar zabbix_server | Fl Fl zabbix Ar zabbix_server
+.Op Fl A | Fl Fl install-zabbix-agent
 .Op Fl M | Fl Fl skip-machine-id
 .Op Fl S | Fl Fl skip-ssh-configuration
 .Op Fl K | Fl Fl skip-ssh-key-replacement
@@ -70,7 +71,9 @@ The following options are available:
 .It Fl H Ar hostname | Fl Fl hostname Ar hostname
 Set the given hostname.
 .It Fl Z Ar zabbix_server | Fl Fl zabbix Ar zabbix_server
-Configure an already-installed Zabbix agent for a given Zabbix server.
+Configure an already-installed Zabbix Agent for a given Zabbix server.
+.It Fl A | Fl Fl install-zabbix-agent
+Try to install Zabbix Agent, if necessary, when a Zabbix server is given but no Zabbix Agent is installed.
 .It Fl M | Fl Fl skip-machine-id
 Do not reset the machine ID.
 .It Fl S | Fl Fl skip-ssh-configuration
@@ -87,6 +90,7 @@ ssh_config without interactively asking for confirmation.
 .It sudo Reset-Machine-ID
 .It sudo Reset-Machine-ID --yes-to-all-i-am-really-sure
 .It sudo Reset-Machine-ID --hostname dbserver.domain.example
-.It sudo Reset-Machine-ID -H server.domain.example -Z zabbix.domain.example
+.It sudo Reset-Machine-ID -H server.domain.example -Z zabbix.domain.example -A
+.It sudo Reset-Machine-ID -H server.domain.example --zabbix zabbix.domain.example --install-zabbix-agent
 .It sudo Reset-Machine-ID --skip-ssh-configuration --skip-ssh-key-replacement
 .El
