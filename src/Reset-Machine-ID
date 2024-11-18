@@ -82,6 +82,11 @@ select-ssh-options ()
 # ###### Install Zabbix Agent ###############################################
 install-zabbix-agent()
 {
+   if [ ! -e /etc/os-release ] ; then
+      echo >&2 "ERROR: /etc/os-release does not exist!"
+      exit 1
+   fi
+   . /etc/os-release
    if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
       # ------ Add Zabbix Official Repository ----------------------------------
