@@ -294,6 +294,10 @@ if [ "${ZABBIX_SERVER}" != "" ] ; then
       if [ ! -e "${zabbixConfig}" ] ; then
          if [ ${stage} -eq 1 ] ; then
             if [ ${INSTALL_ZABBIX_AGENT} -eq 1 ] ; then
+               if [ ${YES_TO_ALL} -ne 1 ] ; then
+                  echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Install Zabbix agent?") [yes/no]?\x1b[0m "
+                  read -er applyChanges
+               fi
                install-zabbix-agent
             fi
          else
