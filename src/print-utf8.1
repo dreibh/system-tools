@@ -113,24 +113,24 @@ Note that if /dev/tty is not available, the default of 80x24 is returned!
 .It print-utf8 -h
 .It print-utf8 --help
 .It print-utf8 --version
-.It print-utf8 --newline --center 'This line is centered in console width!'
-.It print-utf8 --newline --columns 80 --center 'This line is centered in 80 columns!'
-.It print-utf8 --newline --center '\ex1b[38;2;241;71;29mThis line is centered!\ee[0m'
-.It figlet "This is a test!" | print-utf8 --newline -multiline-center "<🏁" "🏁>"
-.It figlet "This is another test!" | print-utf8 -x -8 -n -m "<🏁" "🏁>"
-.It date +"%d. %m.  %Y %H:%M:%S" | figlet -w 128 | ./print-utf8 -n -m "[🕑" "🕑]"
-.It print-utf8 -n -c '😀😀😀 This line is centered in console width! 😀😀😀'
-.It print-utf8 -n -x 80 -c '😀😀😀 This line is centered in 80 columns! 😀😀😀'
-.It print-utf8 --indent -32 'Left: ' && echo '1234'
-.It print-utf8 --indent +32 'Right: ' && echo '1234'
-.It print-utf8 --separator --newline '<*' '=' '*>'
-.It print-utf8 --separator --columns 80 --newline '<*' '=' '*>'
-.It print-utf8 -n -s '<💻😀' '=' '😀💻>'
-.It print-utf8 --width 'Test'
-.It print-utf8 --width 'Test äöü'
-.It print-utf8 -s '😀 Test 😀'
-.It print-utf8 -l '😀 Test 😀'
-.It print-utf8 -w '😀 Test 😀'
-.It print-utf8 -a '😀 Test 😀'
+.It print-utf8 --newline --center \[dq]This line is centered in console width!\[dq]
+.It print-utf8 --newline --columns 80 --center \[dq]This line is centered in 80 columns!\[dq]
+.It print-utf8 --newline --center \[dq]\ex1b[38;2;241;71;29mThis line is centered!\ee[0m\[dq]
+.It figlet \[dq]This is a test!\[dq] | print-utf8 --newline -multiline-center \[dq]<🏁\[dq] \[dq]🏁>\[dq]
+.It figlet \[dq]This is another test!\[dq] | print-utf8 -x -8 -n -m \[dq]<🏁\[dq] \[dq]🏁>\[dq]
+.It date +\[dq]%d. %m.  %Y %H:%M:%S\[dq] | figlet -w 128 | ./print-utf8 -n -m \[dq][🕑\[dq] \[dq]🕑]\[dq]
+.It print-utf8 -n -c \[dq]😀😀😀 This line is centered in console width! 😀😀😀\[dq]
+.It print-utf8 -n -x 80 -c \[dq]😀😀😀 This line is centered in 80 columns! 😀😀😀\[dq]
+.It print-utf8 --indent -32 \[dq]Left: \[dq] && echo \[dq]1234\[dq]
+.It print-utf8 --indent +32 \[dq]Right: \[dq] && echo \[dq]1234\[dq]
+.It print-utf8 --separator --newline \[dq]<*\[dq] \[dq]=\[dq] \[dq]*>\[dq]
+.It print-utf8 --separator --columns 80 --newline \[dq]<*\[dq] \[dq]=\[dq] \[dq]*>\[dq]
+.It print-utf8 -n -s \[dq]<💻😀\[dq] \[dq]=\[dq] \[dq]😀💻>\[dq]
+.It print-utf8 --width \[dq]Test\[dq]
+.It print-utf8 --width \[dq]Test äöü\[dq]
+.It print-utf8 -s \[dq]😀 Test 😀\[dq]
+.It print-utf8 -l \[dq]😀 Test 😀\[dq]
+.It print-utf8 -w \[dq]😀 Test 😀\[dq]
+.It print-utf8 -a \[dq]😀 Test 😀\[dq]
 .It print-utf8 --terminal-info
 .El
