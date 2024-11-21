@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Build Scripts
-# Copyright (C) 2002-2024 by Thomas Dreibholz
+# Copyright (C) 2002-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -70,14 +70,14 @@ while [ $# -gt 0 ] ; do
       CORES="$2"
       shift
    elif [ "$1" == "--" ] ; then
+      shift
       break
    else
-      echo >&2 "Usage: autogen.sh [--use-clang|--use-clang-scan-build|--use-gcc|--use-gcc-analyzer] [--debug|--release|--release-with-debinfo] [--cores N] [--verbose]"
+      echo >&2 "Usage: autogen.sh [--use-clang|--use-clang-scan-build|--use-gcc|--use-gcc-analyzer] [--debug|--release|--release-with-debinfo] [--cores N] [--verbose] -- (further CMake options)"
       exit 1
    fi
    shift
 done
-
 
 # ====== Configure with CMake ===============================================
 rm -f CMakeCache.txt
@@ -87,7 +87,6 @@ else
    installPrefix="/usr/local"
 fi
 if [ "$*" != "" ] ; then
-echo "x"
    CMAKE_OPTIONS="${CMAKE_OPTIONS} $*"
 fi
 echo "CMake options:${CMAKE_OPTIONS} . -DCMAKE_INSTALL_PREFIX=\"${installPrefix}\""
