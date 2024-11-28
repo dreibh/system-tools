@@ -133,4 +133,11 @@ Note that if /dev/tty is not available, the default of 80x24 is returned!
 .It print-utf8 -w \[dq]😀 Test 😀\[dq]
 .It print-utf8 -a \[dq]😀 Test 😀\[dq]
 .It print-utf8 --terminal-info
+.It print-utf8 -n -s \[dq]\[rs]e[1;34m╔\[dq] \[dq]═\[dq] \[dq]╗\[rs]e[0m\[dq]\~;
+.br
+date +\[dq]%d. %m. %Y %H:%M:%S\[dq] | figlet -w 128 | \[rs]
+.br
+print-utf8 -n -m \[dq]\[rs]e[1;34m║🕑\[rs]e[1;31m\[dq] \[dq]\[rs]e[1;34m🕑║\[rs]e[0m\[dq] ;
+.br
+print-utf8 -n -s \[dq]\[rs]e[1;34m╚\[dq] \[dq]═\[dq] \[dq]╝\[dq]
 .El
