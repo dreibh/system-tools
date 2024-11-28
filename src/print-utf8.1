@@ -27,7 +27,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd November, 18 2024
+.Dd November, 28 2024
 .Dt print-utf8 1
 .Os print-utf8
 .\" ###### Name #############################################################
@@ -140,4 +140,15 @@ date +\[dq]%d. %m. %Y %H:%M:%S\[dq] | figlet -w 128 | \[rs]
 print-utf8 -n -m \[dq]\[rs]e[1;34m║🕑\[rs]e[1;31m\[dq] \[dq]\[rs]e[1;34m🕑║\[rs]e[0m\[dq] ;
 .br
 print-utf8 -n -s \[dq]\[rs]e[1;34m╚\[dq] \[dq]═\[dq] \[dq]╝\[dq]
+.It print-utf8 -n -s \[dq]\[rs]e[1;31;5m█\[dq] \[dq]▀\[dq] \[dq]█\[rs]e[0m\[dq]\~;
+echo \[dq]ERROR  1234\[dq] | figlet -w 128 | print-utf8 -n -m \[dq]\[rs]e[1;31;5m█\[rs]e[25m\[dq] \[dq]\[rs]e[5m█\[rs]e[0m\[dq]
+.br
+print-utf8 -n -s \[dq]\[rs]e[1;31;5m█\[dq] \[dq]▄\[dq] \[dq]█\[rs]e[0m\[dq]
+.It print-utf8 -n -s \[dq]\[rs]e[1;31;40;5m█\[dq] \[dq]▀\[dq] \[dq]█\[rs]e[0m\[dq]\~;
+.br
+echo -e \[dq]Software Failure.   Press left mouse button to continue.\[rs]nGuru Meditation #00000004.48454C50\[dq] | \[rs]
+.br
+print-utf8 -n -m \[dq]\[rs]e[1;31;40;5m█\[rs]e[25m\[dq] \[dq]\[rs]e[5m█\[rs]e[0m\[dq]
+.br
+print-utf8 -n -s \[dq]\[rs]e[1;31;40;5m█\[dq] \[dq]▄\[dq] \[dq]█\[rs]e[0m\[dq]
 .El
