@@ -405,7 +405,8 @@ def readRPMPackagingInformation():
                         packageInfo['rpm_packages'].append(
                            packageInfo['rpm_package_name'] + '-' + \
                            match.group(2) + '-' + \
-                           packageInfo['rpm_version_string'])
+                           packageInfo['rpm_version_string'] + '-' + \
+                           str(packageInfo['rpm_version_packaging']))
 
          rpmSpecFile.close()
 
@@ -420,8 +421,10 @@ def readRPMPackagingInformation():
          sys.stderr.write('ERROR: Cannot find required package versioning details in ' + packageInfo['rpm_spec_name'] + '!\n')
          sys.exit(1)
       packageInfo['rpm_packages'].append(
-         packageInfo['rpm_package_name'] +
-         packageInfo['rpm_version_string'])
+         packageInfo['rpm_package_name'] + '-' +
+         packageInfo['rpm_version_string'] + '-' +
+         str(packageInfo['rpm_version_packaging']))
+      print(packageInfo['rpm_packages'])
 
    elif len(rpm_spec_names) > 1:
       sys.stderr.write('ERROR: More than one spec file found: ' + str(rpm_spec_names) + '!\n')
@@ -1617,17 +1620,6 @@ def buildRPM(packageInfo, releases, architectures, skipPackageSigning, summaryFi
          sys.stderr.write('ERROR: RPMSign run failed: ' + str(e) + '\n')
          sys.exit(1)
 
-   # ====== Delete old RPMs =================================================
-   for rpmFilePrefix in packageInfo['rpm_packages']:
-      for architecture in [ 'noarch', buildArchitecture ]:
-         rpmFile = '/var/lib/mock/' + configuration + '/result/' + \
-                     rpmFilePrefix + '.' + \
-                     architecture + '.rpm'
-         try:
-            os.unlink(rpmFile)
-         except FileNotFoundError:
-            pass
-
    # ====== Build for each release ==========================================
    for buildArchitecture in architectures:
       for release in releases:
@@ -1639,6 +1631,17 @@ def buildRPM(packageInfo, releases, architectures, skipPackageSigning, summaryFi
          if not os.path.isfile('/etc/mock/' + configuration + '.cfg'):
             sys.stderr.write('ERROR: Configuration ' + '/etc/mock/' + configuration + '.cfg does not exist!\n')
             sys.exit(1)
+
+         # ====== Delete old RPMs ===========================================
+         for rpmFilePrefix in packageInfo['rpm_packages']:
+            for architecture in [ 'noarch', buildArchitecture ]:
+               rpmFile = '/var/lib/mock/' + configuration + '/result/' + \
+                            rpmFilePrefix + '.' + \
+                            architecture + '.rpm'
+         try:
+            os.unlink(rpmFile)
+         except FileNotFoundError:
+            pass
 
          # ====== Run mock ==================================================
          try:
