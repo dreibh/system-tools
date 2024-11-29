@@ -22,6 +22,8 @@
 # Bash options:
 set -eu
 
+
+# ====== Indentation ========================================================
 print-utf8 -n -s '<*' '=' '*>'
 for indent in -20 +20 ; do
    echo "Indented ${indent}:"
@@ -35,6 +37,8 @@ for indent in -20 +20 ; do
    echo "*"
 done
 
+
+# ====== Centering ==========================================================
 print-utf8 -n -s '<😀' '=' '😀>'
 echo "Centered:"
 print-utf8 -n -c "Test"
@@ -44,9 +48,43 @@ print-utf8 -n -c "托马斯博士"
 
 print-utf8 -n -s '<💻😀' '=' '😀💻>'
 
-print-utf8 -l '<💻😀' '=' '😀💻>'
-print-utf8 -s '<💻😀' '=' '😀💻>'
-print-utf8 -w '<💻😀' '=' '😀💻>'
-print-utf8 -a '<💻😀' '=' '😀💻>'
+
+# ====== Length, size and width =============================================
+echo "Length, size and width:"
+print-utf8 -s '<\x1b[5m💻\x1b[25m😀' '=' '\x1b[5m💻\x1b[25m😀>'
+print-utf8 -l '<\x1b[5m💻\x1b[25m😀'
+print-utf8 -b '<\x1b[5m💻\x1b[25m😀'
+print-utf8 -w '<\x1b[5m💻\x1b[25m😀'
+print-utf8 -a '<\x1b[5m💻\x1b[25m😀'
+print-utf8 -s '<\x1b[5m💻\x1b[25m😀' '=' '\x1b[5m💻\x1b[25m😀>'
+
+
+# ====== More complex examples ==============================================
+
+echo "Box with date:"
+print-utf8 -n -s "\e[1;34m╔" "═" "╗\e[0m"
+# Using fixed date here, to make the test output reproducible:
+date +"29. 09. 1976 12:34:56" | figlet -w 128 | \
+print-utf8 -n -C "\e[1;34m║🕑\e[1;31m" "\e[1;34m🕑║\e[0m"
+print-utf8 -n -s "\e[1;34m╚" "═" "╝\e[0m"
+
+echo "Box with error:"
+print-utf8 -n -s "\e[1;31;5m█" "▀" "█\e[0m"
+echo "ERROR  1234" | figlet -w 128 | \
+   print-utf8 -n -C "\e[1;31;5m█\e[25m" "\e[5m█\e[0m"
+print-utf8 -n -s "\e[1;31;5m█" "▄" "█\e[0m"
+
+echo "Guru Meditation:"
+print-utf8 -n -s "\e[1;31;40;5m█" "▀" "█\e[0m"
+echo -e "Software Failure.   Press left mouse button to continue.\nGuru Meditation #00000004.48454C50" | \
+   print-utf8 -n -C "\e[1;31;40;5m█\e[25m" "\e[5m█\e[0m"
+print-utf8 -n -s "\e[1;31;40;5m█" "▄" "█\e[0m"
+
+echo "Box with indentation:"
+print-utf8 -n -x 44 -s "\e[1;32m╒" "═" "╕\e[0m"
+for i in 1 2 3 4 5  ; do echo "Test $i" ; done | print-utf8 -n --multiline-indent -42 "\e[1;32m│\e[34m" "\e[1;32m│\e[0m"
+for i in 6 7 8 9 10 ; do echo "Test $i" ; done | print-utf8 -n --multiline-indent +42 "\e[1;32m│\e[34m" "\e[1;32m│\e[0m"
+print-utf8 -n -x 44 -s "\e[1;32m╘" "═" "╛\e[0m"
+
 
 echo "Test passed!"
