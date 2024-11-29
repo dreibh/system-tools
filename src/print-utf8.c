@@ -41,6 +41,20 @@
 #include "package-version.h"
 
 
+typedef enum printmode {
+   Indent          = 1,
+   Center          = 2,
+   MultiLineIndent = 3,
+   MultiLineCenter = 4,
+   Separator       = 5,
+   Width           = 6,
+   TerminalInfo    = 7,
+   Length          = 8,
+   Size            = 9,
+   SizeLengthWidth = 10
+} printmode_t;
+
+
 // ###### Obtain console size ###############################################
 static bool ioctlTIOCGWINSZ(struct winsize* w)
 {
@@ -386,9 +400,11 @@ static void separator(const char* separaterBorderLeft,
 
 
 // ###### Multi-Line Center #################################################
-static void doMultiLineCenter(const char* borderLeft,
-                              const char* borderRight,
-                              int         consoleWidth)
+static void doMultiLineIndentOrCenter(const char*       borderLeft,
+                                      const char*       borderRight,
+                                      int               consoleWidth,
+                                      const int         indentWidth,
+                                      const printmode_t mode)
 {
    char*        lineArray[1024];
    unsigned int lineLength[1024];
@@ -437,7 +453,12 @@ static void doMultiLineCenter(const char* borderLeft,
    // ====== Print result ===================================================
    for(unsigned int i = 0; i < lines; i++) {
       fputs(borderLeft, stdout);
-      centered(lineArray[i], consoleWidth, true);
+      if(mode == MultiLineIndent) {
+         indented(indentWidth, lineArray[i]);
+      }
+      else {
+         centered(lineArray[i], consoleWidth, true);
+      }
       fputs(borderRight, stdout);
       if(i + 1 < lines) {
          puts("");
@@ -458,18 +479,7 @@ int main (int argc, char** argv)
    }
 
    // ====== Handle arguments ===============================================
-   enum mode_t {
-      Indent          = 1,
-      Center          = 2,
-      MultiLineCenter = 3,
-      Separator       = 4,
-      Width           = 5,
-      TerminalInfo    = 6,
-      Length          = 7,
-      Size            = 8,
-      SizeLengthWidth = 9
-   };
-   enum mode_t mode                = Indent;
+   printmode_t mode                = Indent;
    int         indentWidth         = 0;
    char*       utf8String          = NULL;
    char*       borderLeft          = NULL;
@@ -479,17 +489,7 @@ int main (int argc, char** argv)
    int         consoleWidth        = defaultConsoleWidth;
 
    for(int i = 1; i <argc; i++) {
-      if( (strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--center") == 0) ) {
-         mode = Center;
-      }
-      else if( (strcmp(argv[i], "-m") == 0) || (strcmp(argv[i], "--multiline-center") == 0) ) {
-         mode = MultiLineCenter;
-         if(i + 2 < argc) {
-            borderLeft  = unescape(argv[i + 1]);
-            borderRight = unescape(argv[i + 2]);
-         }
-      }
-      else if( (strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--indent") == 0) ) {
+      if( (strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--indent") == 0) ) {
          if(i + 1 < argc) {
             indentWidth = atoi(argv[i + 1]);
          }
@@ -499,6 +499,32 @@ int main (int argc, char** argv)
          }
          mode = Indent;
          i++;
+      }
+      else if( (strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--center") == 0) ) {
+         mode = Center;
+      }
+      else if( (strcmp(argv[i], "-I") == 0) || (strcmp(argv[i], "--multiline-indent") == 0) ) {
+         mode = MultiLineIndent;
+         if(i + 3 < argc) {
+            indentWidth = atoi(argv[i + 1]);
+            borderLeft  = unescape(argv[i + 2]);
+            borderRight = unescape(argv[i + 3]);
+         }
+         else {
+            fputs("ERROR: Invalid arguments for multiline-ident!\n", stderr);
+            return 1;
+         }
+      }
+      else if( (strcmp(argv[i], "-C") == 0) || (strcmp(argv[i], "--multiline-center") == 0) ) {
+         mode = MultiLineCenter;
+         if(i + 2 < argc) {
+            borderLeft  = unescape(argv[i + 1]);
+            borderRight = unescape(argv[i + 2]);
+         }
+         else {
+            fputs("ERROR: Invalid arguments for multiline-center!\n", stderr);
+            return 1;
+         }
       }
       else if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--separator") == 0) ) {
          if(i + 3 < argc) {
@@ -548,7 +574,7 @@ int main (int argc, char** argv)
          mode = SizeLengthWidth;
       }
       else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) ) {
-         fprintf(stderr, "Usage: %s [-n|--newline] [-i indentation string|--ident indentation string] [-c string|--center string] [-s border_left separator border_right|--separator border_left separator border_right] [-c columns|--columns columns] [-s string|--size string] [-l string|--length string] [-w string|--width string] [-a string|--size-length-width string] [-t|--terminal-info] [-h|--help] [-v|--version]\n", argv[0]);
+         fprintf(stderr, "Usage: %s [-n|--newline] [-i indentation string|--ident indentation string] [-c string|--center string] [-I left right|--multiline-indent indentation left right]  [-C left right|--multiline-center left right] [-s border_left separator border_right|--separator border_left separator border_right] [-c columns|--columns columns] [-s string|--size string] [-l string|--length string] [-w string|--width string] [-a string|--size-length-width string] [-t|--terminal-info] [-h|--help] [-v|--version]\n", argv[0]);
          return 1;
       }
       else if( (strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--version") == 0) ) {
@@ -573,8 +599,10 @@ int main (int argc, char** argv)
          case Center:
             centered(utf8String, consoleWidth, false);
           break;
+         case MultiLineIndent:
          case MultiLineCenter:
-            doMultiLineCenter(borderLeft, borderRight, consoleWidth);
+            doMultiLineIndentOrCenter(borderLeft, borderRight,
+                                      consoleWidth, indentWidth, mode);
           break;
          case Separator:
             separator(borderLeft, utf8String, borderRight, consoleWidth);

@@ -27,7 +27,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd November, 28 2024
+.Dd November 29, 2024
 .Dt print-utf8 1
 .Os print-utf8
 .\" ###### Name #############################################################
@@ -49,7 +49,10 @@
 .Op Fl c Ar string | Fl Fl center Ar string
 .br
 .Op Fl x Ar console_width | Fl Fl columns Ar console_width
-.Op Fl m Ar left Ar right | Fl Fl multiline-center Ar left Ar right
+.Op Fl I Ar Ar indentation Ar left Ar right | Fl Fl multiline-indent Ar indentation Ar left Ar right
+.br
+.Op Fl x Ar console_width | Fl Fl columns Ar console_width
+.Op Fl C Ar left Ar right | Fl Fl multiline-center Ar left Ar right
 .br
 .Op Fl x Ar console_width | Fl Fl columns Ar console_width
 .Op Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
@@ -117,8 +120,10 @@ Note that if /dev/tty is not available, the default of 80x24 is returned!
 .It print-utf8 --newline --columns 80 --center \[dq]This line is centered in 80 columns!\[dq]
 .It print-utf8 --newline --center \[dq]\ex1b[38;2;241;71;29mThis line is centered!\ee[0m\[dq]
 .It figlet \[dq]This is a test!\[dq] | print-utf8 --newline -multiline-center \[dq]<🏁\[dq] \[dq]🏁>\[dq]
-.It figlet \[dq]This is another test!\[dq] | print-utf8 -x -8 -n -m \[dq]<🏁\[dq] \[dq]🏁>\[dq]
-.It date +\[dq]%d. %m.  %Y %H:%M:%S\[dq] | figlet -w 128 | ./print-utf8 -n -m \[dq][🕑\[dq] \[dq]🕑]\[dq]
+.It figlet \[dq]This is another test!\[dq] | print-utf8 -x -8 -n -C \[dq]<🏁\[dq] \[dq]🏁>\[dq]
+.It figlet "Right" | print-utf8 -n -I +72 \[dq]😀\[dq] \[dq]😀\[dq]
+.It figlet "Left"  | print-utf8 -n -I -72 \[dq]😀\[dq] \[dq]😀\[dq]
+.It date +\[dq]%d. %m.  %Y %H:%M:%S\[dq] | figlet -w 128 | ./print-utf8 -n -C \[dq][🕑\[dq] \[dq]🕑]\[dq]
 .It print-utf8 -n -c \[dq]😀😀😀 This line is centered in console width! 😀😀😀\[dq]
 .It print-utf8 -n -x 80 -c \[dq]😀😀😀 This line is centered in 80 columns! 😀😀😀\[dq]
 .It print-utf8 --indent -32 \[dq]Left: \[dq] && echo \[dq]1234\[dq]
@@ -137,18 +142,23 @@ Note that if /dev/tty is not available, the default of 80x24 is returned!
 .br
 date +\[dq]%d. %m. %Y %H:%M:%S\[dq] | figlet -w 128 | \[rs]
 .br
-print-utf8 -n -m \[dq]\[rs]e[1;34m║🕑\[rs]e[1;31m\[dq] \[dq]\[rs]e[1;34m🕑║\[rs]e[0m\[dq] ;
+print-utf8 -n -C \[dq]\[rs]e[1;34m║🕑\[rs]e[1;31m\[dq] \[dq]\[rs]e[1;34m🕑║\[rs]e[0m\[dq] ;
 .br
 print-utf8 -n -s \[dq]\[rs]e[1;34m╚\[dq] \[dq]═\[dq] \[dq]╝\[dq]
 .It print-utf8 -n -s \[dq]\[rs]e[1;31;5m█\[dq] \[dq]▀\[dq] \[dq]█\[rs]e[0m\[dq]\~;
-echo \[dq]ERROR  1234\[dq] | figlet -w 128 | print-utf8 -n -m \[dq]\[rs]e[1;31;5m█\[rs]e[25m\[dq] \[dq]\[rs]e[5m█\[rs]e[0m\[dq]
+echo \[dq]ERROR  1234\[dq] | figlet -w 128 | print-utf8 -n -C \[dq]\[rs]e[1;31;5m█\[rs]e[25m\[dq] \[dq]\[rs]e[5m█\[rs]e[0m\[dq]\~;
 .br
 print-utf8 -n -s \[dq]\[rs]e[1;31;5m█\[dq] \[dq]▄\[dq] \[dq]█\[rs]e[0m\[dq]
 .It print-utf8 -n -s \[dq]\[rs]e[1;31;40;5m█\[dq] \[dq]▀\[dq] \[dq]█\[rs]e[0m\[dq]\~;
 .br
 echo -e \[dq]Software Failure.   Press left mouse button to continue.\[rs]nGuru Meditation #00000004.48454C50\[dq] | \[rs]
 .br
-print-utf8 -n -m \[dq]\[rs]e[1;31;40;5m█\[rs]e[25m\[dq] \[dq]\[rs]e[5m█\[rs]e[0m\[dq]
+print-utf8 -n -C \[dq]\[rs]e[1;31;40;5m█\[rs]e[25m\[dq] \[dq]\[rs]e[5m█\[rs]e[0m\[dq]\~;
 .br
 print-utf8 -n -s \[dq]\[rs]e[1;31;40;5m█\[dq] \[dq]▄\[dq] \[dq]█\[rs]e[0m\[dq]
+.It print-utf8 -n -x 44 -s \[dq]\[rs]e[1;32m╒\[dq] \[dq]═\[dq] \[dq]╕\[rs]e[0m\[dq]\~;
+.br
+ls / | print-utf8 -n --multiline-indent -42 \[dq]\[rs]e[1;32m│\[rs]e[34m\[dq] \[dq]\[rs]e[1;32m│\[rs]e[0m\[dq]\~;
+.br
+print-utf8 -n -x 44 -s \[dq]\[rs]e[1;32m╘\[dq] \[dq]═\[dq] \[dq]╛\[rs]e[0m\[dq]
 .El
