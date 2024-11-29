@@ -348,8 +348,8 @@ static void indent(const int indentWidth)
 
 
 // ###### Indent ############################################################
-static void indented(const int   totalIndent,
-                     const char* utf8String)
+static void indented(const char* utf8String,
+                     const int   totalIndent)
 {
    if(totalIndent > 0) {
       indent( totalIndent - stringwidth(utf8String, true) );
@@ -454,7 +454,7 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
    for(unsigned int i = 0; i < lines; i++) {
       fputs(borderLeft, stdout);
       if(mode == MultiLineIndent) {
-         indented(indentWidth, lineArray[i]);
+         indented(lineArray[i], indentWidth);
       }
       else {
          centered(lineArray[i], consoleWidth, true);
@@ -594,7 +594,7 @@ int main (int argc, char** argv)
    if( (utf8String) || (mode ==  TerminalInfo) ) {
       switch(mode) {
          case Indent:
-            indented(indentWidth, utf8String);
+            indented(utf8String, indentWidth);
           break;
          case Center:
             centered(utf8String, consoleWidth, false);
