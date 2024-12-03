@@ -1,3 +1,182 @@
+commit a050d4b7b7fee7e74f4964a4510b367d5684230e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 3 21:59:25 2024 +0100
+
+    Workflow updates.
+
+commit 1ce9b975ffb7aaf054c75a2da04e9d221e13c397
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 29 11:51:59 2024 +0100
+
+    Updated translation files.
+
+commit b40021db80dd0885079a500af2e03af3849f0457
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 29 11:50:33 2024 +0100
+
+    Improved test.
+
+commit 4e010c22fc0c717cb7287501ac96a39d8e93d7d1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 29 11:42:18 2024 +0100
+
+    Minor fix.
+
+commit 62d2c7553066d5ebeaf94c7a2c46231268a117a3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 29 11:34:24 2024 +0100
+
+    Some clean-ups.
+
+commit d9d010bbd2dbd8308cace629962eb65fc747ee93
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 29 11:33:11 2024 +0100
+
+    Manpage updates.
+
+commit 98ffca77a7afe31bbced3535fdf3da726d3f83ab
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 29 11:33:00 2024 +0100
+
+    Improved Print-UTF8.
+
+commit e10cd18647f8223ee6248c8fddb16cfdf1daf6d0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 29 10:28:14 2024 +0100
+
+    Updated workflow.
+
+commit 715c709d123bef7ee3e3e86dea0827eb8c812891
+Merge: 3210fbb 1d36615
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Nov 28 17:34:43 2024 +0100
+
+    Merge branch 'dreibh/print-utf8'
+
+commit 1d36615adc686122850b237d0c0649b413b8707c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Nov 28 13:40:01 2024 +0100
+
+    Further improvements.
+
+commit 1c165f1b18f7a2bfd4075b444a88c34ac49e6411
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Nov 28 13:23:30 2024 +0100
+
+    Improved build script.
+
+commit fa06494dd594861619908a29b7148c2582033d7c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Nov 28 12:01:08 2024 +0100
+
+    Further manpage improvements.
+
+commit 11baa090abe55ec2f0f367c79420d45a623ddffa
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Nov 28 11:38:38 2024 +0100
+
+    Improved manpage.
+
+commit 3210fbbca697cbdb49d89fa86b8b607b402e059a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Nov 21 09:05:30 2024 +0100
+
+    Updated CI scripts.
+
+commit 754ea08588aeaa65d7b965e982247a4ccfc4368a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Nov 21 09:04:02 2024 +0100
+
+    Updated script.
+
+commit d9b04d82d6136e7f1d053796607517a11d31e131
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 20 14:58:33 2024 +0100
+
+    Minor update.
+
+commit d6c0446b4588d23f7a7989bec25e65b328be7c3c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 20 11:47:03 2024 +0100
+
+    A small fix.
+
+commit 088043ddcbf26453a894858a7f4638a78ab0bd2e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 20 11:10:37 2024 +0100
+
+    Manpage update.
+
+commit 5caea5bc213d76a333453beabfc0e39610119534
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 20 11:05:22 2024 +0100
+
+    Workflow update.
+
+commit 2b8ba381dafbb1ed6ec25aa3a7a45676a4cc2ce1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 18 15:06:57 2024 +0100
+
+    printf-utf8 improvements:
+    * Added multiline center feature.
+    * Improved --columns option.
+    * Updated manpage.
+
+commit 982eb6bb446a5e531007078507e39c7217a51a99
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 18 12:37:20 2024 +0100
+
+    Manpage fix.
+
+commit 1e63442c9b2fbff53475e0360dd5539f616b950c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 18 09:42:22 2024 +0100
+
+    Updated Bash completion.
+
+commit d04bbc27d414319aa9b2db4a3620da4befe23741
+Merge: 2da908a bb0ea7a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 18 09:34:58 2024 +0100
+
+    Merge branch 'master' of github.com:dreibh/system-tools
+
+commit 2da908acc1d24e10de43126a3d21754be6acd65b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 18 09:34:01 2024 +0100
+
+    Manpage update.
+
+commit bb0ea7ac89ba579ae116c57878a8ae33c74edb22
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 18 09:32:27 2024 +0100
+
+    Small improvements.
+
+commit 0298699464b26527cec1c25666cf58c66355c886
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 18 09:26:32 2024 +0100
+
+    Manpage updates.
+
+commit f6f738d5a8e95fff8291728eddba7314f48523f2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 18 09:25:01 2024 +0100
+
+    Zabbix configuration improvement.
+
+commit a53ba53c29e299018529bcbb8dc0ee98a4e93f46
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Nov 17 12:10:59 2024 +0100
+
+    Header updates.
+
+commit 4ec93e999466619a3dcb501bafc477767c581723
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 12 20:37:10 2024 +0100
+
+    New release td-system-tools-2.0.3.
+
 commit f244af8d667a600abff8f8f560b76bfb43c3b255
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Nov 12 20:35:18 2024 +0100
