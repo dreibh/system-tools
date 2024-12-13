@@ -43,7 +43,7 @@ indent=-20
 
 colorBasic="\e[33m"
 colorNetwork="\e[34m"
-colorPrefix="\e[94m"
+colorPrefix="\e[36m"
 colorInactive="\e[37m"
 colorNone="\e[0m"
 
