@@ -1,3 +1,39 @@
+commit d0cd478697dffa6afcec111c632553c69e803c0d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 13 20:53:05 2024 +0100
+
+    Minor manpage update.
+
+commit 52f51af0b24e9ee3dbb331467f117322a6f070a1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 13 17:26:57 2024 +0100
+
+    Dependency fix for test.
+
+commit edcd6302bfa4fc5caeea62fdac633b85840e54c1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 13 15:25:02 2024 +0100
+
+    Workflow update.
+
+commit 4ebe3aa2ab53ec72963034caa8535f15b672fdcb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 13 15:22:33 2024 +0100
+
+    Workflow update.
+
+commit 49544853674122df2b07651a0547cd167b4236ae
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 13 14:03:08 2024 +0100
+
+    Color sequence update for displaying network prefix. Now, it works both in console as well as in GUI shell under Linux.
+
+commit 6376f598eb05341c9dbc6b22aa6d1853ffbd2375
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 3 23:04:13 2024 +0100
+
+    New release td-system-tools-2.0.4.
+
 commit a050d4b7b7fee7e74f4964a4510b367d5684230e
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Dec 3 21:59:25 2024 +0100
