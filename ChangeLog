@@ -1,3 +1,21 @@
+commit 2019a30d3f3a001560f65ba0be738a46c4e948f9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Dec 18 13:26:41 2024 +0100
+
+    Updated .po files.
+
+commit 1d2bf20a71936d598a5039449f7a25495de205f0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Dec 18 13:16:08 2024 +0100
+
+    Improved Reset-Machine-ID.
+
+commit ae07bae6bbd11fd1cad6099db707eac5dcbcecbc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 13 21:31:07 2024 +0100
+
+    New release td-system-tools-2.0.5.
+
 commit d0cd478697dffa6afcec111c632553c69e803c0d
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Dec 13 20:53:05 2024 +0100
