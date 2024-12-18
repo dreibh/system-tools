@@ -35,7 +35,7 @@ System-Maintenance runs some system maintenance tasks to keep the system clean a
 - Delete network interface mapping (only on request by option, see below),
 - Updating package and file search caches,
 - Updating firmware,
-- Trimming SSDs and virual storage.
+- Trimming SSDs and virtual storage.
 
 ## Binary Package Installation
 
