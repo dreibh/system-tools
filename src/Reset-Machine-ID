@@ -346,7 +346,7 @@ fi
 
 
 # ====== SSH configuration ==================================================
-if [ ${SKIP_SSH_CONFIGURATION} -eq 0 ] && [ -d /etc/ssh ] ; then
+if [ ${SKIP_SSH_CONFIGURATION} -eq 0 ] && [ -d /etc/ssh ] && [ -x "$(command -v ssh)" ] ; then
 
    sshCiphers=$(select-ssh-options       Ciphers       cipher   aes256-gcm@openssh.com chacha20-poly1305@openssh.com)
    sshMACs=$(select-ssh-options          MACs          mac      hmac-sha2-512-etm@openssh.com hmac-sha2-256-etm@openssh.com)
@@ -366,6 +366,10 @@ if [ ${SKIP_SSH_CONFIGURATION} -eq 0 ] && [ -d /etc/ssh ] ; then
       echo >&2 "sshCiphers=${sshCiphers}"
       echo >&2 "sshMACs=${sshMACs}"
       echo >&2 "sshKexAlgorithms=${sshKexAlgorithms}"
+      for option in cipher mac kex ; do
+         echo >&2 "ssh -Q ${option}:"
+         ssh -Q ${option} >&2
+      done
       exit 1
    fi
 
@@ -395,37 +399,40 @@ EOF
 
 
    # ====== Apply ssh_config updates ========================================
-   gettext "Suggested ssh_config changes:"
-   echo ""
-   if ! diff --color=always ssh_config ssh_config.suggested ; then
-      if [ ${YES_TO_ALL} -ne 1 ] ; then
-         echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested ssh_config changes?") [yes/no]?\x1b[0m "
-         read -er applyChanges
-      fi
-      if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
-         cp ssh_config ssh_config.old
-         mv ssh_config.suggested ssh_config
-      else
-         gettext "Skipped!"
-         echo ""
+   if [ -e ssh_config ] ; then
+      gettext "Suggested ssh_config changes:"
+      echo ""
+      if ! diff --color=always ssh_config ssh_config.suggested ; then
+         if [ ${YES_TO_ALL} -ne 1 ] ; then
+            echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested ssh_config changes?") [yes/no]?\x1b[0m "
+            read -er applyChanges
+         fi
+         if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
+            cp ssh_config ssh_config.old
+            mv ssh_config.suggested ssh_config
+         else
+            gettext "Skipped!"
+            echo ""
+         fi
       fi
    fi
 
 
    # ====== Suggest sshd_config updates =====================================
-   port=$(grep "^Port[[:blank:]]" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
-   p1=$(grep "^PasswordAuthentication[[:blank:]]" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
-   p2=$(grep "^KbdInteractiveAuthentication[[:blank:]]" /etc/ssh/sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
-   if [[ ! "${port}" =~ ^[0-9]+$ ]] ; then
-      port="22"
-   fi
-   if [ "${p1}" != "yes" ] && [ "${p1}" != "no" ]  ; then
-      p1="yes"
-   fi
-   if [ "${p2}" != "yes" ] && [ "${p2}" != "no" ]  ; then
-      p2="yes"
-   fi
-   cat >sshd_config.suggested <<EOF
+   if [ -e sshd_config ] ; then
+      port=$(grep "^Port[[:blank:]]" sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
+      p1=$(grep "^PasswordAuthentication[[:blank:]]" sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
+      p2=$(grep "^KbdInteractiveAuthentication[[:blank:]]" sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
+      if [[ ! "${port}" =~ ^[0-9]+$ ]] ; then
+         port="22"
+      fi
+      if [ "${p1}" != "yes" ] && [ "${p1}" != "no" ]  ; then
+         p1="yes"
+      fi
+      if [ "${p2}" != "yes" ] && [ "${p2}" != "no" ]  ; then
+         p2="yes"
+      fi
+      cat >sshd_config.suggested <<EOF
 Protocol 2
 
 Port ${port}
@@ -452,55 +459,56 @@ KbdInteractiveAuthentication ${p2}
 
 AcceptEnv                    LANG LC_*
 EOF
-   for sftp in /usr/lib/openssh/sftp-server /usr/libexec/sftp-server ; do
-      if [ -e "$sftp" ] ; then
-         (
-            echo ""
-            echo "Subsystem sftp $sftp"
-         ) >>sshd_config.suggested
-         break
-      fi
-   done
+      for sftp in /usr/lib/openssh/sftp-server /usr/libexec/sftp-server ; do
+         if [ -e "$sftp" ] ; then
+            (
+               echo ""
+               echo "Subsystem sftp $sftp"
+            ) >>sshd_config.suggested
+            break
+         fi
+      done
 
 
-   # ====== Suggest removal of Cloud-Init sshd configuration ================
-   differences=0
-   if [ -e /etc/ssh/sshd_config.d/50-cloud-init.conf ] ; then
-      gettext "Suggested removal of /etc/ssh/sshd_config.d/50-cloud-init.conf:"
-      echo ""
-      cat /etc/ssh/sshd_config.d/50-cloud-init.conf
-      differences=1
-   fi
-
-
-   # ====== Apply sshd_config updates =======================================
-   gettext "Suggested sshd_config changes:"
-   echo ""
-   diff --color=always sshd_config sshd_config.suggested || differences=$(( differences+1))
-   if [ ${differences} -gt 0 ] ; then
-      if [ ${YES_TO_ALL} -ne 1 ] ; then
-         echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested sshd_config changes?") [yes/no]?\x1b[0m "
-         read -er applyChanges
-      fi
-      if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
-         rm -f /etc/ssh/sshd_config.d/50-cloud-init.conf
-         cp sshd_config sshd_config.old
-         mv sshd_config.suggested sshd_config
-
-         echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
-         # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
-         service sshd restart 2>/dev/null || \
-            service ssh restart 2>/dev/null
-      else
-         gettext "Skipped!"
+      # ====== Suggest removal of Cloud-Init sshd configuration =============
+      differences=0
+      if [ -e sshd_config.d/50-cloud-init.conf ] ; then
+         gettext "Suggested removal of sshd_config.d/50-cloud-init.conf:"
          echo ""
+         cat sshd_config.d/50-cloud-init.conf
+         differences=1
+      fi
+
+
+      # ====== Apply sshd_config updates ====================================
+      gettext "Suggested sshd_config changes:"
+      echo ""
+      diff --color=always sshd_config sshd_config.suggested || differences=$(( differences+1))
+      if [ ${differences} -gt 0 ] ; then
+         if [ ${YES_TO_ALL} -ne 1 ] ; then
+            echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested sshd_config changes?") [yes/no]?\x1b[0m "
+            read -er applyChanges
+         fi
+         if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
+            rm -f sshd_config.d/50-cloud-init.conf
+            cp sshd_config sshd_config.old
+            mv sshd_config.suggested sshd_config
+
+            echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
+            # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
+            service sshd restart 2>/dev/null || \
+               service ssh restart 2>/dev/null
+         else
+            gettext "Skipped!"
+            echo ""
+         fi
       fi
    fi
 fi
 
 
 # ====== Generate new SSH key pair ==========================================
-if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] ; then
+if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && [ -x "$(command -v ssh-keygen)" ] ; then
 
    cd /etc/ssh || exit
 
@@ -513,11 +521,15 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] ; then
 
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Making backup of current keys in \${backupDirectory} ...")\x1b[0m"
       mkdir "${backupDirectory}/"
-      find . -maxdepth 1 -name "ssh_host_*_key*" -print0 | xargs -0 -n1 -I § -r mv § "${backupDirectory}/"
-      find . -maxdepth 1 -name "ssh_host_key*"   -print0 | xargs -0 -n1 -I § -r mv § "${backupDirectory}/"
-      find . -maxdepth 1 -name "moduli*"         -print0 | xargs -0 -n1 -I § -r cp § "${backupDirectory}/"
-      cp sshd_config "${backupDirectory}/"
-      cp ssh_config  "${backupDirectory}/"
+      find . -maxdepth 1 -name "ssh_host_*_key*" -print0 | xargs -0 -I § -r mv § "${backupDirectory}/"
+      find . -maxdepth 1 -name "ssh_host_key*"   -print0 | xargs -0 -I § -r mv § "${backupDirectory}/"
+      find . -maxdepth 1 -name "moduli*"         -print0 | xargs -0 -I § -r cp § "${backupDirectory}/"
+      if [ -e ssh_config ] ; then
+         cp ssh_config "${backupDirectory}/"
+      fi
+      if [ -e sshd_config ] ; then 
+         cp sshd_config "${backupDirectory}/"
+      fi
 
       # rm -f moduli.candidates moduli
       # echo "Generating moduli, step 1 ..."
@@ -537,7 +549,7 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] ; then
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
       # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
       service sshd restart 2>/dev/null || \
-         service ssh restart 2>/dev/null
+         service ssh restart 2>/dev/null || true
 
    else
       gettext "Skipped!"
