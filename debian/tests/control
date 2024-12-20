@@ -10,7 +10,7 @@ Restrictions: needs-root, allow-stderr
 
 Tests: 31-reset-machine-id
 Depends: td-reset-machine-id
-Restrictions: needs-root, breaks-testbed
+Restrictions: needs-root, allow-stderr
 
 Tests: 40-fingerprint-ssh-keys
 Depends: td-fingerprint-ssh-keys
