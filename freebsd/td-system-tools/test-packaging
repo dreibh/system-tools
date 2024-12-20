@@ -41,7 +41,9 @@ if [ -e work ] ; then
    rm -rf work
 fi
 rm -f ${PACKAGE}-${PACKAGE_VERSION}.txz
-find /usr/ports/packages -name "${PACKAGE}*.txz" | xargs rm -f
+if [ -d work/pkg ] ; then
+   find work/pkg -name "${PACKAGE}*.txz" | xargs rm -f
+fi
 
 
 echo "1. ###### make deinstall ##############################################" && \
@@ -53,11 +55,11 @@ make package && \
 echo "4. ###### make deinstall ##############################################" && \
 make deinstall && \
 echo "5. ###### pkg add #####################################################" && \
-if [ ! -e "/usr/ports/packages/All/${PACKAGE}-${PACKAGE_VERSION}.pkg" ] ; then
-   echo >&2 "ERROR: Package /usr/ports/packages/All/${PACKAGE}-${PACKAGE_VERSION}.pkg not found!"
+if [ ! -e "work/pkg/${PACKAGE}-${PACKAGE_VERSION}.pkg" ] ; then
+   echo >&2 "ERROR: Package work/pkg/${PACKAGE}-${PACKAGE_VERSION}.pkg not found!"
    exit 1
 fi && \
-pkg add /usr/ports/packages/All/${PACKAGE}-${PACKAGE_VERSION}.pkg && \
+pkg add work/pkg/${PACKAGE}-${PACKAGE_VERSION}.pkg && \
 echo "6. ###### make deinstall ##############################################" && \
 make deinstall && \
 echo "7. ###### make reinstall ##############################################" && \
@@ -65,7 +67,7 @@ make reinstall && \
 echo "8. ###### make package ################################################" && \
 make package && \
 echo "9. ###### tar tzvf *.pkg ##############################################" && \
-tar tzvf /usr/ports/packages/All/${PACKAGE}-${PACKAGE_VERSION}.pkg && \
+tar tzvf work/pkg/${PACKAGE}-${PACKAGE_VERSION}.pkg && \
 echo "Running portlint ..." && \
 portlint && \
 echo "====== Successfully completed! ======"
