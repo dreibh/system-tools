@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# GitHub Actions Scripts
-# Copyright (C) 2018-2025 by Thomas Dreibholz
+# Travis CI Scripts
+# Copyright (C) 2018-2024 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-import distro
+
 import glob
 import os
 import re
@@ -27,15 +27,15 @@ import subprocess
 import sys
 
 
-# ###### Extract Deb file dependencies ######################################
-debDepLine = re.compile(r'^(.*:[ \t]*)(.*)$')
-debDepItem = re.compile(r'^([a-zA-Z0-9-+\.]+)[\s]*(|\|.*|\(.*)[\s]*$')
-def extractDebDependencies(line, system):
+# ###### Extract dependencies ###############################################
+depLine = re.compile(r'^(.*:[ \t]*)(.*)$')
+depItem = re.compile(r'^([a-zA-Z0-9-+\.]+)[\s]*(|\|.*|\(.*)[\s]*$')
+
+def extractDependencies(line, system):
    dependencies = []
-   distribution = distro.codename()
 
    # Remove "build-depends:", etc.:
-   m = debDepLine.match(line)
+   m = depLine.match(line)
    if m != None:
       line = m.group(2)
    line = line.strip()
@@ -43,15 +43,17 @@ def extractDebDependencies(line, system):
    # Split into segments
    for l in line.split(','):
       l = l.strip()
-      m = debDepItem.match(l)
+      m = depItem.match(l)
       if m != None:
-         dependency = l
+         dependency = m.group(1)
 
          # ------ Ugly work-around for cmake --------------------------------
          # We need cmake >= 3.0!
-         if ((m.group(1) == 'cmake') or (m.group(1) == 'cmake3')):
+         if ((dependency == 'cmake') or (dependency == 'cmake3')):
             if ((system == 'debian') or (system == 'ubuntu')):
                try:
+                  distribution = subprocess.check_output( ["lsb_release", "-cs"] ).decode('utf-8').strip()
+                  # print("distribution=", distribution, ".")
                   if distribution in [ 'trusty' ]:
                      dependency = 'cmake3'
                except:
@@ -62,53 +64,20 @@ def extractDebDependencies(line, system):
    return dependencies
 
 
-# ###### Extract RPM spec dependencies ######################################
-rpmDepLine = re.compile(r'^(.*:[ \t]*)(.*)$')
-rpmDepItem = re.compile(r'^([a-zA-Z0-9-+\.]+)[\s]*(|or[ \t]*.*|\(.*)[\s]*$')
-def extractRPMDependencies(line, system):
-   dependencies = []
-   distribution = distro.codename()
-
-   # Remove "build-depends:", etc.:
-   m = rpmDepLine.match(line)
-   if m != None:
-      dependency = m.group(2).strip()
-      dependencies.append(dependency)
-
-   return dependencies
-
-
 # ###### Main program #######################################################
 
 # ====== Check arguments ====================================================
-system     = None
+if len(sys.argv) < 2:
+   sys.stderr.write('Usage: ' + sys.argv[0] + ' debian|ubuntu|fedora|freebsd [-i|--install]\n')
+   sys.exit(1)
+system     = sys.argv[1]
 runInstall = False
-i = 1
-while i < len(sys.argv):
-   if sys.argv[i] == '-s' or sys.argv[i] == '--system':
-      if i + 1 < len(sys.argv):
-         system = sys.argv[i + 1]
-         i = i + 1
-      else:
-         sys.stderr.write('ERROR: Invalid system setting!\n')
-         sys.exit(1)
-   elif sys.argv[i] == '-i' or sys.argv[i] == '--install':
+for i in range(2, len(sys.argv)):
+   if sys.argv[i] == '-i' or sys.argv[i] == '--install':
       runInstall = True
-   elif sys.argv[i] == '-h' or sys.argv[i] == '--help':
-      sys.stderr.write('Usage: ' + sys.argv[0] + ' [-h|--help] [-s|--system debian|ubuntu|fedora|freebsd|auto] [-i|--install]\n')
-      sys.exit(0)
    else:
-      sys.stderr.write('ERROR: Bad parameter ' + sys.argv[i] + '!\n')
+      sys.stderr.write('ERROR: Bad parameter ' + sys.argv[i] + '!')
       sys.exit(1)
-   i = i + 1
-
-if system == None:
-   with open("/etc/os-release") as osReleaseFile:
-    osRelease = { }
-    for line in osReleaseFile:
-        key, value = line.rstrip().split("=")
-        osRelease[key] = value.strip('"')
-   system = osRelease['ID']
 
 # ====== Debian/Ubuntu ======================================================
 dependencies = [ ]
@@ -122,28 +91,21 @@ if ((system == 'debian') or  (system == 'ubuntu')):
             line_lower = line.lower()
             if inside:
                if line.startswith((' ', "\t")):
-                  dependencies = dependencies + extractDebDependencies(line, system)
+                  dependencies = dependencies + extractDependencies(line, system)
                   continue
                elif line.startswith('#'):
                   continue
                inside = False
             if line_lower.startswith(('build-depends:', 'build-depends-indep:')):
-               dependencies = dependencies + extractDebDependencies(line, system)
+               dependencies = dependencies + extractDependencies(line, system)
                inside = True
 
-      aptCall = [ 'apt-get', 'satisfy', '-qy' ]
-      i=0
       for dependency in sorted(set(dependencies)):
-          if i > 0:
-             sys.stdout.write(', ')
-          sys.stdout.write(dependency)
-          aptCall.append(dependency)
-          i = i + 1
+          sys.stdout.write(dependency + ' ')
       sys.stdout.write('\n')
 
       if runInstall == True:
-         subprocess.call(aptCall,
-                         env = { 'DEBIAN_FRONTEND': 'noninteractive' })
+         subprocess.call([ 'apt-get', 'install', '-qy' ] + dependencies)
 
    else:
       sys.stderr.write('ERROR: Unable to locate Debian control file!\n')
@@ -161,25 +123,22 @@ elif system == 'fedora':
                break
             line_lower = line.lower()
             if inside:
-               if line.startswith('#'):
+               if line.startswith((' ', "\t")):
+                  dependencies = dependencies + extractDependencies(line, system)
+                  continue
+               elif line.startswith('#'):
                   continue
                inside = False
             if line_lower.startswith('buildrequires:'):
-               dependencies = dependencies + extractRPMDependencies(line, system)
+               dependencies = dependencies + extractDependencies(line, system)
                inside = True
 
-      dnfCall = [ 'dnf', 'install', '-y' ]
-      i=0
       for dependency in sorted(set(dependencies)):
-          if i > 0:
-             sys.stdout.write(', ')
-          sys.stdout.write(dependency)
-          dnfCall.append(dependency)
-          i = i + 1
+          sys.stdout.write(dependency + ' ')
       sys.stdout.write('\n')
 
       if runInstall == True:
-         subprocess.call(dnfCall)
+         subprocess.call([ 'dnf', 'install', '-y' ] + dependencies)
 
    else:
       sys.stderr.write('ERROR: Unable to locate RPM spec file!\n')
