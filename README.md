@@ -3,6 +3,16 @@ Tools for Basic System Management
 
 ## Description
 
+System Tools is a collection of helpful tools for basic system management of Linux and FreeBSD systems:
+
+- [System-Info](#System-Info) (display banners and system information),
+- [System-Maintenance](#system-maintenance) (run basic system maintenance tasks),
+- [Print-UTF8](#print-utf8) (print UTF-8 text with options for centering, adjusting, etc.),
+- [Fingerprint-SSH-Keys](#fingerprint-ssh-keys) (show the machine's SSH public key fingerprints in different formats),
+- [Configure-Grub](#configure-grub) (configure options for the GRUB boot loader),
+- [Try-Hard](#try-hard) (run a command, with configurable retries on failure),
+- [Random-Sleep](#random-sleep) (wait for random time span, with support of fractional seconds).
+
 ### System-information
 
 System-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System-Info can be configured to be automatically run when logging in, providing the user an up-to-date overview of the system.
@@ -36,6 +46,34 @@ System-Maintenance runs some system maintenance tasks to keep the system clean a
 - Updating package and file search caches,
 - Updating firmware,
 - Trimming SSDs and virtual storage.
+
+### Print-UTF8
+
+Print-UTF8 is a simple program to print UTF-8 strings in the console with options for indentation, centering, separator as well as size/length/width information. It can e.g.&nbsp;be utilised for printing System-Info banners.
+
+### Fingerprint-SSH-Keys
+
+Fingerprint-SSH-Keys prints the SSH key fingerprints of the local machine in different formats: SSH hash, DNS SSHFP RR.
+
+### Configure-Grub
+
+Configure-Grub adjusts a GRUB configuration file by applying a configuration from a template, and merging the existing configurations settings with additional customisations. It can for example be used to set a custom screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE option).
+
+### Try-Hard
+
+Try-Hard runs a command and retries for a given number of times in case of error, with a delay between the trials.
+
+Example to try a file download up to 3&nbsp;times, with a delay of 60&nbsp;seconds between trials:
+
+``try-hard 3 60 -- wget -O example.tar.gz https://www.example.net/example.tar.gz``
+
+### Random-Sleep
+
+Random-Sleep waits for a random time, selected from a given interval, with support for fractional seconds.
+
+Example to wait between 0.5&nbsp;and 299.5&nbsp;seconds:
+
+``random-sleep 0.5 299.5 &amp;&amp; echo "Finished waiting!"``
 
 ## Binary Package Installation
 
