@@ -43,7 +43,7 @@ center "| |_) \___ \| |_) | |    | ||  _ \ "
 center "|  _ < ___) |  __/| |___ | || |_) |"
 center "|_| \_\____/|_|   |_____|___|____/ "
 echo ""
-center "-- RSPLIB Project at the University of Duisburg-Essen --"
+center "◀◀◀ RSPLIB Project at the University of Duisburg-Essen ▶▶▶"
 echo -en "\x1b[1;34m"
 if [ "${RSERPOOLDEMO_VERSION}" != "" ] ; then
    echo ""
