@@ -1,3 +1,117 @@
+commit ce4d90686f83e722ba694445926fe9f8a6a46823
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 5 13:28:11 2025 +0100
+
+    Updated README.md
+
+commit 8d74ab6ff921d315802fc46ef9b78a438715535d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 5 13:05:58 2025 +0100
+
+    Fixed link.
+
+commit 1b80e95def39f2ebf1a8de78c700d0ccbc69c7f0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 5 12:46:34 2025 +0100
+
+    Minor update.
+
+commit 80133dd3aed909f900f6b9a754eb1d77fa0440e1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 5 12:37:50 2025 +0100
+
+    Another update of README.md.
+
+commit e33d5cd82ce0f396e99ea819e6e7cd03bff2fb05
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 5 12:27:58 2025 +0100
+
+    Improved README.md.
+
+commit 00a69902e2b53ed5b8a8c23b9beb807a3b48b2f0
+Author: NorNet Praesum Presum <nornetpp@localhost>
+Date:   Wed Mar 5 11:58:46 2025 +0100
+
+    Minor update.
+
+commit 5e2cd79573c3741749c2c265a850db42dd778a33
+Author: NorNet Praesum Presum <nornetpp@localhost>
+Date:   Wed Mar 5 11:51:03 2025 +0100
+
+    A small fix.
+
+commit 4de9225cb60926793959ffc0d5421bb547eaae07
+Author: NorNet Praesum Presum <nornetpp@localhost>
+Date:   Wed Mar 5 11:46:22 2025 +0100
+
+    Improved test script.
+
+commit 42723e97cda4af3831a21b4ac3f0ded838367d67
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 5 11:44:47 2025 +0100
+
+    Minor update.
+
+commit 4d93a177af27e363011a41a882691ca8eb8458da
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 5 11:40:41 2025 +0100
+
+    Added another example.
+
+commit 640bd75784f81e0528ac4e7c514ea893d5a7ce6b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 5 11:26:40 2025 +0100
+
+    Modernised old examples.
+
+commit b62d6702b5cd0bda5992281be0443b8611508112
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 5 11:26:29 2025 +0100
+
+    Added some comments.
+
+commit 60476e8663dd42306144a190c084b29db93e738c
+Author: NorNet Praesum Presum <nornetpp@localhost>
+Date:   Wed Mar 5 11:16:12 2025 +0100
+
+    Added more examples.
+
+commit 293bdeb2fcb5e0371de62526e6b40c0fd57d2476
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 4 21:06:59 2025 +0100
+
+    Updated CI scripts
+
+commit 6f1c207aeb3dd5375ccf809062deb4c9fc795f09
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 4 21:06:58 2025 +0100
+
+    Travis CI is dead. Removed obsolete Travis CI scripts and configuration.
+
+commit f65567525d0ac05e56f136ccdb75fcb256b05105
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 20 16:11:42 2024 +0100
+
+    Updated test script.
+
+commit 82e49ab1d11bb58cb16106d427f662c5c498d1b9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 20 16:04:26 2024 +0100
+
+    Another update.
+
+commit 0bcaf65e96116b31eb335fb21668f74b3f593e56
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 20 15:02:45 2024 +0100
+
+    FreeBSD packaging update.
+
+commit 695299412419357b1587702cad9b2651c57f61ff
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 20 14:41:41 2024 +0100
+
+    New release td-system-tools-2.0.7.
+
 commit c460a747acefe4611d3879dca57453e21cfb1109
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Dec 20 14:40:34 2024 +0100

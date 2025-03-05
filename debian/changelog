@@ -1,7 +1,14 @@
-td-system-tools (2.0.7-1ubuntu1) trixie; urgency=medium
+td-system-tools (2.0.8-1ubuntu1) trixie; urgency=medium
 
   * New upstream release.
   * Closes: #1073548 (ITP).
+  * debian/control: Updated standards version to 4.7.1.
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Wed, 05 Mar 2025 13:38:01 +0100
+
+td-system-tools (2.0.7-1ubuntu1) trixie; urgency=medium
+
+  * New upstream release.
 
  -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Fri, 20 Dec 2024 14:41:39 +0100
 

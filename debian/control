@@ -7,7 +7,7 @@ Vcs-Git: https://github.com/dreibh/system-tools.git
 Vcs-Browser: https://github.com/dreibh/system-tools
 Build-Depends: cmake (>= 3.5) | cmake3,
                debhelper (>= 9)
-Standards-Version: 4.7.0
+Standards-Version: 4.7.1
 Rules-Requires-Root: no
 
 Package: td-system-info
