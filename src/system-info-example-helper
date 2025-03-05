@@ -62,7 +62,7 @@ done
 if [ -d "example-${NUMBER}" ] ; then
    echo "Trying example ${NUMBER}, hostname is ${hostnames[$NUMBER]}"
    sudo hostname "${hostnames[$NUMBER]}"  
-   sudo find /etc/system-info.d/ -maxdepth 1 -exec rm {} \;
+   sudo find /etc/system-info.d/ -mindepth 1 -maxdepth 1 -exec rm {} \;
    sudo cp "example-${NUMBER}/"* /etc/system-info.d/
    System-Info
 fi
