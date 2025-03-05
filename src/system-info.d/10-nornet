@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+#
+# Print system information
+# Copyright (C) 2013-2023 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+
+# Get the width of the terminal. Assume 80, if unknown.
+if [ "${TERM}" != "dumb" ] ; then
+   TERMINAL_WIDTH=`tput cols`
+else
+   TERMINAL_WIDTH=80
+fi
+
+
+# ###### Center text in console #############################################
+center ()
+{
+   local text="$1"
+   local length=${#text}
+   local width=${TERMINAL_WIDTH}
+
+   let indent=(${width} - ${length})/2
+   if [ ${indent} -lt 0 ] ; then
+      indent=0
+   fi
+   printf "%${indent}s%s\n" "" "${text}"
+}
+
+
+# ###### Print centered separator in console ################################
+separator ()
+{
+   local separatorCharacter="="
+   local separator=""
+   local width=${TERMINAL_WIDTH}
+   local separatorWidth
+
+   let separatorWidth=${width}-4
+   local i=0
+   while [ $i -lt ${separatorWidth} ] ; do
+      separator="${separator}${separatorCharacter}"
+      let i=$i+1
+   done
+   center "${separator}"
+}
+
+
+# ====== Print banner =======================================================
+
+NORNET_VERSION=""
+if [ -e /etc/nornet/nornet-version ] ; then
+   NORNET_VERSION=`cat /etc/nornet/nornet-version`
+fi
+
+echo -en "\x1b[1;34m"
+separator
+echo -en "\x1b[1;31m"
+center "#     #                 #     #                "
+center "##    #   ####   #####  ##    #  ######   #####"
+center "# #   #  #    #  #    # # #   #  #          #  "
+center "#  #  #  #    #  #    # #  #  #  #####      #  "
+center "#   # #  #    #  #####  #   # #  #          #  "
+center "#    ##  #    #  #   #  #    ##  #          #  "
+center "#     #   ####   #    # #     #  ######     #  "
+echo -en "\x1b[1;34m"
+if [ "${NORNET_VERSION}" != "" ] ; then
+   echo ""
+   center "${NORNET_VERSION}"
+fi
+separator
+echo -e "\x1b[0m"
+
+
+exit 1   # With exit code 1, no further files in /etc/system-info.d are processed!
+
+# Use exit code 0 to process further files!

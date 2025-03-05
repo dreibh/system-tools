@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+#
+# Print system information
+# Copyright (C) 2013-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+
+# ###### Center text in console #############################################
+center ()
+{
+   local text="$1"
+   local length=${#text}
+   local width=`tput cols`   # Console width
+
+   let indent=(${width} - ${length})/2
+   if [ ${indent} -lt 0 ] ; then
+      indent=0
+   fi
+   printf "%${indent}s%s\n" "" "${text}"
+}
+
+
+# ###### Print centered separator in console ################################
+separator ()
+{
+   local separatorCharacter="="
+   local separator=""
+   local width=`tput cols`   # Console width
+   local separatorWidth
+
+   let separatorWidth=${width}-4
+   local i=0
+   while [ $i -lt ${separatorWidth} ] ; do
+      separator="${separator}${separatorCharacter}"
+      let i=$i+1
+   done
+   center "${separator}"
+}
+
+
+# ====== Print banner =======================================================
+
+NEAT_STUFF_VERSION=""
+if [ -e /etc/neat/neat-stuff-version ] ; then
+   NEAT_STUFF_VERSION=`cat /etc/neat/neat-stuff-version`
+fi
+
+echo -en "\x1b[1;34m"
+separator
+echo -en "\x1b[1;31m"
+center "#     # #######    #    #######"
+center "##    # #         # #      #   "
+center "# #   # #        #   #     #   "
+center "#  #  # #####   #     #    #   "
+center "#   # # #       #######    #   "
+center "#    ## #       #     #    #   "
+center "#     # ####### #     #    #   "
+echo ""
+center "-- A New, Evolutive API and Transport-Layer Architecture for the Internet --"
+echo -en "\x1b[1;34m"
+if [ "${NEAT_STUFF_VERSION}" != "" ] ; then
+   echo ""
+   center "${NEAT_STUFF_VERSION}"
+fi
+separator
+echo -e "\x1b[0m"
+
+
+exit 1   # With exit code 1, no further files in /etc/system-info.d are processed!
+
+# Use exit code 0 to process further files!
