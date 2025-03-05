@@ -64,5 +64,6 @@ if [ -d "example-${NUMBER}" ] ; then
    sudo hostname "${hostnames[$NUMBER]}"  
    sudo find /etc/system-info.d/ -mindepth 1 -maxdepth 1 -exec rm {} \;
    sudo cp "example-${NUMBER}/"* /etc/system-info.d/
+   ls -l /etc/system-info.d/
    System-Info
 fi
