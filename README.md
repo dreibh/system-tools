@@ -100,7 +100,7 @@ sudo dnf install td-system-tools
 
 ### FreeBSD
 
-For ready-to-install FreeBSD packages of System-Tools, it is included in the ports collection, see Index of /head/net/td-system-tools/!
+For ready-to-install FreeBSD packages of System-Tools, it is included in the ports collection, see Index of [FreeBSD ports tree index of net/td-system-tools/](https://cgit.freebsd.org/ports/tree/net/td-system-tools/)!
 
    pkg install td-system-tools
 
@@ -116,11 +116,11 @@ make install
 
 System-Tools is released under the GNU General Public Licence (GPL).
 
-Please use the issue tracker at https://github.com/dreibh/system-tools/issues to report bugs and issues!
+Please use the issue tracker at [https://github.com/dreibh/system-tools/issues](https://github.com/dreibh/system-tools/issues) to report bugs and issues!
 
 ### Development Version
 
-The Git repository of the System-Tools sources can be found at https://github.com/dreibh/system-tools:
+The Git repository of the System-Tools sources can be found at [https://github.com/dreibh/system-tools](https://github.com/dreibh/system-tools):
 
 ```
 git clone https://github.com/dreibh/system-tools
@@ -131,16 +131,16 @@ make
 
 Contributions:
 
-- Issue tracker: https://github.com/dreibh/system-tools/issues.
+- Issue tracker: [https://github.com/dreibh/system-tools/issues](https://github.com/dreibh/system-tools/issues).
   Please submit bug reports, issues, questions, etc. in the issue tracker!
 
-- Pull Requests for System-Tools: https://github.com/dreibh/system-tools/pulls.
+- Pull Requests for System-Tools: [https://github.com/dreibh/system-tools/pulls](https://github.com/dreibh/system-tools/pulls).
   Your contributions to System-Tools are always welcome!
 
-- CI build tests of System-Tools: https://github.com/dreibh/system-tools/actions.
+- CI build tests of System-Tools: [https://github.com/dreibh/system-tools/actions](https://github.com/dreibh/system-tools/actions).
 
-- Coverity Scan analysis of System-Tools: https://scan.coverity.com/projects/dreibh-td-system-tools.
+- Coverity Scan analysis of System-Tools: [https://scan.coverity.com/projects/dreibh-td-system-tools](https://scan.coverity.com/projects/dreibh-td-system-tools).
 
 ### Current Stable Release
 
-See https://www.nntb.no/~dreibh/system-tools/#Download!
+See [https://www.nntb.no/~dreibh/system-tools/#Download](https://www.nntb.no/~dreibh/system-tools/#Download)!
