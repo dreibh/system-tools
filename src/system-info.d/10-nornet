@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
+#         ____            _                     _____           _
+#        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+#               |___/
+#                             --- System-Tools ---
+#                  https://www.nntb.no/~dreibh/system-tools/
+# ==========================================================================
 #
-# Print system information
-# Copyright (C) 2013-2023 by Thomas Dreibholz
+# System-Info
+# Copyright (C) 2013-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,48 +25,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Contact: dreibh@simula.no
+# Contact: thomas.dreibholz@gmail.com
 
+set -eu
 
-# Get the width of the terminal. Assume 80, if unknown.
-if [ "${TERM}" != "dumb" ] ; then
-   TERMINAL_WIDTH=`tput cols`
-else
-   TERMINAL_WIDTH=80
-fi
-
-
-# ###### Center text in console #############################################
-center ()
-{
-   local text="$1"
-   local length=${#text}
-   local width=${TERMINAL_WIDTH}
-
-   let indent=(${width} - ${length})/2
-   if [ ${indent} -lt 0 ] ; then
-      indent=0
-   fi
-   printf "%${indent}s%s\n" "" "${text}"
-}
-
-
-# ###### Print centered separator in console ################################
-separator ()
-{
-   local separatorCharacter="="
-   local separator=""
-   local width=${TERMINAL_WIDTH}
-   local separatorWidth
-
-   let separatorWidth=${width}-4
-   local i=0
-   while [ $i -lt ${separatorWidth} ] ; do
-      separator="${separator}${separatorCharacter}"
-      let i=$i+1
-   done
-   center "${separator}"
-}
+# Helper function library -> just return when it is not available.
+# Exit code 0 will let System-Info continue with the next script!
+# shellcheck disable=SC1091
+. "$(dirname "$0")/banner-helper" || exit 0
 
 
 # ====== Print banner =======================================================
@@ -68,7 +43,7 @@ if [ -e /etc/nornet/nornet-version ] ; then
 fi
 
 echo -en "\x1b[1;34m"
-separator
+separator "  " "=" "  "
 echo -en "\x1b[1;31m"
 center "#     #                 #     #                "
 center "##    #   ####   #####  ##    #  ######   #####"
@@ -82,7 +57,7 @@ if [ "${NORNET_VERSION}" != "" ] ; then
    echo ""
    center "${NORNET_VERSION}"
 fi
-separator
+separator "  " "=" "  "
 echo -e "\x1b[0m"
 
 
