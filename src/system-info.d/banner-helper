@@ -44,6 +44,7 @@ consolewidth()
    fi
    echo "${width}"
 
+   # ====== Old code without Print-UTF8 for reference =======================
    # # Requires:
    # # tput: for obtaining the console width (Ubuntu: ncurses-bin)
    # if [ ! -v TERM ] || [ "${TERM}" == "" ] ; then
@@ -52,6 +53,7 @@ consolewidth()
    # else
    #    tput cols
    # fi
+   # ========================================================================
 }
 
 
@@ -62,6 +64,7 @@ stringwidth()
 {
    print-utf8 -w "$1"
 
+   # ====== Old code without Print-UTF8 for reference =======================
    # local string
    #
    # # The ANSI escape sequences for coloring have to be filtered out!
@@ -87,6 +90,7 @@ stringwidth()
    #       print s1 string s2 s1
    #       exit
    #    }' "${string}" | col -b | awk '{ print length - 2 * length(ARGV[2]); exit }' - "${string}"
+   # ========================================================================
 }
 
 
@@ -95,6 +99,7 @@ function center ()
 {
    print-utf8 --newline --center "$1"
 
+   # ====== Old code without Print-UTF8 for reference =======================
    # local text="$1"
    # local consoleWidth
    # local textLength
@@ -107,6 +112,7 @@ function center ()
    # fi
    # printf "%${indent}s"
    # echo -e "${text}"
+   # ========================================================================
 }
 
 
@@ -120,6 +126,7 @@ function separator ()
 {
    print-utf8 --newline --separator "$1" "$2" "$3"
 
+   # ====== Old code without Print-UTF8 for reference =======================
    # local separaterLeftBorder="$1"
    # local separatorCharacter="$2"
    # local separaterRightBorder="$3"
@@ -140,6 +147,7 @@ function separator ()
    #    i=$(( i+separatorCharacterWidth ))
    # done
    # echo "${separaterLeftBorder}${separator}${separaterRightBorder}"
+   # ========================================================================
 }
 
 
