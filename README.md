@@ -100,7 +100,7 @@ sudo dnf install td-system-tools
 
 ### FreeBSD
 
-For ready-to-install FreeBSD packages of System-Tools, it is included in the ports collection, see Index of [FreeBSD ports tree index of net/td-system-tools/](https://cgit.freebsd.org/ports/tree/net/td-system-tools/)!
+For ready-to-install FreeBSD packages of System-Tools, it is included in the ports collection, see [FreeBSD ports tree index of net/td-system-tools/](https://cgit.freebsd.org/ports/tree/net/td-system-tools/)!
 
    pkg install td-system-tools
 
