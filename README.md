@@ -77,7 +77,7 @@ Example to wait between 0.5&nbsp;and 299.5&nbsp;seconds:
 
 ## Binary Package Installation
 
-Please use the issue tracker at https://github.com/dreibh/system-tools/issues to report bugs and issues!
+Please use the issue tracker at [https://github.com/dreibh/system-tools/issues](https://github.com/dreibh/system-tools/issues) to report bugs and issues!
 
 ### Ubuntu Linux
 
