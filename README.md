@@ -143,4 +143,4 @@ Contributions:
 
 ### Current Stable Release
 
-See [https://www.nntb.no/~dreibh/system-tools/#Download](https://www.nntb.no/~dreibh/system-tools/#Download)!
+See [https://www.nntb.no/~dreibh/system-tools/#StableRelease](https://www.nntb.no/~dreibh/system-tools/#StableRelease)!
