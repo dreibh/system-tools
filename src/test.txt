@@ -1,0 +1,13 @@
+<BEGIN-BLOCK-1>
+This is a test!
+<END-BLOCK-1>
+
+<MARKER-1>
+
+   <BEGIN-BLOCK-2>
+   Dies ist ein Test!
+   <END-BLOCK-2>
+
+   <MARKER-2>
+
+*** <BEGIN-BLOCK-3>Dette er en test!<END-BLOCK-3> ***
