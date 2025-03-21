@@ -176,8 +176,9 @@ int main (int argc, char** argv)
 
       const char* ptr;
       do {
-         const char* beginMarkerPtr = NULL;
-         const char* endMarkerPtr   = NULL;
+         const size_t lineLength     = strlen(line);
+         const char*  beginMarkerPtr = NULL;
+         const char*  endMarkerPtr   = NULL;
 
          while( (ptr = (beginTag != NULL) ? strstr(line, (beginMarkerLineNo == 0) ? beginTag : endTag) : NULL) != NULL ) {
             // ------ Found tag ------------------------------------------------
@@ -194,10 +195,10 @@ int main (int argc, char** argv)
             }
             else {
                if(includeTags) {
-                  endMarkerPtr = (withTagLines == true) ? line + strlen(line) : ptr + endTagLength;
+                  endMarkerPtr = (withTagLines == true) ? line + lineLength : ptr + endTagLength;
                }
                else {
-                  endMarkerPtr = (withTagLines == true) ? line + strlen(line) : ptr;
+                  endMarkerPtr = (withTagLines == true) ? line + lineLength : ptr;
                }
                endMarkerLineNo = lineNo;
                // puts("M-2!");
@@ -219,7 +220,7 @@ int main (int argc, char** argv)
 #ifdef DEBUG_MODE
                   puts("CASE-1a: begin marker set in this line, end marker not set");
 #endif
-                  endMarkerPtr = line + strlen(line);
+                  endMarkerPtr = line + lineLength;
                }
                else {   // End marker set
 #ifdef DEBUG_MODE
@@ -245,7 +246,7 @@ int main (int argc, char** argv)
 #endif
                // Continue ...
                beginMarkerPtr = line;
-               endMarkerPtr   = line + strlen(line);   // Mark the full line
+               endMarkerPtr   = line + lineLength;   // Mark the full line
             }
 
             switch(mode) {
