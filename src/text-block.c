@@ -37,7 +37,7 @@
 #include "package-version.h"
 
 
-#define DEBUG_MODE
+// #define DEBUG_MODE
 
 
 typedef enum textblockmode {
@@ -403,9 +403,8 @@ int main (int argc, char** argv)
                            copyInsertFileIntoOutputFile();
                         }
                      }
-                     if(beginMarkerLineNo == 0) {   // FIXME!
-                        if( (!withTagLines == true) && (beginTag != endTag) ) {
-                           writeToOutputFile("*",1);   // FIXME!
+                     if(beginMarkerLineNo == 0) {
+                        if( (!includeTags == true) && (beginTag != endTag) ) {
                            writeToOutputFile(endTag, strlen(endTag));
                         }
                      }
