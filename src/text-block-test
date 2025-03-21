@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+make text-block
+for o1 in --include-tags --exclude-tags ; do
+   for o2 in --tags-only --full-tag-lines ; do
+      echo >&2 -e "\n\n###### $o1 $o2 ######"
+      ./text-block -i test.txt -o x.txt -b "<BEGIN-BLOCK>" -e '<END-BLOCK>' $o1 $o2
+      cat x.txt
+   done
+done
