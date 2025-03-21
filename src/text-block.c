@@ -37,7 +37,7 @@
 #include "package-version.h"
 
 
-// #define DEBUG_MODE
+#define DEBUG_MODE
 
 
 typedef enum textblockmode {
@@ -47,17 +47,26 @@ typedef enum textblockmode {
    Remove  = 4
 } textblockmode_t;
 
-static FILE*       inputFile       = NULL;
-static FILE*       outputFile      = NULL;
 static const char* inputFileName   = NULL;
+static FILE*       inputFile       = NULL;
 static bool        openInputFile   = false;
+
 static const char* outputFileName  = NULL;
+static FILE*       outputFile      = NULL;
 static bool        openOutputFile  = false;
+
+static const char* insertFileName  = NULL;
+static FILE*       insertFile      = NULL;
 
 
 // ###### Clean up ##########################################################
-void cleanUp(int exitCode)
+static void cleanUp(int exitCode)
 {
+   if(insertFile) {
+      fclose(insertFile);
+      insertFile = NULL;
+   }
+
    if(openOutputFile) {
       if(fclose(outputFile) != 0) {
          fprintf(stderr, "ERROR: Unable to open output file %s: %s\n",
@@ -77,14 +86,32 @@ void cleanUp(int exitCode)
 
 
 // ###### Write data to output file #########################################
-void writeToOutputFile(const char* data, const size_t length)
+static void writeToOutputFile(const char* data, const size_t length)
 {
    if(length > 0) {
       if(fwrite(data, 1, length, outputFile) < length) {
          fprintf(stderr, "ERROR: Unable to write to output file %s: %s\n",
-               outputFileName, strerror(errno));
+                 outputFileName, strerror(errno));
          cleanUp(1);
       }
+   }
+}
+
+
+// ###### Write contents of insert file #####################################
+static void copyInsertFileIntoOutputFile()
+{
+   rewind(insertFile);
+
+   char    buffer[65536];
+   ssize_t bytesRead;
+   while( (bytesRead = fread((char*)&buffer, 1, sizeof(buffer), insertFile)) > 0 ) {
+      writeToOutputFile(buffer, bytesRead);
+   }
+   if(bytesRead < 0) {
+      fprintf(stderr, "ERROR: Unable to read to insert file %s: %s\n",
+              insertFileName, strerror(errno));
+      cleanUp(1);
    }
 }
 
@@ -105,6 +132,23 @@ int main (int argc, char** argv)
       }
       else if( (strcmp(argv[i], "-r") == 0) || (strcmp(argv[i], "--remove") == 0) ) {
          mode = Remove;
+      }
+      else if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--insert") == 0) ||
+               (strcmp(argv[i], "-p") == 0) || (strcmp(argv[i], "--replace") == 0) ) {
+         if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--insert") == 0) ) {
+            mode = Insert;
+         }
+         else {
+            mode = Replace;
+         }
+         if(i + 1 < argc) {
+            insertFileName = argv[i + 1];
+         }
+         else {
+            fputs("ERROR: Missing insert file name!\n", stderr);
+            return 1;
+         }
+         i++;
       }
       else if( (strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--input") == 0) ) {
          if(i + 1 < argc) {
@@ -163,7 +207,7 @@ int main (int argc, char** argv)
          return 0;
       }
       else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) ) {
-         fprintf(stderr, "Usage: %s [-x|--extract] [-r|--remove]  [-i|--input input_file] [-o|--output output_file] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-t|--include-tags] [--exclude-tags] [-f|--full-tag-lines] [--tags-only] [-h|--help] [-v|--version]\n", argv[0]);
+         fprintf(stderr, "Usage: %s [-x|--extract] [-r|--remove] [-s|--insert insert_file] [-p|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-t|--include-tags] [--exclude-tags] [-f|--full-tag-lines] [--tags-only] [-h|--help] [-v|--version]\n", argv[0]);
          return 1;
       }
       else {
@@ -179,6 +223,8 @@ int main (int argc, char** argv)
    }
    switch(mode) {
       case Remove:
+      case Insert:
+      case Replace:
          // Just inverse the includeTags option, to keep the following code simple:
          includeTags  = !includeTags;
        break;
@@ -216,6 +262,20 @@ int main (int argc, char** argv)
          cleanUp(1);
       }
       openOutputFile = true;
+   }
+   if(insertFileName != NULL) {
+      insertFile = fopen(insertFileName, "r");
+      if(insertFile == NULL) {
+         fprintf(stderr, "ERROR: Unable to open insert file %s: %s\n",
+                 insertFileName, strerror(errno));
+         cleanUp(1);
+      }
+   }
+   else {
+      if( (mode == Insert) || (mode == Replace) ) {
+         fputs("ERROR: No insert file provided!\n", stderr);
+         cleanUp(1);
+      }
    }
 
    // ====== Read lines from input file =====================================
@@ -332,11 +392,23 @@ int main (int argc, char** argv)
                   }
                 break;
                case Remove:
+               case Insert:
+               case Replace:
                   {
-                     const ssize_t extractSize = (ssize_t)beginMarkerPtr - (ssize_t)line;
-                     // const ssize_t extractSize2 = (ssize_t)endMarkerPtr - (ssize_t)(line + lineLength);
-                     assert(extractSize >= 0);
-                     writeToOutputFile(line, (size_t)extractSize);
+                     const ssize_t extractSize1 = (ssize_t)beginMarkerPtr - (ssize_t)line;
+                     assert(extractSize1 >= 0);
+                     writeToOutputFile(line, (size_t)extractSize1);
+                     if( (mode == Insert) || (mode == Replace) ) {
+                        if(beginMarkerLineNo == 0) {   // Only insert for begin marker's line!
+                           copyInsertFileIntoOutputFile();
+                        }
+                     }
+                     if(beginMarkerLineNo == 0) {   // FIXME!
+                        if( (!withTagLines == true) && (beginTag != endTag) ) {
+                           writeToOutputFile("*",1);   // FIXME!
+                           writeToOutputFile(endTag, strlen(endTag));
+                        }
+                     }
                   }
                 break;
                default:
@@ -352,6 +424,8 @@ int main (int argc, char** argv)
          else {
             switch(mode) {
                case Remove:
+               case Replace:
+               case Insert:
                   writeToOutputFile(line, lineLength);
                 break;
                default:
