@@ -160,89 +160,94 @@ int main (int argc, char** argv)
 
    while( (line = fgets((char*)&buffer, sizeof(buffer), inputFile)) != NULL ) {
       // ====== Process line ================================================
-
       lineNo++;
-      const char* startMarkerPtr = NULL;
-      const char* endMarkerPtr   = NULL;
-      const char* ptr = (beginTag != NULL) ?
-                           strstr(line, (startMarkerLineNo == 0) ? beginTag : endTag) : NULL;
-      while(ptr != NULL) {
-         // ------ Found tag ------------------------------------------------
 
-         if(startMarkerLineNo == 0) {
-            if(includeTags) {
-               startMarkerPtr = (withTagLines == true) ? line : ptr;
+      const char* ptr;
+      do {
+         const char* startMarkerPtr = NULL;
+         const char* endMarkerPtr   = NULL;
+
+         while( (ptr = (beginTag != NULL) ? strstr(line, (startMarkerLineNo == 0) ? beginTag : endTag) : NULL) != NULL ) {
+            // ------ Found tag ------------------------------------------------
+
+            if(startMarkerLineNo == 0) {
+               if(includeTags) {
+                  startMarkerPtr = (withTagLines == true) ? line : ptr;
+               }
+               else {
+                  startMarkerPtr = (withTagLines == true) ? line : ptr + strlen(beginTag);
+               }
+               startMarkerLineNo = lineNo;
+               puts("M-1!");
             }
             else {
-               startMarkerPtr = (withTagLines == true) ? line : ptr + strlen(beginTag);
+               if(includeTags) {
+                  endMarkerPtr = (withTagLines == true) ? line + strlen(line) : ptr + strlen(endTag);
+               }
+               else {
+                  endMarkerPtr = (withTagLines == true) ? line + strlen(line) : ptr;
+               }
+               endMarkerLineNo = lineNo;
+               puts("M-2!");
+               break;
             }
-            startMarkerLineNo = lineNo;
-            puts("M-1!");
-         }
-         else {
-            if(includeTags) {
-               endMarkerPtr = (withTagLines == true) ? line + strlen(line) : ptr + strlen(endTag);
-            }
-            else {
-               endMarkerPtr = (withTagLines == true) ? line + strlen(line) : ptr;
-               // FIXME ((ptr[0] != 0x00) ? ptr - 1 : ptr);
-            }
-            endMarkerLineNo = lineNo;
-            ptr = endMarkerPtr;
-            puts("M-2!");
-            break;
+
+            // ------ Look for next tag ... ------------------------------------
+            ptr = strstr(ptr + 1, (startMarkerLineNo == 0) ? beginTag : endTag);
          }
 
-         // ------ Look for next tag ... ------------------------------------
-         ptr = strstr(ptr + 1, (startMarkerLineNo == 0) ? beginTag : endTag);
-      }
+         if((startMarkerLineNo > 0) || (endMarkerLineNo > 0)) {
 
-      if((startMarkerLineNo > 0) || (endMarkerLineNo > 0)) {
+            printf("Line %06llu:\ts=%p %llu\te=%p %llu\t↠ %s", lineNo, startMarkerPtr, startMarkerLineNo, endMarkerPtr, endMarkerLineNo, line);
 
-         printf("%06llu\ts=%p %llu   e=%p %llu   * %s", lineNo, startMarkerPtr, startMarkerLineNo, endMarkerPtr, endMarkerLineNo, line);
-
-         if(startMarkerPtr != NULL) {   // Start marker set in this line
-            if(endMarkerPtr == NULL) {   // No end marker -> mark until end of line
-               puts("CASE-1a");
-               endMarkerPtr = line + strlen(line);
+            if(startMarkerPtr != NULL) {   // Start marker set in this line
+               if(endMarkerPtr == NULL) {   // No end marker -> mark until end of line
+                  puts("CASE-1a");
+                  endMarkerPtr = line + strlen(line);
+               }
+               else {   // End marker set
+                  puts("CASE-1b");
+                  // Done -> reset marking for next iteration
+                  startMarkerLineNo = 0;
+                  endMarkerLineNo   = 0;
+               }
             }
-            else {   // End marker set
-               puts("CASE-1b");
+            else if(endMarkerLineNo > 0) {   // End marker set in this line
+               startMarkerPtr = line;   // Mark from the beginning of the line
                // Done -> reset marking for next iteration
                startMarkerLineNo = 0;
                endMarkerLineNo   = 0;
+               puts("CASE-2");
             }
-         }
-         else if(endMarkerLineNo > 0) {   // End marker set in this line
-            startMarkerPtr = line;   // Mark from the beginning of the line
-            // Done -> reset marking for next iteration
-            startMarkerLineNo = 0;
-            endMarkerLineNo   = 0;
-            puts("CASE-2");
-         }
-         else if(startMarkerLineNo > 0) {   // Start marker set, but not in this line
-            startMarkerPtr = line;
-            endMarkerPtr   = line + strlen(line);   // Mark the full line
-            // Continue ...
-            puts("CASE-3");
-         }
+            else if(startMarkerLineNo > 0) {   // Start marker set, but not in this line
+               startMarkerPtr = line;
+               endMarkerPtr   = line + strlen(line);   // Mark the full line
+               // Continue ...
+               puts("CASE-3");
+            }
 
-         switch(mode) {
-            case Extract:
-               if(fwrite(startMarkerPtr, 1, (endMarkerPtr - startMarkerPtr), outputFile) < (ssize_t)(endMarkerPtr - startMarkerPtr)) {
-                  fprintf(stderr, "ERROR: Unable to write to output file %s: %s\n",
-                           outputFileName, strerror(errno));
-                  if(openOutputFile) {
-                     fclose(outputFile);
+            switch(mode) {
+               case Extract:
+                  const ssize_t extractSize = (ssize_t)endMarkerPtr - (ssize_t)startMarkerPtr;
+                  printf("e=%d\n", (int)extractSize);
+                  if(fwrite(startMarkerPtr, 1, extractSize, outputFile) < extractSize) {
+                     fprintf(stderr, "ERROR: Unable to write to output file %s: %s\n",
+                              outputFileName, strerror(errno));
+                     if(openOutputFile) {
+                        fclose(outputFile);
+                     }
+                     if(openInputFile) {
+                        fclose(inputFile);
+                     }
+                     exit(1);
                   }
-                  if(openInputFile) {
-                     fclose(inputFile);
-                  }
-                  exit(1);
-               }
-             break;
+               break;
+            }
+
+            // Advance line pointer, to look for next begin tag in the same line:
+            line = endMarkerPtr;
          }
-      }
+      } while( (!withTagLines) && (ptr != NULL) );
    }
 
    // ====== Close files ====================================================
