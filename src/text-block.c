@@ -37,7 +37,7 @@
 #include "package-version.h"
 
 
-// #define DEBUG_MODE
+#define DEBUG_MODE
 
 typedef enum textblockmode {
    Extract = 1,
@@ -46,21 +46,56 @@ typedef enum textblockmode {
    Remove  = 4
 } textblockmode_t;
 
+static FILE*       inputFile       = NULL;
+static FILE*       outputFile      = NULL;
+static const char* inputFileName   = NULL;
+static bool        openInputFile   = false;
+static const char* outputFileName  = NULL;
+static bool        openOutputFile  = false;
+
+
+// ###### Clean up ##########################################################
+void cleanUp(int exitCode)
+{
+   if(openOutputFile) {
+      if(fclose(outputFile) != 0) {
+         fprintf(stderr, "ERROR: Unable to open output file %s: %s\n",
+                 outputFileName, strerror(errno));
+         exitCode = 1;
+      }
+      fclose(outputFile);
+   }
+   outputFile = NULL;
+   if(openInputFile) {
+      fclose(inputFile);
+   }
+   inputFile = NULL;
+   exit(exitCode);
+}
+
+
+// ###### Write data to output file #########################################
+void writeToOutputFile(const char* data, const size_t length)
+{
+   if(length > 0) {
+      if(fwrite(data, 1, length, outputFile) < length) {
+         fprintf(stderr, "ERROR: Unable to write to output file %s: %s\n",
+               outputFileName, strerror(errno));
+         cleanUp(1);
+      }
+   }
+}
 
 
 // ###### Main program ######################################################
 int main (int argc, char** argv)
 {
    // ====== Handle arguments ===============================================
-   textblockmode_t mode            = Extract;
-   const char*     inputFileName   = NULL;
-   bool            openInputFile   = false;
-   const char*     outputFileName  = NULL;
-   bool            openOutputFile  = false;
-   const char*     beginTag        = NULL;
-   const char*     endTag          = NULL;
-   bool            includeTags     = false;
-   bool            withTagLines    = false;
+   textblockmode_t mode         = Extract;
+   bool            includeTags  = false;
+   bool            withTagLines = false;
+   const char*     beginTag     = NULL;
+   const char*     endTag       = NULL;
 
    for(int i = 1; i <argc; i++) {
       if( (strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--input") == 0) ) {
@@ -103,16 +138,22 @@ int main (int argc, char** argv)
          }
          i++;
       }
+      else if( (strcmp(argv[i], "-x") == 0) || (strcmp(argv[i], "--extract") == 0) ) {
+         mode = Extract;
+      }
+      else if( (strcmp(argv[i], "-r") == 0) || (strcmp(argv[i], "--remove") == 0) ) {
+         mode = Remove;
+      }
       else if( (strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "--include-tags") == 0) ) {
          includeTags = true;
       }
-      else if( (strcmp(argv[i], "-x") == 0) || (strcmp(argv[i], "--exclude-tags") == 0) ) {
+      else if(strcmp(argv[i], "--exclude-tags") == 0) {
          includeTags = false;
       }
       else if( (strcmp(argv[i], "-f") == 0) || (strcmp(argv[i], "--full-tag-lines") == 0) ) {
          withTagLines = true;
       }
-      else if( (strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--tags-only") == 0) ) {
+      else if(strcmp(argv[i], "--tags-only") == 0) {
          withTagLines = false;
       }
       else if( (strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--version") == 0) ) {
@@ -134,29 +175,34 @@ int main (int argc, char** argv)
    if((endTag == NULL) || (endTag[0] == 0x00)) {
       endTag = beginTag;
    }
+   if(mode == Remove) {
+      // Just inverse the options, to keep the following code simple:
+      includeTags  = !includeTags;
+      // withTagLines = !withTagLines;
+   }
 #ifdef DEBUG_MODE
    printf("Begin Tag=%s\n", beginTag);
    printf("End Tag=%s\n",   endTag);
 #endif
 
    // ====== Open files =====================================================
-   FILE* inputFile = stdin;
+   inputFile = stdin;
    if(inputFileName != NULL) {
       inputFile = fopen(inputFileName, "r");
       if(inputFile == NULL) {
          fprintf(stderr, "ERROR: Unable to open input file %s: %s\n",
                  inputFileName, strerror(errno));
-         exit(1);
+         cleanUp(1);
       }
       openInputFile = true;
    }
-   FILE* outputFile = stdout;
+   outputFile = stdout;
    if(outputFileName != NULL) {
       outputFile = fopen(outputFileName, "w");
       if(outputFile == NULL) {
          fprintf(stderr, "ERROR: Unable to open output file %s: %s\n",
                  outputFileName, strerror(errno));
-         exit(1);
+         cleanUp(1);
       }
       openOutputFile = true;
    }
@@ -193,6 +239,7 @@ int main (int argc, char** argv)
                }
                beginMarkerLineNo = lineNo;
                // puts("M-1!");
+               ptr += beginTagLength;
             }
             else {
                if(includeTags) {
@@ -203,10 +250,12 @@ int main (int argc, char** argv)
                }
                endMarkerLineNo = lineNo;
                // puts("M-2!");
+               ptr += endTagLength;
                break;
             }
          }
 
+         // ====== Handle marked part of line ===============================
          if((beginMarkerLineNo > 0) || (endMarkerLineNo > 0)) {
 #ifdef DEBUG_MODE
             printf("Line %06llu:\tb=%p %llu\te=%p %llu\t↠ %s",
@@ -248,47 +297,44 @@ int main (int argc, char** argv)
             }
 
             switch(mode) {
-               case Extract:
+               case Extract: {
                   const ssize_t extractSize = (ssize_t)endMarkerPtr - (ssize_t)beginMarkerPtr;
-                  assert(extractSize  >= 0);
-                  if(extractSize > 0) {
-                     if(fwrite(beginMarkerPtr, 1, extractSize, outputFile) < extractSize) {
-                        fprintf(stderr, "ERROR: Unable to write to output file %s: %s\n",
-                                 outputFileName, strerror(errno));
-                        if(openOutputFile) {
-                           fclose(outputFile);
-                        }
-                        if(openInputFile) {
-                           fclose(inputFile);
-                        }
-                        exit(1);
-                     }
-                  }
-               break;
+                  assert(extractSize >= 0);
+                  writeToOutputFile(beginMarkerPtr, (size_t)extractSize);
+                 }
+                break;
+               case Remove: {
+                  const ssize_t extractSize1 = (ssize_t)beginMarkerPtr - (ssize_t)line;
+                  // const ssize_t extractSize2 = (ssize_t)endMarkerPtr - (ssize_t)(line + lineLength);
+                  assert(extractSize1 >= 0);
+                  // assert(extractSize2 >= 0);
+                  writeToOutputFile(line, (size_t)extractSize1);
+                  // writeToOutputFile(endMarkerPtr, strlen(endMarkerPtr));
+                 }
+                break;
+               default:
+                  // Nothing to do here!
+                break;
             }
 
             // Advance line pointer, to look for next begin tag in the same line:
             line = (includeTags == true) ? endMarkerPtr : endMarkerPtr + endTagLength;
          }
+
+         // ====== Handle unmarked line =====================================
+         else {
+            switch(mode) {
+               case Remove:
+                  writeToOutputFile(line, lineLength);
+                break;
+               default:
+                  // Nothing to do here!
+                break;
+            }
+         }
+
       } while( (!withTagLines) && (ptr != NULL) );
    }
 
-   // ====== Close files ====================================================
-   if(openOutputFile) {
-      if(fclose(outputFile) != 0) {
-         fprintf(stderr, "ERROR: Unable to open output file %s: %s\n",
-                 outputFileName, strerror(errno));
-         if(openInputFile) {
-            fclose(inputFile);
-         }
-         exit(1);
-      }
-      outputFile = NULL;
-   }
-   if(openInputFile) {
-      fclose(inputFile);
-      inputFile = NULL;
-   }
-
-   return 0;
+   // ====== Clean up =======================================================
 }
