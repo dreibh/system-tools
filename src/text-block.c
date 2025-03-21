@@ -58,7 +58,7 @@ int main (int argc, char** argv)
    const char*     endTag          = NULL;
    bool            includeTags     = false;
    bool            withTagLines    = false;
-   
+
    for(int i = 1; i <argc; i++) {
       if( (strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--input") == 0) ) {
          if(i + 1 < argc) {
@@ -160,7 +160,6 @@ int main (int argc, char** argv)
 
    while( (line = fgets((char*)&buffer, sizeof(buffer), inputFile)) != NULL ) {
       // ====== Process line ================================================
-      puts(line);
 
       lineNo++;
       const char* startMarkerPtr = NULL;
@@ -182,13 +181,16 @@ int main (int argc, char** argv)
          }
          else {
             if(includeTags) {
-               endMarkerPtr = (withTagLines == true) ? line + strlen(line) : ptr + strlen(beginTag);
+               endMarkerPtr = (withTagLines == true) ? line + strlen(line) : ptr + strlen(endTag);
             }
             else {
-               endMarkerPtr = (withTagLines == true) ? line + strlen(line) : ((ptr[0] != 0x00) ? ptr - 1 : ptr);
+               endMarkerPtr = (withTagLines == true) ? line + strlen(line) : ptr;
+               // FIXME ((ptr[0] != 0x00) ? ptr - 1 : ptr);
             }
             endMarkerLineNo = lineNo;
+            ptr = endMarkerPtr;
             puts("M-2!");
+            break;
          }
 
          // ------ Look for next tag ... ------------------------------------
@@ -200,14 +202,20 @@ int main (int argc, char** argv)
          printf("%06llu\ts=%p %llu   e=%p %llu   * %s", lineNo, startMarkerPtr, startMarkerLineNo, endMarkerPtr, endMarkerLineNo, line);
 
          if(startMarkerPtr != NULL) {   // Start marker set in this line
-            if(endMarkerPtr == NULL) {
-               endMarkerPtr = line + strlen(line);   // No end marker -> mark until end of line
+            if(endMarkerPtr == NULL) {   // No end marker -> mark until end of line
+               puts("CASE-1a");
+               endMarkerPtr = line + strlen(line);
             }
-            puts("CASE-1");
+            else {   // End marker set
+               puts("CASE-1b");
+               // Done -> reset marking for next iteration
+               startMarkerLineNo = 0;
+               endMarkerLineNo   = 0;
+            }
          }
          else if(endMarkerLineNo > 0) {   // End marker set in this line
             startMarkerPtr = line;   // Mark from the beginning of the line
-            // Done -> unmark
+            // Done -> reset marking for next iteration
             startMarkerLineNo = 0;
             endMarkerLineNo   = 0;
             puts("CASE-2");
@@ -221,9 +229,7 @@ int main (int argc, char** argv)
 
          switch(mode) {
             case Extract:
-               // puts("W-2!");
-               // printf("W=<%s> l=%d\n", startMarkerPtr, (int)(endMarkerPtr - startMarkerPtr));
-               if(fwrite(startMarkerPtr, 1, (endMarkerPtr - startMarkerPtr), outputFile) < (endMarkerPtr - startMarkerPtr)) {
+               if(fwrite(startMarkerPtr, 1, (endMarkerPtr - startMarkerPtr), outputFile) < (ssize_t)(endMarkerPtr - startMarkerPtr)) {
                   fprintf(stderr, "ERROR: Unable to write to output file %s: %s\n",
                            outputFileName, strerror(errno));
                   if(openOutputFile) {

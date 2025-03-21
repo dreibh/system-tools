@@ -12,5 +12,11 @@
 
 🚅🚅🚅 <BEGIN-BLOCK>🐺Dette er en test!🐺<END-BLOCK> 🚚🚚🚚
 
+⚠<BEGIN-BLOCK>
+<END-BLOCK>⚠
+
 🚆🚆🚆 <BEGIN-BLOCK>🦘Yet<END-BLOCK><BEGIN-BLOCK> another <END-BLOCK>
 <BEGIN-BLOCK>test🐨<END-BLOCK>!
+⚠<BEGIN-BLOCK><END-BLOCK>⚠
+⚠<BEGIN-BLOCK>
+<END-BLOCK>⚠
