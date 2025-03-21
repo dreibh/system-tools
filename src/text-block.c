@@ -37,7 +37,7 @@
 #include "package-version.h"
 
 
-#define DEBUG_MODE
+// #define DEBUG_MODE
 
 typedef enum textblockmode {
    Extract = 1,
@@ -174,14 +174,15 @@ int main (int argc, char** argv)
       // ====== Process line ================================================
       lineNo++;
 
-      const char* ptr;
+      const char* ptr = line;
       do {
          const size_t lineLength     = strlen(line);
          const char*  beginMarkerPtr = NULL;
          const char*  endMarkerPtr   = NULL;
 
-         while( (ptr = (beginTag != NULL) ? strstr(line, (beginMarkerLineNo == 0) ? beginTag : endTag) : NULL) != NULL ) {
-            // ------ Found tag ------------------------------------------------
+         // ------ Look for next tag ... ------------------------------------
+         while( (ptr = (beginTag != NULL) ? strstr(ptr, (beginMarkerLineNo == 0) ? beginTag : endTag) : NULL) != NULL ) {
+            // ------ Found tag ---------------------------------------------
 
             if(beginMarkerLineNo == 0) {
                if(includeTags) {
@@ -204,14 +205,11 @@ int main (int argc, char** argv)
                // puts("M-2!");
                break;
             }
-
-            // ------ Look for next tag ... ------------------------------------
-            ptr = strstr(ptr + 1, (beginMarkerLineNo == 0) ? beginTag : endTag);
          }
 
          if((beginMarkerLineNo > 0) || (endMarkerLineNo > 0)) {
 #ifdef DEBUG_MODE
-            printf("Line %06llu:\ts=%p %llu\te=%p %llu\t↠ %s",
+            printf("Line %06llu:\tb=%p %llu\te=%p %llu\t↠ %s",
                    lineNo, beginMarkerPtr, beginMarkerLineNo,
                    endMarkerPtr, endMarkerLineNo, line);
 #endif
