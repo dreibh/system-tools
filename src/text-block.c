@@ -37,7 +37,7 @@
 #include "package-version.h"
 
 
-// #define DEBUG_MODE
+#define DEBUG_MODE
 
 typedef enum textblockmode {
    Extract = 1,
@@ -128,9 +128,16 @@ int main (int argc, char** argv)
          return 1;
       }
    }
-   if(endTag == NULL) {
+   if(beginTag[0] == 0x00) {
+      beginTag = NULL;
+   }
+   if((endTag == NULL) || (endTag[0] == 0x00)) {
       endTag = beginTag;
    }
+#ifdef DEBUG_MODE
+   printf("Begin Tag=%s\n", beginTag);
+   printf("End Tag=%s\n",   endTag);
+#endif
 
    // ====== Open files =====================================================
    FILE* inputFile = stdin;
@@ -158,7 +165,9 @@ int main (int argc, char** argv)
    const char*        line;
    char               buffer[65536];
    unsigned long long lineNo            = 0;
-   unsigned long long startMarkerLineNo = 0;   // start marker not set
+   const size_t       beginTagLength    = strlen(beginTag);
+   const size_t       endTagLength      = strlen(endTag);
+   unsigned long long beginMarkerLineNo = 0;   // begin marker not set
    unsigned long long endMarkerLineNo   = 0;   // end marker not set
 
    while( (line = fgets((char*)&buffer, sizeof(buffer), inputFile)) != NULL ) {
@@ -167,25 +176,25 @@ int main (int argc, char** argv)
 
       const char* ptr;
       do {
-         const char* startMarkerPtr = NULL;
+         const char* beginMarkerPtr = NULL;
          const char* endMarkerPtr   = NULL;
 
-         while( (ptr = (beginTag != NULL) ? strstr(line, (startMarkerLineNo == 0) ? beginTag : endTag) : NULL) != NULL ) {
+         while( (ptr = (beginTag != NULL) ? strstr(line, (beginMarkerLineNo == 0) ? beginTag : endTag) : NULL) != NULL ) {
             // ------ Found tag ------------------------------------------------
 
-            if(startMarkerLineNo == 0) {
+            if(beginMarkerLineNo == 0) {
                if(includeTags) {
-                  startMarkerPtr = (withTagLines == true) ? line : ptr;
+                  beginMarkerPtr = (withTagLines == true) ? line : ptr;
                }
                else {
-                  startMarkerPtr = (withTagLines == true) ? line : ptr + strlen(beginTag);
+                  beginMarkerPtr = (withTagLines == true) ? line : ptr + beginTagLength;
                }
-               startMarkerLineNo = lineNo;
+               beginMarkerLineNo = lineNo;
                // puts("M-1!");
             }
             else {
                if(includeTags) {
-                  endMarkerPtr = (withTagLines == true) ? line + strlen(line) : ptr + strlen(endTag);
+                  endMarkerPtr = (withTagLines == true) ? line + strlen(line) : ptr + endTagLength;
                }
                else {
                   endMarkerPtr = (withTagLines == true) ? line + strlen(line) : ptr;
@@ -196,14 +205,16 @@ int main (int argc, char** argv)
             }
 
             // ------ Look for next tag ... ------------------------------------
-            ptr = strstr(ptr + 1, (startMarkerLineNo == 0) ? beginTag : endTag);
+            ptr = strstr(ptr + 1, (beginMarkerLineNo == 0) ? beginTag : endTag);
          }
 
-         if((startMarkerLineNo > 0) || (endMarkerLineNo > 0)) {
+         if((beginMarkerLineNo > 0) || (endMarkerLineNo > 0)) {
 #ifdef DEBUG_MODE
-            printf("Line %06llu:\ts=%p %llu\te=%p %llu\t↠ %s", lineNo, startMarkerPtr, startMarkerLineNo, endMarkerPtr, endMarkerLineNo, line);
+            printf("Line %06llu:\ts=%p %llu\te=%p %llu\t↠ %s",
+                   lineNo, beginMarkerPtr, beginMarkerLineNo,
+                   endMarkerPtr, endMarkerLineNo, line);
 #endif
-            if(startMarkerPtr != NULL) {   // Start marker set in this line
+            if(beginMarkerPtr != NULL) {   // Begin marker set in this line
                if(endMarkerPtr == NULL) {   // No end marker -> mark until end of line
 #ifdef DEBUG_MODE
                   puts("CASE-1a: begin marker set in this line, end marker not set");
@@ -215,7 +226,7 @@ int main (int argc, char** argv)
                   puts("CASE-1b: begin marker and end marker set in this line");
 #endif
                   // Done -> reset marking for next iteration
-                  startMarkerLineNo = 0;
+                  beginMarkerLineNo = 0;
                   endMarkerLineNo   = 0;
                }
             }
@@ -223,26 +234,26 @@ int main (int argc, char** argv)
 #ifdef DEBUG_MODE
                   puts("CASE-2: end marker set in this line");
 #endif
-               startMarkerPtr = line;   // Mark from the beginning of the line
+               beginMarkerPtr = line;   // Mark from the beginning of the line
                // Done -> reset marking for next iteration
-               startMarkerLineNo = 0;
+               beginMarkerLineNo = 0;
                endMarkerLineNo   = 0;
             }
-            else if(startMarkerLineNo > 0) {   // Start marker set, but not in this line
+            else if(beginMarkerLineNo > 0) {   // Begin marker set, but not in this line
 #ifdef DEBUG_MODE
-                  puts("CASE-3: start marker set, but not in this line");
+                  puts("CASE-3: begin marker set, but not in this line");
 #endif
                // Continue ...
-               startMarkerPtr = line;
+               beginMarkerPtr = line;
                endMarkerPtr   = line + strlen(line);   // Mark the full line
             }
 
             switch(mode) {
                case Extract:
-                  const ssize_t extractSize = (ssize_t)endMarkerPtr - (ssize_t)startMarkerPtr;
+                  const ssize_t extractSize = (ssize_t)endMarkerPtr - (ssize_t)beginMarkerPtr;
                   assert(extractSize  >= 0);
                   if(extractSize > 0) {
-                     if(fwrite(startMarkerPtr, 1, extractSize, outputFile) < extractSize) {
+                     if(fwrite(beginMarkerPtr, 1, extractSize, outputFile) < extractSize) {
                         fprintf(stderr, "ERROR: Unable to write to output file %s: %s\n",
                                  outputFileName, strerror(errno));
                         if(openOutputFile) {
@@ -258,7 +269,7 @@ int main (int argc, char** argv)
             }
 
             // Advance line pointer, to look for next begin tag in the same line:
-            line = (includeTags == true) ? endMarkerPtr : endMarkerPtr + strlen(endTag);
+            line = (includeTags == true) ? endMarkerPtr : endMarkerPtr + endTagLength;
          }
       } while( (!withTagLines) && (ptr != NULL) );
    }
