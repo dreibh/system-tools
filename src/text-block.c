@@ -37,7 +37,8 @@
 #include "package-version.h"
 
 
-#define DEBUG_MODE
+// #define DEBUG_MODE
+
 
 typedef enum textblockmode {
    Extract = 1,
@@ -63,13 +64,14 @@ void cleanUp(int exitCode)
                  outputFileName, strerror(errno));
          exitCode = 1;
       }
-      fclose(outputFile);
    }
    outputFile = NULL;
+
    if(openInputFile) {
       fclose(inputFile);
    }
    inputFile = NULL;
+
    exit(exitCode);
 }
 
@@ -98,7 +100,13 @@ int main (int argc, char** argv)
    const char*     endTag       = NULL;
 
    for(int i = 1; i <argc; i++) {
-      if( (strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--input") == 0) ) {
+      if( (strcmp(argv[i], "-x") == 0) || (strcmp(argv[i], "--extract") == 0) ) {
+         mode = Extract;
+      }
+      else if( (strcmp(argv[i], "-r") == 0) || (strcmp(argv[i], "--remove") == 0) ) {
+         mode = Remove;
+      }
+      else if( (strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--input") == 0) ) {
          if(i + 1 < argc) {
             inputFileName = argv[i + 1];
          }
@@ -138,12 +146,6 @@ int main (int argc, char** argv)
          }
          i++;
       }
-      else if( (strcmp(argv[i], "-x") == 0) || (strcmp(argv[i], "--extract") == 0) ) {
-         mode = Extract;
-      }
-      else if( (strcmp(argv[i], "-r") == 0) || (strcmp(argv[i], "--remove") == 0) ) {
-         mode = Remove;
-      }
       else if( (strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "--include-tags") == 0) ) {
          includeTags = true;
       }
@@ -161,7 +163,7 @@ int main (int argc, char** argv)
          return 0;
       }
       else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) ) {
-         fprintf(stderr, "Usage: %s [-i|--input input_file] [-o|--output output_file] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-h|--help] [-v|--version]\n", argv[0]);
+         fprintf(stderr, "Usage: %s [-x|--extract] [-r|--remove]  [-i|--input input_file] [-o|--output output_file] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-t|--include-tags] [--exclude-tags] [-f|--full-tag-lines] [--tags-only] [-h|--help] [-v|--version]\n", argv[0]);
          return 1;
       }
       else {
@@ -175,10 +177,19 @@ int main (int argc, char** argv)
    if((endTag == NULL) || (endTag[0] == 0x00)) {
       endTag = beginTag;
    }
-   if(mode == Remove) {
-      // Just inverse the options, to keep the following code simple:
-      includeTags  = !includeTags;
-      // withTagLines = !withTagLines;
+   switch(mode) {
+      case Remove:
+         // Just inverse the includeTags option, to keep the following code simple:
+         includeTags  = !includeTags;
+       break;
+      case Extract:
+         if(beginTag == endTag) {
+            fprintf(stderr, "ERROR: Extract mode is not useful with identical begin/end tags!\n");
+            return 1;
+         }
+       break;
+      default:
+       break;
    }
 #ifdef DEBUG_MODE
    printf("Begin Tag=%s\n", beginTag);
@@ -238,8 +249,24 @@ int main (int argc, char** argv)
                   beginMarkerPtr = (withTagLines == true) ? line : ptr + beginTagLength;
                }
                beginMarkerLineNo = lineNo;
-               // puts("M-1!");
-               ptr += beginTagLength;
+               // ------ Usual case: different tags for begin and end: ------
+               if(beginTag != endTag) {
+                  // puts("M-1!");
+                  ptr += beginTagLength;
+               }
+               // ------ Special case: identical tag for begin/end: ---------
+               else {
+                  if(includeTags) {
+                     endMarkerPtr = (withTagLines == true) ? line + lineLength : ptr + endTagLength;
+                  }
+                  else {
+                     endMarkerPtr = (withTagLines == true) ? line + lineLength : ptr;
+                  }
+                  endMarkerLineNo = lineNo;
+                  // puts("M-1/2!");
+                  ptr += beginTagLength;
+                  break;
+               }
             }
             else {
                if(includeTags) {
@@ -297,20 +324,20 @@ int main (int argc, char** argv)
             }
 
             switch(mode) {
-               case Extract: {
-                  const ssize_t extractSize = (ssize_t)endMarkerPtr - (ssize_t)beginMarkerPtr;
-                  assert(extractSize >= 0);
-                  writeToOutputFile(beginMarkerPtr, (size_t)extractSize);
-                 }
+               case Extract:
+                  {
+                     const ssize_t extractSize = (ssize_t)endMarkerPtr - (ssize_t)beginMarkerPtr;
+                     assert(extractSize >= 0);
+                     writeToOutputFile(beginMarkerPtr, (size_t)extractSize);
+                  }
                 break;
-               case Remove: {
-                  const ssize_t extractSize1 = (ssize_t)beginMarkerPtr - (ssize_t)line;
-                  // const ssize_t extractSize2 = (ssize_t)endMarkerPtr - (ssize_t)(line + lineLength);
-                  assert(extractSize1 >= 0);
-                  // assert(extractSize2 >= 0);
-                  writeToOutputFile(line, (size_t)extractSize1);
-                  // writeToOutputFile(endMarkerPtr, strlen(endMarkerPtr));
-                 }
+               case Remove:
+                  {
+                     const ssize_t extractSize = (ssize_t)beginMarkerPtr - (ssize_t)line;
+                     // const ssize_t extractSize2 = (ssize_t)endMarkerPtr - (ssize_t)(line + lineLength);
+                     assert(extractSize >= 0);
+                     writeToOutputFile(line, (size_t)extractSize);
+                  }
                 break;
                default:
                   // Nothing to do here!
@@ -337,4 +364,5 @@ int main (int argc, char** argv)
    }
 
    // ====== Clean up =======================================================
+   cleanUp(0);
 }
