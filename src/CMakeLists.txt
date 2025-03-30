@@ -104,7 +104,7 @@ INSTALL(FILES       try-hard.bash-completion
 
 ADD_EXECUTABLE(text-block text-block.c)
 SET_PROPERTY(TARGET text-block PROPERTY C_STANDARD 11)
-INSTALL(PROGRAMS    text-block   DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(TARGETS     text-block   DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES       text-block.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       text-block.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
