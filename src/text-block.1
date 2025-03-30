@@ -1,28 +1,88 @@
-[-c|--cat]
-[-x|--extract]
-[-r|--remove]
-[-s|--insert insert_file]
-[-p|--replace insert_file]
-[-i|--input input_file]
-[-o|--output output_file]
-[-b|--begin-tag begin_tag]
-[-e|--end-tag end_tag]
-[-t|--include-tags]
-[--exclude-tags]
-[-f|--full-tag-lines]
-[--tags-only]
-[-h|--help]
-[-v|--version]
-
-TBD:
-
-INPUT | text-block --extract BEGIN END | OUTPUT
-
-INPUT | text-block --replace BEGIN END new_section_file | OUTPUT
-Variants:
-INPUT | text-block --replace BEGIN END replacement_string | OUTPUT
-INPUT | text-block --remove BEGIN END | OUTPUT
-
-Options:
---error-if-not-found
-indenting ?
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" Text-Block
+.\" Copyright (C) 2024-2025 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd March 30, 2025
+.Dt text-block 1
+.Os text-block
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm text-block
+.Nd waits for a randomly selected time
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm text-block
+.Op Fl c | Fl Fl cat
+.Op OPTIONS
+.Nm text-block
+.Op Fl x | Fl Fl extract
+.Op OPTIONS
+.Nm text-block
+.Op Fl r | Fl Fl remove
+.Op OPTIONS
+.Nm text-block
+.Op Fl s | Fl Fl insert Ar insert_file
+.Op OPTIONS
+.Nm text-block
+.Op Fl p | Fl Fl replace Ar insert_file
+.Op OPTIONS
+.Nm text-block
+.Op Fl h | Fl Fl help
+.Nm text-block
+.Op Fl v | Fl Fl version
+.Nm OPTIONS:
+.Op Fl i Ar input_file | Fl Fl input Ar input_file
+.Op Fl o Ar output_file | Fl Fl output Ar output_file
+.Op Fl b Ar begin_tag | Fl Fl begin-tag Ar begin_tag
+.Op Fl e Ar end_tag | Fl Fl end-tag Ar end_tag
+.Op Fl t | Fl Fl include-tags
+.Op Fl -exclude-tags
+.Op Fl f | Fl Fl full-tag-lines
+.Op Fl -tags-only
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm text-block
+TBD!
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It Fl q | Fl Fl quiet
+Quiet mode: no output is made.
+.It Fl v | Fl Fl verbose
+Verbose mode: print selected delay and wake-up.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It text-block TBD!
+TBD!
+.El
