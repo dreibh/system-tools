@@ -41,6 +41,7 @@
 
 
 typedef enum textblockmode {
+   Cat     = 0,
    Extract = 1,
    Insert  = 2,
    Replace = 3,
@@ -120,14 +121,17 @@ static void copyInsertFileIntoOutputFile()
 int main (int argc, char** argv)
 {
    // ====== Handle arguments ===============================================
-   textblockmode_t mode         = Extract;
+   textblockmode_t mode         = Cat;
    bool            includeTags  = false;
    bool            withTagLines = false;
    const char*     beginTag     = NULL;
    const char*     endTag       = NULL;
 
    for(int i = 1; i <argc; i++) {
-      if( (strcmp(argv[i], "-x") == 0) || (strcmp(argv[i], "--extract") == 0) ) {
+      if( (strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--cat") == 0) ) {
+         mode = Cat;
+      }
+      else if( (strcmp(argv[i], "-x") == 0) || (strcmp(argv[i], "--extract") == 0) ) {
          mode = Extract;
       }
       else if( (strcmp(argv[i], "-r") == 0) || (strcmp(argv[i], "--remove") == 0) ) {
@@ -207,7 +211,7 @@ int main (int argc, char** argv)
          return 0;
       }
       else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) ) {
-         fprintf(stderr, "Usage: %s [-x|--extract] [-r|--remove] [-s|--insert insert_file] [-p|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-t|--include-tags] [--exclude-tags] [-f|--full-tag-lines] [--tags-only] [-h|--help] [-v|--version]\n", argv[0]);
+         fprintf(stderr, "Usage: %s [-c|--cat] [-x|--extract] [-r|--remove] [-s|--insert insert_file] [-p|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-t|--include-tags] [--exclude-tags] [-f|--full-tag-lines] [--tags-only] [-h|--help] [-v|--version]\n", argv[0]);
          return 1;
       }
       else {
@@ -215,13 +219,16 @@ int main (int argc, char** argv)
          return 1;
       }
    }
-   if(beginTag[0] == 0x00) {
+   if( (beginTag != NULL) && (beginTag[0] == 0x00) ) {
       beginTag = NULL;
    }
    if((endTag == NULL) || (endTag[0] == 0x00)) {
       endTag = beginTag;
    }
+   printf("MODE=%d\n", (int)mode);
    switch(mode) {
+      case Cat:
+       break;
       case Remove:
       case Insert:
       case Replace:
@@ -230,11 +237,13 @@ int main (int argc, char** argv)
        break;
       case Extract:
          if(beginTag == endTag) {
-            fprintf(stderr, "ERROR: Extract mode is not useful with identical begin/end tags!\n");
+            fputs("ERROR: Extract mode is not useful with identical begin/end tags!\n", stderr);
             return 1;
          }
        break;
       default:
+         fputs("ERROR: Extract mode is not useful with identical begin/end tags!\n", stderr);
+         return 1;
        break;
    }
 #ifdef DEBUG_MODE
@@ -282,8 +291,8 @@ int main (int argc, char** argv)
    const char*        line;
    char               buffer[65536];
    unsigned long long lineNo            = 0;
-   const size_t       beginTagLength    = strlen(beginTag);
-   const size_t       endTagLength      = strlen(endTag);
+   const size_t       beginTagLength    = (beginTag != NULL) ? strlen(beginTag) : 0;
+   const size_t       endTagLength      = (endTag != NULL)   ? strlen(endTag)   : 0;
    unsigned long long beginMarkerLineNo = 0;   // begin marker not set
    unsigned long long endMarkerLineNo   = 0;   // end marker not set
 
@@ -422,6 +431,7 @@ int main (int argc, char** argv)
          // ====== Handle unmarked line =====================================
          else {
             switch(mode) {
+               case Cat:
                case Remove:
                case Replace:
                case Insert:
