@@ -1,5 +1,6 @@
 Tests: 10-print-utf8
-Depends: td-print-utf8, figlet
+Depends: figlet,
+         td-print-utf8
 
 Tests: 20-get-system-info
 Depends: td-get-system-info
