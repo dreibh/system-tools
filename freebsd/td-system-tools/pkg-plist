@@ -6,6 +6,7 @@ bin/configure-grub
 bin/get-system-info
 bin/print-utf8
 bin/random-sleep
+bin/text-block
 bin/try-hard
 etc/profile.d/system-info.csh
 etc/profile.d/system-info.sh
@@ -24,6 +25,7 @@ share/bash-completion/completions/configure-grub
 share/bash-completion/completions/get-system-info
 share/bash-completion/completions/print-utf8
 share/bash-completion/completions/random-sleep
+share/bash-completion/completions/text-block
 share/bash-completion/completions/try-hard
 share/configure-grub/grub-defaults-nornet
 share/configure-grub/grub-defaults-standard
@@ -47,4 +49,5 @@ share/man/man1/configure-grub.1.gz
 share/man/man1/get-system-info.1.gz
 share/man/man1/print-utf8.1.gz
 share/man/man1/random-sleep.1.gz
+share/man/man1/text-block.1.gz
 share/man/man1/try-hard.1.gz
