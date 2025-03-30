@@ -225,7 +225,6 @@ int main (int argc, char** argv)
    if((endTag == NULL) || (endTag[0] == 0x00)) {
       endTag = beginTag;
    }
-   printf("MODE=%d\n", (int)mode);
    switch(mode) {
       case Cat:
        break;
