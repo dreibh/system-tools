@@ -1,4 +1,31 @@
 #!/usr/bin/env bash
+#         ____            _                     _____           _
+#        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+#               |___/
+#                             --- System-Tools ---
+#                  https://www.nntb.no/~dreibh/system-tools/
+# ==========================================================================
+#
+# Text-Block
+# Copyright (C) 2025 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
 
 set -eu
 
@@ -12,13 +39,16 @@ for mode in cat extract remove replace ; do
    for o1 in include-tags exclude-tags ; do
       for o2 in tags-only full-tag-lines ; do
          for test in simple ; do
-            if [ "${mode}" == "extract" ] && [ "${test}" == "test2" ] ; then
+            if [ "${mode}" == "extract" ] && [ "${test}" == "advanced2" ] ; then
                continue
             fi
             echo >&2 -e "\x1b[34m###### Testing: ${test} --${mode} --${o1} --${o2} ######\x1b[0m"
 
             outputFile="text-block-tests/${test}-${mode}-${o1}-${o2}.out"
             goodFile="text-block-tests/${test}-${mode}-${o1}-${o2}.good"
+            badFile="text-block-tests/${test}-${mode}-${o1}-${o2}.bad"
+
+            rm -f "${badFile}"
             if [ "${mode}" == "replace" ] || [ "${mode}" == "insert" ]  ; then
                mode2="${mode} ${insertFile}"
             else
@@ -49,6 +79,7 @@ for mode in cat extract remove replace ; do
                      echo "Output:  $(basename "${outputFile}")"
                      echo "Diff:"
                      diff --color "${goodFile}" "${outputFile}" || true
+                     cp "${outputFile}" "${badFile}"
                   ) >&2
 #                   exit 1
                else
