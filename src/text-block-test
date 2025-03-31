@@ -2,23 +2,44 @@
 
 set -e
 
+RUN=""
+# RUN="valgrind "
+
 make text-block
-for mode in extract remove ; do
+for mode in cat extract remove ; do
    for o1 in include-tags exclude-tags ; do
       for o2 in tags-only full-tag-lines ; do
-         for test in test1 test2 ; do
-            if [ "$mode" == "extract" ] && [ "$test" == "test2" ] ; then
+         for test in simple ; do
+            if [ "${mode}" == "extract" ] && [ "${test}" == "test2" ] ; then
                continue
             fi
-            echo >&2 -e "\n\n###### $test --$mode --$o1 --$o2 ######"
-            if [ "$test" == "test1" ] ; then
-               valgrind ./text-block -i test.txt -o x.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --$mode --$o1 --$o2
-            elif [ "$test" == "test2" ] ; then
-               valgrind ./text-block -i test.txt -o x.txt -b '<MARKER>' --$mode --$o1 --$o2
+            echo >&2 -e "\x1b[34m###### Testing: ${test} --${mode} --${o1} --${o2} ######\x1b[0m"
+            outputFile="text-block-tests/${test}-${mode}-${o1}-${o2}.out"
+            goodFile="text-block-tests/${test}-${mode}-${o1}-${o2}.good"
+            if [ "${test}" == "simple" ] ; then
+               ${RUN} ./text-block -i text-block-tests/simple.txt -o "${outputFile}" -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --${mode} --${o1} --${o2}
+            elif [ "${test}" == "advanced1" ] ; then
+               ${RUN} ./text-block -i text-block-tests/advanced.txt -o "${outputFile}" -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --${mode} --${o1} --${o2}
+               cat "${outputFile}"
+            elif [ "${test}" == "advanced2" ] ; then
+               ${RUN} ./text-block -i text-block-tests/advanced.txt -o "${outputFile}" -b '<MARKER>' --${mode} --${o1} --${o2}
+               cat "${outputFile}"
             else
                false
             fi
-            cat x.txt
+
+            if [ -e "${goodFile}" ] ; then
+               if ! diff --color "${outputFile}" "${goodFile}" ; then
+                  (
+                     print-utf8 -n -s "\e[1;31;5m█" "▀" "█\e[0m" ;
+                     echo "TEST FAILED!" | figlet -w 64 | print-utf8 -n -C "\e[1;31;5m█\e[25m" "\e[5m█\e[0m" ;
+                     print-utf8 -n -s "\e[1;31;5m█" "▄" "█\e[0m"
+                  ) >&2
+                  exit 1
+               else
+                  echo "OK!"
+               fi
+            fi
          done
       done
    done
