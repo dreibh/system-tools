@@ -227,6 +227,12 @@ int main (int argc, char** argv)
    }
    switch(mode) {
       case Cat:
+         // Cat means 1:1 copy -> no tags!
+         if( (beginTag != NULL) || (endTag != NULL) ) {
+            fputs("WARNING: Cat mode is not useful with begin/end tags!\n", stderr);
+         }
+         beginTag = NULL;
+         endTag   = NULL;
        break;
       case Remove:
       case Insert:
@@ -314,6 +320,7 @@ int main (int argc, char** argv)
                   beginMarkerPtr = (withTagLines == true) ? line : ptr;
                }
                else {
+                  printf("I=%d   f=%d\n",includeTags, withTagLines);
                   beginMarkerPtr = (withTagLines == true) ? line : ptr + beginTagLength;
                }
                beginMarkerLineNo = lineNo;
