@@ -320,8 +320,8 @@ int main (int argc, char** argv)
                   beginMarkerPtr = (withTagLines == true) ? line : ptr;
                }
                else {
-                  printf("I=%d   f=%d\n",includeTags, withTagLines);
                   beginMarkerPtr = (withTagLines == true) ? line : ptr + beginTagLength;
+                  printf("I=%d   f=%d  b=%s\n",includeTags, withTagLines, beginMarkerPtr);
                }
                beginMarkerLineNo = lineNo;
                // ------ Usual case: different tags for begin and end: ------

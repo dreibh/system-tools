@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
-set -e
+set -eu
 
 RUN=""
 # RUN="valgrind "
 
 make text-block
 insertFile="text-block-tests/insert.txt"
+failures=0
 for mode in cat extract remove replace ; do
    for o1 in include-tags exclude-tags ; do
       for o2 in tags-only full-tag-lines ; do
@@ -15,6 +16,7 @@ for mode in cat extract remove replace ; do
                continue
             fi
             echo >&2 -e "\x1b[34m###### Testing: ${test} --${mode} --${o1} --${o2} ######\x1b[0m"
+
             outputFile="text-block-tests/${test}-${mode}-${o1}-${o2}.out"
             goodFile="text-block-tests/${test}-${mode}-${o1}-${o2}.good"
             if [ "${mode}" == "replace" ] || [ "${mode}" == "insert" ]  ; then
@@ -23,23 +25,30 @@ for mode in cat extract remove replace ; do
                mode2="${mode}"
             fi
             if [ "${test}" == "simple" ] ; then
-               ${RUN} ./text-block -i text-block-tests/simple.txt -o "${outputFile}" -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --${mode2} --${o1} --${o2}
+               command="${RUN} ./text-block -i text-block-tests/simple.txt -o ${outputFile} -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --${mode2} --${o1} --${o2}"
+
             elif [ "${test}" == "advanced1" ] ; then
-               ${RUN} ./text-block -i text-block-tests/advanced.txt -o "${outputFile}" -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --${mode2} --${o1} --${o2}
-               cat "${outputFile}"
+               command="${RUN} ./text-block -i text-block-tests/advanced.txt -o ${outputFile} -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --${mode2} --${o1} --${o2}"
             elif [ "${test}" == "advanced2" ] ; then
-               ${RUN} ./text-block -i text-block-tests/advanced.txt -o "${outputFile}" -b '<MARKER>' --${mode2} --${o1} --${o2}
-               cat "${outputFile}"
+               command="${RUN} ./text-block -i text-block-tests/advanced.txt -o ${outputFile} -b '<MARKER>' --${mode2} --${o1} --${o2}"
             else
                false
             fi
+            sh -c "${command}"
 
             if [ -e "${goodFile}" ] ; then
-               if ! diff --color "${outputFile}" "${goodFile}" ; then
+               if ! diff --color "${goodFile}" "${outputFile}" ; then
+                  failures=$((failures+1))
                   (
                      ./print-utf8 -n -s "\e[1;31;5m█" "▀" "█\e[0m" ;
                      echo "TEST FAILED!" | figlet -w 64 | ./print-utf8 -n -C "\e[1;31;5m█\e[25m" "\e[5m█\e[0m" ;
                      ./print-utf8 -n -s "\e[1;31;5m█" "▄" "█\e[0m"
+                     echo "Failure #${failures}:"
+                     echo "Command:${command}"
+                     echo "Good:    $(basename "${goodFile}")"
+                     echo "Output:  $(basename "${outputFile}")"
+                     echo "Diff:"
+                     diff --color "${goodFile}" "${outputFile}" || true
                   ) >&2
 #                   exit 1
                else
