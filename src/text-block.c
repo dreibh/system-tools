@@ -413,9 +413,9 @@ int main (int argc, char** argv)
                         writeToOutputFile(line, (size_t)lineLength);
                      }
                      else {
-                        const ssize_t extractSize1 = (ssize_t)(beginMarkerPtr - line);
-                        assert(extractSize1 >= 0);
-                        writeToOutputFile(line, (size_t)extractSize1);
+                        const ssize_t extractSize = (ssize_t)(beginMarkerPtr - line);
+                        assert(extractSize >= 0);
+                        writeToOutputFile(line, (size_t)extractSize);
                      }
 
                      if( (mode == Insert) || (mode == Replace) ) {
@@ -424,14 +424,14 @@ int main (int argc, char** argv)
                         }
                      }
                      if(beginMarkerLineNo == 0) {   // End marker is in this line!
-                        if( (!includeTags) && (withTagLines) ) {
-                           writeToOutputFile(line, (size_t)lineLength);
-                        }
-                        else {
-                           if (!includeTags == true) {
-                           const ssize_t extractSize1 = (ssize_t)(endMarkerPtr - line);
-                           assert(extractSize1 >= 0);
-                           writeToOutputFile(endTag, endTagLength);
+                        if(!includeTags == true) {
+                           if(withTagLines) {
+                              writeToOutputFile(line, (size_t)lineLength);
+                           }
+                           else {
+                              const ssize_t extractSize = (ssize_t)(endMarkerPtr - line);
+                              assert(extractSize >= 0);
+                              writeToOutputFile(endTag, endTagLength);
                            }
                         }
                      }
