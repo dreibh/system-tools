@@ -35,7 +35,7 @@ RUN=""
 make text-block
 insertFile="text-block-tests/insert.txt"
 failures=0
-for mode in cat extract remove replace ; do
+for mode in cat extract remove replace insert ; do
    for o1 in include-tags exclude-tags ; do
       for o2 in tags-only full-tag-lines ; do
          for test in simple ; do

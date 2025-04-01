@@ -419,10 +419,16 @@ int main (int argc, char** argv)
                      }
 
                      if( (mode == Insert) || (mode == Replace) ) {
-                        if(beginMarkerLineNo == 0) {   // Only insert on begin marker's line!
+                        if(beginMarkerLineNo == lineNo) {   // Only insert on begin marker's line!
                            copyInsertFileIntoOutputFile();
                         }
+                        if(mode == Insert) {
+                           const ssize_t extractSize = (ssize_t)(endMarkerPtr - beginMarkerPtr);
+                           assert(extractSize >= 0);
+                           writeToOutputFile(beginMarkerPtr, extractSize);
+                        }
                      }
+
                      if(beginMarkerLineNo == 0) {   // End marker is in this line!
                         if(!includeTags == true) {
                            if(withTagLines) {
