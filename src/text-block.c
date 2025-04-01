@@ -321,7 +321,6 @@ int main (int argc, char** argv)
                }
                else {
                   beginMarkerPtr = (withTagLines == true) ? line : ptr + beginTagLength;
-                  printf("I=%d   f=%d  b=%s\n",includeTags, withTagLines, beginMarkerPtr);
                }
                beginMarkerLineNo = lineNo;
                // ------ Usual case: different tags for begin and end: ------
@@ -410,17 +409,30 @@ int main (int argc, char** argv)
                case Insert:
                case Replace:
                   {
-                     const ssize_t extractSize1 = (ssize_t)beginMarkerPtr - (ssize_t)line;
-                     assert(extractSize1 >= 0);
-                     writeToOutputFile(line, (size_t)extractSize1);
+                     if( (!includeTags) && (withTagLines) && (beginMarkerLineNo == lineNo) ) {
+                        writeToOutputFile(line, (size_t)lineLength);
+                     }
+                     else {
+                        const ssize_t extractSize1 = (ssize_t)(beginMarkerPtr - line);
+                        assert(extractSize1 >= 0);
+                        writeToOutputFile(line, (size_t)extractSize1);
+                     }
+
                      if( (mode == Insert) || (mode == Replace) ) {
-                        if(beginMarkerLineNo == 0) {   // Only insert for begin marker's line!
+                        if(beginMarkerLineNo == 0) {   // Only insert on begin marker's line!
                            copyInsertFileIntoOutputFile();
                         }
                      }
-                     if(beginMarkerLineNo == 0) {
-                        if( (!includeTags == true) && (beginTag != endTag) ) {
-                           writeToOutputFile(endTag, strlen(endTag));
+                     if(beginMarkerLineNo == 0) {   // End marker is in this line!
+                        if( (!includeTags) && (withTagLines) ) {
+                           writeToOutputFile(line, (size_t)lineLength);
+                        }
+                        else {
+                           if (!includeTags == true) {
+                           const ssize_t extractSize1 = (ssize_t)(endMarkerPtr - line);
+                           assert(extractSize1 >= 0);
+                           writeToOutputFile(endTag, endTagLength);
+                           }
                         }
                      }
                   }
