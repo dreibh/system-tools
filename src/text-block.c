@@ -392,13 +392,17 @@ int main (int argc, char** argv)
          while( (next = (MarkerTag != NULL) ? strstr(Pointer, MarkerTag) : NULL) != NULL ) {
             if(MarkerTag == BeginTag) {
                processUnmarked(Pointer, (ssize_t)(next - Pointer));
-               next += MarkerTagLength;
+               if(!IncludeTags) {
+                  next += MarkerTagLength;
+               }
                MarkerTag       = EndTag;
                MarkerTagLength = EndTagLength;
             }
             else {
                processMarked(Pointer, (ssize_t)(next - Pointer));
-               next += MarkerTagLength;
+               if(!IncludeTags) {
+                  next += MarkerTagLength;
+               }
                MarkerTag       = BeginTag;
                MarkerTagLength = BeginTagLength;
             }
