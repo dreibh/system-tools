@@ -48,42 +48,62 @@ typedef enum textblockmode {
    Insert    = 4,
    Replace   = 5,
    Remove    = 6
-
 } textblockmode_t;
 
-static const char* inputFileName   = NULL;
-static FILE*       inputFile       = NULL;
-static bool        openInputFile   = false;
 
-static const char* outputFileName  = NULL;
-static FILE*       outputFile      = NULL;
-static bool        openOutputFile  = false;
+static textblockmode_t    Mode           = Cat;
+static const char*        BeginTag       = NULL;
+static size_t             BeginTagLength = 0;
+static const char*        EndTag         = NULL;
+static size_t             EndTagLength   = 0;
+static bool               IncludeTags    = true;
+static bool               WithTagLines   = false;
 
-static const char* insertFileName  = NULL;
-static FILE*       insertFile      = NULL;
+static const char*        InputFileName  = NULL;
+static FILE*              InputFile      = NULL;
+static bool               OpenInputFile  = NULL;
+static const char*        OutputFileName = NULL;
+static FILE*              OutputFile     = NULL;
+static bool               OpenOutputFile = NULL;
+static const char*        InsertFileName = NULL;
+static FILE*              InsertFile     = NULL;
+static char*              Buffer         = NULL;
+static size_t             BufferSize     = 65536;
+
+static unsigned long long LineNo;
+static const char*        EndOfLine;
+static const char*        Line;
+static const char*        MarkerTag;
+static size_t             MarkerTagLength;
+static const char*        Pointer;
 
 
 // ###### Clean up ##########################################################
 static void cleanUp(int exitCode)
 {
-   if(insertFile) {
-      fclose(insertFile);
-      insertFile = NULL;
+   if(Buffer) {
+      free(Buffer);
+      Buffer = NULL;
    }
 
-   if(openOutputFile) {
-      if(fclose(outputFile) != 0) {
+   if(InsertFile) {
+      fclose(InsertFile);
+      InsertFile = NULL;
+   }
+
+   if(OpenOutputFile) {
+      if(fclose(OutputFile) != 0) {
          fprintf(stderr, "ERROR: Unable to open output file %s: %s\n",
-                 outputFileName, strerror(errno));
+                 OutputFileName, strerror(errno));
          exitCode = 1;
       }
    }
-   outputFile = NULL;
+   OutputFile = NULL;
 
-   if(openInputFile) {
-      fclose(inputFile);
+   if(OpenInputFile) {
+      fclose(InputFile);
    }
-   inputFile = NULL;
+   InputFile = NULL;
 
    exit(exitCode);
 }
@@ -93,10 +113,9 @@ static void cleanUp(int exitCode)
 static void writeToOutputFile(const char* data, const size_t length)
 {
    if(length > 0) {
-      printf("l=%d\n", (int)length);
-      if(fwrite(data, 1, length, outputFile) < length) {
+      if(fwrite(data, 1, length, OutputFile) < length) {
          fprintf(stderr, "ERROR: Unable to write to output file %s: %s\n",
-                 outputFileName, strerror(errno));
+                 OutputFileName, strerror(errno));
          cleanUp(1);
       }
    }
@@ -106,45 +125,56 @@ static void writeToOutputFile(const char* data, const size_t length)
 // ###### Write contents of insert file #####################################
 static void copyInsertFileIntoOutputFile()
 {
-   rewind(insertFile);
+   rewind(InsertFile);
 
    char    buffer[65536];
    ssize_t bytesRead;
-   while( (bytesRead = fread((char*)&buffer, 1, sizeof(buffer), insertFile)) > 0 ) {
+   while( (bytesRead = fread((char*)&buffer, 1, sizeof(buffer), InsertFile)) > 0 ) {
       writeToOutputFile(buffer, bytesRead);
    }
    if(bytesRead < 0) {
       fprintf(stderr, "ERROR: Unable to read to insert file %s: %s\n",
-              insertFileName, strerror(errno));
+              InsertFileName, strerror(errno));
       cleanUp(1);
    }
 }
 
 
-static void processUnmarked(const textblockmode_t mode,
-                            const char*           text,
-                            const ssize_t         textLength,
-                            const bool            includeTags,
-                            const bool            withTagLines)
+// ###### Process unmarked text #############################################
+static void processUnmarked(const char*   text,
+                            const ssize_t textLength)
 {
    assert(textLength >= 0);
-   switch(mode) {
+   switch(Mode) {
       case Cat:
-
+         writeToOutputFile(text, textLength);
+       break;
+      case Enumerate:
+         fprintf(OutputFile, "%06llu ", LineNo);
+         writeToOutputFile(text, textLength);
+       break;
+      case Highlight:
+         fputs("\x1b[34m", OutputFile);
+         writeToOutputFile(text, textLength);
+         fputs("\x1b[0m", OutputFile);
+       break;
       default:
        break;
    }
 }
 
 
-static void processMarked(const textblockmode_t mode,
-                          const char*           text,
-                          const ssize_t         textLength,
-                          const bool            includeTags,
-                          const bool            withTagLines)
+// ###### Process marked text ###############################################
+static void processMarked(const char*   text,
+                          const ssize_t textLength)
 {
    assert(textLength >= 0);
-   switch(mode) {
+   switch(Mode) {
+      case Highlight:
+         fputs("\x1b[31m", OutputFile);
+         writeToOutputFile(text, textLength);
+         fputs("\x1b[0m", OutputFile);
+       break;
       default:
        break;
    }
@@ -156,35 +186,29 @@ static void processMarked(const textblockmode_t mode,
 int main (int argc, char** argv)
 {
    // ====== Handle arguments ===============================================
-   textblockmode_t mode         = Cat;
-   bool            includeTags  = false;
-   bool            withTagLines = false;
-   const char*     beginTag     = NULL;
-   const char*     endTag       = NULL;
-
    for(int i = 1; i <argc; i++) {
       if( (strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--cat") == 0) ) {
-         mode = Cat;
+         Mode = Cat;
       }
       else if( (strcmp(argv[i], "-n") == 0) || (strcmp(argv[i], "--enumerate") == 0) ) {
-         mode = Enumerate;
+         Mode = Enumerate;
       }
       else if( (strcmp(argv[i], "-x") == 0) || (strcmp(argv[i], "--extract") == 0) ) {
-         mode = Extract;
+         Mode = Extract;
       }
       else if( (strcmp(argv[i], "-r") == 0) || (strcmp(argv[i], "--remove") == 0) ) {
-         mode = Remove;
+         Mode = Remove;
       }
       else if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--insert") == 0) ||
                (strcmp(argv[i], "-p") == 0) || (strcmp(argv[i], "--replace") == 0) ) {
          if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--insert") == 0) ) {
-            mode = Insert;
+            Mode = Insert;
          }
          else {
-            mode = Replace;
+            Mode = Replace;
          }
          if(i + 1 < argc) {
-            insertFileName = argv[i + 1];
+            InsertFileName = argv[i + 1];
          }
          else {
             fputs("ERROR: Missing insert file name!\n", stderr);
@@ -194,7 +218,7 @@ int main (int argc, char** argv)
       }
       else if( (strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--input") == 0) ) {
          if(i + 1 < argc) {
-            inputFileName = argv[i + 1];
+            InputFileName = argv[i + 1];
          }
          else {
             fputs("ERROR: Missing input file name!\n", stderr);
@@ -203,11 +227,11 @@ int main (int argc, char** argv)
          i++;
       }
       else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--highlight") == 0) ) {
-         mode = Highlight;
+         Mode = Highlight;
       }
       else if( (strcmp(argv[i], "-o") == 0) || (strcmp(argv[i], "--output") == 0) ) {
          if(i + 1 < argc) {
-            outputFileName = argv[i + 1];
+            OutputFileName = argv[i + 1];
          }
          else {
             fputs("ERROR: Missing output file name!\n", stderr);
@@ -217,7 +241,7 @@ int main (int argc, char** argv)
       }
       else if( (strcmp(argv[i], "-b") == 0) || (strcmp(argv[i], "--begin-tag") == 0) ) {
          if(i + 1 < argc) {
-            beginTag = argv[i + 1];
+            BeginTag = argv[i + 1];
          }
          else {
             fputs("ERROR: Missing begin tag!\n", stderr);
@@ -227,7 +251,7 @@ int main (int argc, char** argv)
       }
       else if( (strcmp(argv[i], "-e") == 0) || (strcmp(argv[i], "--end-tag") == 0) ) {
          if(i + 1 < argc) {
-            endTag = argv[i + 1];
+            EndTag = argv[i + 1];
          }
          else {
             fputs("ERROR: Missing end tag!\n", stderr);
@@ -236,23 +260,23 @@ int main (int argc, char** argv)
          i++;
       }
       else if( (strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "--include-tags") == 0) ) {
-         includeTags = true;
+         IncludeTags = true;
       }
       else if(strcmp(argv[i], "--exclude-tags") == 0) {
-         includeTags = false;
+         IncludeTags = false;
       }
       else if( (strcmp(argv[i], "-f") == 0) || (strcmp(argv[i], "--full-tag-lines") == 0) ) {
-         withTagLines = true;
+         WithTagLines = true;
       }
       else if(strcmp(argv[i], "--tags-only") == 0) {
-         withTagLines = false;
+         WithTagLines = false;
       }
       else if( (strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--version") == 0) ) {
          printf("printf-utf8 %s\n", SYSTEMTOOLS_VERSION);
          return 0;
       }
       else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) ) {
-         fprintf(stderr, "Usage: %s [-c|--cat] [-x|--extract] [-r|--remove] [-s|--insert insert_file] [-p|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-t|--include-tags] [--exclude-tags] [-f|--full-tag-lines] [--tags-only] [-h|--help] [-v|--version]\n", argv[0]);
+         fprintf(stderr, "Usage: %s [-c|--cat] [-n|--enumerate] [-h|--highlight] [-x|--extract] [-r|--remove] [-s|--insert insert_file] [-p|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-t|--include-tags] [--exclude-tags] [-f|--full-tag-lines] [--tags-only] [-h|--help] [-v|--version]\n", argv[0]);
          return 1;
       }
       else {
@@ -260,141 +284,142 @@ int main (int argc, char** argv)
          return 1;
       }
    }
-   if( (beginTag != NULL) && (beginTag[0] == 0x00) ) {
-      beginTag = NULL;
+
+   // ====== Check parameters ===============================================
+   if( (BeginTag != NULL) && (BeginTag[0] == 0x00) ) {
+      BeginTag = NULL;
    }
-   if((endTag == NULL) || (endTag[0] == 0x00)) {
-      endTag = beginTag;
+   if((EndTag == NULL) || (EndTag[0] == 0x00)) {
+      EndTag = BeginTag;
    }
-   switch(mode) {
+   BeginTagLength = (BeginTag != NULL) ? strlen(BeginTag) : 0;
+   EndTagLength   = (EndTag != NULL)   ? strlen(EndTag)   : 0;
+
+   switch(Mode) {
       case Cat:
+      case Enumerate:
          // Cat means 1:1 copy -> no tags!
-         if( (beginTag != NULL) || (endTag != NULL) ) {
-            fputs("WARNING: Cat mode is not useful with begin/end tags!\n", stderr);
+         if( (BeginTag != NULL) || (EndTag != NULL) ) {
+            fputs("WARNING: Cat or Enumerate Mode is not useful with begin/end tags!\n", stderr);
          }
-         beginTag = NULL;
-         endTag   = NULL;
+         BeginTag = NULL;
+         EndTag   = NULL;
        break;
       case Remove:
       case Insert:
       case Replace:
-         // Just inverse the includeTags option, to keep the following code simple:
-         includeTags  = !includeTags;
+         // Just inverse the IncludeTags option, to keep the following code simple:
+         IncludeTags  = !IncludeTags;
        break;
       case Extract:
-         if(beginTag == endTag) {
-            fputs("ERROR: Extract mode is not useful with identical begin/end tags!\n", stderr);
+         if(BeginTag == EndTag) {
+            fputs("ERROR: Extract Mode is not useful with identical begin/end tags!\n", stderr);
             return 1;
          }
        break;
-      default:
-         fputs("ERROR: Extract mode is not useful with identical begin/end tags!\n", stderr);
-         return 1;
+      case Highlight:
        break;
    }
 #ifdef DEBUG_MODE
-   printf("Begin Tag=%s\n", beginTag);
-   printf("End Tag=%s\n",   endTag);
+   printf("Begin Tag=%s\n", BeginTag);
+   printf("End Tag=%s\n",   EndTag);
 #endif
 
    // ====== Open files =====================================================
-   inputFile = stdin;
-   if(inputFileName != NULL) {
-      inputFile = fopen(inputFileName, "r");
-      if(inputFile == NULL) {
+   InputFile = stdin;
+   if(InputFileName != NULL) {
+      InputFile = fopen(InputFileName, "r");
+      if(InputFile == NULL) {
          fprintf(stderr, "ERROR: Unable to open input file %s: %s\n",
-                 inputFileName, strerror(errno));
+                 InputFileName, strerror(errno));
          cleanUp(1);
       }
-      openInputFile = true;
+      OpenInputFile = true;
    }
-   outputFile = stdout;
-   if(outputFileName != NULL) {
-      outputFile = fopen(outputFileName, "w");
-      if(outputFile == NULL) {
+   OutputFile = stdout;
+   if(OutputFileName != NULL) {
+      OutputFile = fopen(OutputFileName, "w");
+      if(OutputFile == NULL) {
          fprintf(stderr, "ERROR: Unable to open output file %s: %s\n",
-                 outputFileName, strerror(errno));
+                 OutputFileName, strerror(errno));
          cleanUp(1);
       }
-      openOutputFile = true;
+      OpenOutputFile = true;
    }
-   if(insertFileName != NULL) {
-      insertFile = fopen(insertFileName, "r");
-      if(insertFile == NULL) {
+   if(InsertFileName != NULL) {
+      InsertFile = fopen(InsertFileName, "r");
+      if(InsertFile == NULL) {
          fprintf(stderr, "ERROR: Unable to open insert file %s: %s\n",
-                 insertFileName, strerror(errno));
+                 InsertFileName, strerror(errno));
          cleanUp(1);
       }
    }
    else {
-      if( (mode == Insert) || (mode == Replace) ) {
+      if( (Mode == Insert) || (Mode == Replace) ) {
          fputs("ERROR: No insert file provided!\n", stderr);
          cleanUp(1);
       }
    }
 
+   // ====== Allocate buffer ================================================
+   Buffer = (char*)malloc(BufferSize);
+   if(Buffer == NULL) {
+      cleanUp(1);
+   }
+
    // ====== Read lines from input file =====================================
-   char               buffer[65536];
-   char*              line;
-   ssize_t            lineLength;
-   unsigned long long lineNo            = 0;
-   const size_t       beginTagLength    = (beginTag != NULL) ? strlen(beginTag) : 0;
-   const size_t       endTagLength      = (endTag != NULL)   ? strlen(endTag)   : 0;
-   // unsigned long long beginMarkerLineNo = 0;   // begin marker not set
-   // unsigned long long endMarkerLineNo   = 0;   // end marker not set
+   Line            = Buffer;
+   LineNo          = 0;
+   MarkerTag       = BeginTag;
+   MarkerTagLength = BeginTagLength;
 
-   const char* markerTag       = beginTag;
-   size_t      markerTagLength = beginTagLength;
-
-   line       = (char*)&buffer;
-   lineLength = sizeof(buffer);
-   while( (lineLength = (getline((char**)&line, &lineLength, inputFile))) > 0 ) {
-      const char* eol = line + lineLength;
+   char*   line       = Buffer;
+   ssize_t lineLength = BufferSize;
+   while( (lineLength = (getline((char**)&line, &lineLength, InputFile))) > 0 ) {
 
       // ====== Process line ================================================
-      lineNo++;
+      LineNo++;
+      EndOfLine = Line + lineLength;
 #ifdef DEBUG_MODE
-      printf("%u (l=%u/%d):\t%s", (unsigned int)lineNo, (unsigned int)lineLength, (unsigned int)(eol - line), line);
+      // printf("%llu (l=%u m=%s):\t%s",
+      //        (unsigned long long)LineNo, (unsigned int)lineLength, MarkerTag,
+      //        Line);
 #endif
 
-      if(markerTag != NULL) {
-         const char* ptr = line;
+      if(MarkerTag != NULL) {
+         Pointer = Line;
          const char* next;
-         while( (next = (markerTag != NULL) ? strstr(ptr, markerTag) : NULL) != NULL ) {
-            if(markerTag == beginTag) {
-               processUnmarked(mode, ptr, (ssize_t)(next - ptr), includeTags, withTagLines);
-               next += markerTagLength;
-               markerTag       = endTag;
-               markerTagLength = endTagLength;
+         while( (next = (MarkerTag != NULL) ? strstr(Pointer, MarkerTag) : NULL) != NULL ) {
+            if(MarkerTag == BeginTag) {
+               processUnmarked(Pointer, (ssize_t)(next - Pointer));
+               next += MarkerTagLength;
+               MarkerTag       = EndTag;
+               MarkerTagLength = EndTagLength;
             }
             else {
-               processUnmarked(mode, ptr, (ssize_t)(next - ptr), includeTags, withTagLines);
-               next += markerTagLength;
-               markerTag       = beginTag;
-               markerTagLength = beginTagLength;
+               processMarked(Pointer, (ssize_t)(next - Pointer));
+               next += MarkerTagLength;
+               MarkerTag       = BeginTag;
+               MarkerTagLength = BeginTagLength;
             }
-            printf("N=%s", next);
-            printf("M=%d\n",(int)markerTagLength);
-            ptr = next;
+            Pointer = next;
          }
-         if(markerTag == beginTag) {
-            processUnmarked(mode, ptr, (ssize_t)(eol - ptr), includeTags, withTagLines);
+         if(MarkerTag == BeginTag) {
+            processUnmarked(Pointer, (ssize_t)(EndOfLine - Pointer));
          }
          else {
-            printf("ptr=%s",ptr);
-            printf("eol=%s",eol);
-            processUnmarked(mode, ptr, (ssize_t)(eol - ptr), includeTags, withTagLines);
+            processMarked(Pointer, (ssize_t)(EndOfLine - Pointer));
          }
       }
       else {
-         processUnmarked(mode, line, lineLength, includeTags, withTagLines);
+         processUnmarked(Line, (ssize_t)(EndOfLine - line));
       }
 
       // ====== Prepare next iteration ======================================
-      line       = (char*)&buffer;
-      lineLength = sizeof(buffer);
+      line       = Buffer;
+      lineLength = BufferSize;
    }
-   if(lineLength < 0) {
+   if( (lineLength < 0) && (errno != 0) ) {
       fprintf(stderr, "ERROR: Read error: %s\n", strerror(errno));
       cleanUp(1);
    }
@@ -403,29 +428,29 @@ int main (int argc, char** argv)
 
 
    // bool marked = false;
-   // const char*  markerTag = beginTag;
+   // const char*  MarkerTag = BeginTag;
    // const size_t markerLength;
 
-   // while( (line = fgets((char*)&buffer, sizeof(buffer), inputFile)) != NULL ) {
+   // while( (line = fgets((char*)&buffer, sizeof(buffer), InputFile)) != NULL ) {
       // // ====== Process line ================================================
       // lineNo++;
 //       size_t lineLength = strlen(line);
 //
 //       while( (ptr = (markerTag != NULL) ? strstr(ptr, markerTag) : NULL) != NULL ) {
-//          if(margerTag == beginTag) {
+//          if(margerTag == BeginTag) {
 //             processUnmarked(line, (
 //             ptr +=
 //          }
 //       }
 //
-//       if(beginTag != NULL) {
+//       if(BeginTag != NULL) {
 //          if(marked == false) {
-//             markerTagPtr    = beginTagPtr;
-//             markerTagLength = beginTagLength;
+//             markerTagPtr    = BeginTagPtr;
+//             markerTagLength = BeginTagLength;
 //          }
 //          else if(marked == false) {
-//             markerTagPtr    = beginTagPtr;
-//             markerTagLength = beginTagLength;
+//             markerTagPtr    = BeginTagPtr;
+//             markerTagLength = BeginTagLength;
 //          }
 //          ptr = strstr(ptr, markerTagPtr);
 //       }
@@ -435,7 +460,7 @@ int main (int argc, char** argv)
 //       = (marked == false) ?
 //
 //
-//       while( (ptr = (beginTag != NULL) ? strstr(ptr, markerTagPtr) : NULL) != NULL ) {
+//       while( (ptr = (BeginTag != NULL) ? strstr(ptr, markerTagPtr) : NULL) != NULL ) {
 //
 //       }
 
@@ -451,16 +476,16 @@ int main (int argc, char** argv)
          const char*  endMarkerPtr2   = NULL;
 
          // ------ Look for next tag ... ------------------------------------
-         while( (ptr = (beginTag != NULL) ? strstr(ptr, (beginMarkerLineNo == 0) ? beginTag : endTag) : NULL) != NULL ) {
+         while( (ptr = (BeginTag != NULL) ? strstr(ptr, (beginMarkerLineNo == 0) ? BeginTag : EndTag) : NULL) != NULL ) {
             // ------ Found tag ---------------------------------------------
 
             if(beginMarkerLineNo == 0) {
                // Set begin marker
                beginMarkerPtr1   = ptr;
-               beginMarkerPtr2   = beginMarkerPtr1 + beginTagLength;
+               beginMarkerPtr2   = beginMarkerPtr1 + BeginTagLength;
                beginMarkerLineNo = lineNo;
                // ------ Usual case: different tags for begin and end: ------
-               if(beginTag != endTag) {
+               if(BeginTag != EndTag) {
 #ifdef DEBUG_MODE
                   puts("M-1!");
 #endif
@@ -468,7 +493,7 @@ int main (int argc, char** argv)
                }
                // ------ Special case: identical tag for begin/end: ---------
                else {
-                  if(includeTags) {
+                  if(IncludeTags) {
                      // There is no end marker
                      // => set both pointers to end of begin marker:
                      endMarkerPtr1 = beginMarkerPtr2;
@@ -477,7 +502,7 @@ int main (int argc, char** argv)
                   else {
                      // Set end marker
                      endMarkerPtr1 = ptr;
-                     endMarkerPtr2 = endMarkerPtr1 + endTagLength;
+                     endMarkerPtr2 = endMarkerPtr1 + EndTagLength;
                   }
                   endMarkerLineNo = lineNo;
 #ifdef DEBUG_MODE
@@ -489,12 +514,12 @@ int main (int argc, char** argv)
             }
             else {
                endMarkerPtr1   = ptr;
-               endMarkerPtr2   = ptr + endTagLength;
+               endMarkerPtr2   = ptr + EndTagLength;
                endMarkerLineNo = lineNo;
 #ifdef DEBUG_MODE
                puts("M-2!");
 #endif
-               ptr += endTagLength;
+               ptr += EndTagLength;
                break;
             }
          }
@@ -558,11 +583,11 @@ int main (int argc, char** argv)
 
             printf("L%d=%s", lineNo, line);
 
-            switch(mode) {
+            switch(Mode) {
                case Extract:
                   puts("e-1");
-                  if( (withTagLines) &&
-                      (includeTags) &&
+                  if( (WithTagLines) &&
+                      (IncludeTags) &&
                          (beginMarkerLineNo == lineNo)) {
                         puts("e-3");
                         writeToOutputFile(line, (size_t)lineLength);
@@ -570,7 +595,7 @@ int main (int argc, char** argv)
                   }
                   else {
                      puts("e-20");
-                     if(includeTags) {
+                     if(IncludeTags) {
                         puts("e-21");
                         printf("B=%s\n", beginMarkerPtr1);
                         printf("E=%s\n", endMarkerPtr2);
@@ -585,13 +610,13 @@ int main (int argc, char** argv)
                   {
                      const char* extractPtr;
                      ssize_t     extractSize;
-                     if(withTagLines) {
+                     if(WithTagLines) {
                         extractPtr  = line;
                         extractSize = lineLength;
                      }
                      else {
                         const ssize_t extractSize =
-                           (includeTags == true) ? ((ssize_t)endMarkerPtr2 - (ssize_t)beginMarkerPtr1)
+                           (IncludeTags == true) ? ((ssize_t)endMarkerPtr2 - (ssize_t)beginMarkerPtr1)
 
                         (ssize_t)endMarkerPtr - (ssize_t)beginMarkerPtr;
                      }
@@ -605,7 +630,7 @@ int main (int argc, char** argv)
                case Insert:
                case Replace:
                   {
-                     // if( (!includeTags) && (withTagLines) && (beginMarkerLineNo == lineNo) ) {
+                     // if( (!IncludeTags) && (WithTagLines) && (beginMarkerLineNo == lineNo) ) {
                      //    writeToOutputFile(line, (size_t)lineLength);
                      // }
                      // else {
@@ -614,11 +639,11 @@ int main (int argc, char** argv)
                      //    writeToOutputFile(line, (size_t)extractSize);
                      // }
                      //
-                     // if( (mode == Insert) || (mode == Replace) ) {
+                     // if( (Mode == Insert) || (Mode == Replace) ) {
                      //    if(beginMarkerLineNo == lineNo) {   // Only insert on begin marker's line!
                      //       copyInsertFileIntoOutputFile();
                      //    }
-                     //    if(mode == Insert) {
+                     //    if(Mode == Insert) {
                      //       const ssize_t extractSize = (ssize_t)(endMarkerPtr - beginMarkerPtr);
                      //       assert(extractSize >= 0);
                      //       writeToOutputFile(beginMarkerPtr, extractSize);
@@ -626,14 +651,14 @@ int main (int argc, char** argv)
                      // }
                      //
                      // if(beginMarkerLineNo == 0) {   // End marker is in this line!
-                     //    if(!includeTags == true) {
-                     //       if(withTagLines) {
+                     //    if(!IncludeTags == true) {
+                     //       if(WithTagLines) {
                      //          writeToOutputFile(line, (size_t)lineLength);
                      //       }
                      //       else {
                      //          const ssize_t extractSize = (ssize_t)(endMarkerPtr - line);
                      //          assert(extractSize >= 0);
-                     //          writeToOutputFile(endTag, endTagLength);
+                     //          writeToOutputFile(EndTag, EndTagLength);
                      //       }
                      //    }
                      // }
@@ -650,7 +675,7 @@ int main (int argc, char** argv)
 
          // ====== Handle unmarked line =====================================
          else {
-            switch(mode) {
+            switch(Mode) {
                case Cat:
                case Remove:
                case Replace:
@@ -663,7 +688,7 @@ int main (int argc, char** argv)
             }
          }
 
-      } while( (!withTagLines) && (ptr != NULL) );
+      } while( (!WithTagLines) && (ptr != NULL) );
 #endif
    // }
 
