@@ -1,0 +1,7 @@
+This is a marker test!
+Block Test #1: <BEGIN-BLOCK><END-BLOCK>.
+An unmarked line.
+<BEGIN-BLOCK><END-BLOCK>This line is not in a block.
+***
+Three blocks: 1<BEGIN-BLOCK><END-BLOCK>3<BEGIN-BLOCK><END-BLOCK>5<BEGIN-BLOCK><END-BLOCK> (even numbers in blocks)
+Text-Block does not handle nested blocks: A<BEGIN-BLOCK><END-BLOCK>D<END-BLOCK>E

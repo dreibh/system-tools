@@ -1,0 +1,12 @@
+000001 This is a marker test!
+000002 Block Test #1: <BEGIN-BLOCK>First line in block (begin marker line)
+000003 A line in the block.
+000004 Another line in the block.
+000005 Last line in block (end marker line)<END-BLOCK>.
+000006 An unmarked line.
+000007 <BEGIN-BLOCK>Another block.
+000008 Yet another line in a block.
+000009 <END-BLOCK>This line is not in a block.
+000010 ***
+000011 Three blocks: 1<BEGIN-BLOCK>2<END-BLOCK>3<BEGIN-BLOCK>4<END-BLOCK>5<BEGIN-BLOCK>6<END-BLOCK> (even numbers in blocks)
+000012 Text-Block does not handle nested blocks: A<BEGIN-BLOCK>B<BEGIN-BLOCK>C<END-BLOCK>D<END-BLOCK>E

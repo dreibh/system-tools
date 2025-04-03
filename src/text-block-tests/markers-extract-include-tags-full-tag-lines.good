@@ -1,0 +1,9 @@
+Block Test #1: <BEGIN-BLOCK>First line in block (begin marker line)
+A line in the block.
+Another line in the block.
+Last line in block (end marker line)<END-BLOCK>.
+<BEGIN-BLOCK>Another block.
+Yet another line in a block.
+<END-BLOCK>This line is not in a block.
+Three blocks: 1<BEGIN-BLOCK>2<END-BLOCK>3<BEGIN-BLOCK>4<END-BLOCK>5<BEGIN-BLOCK>6<END-BLOCK> (even numbers in blocks)
+Text-Block does not handle nested blocks: A<BEGIN-BLOCK>B<BEGIN-BLOCK>C<END-BLOCK>D<END-BLOCK>E

@@ -439,10 +439,10 @@ int main (int argc, char** argv)
                }
                // ------ Begin of marking with tags only --------------------
                else {
-                  processUnmarked(Pointer, (ssize_t)(next - Pointer));
                   if(!IncludeTags) {
                      next += MarkerTagLength;
                   }
+                  processUnmarked(Pointer, (ssize_t)(next - Pointer));
                }
                MarkerTag       = EndTag;
                MarkerTagLength = EndTagLength;
@@ -464,9 +464,9 @@ int main (int argc, char** argv)
                      next += MarkerTagLength;
                   }
                   processMarked(Pointer, (ssize_t)(next - Pointer));
-                  if(!IncludeTags) {
-                     next += MarkerTagLength;
-                  }
+                  // if(!IncludeTags) {
+                     // next += MarkerTagLength;
+                  // }
                }
                MarkerTag       = BeginTag;
                MarkerTagLength = BeginTagLength;

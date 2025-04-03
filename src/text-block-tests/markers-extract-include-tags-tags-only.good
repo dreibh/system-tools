@@ -1,0 +1,6 @@
+<BEGIN-BLOCK>First line in block (begin marker line)
+A line in the block.
+Another line in the block.
+Last line in block (end marker line)<END-BLOCK><BEGIN-BLOCK>Another block.
+Yet another line in a block.
+<END-BLOCK><BEGIN-BLOCK>2<END-BLOCK><BEGIN-BLOCK>4<END-BLOCK><BEGIN-BLOCK>6<END-BLOCK><BEGIN-BLOCK>B<BEGIN-BLOCK>C<END-BLOCK>

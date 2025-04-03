@@ -1,0 +1,6 @@
+First line in block (begin marker line)
+A line in the block.
+Another line in the block.
+Last line in block (end marker line)Another block.
+Yet another line in a block.
+246B<BEGIN-BLOCK>C
