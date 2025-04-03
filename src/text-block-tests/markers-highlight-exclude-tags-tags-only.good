@@ -1,0 +1,13 @@
+uThis is a marker test!
+UuBlock Test #1: UmFirst line in block (begin marker line)
+MmA line in the block.
+MmAnother line in the block.
+MmLast line in block (end marker line)Mu.
+UuAn unmarked line.
+UuUmAnother block.
+MmYet another line in a block.
+MmMuThis line is not in a block.
+Uu***
+UuThree blocks: 1Um2Mu3Um4Mu5Um6Mu (even numbers in blocks)
+UuText-Block does not handle nested blocks: AUmB<BEGIN-BLOCK>CMuD<END-BLOCK>E
+U

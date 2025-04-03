@@ -36,10 +36,10 @@ make text-block
 insertFile="text-block-tests/insert.txt"
 failures=0
 # remove replace insert
-for mode in cat extract ; do
+for mode in cat enumerate highlight ; do
    for o1 in include-tags exclude-tags ; do
       for o2 in tags-only full-tag-lines ; do
-         for test in simple ; do
+         for test in markers ; do
             if [ "${mode}" == "extract" ] && [ "${test}" == "advanced2" ] ; then
                continue
             fi
@@ -49,14 +49,16 @@ for mode in cat extract ; do
             outputFile="text-block-tests/${test}-${mode}-${o1}-${o2}.out"
             goodFile="text-block-tests/${test}-${mode}-${o1}-${o2}.good"
             badFile="text-block-tests/${test}-${mode}-${o1}-${o2}.bad"
-
             rm -f "${badFile}"
             if [ "${mode}" == "replace" ] || [ "${mode}" == "insert" ]  ; then
                mode2="${mode} ${insertFile}"
             else
                mode2="${mode}"
             fi
-            if [ "${test}" == "simple" ] ; then
+
+            if [ "${test}" == "markers" ] ; then
+               command="${RUN} ./text-block -w -i text-block-tests/markers.txt -o ${outputFile} -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -G u U m M --${mode2} --${o1} --${o2}"
+            elif [ "${test}" == "simple" ] ; then
                command="${RUN} ./text-block -i text-block-tests/simple.txt -o ${outputFile} -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --${mode2} --${o1} --${o2}"
 
             elif [ "${test}" == "advanced1" ] ; then

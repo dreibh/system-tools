@@ -51,24 +51,27 @@ typedef enum textblockmode {
 } textblockmode_t;
 
 
-static textblockmode_t    Mode           = Cat;
-static const char*        BeginTag       = NULL;
-static size_t             BeginTagLength = 0;
-static const char*        EndTag         = NULL;
-static size_t             EndTagLength   = 0;
-static bool               IncludeTags    = true;
-static bool               WithTagLines   = false;
-
-static const char*        InputFileName  = NULL;
-static FILE*              InputFile      = NULL;
-static bool               OpenInputFile  = NULL;
-static const char*        OutputFileName = NULL;
-static FILE*              OutputFile     = NULL;
-static bool               OpenOutputFile = NULL;
-static const char*        InsertFileName = NULL;
-static FILE*              InsertFile     = NULL;
-static char*              Buffer         = NULL;
-static size_t             BufferSize     = 65536;
+static textblockmode_t    Mode               = Cat;
+static const char*        BeginTag           = NULL;
+static size_t             BeginTagLength     = 0;
+static const char*        EndTag             = NULL;
+static size_t             EndTagLength       = 0;
+static bool               IncludeTags        = true;
+static bool               WithTagLines       = false;
+static const char*        HighlightUnmarked1 = "\x1b[34m";
+static const char*        HighlightUnmarked2 = "\x1b[0m";
+static const char*        HighlightMarked1   = "\x1b[31m";
+static const char*        HighlightMarked2   = "\x1b[0m";
+static const char*        InputFileName      = NULL;
+static FILE*              InputFile          = NULL;
+static bool               OpenInputFile      = NULL;
+static const char*        OutputFileName     = NULL;
+static FILE*              OutputFile         = NULL;
+static bool               OpenOutputFile     = NULL;
+static const char*        InsertFileName     = NULL;
+static FILE*              InsertFile         = NULL;
+static char*              Buffer             = NULL;
+static size_t             BufferSize         = 65536;
 
 static unsigned long long LineNo;
 static const char*        EndOfLine;
@@ -154,9 +157,9 @@ static void processUnmarked(const char*   text,
          writeToOutputFile(text, textLength);
        break;
       case Highlight:
-         fputs("\x1b[34m", OutputFile);
+         fputs(HighlightUnmarked1, OutputFile);
          writeToOutputFile(text, textLength);
-         fputs("\x1b[0m", OutputFile);
+         fputs(HighlightUnmarked2, OutputFile);
        break;
       default:
        break;
@@ -171,9 +174,9 @@ static void processMarked(const char*   text,
    assert(textLength >= 0);
    switch(Mode) {
       case Highlight:
-         fputs("\x1b[31m", OutputFile);
+         fputs(HighlightMarked1, OutputFile);
          writeToOutputFile(text, textLength);
-         fputs("\x1b[0m", OutputFile);
+         fputs(HighlightMarked2, OutputFile);
        break;
       default:
        break;
@@ -186,6 +189,7 @@ static void processMarked(const char*   text,
 int main (int argc, char** argv)
 {
    // ====== Handle arguments ===============================================
+   bool warnings = true;
    for(int i = 1; i <argc; i++) {
       if( (strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--cat") == 0) ) {
          Mode = Cat;
@@ -226,8 +230,22 @@ int main (int argc, char** argv)
          }
          i++;
       }
-      else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--highlight") == 0) ) {
+      else if( (strcmp(argv[i], "-g") == 0) || (strcmp(argv[i], "--highlight") == 0) ) {
          Mode = Highlight;
+      }
+      else if( (strcmp(argv[i], "-G") == 0) || (strcmp(argv[i], "--highlight-with") == 0) ) {
+         if(i + 4 < argc) {
+            Mode = Highlight;
+            HighlightUnmarked1 = argv[i + 1];
+            HighlightUnmarked2 = argv[i + 2];
+            HighlightMarked1   = argv[i + 3];
+            HighlightMarked2   = argv[i + 4];
+         }
+         else {
+            fputs("ERROR: Not enough parameters for highlight-with!\n", stderr);
+            return 1;
+         }
+         i += 4;
       }
       else if( (strcmp(argv[i], "-o") == 0) || (strcmp(argv[i], "--output") == 0) ) {
          if(i + 1 < argc) {
@@ -271,12 +289,15 @@ int main (int argc, char** argv)
       else if(strcmp(argv[i], "--tags-only") == 0) {
          WithTagLines = false;
       }
+      else if( (strcmp(argv[i], "-w") == 0) || (strcmp(argv[i], "--suppress-warnings") == 0) ) {
+         warnings = false;
+      }
       else if( (strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--version") == 0) ) {
          printf("printf-utf8 %s\n", SYSTEMTOOLS_VERSION);
          return 0;
       }
       else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) ) {
-         fprintf(stderr, "Usage: %s [-c|--cat] [-n|--enumerate] [-h|--highlight] [-x|--extract] [-r|--remove] [-s|--insert insert_file] [-p|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-t|--include-tags] [--exclude-tags] [-f|--full-tag-lines] [--tags-only] [-h|--help] [-v|--version]\n", argv[0]);
+         fprintf(stderr, "Usage: %s [-c|--cat] [-n|--enumerate] [-g|--highlight] [-G|--highlight-with u1 u2 m1 m2] [-x|--extract] [-r|--remove] [-s|--insert insert_file] [-p|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-t|--include-tags] [--exclude-tags] [-f|--full-tag-lines] [--tags-only] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n", argv[0]);
          return 1;
       }
       else {
@@ -295,11 +316,18 @@ int main (int argc, char** argv)
    BeginTagLength = (BeginTag != NULL) ? strlen(BeginTag) : 0;
    EndTagLength   = (EndTag != NULL)   ? strlen(EndTag)   : 0;
 
+   if(Mode != Highlight) {
+      if( warnings && ( (HighlightUnmarked1 != NULL) || (HighlightUnmarked2 != NULL) ||
+                        (HighlightMarked1 != NULL) || (HighlightMarked2 != NULL) ) ) {
+         fputs("WARNING: Not in Highlight Mode but Highlight parameters set!\n", stderr);
+      }
+   }
+
    switch(Mode) {
       case Cat:
       case Enumerate:
          // Cat means 1:1 copy -> no tags!
-         if( (BeginTag != NULL) || (EndTag != NULL) ) {
+         if( warnings && ( (BeginTag != NULL) || (EndTag != NULL) ) ) {
             fputs("WARNING: Cat or Enumerate Mode is not useful with begin/end tags!\n", stderr);
          }
          BeginTag = NULL;
@@ -389,33 +417,78 @@ int main (int argc, char** argv)
       if(MarkerTag != NULL) {
          Pointer = Line;
          const char* next;
+         bool foundMarker = false;
          while( (next = (MarkerTag != NULL) ? strstr(Pointer, MarkerTag) : NULL) != NULL ) {
+            foundMarker = true;
+
+            // ====== Begin marker found ====================================
             if(MarkerTag == BeginTag) {
-               processUnmarked(Pointer, (ssize_t)(next - Pointer));
-               if(!IncludeTags) {
+               // ------ Begin of marking with full tag lines ---------------
+               if(WithTagLines) {
                   next += MarkerTagLength;
+                  if(IncludeTags) {
+                     processMarked(Pointer, (ssize_t)(next - Pointer));
+                  }
+                  else {
+                     processUnmarked(Pointer, (ssize_t)(next - Pointer));
+                  }
+               }
+               // ------ Begin of marking with tags only --------------------
+               else {
+                  processUnmarked(Pointer, (ssize_t)(next - Pointer));
+                  if(!IncludeTags) {
+                     next += MarkerTagLength;
+                  }
                }
                MarkerTag       = EndTag;
                MarkerTagLength = EndTagLength;
             }
+
+            // ====== End marker found ======================================
             else {
-               if(IncludeTags) {
+               if(WithTagLines) {
                   next += MarkerTagLength;
+                  if(IncludeTags) {
+                     processMarked(Pointer, (ssize_t)(next - Pointer));
+                  }
+                  else {
+                     processUnmarked(Pointer, (ssize_t)(next - Pointer));
+                  }
                }
-               processMarked(Pointer, (ssize_t)(next - Pointer));
-               if(!IncludeTags) {
-                  next += MarkerTagLength;
+               else {
+                  if(IncludeTags) {
+                     next += MarkerTagLength;
+                  }
+                  processMarked(Pointer, (ssize_t)(next - Pointer));
+                  if(!IncludeTags) {
+                     next += MarkerTagLength;
+                  }
                }
                MarkerTag       = BeginTag;
                MarkerTagLength = BeginTagLength;
             }
+
             Pointer = next;
          }
-         if(MarkerTag == BeginTag) {
-            processUnmarked(Pointer, (ssize_t)(EndOfLine - Pointer));
+
+         // ====== No (further) marker found ================================
+         // Still need to handle the rest of the line
+
+         if( (WithTagLines) && (foundMarker) ) {
+            if(IncludeTags) {
+               processMarked(Pointer, (ssize_t)(EndOfLine - Pointer));
+            }
+            else {
+               processUnmarked(Pointer, (ssize_t)(EndOfLine - Pointer));
+            }
          }
          else {
-            processMarked(Pointer, (ssize_t)(EndOfLine - Pointer));
+            if(MarkerTag == BeginTag) {
+               processUnmarked(Pointer, (ssize_t)(EndOfLine - Pointer));
+            }
+            else {
+               processMarked(Pointer, (ssize_t)(EndOfLine - Pointer));
+            }
          }
       }
       else {
