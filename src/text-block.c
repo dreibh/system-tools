@@ -150,6 +150,7 @@ static void processUnmarked(const char*   text,
    assert(textLength >= 0);
    switch(Mode) {
       case Cat:
+      case Remove:
          writeToOutputFile(text, textLength);
        break;
       case Enumerate:
@@ -173,6 +174,9 @@ static void processMarked(const char*   text,
 {
    assert(textLength >= 0);
    switch(Mode) {
+      case Extract:
+         writeToOutputFile(text, textLength);
+       break;
       case Highlight:
          fputs(HighlightMarked1, OutputFile);
          writeToOutputFile(text, textLength);
