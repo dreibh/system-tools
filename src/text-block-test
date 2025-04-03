@@ -37,7 +37,7 @@ insertFile="text-block-tests/insert.txt"
 failures=0
 # remove replace insert
 for test in simple markers ; do
-   for mode in cat enumerate highlight extract remove ; do
+   for mode in cat enumerate highlight extract remove  ; do
       for o1 in include-tags exclude-tags ; do
          for o2 in tags-only full-tag-lines ; do
             if [ "${mode}" == "extract" ] && [ "${test}" == "advanced2" ] ; then
@@ -75,11 +75,11 @@ for test in simple markers ; do
                      ./print-utf8 -n -s "\e[1;31;5m█" "▄" "█\e[0m"
                      echo "Failure #${failures}:"
                      echo "Command:${command}"
-                     echo -e "\x1b[33mGood:    $(basename "${goodFile}")"
+                     ./print-utf8 -x 78 -n -s  "\x1b[33m------ Good ($(basename "${goodFile}")) " "-" "-\x1b[0m"
                      cat "${goodFile}"
-                     echo -e "\x1b[35mOutput:  $(basename "${outputFile}")"
+                     ./print-utf8 -x 78 -n -s  "\x1b[35m------ Output ($(basename "${outputFile}")) " "-" "-\x1b[0m"
                      cat "${outputFile}"
-                     echo -e "\x1b[0mDiff:"
+                     ./print-utf8 -x 78 -n -s  "\x1b[31m------ Differences: " "-" "-\x1b[0m"
                      diff --color "${goodFile}" "${outputFile}" || true
                      cp "${outputFile}" "${badFile}"
                   ) >&2
