@@ -37,7 +37,7 @@
 #include "package-version.h"
 
 
-#define DEBUG_MODE
+// #define DEBUG_MODE
 
 
 typedef enum textblockmode {
@@ -381,9 +381,9 @@ int main (int argc, char** argv)
       LineNo++;
       EndOfLine = Line + lineLength;
 #ifdef DEBUG_MODE
-      // printf("%llu (l=%u m=%s):\t%s",
-      //        (unsigned long long)LineNo, (unsigned int)lineLength, MarkerTag,
-      //        Line);
+      printf("%llu (l=%u m=%s):\t%s",
+             (unsigned long long)LineNo, (unsigned int)lineLength, MarkerTag,
+             Line);
 #endif
 
       if(MarkerTag != NULL) {
@@ -399,6 +399,9 @@ int main (int argc, char** argv)
                MarkerTagLength = EndTagLength;
             }
             else {
+               if(IncludeTags) {
+                  next += MarkerTagLength;
+               }
                processMarked(Pointer, (ssize_t)(next - Pointer));
                if(!IncludeTags) {
                   next += MarkerTagLength;
