@@ -62,7 +62,7 @@ for test in simple  ; do
             elif [ "${test}" == "advanced2" ] ; then
                command="${RUN} ./text-block -i text-block-tests/advanced.txt -o ${outputFile} -b '<MARKER>' --${mode2} --${o1} --${o2}"
             else
-               command="${RUN} ./text-block -w -i text-block-tests/${test}.txt -o ${outputFile} -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -G u U m M --${mode2} --${o1} --${o2}"
+               command="${RUN} ./text-block -w -i text-block-tests/${test}.txt -o ${outputFile} -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -G $'\x1b[34mu' $'U\x1b[0m' $'m\x1b[31m' $'M\x1b[0m' --${mode2} --${o1} --${o2}"
             fi
             sh -c "${command}"
 
