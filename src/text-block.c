@@ -480,7 +480,7 @@ int main (int argc, char** argv)
       if(MarkerTag != NULL) {
          Pointer = Line;
          const char* next;
-         bool foundMarker = false;
+         bool        foundMarker = false;
          while( (next = (MarkerTag != NULL) ? strstr(Pointer, MarkerTag) : NULL) != NULL ) {
             foundMarker = true;
 
@@ -533,6 +533,13 @@ int main (int argc, char** argv)
             }
 
             Pointer = next;
+
+            // ====== Special case: WithTagLines with multiple markers ======
+            if((WithTagLines) && (foundMarker)) {
+               // WithTagLines with multiple markers in a line is not useful
+               // => Interpret only the *first* marker here!
+               break;
+            }
          }
 
          // ====== No (further) marker found ================================
