@@ -35,9 +35,9 @@ RUN=""
 make text-block
 insertFile="text-block-tests/insert.txt"
 failures=0
-# remove replace insert-front insert-back
-# markers
-for test in simple  ; do
+# Tests: simple markers
+for test in simple markers ; do
+   # Modes: cat enumerate highlight extract remove insert-front insert-back replace
    for mode in cat enumerate highlight extract remove insert-front insert-back replace ; do
       for o1 in include-tags exclude-tags ; do
          for o2 in tags-only full-tag-lines ; do
@@ -98,7 +98,7 @@ for test in simple  ; do
                      echo ""
                      cp "${outputFile}" "${badFile}"
                   ) >&2
-#                   exit 1
+                  exit 1
                else
                   echo -e "\x1b[33mOKAY!\x1b[0m"
                fi

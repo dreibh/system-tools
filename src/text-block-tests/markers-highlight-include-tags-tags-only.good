@@ -1,13 +1,13 @@
-uThis is a marker test!
-UuBlock Test #1: Um<BEGIN-BLOCK>First line in block (begin marker line)
-MmA line in the block.
-MmAnother line in the block.
-MmLast line in block (end marker line)<END-BLOCK>Mu.
-UuAn unmarked line.
-UuUm<BEGIN-BLOCK>Another block.
-MmYet another line in a block.
-Mm<END-BLOCK>MuThis line is not in a block.
-Uu***
-UuThree blocks: 1Um<BEGIN-BLOCK>2<END-BLOCK>Mu3Um<BEGIN-BLOCK>4<END-BLOCK>Mu5Um<BEGIN-BLOCK>6<END-BLOCK>Mu (even numbers in blocks)
-UuText-Block does not handle nested blocks: AUm<BEGIN-BLOCK>B<BEGIN-BLOCK>C<END-BLOCK>MuD<END-BLOCK>E
-U
+[34muThis is a marker test!
+U[0m[34muBlock Test #1: U[0m⭐m[31m<BEGIN-BLOCK>First line in block (begin marker line)
+M[0mm[31mA line in the block.
+M[0mm[31mAnother line in the block.
+M[0mm[31mLast line in block (end marker line)<END-BLOCK>M[0m🛑[34mu.
+U[0m[34muAn unmarked line.
+U[0m[34muU[0m⭐m[31m<BEGIN-BLOCK>Another block.
+M[0mm[31mYet another line in a block.
+M[0mm[31m<END-BLOCK>M[0m🛑[34muThis line is not in a block.
+U[0m[34mu***
+U[0m[34muThree blocks: 1U[0m⭐m[31m<BEGIN-BLOCK>2<END-BLOCK>M[0m🛑[34mu3U[0m⭐m[31m<BEGIN-BLOCK>4<END-BLOCK>M[0m🛑[34mu5U[0m⭐m[31m<BEGIN-BLOCK>6<END-BLOCK>M[0m🛑[34mu (even numbers in blocks)
+U[0m[34muText-Block does not handle nested blocks: AU[0m⭐m[31m<BEGIN-BLOCK>B<BEGIN-BLOCK>C<END-BLOCK>M[0m🛑[34muD<END-BLOCK>E
+U[0m
