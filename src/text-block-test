@@ -38,25 +38,27 @@ failures=0
 # remove replace insert
 # markers
 for test in simple  ; do
-   for mode in cat enumerate highlight extract remove insert  ; do
+   for mode in cat enumerate highlight extract remove insert insert-back ; do
       for o1 in include-tags exclude-tags ; do
          for o2 in tags-only full-tag-lines ; do
             if [ "${mode}" == "extract" ] && [ "${test}" == "advanced2" ] ; then
                continue
             fi
-            # echo >&2 -e "\x1b[34m###### Testing: ${test} --${mode} --${o1} --${o2} ######\x1b[0m"
+
+            # ====== Prepare test run =======================================
             ./print-utf8 -x 74 -s "\x1b[34m###### Testing: ${test} --${mode} --${o1} --${o2} " "#" "#\x1b[0m   " >&2
 
             outputFile="text-block-tests/${test}-${mode}-${o1}-${o2}.out"
             goodFile="text-block-tests/${test}-${mode}-${o1}-${o2}.good"
             badFile="text-block-tests/${test}-${mode}-${o1}-${o2}.bad"
             rm -f "${badFile}"
-            if [ "${mode}" == "replace" ] || [ "${mode}" == "insert" ]  ; then
+            if [ "${mode}" == "replace" ] || [ "${mode}" == "insert" ] || [ "${mode}" == "insert-back" ] ; then
                mode2="${mode} ${insertFile}"
             else
                mode2="${mode}"
             fi
 
+            # ====== Perform the test run ===================================
             if [ "${test}" == "advanced1" ] ; then
                command="${RUN} ./text-block -i text-block-tests/advanced.txt -o ${outputFile} -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --${mode2} --${o1} --${o2}"
             elif [ "${test}" == "advanced2" ] ; then
@@ -66,6 +68,7 @@ for test in simple  ; do
             fi
             bash -c "${command}"
 
+            # ====== Check results ==========================================
             if [ -e "${goodFile}" ] ; then
                if ! diff -q "${goodFile}" "${outputFile}" >/dev/null ; then
                   failures=$((failures+1))
@@ -93,7 +96,7 @@ for test in simple  ; do
                   echo -e "\x1b[33mOKAY!\x1b[0m"
                fi
             else
-               echo -e "N/A!"
+               echo -e "\x1b[35mN/A!\x1b[0m"
                echo "*** No good file for $(basename "${outputFile}")! ***"
             fi
          done

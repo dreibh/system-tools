@@ -188,6 +188,7 @@ static void processUnmarked(const char*   text,
          writeToOutputFile(text, textLength);
        break;
       case Highlight:
+         assert(InMarkedBlock == false);
          fputs(HighlightUnmarked1, OutputFile);
          writeToOutputFile(text, textLength);
          fputs(HighlightUnmarked2, OutputFile);
@@ -241,6 +242,7 @@ static void processMarked(const char*   text,
          printf("<EE>");
        break;
       case Highlight:
+         assert(InMarkedBlock == true);
          fputs(HighlightMarked1, OutputFile);
          writeToOutputFile(text, textLength);
          fputs(HighlightMarked2, OutputFile);
