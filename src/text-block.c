@@ -59,6 +59,8 @@ static const char*        EndTag             = NULL;
 static size_t             EndTagLength       = 0;
 static bool               IncludeTags        = true;
 static bool               WithTagLines       = false;
+static const char*        HighlightBegin     = "⭐";
+static const char*        HighlightEnd       = "🛑";
 static const char*        HighlightUnmarked1 = "\x1b[34m";
 static const char*        HighlightUnmarked2 = "\x1b[0m";
 static const char*        HighlightMarked1   = "\x1b[31m";
@@ -72,6 +74,7 @@ static bool               OpenOutputFile     = NULL;
 static const char*        InsertFileName     = NULL;
 static FILE*              InsertFile         = NULL;
 static bool               InsertOnNextLine   = false;
+static bool               InMarkedBlock      = false;
 static char*              Buffer             = NULL;
 static size_t             BufferSize         = 65536;
 
@@ -188,6 +191,10 @@ static void processUnmarked(const char*   text,
          fputs(HighlightUnmarked1, OutputFile);
          writeToOutputFile(text, textLength);
          fputs(HighlightUnmarked2, OutputFile);
+         if(beginOfMarking) {
+            InMarkedBlock = true;
+            fputs(HighlightBegin, OutputFile);
+         }
        break;
       default:
        break;
@@ -237,6 +244,10 @@ static void processMarked(const char*   text,
          fputs(HighlightMarked1, OutputFile);
          writeToOutputFile(text, textLength);
          fputs(HighlightMarked2, OutputFile);
+         if(endOfMarking) {
+            InMarkedBlock = false;
+            fputs(HighlightEnd, OutputFile);
+         }
        break;
       default:
        break;
