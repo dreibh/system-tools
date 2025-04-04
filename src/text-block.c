@@ -152,7 +152,9 @@ static void processUnmarked(const char*   text,
                             const ssize_t textLength,
                             const bool    beginOfMarking)
 {
+   assert(InMarkedBlock == false);
    assert(textLength >= 0);
+
    switch(Mode) {
       case Cat:
       case Remove:
@@ -173,17 +175,19 @@ static void processUnmarked(const char*   text,
          writeToOutputFile(text, textLength);
        break;
       case Highlight:
-         assert(InMarkedBlock == false);
          fputs(HighlightUnmarked1, OutputFile);
          writeToOutputFile(text, textLength);
          fputs(HighlightUnmarked2, OutputFile);
          if(beginOfMarking) {
-            InMarkedBlock = true;
             fputs(HighlightBegin, OutputFile);
          }
        break;
       default:
        break;
+   }
+
+   if(beginOfMarking) {
+      InMarkedBlock = true;
    }
 }
 
@@ -193,7 +197,9 @@ static void processMarked(const char*   text,
                           const ssize_t textLength,
                           const bool    endOfMarking)
 {
+   assert(InMarkedBlock == true);
    assert(textLength >= 0);
+
    switch(Mode) {
       case Extract:
          writeToOutputFile(text, textLength);
@@ -213,17 +219,19 @@ static void processMarked(const char*   text,
          }
        break;
       case Highlight:
-         assert(InMarkedBlock == true);
          fputs(HighlightMarked1, OutputFile);
          writeToOutputFile(text, textLength);
          fputs(HighlightMarked2, OutputFile);
          if(endOfMarking) {
-            InMarkedBlock = false;
             fputs(HighlightEnd, OutputFile);
          }
        break;
       default:
        break;
+   }
+
+   if(endOfMarking) {
+      InMarkedBlock = false;
    }
 }
 
