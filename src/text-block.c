@@ -368,8 +368,9 @@ int main (int argc, char** argv)
        break;
    }
 #ifdef DEBUG_MODE
-   printf("Begin Tag=%s\n", BeginTag);
-   printf("End Tag=%s\n",   EndTag);
+   printf("Begin Tag=%s\n",   BeginTag);
+   printf("End Tag=%s\n",     EndTag);
+   printf("IncludeTags=%u\n", IncludeTags);
 #endif
 
    // ====== Open files =====================================================
@@ -421,8 +422,8 @@ int main (int argc, char** argv)
    MarkerTagLength = BeginTagLength;
 
    char*   line       = Buffer;
-   ssize_t lineLength = BufferSize;
-   while( (lineLength = (getline((char**)&line, &lineLength, InputFile))) > 0 ) {
+   ssize_t lineLength;
+   while( (lineLength = (getline((char**)&line, &BufferSize, InputFile))) > 0 ) {
 
       // ====== Process line ================================================
       LineNo++;
