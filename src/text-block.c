@@ -73,7 +73,6 @@ static FILE*              OutputFile         = NULL;
 static bool               OpenOutputFile     = NULL;
 static const char*        InsertFileName     = NULL;
 static FILE*              InsertFile         = NULL;
-static bool               InsertOnNextLine   = false;
 static bool               InMarkedBlock      = false;
 static char*              Buffer             = NULL;
 static size_t             BufferSize         = 65536;
@@ -163,25 +162,11 @@ static void processUnmarked(const char*   text,
       case InsertFront:
          writeToOutputFile(text, textLength);
          if(beginOfMarking) {
-            if(!WithTagLines) {
-               copyInsertFileIntoOutputFile();
-            }
-            else {
-               // Postpone insertion in case of WithTagLines:
-               InsertOnNextLine = true;
-            }
+            copyInsertFileIntoOutputFile();
          }
        break;
       case InsertBack:
-         printf("<qq%d,%d>", beginOfMarking,InsertOnNextLine);
          writeToOutputFile(text, textLength);
-         if(beginOfMarking) {
-            if(WithTagLines) {
-               // Postpone insertion in case of WithTagLines:
-               InsertOnNextLine = true;
-            }
-         }
-         printf("<QQ>");
        break;
       case Enumerate:
          fprintf(OutputFile, "%06llu ", LineNo);
@@ -219,27 +204,13 @@ static void processMarked(const char*   text,
          }
        break;
       case InsertFront:
-         if( (InsertOnNextLine) && (text == Line) ) {
-            // Apply a postponed insertion for WithTagLines:
-            copyInsertFileIntoOutputFile();
-            InsertOnNextLine = false;
-         }
          writeToOutputFile(text, textLength);
        break;
       case InsertBack:
-         printf("<ee%d,%d>", endOfMarking, InsertOnNextLine);
-         if(endOfMarking) {
-            if(!WithTagLines) {
-               printf("<ZZZ>");
-               copyInsertFileIntoOutputFile();
-            }
-            else {
-               // Postpone insertion to next line!
-               InsertOnNextLine = true;
-            }
-         }
          writeToOutputFile(text, textLength);
-         printf("<EE>");
+         if(endOfMarking) {
+            copyInsertFileIntoOutputFile();
+         }
        break;
       case Highlight:
          assert(InMarkedBlock == true);
@@ -276,10 +247,10 @@ int main (int argc, char** argv)
       else if( (strcmp(argv[i], "-r") == 0) || (strcmp(argv[i], "--remove") == 0) ) {
          Mode = Remove;
       }
-      else if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--insert") == 0) ||
+      else if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--insert-front") == 0) ||
                (strcmp(argv[i], "-z") == 0) || (strcmp(argv[i], "--insert-back") == 0) ||
                (strcmp(argv[i], "-p") == 0) || (strcmp(argv[i], "--replace") == 0) ) {
-         if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--insert") == 0) ) {
+         if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--insert-front") == 0) ) {
             Mode = InsertFront;
          }
          else if( (strcmp(argv[i], "-z") == 0) || (strcmp(argv[i], "--insert-back") == 0) ) {
