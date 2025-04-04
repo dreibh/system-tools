@@ -64,7 +64,7 @@ for test in simple  ; do
             else
                command="${RUN} ./text-block -w -i text-block-tests/${test}.txt -o ${outputFile} -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -G $'\x1b[34mu' $'U\x1b[0m' $'m\x1b[31m' $'M\x1b[0m' --${mode2} --${o1} --${o2}"
             fi
-            sh -c "${command}"
+            bash -c "${command}"
 
             if [ -e "${goodFile}" ] ; then
                if ! diff -q "${goodFile}" "${outputFile}" >/dev/null ; then
