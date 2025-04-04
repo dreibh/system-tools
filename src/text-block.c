@@ -509,10 +509,12 @@ int main (int argc, char** argv)
                if(WithTagLines) {
                   next += MarkerTagLength;
                   if(IncludeTags) {
+                     processUnmarked(Line, 0, true);
                      processMarked(Pointer, (ssize_t)(next - Pointer), false);
                   }
                   else {
-                     processUnmarked(Pointer, (ssize_t)(next - Pointer), true);
+                     processUnmarked(Pointer, (ssize_t)(next - Pointer), false);
+                     // Postponed start of block until end of the line!
                   }
                }
                // ------ Begin of marking with tags only --------------------
@@ -527,13 +529,15 @@ int main (int argc, char** argv)
             }
 
             // ====== End marker found ======================================
-            else {
+            else /* if(MarkerTag == BeginTag) */ {
                if(WithTagLines) {
                   next += MarkerTagLength;
                   if(IncludeTags) {
-                     processMarked(Pointer, (ssize_t)(next - Pointer), true);
+                     processMarked(Pointer, (ssize_t)(next - Pointer), false);
+                     // Postponed end of block until end of the line!
                   }
                   else {
+                     processMarked(Line, 0, true);
                      processUnmarked(Pointer, (ssize_t)(next - Pointer), false);
                   }
                }
@@ -554,10 +558,10 @@ int main (int argc, char** argv)
          // Still need to handle the rest of the line ...
          if( (WithTagLines) && (foundMarker) ) {
             if(IncludeTags) {
-               processMarked(Pointer, (ssize_t)(EndOfLine - Pointer), false);
+               processMarked(Pointer, (ssize_t)(EndOfLine - Pointer), (MarkerTag == BeginTag));
             }
             else {
-               processUnmarked(Pointer, (ssize_t)(EndOfLine - Pointer), false);
+               processUnmarked(Pointer, (ssize_t)(EndOfLine - Pointer), (MarkerTag == EndTag));
             }
          }
          else {
