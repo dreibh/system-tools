@@ -1,0 +1,18 @@
+This is a marker test!
+Block Test #1: <BEGIN-BLOCK>First line in block (begin marker line)
+A line in the block.
+Another line in the block.
+Last line in block (end marker line)Inserted text!
+<END-BLOCK>.
+An unmarked line.
+<BEGIN-BLOCK>Another block.
+Yet another line in a block.
+Inserted text!
+<END-BLOCK>This line is not in a block.
+***
+Three blocks: 1<BEGIN-BLOCK>2Inserted text!
+<END-BLOCK>3<BEGIN-BLOCK>4Inserted text!
+<END-BLOCK>5<BEGIN-BLOCK>6Inserted text!
+<END-BLOCK> (even numbers in blocks)
+Text-Block does not handle nested blocks: A<BEGIN-BLOCK>B<BEGIN-BLOCK>CInserted text!
+<END-BLOCK>D<END-BLOCK>E
