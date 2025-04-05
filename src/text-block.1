@@ -26,6 +26,13 @@
 .\"
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
+.\" -------------------------------------------------------------------------
+.\" Manpage syntax help:
+.\" * https://man.freebsd.org/cgi/man.cgi?mdoc(7)
+.\" * https://freebsdfoundation.org/wp-content/uploads/2019/03/Writing-Manual-Pages.pdf
+.\" * https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.\" -------------------------------------------------------------------------
+.\"
 .\" ###### Setup ############################################################
 .Dd April 5, 2025
 .Dt text-block 1
@@ -33,10 +40,8 @@
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm text-block
-.Nd reads text from standard input or given file, and writes it to standard output or a given file. On the text, various modifications can be applied, according to the operation mode: Cat (do nothing), Enumerate (add line numbers), Highlight (visually highlight text block between markers), Insert (insert text at front/back of marked blocks), Delete (remove text between markers), Replace (replace text of marked blocks).
+.Nd reads text from standard input or given file, and writes it to standard output or a given file. On the text, various modifications can be applied, according to the operation mode: Cat (copy the input text), Enumerate (add line numbers), Highlight (visually highlight text block between markers), Insert (insert text at front/back of marked blocks), Delete (remove text between markers), Replace (replace text of marked blocks).
 .\" ###### Synopsis #########################################################
-.\" Manpage syntax help:
-.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm text-block
 .Op Fl H | Fl Fl highlight
@@ -69,7 +74,7 @@
 .Op Fl h | Fl Fl help
 .Nm text-block
 .Op Fl v | Fl Fl version
-.\" FIXME!
+.Pp
 .Nm OPTIONS:
 .Op Fl b Ar begin_tag | Fl Fl begin-tag Ar begin_tag
 .Op Fl e Ar end_tag | Fl Fl end-tag Ar end_tag
@@ -93,23 +98,34 @@
 .Sh DESCRIPTION
 .Nm text-block
 .Nd reads text from standard input or given file, and writes it to standard output or a given file. On the text, various modifications can be applied, according to the operation mode:
-.Bl -tag -width indent
-.It Cat: do nothing.
-.It Enumerate: add line numbers. The format of the enumeration is configurable.
-.It Highlight: visually highlight text block between markers. The format of the markers is configurable, e.g. to apply ANSI colouring, etc.
-.It Insert: insert text at front/back of marked blocks.
-.It Delete: remove text between markers.
-.It Replace: replace text of marked blocks.
+.Bl -bullet
+.It
+Cat: copy the input text as-is.
+.It
+Enumerate: add line numbers. The format of the enumeration is configurable.
+.It
+Highlight: visually highlight text block between markers. The format of the marking is configurable, e.g. to apply ANSI colouring, etc.
+.It
+Delete: remove text between markers.
+.It
+Insert: insert text from a file at front/back of marked blocks.
+.It
+Replace: replace text of marked blocks by text from a file.
 .El
-xxxxx
-.Rs
-.Ip xxxxx
-.Re
-xxxxx
-The marking is based on configurable tags, e.g. <BEGIN-OF-BLOCK> and <END-OF-BLOCK>, or BEGIN and END. The handling is tags is configurable:
-.Bl -tag -width indent
-.It tags-only: Only the text between the markers belongs to a block. That is, multiple blocks can appear on the same line.
-.It full-tag-lines: A marker includes the full line of is begin and end tags.
+.Pp
+The marking used for the operation modes is based on configurable begin and end tags, e.g. <BEGIN-OF-BLOCK> and <END-OF-BLOCK>, or BEGIN and END. The handling of tags is configurable:
+.Bl -bullet
+.It
+tags-only: Only the text between the marker tags belongs to a block. That is, multiple blocks can appear on the same line. This is the default.
+.It
+full-tag-lines: A marker includes the full line of is begin and end tags.
+.El
+Furthermore, the handling of begin/end tags is configurable as well:
+.Bl -bullet
+.It
+exclude-tags: Marked text does not include the begin/end tags. This is the default.
+.It
+include-tags: Marked text includes the begin/end tags.
 .El
 .Pp
 .\" ###### Arguments ########################################################

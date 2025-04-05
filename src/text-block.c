@@ -59,7 +59,7 @@ static const char*        BeginTag           = NULL;
 static size_t             BeginTagLength     = 0;
 static const char*        EndTag             = NULL;
 static size_t             EndTagLength       = 0;
-static bool               IncludeTags        = true;
+static bool               IncludeTags        = false;
 static bool               WithTagLines       = false;
 static const char*        EnumerateFormat    = "06";   // => "%06llu"
 static const char*        HighlightBegin     = "⭐";
