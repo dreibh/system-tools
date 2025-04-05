@@ -27,58 +27,98 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd March 30, 2025
+.Dd April 5, 2025
 .Dt text-block 1
 .Os text-block
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm text-block
-.Nd waits for a randomly selected time
+.Nd reads text from standard input or given file, and writes it to standard output or a given file. On the text, various modifications can be applied, according to the operation mode: Cat (do nothing), Enumerate (add line numbers), Highlight (visually highlight text block between markers), Insert (insert text at front/back of marked blocks), Delete (remove text between markers), Replace (replace text of marked blocks).
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm text-block
-.Op Fl c | Fl Fl cat
+.Op Fl H | Fl Fl highlight
 .Op OPTIONS
 .Nm text-block
-.Op Fl x | Fl Fl extract
+.Op Fl E | Fl Fl enumerate
 .Op OPTIONS
 .Nm text-block
-.Op Fl r | Fl Fl remove
+.Op Fl X | Fl Fl extract
 .Op OPTIONS
 .Nm text-block
-.Op Fl s | Fl Fl insert Ar insert_file
+.Op Fl D | Fl Fl delete | Fl Fl remove
 .Op OPTIONS
 .Nm text-block
-.Op Fl p | Fl Fl replace Ar insert_file
+.Op Fl F Ar insert_file | Fl Fl insert-front Ar insert_file
+.Op OPTIONS
+.Nm text-block
+.Op Fl B Ar insert_file | Fl Fl insert-back Ar insert_file
+.Op OPTIONS
+.Nm text-block
+.Op Fl R Ar insert_file | Fl Fl replace Ar insert_file
+.Op OPTIONS
+.Nm text-block
+.Op Fl i Ar input_file | Fl Fl input Ar input_file
+.Op OPTIONS
+.Nm text-block
+.Op Fl i Ar output_file | Fl Fl output Ar output_file
 .Op OPTIONS
 .Nm text-block
 .Op Fl h | Fl Fl help
 .Nm text-block
 .Op Fl v | Fl Fl version
+.\" FIXME!
 .Nm OPTIONS:
-.Op Fl i Ar input_file | Fl Fl input Ar input_file
-.Op Fl o Ar output_file | Fl Fl output Ar output_file
 .Op Fl b Ar begin_tag | Fl Fl begin-tag Ar begin_tag
 .Op Fl e Ar end_tag | Fl Fl end-tag Ar end_tag
-.Op Fl t | Fl Fl include-tags
-.Op Fl -exclude-tags
-.Op Fl f | Fl Fl full-tag-lines
-.Op Fl -tags-only
+.Op Fl -i | Fl Fl input input_file
+.Op Fl -o | Fl Fl output output_file
+.Op Fl -a | Fl Fl append
+.Op Fl -b | Fl Fl begin-tag begin_tag
+.Op Fl -e | Fl Fl end-tag end_tag
+.Op Fl -y | Fl Fl include-tags
+.Op Fl -x | Fl Fl exclude-tags
+.Op Fl -f | Fl Fl full-tag-lines
+.Op Fl -t | Fl Fl tags-only
+.Op Fl -w | Fl Fl suppress-warnings
+.Op Fl Fl highlight-begin string
+.Op Fl Fl highlight-end string
+.Op Fl Fl highlight-unmarked1 string
+.Op Fl Fl highlight-unmarked2 string
+.Op Fl Fl highlight-marked1 string
+.Op Fl Fl highlight-marked2 string
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm text-block
-TBD!
+.Nd reads text from standard input or given file, and writes it to standard output or a given file. On the text, various modifications can be applied, according to the operation mode:
+.Bl -tag -width indent
+.It Cat: do nothing.
+.It Enumerate: add line numbers. The format of the enumeration is configurable.
+.It Highlight: visually highlight text block between markers. The format of the markers is configurable, e.g. to apply ANSI colouring, etc.
+.It Insert: insert text at front/back of marked blocks.
+.It Delete: remove text between markers.
+.It Replace: replace text of marked blocks.
+.El
+xxxxx
+.Rs
+.Ip xxxxx
+.Re
+xxxxx
+The marking is based on configurable tags, e.g. <BEGIN-OF-BLOCK> and <END-OF-BLOCK>, or BEGIN and END. The handling is tags is configurable:
+.Bl -tag -width indent
+.It tags-only: Only the text between the markers belongs to a block. That is, multiple blocks can appear on the same line.
+.It full-tag-lines: A marker includes the full line of is begin and end tags.
+.El
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl q | Fl Fl quiet
-Quiet mode: no output is made.
-.It Fl v | Fl Fl verbose
-Verbose mode: print selected delay and wake-up.
+
+.It TBD!
+
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
