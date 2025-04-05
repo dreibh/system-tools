@@ -605,8 +605,7 @@ int main (int argc, char** argv)
       }
 
       // ====== Prepare next iteration ======================================
-      line       = Buffer;
-      lineLength = BufferSize;
+      line = Buffer;
    }
    if( (lineLength < 0) && (errno != 0) ) {
       fprintf(stderr, "ERROR: Read error: %s\n", strerror(errno));
