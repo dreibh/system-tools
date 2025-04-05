@@ -55,6 +55,8 @@ _text_block()
       -b | --begin-tag      | \
       -e | --end-tag        | \
       --enumerate-format    | \
+      --enumerate-label1    | \
+      --enumerate-label2    | \
       --highlight-begin     | \
       --highlight-end       | \
       --highlight-unmarked1 | \

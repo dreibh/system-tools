@@ -31,6 +31,7 @@
 .\" * https://man.freebsd.org/cgi/man.cgi?mdoc(7)
 .\" * https://freebsdfoundation.org/wp-content/uploads/2019/03/Writing-Manual-Pages.pdf
 .\" * https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.\" * man mandoc_char
 .\" -------------------------------------------------------------------------
 .\"
 .\" ###### Setup ############################################################
@@ -88,6 +89,9 @@
 .Op Fl -f | Fl Fl full-tag-lines
 .Op Fl -t | Fl Fl tags-only
 .Op Fl -w | Fl Fl suppress-warnings
+.Op Fl enumerate-format format
+.Op Fl enumerate-label1 string
+.Op Fl enumerate-label2 string
 .Op Fl Fl highlight-begin string
 .Op Fl Fl highlight-end string
 .Op Fl Fl highlight-unmarked1 string
@@ -141,4 +145,7 @@ The following options are available:
 .Bl -tag -width indent
 .It text-block TBD!
 TBD!
+
+.It cat text-block.c | text-block -E --enumerate-format \[dq]6\[dq] --enumerate-label1 $\[aq]\ex1b[37m<\[aq] --enumerate-label2 $\[aq]>\ex1b[0m \[aq]
+
 .El

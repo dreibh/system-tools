@@ -54,32 +54,34 @@ typedef enum textblockmode {
 } textblockmode_t;
 
 
-static textblockmode_t    Mode               = Cat;
-static const char*        BeginTag           = NULL;
-static size_t             BeginTagLength     = 0;
-static const char*        EndTag             = NULL;
-static size_t             EndTagLength       = 0;
-static bool               IncludeTags        = false;
-static bool               WithTagLines       = false;
-static const char*        EnumerateFormat    = "06";   // => "%06llu"
-static const char*        HighlightBegin     = "⭐";
-static const char*        HighlightEnd       = "🛑";
-static const char*        HighlightUnmarked1 = "\x1b[34m";
-static const char*        HighlightUnmarked2 = "\x1b[0m";
-static const char*        HighlightMarked1   = "\x1b[31m";
-static const char*        HighlightMarked2   = "\x1b[0m";
-static const char*        InputFileName      = NULL;
-static FILE*              InputFile          = NULL;
-static bool               OpenInputFile      = false;
-static const char*        OutputFileName     = NULL;
-static FILE*              OutputFile         = NULL;
-static bool               OpenOutputFile     = false;
-static bool               OpenOutputAppend   = false;
-static const char*        InsertFileName     = NULL;
-static FILE*              InsertFile         = NULL;
-static bool               InMarkedBlock      = false;
-static char*              Buffer             = NULL;
-static size_t             BufferSize         = 65536;
+static textblockmode_t    Mode                 = Cat;
+static const char*        BeginTag             = NULL;
+static size_t             BeginTagLength       = 0;
+static const char*        EndTag               = NULL;
+static size_t             EndTagLength         = 0;
+static bool               IncludeTags          = false;
+static bool               WithTagLines         = false;
+static char               EnumerateFormat[128] = "%06llu ";
+static const char*        Enumerate1           = "\e[36m";
+static const char*        Enumerate2           = "\e[0m ";
+static const char*        HighlightBegin       = "⭐";
+static const char*        HighlightEnd         = "🛑";
+static const char*        HighlightUnmarked1   = "\e[34m";
+static const char*        HighlightUnmarked2   = "\e[0m";
+static const char*        HighlightMarked1     = "\e[31m";
+static const char*        HighlightMarked2     = "\e[0m";
+static const char*        InputFileName        = NULL;
+static FILE*              InputFile            = NULL;
+static bool               OpenInputFile        = false;
+static const char*        OutputFileName       = NULL;
+static FILE*              OutputFile           = NULL;
+static bool               OpenOutputFile       = false;
+static bool               OpenOutputAppend     = false;
+static const char*        InsertFileName       = NULL;
+static FILE*              InsertFile           = NULL;
+static bool               InMarkedBlock        = false;
+static char*              Buffer               = NULL;
+static size_t             BufferSize           = 65536;
 
 static unsigned long long LineNo;
 static const char*        EndOfLine;
@@ -175,7 +177,9 @@ static void processUnmarked(const char*   text,
          writeToOutputFile(text, textLength);
        break;
       case Enumerate:
-         fprintf(OutputFile, "%06llu ", LineNo);
+         fputs(Enumerate1, OutputFile);
+         fprintf(OutputFile, EnumerateFormat, LineNo);
+         fputs(Enumerate2, OutputFile);
          writeToOutputFile(text, textLength);
        break;
       case Highlight:
@@ -251,7 +255,7 @@ static void version()
 // ###### Usage #############################################################
 static void usage(const char* program)
 {
-   fprintf(stderr, "Usage: %s [-C|--cat] [-H|--highlight] [-E|--enumerate] [-X|--extract] [-D|--delete|--remove] [-F|--insert-front insert_file] [-B|--insert-back insert_file] [-R|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-a|--append] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-y|--include-tags] [-x|--exclude-tags] [-f|--full-tag-lines] [-t|--tags-only] [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label] [--enumerate-format format] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n", program);
+   fprintf(stderr, "Usage: %s [-C|--cat] [-H|--highlight] [-E|--enumerate] [-X|--extract] [-D|--delete|--remove] [-F|--insert-front insert_file] [-B|--insert-back insert_file] [-R|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-a|--append] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-y|--include-tags] [-x|--exclude-tags] [-f|--full-tag-lines] [-t|--tags-only] [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label] [--enumerate-format format] [--enumerate-label[1|2] string] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n", program);
    exit(0);
 }
 
@@ -284,6 +288,8 @@ int main (int argc, char** argv)
       { "tags-only",           no_argument,       0, 't' },
 
       { "enumerate-format",    required_argument, 0, 0x1000 },
+      { "enumerate-label1",    required_argument, 0, 0x1001 },
+      { "enumerate-label2",    required_argument, 0, 0x1002 },
       { "highlight-begin",     required_argument, 0, 0x2000 },
       { "highlight-end",       required_argument, 0, 0x2001 },
       { "highlight-unmarked1", required_argument, 0, 0x2002 },
@@ -360,12 +366,20 @@ int main (int argc, char** argv)
           break;
          case 0x1000:
             for(unsigned int i = 0; i < strlen(optarg); i++) {
-               if( (optarg[i] == '%') || !isalnum(optarg[i]) ) {
+               if( (optarg[i] == '%') ||
+                   !( (isalnum(optarg[i]) || (optarg[i] != '-') || (optarg[i] != '\'') ) ) ) {
                   fputs("ERROR: Invalid value for enumeration-format!\n", stderr);
                   return 1;
                }
             }
-            EnumerateFormat = optarg;
+            snprintf((char*)&EnumerateFormat, sizeof(EnumerateFormat), "%%%sllu", optarg);
+          break;
+         case 0x1001:
+            Enumerate1 = optarg;
+          break;
+         case 0x1002:
+            Enumerate2 = optarg;
+          break;
          case 0x2000:
             HighlightBegin = optarg;
           break;
@@ -410,13 +424,6 @@ int main (int argc, char** argv)
    }
    BeginTagLength = (BeginTag != NULL) ? strlen(BeginTag) : 0;
    EndTagLength   = (EndTag != NULL)   ? strlen(EndTag)   : 0;
-
-   if(Mode != Highlight) {
-      if( showWarnings && ( (HighlightUnmarked1 != NULL) || (HighlightUnmarked2 != NULL) ||
-                            (HighlightMarked1 != NULL) || (HighlightMarked2 != NULL) ) ) {
-         fputs("WARNING: Not in Highlight Mode but Highlight parameters set!\n", stderr);
-      }
-   }
 
    switch(Mode) {
       case Cat:
