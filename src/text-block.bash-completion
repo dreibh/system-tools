@@ -52,14 +52,22 @@ _text_block()
    # ====== Options =========================================================
    case "${prev}" in
       #  ====== Generic value ===============================================
-      -b | --begin-tag | \
-      -e | --end-tag)
+      -b | --begin-tag      | \
+      -e | --end-tag        | \
+      --enumerate-format    | \
+      --highlight-begin     | \
+      --highlight-end       | \
+      --highlight-unmarked1 | \
+      --highlight-unmarked2 | \
+      --highlight-marked1   | \
+      --highlight-marked2)
          return
          ;;
       # ====== Special case: file ===========================================
-      -s | --insert  | \
-      -p | --replace | \
-      -i | --input   | \
+      -F | --insert-front | \
+      -B | --insert-back  | \
+      -R | --replace      | \
+      -i | --input        | \
       -o | --output)
          # Arbitrary file names:
          _filedir
@@ -69,34 +77,59 @@ _text_block()
 
    # ====== All options =====================================================
    local opts="
--c
---cat
--x
+-H
+--highlight
+-E
+--enumerate
+-X
 --extract
--r
+-D
+--delete
 --remove
--s
---insert
--p
+-F
+--insert-front
+-B
+--insert-back
+-R
 --replace
+-i
+--input
+-i
+--output
 -h
 --help
 -v
 --version
--i
---input
--o
---output
 -b
 --begin-tag
 -e
 --end-tag
--t
+--i
+--input
+--o
+--output
+--a
+--append
+--b
+--begin-tag
+--e
+--end-tag
+--y
 --include-tags
+--x
 --exclude-tags
--f
+--f
 --full-tag-lines
+--t
 --tags-only
+--w
+--suppress-warnings
+--highlight-begin
+--highlight-end
+--highlight-unmarked1
+--highlight-unmarked2
+--highlight-marked1
+--highlight-marked2
 "
    # shellcheck disable=SC2207
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
