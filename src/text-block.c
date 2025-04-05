@@ -26,6 +26,8 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#include <ctype.h>
+#include <getopt.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -59,6 +61,7 @@ static const char*        EndTag             = NULL;
 static size_t             EndTagLength       = 0;
 static bool               IncludeTags        = true;
 static bool               WithTagLines       = false;
+static const char*        EnumerateFormat    = "06";   // => "%06llu"
 static const char*        HighlightBegin     = "⭐";
 static const char*        HighlightEnd       = "🛑";
 static const char*        HighlightUnmarked1 = "\x1b[34m";
@@ -67,10 +70,11 @@ static const char*        HighlightMarked1   = "\x1b[31m";
 static const char*        HighlightMarked2   = "\x1b[0m";
 static const char*        InputFileName      = NULL;
 static FILE*              InputFile          = NULL;
-static bool               OpenInputFile      = NULL;
+static bool               OpenInputFile      = false;
 static const char*        OutputFileName     = NULL;
 static FILE*              OutputFile         = NULL;
-static bool               OpenOutputFile     = NULL;
+static bool               OpenOutputFile     = false;
+static bool               OpenOutputAppend   = false;
 static const char*        InsertFileName     = NULL;
 static FILE*              InsertFile         = NULL;
 static bool               InMarkedBlock      = false;
@@ -236,130 +240,165 @@ static void processMarked(const char*   text,
 }
 
 
+// ###### Version ###########################################################
+static void version()
+{
+   printf("text-block %s\n", SYSTEMTOOLS_VERSION);
+   exit(0);
+}
+
+
+// ###### Usage #############################################################
+static void usage(const char* program)
+{
+   fprintf(stderr, "Usage: %s file [-C|--cat] [-H|--highlight] [-E|--enumerate] [-X|--extract] [-D|--delete] [-F|--insert-front insert_file] [-B|--insert-back insert_file] [-R|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-a|--append] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-y|--include-tags] [-x|--exclude-tags] [-f|--full-tag-lines] [-t|--tags-only] [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label] [--enumerate-format format] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n", program);
+   exit(0);
+}
+
+
 
 // ###### Main program ######################################################
 int main (int argc, char** argv)
 {
    // ====== Handle arguments ===============================================
-   bool warnings = true;
-   for(int i = 1; i <argc; i++) {
-      if( (strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--cat") == 0) ) {
-         Mode = Cat;
-      }
-      else if( (strcmp(argv[i], "-n") == 0) || (strcmp(argv[i], "--enumerate") == 0) ) {
-         Mode = Enumerate;
-      }
-      else if( (strcmp(argv[i], "-x") == 0) || (strcmp(argv[i], "--extract") == 0) ) {
-         Mode = Extract;
-      }
-      else if( (strcmp(argv[i], "-r") == 0) || (strcmp(argv[i], "--remove") == 0) ) {
-         Mode = Remove;
-      }
-      else if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--insert-front") == 0) ||
-               (strcmp(argv[i], "-z") == 0) || (strcmp(argv[i], "--insert-back") == 0) ||
-               (strcmp(argv[i], "-p") == 0) || (strcmp(argv[i], "--replace") == 0) ) {
-         if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--insert-front") == 0) ) {
-            Mode = InsertFront;
-         }
-         else if( (strcmp(argv[i], "-z") == 0) || (strcmp(argv[i], "--insert-back") == 0) ) {
-            Mode = InsertBack;
-         }
-         else {
-            Mode = Replace;
-         }
-         if(i + 1 < argc) {
-            InsertFileName = argv[i + 1];
-         }
-         else {
-            fputs("ERROR: Missing insert file name!\n", stderr);
-            return 1;
-         }
-         i++;
-      }
-      else if( (strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--input") == 0) ) {
-         if(i + 1 < argc) {
-            InputFileName = argv[i + 1];
-         }
-         else {
-            fputs("ERROR: Missing input file name!\n", stderr);
-            return 1;
-         }
-         i++;
-      }
-      else if( (strcmp(argv[i], "-g") == 0) || (strcmp(argv[i], "--highlight") == 0) ) {
-         Mode = Highlight;
-      }
-      else if( (strcmp(argv[i], "-G") == 0) || (strcmp(argv[i], "--highlight-with") == 0) ) {
-         if(i + 4 < argc) {
+   bool showWarnings = true;
+   const static struct option long_options[] = {
+      { "cat",                 no_argument,       0, 'C' },
+      { "highlight",           no_argument,       0, 'H' },
+      { "enumerate",           no_argument,       0, 'E' },
+      { "extract",             no_argument,       0, 'X' },
+      { "delete",              no_argument,       0, 'D' },
+      { "remove",              no_argument,       0, 'D' },   // Alias for "delete"
+      { "insert-front",        required_argument, 0, 'F' },
+      { "insert-back",         required_argument, 0, 'B' },
+      { "replace",             required_argument, 0, 'R' },
+
+      { "input",               required_argument, 0, 'i' },
+      { "output",              required_argument, 0, 'o' },
+      { "append",              no_argument,       0, 'a' },
+      { "begin-tag",           required_argument, 0, 'b' },
+      { "end-tag",             required_argument, 0, 'e' },
+      { "exclude-tags",        no_argument,       0, 'x' },
+      { "include-tags",        no_argument,       0, 'y' },
+      { "full-tag-lines",      no_argument,       0, 'f' },
+      { "tags-only",           no_argument,       0, 't' },
+
+      { "enumerate-format",    required_argument, 0, 0x1000 },
+      { "highlight-begin",     required_argument, 0, 0x2000 },
+      { "highlight-end",       required_argument, 0, 0x2001 },
+      { "highlight-unmarked1", required_argument, 0, 0x2002 },
+      { "highlight-unmarked2", required_argument, 0, 0x2003 },
+      { "highlight-marked1",   required_argument, 0, 0x2004 },
+      { "highlight-marked2",   required_argument, 0, 0x2005 },
+
+      { "suppress-warnings",   no_argument,       0, 'w' },
+      { "help",                no_argument,       0, 'h' },
+      { "version",             no_argument,       0, 'v' },
+      {  NULL,                 0,                 0, 0   }
+   };
+
+   int option;
+   int longIndex;
+   while( (option = getopt_long(argc, argv, "CHEXDF:B:R:i:o:a:b:e:xyftwhv", long_options, &longIndex)) != -1 ) {
+      switch(option) {
+         case 'C':
+            Mode = Cat;
+          break;
+         case 'H':
             Mode = Highlight;
-            HighlightUnmarked1 = argv[i + 1];
-            HighlightUnmarked2 = argv[i + 2];
-            HighlightMarked1   = argv[i + 3];
-            HighlightMarked2   = argv[i + 4];
-         }
-         else {
-            fputs("ERROR: Not enough parameters for highlight-with!\n", stderr);
-            return 1;
-         }
-         i += 4;
+          break;
+         case 'E':
+            Mode = Enumerate;
+          break;
+         case 'X':
+            Mode = Extract;
+          break;
+         case 'D':
+            Mode = Remove;
+          break;
+         case 'F':
+            Mode           = InsertFront;
+            InsertFileName = optarg;
+          break;
+         case 'B':
+            Mode           = InsertBack;
+            InsertFileName = optarg;
+          break;
+         case 'R':
+            Mode           = Replace;
+            InsertFileName = optarg;
+          break;
+         case 'i':
+            InputFileName  = optarg;
+          break;
+         case 'o':
+            OutputFileName = optarg;
+          break;
+         case 'a':
+            OpenOutputAppend = true;
+          break;
+         case 'b':
+            BeginTag = optarg;
+          break;
+         case 'e':
+            EndTag = optarg;
+          break;
+         case 'x':
+            IncludeTags = false;
+          break;
+         case 'y':
+            IncludeTags = true;
+          break;
+         case 'f':
+            WithTagLines = true;
+          break;
+         case 't':
+            WithTagLines = false;
+          break;
+         case 'w':
+            showWarnings = false;
+          break;
+         case 0x1000:
+            for(unsigned int i = 0; i < strlen(optarg); i++) {
+               if( (optarg[i] == '%') || !isalnum(optarg[i]) ) {
+                  fputs("ERROR: Invalid value for enumeration-format!\n", stderr);
+                  return 1;
+               }
+            }
+            EnumerateFormat = optarg;
+         case 0x2000:
+            HighlightBegin = optarg;
+          break;
+         case 0x2001:
+            HighlightEnd = optarg;
+          break;
+         case 0x2002:
+            HighlightUnmarked1 = optarg;
+          break;
+         case 0x2003:
+            HighlightUnmarked2 = optarg;
+          break;
+         case 0x2004:
+            HighlightMarked1 = optarg;
+          break;
+         case 0x2005:
+            HighlightMarked2 = optarg;
+          break;
+         case 'v':
+            version();
+          break;
+         // case 'h':
+         default:
+            usage(argv[0]);
+          break;
       }
-      else if( (strcmp(argv[i], "-o") == 0) || (strcmp(argv[i], "--output") == 0) ) {
-         if(i + 1 < argc) {
-            OutputFileName = argv[i + 1];
-         }
-         else {
-            fputs("ERROR: Missing output file name!\n", stderr);
-            return 1;
-         }
-         i++;
+   }
+   if(optind < argc) {
+      while(optind < argc) {
+         printf("optind=%d: <%s>\n", optind, argv[optind]);
+         optind++;
       }
-      else if( (strcmp(argv[i], "-b") == 0) || (strcmp(argv[i], "--begin-tag") == 0) ) {
-         if(i + 1 < argc) {
-            BeginTag = argv[i + 1];
-         }
-         else {
-            fputs("ERROR: Missing begin tag!\n", stderr);
-            return 1;
-         }
-         i++;
-      }
-      else if( (strcmp(argv[i], "-e") == 0) || (strcmp(argv[i], "--end-tag") == 0) ) {
-         if(i + 1 < argc) {
-            EndTag = argv[i + 1];
-         }
-         else {
-            fputs("ERROR: Missing end tag!\n", stderr);
-            return 1;
-         }
-         i++;
-      }
-      else if( (strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "--include-tags") == 0) ) {
-         IncludeTags = true;
-      }
-      else if(strcmp(argv[i], "--exclude-tags") == 0) {
-         IncludeTags = false;
-      }
-      else if( (strcmp(argv[i], "-f") == 0) || (strcmp(argv[i], "--full-tag-lines") == 0) ) {
-         WithTagLines = true;
-      }
-      else if(strcmp(argv[i], "--tags-only") == 0) {
-         WithTagLines = false;
-      }
-      else if( (strcmp(argv[i], "-w") == 0) || (strcmp(argv[i], "--suppress-warnings") == 0) ) {
-         warnings = false;
-      }
-      else if( (strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--version") == 0) ) {
-         printf("printf-utf8 %s\n", SYSTEMTOOLS_VERSION);
-         return 0;
-      }
-      else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) ) {
-         fprintf(stderr, "Usage: %s [-c|--cat] [-n|--enumerate] [-g|--highlight] [-G|--highlight-with u1 u2 m1 m2] [-x|--extract] [-r|--remove] [-s|--insert insert_file] [-p|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-t|--include-tags] [--exclude-tags] [-f|--full-tag-lines] [--tags-only] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n", argv[0]);
-         return 1;
-      }
-      else {
-         fprintf(stderr, "ERROR: Bad parameter %s!\n", argv[i]);
-         return 1;
-      }
+      usage(argv[0]);
    }
 
    // ====== Check parameters ===============================================
@@ -373,8 +412,8 @@ int main (int argc, char** argv)
    EndTagLength   = (EndTag != NULL)   ? strlen(EndTag)   : 0;
 
    if(Mode != Highlight) {
-      if( warnings && ( (HighlightUnmarked1 != NULL) || (HighlightUnmarked2 != NULL) ||
-                        (HighlightMarked1 != NULL) || (HighlightMarked2 != NULL) ) ) {
+      if( showWarnings && ( (HighlightUnmarked1 != NULL) || (HighlightUnmarked2 != NULL) ||
+                            (HighlightMarked1 != NULL) || (HighlightMarked2 != NULL) ) ) {
          fputs("WARNING: Not in Highlight Mode but Highlight parameters set!\n", stderr);
       }
    }
@@ -383,7 +422,7 @@ int main (int argc, char** argv)
       case Cat:
       case Enumerate:
          // Cat means 1:1 copy -> no tags!
-         if( warnings && ( (BeginTag != NULL) || (EndTag != NULL) ) ) {
+         if( showWarnings && ( (BeginTag != NULL) || (EndTag != NULL) ) ) {
             fputs("WARNING: Cat or Enumerate Mode is not useful with begin/end tags!\n", stderr);
          }
          BeginTag = NULL;
@@ -396,7 +435,7 @@ int main (int argc, char** argv)
        break;
       case InsertFront:
       case InsertBack:
-         if( warnings && IncludeTags ) {
+         if( showWarnings && IncludeTags ) {
             fputs("WARNING: Insert Mode is not useful with --include-tags!\n", stderr);
          }
          IncludeTags = false;
@@ -429,7 +468,7 @@ int main (int argc, char** argv)
    }
    OutputFile = stdout;
    if(OutputFileName != NULL) {
-      OutputFile = fopen(OutputFileName, "w");
+      OutputFile = fopen(OutputFileName, (OpenOutputAppend == false) ? "w" : "a");
       if(OutputFile == NULL) {
          fprintf(stderr, "ERROR: Unable to open output file %s: %s\n",
                  OutputFileName, strerror(errno));
