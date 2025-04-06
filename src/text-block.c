@@ -254,10 +254,10 @@ static void version()
 
 
 // ###### Usage #############################################################
-static void usage(const char* program)
+static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "Usage: %s [-C|--cat] [-0|--discard] [-H|--highlight] [-E|--enumerate] [-X|--extract] [-D|--delete|--remove] [-F|--insert-front insert_file] [-B|--insert-back insert_file] [-R|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-a|--append] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-y|--include-tags] [-x|--exclude-tags] [-f|--full-tag-lines] [-t|--tags-only] [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label] [--enumerate-format format] [--enumerate-label[1|2] string] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n", program);
-   exit(0);
+   exit(exitCode);
 }
 
 
@@ -406,18 +406,19 @@ int main (int argc, char** argv)
          case 'v':
             version();
           break;
-         // case 'h':
+         case 'h':
+            usage(argv[0], 0);
+          break;
          default:
-            usage(argv[0]);
+            usage(argv[0], 1);
           break;
       }
    }
    if(optind < argc) {
-      while(optind < argc) {
-         printf("optind=%d: <%s>\n", optind, argv[optind]);
-         optind++;
-      }
-      usage(argv[0]);
+      // while(optind < argc) {
+      //    optind++;
+      // }
+      usage(argv[0], 1);
    }
 
    // ====== Check parameters ===============================================
