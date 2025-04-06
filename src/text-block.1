@@ -190,9 +190,9 @@ Suppress warnings on useless input parameters. Useful for debugging.
 In Enumerate mode, sets the format of the line number output according to printf formatting. However, only the number format specification is allowed here. Examples:
 .Bl -bullet
 .It
-4 -> 4-digit line numbers, prepended with space when necessary (e.g. "   1", etc.)
+06 -> add leading zero to get a 6-digit output (e.g. "000001", etc.). This is the default.
 .It
-04 -> add leading zero to get a 4-digit output (e.g. "0002", etc.)
+4 -> 4-digit line numbers, prepended with space when necessary (e.g. "   2", etc.).
 .It
 -4 -> left-adjusted 4-digit number (e.g. "3   ").
 .El
