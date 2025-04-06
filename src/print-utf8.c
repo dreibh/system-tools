@@ -514,7 +514,7 @@ int main (int argc, char** argv)
 
       { "newline",             no_argument,       0, 'n' },
       { "terminal-info",       no_argument,       0, 't' },
-      { "Width",               no_argument,       0, 'w' },
+      { "width",               no_argument,       0, 'w' },
       { "length",              no_argument,       0, 'l' },
       { "size",                no_argument,       0, 'b' },
       { "size-length-width",   no_argument,       0, 'a' },
