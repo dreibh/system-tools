@@ -110,7 +110,10 @@ Package: td-text-block
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
-Description: Reads text from standard input or given file, and writes it to standard output or a given file. On the text, various modifications can be applied, according to the operation mode.
+Description: Apply modifications to text
+ text-block reads text from standard input or given file, and writes it to
+ standard output or a given file. On the text, various modifications can be
+ applied, according to the operation mode.
 
 Package: td-misc
 Architecture: any
