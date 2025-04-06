@@ -1,0 +1,29 @@
+This is just a test file for Text-Block!
+
+<BEGIN-BLOCK>
+Inserted text!
+🐻This is a test!🐻
+<END-BLOCK>
+
+🌙<MARKER>⭐
+
+   <BEGIN-BLOCK>
+Inserted text!
+   🐁Dies ist ein Test!🐁
+   <END-BLOCK>
+
+   🐼<MARKER>🐕
+
+🚅🚅🚅 <BEGIN-BLOCK>🐺Dette er en test!🐺<END-BLOCK> 🚚🚚🚚
+Inserted text!
+
+⚠<BEGIN-BLOCK>
+<END-BLOCK>⚠
+
+🚆🚆🚆 <BEGIN-BLOCK>🦘Yet<END-BLOCK><BEGIN-BLOCK> another <END-BLOCK>
+Inserted text!
+🐋<BEGIN-BLOCK>test🐨<END-BLOCK>🐖
+🐞<BEGIN-BLOCK><END-BLOCK>🐟
+Inserted text!
+🐗<BEGIN-BLOCK>
+<END-BLOCK>🐑

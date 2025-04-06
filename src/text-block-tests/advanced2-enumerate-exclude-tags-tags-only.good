@@ -1,0 +1,24 @@
+[36m000001[0m This is just a test file for Text-Block!
+[36m000002[0m 
+[36m000003[0m <BEGIN-BLOCK>
+[36m000004[0m 🐻This is a test!🐻
+[36m000005[0m <END-BLOCK>
+[36m000006[0m 
+[36m000007[0m 🌙<MARKER>⭐
+[36m000008[0m 
+[36m000009[0m    <BEGIN-BLOCK>
+[36m000010[0m    🐁Dies ist ein Test!🐁
+[36m000011[0m    <END-BLOCK>
+[36m000012[0m 
+[36m000013[0m    🐼<MARKER>🐕
+[36m000014[0m 
+[36m000015[0m 🚅🚅🚅 <BEGIN-BLOCK>🐺Dette er en test!🐺<END-BLOCK> 🚚🚚🚚
+[36m000016[0m 
+[36m000017[0m ⚠<BEGIN-BLOCK>
+[36m000018[0m <END-BLOCK>⚠
+[36m000019[0m 
+[36m000020[0m 🚆🚆🚆 <BEGIN-BLOCK>🦘Yet<END-BLOCK><BEGIN-BLOCK> another <END-BLOCK>
+[36m000021[0m 🐋<BEGIN-BLOCK>test🐨<END-BLOCK>🐖
+[36m000022[0m 🐞<BEGIN-BLOCK><END-BLOCK>🐟
+[36m000023[0m 🐗<BEGIN-BLOCK>
+[36m000024[0m <END-BLOCK>🐑

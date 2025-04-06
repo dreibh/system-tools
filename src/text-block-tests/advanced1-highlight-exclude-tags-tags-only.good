@@ -1,0 +1,25 @@
+[34muThis is just a test file for Text-Block!
+U[0m[34mu
+U[0m[34mu<BEGIN-BLOCK>U[0m⭐m[31m
+M[0mm[31m🐻This is a test!🐻
+M[0mm[31mM[0m🛑[34mu<END-BLOCK>
+U[0m[34mu
+U[0m[34mu🌙<MARKER>⭐
+U[0m[34mu
+U[0m[34mu   <BEGIN-BLOCK>U[0m⭐m[31m
+M[0mm[31m   🐁Dies ist ein Test!🐁
+M[0mm[31m   M[0m🛑[34mu<END-BLOCK>
+U[0m[34mu
+U[0m[34mu   🐼<MARKER>🐕
+U[0m[34mu
+U[0m[34mu🚅🚅🚅 <BEGIN-BLOCK>U[0m⭐m[31m🐺Dette er en test!🐺M[0m🛑[34mu<END-BLOCK> 🚚🚚🚚
+U[0m[34mu
+U[0m[34mu⚠<BEGIN-BLOCK>U[0m⭐m[31m
+M[0mm[31mM[0m🛑[34mu<END-BLOCK>⚠
+U[0m[34mu
+U[0m[34mu🚆🚆🚆 <BEGIN-BLOCK>U[0m⭐m[31m🦘YetM[0m🛑[34mu<END-BLOCK><BEGIN-BLOCK>U[0m⭐m[31m another M[0m🛑[34mu<END-BLOCK>
+U[0m[34mu🐋<BEGIN-BLOCK>U[0m⭐m[31mtest🐨M[0m🛑[34mu<END-BLOCK>🐖
+U[0m[34mu🐞<BEGIN-BLOCK>U[0m⭐m[31mM[0m🛑[34mu<END-BLOCK>🐟
+U[0m[34mu🐗<BEGIN-BLOCK>U[0m⭐m[31m
+M[0mm[31mM[0m🛑[34mu<END-BLOCK>🐑
+U[0m
