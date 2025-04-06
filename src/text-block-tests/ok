@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Bash options:
+set -eu
+
+while [ $# -gt 0 ] ; do
+   f="$1"
+   o="${f//.out/}"
+   n="$o.good"
+   echo "$o -> $n"
+   shift
+done
