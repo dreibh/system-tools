@@ -5,8 +5,9 @@ set -eu
 
 while [ $# -gt 0 ] ; do
    f="$1"
-   o="${f//.out/}"
-   n="$o.good"
-   echo "$o -> $n"
+   b="${f//.out/}"
+   n="$b.good"
+   echo "$f -> $n"
+   mv "$f" "$n"
    shift
 done
