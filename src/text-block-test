@@ -37,8 +37,8 @@ insertFile="text-block-tests/insert.txt"
 failures=0
 # Tests: simple markers
 for test in simple markers ; do
-   # Modes: cat enumerate highlight extract remove insert-front insert-back replace
-   for mode in cat enumerate highlight extract remove insert-front insert-back replace ; do
+   # Modes: cat discard enumerate highlight extract remove insert-front insert-back replace
+   for mode in cat discard enumerate highlight extract remove insert-front insert-back replace ; do
       for o1 in include-tags exclude-tags ; do
          for o2 in tags-only full-tag-lines ; do
 
@@ -61,6 +61,9 @@ for test in simple markers ; do
             rm -f "${badFile}"
             if [ "${mode}" == "replace" ] || [ "${mode}" == "insert-front" ] || [ "${mode}" == "insert-back" ] ; then
                mode2="${mode} ${insertFile}"
+            elif [ "${mode}" == "discard" ] ; then
+               mode2="${mode}"
+               touch "${goodFile}"   # There are no empty files in Git!
             else
                mode2="${mode}"
             fi
@@ -73,7 +76,7 @@ for test in simple markers ; do
             else
                command="${RUN} ./text-block -w -i text-block-tests/${test}.txt -o ${outputFile} -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight-unmarked1 $'\x1b[34mu' --highlight-unmarked2 $'U\x1b[0m' --highlight-marked1 $'m\x1b[31m' --highlight-marked2 $'M\x1b[0m' --${mode2} --${o1} --${o2}"
             fi
-            bash -c "${command}" || true
+            bash -c "${command}"
 
             # ====== Check results ==========================================
             if [ -e "${goodFile}" ] ; then
