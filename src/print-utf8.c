@@ -28,6 +28,7 @@
 
 #define _XOPEN_SOURCE 500
 #include <ctype.h>
+#include <getopt.h>
 #include <fcntl.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -469,6 +470,22 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
 }
 
 
+// ###### Version ###########################################################
+static void version()
+{
+   printf("print-utf8 %s\n", SYSTEMTOOLS_VERSION);
+   exit(0);
+}
+
+
+// ###### Usage #############################################################
+static void usage(const char* program, const int exitCode)
+{
+   fprintf(stderr, "Usage: %s [-n|--newline] [-i indentation string|--ident indentation string] [-c string|--center string] [-I left right|--multiline-indent indentation left right]  [-C left right|--multiline-center left right] [-s border_left separator border_right|--separator border_left separator border_right] [-c columns|--columns columns] [-s string|--size string] [-l string|--length string] [-w string|--width string] [-a string|--size-length-width string] [-t|--terminal-info] [-h|--help] [-v|--version]\n", program);
+   exit(exitCode);
+}
+
+
 
 // ###### Main program ######################################################
 int main (int argc, char** argv)
@@ -488,141 +505,180 @@ int main (int argc, char** argv)
    const int   defaultConsoleWidth = getConsoleWidth();
    int         consoleWidth        = defaultConsoleWidth;
 
-   for(int i = 1; i <argc; i++) {
-      if( (strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--indent") == 0) ) {
-         if(i + 1 < argc) {
-            indentWidth = atoi(argv[i + 1]);
-         }
-         else {
-            fputs("ERROR: Invalid indentation setting!\n", stderr);
-            return 1;
-         }
-         mode = Indent;
-         i++;
-      }
-      else if( (strcmp(argv[i], "-c") == 0) || (strcmp(argv[i], "--center") == 0) ) {
-         mode = Center;
-      }
-      else if( (strcmp(argv[i], "-I") == 0) || (strcmp(argv[i], "--multiline-indent") == 0) ) {
-         mode = MultiLineIndent;
-         if(i + 3 < argc) {
-            indentWidth = atoi(argv[i + 1]);
-            borderLeft  = unescape(argv[i + 2]);
-            borderRight = unescape(argv[i + 3]);
-         }
-         else {
-            fputs("ERROR: Invalid arguments for multiline-ident!\n", stderr);
-            return 1;
-         }
-      }
-      else if( (strcmp(argv[i], "-C") == 0) || (strcmp(argv[i], "--multiline-center") == 0) ) {
-         mode = MultiLineCenter;
-         if(i + 2 < argc) {
-            borderLeft  = unescape(argv[i + 1]);
-            borderRight = unescape(argv[i + 2]);
-         }
-         else {
-            fputs("ERROR: Invalid arguments for multiline-center!\n", stderr);
-            return 1;
-         }
-      }
-      else if( (strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--separator") == 0) ) {
-         if(i + 3 < argc) {
-            borderLeft  = unescape(argv[i + 1]);
-            borderRight = unescape(argv[i + 3]);
-            if(utf8String) {
-               free(utf8String);
+   const static struct option long_options[] = {
+      { "indent",              required_argument, 0, 'i' },
+      { "multiline-indent",    required_argument, 0, 'I' },
+      { "center",              no_argument,       0, 'c' },
+      { "multiline-center",    required_argument, 0, 'C' },
+      { "separator",           required_argument, 0, 's' },
+
+      { "newline",             no_argument,       0, 'n' },
+      { "terminal-info",       no_argument,       0, 't' },
+      { "Width",               no_argument,       0, 'w' },
+      { "length",              no_argument,       0, 'l' },
+      { "size",                no_argument,       0, 'b' },
+      { "size-length-width",   no_argument,       0, 'a' },
+      { "columns",             required_argument, 0, 'x' },
+
+      { "",                    no_argument,       0, '-' },
+      { "help",                no_argument,       0, 'h' },
+      { "version",             no_argument,       0, 'v' },
+      {  NULL,                 0,                 0, 0   }
+   };
+
+   int option;
+   int longIndex;
+   while( (option = getopt_long(argc, argv, "i:cI:C:s:ntwlbax:-hv", long_options, &longIndex)) != -1 ) {
+      // NOTE: optind already points to the next option here!
+      //       For options with two or more parameters, this
+      //       will be the *second* parameter!
+      switch(option) {
+         case 'i':
+            mode        = Indent;
+            indentWidth = atoi(optarg);
+          break;
+         case 'c':
+            mode = Center;
+          break;
+         case 'I':
+            mode = MultiLineIndent;
+            if(optind + 1 < argc) {
+               indentWidth = atoi(argv[optind - 1]);
+               borderLeft  = unescape(argv[optind + 0]);
+               borderRight = unescape(argv[optind + 1]);
+               optind += 2;
             }
-            utf8String  = unescape(argv[i + 2]);
-         }
-         else {
-            fputs("ERROR: Invalid separator setting!\n", stderr);
-            return 1;
-         }
-         mode = Separator;
-         i += 3;
-      }
-      else if( (strcmp(argv[i], "-n") == 0) || (strcmp(argv[i], "--newline") == 0) ) {
-         newline = true;
-      }
-      else if( (strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "--terminal-info") == 0) ) {
-         mode = TerminalInfo;
-      }
-      else if( (strcmp(argv[i], "-x") == 0) || (strcmp(argv[i], "--columns") == 0) ) {
-         if(i + 1 < argc) {
-            consoleWidth = atol(argv[i + 1]);
-            if( consoleWidth <= 0) {
-               consoleWidth = defaultConsoleWidth + consoleWidth;   // subtract!
-            }
-            if (consoleWidth > 4096) {
-               fprintf(stderr, "ERROR: Invalid console width %u!\n", consoleWidth);
+            else {
+               fputs("ERROR: Invalid arguments for multiline-ident!\n", stderr);
                return 1;
             }
-         }
-         i += 1;
+          break;
+         case 'C':
+            mode = MultiLineCenter;
+            if(optind < argc) {
+               borderLeft  = unescape(argv[optind - 1]);
+               borderRight = unescape(argv[optind - 0]);
+               optind++;
+            }
+            else {
+               fputs("ERROR: Invalid arguments for multiline-center!\n", stderr);
+               return 1;
+            }
+          break;
+         case 's':
+            mode = Separator;
+            if(optind + 1 < argc) {
+               borderLeft  = unescape(argv[optind - 1]);
+               borderRight = unescape(argv[optind + 1]);
+               if(utf8String) {
+                  free(utf8String);
+               }
+               utf8String  = unescape(argv[optind + 0]);
+               optind += 2;
+            }
+            else {
+               fputs("ERROR: Invalid separator setting!\n", stderr);
+               return 1;
+            }
+          break;
+         case 'x':
+            if(optind < argc) {
+               consoleWidth = atol(optarg);
+               if(consoleWidth <= 0) {
+                  consoleWidth = defaultConsoleWidth + consoleWidth;   // subtract!
+               }
+               if(consoleWidth > 4096) {
+                  fprintf(stderr, "ERROR: Invalid console width %u!\n", consoleWidth);
+                  return 1;
+               }
+            }
+          break;
+         case 'n':
+            newline = true;
+          break;
+         case 't':
+            mode = TerminalInfo;
+          break;
+         case 'w':
+            mode = Width;
+          break;
+         case 'l':
+            mode = Length;
+          break;
+         case 'b':
+            mode = Size;
+          break;
+         case 'a':
+            mode = SizeLengthWidth;
+          break;
+         case 'v':
+            version();
+          break;
+         case 'h':
+            usage(argv[0], 0);
+          break;
+         case '-':
+            puts("XXX");
+          break;
+         default:
+          break;
       }
-      else if( (strcmp(argv[i], "-w") == 0) || (strcmp(argv[i], "--width") == 0) ) {
-         mode = Width;
+   }
+   if(optind < argc) {
+      if(utf8String) {
+         free(utf8String);
       }
-      else if( (strcmp(argv[i], "-l") == 0) || (strcmp(argv[i], "--length") == 0) ) {
-         mode = Length;
-      }
-      else if( (strcmp(argv[i], "-b") == 0) || (strcmp(argv[i], "--size") == 0) ) {
-         mode = Size;
-      }
-      else if( (strcmp(argv[i], "-a") == 0) || (strcmp(argv[i], "--size-length-width") == 0) ) {
-         mode = SizeLengthWidth;
-      }
-      else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) ) {
-         fprintf(stderr, "Usage: %s [-n|--newline] [-i indentation string|--ident indentation string] [-c string|--center string] [-I left right|--multiline-indent indentation left right]  [-C left right|--multiline-center left right] [-s border_left separator border_right|--separator border_left separator border_right] [-c columns|--columns columns] [-s string|--size string] [-l string|--length string] [-w string|--width string] [-a string|--size-length-width string] [-t|--terminal-info] [-h|--help] [-v|--version]\n", argv[0]);
-         return 1;
-      }
-      else if( (strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--version") == 0) ) {
-         printf("printf-utf8 %s\n", SYSTEMTOOLS_VERSION);
-         return 0;
-      }
-      else {
-         if(utf8String) {
-            free(utf8String);
-         }
-         utf8String = unescape(argv[i]);
-         break;
+      utf8String = unescape(argv[optind++]);
+      while(optind < argc) {
+         fprintf(stderr, "WARNING: Unhandled parameter %s!\n", argv[optind++]);
       }
    }
 
    // ====== Handle command =================================================
-   if( (utf8String) || (mode ==  TerminalInfo) ) {
-      switch(mode) {
-         case Indent:
+   switch(mode) {
+      case Indent:
+         if(utf8String) {
             indented(utf8String, indentWidth);
-          break;
-         case Center:
+         }
+         break;
+      case Center:
+         if(utf8String) {
             centered(utf8String, consoleWidth, false);
-          break;
-         case MultiLineIndent:
-         case MultiLineCenter:
-            doMultiLineIndentOrCenter(borderLeft, borderRight,
-                                      consoleWidth, indentWidth, mode);
-          break;
-         case Separator:
+         }
+         break;
+      case MultiLineIndent:
+      case MultiLineCenter:
+         doMultiLineIndentOrCenter(borderLeft, borderRight,
+                                    consoleWidth, indentWidth, mode);
+         break;
+      case Separator:
+         if(utf8String) {
             separator(borderLeft, utf8String, borderRight, consoleWidth);
-          break;
-         case Width:
+         }
+         break;
+      case Width:
+         if(utf8String) {
             stringSizeLengthWidth(utf8String, true, false, false, true);
-          break;
-         case Length:
+         }
+         break;
+      case Length:
+         if(utf8String) {
             stringSizeLengthWidth(utf8String, true, false, true, false);
-          break;
-         case Size:
+         }
+         break;
+      case Size:
+         if(utf8String) {
             stringSizeLengthWidth(utf8String, true, true, false, false);
-          break;
-         case SizeLengthWidth:
+         }
+         break;
+      case SizeLengthWidth:
+         if(utf8String) {
             stringSizeLengthWidth(utf8String, true, true, true, true);
-          break;
-         case TerminalInfo:
-            terminalInfo();
-          break;
-      }
+         }
+         break;
+      case TerminalInfo:
+         terminalInfo();
+         break;
    }
    if(newline) {
       fputs("\n", stdout);
