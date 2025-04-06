@@ -434,7 +434,6 @@ int main (int argc, char** argv)
       case Cat:
       case Discard:
       case Enumerate:
-         // Cat means 1:1 copy -> no tags!
          if( showWarnings && ( (BeginTag != NULL) || (EndTag != NULL) ) ) {
             fputs("WARNING: Cat, Discard or Enumerate Mode is not useful with begin/end tags!\n", stderr);
          }

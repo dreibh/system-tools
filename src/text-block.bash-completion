@@ -81,6 +81,8 @@ _text_block()
    local opts="
 -C
 --cat
+-0
+--discard
 -H
 --highlight
 -E
