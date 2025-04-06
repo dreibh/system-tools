@@ -26,6 +26,7 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#include <getopt.h>
 #include <libintl.h>
 #include <locale.h>
 #include <stdbool.h>
@@ -34,6 +35,8 @@
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
+
+#include "package-version.h"
 
 
 // ###### Generate random number out of [min, max] ##########################
@@ -49,11 +52,29 @@ static double runiform(const double min, const  double max)
 }
 
 
+// ###### Version ###########################################################
+static void version()
+{
+   printf("random-sleep %s\n", SYSTEMTOOLS_VERSION);
+   exit(0);
+}
+
+
+// ###### Usage #############################################################
+static void usage(const char* program, const int exitCode)
+{
+   fprintf(stderr, "%s %s min_delay max_delay [-q|--quiet] [-w|--verbose] [-h|--help] [-v|--version]\n",
+           gettext("Usage:"), program);
+   exit(exitCode);
+}
+
+
+
 // ###### Main program ######################################################
 int main(int argc, char** argv)
 {
-   double delayMin;
-   double delayMax;
+   double delayMin = -1.0;
+   double delayMax = -1.0;
    bool   verboseMode = false;
 
    // ====== Initialise i18n support ========================================
@@ -64,34 +85,49 @@ int main(int argc, char** argv)
    textdomain("random-sleep");
 
    // ====== Handle arguments ===============================================
-   if(argc < 3) {
-      fprintf(stderr, "%s %s min_delay max_delay [-q|--quiet] [-v|--verbose]",
-              gettext("Usage:"), argv[0]);
-      fputs("\n", stderr);
-      return 1;
+   const static struct option long_options[] = {
+      { "verbose", no_argument, 0, 'w' },
+      { "quiet",   no_argument, 0, 'q' },
+      { "help",    no_argument, 0, 'h' },
+      { "version", no_argument, 0, 'v' },
+      {  NULL,     0,           0, 0   }
+   };
+
+   if(optind + 1 < argc) {
+      delayMin = atof(argv[optind + 0]);
+      delayMax = atof(argv[optind + 1]);
+      optind += 2;
    }
-   delayMin = atof(argv[1]);
-   delayMax = atof(argv[2]);
-   if(delayMin > delayMax) {
+
+   int option;
+   int longIndex;
+   while( (option = getopt_long(argc, argv, "wqhv", long_options, &longIndex)) != -1 ) {
+      switch(option) {
+         case 'w':
+            verboseMode = true;
+          break;
+         case 'q':
+            verboseMode = false;
+          break;
+         case 'v':
+            version();
+          break;
+         case 'h':
+            usage(argv[0], 0);
+          break;
+         default:
+            fprintf(stderr, gettext("ERROR: Invalid argument %s!"), argv[optind - 1]);
+            return 1;
+          break;
+      }
+   }
+   if(optind < argc) {
+      usage(argv[0], 1);
+   }
+   if( (delayMin < 0.0) || (delayMin > delayMax) ) {
       fputs(gettext("ERROR: Invalid min_delay/max_delay"), stderr);
       fputs("\n", stderr);
       return 1;
-   }
-   if(argc > 3) {
-      int i;
-      for(i = 3; i < argc; i++) {
-         if( (strcmp(argv[i], "-q") == 0) || (strcmp(argv[i], "--quiet") == 0) ) {
-            verboseMode = false;
-         }
-         else if( (strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--verbose") == 0) ) {
-            verboseMode = true;
-         }
-         else {
-            fprintf(stderr, gettext("ERROR: Invalid argument %s!"), argv[i]);
-            fputs("\n", stderr);
-            return 1;
-         }
-      }
    }
 
    // ====== Initialise random number generator =============================

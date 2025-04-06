@@ -26,10 +26,10 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#include <getopt.h>
 #include <ifaddrs.h>
 #include <libintl.h>
 #include <locale.h>
-
 #include <netdb.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -691,6 +691,22 @@ static void showNetworkInformation(const bool filterLocalScope)
 }
 
 
+// ###### Version ###########################################################
+static void version()
+{
+   printf("get-system-info %s\n", SYSTEMTOOLS_VERSION);
+   exit(0);
+}
+
+
+// ###### Usage #############################################################
+static void usage(const char* program, const int exitCode)
+{
+   fprintf(stderr, "Usage: %s [-h|--help] [-v|--version]\n", program);
+   exit(exitCode);
+}
+
+
 
 // ###### Main program ######################################################
 int main(int argc, char** argv)
@@ -701,15 +717,30 @@ int main(int argc, char** argv)
    }
 
    // ====== Handle arguments ===============================================
-   for(int i = 1; i <argc; i++) {
-      if( (strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--version") == 0) ) {
-         printf("get-system-info %s\n", SYSTEMTOOLS_VERSION);
-         return 0;
+   const static struct option long_options[] = {
+      { "help",    no_argument, 0, 'h' },
+      { "version", no_argument, 0, 'v' },
+      {  NULL,     0,           0, 0   }
+   };
+
+   int option;
+   int longIndex;
+   while( (option = getopt_long(argc, argv, "hv", long_options, &longIndex)) != -1 ) {
+      switch(option) {
+         case 'v':
+            version();
+          break;
+         case 'h':
+            usage(argv[0], 0);
+          break;
+         default:
+            fprintf(stderr, "ERROR: Invalid argument %s!", argv[optind - 1]);
+            return 1;
+          break;
       }
-      else /* if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0) ) */ {
-         fprintf(stderr, "Usage: %s [-h|--help] [-v|--version]\n", argv[0]);
-         return 1;
-      }
+   }
+   if(optind < argc) {
+      usage(argv[0], 1);
    }
 
    // ====== Show system information in machine-readable form ===============
