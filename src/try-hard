@@ -40,7 +40,7 @@ export TEXTDOMAIN="try-hard"
 
 # ====== Handle arguments ===================================================
 if [ $# -lt 4 ] ; then
-   echo >&2 "$(gettext "Usage:") $0 max_trials delay [-v|--verbose] [-q|--quiet] -- command ..."
+   echo >&2 "$(gettext "Usage:") $0 max_trials delay [-w|--verbose] [-q|--quiet] -- command ..."
    exit 1
 fi
 
