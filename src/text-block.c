@@ -44,6 +44,7 @@
 
 typedef enum textblockmode {
    Cat,
+   Discard,
    Enumerate,
    Highlight,
    Extract,
@@ -255,7 +256,7 @@ static void version()
 // ###### Usage #############################################################
 static void usage(const char* program)
 {
-   fprintf(stderr, "Usage: %s [-C|--cat] [-H|--highlight] [-E|--enumerate] [-X|--extract] [-D|--delete|--remove] [-F|--insert-front insert_file] [-B|--insert-back insert_file] [-R|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-a|--append] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-y|--include-tags] [-x|--exclude-tags] [-f|--full-tag-lines] [-t|--tags-only] [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label] [--enumerate-format format] [--enumerate-label[1|2] string] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n", program);
+   fprintf(stderr, "Usage: %s [-C|--cat] [-0|--discard] [-H|--highlight] [-E|--enumerate] [-X|--extract] [-D|--delete|--remove] [-F|--insert-front insert_file] [-B|--insert-back insert_file] [-R|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-a|--append] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-y|--include-tags] [-x|--exclude-tags] [-f|--full-tag-lines] [-t|--tags-only] [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label] [--enumerate-format format] [--enumerate-label[1|2] string] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n", program);
    exit(0);
 }
 
@@ -268,6 +269,7 @@ int main (int argc, char** argv)
    bool showWarnings = true;
    const static struct option long_options[] = {
       { "cat",                 no_argument,       0, 'C' },
+      { "discard",             no_argument,       0, '0' },
       { "highlight",           no_argument,       0, 'H' },
       { "enumerate",           no_argument,       0, 'E' },
       { "extract",             no_argument,       0, 'X' },
@@ -305,10 +307,13 @@ int main (int argc, char** argv)
 
    int option;
    int longIndex;
-   while( (option = getopt_long(argc, argv, "CHEXDF:B:R:i:o:a:b:e:xyftwhv", long_options, &longIndex)) != -1 ) {
+   while( (option = getopt_long(argc, argv, "C0HEXDF:B:R:i:o:a:b:e:xyftwhv", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'C':
             Mode = Cat;
+          break;
+         case '0':
+            Mode = Discard;
           break;
          case 'H':
             Mode = Highlight;
@@ -427,10 +432,11 @@ int main (int argc, char** argv)
 
    switch(Mode) {
       case Cat:
+      case Discard:
       case Enumerate:
          // Cat means 1:1 copy -> no tags!
          if( showWarnings && ( (BeginTag != NULL) || (EndTag != NULL) ) ) {
-            fputs("WARNING: Cat or Enumerate Mode is not useful with begin/end tags!\n", stderr);
+            fputs("WARNING: Cat, Discard or Enumerate Mode is not useful with begin/end tags!\n", stderr);
          }
          BeginTag = NULL;
          EndTag   = NULL;

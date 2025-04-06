@@ -46,6 +46,10 @@
 .Sh SYNOPSIS
 .Nm text-block
 .Op Fl C | Fl Fl cat
+.Op OPTIONS
+.Nm text-block
+.Op Fl 0 | Fl Fl discard
+.Op OPTIONS
 .Nm text-block
 .Op Fl H | Fl Fl highlight
 .Op OPTIONS
@@ -102,6 +106,8 @@
 .It
 Cat: copy the input text as-is.
 .It
+Discard: do nothing (i.e. just discard the input).
+.It
 Enumerate: add line numbers. The format of the enumeration is configurable.
 .It
 Highlight: visually highlight text block between markers. The format of the marking is configurable, e.g. to apply ANSI colouring, etc.
@@ -136,6 +142,8 @@ The following options are available:
 .Bl -tag -width indent
 .It Fl C | Fl Fl cat
 Run in Cat mode (default).
+.It Fl 0 | Fl Fl discard
+Run in Discard mode.
 .It Fl H | Fl Fl highlight
 Run in Highlight mode.
 .It Fl E | Fl Fl enumerate
