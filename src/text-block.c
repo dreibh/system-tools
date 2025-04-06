@@ -299,7 +299,7 @@ int main (int argc, char** argv)
       { "highlight-marked1",   required_argument, 0, 0x2004 },
       { "highlight-marked2",   required_argument, 0, 0x2005 },
 
-      { "suppress-warnings",   no_argument,       0, 'w' },
+      { "suppress-warnings",   no_argument,       0, 'q' },
       { "help",                no_argument,       0, 'h' },
       { "version",             no_argument,       0, 'v' },
       {  NULL,                 0,                 0, 0   }
@@ -307,7 +307,7 @@ int main (int argc, char** argv)
 
    int option;
    int longIndex;
-   while( (option = getopt_long(argc, argv, "C0HEXDF:B:R:i:o:a:b:e:xyftwhv", long_options, &longIndex)) != -1 ) {
+   while( (option = getopt_long(argc, argv, "C0HEXDF:B:R:i:o:a:b:e:xyftqhv", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'C':
             Mode = Cat;
@@ -366,7 +366,7 @@ int main (int argc, char** argv)
          case 't':
             WithTagLines = false;
           break;
-         case 'w':
+         case 'q':
             showWarnings = false;
           break;
          case 0x1000:
@@ -410,14 +410,12 @@ int main (int argc, char** argv)
             usage(argv[0], 0);
           break;
          default:
-            usage(argv[0], 1);
+            fprintf(stderr, "ERROR: Invalid argument %s!", argv[optind - 1]);
+            return 1;
           break;
       }
    }
    if(optind < argc) {
-      // while(optind < argc) {
-      //    optind++;
-      // }
       usage(argv[0], 1);
    }
 

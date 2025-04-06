@@ -74,7 +74,7 @@ for test in simple markers ; do
             elif [ "${test}" == "advanced2" ] ; then
                command="${RUN} ./text-block -i text-block-tests/advanced.txt -o ${outputFile} -b '<MARKER>' --${mode2} --${o1} --${o2}"
             else
-               command="${RUN} ./text-block -w -i text-block-tests/${test}.txt -o ${outputFile} -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight-unmarked1 $'\x1b[34mu' --highlight-unmarked2 $'U\x1b[0m' --highlight-marked1 $'m\x1b[31m' --highlight-marked2 $'M\x1b[0m' --${mode2} --${o1} --${o2}"
+               command="${RUN} ./text-block -q -i text-block-tests/${test}.txt -o ${outputFile} -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight-unmarked1 $'\x1b[34mu' --highlight-unmarked2 $'U\x1b[0m' --highlight-marked1 $'m\x1b[31m' --highlight-marked2 $'M\x1b[0m' --${mode2} --${o1} --${o2}"
             fi
             bash -c "${command}"
 

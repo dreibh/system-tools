@@ -42,7 +42,7 @@
 max_trials
 delay
 .Op Fl q | Fl Fl quiet
-.Op Fl v | Fl Fl verbose
+.Op Fl w | Fl Fl verbose
 --
 command ...
 .\" ###### Description ######################################################
@@ -57,7 +57,7 @@ The following options are available:
 .Bl -tag -width indent
 .It Fl q | Fl Fl quiet
 Quiet mode: no output is made.
-.It Fl v | Fl Fl verbose
+.It Fl w | Fl Fl verbose
 Verbose mode: print selected delay and wake-up.
 .El
 .\" ###### Examples #########################################################
@@ -66,5 +66,5 @@ Verbose mode: print selected delay and wake-up.
 .It try-hard 10 60 --verbose -- git clone https://dreibh@github.com/dreibh/rserpooldemo.git
 .It try-hard 3 300 -q -- git clone https://git.freebsd.org/ports.git
 .It try-hard 3 60 -- wget -O example.tar.gz https://www.example.net/example.tar.gz
-.It try-hard 100 1 -v -- false
+.It try-hard 100 1 -w -- false
 .El
