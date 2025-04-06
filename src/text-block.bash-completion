@@ -79,6 +79,8 @@ _text_block()
 
    # ====== All options =====================================================
    local opts="
+-C
+--cat
 -H
 --highlight
 -E
@@ -94,10 +96,6 @@ _text_block()
 --insert-back
 -R
 --replace
--i
---input
--i
---output
 -h
 --help
 -v
@@ -126,6 +124,9 @@ _text_block()
 --tags-only
 --w
 --suppress-warnings
+--enumerate-format
+--enumerate-label1
+--enumerate-label2
 --highlight-begin
 --highlight-end
 --highlight-unmarked1
