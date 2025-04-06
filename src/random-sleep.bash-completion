@@ -57,8 +57,12 @@ _random_sleep()
    local opts="
 -q
 --quiet
--v
+-w
 --verbose
+-h
+--help
+-v
+--version
 "
    # shellcheck disable=SC2207
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
