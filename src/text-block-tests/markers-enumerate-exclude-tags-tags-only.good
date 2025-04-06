@@ -1,12 +1,12 @@
-[36m000001 [0m This is a marker test!
-[36m000002 [0m Block Test #1: <BEGIN-BLOCK>First line in block (begin marker line)
-[36m000003 [0m A line in the block.
-[36m000004 [0m Another line in the block.
-[36m000005 [0m Last line in block (end marker line)<END-BLOCK>.
-[36m000006 [0m An unmarked line.
-[36m000007 [0m <BEGIN-BLOCK>Another block.
-[36m000008 [0m Yet another line in a block.
-[36m000009 [0m <END-BLOCK>This line is not in a block.
-[36m000010 [0m ***
-[36m000011 [0m Three blocks: 1<BEGIN-BLOCK>2<END-BLOCK>3<BEGIN-BLOCK>4<END-BLOCK>5<BEGIN-BLOCK>6<END-BLOCK> (even numbers in blocks)
-[36m000012 [0m Text-Block does not handle nested blocks: A<BEGIN-BLOCK>B<BEGIN-BLOCK>C<END-BLOCK>D<END-BLOCK>E
+[36m000001[0m This is a marker test!
+[36m000002[0m Block Test #1: <BEGIN-BLOCK>First line in block (begin marker line)
+[36m000003[0m A line in the block.
+[36m000004[0m Another line in the block.
+[36m000005[0m Last line in block (end marker line)<END-BLOCK>.
+[36m000006[0m An unmarked line.
+[36m000007[0m <BEGIN-BLOCK>Another block.
+[36m000008[0m Yet another line in a block.
+[36m000009[0m <END-BLOCK>This line is not in a block.
+[36m000010[0m ***
+[36m000011[0m Three blocks: 1<BEGIN-BLOCK>2<END-BLOCK>3<BEGIN-BLOCK>4<END-BLOCK>5<BEGIN-BLOCK>6<END-BLOCK> (even numbers in blocks)
+[36m000012[0m Text-Block does not handle nested blocks: A<BEGIN-BLOCK>B<BEGIN-BLOCK>C<END-BLOCK>D<END-BLOCK>E
