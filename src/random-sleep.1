@@ -42,7 +42,11 @@
 min_delay
 max_delay
 .Op Fl q | Fl Fl quiet
-.Op Fl v | Fl Fl verbose
+.Op Fl w | Fl Fl verbose
+.Nm random-sleep
+.Op Fl h | Fl Fl help
+.Nm random-sleep
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm random-sleep
@@ -55,14 +59,20 @@ The following options are available:
 .Bl -tag -width indent
 .It Fl q | Fl Fl quiet
 Quiet mode: no output is made.
-.It Fl v | Fl Fl verbose
+.It Fl w | Fl Fl verbose
 Verbose mode: print selected delay and wake-up.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It random-sleep 0 3600
 .It random-sleep 0 300 --verbose
-.It random-sleep 60.0 120.5 -v
+.It random-sleep 60.0 120.5 -w
 .It random-sleep 0.10 0.50 --verbose
+.It random-sleep --version
+.It random-sleep --help
 .El
