@@ -16,9 +16,10 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 Requires: td-system-tools-fingerprint-ssh-keys = %{version}-%{release}
 Requires: td-system-tools-misc = %{version}-%{release}
+Requires: td-system-tools-reset-machine-id = %{version}-%{release}
 Requires: td-system-tools-system-info = %{version}-%{release}
 Requires: td-system-tools-system-maintenance = %{version}-%{release}
-Requires: td-system-tools-reset-machine-id = %{version}-%{release}
+Requires: td-system-tools-text-block = %{version}-%{release}
 Recommends: td-system-tools-configure-grub = %{version}-%{release}
 
 
@@ -204,6 +205,19 @@ information.
 %{_bindir}/print-utf8
 %{_mandir}/man1/print-utf8.1.gz
 %{_datadir}/bash-completion/completions/print-utf8
+
+
+%package text-block
+Summary: Apply modifications to text
+Group: Applications/System
+
+%description text-block
+text-block reads text from standard input or given file, and writes it to standard output or a given file. On the text, various modifications can be applied, according to the operation mode.
+
+%files text-block
+%{_bindir}/text-block
+%{_mandir}/man1/text-block.1.gz
+%{_datadir}/bash-completion/completions/text-block
 
 
 %package misc

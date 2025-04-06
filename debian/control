@@ -106,6 +106,12 @@ Description: Print UTF-8 strings and obtain size/length/width information
  options for indentation, centering, separator as well as size/length/width
  information.
 
+Package: td-text-block
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Reads text from standard input or given file, and writes it to standard output or a given file. On the text, various modifications can be applied, according to the operation mode.
+
 Package: td-misc
 Architecture: any
 Depends: gettext-base,
@@ -126,6 +132,7 @@ Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
          td-reset-machine-id  (>= ${source:Version}),
          td-system-info (>= ${source:Version}),
          td-system-maintenance (>= ${source:Version}),
+         td-text-block (>= ${source:Version}),
          ${misc:Depends}
 Provides: td-system-reset-machine-id
 Replaces: td-system-reset-machine-id
