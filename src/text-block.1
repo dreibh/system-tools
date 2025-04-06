@@ -45,6 +45,8 @@
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm text-block
+.Op Fl C | Fl Fl cat
+.Nm text-block
 .Op Fl H | Fl Fl highlight
 .Op OPTIONS
 .Nm text-block
@@ -66,12 +68,6 @@
 .Op Fl R Ar insert_file | Fl Fl replace Ar insert_file
 .Op OPTIONS
 .Nm text-block
-.Op Fl i Ar input_file | Fl Fl input Ar input_file
-.Op OPTIONS
-.Nm text-block
-.Op Fl i Ar output_file | Fl Fl output Ar output_file
-.Op OPTIONS
-.Nm text-block
 .Op Fl h | Fl Fl help
 .Nm text-block
 .Op Fl v | Fl Fl version
@@ -79,25 +75,25 @@
 .Nm OPTIONS:
 .Op Fl b Ar begin_tag | Fl Fl begin-tag Ar begin_tag
 .Op Fl e Ar end_tag | Fl Fl end-tag Ar end_tag
-.Op Fl -i | Fl Fl input input_file
-.Op Fl -o | Fl Fl output output_file
+.Op Fl -i | Fl Fl input Ar input_file
+.Op Fl -o | Fl Fl output Ar output_file
 .Op Fl -a | Fl Fl append
-.Op Fl -b | Fl Fl begin-tag begin_tag
-.Op Fl -e | Fl Fl end-tag end_tag
+.Op Fl -b | Fl Fl begin-tag Ar begin_tag
+.Op Fl -e | Fl Fl end-tag Ar end_tag
 .Op Fl -y | Fl Fl include-tags
 .Op Fl -x | Fl Fl exclude-tags
 .Op Fl -f | Fl Fl full-tag-lines
 .Op Fl -t | Fl Fl tags-only
 .Op Fl -w | Fl Fl suppress-warnings
-.Op Fl enumerate-format format
-.Op Fl enumerate-label1 string
-.Op Fl enumerate-label2 string
-.Op Fl Fl highlight-begin string
-.Op Fl Fl highlight-end string
-.Op Fl Fl highlight-unmarked1 string
-.Op Fl Fl highlight-unmarked2 string
-.Op Fl Fl highlight-marked1 string
-.Op Fl Fl highlight-marked2 string
+.Op Fl Fl enumerate-format Ar format
+.Op Fl Fl enumerate-label1 Ar string
+.Op Fl Fl enumerate-label2 Ar string
+.Op Fl Fl highlight-begin Ar string
+.Op Fl Fl highlight-end Ar string
+.Op Fl Fl highlight-unmarked1 Ar string
+.Op Fl Fl highlight-unmarked2 Ar string
+.Op Fl Fl highlight-marked1 Ar string
+.Op Fl Fl highlight-marked2 Ar string
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm text-block
@@ -136,9 +132,77 @@ include-tags: Marked text includes the begin/end tags.
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-
-.It TBD!
-
+.It Fl C | Fl Fl cat
+Run in Cat mode (default).
+.It Fl H | Fl Fl highlight
+Run in Highlight mode.
+.It Fl E | Fl Fl enumerate
+Run in Enumerate mode.
+.It Fl X | Fl Fl extract
+Run in Highlight mode.
+.It Fl D | Fl Fl delete | Fl Fl remove
+Run in Delete mode.
+.It Fl F Ar insert_file | Fl Fl insert-front Ar insert_file
+Run in Insert-Front mode.
+.It Fl B Ar insert_file | Fl Fl insert-back Ar insert_file
+Run in Insert-Back mode.
+.It Fl R Ar insert_file | Fl Fl replace Ar insert_file
+Run in Replace mode.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.It Fl v | Fl version
+Prints program version.
+.It Fl b Ar begin_tag | Fl Fl begin-tag Ar begin_tag
+Sets the begin tag.
+.It Fl e Ar end_tag | Fl Fl end-tag Ar end_tag
+Sets the end tag.
+.It Fl -i | Fl Fl input Ar input_file
+Sets the input file.
+.It Fl -o | Fl Fl output Ar output_file
+Sets the output file. By default, an existing output file will be overwritten.
+.It Fl -a | Fl Fl append
+Opens the output file in append mode, appending new output instead of overwriting an existing file.
+.It Fl -y | Fl Fl include-tags
+Include the marker tags in the marking.
+Hint: Use Highlight mode to visualise the behaviour.
+.It Fl -x | Fl Fl exclude-tags
+Exclude the marker tags from the marking.
+Hint: Use Highlight mode to visualise the behaviour.
+.It Fl -f | Fl Fl full-tag-lines
+Include full marker tag lines in the marking.
+Hint: Use Highlight mode to visualise the behaviour.
+.It Fl -t | Fl Fl tags-only
+Exclude the marker tag lines from the marking.
+Hint: Use Highlight mode to visualise the behaviour.
+.It Fl -w | Fl Fl suppress-warnings
+Suppress warnings on useless input parameters. Useful for debugging.
+.It Fl Fl enumerate-format Ar format
+In Enumerate mode, sets the format of the line number output according to printf formatting. However, only the number format specification is allowed here. Examples:
+.Bl -bullet
+.It
+4 -> 4-digit line numbers, prepended with space when necessary (e.g. "   1", etc.)
+.It
+04 -> add leading zero to get a 4-digit output (e.g. "0002", etc.)
+.It
+-4 -> left-adjusted 4-digit number (e.g. "3   ").
+.El
+.It Fl Fl enumerate-label1 Ar string
+For Enumerate mode: prepends the given string before the line number output. Default: $\[aq]\ex1b[36m\[aq] (enables cyan colour output).
+.It Fl Fl enumerate-label2 Ar string
+For Enumerate mode: appends the given string before the line number output. Default: $\[aq]\ex1b[0m \[aq] (disables colour output, and add a space).
+.It Fl Fl highlight-begin Ar string
+For Highlight mode: Sets string to visualise the begin of a marked block. Default: ⭐.
+.It Fl Fl highlight-end Ar string
+For Highlight mode: Sets string to visualise the end of a marked block. Default: 🛑.
+.It Fl Fl highlight-unmarked1 Ar string
+For Highlight mode: Sets string to visualise the begin of an unmarked text fragment. Default: $\[aq]\ex1b[34m\[aq] (enables blue colour output).
+.It Fl Fl highlight-unmarked2 Ar string
+For Highlight mode: Sets string to visualise the end of an unmarked text fragment. Default: $\[aq]\ex1b[0m \[aq] (disables colour output).
+.It Fl Fl highlight-marked1 Ar string
+For Highlight mode: Sets string to visualise the begin of a marked text fragment. Default: $\[aq]\ex1b[31m\[aq]
+(enables red colour output).
+.It Fl Fl highlight-marked2 Ar string
+For Highlight mode: Sets string to visualise the end of a marked text fragment. Default: $\[aq]\ex1b[0m \[aq] (disables colour output).
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
