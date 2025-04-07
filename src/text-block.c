@@ -560,7 +560,7 @@ int main (int argc, char** argv)
             }
 
             // ====== End marker found ======================================
-            else /* if(MarkerTag == BeginTag) */ {
+            else /* if(MarkerTag == EndTag) */ {
                if(WithTagLines) {
                   next += MarkerTagLength;
                   if(IncludeTags) {
