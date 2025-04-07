@@ -554,6 +554,16 @@ int main (int argc, char** argv)
                      next += MarkerTagLength;
                   }
                   processUnmarked(Pointer, (ssize_t)(next - Pointer), true);
+                  // ------ Special case: BeginTag == EndTag ----------------
+                  if(BeginTag == EndTag) {
+                     if(IncludeTags) {
+                        processMarked(next, MarkerTagLength, true);
+                        next += MarkerTagLength;
+                     }
+                     else {
+                        processMarked(next, 0, true);
+                     }
+                  }
                }
                MarkerTag       = EndTag;
                MarkerTagLength = EndTagLength;
