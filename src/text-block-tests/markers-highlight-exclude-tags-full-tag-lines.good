@@ -2,12 +2,12 @@
 U[0m[34muBlock Test #1: <BEGIN-BLOCK>U[0m[34muFirst line in block (begin marker line)
 U[0m⭐m[31mA line in the block.
 M[0mm[31mAnother line in the block.
-M[0mm[31mM[0m🛑[34muLast line in block (end marker line)<END-BLOCK>U[0m[34mu.
+M[0m🛑[34muLast line in block (end marker line)<END-BLOCK>U[0m[34mu.
 U[0m[34muAn unmarked line.
 U[0m[34mu<BEGIN-BLOCK>U[0m[34muAnother block.
 U[0m⭐m[31mYet another line in a block.
-M[0mm[31mM[0m🛑[34mu<END-BLOCK>U[0m[34muThis line is not in a block.
+M[0m🛑[34mu<END-BLOCK>U[0m[34muThis line is not in a block.
 U[0m[34mu***
 U[0m[34muThree blocks: 1<BEGIN-BLOCK>U[0m[34mu2<END-BLOCK>3<BEGIN-BLOCK>4<END-BLOCK>5<BEGIN-BLOCK>6<END-BLOCK> (even numbers in blocks)
-U[0m⭐m[31mM[0m🛑[34muText-Block does not handle nested blocks: A<BEGIN-BLOCK>B<BEGIN-BLOCK>C<END-BLOCK>U[0m[34muD<END-BLOCK>E
+U[0m⭐🛑[34muText-Block does not handle nested blocks: A<BEGIN-BLOCK>B<BEGIN-BLOCK>C<END-BLOCK>U[0m[34muD<END-BLOCK>E
 U[0m

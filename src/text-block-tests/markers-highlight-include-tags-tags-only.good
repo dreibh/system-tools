@@ -4,7 +4,7 @@ M[0mm[31mA line in the block.
 M[0mm[31mAnother line in the block.
 M[0mm[31mLast line in block (end marker line)<END-BLOCK>M[0m🛑[34mu.
 U[0m[34muAn unmarked line.
-U[0m[34muU[0m⭐m[31m<BEGIN-BLOCK>Another block.
+U[0m⭐m[31m<BEGIN-BLOCK>Another block.
 M[0mm[31mYet another line in a block.
 M[0mm[31m<END-BLOCK>M[0m🛑[34muThis line is not in a block.
 U[0m[34mu***

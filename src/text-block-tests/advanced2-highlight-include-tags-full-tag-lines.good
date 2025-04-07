@@ -4,14 +4,14 @@ U[0m[34mu<BEGIN-BLOCK>
 U[0m[34mu🐻This is a test!🐻
 U[0m[34mu<END-BLOCK>
 U[0m[34mu
-U[0m[34mu🌙<MARKER>U[0m⭐🛑[34mu🌞
-U[0m[34mu
+U[0m⭐m[31m🌙<MARKER>M[0mm[31m🌞
+M[0m🛑[34mu
 U[0m[34mu   <BEGIN-BLOCK>
 U[0m[34mu   🐁Dies ist ein Test!🐁
 U[0m[34mu   <END-BLOCK>
 U[0m[34mu
-U[0m[34mu   🐼<MARKER>U[0m⭐🛑[34mu🐕
-U[0m[34mu
+U[0m⭐m[31m   🐼<MARKER>M[0mm[31m🐕
+M[0m🛑[34mu
 U[0m[34mu🚅🚅🚅 <BEGIN-BLOCK>🐺Dette er en test!🐺<END-BLOCK> 🚚🚚🚚
 U[0m[34mu
 U[0m[34mu⚠<BEGIN-BLOCK>

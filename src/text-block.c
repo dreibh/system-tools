@@ -184,9 +184,11 @@ static void processUnmarked(const char*   text,
          writeToOutputFile(text, textLength);
        break;
       case Highlight:
-         fputs(HighlightUnmarked1, OutputFile);
-         writeToOutputFile(text, textLength);
-         fputs(HighlightUnmarked2, OutputFile);
+         if(textLength > 0) {
+            fputs(HighlightUnmarked1, OutputFile);
+            writeToOutputFile(text, textLength);
+            fputs(HighlightUnmarked2, OutputFile);
+         }
          if(beginOfMarking) {
             fputs(HighlightBegin, OutputFile);
          }
@@ -228,9 +230,11 @@ static void processMarked(const char*   text,
          }
        break;
       case Highlight:
-         fputs(HighlightMarked1, OutputFile);
-         writeToOutputFile(text, textLength);
-         fputs(HighlightMarked2, OutputFile);
+         if(textLength > 0) {
+            fputs(HighlightMarked1, OutputFile);
+            writeToOutputFile(text, textLength);
+            fputs(HighlightMarked2, OutputFile);
+         }
          if(endOfMarking) {
             fputs(HighlightEnd, OutputFile);
          }

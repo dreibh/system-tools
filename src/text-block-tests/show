@@ -5,7 +5,7 @@ set -eu
 
 while [ $# -gt 0 ] ; do
    f="$1"
-   print-utf8 -s "\x1b[34m====== $f " "=" "=\x1b[0m"
+   print-utf8 -s "\x1b[32m====== $f " "=" "=\x1b[0m"
    cat "$f"
    echo ""
    shift
