@@ -609,7 +609,14 @@ int main (int argc, char** argv)
                processMarked(Pointer, (ssize_t)(EndOfLine - Pointer), (MarkerTag == BeginTag));
             }
             else {
-               processUnmarked(Pointer, (ssize_t)(EndOfLine - Pointer), (MarkerTag == EndTag));
+               if(BeginTag != EndTag) {
+                  processUnmarked(Pointer, (ssize_t)(EndOfLine - Pointer), (MarkerTag == EndTag));
+               }
+               // ------ Special case: BeginTag == EndTag -------------------
+               else {
+                  processUnmarked(Pointer, (ssize_t)(EndOfLine - Pointer), true);
+                  processMarked(EndOfLine, 0, true);
+               }
             }
          }
          else {
