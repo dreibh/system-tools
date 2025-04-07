@@ -126,8 +126,10 @@ The marking used for the operation modes is based on configurable begin and end 
 .It
 tags-only: Only the text between the marker tags belongs to a block. That is, multiple blocks can appear on the same line. This is the default.
 .It
-full-tag-lines: A marker includes the full line of is begin and end tags.
+full-tag-lines: A marker includes the full line of is begin and end tags. That is, a line containing a begin/end tag is handled like being the begin/end tag. This also means that only the \f[B]first\f[R] tag in a line is handled. All further tags in the same line are ignored!
+Hint: Use Highlight mode to visualise the behaviour.
 .El
+.Pp
 Furthermore, the handling of begin/end tags is configurable as well:
 .Bl -bullet
 .It
