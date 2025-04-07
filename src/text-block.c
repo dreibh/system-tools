@@ -288,10 +288,11 @@ int main (int argc, char** argv)
       { "append",              no_argument,       0, 'a' },
       { "begin-tag",           required_argument, 0, 'b' },
       { "end-tag",             required_argument, 0, 'e' },
+      { "tag",                 required_argument, 0, 't' },
       { "exclude-tags",        no_argument,       0, 'x' },
       { "include-tags",        no_argument,       0, 'y' },
       { "full-tag-lines",      no_argument,       0, 'f' },
-      { "tags-only",           no_argument,       0, 't' },
+      { "tags-only",           no_argument,       0, 'g' },
 
       { "enumerate-format",    required_argument, 0, 0x1000 },
       { "enumerate-label1",    required_argument, 0, 0x1001 },
@@ -311,7 +312,7 @@ int main (int argc, char** argv)
 
    int option;
    int longIndex;
-   while( (option = getopt_long(argc, argv, "C0HEXDF:B:R:i:o:a:b:e:xyftqhv", long_options, &longIndex)) != -1 ) {
+   while( (option = getopt_long(argc, argv, "C0HEXDF:B:R:i:o:a:b:e:t:xyfgqhv", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'C':
             Mode = Cat;
@@ -358,6 +359,10 @@ int main (int argc, char** argv)
          case 'e':
             EndTag = optarg;
           break;
+         case 't':
+            BeginTag = optarg;
+            EndTag   = NULL;
+          break;
          case 'x':
             IncludeTags = false;
           break;
@@ -367,7 +372,7 @@ int main (int argc, char** argv)
          case 'f':
             WithTagLines = true;
           break;
-         case 't':
+         case 'g':
             WithTagLines = false;
           break;
          case 'q':
@@ -427,7 +432,7 @@ int main (int argc, char** argv)
    if( (BeginTag != NULL) && (BeginTag[0] == 0x00) ) {
       BeginTag = NULL;
    }
-   if((EndTag == NULL) || (EndTag[0] == 0x00)) {
+   if( (EndTag == NULL) || (EndTag[0] == 0x00) || (strcmp(EndTag, BeginTag) == 0) ) {
       EndTag = BeginTag;
    }
    BeginTagLength = (BeginTag != NULL) ? strlen(BeginTag) : 0;

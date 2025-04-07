@@ -79,16 +79,17 @@
 .Nm OPTIONS:
 .Op Fl b Ar begin_tag | Fl Fl begin-tag Ar begin_tag
 .Op Fl e Ar end_tag | Fl Fl end-tag Ar end_tag
-.Op Fl -i | Fl Fl input Ar input_file
-.Op Fl -o | Fl Fl output Ar output_file
-.Op Fl -a | Fl Fl append
-.Op Fl -b | Fl Fl begin-tag Ar begin_tag
-.Op Fl -e | Fl Fl end-tag Ar end_tag
-.Op Fl -y | Fl Fl include-tags
-.Op Fl -x | Fl Fl exclude-tags
-.Op Fl -f | Fl Fl full-tag-lines
-.Op Fl -t | Fl Fl tags-only
-.Op Fl -q | Fl Fl suppress-warnings
+.Op Fl i | Fl Fl input Ar input_file
+.Op Fl o | Fl Fl output Ar output_file
+.Op Fl a | Fl Fl append
+.Op Fl b | Fl Fl begin-tag Ar begin_tag
+.Op Fl e | Fl Fl end-tag Ar end_tag
+.Op Fl t | Fl Fl tag Ar tag
+.Op Fl y | Fl Fl include-tags
+.Op Fl x | Fl Fl exclude-tags
+.Op Fl f | Fl Fl full-tag-lines
+.Op Fl g | Fl Fl tags-only
+.Op Fl q | Fl Fl suppress-warnings
 .Op Fl Fl enumerate-format Ar format
 .Op Fl Fl enumerate-label1 Ar string
 .Op Fl Fl enumerate-label2 Ar string
@@ -138,6 +139,8 @@ exclude-tags: Marked text does not include the begin/end tags. This is the defau
 include-tags: Marked text includes the begin/end tags.
 .El
 .Pp
+A special case is to have identical begin/end tags, e.g. <MARKER>. The text block "inside" this tag is therefore always empty. A use case for such a marker is e.g. to mark where to insert the contents of a file.
+.Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
@@ -168,25 +171,27 @@ Prints program version.
 Sets the begin tag.
 .It Fl e Ar end_tag | Fl Fl end-tag Ar end_tag
 Sets the end tag.
-.It Fl -i | Fl Fl input Ar input_file
+.It Fl t Ar tag | Fl Fl tag Ar tag
+Sets a combined begin/end tag, i.e. the tag marks begin and end.
+.It Fl i | Fl Fl input Ar input_file
 Sets the input file.
-.It Fl -o | Fl Fl output Ar output_file
+.It Fl o | Fl Fl output Ar output_file
 Sets the output file. By default, an existing output file will be overwritten.
-.It Fl -a | Fl Fl append
+.It Fl a | Fl Fl append
 Opens the output file in append mode, appending new output instead of overwriting an existing file.
-.It Fl -y | Fl Fl include-tags
+.It Fl y | Fl Fl include-tags
 Include the marker tags in the marking.
 Hint: Use Highlight mode to visualise the behaviour.
-.It Fl -x | Fl Fl exclude-tags
+.It Fl x | Fl Fl exclude-tags
 Exclude the marker tags from the marking.
 Hint: Use Highlight mode to visualise the behaviour.
-.It Fl -f | Fl Fl full-tag-lines
+.It Fl f | Fl Fl full-tag-lines
 Include full marker tag lines in the marking.
 Hint: Use Highlight mode to visualise the behaviour.
-.It Fl -t | Fl Fl tags-only
+.It Fl g | Fl Fl tags-only
 Exclude the marker tag lines from the marking.
 Hint: Use Highlight mode to visualise the behaviour.
-.It Fl -q | Fl Fl suppress-warnings
+.It Fl q | Fl Fl suppress-warnings
 Suppress warnings on useless input parameters. Useful for debugging.
 .It Fl Fl enumerate-format Ar format
 In Enumerate mode, sets the format of the line number output according to printf formatting. However, only the number format specification is allowed here. Examples:
@@ -219,39 +224,52 @@ For Highlight mode: Sets string to visualise the end of a marked text fragment. 
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Ss Cat Mode
-.Bl -tag -width indent
-.It text-block text-block -i /etc/system-info.d/01-example
-.It text-block text-block -i /etc/system-info.d/01-example -C
+.Bl -bullet
+.It
+text-block -i /etc/system-info.d/01-example
+.It
+text-block -i /etc/system-info.d/01-example -C
 .El
 .Ss Enumerate Mode
-.Bl -tag -width indent
-.It figlet \[dq]Test!\[dq] | text-block -E
-.It text-block -i /etc/system-info.d/01-example -E
-.It text-block -i /etc/system-info.d/01-example --enumerate --enumerate-format \[dq]6\[dq] --enumerate-label1 $\[aq]\ex1b[37m<\[aq] --enumerate-label2 $\[aq]>\ex1b[0m \[aq]
+.Bl -bullet
+.It
+figlet \[dq]Test!\[dq] | text-block -E
+.It
+text-block -i /etc/system-info.d/01-example -E
+.It
+text-block -i /etc/system-info.d/01-example --enumerate --enumerate-format \[dq]6\[dq] --enumerate-label1 $\[aq]\ex1b[37m<\[aq] --enumerate-label2 $\[aq]>\ex1b[0m \[aq]
 .El
 .Ss Highlight Mode
-.Bl -tag -width indent
-.It TBD!
+.Bl -bullet
+.It
+TBD!
 .El
 .Ss Delete Mode
-.Bl -tag -width indent
-.It TBD!
+.Bl -bullet
+.It
+TBD!
 .El
 .Ss Insert Front Mode
-.Bl -tag -width indent
-.It TBD!
+.Bl -bullet
+.It
+TBD!
 .El
 .Ss Insert Back Mode
-.Bl -tag -width indent
-.It TBD!
+.Bl -bullet
+.It
+TBD!
 .El
 .Ss Replace Mode
-.Bl -tag -width indent
-.It TBD!
+.Bl -bullet
+.It
+TBD!
 .El
 .Ss Other Examples
-.Bl -tag -width indent
-.It text-block --help
-.It text-block --version
-.It text-block --v
+.Bl -bullet
+.It
+text-block --help
+.It
+text-block --version
+.It
+text-block --v
 .El
