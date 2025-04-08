@@ -27,6 +27,7 @@
 // Contact: thomas.dreibholz@gmail.com
 
 #include <ctype.h>
+#include <fcntl.h>
 #include <getopt.h>
 #include <assert.h>
 #include <stdbool.h>
@@ -484,6 +485,9 @@ int main (int argc, char** argv)
                  InputFileName, strerror(errno));
          cleanUp(1);
       }
+#ifdef POSIX_FADV_SEQUENTIAL
+      posix_fadvise(fileno(InputFile), 0, 0, POSIX_FADV_SEQUENTIAL|POSIX_FADV_WILLNEED|POSIX_FADV_NOREUSE);
+#endif
       OpenInputFile = true;
    }
    OutputFile = stdout;
@@ -503,6 +507,9 @@ int main (int argc, char** argv)
                  InsertFileName, strerror(errno));
          cleanUp(1);
       }
+#ifdef POSIX_FADV_SEQUENTIAL
+      posix_fadvise(fileno(InputFile), 0, 0, POSIX_FADV_SEQUENTIAL);
+#endif
    }
    else {
       if( (Mode == InsertFront) || (Mode == InsertBack) || (Mode == Replace) ) {
