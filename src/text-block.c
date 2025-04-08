@@ -26,10 +26,12 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#include <assert.h>
 #include <ctype.h>
 #include <fcntl.h>
 #include <getopt.h>
-#include <assert.h>
+#include <libintl.h>
+#include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -108,8 +110,9 @@ static void cleanUp(int exitCode)
 
    if(OpenOutputFile) {
       if(fclose(OutputFile) != 0) {
-         fprintf(stderr, "ERROR: Unable to open output file %s: %s\n",
+         fprintf(stderr, gettext("ERROR: Unable to open output file %s: %s"),
                  OutputFileName, strerror(errno));
+         fputs("\n", stderr);
          exitCode = 1;
       }
    }
@@ -129,8 +132,9 @@ static void writeToOutputFile(const char* data, const size_t length)
 {
    if(length > 0) {
       if(fwrite(data, 1, length, OutputFile) < length) {
-         fprintf(stderr, "ERROR: Unable to write to output file %s: %s\n",
+         fprintf(stderr, gettext("ERROR: Unable to write to output file %s: %s"),
                  OutputFileName, strerror(errno));
+         fputs("\n", stderr);
          cleanUp(1);
       }
    }
@@ -148,8 +152,9 @@ static void copyInsertFileIntoOutputFile()
       writeToOutputFile(buffer, bytesRead);
    }
    if(bytesRead < 0) {
-      fprintf(stderr, "ERROR: Unable to read to insert file %s: %s\n",
+      fprintf(stderr, gettext("ERROR: Unable to read to insert file %s: %s"),
               InsertFileName, strerror(errno));
+      fputs("\n", stderr);
       cleanUp(1);
    }
 }
@@ -261,7 +266,8 @@ static void version()
 // ###### Usage #############################################################
 static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "Usage: %s [-C|--cat] [-0|--discard] [-H|--highlight] [-E|--enumerate] [-X|--extract] [-D|--delete|--remove] [-F|--insert-front insert_file] [-B|--insert-back insert_file] [-R|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-a|--append] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-y|--include-tags] [-x|--exclude-tags] [-f|--full-tag-lines] [-t|--tags-only] [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label] [--enumerate-format format] [--enumerate-label[1|2] string] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n", program);
+   fprintf(stderr, "%s %s [-C|--cat] [-0|--discard] [-H|--highlight] [-E|--enumerate] [-X|--extract] [-D|--delete|--remove] [-F|--insert-front insert_file] [-B|--insert-back insert_file] [-R|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-a|--append] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-y|--include-tags] [-x|--exclude-tags] [-f|--full-tag-lines] [-t|--tags-only] [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label] [--enumerate-format format] [--enumerate-label[1|2] string] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n",
+           gettext("Usage:"), program);
    exit(exitCode);
 }
 
@@ -270,6 +276,13 @@ static void usage(const char* program, const int exitCode)
 // ###### Main program ######################################################
 int main (int argc, char** argv)
 {
+   // ====== Initialise i18n support ========================================
+   if(setlocale(LC_ALL, "") == NULL) {
+      setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
+   }
+   bindtextdomain("text-block", NULL);
+   textdomain("text-block");
+
    // ====== Handle arguments ===============================================
    bool showWarnings = true;
    const static struct option long_options[] = {
@@ -383,7 +396,8 @@ int main (int argc, char** argv)
             for(unsigned int i = 0; i < strlen(optarg); i++) {
                if( (optarg[i] == '%') ||
                    !( (isalnum(optarg[i]) || (optarg[i] != '-') || (optarg[i] != '\'') ) ) ) {
-                  fputs("ERROR: Invalid value for enumeration-format!\n", stderr);
+                  fputs(gettext("ERROR: Invalid value for enumeration-format!"), stderr);
+                  fputs("\n", stderr);
                   return 1;
                }
             }
@@ -420,7 +434,8 @@ int main (int argc, char** argv)
             usage(argv[0], 0);
           break;
          default:
-            fprintf(stderr, "ERROR: Invalid argument %s!", argv[optind - 1]);
+            fprintf(stderr, gettext("ERROR: Invalid argument %s!"), argv[optind - 1]);
+            fputs("\n", stderr);
             return 1;
           break;
       }
@@ -444,7 +459,8 @@ int main (int argc, char** argv)
       case Discard:
       case Enumerate:
          if( showWarnings && ( (BeginTag != NULL) || (EndTag != NULL) ) ) {
-            fputs("WARNING: Cat, Discard or Enumerate Mode is not useful with begin/end tags!\n", stderr);
+            fputs(gettext("WARNING: Cat, Discard or Enumerate Mode is not useful with begin/end tags!"), stderr);
+            fputs("\n", stderr);
          }
          BeginTag = NULL;
          EndTag   = NULL;
@@ -457,13 +473,15 @@ int main (int argc, char** argv)
       case InsertFront:
       case InsertBack:
          if( showWarnings && IncludeTags ) {
-            fputs("WARNING: Insert Mode is not useful with --include-tags!\n", stderr);
+            fputs(gettext("WARNING: Insert Mode is not useful with --include-tags!"), stderr);
+            fputs("\n", stderr);
          }
          IncludeTags = false;
        break;
       case Extract:
          if(BeginTag == EndTag) {
-            fputs("ERROR: Extract Mode is not useful with identical begin/end tags!\n", stderr);
+            fputs(gettext("ERROR: Extract Mode is not useful with identical begin/end tags!"), stderr);
+            fputs("\n", stderr);
             return 1;
          }
        break;
@@ -481,8 +499,9 @@ int main (int argc, char** argv)
    if(InputFileName != NULL) {
       InputFile = fopen(InputFileName, "r");
       if(InputFile == NULL) {
-         fprintf(stderr, "ERROR: Unable to open input file %s: %s\n",
+         fprintf(stderr, gettext("ERROR: Unable to open input file %s: %s"),
                  InputFileName, strerror(errno));
+         fputs("\n", stderr);
          cleanUp(1);
       }
 #ifdef POSIX_FADV_SEQUENTIAL
@@ -494,8 +513,9 @@ int main (int argc, char** argv)
    if(OutputFileName != NULL) {
       OutputFile = fopen(OutputFileName, (OpenOutputAppend == false) ? "w" : "a");
       if(OutputFile == NULL) {
-         fprintf(stderr, "ERROR: Unable to open output file %s: %s\n",
+         fprintf(stderr, gettext("ERROR: Unable to open output file %s: %s"),
                  OutputFileName, strerror(errno));
+         fputs("\n", stderr);
          cleanUp(1);
       }
       OpenOutputFile = true;
@@ -503,8 +523,9 @@ int main (int argc, char** argv)
    if(InsertFileName != NULL) {
       InsertFile = fopen(InsertFileName, "r");
       if(InsertFile == NULL) {
-         fprintf(stderr, "ERROR: Unable to open insert file %s: %s\n",
+         fprintf(stderr, gettext("ERROR: Unable to open insert file %s: %s"),
                  InsertFileName, strerror(errno));
+         fputs("\n", stderr);
          cleanUp(1);
       }
 #ifdef POSIX_FADV_SEQUENTIAL
@@ -513,7 +534,8 @@ int main (int argc, char** argv)
    }
    else {
       if( (Mode == InsertFront) || (Mode == InsertBack) || (Mode == Replace) ) {
-         fputs("ERROR: No insert file provided!\n", stderr);
+         fputs(gettext("ERROR: No insert file provided!"), stderr);
+         fputs("\n", stderr);
          cleanUp(1);
       }
    }
@@ -652,7 +674,8 @@ int main (int argc, char** argv)
       line = Buffer;
    }
    if( (lineLength < 0) && (errno != 0) ) {
-      fprintf(stderr, "ERROR: Read error: %s\n", strerror(errno));
+      fprintf(stderr, gettext("ERROR: Read error: %s"), strerror(errno));
+      fputs("\n", stderr);
       cleanUp(1);
    }
 
