@@ -30,6 +30,8 @@
 #include <ctype.h>
 #include <getopt.h>
 #include <fcntl.h>
+#include <libintl.h>
+#include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -105,7 +107,8 @@ static char* unescape(const char* originalString)
    size_t original_string_length = strlen(originalString);
    char*  unescapedString        = malloc(original_string_length + 1);
    if(unescapedString == NULL) {
-      fputs("ERROR: malloc() failed!\n", stderr);
+      fputs(gettext("ERROR: malloc() failed!"), stderr);
+      fputs("\n", stderr);
       exit(1);
    }
 
@@ -229,7 +232,8 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
    // ====== Copy string, but filter out ANSI colouring sequences ===========
    char* utf8String = malloc(original_string_length + 1);
    if(utf8String == NULL) {
-      fputs("ERROR: malloc() failed!\n", stderr);
+      fputs(gettext("ERROR: malloc() failed!"), stderr);
+      fputs("\n", stderr);
       exit(1);
    }
 
@@ -255,12 +259,14 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
    // ====== Get string width ===============================================
    wchar_t* wide_string = (wchar_t*)malloc(sizeof(wchar_t) * (j + 1));
    if(wide_string == NULL) {
-      fputs("ERROR: malloc() failed!\n", stderr);
+      fputs(gettext("ERROR: malloc() failed!"), stderr);
+      fputs("\n", stderr);
       exit(1);
    }
    const size_t wide_string_length = mbstowcs(wide_string, utf8String, j);
    if(wide_string_length < 0) {
-      fputs("ERROR: mbstowcs() failed!\n", stderr);
+      fputs(gettext("ERROR: mbstowcs() failed!"), stderr);
+      fputs("\n", stderr);
       exit(1);
    }
 
@@ -494,6 +500,8 @@ int main (int argc, char** argv)
    if(setlocale(LC_ALL, "") == NULL) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
+   bindtextdomain("print-utf8", NULL);
+   textdomain("print-utf8");
 
    // ====== Handle arguments ===============================================
    printmode_t mode                = Indent;
@@ -549,7 +557,8 @@ int main (int argc, char** argv)
                optind += 2;
             }
             else {
-               fputs("ERROR: Invalid arguments for multiline-ident!\n", stderr);
+               fputs(gettext("ERROR: Invalid arguments for multiline-ident!"), stderr);
+               fputs("\n", stderr);
                return 1;
             }
           break;
@@ -561,7 +570,8 @@ int main (int argc, char** argv)
                optind++;
             }
             else {
-               fputs("ERROR: Invalid arguments for multiline-center!\n", stderr);
+               fputs(gettext("ERROR: Invalid arguments for multiline-center!"), stderr);
+               fputs("\n", stderr);
                return 1;
             }
           break;
@@ -577,7 +587,8 @@ int main (int argc, char** argv)
                optind += 2;
             }
             else {
-               fputs("ERROR: Invalid separator setting!\n", stderr);
+               fputs(gettext("ERROR: Invalid separator setting!"), stderr);
+               fputs("\n", stderr);
                return 1;
             }
           break;
@@ -588,7 +599,8 @@ int main (int argc, char** argv)
                   consoleWidth = defaultConsoleWidth + consoleWidth;   // subtract!
                }
                if(consoleWidth > 4096) {
-                  fprintf(stderr, "ERROR: Invalid console width %u!\n", consoleWidth);
+                  fprintf(stderr, gettext("ERROR: Invalid console width %u!"), consoleWidth);
+                  fputs("\n", stderr);
                   return 1;
                }
             }
@@ -618,7 +630,6 @@ int main (int argc, char** argv)
             usage(argv[0], 0);
           break;
          case '-':
-            puts("XXX");
           break;
          default:
           break;
@@ -630,7 +641,8 @@ int main (int argc, char** argv)
       }
       utf8String = unescape(argv[optind++]);
       while(optind < argc) {
-         fprintf(stderr, "WARNING: Unhandled parameter %s!\n", argv[optind++]);
+         fprintf(stderr, gettext("WARNING: Unhandled parameter %s!"), argv[optind++]);
+         fputs("\n", stderr);
       }
    }
 
