@@ -117,6 +117,7 @@ int main(int argc, char** argv)
           break;
          default:
             fprintf(stderr, gettext("ERROR: Invalid argument %s!"), argv[optind - 1]);
+            fputs("\n", stderr);
             return 1;
           break;
       }
