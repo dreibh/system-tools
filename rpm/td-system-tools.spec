@@ -241,6 +241,8 @@ support for fractional seconds.
 %{_datadir}/bash-completion/completions/try-hard
 %{_datadir}/locale/*/LC_MESSAGES/random-sleep.mo
 %{_datadir}/locale/*/LC_MESSAGES/try-hard.mo
+%{_datadir}/text-block/examples/example1.txt
+%{_datadir}/text-block/examples/example2.txt
 %{_mandir}/man1/random-sleep.1.gz
 %{_mandir}/man1/text-block.1.gz
 %{_mandir}/man1/try-hard.1.gz
