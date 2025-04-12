@@ -99,6 +99,7 @@
 .Op Fl Fl highlight-unmarked2 Ar string
 .Op Fl Fl highlight-marked1 Ar string
 .Op Fl Fl highlight-marked2 Ar string
+.Op Fl Fl highlight-param Fl begin_label Fl end_label Fl unmarked1_label Fl unmarked2_label Fl marked1_label Fl marked2_label
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm text-block
@@ -220,11 +221,18 @@ For Highlight mode: Sets string to visualise the begin of a marked text fragment
 (enables red colour output).
 .It Fl Fl highlight-marked2 Ar string
 For Highlight mode: Sets string to visualise the end of a marked text fragment. Default: $\[aq]\ex1b[0m \[aq] (disables colour output).
+.It Fl Fl highlight-param Fl begin_label Fl end_label Fl unmarked1_label Fl unmarked2_label Fl marked1_label Fl marked2_label
+A shortcut to set all 6 highlight parameters at once.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
+Note: the example input files example1.txt and example2.txt, referred to in
+the following command-line examples, are usually installed under
+/usr/share/text-block or /usr/local/share/text-block/!
 .Ss Cat Mode
 .Bl -bullet
+.It
+text-block -i example1.txt --cat
 .It
 text-block -i /etc/system-info.d/01-example
 .It
@@ -232,6 +240,8 @@ text-block -i /etc/system-info.d/01-example -C
 .El
 .Ss Enumerate Mode
 .Bl -bullet
+.It
+text-block -i example1.txt --enumerate
 .It
 figlet \[dq]Test!\[dq] | text-block -E
 .It
@@ -242,15 +252,25 @@ text-block -i /etc/system-info.d/01-example --enumerate --enumerate-format \[dq]
 .Ss Highlight Mode
 .Bl -bullet
 .It
-text-block -i /usr/share/text-block/example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight
 .It
-text-block -i /usr/share/text-block/example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --exclude-tags --tags-only
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --exclude-tags --tags-only
 .It
-text-block -i /usr/share/text-block/example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --include-tags --tags-only
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --include-tags --tags-only
 .It
-text-block -i /usr/share/text-block/example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --include-tags --full-tag-lines
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --include-tags --full-tag-lines
 .It
-text-block -i /usr/share/text-block/example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --exclude-tags --full-tag-lines
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --exclude-tags --full-tag-lines
+.It
+text-block -i example2.txt -b '<MARKER>' -H --exclude-tags --tags-only
+.It
+text-block -i example2.txt -b '<MARKER>' -H --include-tags --tags-only
+.It
+text-block -i example2.txt -b '<MARKER>' -H --include-tags --full-tag-lines
+.It
+text-block -i example2.txt -b '<MARKER>' -H --exclude-tags --full-tag-lines
+.It
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight --highlight-param "☀" "🌙" $\[aq]\e[32m' $\[aq]\e[0m' $\[aq]\e[31;5m' $\[aq]\e[0m'
 .El
 .Ss Delete Mode
 .Bl -bullet
