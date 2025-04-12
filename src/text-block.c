@@ -486,11 +486,6 @@ int main (int argc, char** argv)
          BeginTag = NULL;
          EndTag   = NULL;
        break;
-      case Remove:
-      case Replace:
-         // Just inverse the IncludeTags option, to keep the following code simple:
-         IncludeTags  = !IncludeTags;
-       break;
       case InsertFront:
       case InsertBack:
          if( showWarnings && IncludeTags ) {
@@ -506,7 +501,7 @@ int main (int argc, char** argv)
             return 1;
          }
        break;
-      case Highlight:
+      default:
        break;
    }
 #ifdef DEBUG_MODE
