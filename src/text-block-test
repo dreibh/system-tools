@@ -48,10 +48,6 @@ for test in simple markers advanced1 advanced2 ; do
                fi
             fi
 
-            if [ "${mode}" == "extract" ] && [ "${test}" == "advanced2" ] ; then
-               continue
-            fi
-
             # ====== Prepare test run =======================================
             ./print-utf8 -x 86 -s "\x1b[34m###### Testing: ${test} --${mode} --${o1} --${o2} " "#" "#\x1b[0m   " >&2
 
@@ -64,6 +60,11 @@ for test in simple markers advanced1 advanced2 ; do
             elif [ "${mode}" == "discard" ] ; then
                mode2="${mode}"
                touch "${goodFile}"   # There are no empty files in Git!
+            elif [ "${mode}" == "extract" ] && [ "${test}" == "advanced2" ] ; then
+               mode2="${mode}"
+               if [ "$o2" == "include-tags" ] ; then
+                  touch "${goodFile}"   # There are no empty files in Git!
+               fi
             else
                mode2="${mode}"
             fi

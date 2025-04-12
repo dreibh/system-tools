@@ -495,10 +495,9 @@ int main (int argc, char** argv)
          IncludeTags = false;
        break;
       case Extract:
-         if(BeginTag == EndTag) {
-            fputs(gettext("ERROR: Extract Mode is not useful with identical begin/end tags!"), stderr);
+         if( showWarnings && (BeginTag == EndTag) )  {
+            fputs(gettext("WARNING: Extract Mode is not useful with identical begin/end tags!"), stderr);
             fputs("\n", stderr);
-            return 1;
          }
        break;
       default:
