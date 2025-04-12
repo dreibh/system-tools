@@ -136,6 +136,6 @@ INSTALL(PROGRAMS system-info.d/banner-helper           DESTINATION ${CMAKE_INSTA
 INSTALL(FILES grub-defaults-nornet   DESTINATION ${CMAKE_INSTALL_DATADIR}/configure-grub)
 INSTALL(FILES grub-defaults-standard DESTINATION ${CMAKE_INSTALL_DATADIR}/configure-grub)
 
-INSTALL(FILES text-block-examples/example1.txt
-              text-block-examples/example2.txt
+INSTALL(FILES text-block-tests/example1.txt
+              text-block-tests/example2.txt
         DESTINATION ${CMAKE_INSTALL_DATADIR}/text-block)
