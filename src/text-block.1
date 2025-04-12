@@ -242,7 +242,15 @@ text-block -i /etc/system-info.d/01-example --enumerate --enumerate-format \[dq]
 .Ss Highlight Mode
 .Bl -bullet
 .It
-TBD!
+text-block -i /usr/share/text-block/example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight
+.It
+text-block -i /usr/share/text-block/example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --exclude-tags --tags-only
+.It
+text-block -i /usr/share/text-block/example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --include-tags --tags-only
+.It
+text-block -i /usr/share/text-block/example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --include-tags --full-tag-lines
+.It
+text-block -i /usr/share/text-block/example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --exclude-tags --full-tag-lines
 .El
 .Ss Delete Mode
 .Bl -bullet
