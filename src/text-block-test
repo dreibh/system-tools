@@ -35,8 +35,8 @@ RUN=""
 make text-block
 insertFile="text-block-tests/insert.txt"
 failures=0
-# Tests: simple markers
-for test in simple markers advanced1 advanced2 ; do
+# Tests: simple markers advanced1 advanced2 example1 example2
+for test in simple markers advanced1 advanced2 example1 example2 ; do
    # Modes: cat discard enumerate highlight extract remove insert-front insert-back replace
    for mode in cat discard enumerate highlight extract remove insert-front insert-back replace ; do
       for o1 in include-tags exclude-tags ; do
@@ -45,9 +45,13 @@ for test in simple markers advanced1 advanced2 ; do
             # ====== Prepare test run =======================================
             ./print-utf8 -x 86 -s "\x1b[34m###### Testing: ${test} --${mode} --${o1} --${o2} " "#" "#\x1b[0m   " >&2
 
+            # ------ Default parameters -------------------------------------
+            inputFile="text-block-tests/${test}.txt"
             outputFile="text-block-tests/${test}-${mode}-${o1}-${o2}.out"
             goodFile="text-block-tests/${test}-${mode}-${o1}-${o2}.good"
             badFile="text-block-tests/${test}-${mode}-${o1}-${o2}.bad"
+            beginTag="<BEGIN-BLOCK>"
+            endTag="<END-BLOCK>"
             rm -f "${badFile}"
             if [ "${mode}" == "replace" ] || [ "${mode}" == "insert-front" ] || [ "${mode}" == "insert-back" ] ; then
                mode2="${mode} ${insertFile}"
@@ -63,14 +67,20 @@ for test in simple markers advanced1 advanced2 ; do
                mode2="${mode}"
             fi
 
-            # ====== Perform the test run ===================================
+            # ------ Special cases ------------------------------------------
             if [ "${test}" == "advanced1" ] ; then
-               command="${RUN} ./text-block -q -i text-block-tests/advanced.txt -o ${outputFile} -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight-unmarked1 $'\x1b[34mu' --highlight-unmarked2 $'U\x1b[0m' --highlight-marked1 $'m\x1b[31m' --highlight-marked2 $'M\x1b[0m' --${mode2} --${o1} --${o2}"
+               inputFile="text-block-tests/advanced.txt"
             elif [ "${test}" == "advanced2" ] ; then
-               command="${RUN} ./text-block -q -i text-block-tests/advanced.txt -o ${outputFile} -b '<MARKER>' --highlight-unmarked1 $'\x1b[34mu' --highlight-unmarked2 $'U\x1b[0m' --highlight-marked1 $'m\x1b[31m' --highlight-marked2 $'M\x1b[0m' --${mode2} --${o1} --${o2}"
-            else
-               command="${RUN} ./text-block -q -i text-block-tests/${test}.txt -o ${outputFile} -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight-unmarked1 $'\x1b[34mu' --highlight-unmarked2 $'U\x1b[0m' --highlight-marked1 $'m\x1b[31m' --highlight-marked2 $'M\x1b[0m' --${mode2} --${o1} --${o2}"
+               inputFile="text-block-tests/advanced.txt"
+               beginTag="<MARKER>"
+               endTag="<MARKER>"
+            elif [ "${test}" == "example2" ] ; then
+               beginTag="<MARKER>"
+               endTag="<MARKER>"
             fi
+
+            # ====== Perform the test run ===================================
+            command="${RUN} ./text-block -q -i ${inputFile} -o ${outputFile} -b '${beginTag}' -e '${endTag}' --highlight-unmarked1 $'\x1b[34mu' --highlight-unmarked2 $'U\x1b[0m' --highlight-marked1 $'m\x1b[31m' --highlight-marked2 $'M\x1b[0m' --${mode2} --${o1} --${o2}"
             bash -c "${command}"
 
             # ====== Check results ==========================================

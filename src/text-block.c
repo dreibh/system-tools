@@ -525,6 +525,9 @@ int main (int argc, char** argv)
          fputs("\n", stderr);
          cleanUp(1);
       }
+#ifdef POSIX_FADV_SEQUENTIAL
+      posix_fadvise(fileno(OutputFile), 0, 0, POSIX_FADV_SEQUENTIAL|POSIX_FADV_NOREUSE);
+#endif
       OpenOutputFile = true;
    }
    if(InsertFileName != NULL) {
@@ -536,7 +539,7 @@ int main (int argc, char** argv)
          cleanUp(1);
       }
 #ifdef POSIX_FADV_SEQUENTIAL
-      posix_fadvise(fileno(InputFile), 0, 0, POSIX_FADV_SEQUENTIAL);
+      posix_fadvise(fileno(InputFile), 0, 0, POSIX_FADV_SEQUENTIAL|POSIX_FADV_WILLNEED);
 #endif
    }
    else {
