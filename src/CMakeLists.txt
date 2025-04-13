@@ -138,4 +138,5 @@ INSTALL(FILES grub-defaults-standard DESTINATION ${CMAKE_INSTALL_DATADIR}/config
 
 INSTALL(FILES text-block-tests/example1.txt
               text-block-tests/example2.txt
+              text-block-tests/insert.txt
         DESTINATION ${CMAKE_INSTALL_DATADIR}/text-block)
