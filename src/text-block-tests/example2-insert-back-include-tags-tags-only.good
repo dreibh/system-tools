@@ -1,0 +1,7 @@
+This line is not in a block.
+before the first tag <MARKER>Inserted text!
+ after first the tag
+This line is also not in a block.
+before the second tag <MARKER>Inserted text!
+ after second the tag
+This line is not in a block as well.
