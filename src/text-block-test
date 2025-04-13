@@ -42,12 +42,6 @@ for test in simple markers advanced1 advanced2 ; do
       for o1 in include-tags exclude-tags ; do
          for o2 in tags-only full-tag-lines ; do
 
-            if [ "${mode}" == "insert-front" ] || [ "${mode}" == "insert-back" ] ; then
-               if [ "$o1" == "include-tags" ] ; then
-                  continue   # Not useful
-               fi
-            fi
-
             # ====== Prepare test run =======================================
             ./print-utf8 -x 86 -s "\x1b[34m###### Testing: ${test} --${mode} --${o1} --${o2} " "#" "#\x1b[0m   " >&2
 

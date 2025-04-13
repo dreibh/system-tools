@@ -486,14 +486,6 @@ int main (int argc, char** argv)
          BeginTag = NULL;
          EndTag   = NULL;
        break;
-      case InsertFront:
-      case InsertBack:
-         if( showWarnings && IncludeTags ) {
-            fputs(gettext("WARNING: Insert Mode is not useful with --include-tags!"), stderr);
-            fputs("\n", stderr);
-         }
-         IncludeTags = false;
-       break;
       case Extract:
          if( showWarnings && (BeginTag == EndTag) )  {
             fputs(gettext("WARNING: Extract Mode is not useful with identical begin/end tags!"), stderr);
