@@ -226,9 +226,9 @@ A shortcut to set all 6 highlight parameters at once.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-Note: the example input files example1.txt and example2.txt, referred to in
-the following command-line examples, are usually installed under
-/usr/share/text-block or /usr/local/share/text-block/!
+Note: the example input files example1.txt, example2.txt, and insert.txt,
+referred to in the following command-line examples, are usually installed
+under /usr/share/text-block or /usr/local/share/text-block/!
 .Ss Cat Mode
 .Bl -bullet
 .It
@@ -275,22 +275,36 @@ text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight --hig
 .Ss Delete Mode
 .Bl -bullet
 .It
-TBD!
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --delete
+.It
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -D
 .El
 .Ss Insert Front Mode
 .Bl -bullet
 .It
-TBD!
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --insert-front insert.txt
+.It
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -F insert.txt
 .El
 .Ss Insert Back Mode
 .Bl -bullet
 .It
-TBD!
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --insert-back insert.txt
+.It
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -B insert.txt
+.It
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -F insert.txt -f
 .El
 .Ss Replace Mode
 .Bl -bullet
 .It
-TBD!
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --replace insert.txt
+.It
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --replace insert.txt --include-tags
+.It
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --replace insert.txt --include-tags --full-tag-lines
+.It
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -R insert.txt -gy
 .El
 .Ss Other Examples
 .Bl -bullet
