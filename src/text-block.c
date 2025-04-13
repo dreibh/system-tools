@@ -64,7 +64,7 @@ static size_t             BeginTagLength       = 0;
 static const char*        EndTag               = NULL;
 static size_t             EndTagLength         = 0;
 static bool               IncludeTags          = false;
-static bool               WithTagLines         = false;
+static bool               FullTagLines         = false;
 static char               EnumerateFormat[128] = "%06llu";
 static const char*        Enumerate1           = "\e[36m";
 static const char*        Enumerate2           = "\e[0m ";
@@ -385,10 +385,10 @@ int main (int argc, char** argv)
             IncludeTags = true;
           break;
          case 'f':
-            WithTagLines = true;
+            FullTagLines = true;
           break;
          case 'g':
-            WithTagLines = false;
+            FullTagLines = false;
           break;
          case 'q':
             showWarnings = false;
@@ -480,15 +480,17 @@ int main (int argc, char** argv)
       case Discard:
       case Enumerate:
          if( showWarnings && ( (BeginTag != NULL) || (EndTag != NULL) ) ) {
-            fputs(gettext("WARNING: Cat, Discard or Enumerate Mode is not useful with begin/end tags!"), stderr);
+            fputs(gettext("WARNING: Begin/end tags (--begin-tag/-b/--end-tag/-e/--tag/-t) have no effect in Cat, Discard, or Enumerate Mode!"), stderr);
             fputs("\n", stderr);
          }
          BeginTag = NULL;
          EndTag   = NULL;
        break;
       case Extract:
-         if( showWarnings && (BeginTag == EndTag) )  {
-            fputs(gettext("WARNING: Extract Mode is not useful with identical begin/end tags!"), stderr);
+      case Remove:
+      case Replace:
+         if( showWarnings && (BeginTag == EndTag) && (!IncludeTags) )  {
+            fputs(gettext("WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful in Extract, Remove, or Replace Mode!"), stderr);
             fputs("\n", stderr);
          }
        break;
@@ -499,6 +501,7 @@ int main (int argc, char** argv)
    printf("Begin Tag=%s\n",   BeginTag);
    printf("End Tag=%s\n",     EndTag);
    printf("IncludeTags=%u\n", IncludeTags);
+   printf("FullTagLines=%u\n", FullTagLines);
 #endif
 
    // ====== Open files =====================================================
@@ -585,7 +588,7 @@ int main (int argc, char** argv)
             // ====== Begin marker found ====================================
             if(MarkerTag == BeginTag) {
                // ------ Begin of marking with full tag lines ---------------
-               if(WithTagLines) {
+               if(FullTagLines) {
                   next += MarkerTagLength;
                   if(IncludeTags) {
                      processUnmarked(Line, 0, true);
@@ -619,7 +622,7 @@ int main (int argc, char** argv)
 
             // ====== End marker found ======================================
             else /* if(MarkerTag == EndTag) */ {
-               if(WithTagLines) {
+               if(FullTagLines) {
                   next += MarkerTagLength;
                   if(IncludeTags) {
                      processMarked(Pointer, (ssize_t)(next - Pointer), false);
@@ -642,9 +645,9 @@ int main (int argc, char** argv)
 
             Pointer = next;
 
-            // ====== Special case: WithTagLines with multiple markers ======
-            if((WithTagLines) && (foundMarker)) {
-               // WithTagLines with multiple markers in a line is not useful
+            // ====== Special case: FullTagLines with multiple markers ======
+            if((FullTagLines) && (foundMarker)) {
+               // FullTagLines with multiple markers in a line is not useful
                // => Interpret only the *first* marker here!
                break;
             }
@@ -652,7 +655,7 @@ int main (int argc, char** argv)
 
          // ====== No (further) marker found ================================
          // Still need to handle the rest of the line ...
-         if( (WithTagLines) && (foundMarker) ) {
+         if( (FullTagLines) && (foundMarker) ) {
             if(IncludeTags) {
                processMarked(Pointer, (ssize_t)(EndOfLine - Pointer), (MarkerTag == BeginTag));
             }

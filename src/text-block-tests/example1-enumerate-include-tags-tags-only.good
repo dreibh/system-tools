@@ -1,0 +1,5 @@
+[36m000001[0m This line is not in a block.
+[36m000002[0m before the begin tag <BEGIN-BLOCK> after the begin tag
+[36m000003[0m A line within the tagged block.
+[36m000004[0m before the end tag <END-BLOCK> after the end tag
+[36m000005[0m This line is also not in a block.

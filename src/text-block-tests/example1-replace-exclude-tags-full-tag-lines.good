@@ -1,0 +1,5 @@
+This line is not in a block.
+before the begin tag <BEGIN-BLOCK> after the begin tag
+Inserted text!
+before the end tag <END-BLOCK> after the end tag
+This line is also not in a block.

@@ -53,19 +53,6 @@ for test in simple markers advanced1 advanced2 example1 example2 ; do
             beginTag="<BEGIN-BLOCK>"
             endTag="<END-BLOCK>"
             rm -f "${badFile}"
-            if [ "${mode}" == "replace" ] || [ "${mode}" == "insert-front" ] || [ "${mode}" == "insert-back" ] ; then
-               mode2="${mode} ${insertFile}"
-            elif [ "${mode}" == "discard" ] ; then
-               mode2="${mode}"
-               touch "${goodFile}"   # There are no empty files in Git!
-            elif [ "${mode}" == "extract" ] && [ "${test}" == "advanced2" ] ; then
-               mode2="${mode}"
-               if [ "$o2" == "include-tags" ] ; then
-                  touch "${goodFile}"   # There are no empty files in Git!
-               fi
-            else
-               mode2="${mode}"
-            fi
 
             # ------ Special cases ------------------------------------------
             if [ "${test}" == "advanced1" ] ; then
@@ -79,8 +66,20 @@ for test in simple markers advanced1 advanced2 example1 example2 ; do
                endTag="<MARKER>"
             fi
 
+            m="${mode}"
+            if [ "${mode}" == "discard" ] ; then
+               touch "${goodFile}"   # There are no empty files in Git!
+            elif [ "${mode}" == "extract" ] ; then
+               if [ "${beginTag}" == "${endTag}" ] && [ "${o1}" == "exclude-tags" ] ; then
+                  touch "${goodFile}"   # There are no empty files in Git!
+               fi
+            elif [ "${mode}" == "replace" ] || [ "${mode}" == "insert-front" ] || [ "${mode}" == "insert-back" ] ; then
+               m="${mode} ${insertFile}"   # Add insert file name as parameter
+            fi
+
+
             # ====== Perform the test run ===================================
-            command="${RUN} ./text-block -q -i ${inputFile} -o ${outputFile} -b '${beginTag}' -e '${endTag}' --highlight-unmarked1 $'\x1b[34mu' --highlight-unmarked2 $'U\x1b[0m' --highlight-marked1 $'m\x1b[31m' --highlight-marked2 $'M\x1b[0m' --${mode2} --${o1} --${o2}"
+            command="${RUN} ./text-block -q -i ${inputFile} -o ${outputFile} -b '${beginTag}' -e '${endTag}' --highlight-unmarked1 $'\x1b[34mu' --highlight-unmarked2 $'U\x1b[0m' --highlight-marked1 $'m\x1b[31m' --highlight-marked2 $'M\x1b[0m' --${m} --${o1} --${o2}"
             bash -c "${command}"
 
             # ====== Check results ==========================================

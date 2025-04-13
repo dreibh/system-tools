@@ -1,0 +1,6 @@
+[34muThis line is not in a block.
+U[0m⭐m[31mbefore the begin tag <BEGIN-BLOCK>M[0mm[31m after the begin tag
+M[0mm[31mA line within the tagged block.
+M[0mm[31mbefore the end tag <END-BLOCK>M[0mm[31m after the end tag
+M[0m🛑[34muThis line is also not in a block.
+U[0m
