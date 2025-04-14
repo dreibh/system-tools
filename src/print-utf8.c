@@ -35,6 +35,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdnoreturn.h>
 #include <string.h>
 #include <unistd.h>
 #include <wchar.h>
@@ -477,7 +478,7 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
 
 
 // ###### Version ###########################################################
-static void version()
+static noreturn void version()
 {
    printf("print-utf8 %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -485,7 +486,7 @@ static void version()
 
 
 // ###### Usage #############################################################
-static void usage(const char* program, const int exitCode)
+static noreturn void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "Usage: %s [-n|--newline] [-i indentation string|--ident indentation string] [-c string|--center string] [-I left right|--multiline-indent indentation left right]  [-C left right|--multiline-center left right] [-s border_left separator border_right|--separator border_left separator border_right] [-c columns|--columns columns] [-s string|--size string] [-l string|--length string] [-w string|--width string] [-a string|--size-length-width string] [-t|--terminal-info] [-h|--help] [-v|--version]\n", program);
    exit(exitCode);

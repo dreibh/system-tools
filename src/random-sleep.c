@@ -32,6 +32,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdnoreturn.h>
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
@@ -53,7 +54,7 @@ static double runiform(const double min, const  double max)
 
 
 // ###### Version ###########################################################
-static void version()
+static noreturn void version()
 {
    printf("random-sleep %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -61,7 +62,7 @@ static void version()
 
 
 // ###### Usage #############################################################
-static void usage(const char* program, const int exitCode)
+static noreturn void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "%s %s min_delay max_delay [-q|--quiet] [-w|--verbose] [-h|--help] [-v|--version]\n",
            gettext("Usage:"), program);

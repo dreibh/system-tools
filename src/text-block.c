@@ -35,6 +35,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdnoreturn.h>
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
@@ -99,7 +100,7 @@ static const char*        Pointer;
 
 
 // ###### Clean up ##########################################################
-static void cleanUp(int exitCode)
+static noreturn void cleanUp(int exitCode)
 {
    if(InsertFile) {
       fclose(InsertFile);
@@ -275,7 +276,7 @@ static void processMarked(const char*   text,
 
 
 // ###### Version ###########################################################
-static void version()
+static noreturn void version()
 {
    printf("text-block %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -283,7 +284,7 @@ static void version()
 
 
 // ###### Usage #############################################################
-static void usage(const char* program, const int exitCode)
+static noreturn void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "%s %s [-C|--cat] [-0|--discard] [-H|--highlight] [-E|--enumerate] [-X|--extract] [-D|--delete|--remove] [-F|--insert-front insert_file] [-B|--insert-back insert_file] [-R|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-a|--append] [-s|--select from_line to_line] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-y|--include-tags] [-x|--exclude-tags] [-f|--full-tag-lines] [-g|--tags-only] [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label] [--highlight-param begin_label end_label unmarked1_label unmarked2_label marked1_label marked2_label] [--enumerate-format format] [--enumerate-label[1|2] string] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n",
            gettext("Usage:"), program);

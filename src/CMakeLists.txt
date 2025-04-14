@@ -89,18 +89,13 @@ INSTALL(FILES              print-utf8.bash-completion
         RENAME             print-utf8)
 
 ADD_EXECUTABLE(random-sleep random-sleep.c)
+SET_PROPERTY(TARGET random-sleep PROPERTY C_STANDARD 11)
 TARGET_LINK_LIBRARIES(random-sleep ${Intl_LIBRARIES})
 INSTALL(TARGETS     random-sleep   DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES       random-sleep.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       random-sleep.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      random-sleep)
-
-INSTALL(PROGRAMS    try-hard   DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES       try-hard.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       try-hard.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      try-hard)
 
 ADD_EXECUTABLE(text-block text-block.c)
 SET_PROPERTY(TARGET text-block PROPERTY C_STANDARD 11)
@@ -109,6 +104,12 @@ INSTALL(FILES       text-block.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       text-block.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      text-block)
+
+INSTALL(PROGRAMS    try-hard   DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES       try-hard.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       try-hard.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      try-hard)
 
 
 #############################################################################
