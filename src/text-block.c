@@ -63,6 +63,9 @@ static const char*        BeginTag             = NULL;
 static size_t             BeginTagLength       = 0;
 static const char*        EndTag               = NULL;
 static size_t             EndTagLength         = 0;
+static long long          SelectBegin          = 0;
+static long long          SelectEnd            = 0;
+static long long          TotalInputLines      = -1;
 static bool               IncludeTags          = false;
 static bool               FullTagLines         = false;
 static char               EnumerateFormat[128] = "%06llu";
@@ -98,11 +101,6 @@ static const char*        Pointer;
 // ###### Clean up ##########################################################
 static void cleanUp(int exitCode)
 {
-   if(Buffer) {
-      free(Buffer);
-      Buffer = NULL;
-   }
-
    if(InsertFile) {
       fclose(InsertFile);
       InsertFile = NULL;
@@ -123,6 +121,11 @@ static void cleanUp(int exitCode)
    }
    InputFile = NULL;
 
+   if(Buffer) {
+      free(Buffer);
+      Buffer = NULL;
+   }
+
    exit(exitCode);
 }
 
@@ -138,6 +141,22 @@ static void writeToOutputFile(const char* data, const size_t length)
          cleanUp(1);
       }
    }
+}
+
+
+// ###### Count lines of input file #########################################
+static long long countLines(FILE* inputFile)
+{
+   long long lines = 0;
+
+   char* line = Buffer;
+   while( (getline((char**)&line, &BufferSize, inputFile)) > 0 ) {
+      lines++;
+      line = Buffer;
+   }
+   rewind(inputFile);
+
+   return lines;
 }
 
 
@@ -266,7 +285,7 @@ static void version()
 // ###### Usage #############################################################
 static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "%s %s [-C|--cat] [-0|--discard] [-H|--highlight] [-E|--enumerate] [-X|--extract] [-D|--delete|--remove] [-F|--insert-front insert_file] [-B|--insert-back insert_file] [-R|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-a|--append] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-y|--include-tags] [-x|--exclude-tags] [-f|--full-tag-lines] [-t|--tags-only] [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label] [--highlight-param begin_label end_label unmarked1_label unmarked2_label marked1_label marked2_label] [--enumerate-format format] [--enumerate-label[1|2] string] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n",
+   fprintf(stderr, "%s %s [-C|--cat] [-0|--discard] [-H|--highlight] [-E|--enumerate] [-X|--extract] [-D|--delete|--remove] [-F|--insert-front insert_file] [-B|--insert-back insert_file] [-R|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-a|--append] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-s|--select from_line to_line] [-y|--include-tags] [-x|--exclude-tags] [-f|--full-tag-lines] [-g|--tags-only] [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label] [--highlight-param begin_label end_label unmarked1_label unmarked2_label marked1_label marked2_label] [--enumerate-format format] [--enumerate-label[1|2] string] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n",
            gettext("Usage:"), program);
    exit(exitCode);
 }
@@ -303,6 +322,7 @@ int main (int argc, char** argv)
       { "begin-tag",           required_argument, 0, 'b' },
       { "end-tag",             required_argument, 0, 'e' },
       { "tag",                 required_argument, 0, 't' },
+      { "select",              required_argument, 0, 's' },
       { "exclude-tags",        no_argument,       0, 'x' },
       { "include-tags",        no_argument,       0, 'y' },
       { "full-tag-lines",      no_argument,       0, 'f' },
@@ -327,7 +347,7 @@ int main (int argc, char** argv)
 
    int option;
    int longIndex;
-   while( (option = getopt_long(argc, argv, "C0HEXDF:B:R:i:o:a:b:e:t:xyfgqhv", long_options, &longIndex)) != -1 ) {
+   while( (option = getopt_long(argc, argv, "C0HEXDF:B:R:i:o:a:b:e:t:s:xyfgqhv", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'C':
             Mode = Cat;
@@ -377,6 +397,18 @@ int main (int argc, char** argv)
          case 't':
             BeginTag = optarg;
             EndTag   = NULL;
+          break;
+         case 's':
+            if(optind < argc) {
+               SelectBegin = atoll(argv[optind - 1]);
+               SelectEnd   = atoll(argv[optind]);
+               optind++;
+            }
+            else {
+               fputs(gettext("ERROR: Too few arguments for select!"), stderr);
+               fputs("\n", stderr);
+               return 1;
+            }
           break;
          case 'x':
             IncludeTags = false;
@@ -443,7 +475,7 @@ int main (int argc, char** argv)
                optind += 5;
             }
             else {
-               fputs(gettext("ERROR: Invalid arguments for highlight-params!"), stderr);
+               fputs(gettext("ERROR: Too few arguments for highlight-params!"), stderr);
                fputs("\n", stderr);
                return 1;
             }
@@ -472,6 +504,11 @@ int main (int argc, char** argv)
    if( (EndTag == NULL) || (EndTag[0] == 0x00) || (strcmp(EndTag, BeginTag) == 0) ) {
       EndTag = BeginTag;
    }
+   if( (BeginTag) && ((SelectBegin != 0) || (SelectEnd != 0)) ) {
+      fputs(gettext("ERROR: Select (--select|-s) and tags (--begin-tag/-b/--end-tag/-e/--tag/-t) are mutually exclusive!"), stderr);
+      fputs("\n", stderr);
+      return 1;
+   }
    BeginTagLength = (BeginTag != NULL) ? strlen(BeginTag) : 0;
    EndTagLength   = (EndTag != NULL)   ? strlen(EndTag)   : 0;
 
@@ -497,14 +534,14 @@ int main (int argc, char** argv)
       default:
        break;
    }
-#ifdef DEBUG_MODE
-   printf("Begin Tag=%s\n",   BeginTag);
-   printf("End Tag=%s\n",     EndTag);
-   printf("IncludeTags=%u\n", IncludeTags);
-   printf("FullTagLines=%u\n", FullTagLines);
-#endif
 
-   // ====== Open files =====================================================
+   // ====== Allocate buffer ================================================
+   Buffer = (char*)malloc(BufferSize);
+   if(Buffer == NULL) {
+      cleanUp(1);
+   }
+
+   // ====== Open input file ================================================
    InputFile = stdin;
    if(InputFileName != NULL) {
       InputFile = fopen(InputFileName, "r");
@@ -514,11 +551,36 @@ int main (int argc, char** argv)
          fputs("\n", stderr);
          cleanUp(1);
       }
-#ifdef POSIX_FADV_SEQUENTIAL
-      posix_fadvise(fileno(InputFile), 0, 0, POSIX_FADV_SEQUENTIAL|POSIX_FADV_WILLNEED|POSIX_FADV_NOREUSE);
-#endif
       OpenInputFile = true;
+#ifdef POSIX_FADV_SEQUENTIAL
+      const int advice = ((SelectBegin >= 0) && (SelectEnd >= 0)) ?
+         POSIX_FADV_SEQUENTIAL|POSIX_FADV_WILLNEED|POSIX_FADV_NOREUSE :
+         POSIX_FADV_SEQUENTIAL|POSIX_FADV_WILLNEED;
+      posix_fadvise(fileno(InputFile), 0, 0, advice);
+#endif
+      TotalInputLines = countLines(InputFile);
+      if(SelectBegin < 0) {
+         SelectBegin = TotalInputLines + SelectBegin;
+      }
+      if(SelectEnd < 0) {
+         SelectEnd = TotalInputLines + SelectEnd;
+      }
+      if(showWarnings && ( (SelectEnd < SelectBegin) && (SelectEnd != 0)) ) {
+         fprintf(stderr,
+                 gettext("WARNING: Select range (%lld — %lld) is not useful. Input file too short?"),
+                 SelectBegin, SelectEnd);
+         fputs("\n", stderr);
+      }
    }
+   else {
+      if((SelectBegin < 0) || (SelectEnd < 0)) {
+         fputs(gettext("ERROR: Select from end of file (negative line number) is only possible with input file!"), stderr);
+         fputs("\n", stderr);
+         return 1;
+      }
+   }
+
+   // ====== Open output file ===============================================
    OutputFile = stdout;
    if(OutputFileName != NULL) {
       OutputFile = fopen(OutputFileName, (OpenOutputAppend == false) ? "w" : "a");
@@ -528,11 +590,13 @@ int main (int argc, char** argv)
          fputs("\n", stderr);
          cleanUp(1);
       }
+      OpenOutputFile = true;
 #ifdef POSIX_FADV_SEQUENTIAL
       posix_fadvise(fileno(OutputFile), 0, 0, POSIX_FADV_SEQUENTIAL|POSIX_FADV_NOREUSE);
 #endif
-      OpenOutputFile = true;
    }
+
+   // ====== Open insert file ===============================================
    if(InsertFileName != NULL) {
       InsertFile = fopen(InsertFileName, "r");
       if(InsertFile == NULL) {
@@ -553,13 +617,16 @@ int main (int argc, char** argv)
       }
    }
 
-   // ====== Allocate buffer ================================================
-   Buffer = (char*)malloc(BufferSize);
-   if(Buffer == NULL) {
-      cleanUp(1);
-   }
-
    // ====== Read lines from input file =====================================
+#ifdef DEBUG_MODE
+   printf("Select Begin=%lld\n", SelectBegin);
+   printf("Select End=%lld\n", SelectEnd);
+   printf("Begin Tag=%s\n",   BeginTag);
+   printf("End Tag=%s\n",     EndTag);
+   printf("IncludeTags=%u\n", IncludeTags);
+   printf("FullTagLines=%u\n", FullTagLines);
+#endif
+
    Line            = Buffer;
    LineNo          = 0;
    MarkerTag       = BeginTag;
@@ -578,6 +645,8 @@ int main (int argc, char** argv)
              Line);
 #endif
 
+
+      // ====== Tag handling ================================================
       if(MarkerTag != NULL) {
          Pointer = Line;
          const char* next;
@@ -679,9 +748,24 @@ int main (int argc, char** argv)
             }
          }
       }
+
+      // ====== Select handling =============================================
+      else if( (SelectBegin > 0) && (LineNo >= SelectBegin) &&
+               ( (SelectEnd == 0) || (LineNo <= SelectEnd) ) ) {
+         if(LineNo == SelectBegin) {
+            processUnmarked(Line, 0, true);
+         }
+         processMarked(Line, (ssize_t)(EndOfLine - Line), false);
+         if(LineNo == SelectEnd) {
+            processMarked(EndOfLine, 0, true);
+         }
+      }
+
+      // ====== Just process a regular, unmarked line =======================
       else {
          processUnmarked(Line, (ssize_t)(EndOfLine - line), false);
       }
+
 
       // ====== Prepare next iteration ======================================
       line = Buffer;
@@ -693,5 +777,9 @@ int main (int argc, char** argv)
    }
 
    // ====== Clean up =======================================================
+   if(InMarkedBlock) {
+      // Finish the marked block, if it is still active:
+      processMarked(Line, 0, true);
+   }
    cleanUp(0);
 }

@@ -85,6 +85,7 @@
 .Op Fl b | Fl Fl begin-tag Ar begin_tag
 .Op Fl e | Fl Fl end-tag Ar end_tag
 .Op Fl t | Fl Fl tag Ar tag
+.Op Fl s | Fl Fl select Ar from_line Ar to_line
 .Op Fl y | Fl Fl include-tags
 .Op Fl x | Fl Fl exclude-tags
 .Op Fl f | Fl Fl full-tag-lines
@@ -142,6 +143,11 @@ include-tags: Marked text includes the begin/end tags.
 .Pp
 A special case is to have identical begin/end tags, e.g. <MARKER>. The text block "inside" this tag is therefore always empty. A use case for such a marker is e.g. to mark where to insert the contents of a file.
 .Pp
+Alternatively to marking by tags, the marking can be based on a line number
+range selection. Negative line numbers denote counting backwards from the end
+of the file, which in this case needs to be line-counted first. That is, input
+from standard input is not possible in this case.
+.Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
@@ -170,10 +176,21 @@ Prints command-line parameters.
 Prints program version.
 .It Fl b Ar begin_tag | Fl Fl begin-tag Ar begin_tag
 Sets the begin tag.
+Tags are mutually exclusive with line selection (--select|-s).
 .It Fl e Ar end_tag | Fl Fl end-tag Ar end_tag
 Sets the end tag.
+Tags are mutually exclusive with line selection (--select|-s).
 .It Fl t Ar tag | Fl Fl tag Ar tag
 Sets a combined begin/end tag, i.e. the tag marks begin and end.
+Tags are mutually exclusive with line selection (--select|-s).
+.It Fl s | Fl Fl select Ar from_line Ar to_line
+Select a line range, ranging from line from_line to line to_line.
+A from_line of one (1) denotes marking from start of the file.
+A to_line of zero (0) denotes marking until end of the file.
+If a line number is negative, it is counted backwards from the end of the
+file. This requires an input file (--input|-i), which is line-counted
+first. Line range selection is mutually exclusive with tags
+(--begin-tag|-b|--end-tag|--tag|-t).
 .It Fl i | Fl Fl input Ar input_file
 Sets the input file.
 .It Fl o | Fl Fl output Ar output_file
