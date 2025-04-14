@@ -243,9 +243,9 @@ A shortcut to set all 6 highlight parameters at once.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-Note: the example input files example1.txt, example2.txt, and insert.txt,
-referred to in the following command-line examples, are usually installed
-under /usr/share/text-block or /usr/local/share/text-block/!
+Note: the example input files example1.txt, example2.txt, insert.txt, and
+numbers.txt, referred to in the following command-line examples, are usually
+installed under /usr/share/text-block or /usr/local/share/text-block/!
 .Ss Cat Mode
 .Bl -bullet
 .It
@@ -292,6 +292,8 @@ text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight --hig
 text-block -i numbers.txt --select 1 3 -H
 .It
 text-block -i numbers.txt --select -3 -1 -H
+.It
+text-block -i numbers.txt --select -5 0 -H
 .El
 .Ss Delete Mode
 .Bl -bullet
@@ -299,6 +301,12 @@ text-block -i numbers.txt --select -3 -1 -H
 text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --delete
 .It
 text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -D
+.It
+text-block -i numbers.txt --select 2 4 -D
+.It
+text-block -i numbers.txt --select -4 -2 -D
+.It
+text-block -i numbers.txt -s -7 0 -D
 .El
 .Ss Insert Front Mode
 .Bl -bullet
@@ -306,6 +314,12 @@ text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -D
 text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --insert-front insert.txt
 .It
 text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -F insert.txt
+.It
+text-block -i numbers.txt -F insert.txt --select 4 7
+.It
+text-block -i numbers.txt -F insert.txt --select -4 -2
+.It
+text-block -i numbers.txt -F insert.txt -s 4 0
 .El
 .Ss Insert Back Mode
 .Bl -bullet
@@ -315,6 +329,12 @@ text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --insert-back ins
 text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -B insert.txt
 .It
 text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -F insert.txt -f
+.It
+text-block -i numbers.txt -B insert.txt --select 4 7
+.It
+text-block -i numbers.txt -B insert.txt --select -4 -2
+.It
+text-block -i numbers.txt -B insert.txt -s 4 0
 .El
 .Ss Replace Mode
 .Bl -bullet
@@ -326,6 +346,12 @@ text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --replace insert.
 text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --replace insert.txt --include-tags --full-tag-lines
 .It
 text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -R insert.txt -gy
+.It
+text-block -i numbers.txt -R insert.txt --select 4 7
+.It
+text-block -i numbers.txt -R insert.txt --select -4 -2
+.It
+text-block -i numbers.txt -R insert.txt -s 4 0
 .El
 .Ss Other Examples
 .Bl -bullet

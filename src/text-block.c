@@ -527,7 +527,7 @@ int main (int argc, char** argv)
       case Extract:
       case Remove:
       case Replace:
-         if( showWarnings && (BeginTag == EndTag) && (!IncludeTags) )  {
+         if( showWarnings && (BeginTag != NULL) && (BeginTag == EndTag) && (!IncludeTags) )  {
             fputs(gettext("WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful in Extract, Remove, or Replace Mode!"), stderr);
             fputs("\n", stderr);
          }
