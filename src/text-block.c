@@ -560,10 +560,10 @@ int main (int argc, char** argv)
 #endif
       TotalInputLines = countLines(InputFile);
       if(SelectBegin < 0) {
-         SelectBegin = TotalInputLines + SelectBegin;
+         SelectBegin = TotalInputLines + SelectBegin + 1;
       }
       if(SelectEnd < 0) {
-         SelectEnd = TotalInputLines + SelectEnd;
+         SelectEnd = TotalInputLines + SelectEnd + 1;
       }
       if(showWarnings && ( (SelectEnd < SelectBegin) && (SelectEnd != 0)) ) {
          fprintf(stderr,

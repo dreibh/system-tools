@@ -288,6 +288,10 @@ text-block -i example2.txt -b '<MARKER>' -H --include-tags --full-tag-lines
 text-block -i example2.txt -b '<MARKER>' -H --exclude-tags --full-tag-lines
 .It
 text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight --highlight-param "☀" "🌙" $\[aq]\e[32m' $\[aq]\e[0m' $\[aq]\e[31;5m' $\[aq]\e[0m'
+.It
+text-block -i numbers.txt --select 1 3 -H
+.It
+text-block -i numbers.txt --select -3 -1 -H
 .El
 .Ss Delete Mode
 .Bl -bullet
