@@ -54,6 +54,7 @@ _text_block()
       #  ====== Generic value ===============================================
       -b | --begin-tag      | \
       -e | --end-tag        | \
+      -t | --tag            | \
       --enumerate-format    | \
       --enumerate-label1    | \
       --enumerate-label2    | \
@@ -62,7 +63,9 @@ _text_block()
       --highlight-unmarked1 | \
       --highlight-unmarked2 | \
       --highlight-marked1   | \
-      --highlight-marked2)
+      --highlight-marked2   | \
+      --highlight-param     | \
+      --select)
          return
          ;;
       # ====== Special case: file ===========================================
@@ -106,25 +109,29 @@ _text_block()
 --begin-tag
 -e
 --end-tag
---i
+-i
 --input
---o
+-o
 --output
---a
+-a
 --append
---b
+-b
 --begin-tag
---e
+-e
 --end-tag
---y
+-t
+--tag
+-s
+--select
+-y
 --include-tags
---x
+-x
 --exclude-tags
---f
+-f
 --full-tag-lines
---t
+-g
 --tags-only
---w
+-q
 --suppress-warnings
 --enumerate-format
 --enumerate-label1
@@ -135,6 +142,7 @@ _text_block()
 --highlight-unmarked2
 --highlight-marked1
 --highlight-marked2
+--highlight-param
 "
    # shellcheck disable=SC2207
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
