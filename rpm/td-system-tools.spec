@@ -244,6 +244,7 @@ support for fractional seconds.
 %{_datadir}/text-block/example1.txt
 %{_datadir}/text-block/example2.txt
 %{_datadir}/text-block/insert.txt
+%{_datadir}/text-block/numbers.txt
 %{_mandir}/man1/random-sleep.1.gz
 %{_mandir}/man1/text-block.1.gz
 %{_mandir}/man1/try-hard.1.gz
