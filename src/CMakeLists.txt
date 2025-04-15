@@ -82,6 +82,7 @@ INSTALL(FILES       get-system-info.bash-completion
 
 ADD_EXECUTABLE(print-utf8 print-utf8.c)
 SET_PROPERTY(TARGET print-utf8 PROPERTY C_STANDARD 23)
+TARGET_LINK_LIBRARIES(print-utf8 ${Intl_LIBRARIES})
 INSTALL(TARGETS print-utf8 DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES print-utf8.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES              print-utf8.bash-completion
@@ -99,6 +100,7 @@ INSTALL(FILES       random-sleep.bash-completion
 
 ADD_EXECUTABLE(text-block text-block.c)
 SET_PROPERTY(TARGET text-block PROPERTY C_STANDARD 23)
+TARGET_LINK_LIBRARIES(text-block ${Intl_LIBRARIES})
 INSTALL(TARGETS     text-block   DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES       text-block.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       text-block.bash-completion
