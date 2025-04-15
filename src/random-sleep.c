@@ -35,6 +35,9 @@
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
+#ifndef nullptr
+#define nullptr NULL
+#endif
 
 #include "package-version.h"
 

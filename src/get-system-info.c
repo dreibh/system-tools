@@ -53,6 +53,9 @@
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
+#ifndef nullptr
+#define nullptr NULL
+#endif
 
 // FIXME: For some reasons, IFF_LOWER_UP seems to be undefined here.
 #if defined(__linux)

@@ -26,7 +26,7 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-#define _XOPEN_SOURCE 500
+#define _XOPEN_SOURCE 700
 #include <ctype.h>
 #include <getopt.h>
 #include <fcntl.h>
@@ -40,6 +40,9 @@
 #include <wchar.h>
 #include <locale.h>
 #include <sys/ioctl.h>
+#ifndef nullptr
+#define nullptr NULL
+#endif
 
 #include "package-version.h"
 

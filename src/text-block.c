@@ -26,6 +26,7 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#define _XOPEN_SOURCE 700
 #include <assert.h>
 #include <ctype.h>
 #include <fcntl.h>
@@ -38,6 +39,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#ifndef nullptr
+#define nullptr NULL
+#endif
 
 #include "package-version.h"
 
