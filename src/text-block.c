@@ -59,6 +59,8 @@ typedef enum textblockmode {
 
 
 static textblockmode_t Mode                 = Cat;
+static int             MinActions           = -1;
+static int             MaxActions           = -1;
 static const char*     BeginTag             = nullptr;
 static size_t          BeginTagLength       = 0;
 static const char*     EndTag               = nullptr;
@@ -90,6 +92,7 @@ static bool            InMarkedBlock        = false;
 static char*           Buffer               = nullptr;
 static size_t          BufferSize           = 65536;
 
+static int             Actions;
 static long long       LineNo;
 static const char*     EndOfLine;
 static const char*     Line;
@@ -224,6 +227,7 @@ static void processUnmarked(const char*   text,
 
    if(beginOfMarking) {
       InMarkedBlock = true;
+      Actions++;
    }
 }
 
@@ -319,6 +323,8 @@ int main (int argc, char** argv)
       { "input",               required_argument, 0, 'i' },
       { "output",              required_argument, 0, 'o' },
       { "append",              no_argument,       0, 'a' },
+      { "min-actions",         required_argument, 0, 'm' },
+      { "max-actions",         required_argument, 0, 'M' },
 
       { "select",              required_argument, 0, 's' },
       { "begin-tag",           required_argument, 0, 'b' },
@@ -343,12 +349,12 @@ int main (int argc, char** argv)
       { "suppress-warnings",   no_argument,       0, 'q' },
       { "help",                no_argument,       0, 'h' },
       { "version",             no_argument,       0, 'v' },
-      {  nullptr,                 0,                 0, 0   }
+      {  nullptr,              0,                 0, 0   }
    };
 
    int option;
    int longIndex;
-   while( (option = getopt_long(argc, argv, "C0HEXDF:B:R:i:o:a:b:e:t:s:xyfgqhv", long_options, &longIndex)) != -1 ) {
+   while( (option = getopt_long(argc, argv, "C0HEXDF:B:R:i:o:am:M:b:e:t:s:xyfgqhv", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'C':
             Mode = Cat;
@@ -388,6 +394,12 @@ int main (int argc, char** argv)
           break;
          case 'a':
             OpenOutputAppend = true;
+          break;
+         case 'm':
+            MinActions = atoi(optarg);
+          break;
+         case 'M':
+            MaxActions = atoi(optarg);
           break;
          case 's':
             if(optind < argc) {
@@ -499,6 +511,11 @@ int main (int argc, char** argv)
    }
 
    // ====== Check parameters ===============================================
+   if( (MaxActions >= 0) && (MinActions > MaxActions) ) {
+      fputs(gettext("ERROR: Invalid min/max actions settings!"), stderr);
+      fputs("\n", stderr);
+      return 1;
+   }
    if( (BeginTag != nullptr) && (BeginTag[0] == 0x00) ) {
       BeginTag = nullptr;
    }
@@ -630,6 +647,7 @@ int main (int argc, char** argv)
 
    Line            = Buffer;
    LineNo          = 0;
+   Actions         = 0;
    MarkerTag       = BeginTag;
    MarkerTagLength = BeginTagLength;
 
@@ -782,5 +800,12 @@ int main (int argc, char** argv)
       // Finish the marked block, if it is still active:
       processMarked(Line, 0, true);
    }
-   cleanUp(0);
+   const bool success =
+      ( (MinActions < 0) || (Actions >= MinActions) ) &&
+      ( (MaxActions < 0) || (Actions <= MaxActions) );
+   if(!success) {
+      fputs(gettext("ERROR: Number of actions outside of limits set by min/max actions (--min-actions/-m/--max-actions/-M)!"), stderr);
+      fputs("\n", stderr);
+   }
+   cleanUp( (success == true) ? 0 : 1 );
 }
