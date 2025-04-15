@@ -106,7 +106,7 @@ static char* unescape(const char* originalString)
 {
    size_t original_string_length = strlen(originalString);
    char*  unescapedString        = (char*)malloc(original_string_length + 1);
-   if(unescapedString == NULL) {
+   if(unescapedString == nullptr) {
       fputs(gettext("ERROR: malloc() failed!"), stderr);
       fputs("\n", stderr);
       exit(1);
@@ -231,7 +231,7 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
 
    // ====== Copy string, but filter out ANSI colouring sequences ===========
    char* utf8String = (char*)malloc(original_string_length + 1);
-   if(utf8String == NULL) {
+   if(utf8String == nullptr) {
       fputs(gettext("ERROR: malloc() failed!"), stderr);
       fputs("\n", stderr);
       exit(1);
@@ -258,7 +258,7 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
 
    // ====== Get string width ===============================================
    wchar_t* wide_string = (wchar_t*)malloc(sizeof(wchar_t) * (j + 1));
-   if(wide_string == NULL) {
+   if(wide_string == nullptr) {
       fputs(gettext("ERROR: malloc() failed!"), stderr);
       fputs("\n", stderr);
       exit(1);
@@ -289,7 +289,7 @@ static int stringwidth(const char* originalString,
    size_t   wide_string_length;
    wchar_t* wide_string = convertToWideStringWithoutANSI(
                              originalString, removeANSISequences,
-                             NULL, &wide_string_length);
+                             nullptr, &wide_string_length);
    const int width = wcswidth(wide_string, wide_string_length);
    free(wide_string);
    return width;
@@ -421,10 +421,10 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
    char*        s;
    char         buffer[8192];
    unsigned int maxLength = 0;
-   while( (s = fgets((char*)&buffer, sizeof(buffer), stdin)) != NULL ) {
+   while( (s = fgets((char*)&buffer, sizeof(buffer), stdin)) != nullptr ) {
       buffer[strcspn(buffer, "\r\n")] = 0x00;   // Remove newline
       lineArray[lines] = strdup(s);
-      if(lineArray[lines] == NULL) {
+      if(lineArray[lines] == nullptr) {
          exit(1);
       }
       lineLength[lines] = strlen(lineArray[lines]);
@@ -439,7 +439,7 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
 
    // ====== Obtain left and right border widths ============================
    size_t   wll;
-   wchar_t* wsl = convertToWideStringWithoutANSI(borderLeft, true, NULL, &wll);
+   wchar_t* wsl = convertToWideStringWithoutANSI(borderLeft, true, nullptr, &wll);
    if(wsl) {
       const int borderLeftWidth = wcswidth(wsl, wll);
       if(borderLeftWidth > 0) {
@@ -448,7 +448,7 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
       free(wsl);
    }
    size_t   wlr;
-   wchar_t* wsr = convertToWideStringWithoutANSI(borderRight, true, NULL, &wlr);
+   wchar_t* wsr = convertToWideStringWithoutANSI(borderRight, true, nullptr, &wlr);
    if(wsr) {
       const int borderRightWidth = wcswidth(wsr, wlr);
       if(borderRightWidth > 0) {
@@ -471,7 +471,7 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
          puts("");
       }
       free(lineArray[i]);
-      lineArray[i] = NULL;
+      lineArray[i] = nullptr;
    }
 }
 
@@ -497,18 +497,18 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
 int main (int argc, char** argv)
 {
    // ====== Initialise locale support ======================================
-   if(setlocale(LC_ALL, "") == NULL) {
+   if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
-   bindtextdomain("print-utf8", NULL);
+   bindtextdomain("print-utf8", nullptr);
    textdomain("print-utf8");
 
    // ====== Handle arguments ===============================================
    printmode_t mode                = Indent;
    int         indentWidth         = 0;
-   char*       utf8String          = NULL;
-   char*       borderLeft          = NULL;
-   char*       borderRight         = NULL;
+   char*       utf8String          = nullptr;
+   char*       borderLeft          = nullptr;
+   char*       borderRight         = nullptr;
    bool        newline             = false;
    const int   defaultConsoleWidth = getConsoleWidth();
    int         consoleWidth        = defaultConsoleWidth;
@@ -531,7 +531,7 @@ int main (int argc, char** argv)
       { "",                    no_argument,       0, '-' },
       { "help",                no_argument,       0, 'h' },
       { "version",             no_argument,       0, 'v' },
-      {  NULL,                 0,                 0, 0   }
+      {  nullptr,                 0,                 0, 0   }
    };
 
    int option;

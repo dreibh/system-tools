@@ -59,9 +59,9 @@ typedef enum textblockmode {
 
 
 static textblockmode_t Mode                 = Cat;
-static const char*     BeginTag             = NULL;
+static const char*     BeginTag             = nullptr;
 static size_t          BeginTagLength       = 0;
-static const char*     EndTag               = NULL;
+static const char*     EndTag               = nullptr;
 static size_t          EndTagLength         = 0;
 static long long       SelectBegin          = 0;
 static long long       SelectEnd            = 0;
@@ -77,17 +77,17 @@ static const char*     HighlightUnmarked1   = "\e[34m";
 static const char*     HighlightUnmarked2   = "\e[0m";
 static const char*     HighlightMarked1     = "\e[31m";
 static const char*     HighlightMarked2     = "\e[0m";
-static const char*     InputFileName        = NULL;
-static FILE*           InputFile            = NULL;
+static const char*     InputFileName        = nullptr;
+static FILE*           InputFile            = nullptr;
 static bool            OpenInputFile        = false;
-static const char*     OutputFileName       = NULL;
-static FILE*           OutputFile           = NULL;
+static const char*     OutputFileName       = nullptr;
+static FILE*           OutputFile           = nullptr;
 static bool            OpenOutputFile       = false;
 static bool            OpenOutputAppend     = false;
-static const char*     InsertFileName       = NULL;
-static FILE*           InsertFile           = NULL;
+static const char*     InsertFileName       = nullptr;
+static FILE*           InsertFile           = nullptr;
 static bool            InMarkedBlock        = false;
-static char*           Buffer               = NULL;
+static char*           Buffer               = nullptr;
 static size_t          BufferSize           = 65536;
 
 static long long       LineNo;
@@ -103,7 +103,7 @@ static const char*     Pointer;
 {
    if(InsertFile) {
       fclose(InsertFile);
-      InsertFile = NULL;
+      InsertFile = nullptr;
    }
 
    if(OpenOutputFile) {
@@ -114,16 +114,16 @@ static const char*     Pointer;
          exitCode = 1;
       }
    }
-   OutputFile = NULL;
+   OutputFile = nullptr;
 
    if(OpenInputFile) {
       fclose(InputFile);
    }
-   InputFile = NULL;
+   InputFile = nullptr;
 
    if(Buffer) {
       free(Buffer);
-      Buffer = NULL;
+      Buffer = nullptr;
    }
 
    exit(exitCode);
@@ -296,10 +296,10 @@ static void processMarked(const char*   text,
 int main (int argc, char** argv)
 {
    // ====== Initialise i18n support ========================================
-   if(setlocale(LC_ALL, "") == NULL) {
+   if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
-   bindtextdomain("text-block", NULL);
+   bindtextdomain("text-block", nullptr);
    textdomain("text-block");
 
    // ====== Handle arguments ===============================================
@@ -343,7 +343,7 @@ int main (int argc, char** argv)
       { "suppress-warnings",   no_argument,       0, 'q' },
       { "help",                no_argument,       0, 'h' },
       { "version",             no_argument,       0, 'v' },
-      {  NULL,                 0,                 0, 0   }
+      {  nullptr,                 0,                 0, 0   }
    };
 
    int option;
@@ -409,7 +409,7 @@ int main (int argc, char** argv)
           break;
          case 't':
             BeginTag = optarg;
-            EndTag   = NULL;
+            EndTag   = nullptr;
           break;
          case 'x':
             IncludeTags = false;
@@ -499,10 +499,10 @@ int main (int argc, char** argv)
    }
 
    // ====== Check parameters ===============================================
-   if( (BeginTag != NULL) && (BeginTag[0] == 0x00) ) {
-      BeginTag = NULL;
+   if( (BeginTag != nullptr) && (BeginTag[0] == 0x00) ) {
+      BeginTag = nullptr;
    }
-   if( (EndTag == NULL) || (EndTag[0] == 0x00) || (strcmp(EndTag, BeginTag) == 0) ) {
+   if( (EndTag == nullptr) || (EndTag[0] == 0x00) || (strcmp(EndTag, BeginTag) == 0) ) {
       EndTag = BeginTag;
    }
    if( (BeginTag) && ((SelectBegin != 0) || (SelectEnd != 0)) ) {
@@ -510,24 +510,24 @@ int main (int argc, char** argv)
       fputs("\n", stderr);
       return 1;
    }
-   BeginTagLength = (BeginTag != NULL) ? strlen(BeginTag) : 0;
-   EndTagLength   = (EndTag != NULL)   ? strlen(EndTag)   : 0;
+   BeginTagLength = (BeginTag != nullptr) ? strlen(BeginTag) : 0;
+   EndTagLength   = (EndTag != nullptr)   ? strlen(EndTag)   : 0;
 
    switch(Mode) {
       case Cat:
       case Discard:
       case Enumerate:
-         if( showWarnings && ( (BeginTag != NULL) || (EndTag != NULL) ) ) {
+         if( showWarnings && ( (BeginTag != nullptr) || (EndTag != nullptr) ) ) {
             fputs(gettext("WARNING: Begin/end tags (--begin-tag/-b/--end-tag/-e/--tag/-t) have no effect in Cat, Discard, or Enumerate Mode!"), stderr);
             fputs("\n", stderr);
          }
-         BeginTag = NULL;
-         EndTag   = NULL;
+         BeginTag = nullptr;
+         EndTag   = nullptr;
        break;
       case Extract:
       case Remove:
       case Replace:
-         if( showWarnings && (BeginTag != NULL) && (BeginTag == EndTag) && (!IncludeTags) )  {
+         if( showWarnings && (BeginTag != nullptr) && (BeginTag == EndTag) && (!IncludeTags) )  {
             fputs(gettext("WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful in Extract, Remove, or Replace Mode!"), stderr);
             fputs("\n", stderr);
          }
@@ -538,15 +538,15 @@ int main (int argc, char** argv)
 
    // ====== Allocate buffer ================================================
    Buffer = (char*)malloc(BufferSize);
-   if(Buffer == NULL) {
+   if(Buffer == nullptr) {
       cleanUp(1);
    }
 
    // ====== Open input file ================================================
    InputFile = stdin;
-   if(InputFileName != NULL) {
+   if(InputFileName != nullptr) {
       InputFile = fopen(InputFileName, "r");
-      if(InputFile == NULL) {
+      if(InputFile == nullptr) {
          fprintf(stderr, gettext("ERROR: Unable to open input file %s: %s"),
                  InputFileName, strerror(errno));
          fputs("\n", stderr);
@@ -583,9 +583,9 @@ int main (int argc, char** argv)
 
    // ====== Open output file ===============================================
    OutputFile = stdout;
-   if(OutputFileName != NULL) {
+   if(OutputFileName != nullptr) {
       OutputFile = fopen(OutputFileName, (OpenOutputAppend == false) ? "w" : "a");
-      if(OutputFile == NULL) {
+      if(OutputFile == nullptr) {
          fprintf(stderr, gettext("ERROR: Unable to open output file %s: %s"),
                  OutputFileName, strerror(errno));
          fputs("\n", stderr);
@@ -598,9 +598,9 @@ int main (int argc, char** argv)
    }
 
    // ====== Open insert file ===============================================
-   if(InsertFileName != NULL) {
+   if(InsertFileName != nullptr) {
       InsertFile = fopen(InsertFileName, "r");
-      if(InsertFile == NULL) {
+      if(InsertFile == nullptr) {
          fprintf(stderr, gettext("ERROR: Unable to open insert file %s: %s"),
                  InsertFileName, strerror(errno));
          fputs("\n", stderr);
@@ -648,11 +648,11 @@ int main (int argc, char** argv)
 
 
       // ====== Tag handling ================================================
-      if(MarkerTag != NULL) {
+      if(MarkerTag != nullptr) {
          Pointer = Line;
          const char* next;
          bool        foundMarker = false;
-         while( (next = (MarkerTag != NULL) ? strstr(Pointer, MarkerTag) : NULL) != NULL ) {
+         while( (next = (MarkerTag != nullptr) ? strstr(Pointer, MarkerTag) : nullptr) != nullptr ) {
             foundMarker = true;
 
             // ====== Begin marker found ====================================

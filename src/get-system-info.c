@@ -128,7 +128,7 @@ static void printaddress(const struct sockaddr* address,
                               (address->sa_family == AF_INET6) ?
                                  sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in),
                               (char*)&resolvedHost, sizeof(resolvedHost),
-                              NULL, 0,
+                              nullptr, 0,
                               NI_NUMERICHOST);
       if(error != 0) {
          fprintf(stderr, "ERROR: getnameinfo() failed: %s\n", gai_strerror(error));
@@ -179,7 +179,7 @@ static void showHostnameInformation()
    }
 
    char* domainname = strchr(hostname, '.');
-   if(domainname != NULL) {
+   if(domainname != nullptr) {
       domainname[0] = 0x00;
       domainname++;
       printf("hostname_long=\"%s.%s\"\n", hostname, domainname);
@@ -229,12 +229,12 @@ static void showUptimeInformation()
 static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 {
    FILE* fh = popen(command, "r");
-   if(fh != NULL) {
+   if(fh != nullptr) {
       size_t resultSize = 0;
       char*  r;
       do {
          r = fgets((char*)&result[resultSize], resultMaxSize - 1 - resultSize, fh);
-         if(r == NULL) {
+         if(r == nullptr) {
             break;
          }
          resultSize += strlen(r);
@@ -252,12 +252,12 @@ static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 static bool queryFile(const char* file, char* result, size_t resultMaxSize)
 {
    FILE* fh = fopen(file, "r");
-   if(fh != NULL) {
+   if(fh != nullptr) {
       size_t resultSize = 0;
       char*  r;
       do {
          r = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
-         if(r == NULL) {
+         if(r == nullptr) {
             break;
          }
          resultSize += strlen(r);
@@ -380,7 +380,7 @@ static void showBatteryInformation()
          do {
             printf("x");
             r = index(r, '\n');
-         } while(r++ != NULL);
+         } while(r++ != nullptr);
          batteryIDs[batteries++] = i;
       }
    }
@@ -407,7 +407,7 @@ static void showMemoryInformation()
 #if defined(__linux)
    // ====== Query memory information via /proc =============================
    FILE* fh = fopen("/proc/meminfo", "r");
-   if(fh != NULL) {
+   if(fh != nullptr) {
       char line[256];
       while(fgets(line, sizeof(line) ,fh)) {
          if(strncmp(line, "Mem", 3) == 0) {
@@ -443,7 +443,7 @@ static void showMemoryInformation()
    // ------ Query hw.pagesize ----------------------------------------------
    unsigned int pageSize;
    size_t len = sizeof(pageSize);
-   if(sysctlbyname("hw.pagesize", &pageSize, &len, NULL, 0) != 0) {
+   if(sysctlbyname("hw.pagesize", &pageSize, &len, nullptr, 0) != 0) {
       perror("sysctl(hw.pagesize)");
       return;
    }
@@ -451,7 +451,7 @@ static void showMemoryInformation()
    // ------ Query hw.physmem -----------------------------------------------
    unsigned long physMem;
    len = sizeof(physMem);
-   if(sysctlbyname("hw.physmem", &physMem, &len, NULL, 0) != 0) {
+   if(sysctlbyname("hw.physmem", &physMem, &len, nullptr, 0) != 0) {
       perror("sysctl(hw.physmem)");
       return;
    }
@@ -459,7 +459,7 @@ static void showMemoryInformation()
    // ------ Query vm.stats.vm.v_inactive_count -----------------------------
    unsigned int vInactiveCount;
    len = sizeof(vInactiveCount);
-   if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &len, NULL, 0) != 0) {
+   if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &len, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_inactive_count)");
       return;
    }
@@ -467,7 +467,7 @@ static void showMemoryInformation()
    // ------ Query vm.stats.vm.v_cache_count -----------------------------
    unsigned int vCacheCount;
    len = sizeof(vCacheCount);
-   if(sysctlbyname("vm.stats.vm.v_cache_count", &vCacheCount, &len, NULL, 0) != 0) {
+   if(sysctlbyname("vm.stats.vm.v_cache_count", &vCacheCount, &len, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_cache_count)");
       return;
    }
@@ -475,7 +475,7 @@ static void showMemoryInformation()
    // ------ Query vm.stats.vm.v_free_count -----------------------------
    unsigned int vFreeCount;
    len = sizeof(vFreeCount);
-   if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &len, NULL, 0) != 0) {
+   if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &len, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_free_count)");
       return;
    }
@@ -501,7 +501,7 @@ static void showMemoryInformation()
       mib[mibsize] = n;
       struct xswdev xsw;
       size_t        size  = sizeof(xsw);
-      if(sysctl(mib, mibsize + 1, &xsw, &size, NULL, 0) == -1) {
+      if(sysctl(mib, mibsize + 1, &xsw, &size, nullptr, 0) == -1) {
          break;
       }
       if(xsw.xsw_version != XSWDEV_VERSION) {
@@ -575,8 +575,8 @@ static void showNetworkInformation(const bool filterLocalScope)
    // ====== Build list of interfaces and their addresses ==================
    struct interfaceaddress ifaArray[4096];
    unsigned int n = 0;
-   for(struct ifaddrs* ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
-      if(ifa->ifa_addr != NULL) {
+   for(struct ifaddrs* ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
+      if(ifa->ifa_addr != nullptr) {
          if( (ifa->ifa_addr->sa_family == AF_INET6) ||
              (ifa->ifa_addr->sa_family == AF_INET) ) {
             if(n >= (sizeof(ifaArray) / sizeof(ifaArray[0]))) {
@@ -712,7 +712,7 @@ static void showNetworkInformation(const bool filterLocalScope)
 int main(int argc, char** argv)
 {
    // ====== Initialise locale support ======================================
-   if(setlocale(LC_ALL, "") == NULL) {
+   if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
 
@@ -720,7 +720,7 @@ int main(int argc, char** argv)
    const static struct option long_options[] = {
       { "help",    no_argument, 0, 'h' },
       { "version", no_argument, 0, 'v' },
-      {  NULL,     0,           0, 0   }
+      {  nullptr,     0,           0, 0   }
    };
 
    int option;

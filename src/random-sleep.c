@@ -78,10 +78,10 @@ int main(int argc, char** argv)
    bool   verboseMode = false;
 
    // ====== Initialise i18n support ========================================
-   if(setlocale(LC_ALL, "") == NULL) {
+   if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
-   bindtextdomain("random-sleep", NULL);
+   bindtextdomain("random-sleep", nullptr);
    textdomain("random-sleep");
 
    // ====== Handle arguments ===============================================
@@ -90,7 +90,7 @@ int main(int argc, char** argv)
       { "quiet",   no_argument, 0, 'q' },
       { "help",    no_argument, 0, 'h' },
       { "version", no_argument, 0, 'v' },
-      {  NULL,     0,           0, 0   }
+      {  nullptr,     0,           0, 0   }
    };
 
    if(optind + 1 < argc) {
@@ -133,7 +133,7 @@ int main(int argc, char** argv)
 
    // ====== Initialise random number generator =============================
    struct timeval tv;
-   if(gettimeofday(&tv, NULL) == 0) {
+   if(gettimeofday(&tv, nullptr) == 0) {
       srand(tv.tv_usec);
    }
 
