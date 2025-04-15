@@ -73,7 +73,7 @@ INSTALL(FILES       configure-grub.bash-completion
         RENAME      configure-grub)
 
 ADD_EXECUTABLE(get-system-info get-system-info.c)
-SET_PROPERTY(TARGET get-system-info PROPERTY C_STANDARD 11)
+SET_PROPERTY(TARGET get-system-info PROPERTY C_STANDARD 23)
 INSTALL(TARGETS get-system-info DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES get-system-info.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       get-system-info.bash-completion
@@ -81,7 +81,7 @@ INSTALL(FILES       get-system-info.bash-completion
         RENAME      get-system-info)
 
 ADD_EXECUTABLE(print-utf8 print-utf8.c)
-SET_PROPERTY(TARGET print-utf8 PROPERTY C_STANDARD 11)
+SET_PROPERTY(TARGET print-utf8 PROPERTY C_STANDARD 23)
 INSTALL(TARGETS print-utf8 DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES print-utf8.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES              print-utf8.bash-completion
@@ -89,7 +89,7 @@ INSTALL(FILES              print-utf8.bash-completion
         RENAME             print-utf8)
 
 ADD_EXECUTABLE(random-sleep random-sleep.c)
-SET_PROPERTY(TARGET random-sleep PROPERTY C_STANDARD 11)
+SET_PROPERTY(TARGET random-sleep PROPERTY C_STANDARD 23)
 TARGET_LINK_LIBRARIES(random-sleep ${Intl_LIBRARIES})
 INSTALL(TARGETS     random-sleep   DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES       random-sleep.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
@@ -98,7 +98,7 @@ INSTALL(FILES       random-sleep.bash-completion
         RENAME      random-sleep)
 
 ADD_EXECUTABLE(text-block text-block.c)
-SET_PROPERTY(TARGET text-block PROPERTY C_STANDARD 11)
+SET_PROPERTY(TARGET text-block PROPERTY C_STANDARD 23)
 INSTALL(TARGETS     text-block   DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES       text-block.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       text-block.bash-completion

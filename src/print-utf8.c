@@ -35,7 +35,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdnoreturn.h>
 #include <string.h>
 #include <unistd.h>
 #include <wchar.h>
@@ -106,7 +105,7 @@ static unsigned int hexDigitToNumber(const char digit)
 static char* unescape(const char* originalString)
 {
    size_t original_string_length = strlen(originalString);
-   char*  unescapedString        = malloc(original_string_length + 1);
+   char*  unescapedString        = (char*)malloc(original_string_length + 1);
    if(unescapedString == NULL) {
       fputs(gettext("ERROR: malloc() failed!"), stderr);
       fputs("\n", stderr);
@@ -231,7 +230,7 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
    const size_t original_string_length = strlen(originalString);
 
    // ====== Copy string, but filter out ANSI colouring sequences ===========
-   char* utf8String = malloc(original_string_length + 1);
+   char* utf8String = (char*)malloc(original_string_length + 1);
    if(utf8String == NULL) {
       fputs(gettext("ERROR: malloc() failed!"), stderr);
       fputs("\n", stderr);
@@ -478,7 +477,7 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
 
 
 // ###### Version ###########################################################
-static noreturn void version()
+[[ noreturn ]] static void version()
 {
    printf("print-utf8 %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -486,7 +485,7 @@ static noreturn void version()
 
 
 // ###### Usage #############################################################
-static noreturn void usage(const char* program, const int exitCode)
+[[ noreturn ]] static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "Usage: %s [-n|--newline] [-i indentation string|--ident indentation string] [-c string|--center string] [-I left right|--multiline-indent indentation left right]  [-C left right|--multiline-center left right] [-s border_left separator border_right|--separator border_left separator border_right] [-c columns|--columns columns] [-s string|--size string] [-l string|--length string] [-w string|--width string] [-a string|--size-length-width string] [-t|--terminal-info] [-h|--help] [-v|--version]\n", program);
    exit(exitCode);

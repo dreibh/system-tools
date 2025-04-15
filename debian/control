@@ -6,8 +6,8 @@ Homepage: https://www.nntb.no/~dreibh/system-tools/
 Vcs-Git: https://github.com/dreibh/system-tools.git
 Vcs-Browser: https://github.com/dreibh/system-tools
 Build-Depends: cmake (>= 3.5),
-               debhelper-compat (= 12)
-Standards-Version: 4.7.1
+               debhelper-compat (= 13)
+Standards-Version: 4.7.2
 Rules-Requires-Root: no
 
 Package: td-system-info

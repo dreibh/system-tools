@@ -34,7 +34,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdnoreturn.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
@@ -693,7 +692,7 @@ static void showNetworkInformation(const bool filterLocalScope)
 
 
 // ###### Version ###########################################################
-static noreturn void version()
+[[ noreturn ]] static void version()
 {
    printf("get-system-info %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -701,7 +700,7 @@ static noreturn void version()
 
 
 // ###### Usage #############################################################
-static noreturn void usage(const char* program, const int exitCode)
+[[ noreturn ]] static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "Usage: %s [-h|--help] [-v|--version]\n", program);
    exit(exitCode);
