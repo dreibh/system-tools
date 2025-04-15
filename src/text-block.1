@@ -82,6 +82,8 @@
 .Op Fl i | Fl Fl input Ar input_file
 .Op Fl o | Fl Fl output Ar output_file
 .Op Fl a | Fl Fl append
+.Op Fl m | Fl Fl min-actions
+.Op Fl M | Fl Fl max-actions
 .Op Fl s | Fl Fl select Ar from_line Ar to_line
 .Op Fl b | Fl Fl begin-tag Ar begin_tag
 .Op Fl e | Fl Fl end-tag Ar end_tag
@@ -197,6 +199,10 @@ Sets the input file.
 Sets the output file. By default, an existing output file will be overwritten.
 .It Fl a | Fl Fl append
 Opens the output file in append mode, appending new output instead of overwriting an existing file.
+.Op Fl m | Fl Fl min-actions
+Set lower limit for number of marking actions. If the number of applied markings falls below this limit, an error is returned.
+.Op Fl M | Fl Fl max-actions
+Set lower limit for number of marking actions. If the number of applied markings exceeds this limit, an error is returned.
 .It Fl y | Fl Fl include-tags
 Include the marker tags in the marking.
 Hint: Use Highlight mode to visualise the behaviour.
@@ -315,6 +321,12 @@ text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --insert-front in
 .It
 text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -F insert.txt
 .It
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -F insert.txt -f
+.It
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -F insert.txt --min-actions 1 --max-actions 1
+.It
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -F insert.txt -m 1 -M 1
+.It
 text-block -i numbers.txt -F insert.txt --select 4 7
 .It
 text-block -i numbers.txt -F insert.txt --select -4 -2
@@ -328,7 +340,11 @@ text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --insert-back ins
 .It
 text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -B insert.txt
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -F insert.txt -f
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -B insert.txt -f
+.It
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -B insert.txt --min-actions 1 --max-actions 1
+.It
+text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -B insert.txt -m 1 -M 1
 .It
 text-block -i numbers.txt -B insert.txt --select 4 7
 .It
