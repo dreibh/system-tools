@@ -65,6 +65,8 @@ _text_block()
       --highlight-marked1   | \
       --highlight-marked2   | \
       --highlight-param     | \
+      -m | --min-actions    | \
+      -M | --max-actions    | \
       --select)
          return
          ;;
@@ -115,14 +117,18 @@ _text_block()
 --output
 -a
 --append
+-m
+--min-actions
+-M
+--max-actions
+-s
+--select
 -b
 --begin-tag
 -e
 --end-tag
 -t
 --tag
--s
---select
 -y
 --include-tags
 -x
@@ -143,6 +149,10 @@ _text_block()
 --highlight-marked1
 --highlight-marked2
 --highlight-param
+-m
+--min-actions
+-M
+--max-actions
 "
    # shellcheck disable=SC2207
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
