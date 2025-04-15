@@ -531,7 +531,7 @@ int main (int argc, char** argv)
       { "",                    no_argument,       0, '-' },
       { "help",                no_argument,       0, 'h' },
       { "version",             no_argument,       0, 'v' },
-      {  nullptr,                 0,                 0, 0   }
+      {  nullptr,              0,                 0, 0   }
    };
 
    int option;

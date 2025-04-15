@@ -90,7 +90,7 @@ int main(int argc, char** argv)
       { "quiet",   no_argument, 0, 'q' },
       { "help",    no_argument, 0, 'h' },
       { "version", no_argument, 0, 'v' },
-      {  nullptr,     0,           0, 0   }
+      {  nullptr,  0,           0, 0   }
    };
 
    if(optind + 1 < argc) {
