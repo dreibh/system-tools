@@ -35,7 +35,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdnoreturn.h>
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
@@ -59,48 +58,48 @@ typedef enum textblockmode {
 } textblockmode_t;
 
 
-static textblockmode_t    Mode                 = Cat;
-static const char*        BeginTag             = NULL;
-static size_t             BeginTagLength       = 0;
-static const char*        EndTag               = NULL;
-static size_t             EndTagLength         = 0;
-static long long          SelectBegin          = 0;
-static long long          SelectEnd            = 0;
-static long long          TotalInputLines      = -1;
-static bool               IncludeTags          = false;
-static bool               FullTagLines         = false;
-static char               EnumerateFormat[128] = "%06llu";
-static const char*        Enumerate1           = "\e[36m";
-static const char*        Enumerate2           = "\e[0m ";
-static const char*        HighlightBegin       = "⭐";
-static const char*        HighlightEnd         = "🛑";
-static const char*        HighlightUnmarked1   = "\e[34m";
-static const char*        HighlightUnmarked2   = "\e[0m";
-static const char*        HighlightMarked1     = "\e[31m";
-static const char*        HighlightMarked2     = "\e[0m";
-static const char*        InputFileName        = NULL;
-static FILE*              InputFile            = NULL;
-static bool               OpenInputFile        = false;
-static const char*        OutputFileName       = NULL;
-static FILE*              OutputFile           = NULL;
-static bool               OpenOutputFile       = false;
-static bool               OpenOutputAppend     = false;
-static const char*        InsertFileName       = NULL;
-static FILE*              InsertFile           = NULL;
-static bool               InMarkedBlock        = false;
-static char*              Buffer               = NULL;
-static size_t             BufferSize           = 65536;
+static textblockmode_t Mode                 = Cat;
+static const char*     BeginTag             = NULL;
+static size_t          BeginTagLength       = 0;
+static const char*     EndTag               = NULL;
+static size_t          EndTagLength         = 0;
+static long long       SelectBegin          = 0;
+static long long       SelectEnd            = 0;
+static long long       TotalInputLines      = -1;
+static bool            IncludeTags          = false;
+static bool            FullTagLines         = false;
+static char            EnumerateFormat[128] = "%06llu";
+static const char*     Enumerate1           = "\e[36m";
+static const char*     Enumerate2           = "\e[0m ";
+static const char*     HighlightBegin       = "⭐";
+static const char*     HighlightEnd         = "🛑";
+static const char*     HighlightUnmarked1   = "\e[34m";
+static const char*     HighlightUnmarked2   = "\e[0m";
+static const char*     HighlightMarked1     = "\e[31m";
+static const char*     HighlightMarked2     = "\e[0m";
+static const char*     InputFileName        = NULL;
+static FILE*           InputFile            = NULL;
+static bool            OpenInputFile        = false;
+static const char*     OutputFileName       = NULL;
+static FILE*           OutputFile           = NULL;
+static bool            OpenOutputFile       = false;
+static bool            OpenOutputAppend     = false;
+static const char*     InsertFileName       = NULL;
+static FILE*           InsertFile           = NULL;
+static bool            InMarkedBlock        = false;
+static char*           Buffer               = NULL;
+static size_t          BufferSize           = 65536;
 
-static unsigned long long LineNo;
-static const char*        EndOfLine;
-static const char*        Line;
-static const char*        MarkerTag;
-static size_t             MarkerTagLength;
-static const char*        Pointer;
+static long long       LineNo;
+static const char*     EndOfLine;
+static const char*     Line;
+static const char*     MarkerTag;
+static size_t          MarkerTagLength;
+static const char*     Pointer;
 
 
 // ###### Clean up ##########################################################
-static noreturn void cleanUp(int exitCode)
+[[ noreturn ]] static void cleanUp(int exitCode)
 {
    if(InsertFile) {
       fclose(InsertFile);
@@ -276,7 +275,7 @@ static void processMarked(const char*   text,
 
 
 // ###### Version ###########################################################
-static noreturn void version()
+[[ noreturn ]] static void version()
 {
    printf("text-block %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -284,7 +283,7 @@ static noreturn void version()
 
 
 // ###### Usage #############################################################
-static noreturn void usage(const char* program, const int exitCode)
+[[ noreturn ]] static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "%s %s [-C|--cat] [-0|--discard] [-H|--highlight] [-E|--enumerate] [-X|--extract] [-D|--delete|--remove] [-F|--insert-front insert_file] [-B|--insert-back insert_file] [-R|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-a|--append] [-s|--select from_line to_line] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-y|--include-tags] [-x|--exclude-tags] [-f|--full-tag-lines] [-g|--tags-only] [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label] [--highlight-param begin_label end_label unmarked1_label unmarked2_label marked1_label marked2_label] [--enumerate-format format] [--enumerate-label[1|2] string] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n",
            gettext("Usage:"), program);
