@@ -178,7 +178,7 @@ static void copyInsertFileIntoOutputFile()
       writeToOutputFile(buffer, bytesRead);
    }
    if(bytesRead < 0) {
-      fprintf(stderr, gettext("ERROR: Unable to read to insert file %s: %s"),
+      fprintf(stderr, gettext("ERROR: Unable to read from insert file %s: %s"),
               InsertFileName, strerror(errno));
       fputs("\n", stderr);
       cleanUp(1);
