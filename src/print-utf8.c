@@ -492,7 +492,7 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
 {
    fprintf(stderr, "%s %s"
            " [-n|--newline]"
-           " [-i indentation string|--ident indentation string]"
+           " [-i indentation string|--indent indentation string]"
            " [-c string|--center string]"
            " [-I left right|--multiline-indent indentation left right]"
            " [-C left right|--multiline-center left right]"
@@ -576,7 +576,7 @@ int main (int argc, char** argv)
                optind += 2;
             }
             else {
-               fputs(gettext("ERROR: Invalid arguments for multiline-ident!"), stderr);
+               fputs(gettext("ERROR: Invalid arguments for multiline-indent!"), stderr);
                fputs("\n", stderr);
                return 1;
             }
