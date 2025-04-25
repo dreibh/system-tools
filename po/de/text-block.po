@@ -120,9 +120,5 @@ msgid "ERROR: Read error: %s"
 msgstr "FEHLER: Lesefehler: %s"
 
 #: src/text-block.c:839
-msgid ""
-"ERROR: Number of actions outside of set limits (--min-actions/-m/--max-"
-"actions/-M)!"
-msgstr ""
-"FEHLER: Anzahl der Aktionen liegt außerhalb der festgelegten Grenzen (--min-"
-"actions/-m/-max-actions/-m)!"
+msgid "ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!"
+msgstr "FEHLER: Anzahl der Aktionen liegt außerhalb der festgelegten Grenzen (--min-actions/-m/--max-actions/-M)!"
