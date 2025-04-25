@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-04-25 09:27+0200\n"
+"POT-Creation-Date: 2025-04-25 17:49+0200\n"
 "PO-Revision-Date: 2025-04-25 08:35+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -32,7 +32,7 @@ msgstr "FEHLER: Ausgabedatei %s kann nicht geschrieben werden: %s"
 
 #: src/text-block.c:181
 #, c-format
-msgid "ERROR: Unable to read to insert file %s: %s"
+msgid "ERROR: Unable to read from insert file %s: %s"
 msgstr "FEHLER: Einfügedatei %s kann nicht gelesen werden: %s"
 
 #: src/text-block.c:325
@@ -120,5 +120,9 @@ msgid "ERROR: Read error: %s"
 msgstr "FEHLER: Lesefehler: %s"
 
 #: src/text-block.c:839
-msgid "ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!"
-msgstr "FEHLER: Anzahl der Aktionen liegt außerhalb der festgelegten Grenzen (--min-actions/-m/--max-actions/-M)!"
+msgid ""
+"ERROR: Number of actions outside of set limits (--min-actions/-m/--max-"
+"actions/-M)!"
+msgstr ""
+"FEHLER: Anzahl der Aktionen liegt außerhalb der festgelegten Grenzen (--min-"
+"actions/-m/--max-actions/-M)!"
