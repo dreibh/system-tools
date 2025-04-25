@@ -1,0 +1,55 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR "Copyright (C) 2013-2025 by Thomas Dreibholz"
+# This file is distributed under the same license as the "td-system-tools" package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
+"Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
+"POT-Creation-Date: 2025-04-25 09:27+0200\n"
+"PO-Revision-Date: 2025-04-25 08:35+0200\n"
+"Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
+"Language-Team:\n"
+"Language: nb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Language: nb\n"
+"X-Source-Language: en_GB\n"
+
+#: src/print-utf8.c:113 src/print-utf8.c:238 src/print-utf8.c:265
+msgid "ERROR: malloc() failed!"
+msgstr "FEIL: malloc() mislyktes!"
+
+#: src/print-utf8.c:271
+msgid "ERROR: mbstowcs() failed!"
+msgstr "FEIL: mbstowcs () mislyktes!"
+
+#: src/print-utf8.c:508
+msgid "Usage:"
+msgstr "Bruk:"
+
+#: src/print-utf8.c:579
+msgid "ERROR: Invalid arguments for multiline-indent!"
+msgstr "FEIL: Ugyldige argumenter for multiline-indent!"
+
+#: src/print-utf8.c:592
+msgid "ERROR: Invalid arguments for multiline-center!"
+msgstr "FEIL: Ugyldige argumenter for multiline-center!"
+
+#: src/print-utf8.c:609
+msgid "ERROR: Invalid separator setting!"
+msgstr "FEIL: Ugyldig separatorinnstilling!"
+
+#: src/print-utf8.c:621
+#, c-format
+msgid "ERROR: Invalid console width %u!"
+msgstr "FEIL: Ugyldig konsollbredde %u!"
+
+#: src/print-utf8.c:663
+#, c-format
+msgid "WARNING: Unhandled parameter %s!"
+msgstr "ADVARSEL: Ugyldig parameter %s!"
