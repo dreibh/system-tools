@@ -205,6 +205,7 @@ information.
 %{_bindir}/print-utf8
 %{_mandir}/man1/print-utf8.1.gz
 %{_datadir}/bash-completion/completions/print-utf8
+%{_datadir}/locale/*/LC_MESSAGES/print-utf8.mo
 
 
 %package text-block
@@ -218,6 +219,7 @@ text-block reads text from standard input or given file, and writes it to standa
 %{_bindir}/text-block
 %{_mandir}/man1/text-block.1.gz
 %{_datadir}/bash-completion/completions/text-block
+%{_datadir}/locale/*/LC_MESSAGES/text-block.mo
 
 
 %package misc

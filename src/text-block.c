@@ -293,7 +293,35 @@ static void processMarked(const char*   text,
 // ###### Usage #############################################################
 [[ noreturn ]] static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "%s %s [-C|--cat] [-0|--discard] [-H|--highlight] [-E|--enumerate] [-X|--extract] [-D|--delete|--remove] [-F|--insert-front insert_file] [-B|--insert-back insert_file] [-R|--replace insert_file] [-i|--input input_file] [-o|--output output_file] [-a|--append] [--min-actions|-m actions] [--max-actions|-M actions] [-s|--select from_line to_line] [-b|--begin-tag begin_tag] [-e|--end-tag end_tag] [-y|--include-tags] [-x|--exclude-tags] [-f|--full-tag-lines] [-g|--tags-only] [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label] [--highlight-param begin_label end_label unmarked1_label unmarked2_label marked1_label marked2_label] [--enumerate-format format] [--enumerate-label[1|2] string] [-w|--suppress-warnings] [-h|--help] [-v|--version]\n",
+   fprintf(stderr, "%s %s"
+           " [-C|--cat]"
+           " [-0|--discard]"
+           " [-H|--highlight]"
+           " [-E|--enumerate]"
+           " [-X|--extract]"
+           " [-D|--delete|--remove]"
+           " [-F|--insert-front insert_file]"
+           " [-B|--insert-back insert_file]"
+           " [-R|--replace insert_file]"
+           " [-i|--input input_file]"
+           " [-o|--output output_file]"
+           " [-a|--append]"
+           " [--min-actions|-m actions]"
+           " [--max-actions|-M actions]"
+           " [-s|--select from_line to_line]"
+           " [-b|--begin-tag begin_tag]"
+           " [-e|--end-tag end_tag]"
+           " [-y|--include-tags]"
+           " [-x|--exclude-tags]"
+           " [-f|--full-tag-lines]"
+           " [-g|--tags-only]"
+           " [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label]"
+           " [--highlight-param begin_label end_label unmarked1_label unmarked2_label marked1_label marked2_label]"
+           " [--enumerate-format format]"
+           " [--enumerate-label[1|2] string]"
+           " [-w|--suppress-warnings]"
+           " [-h|--help]"
+           " [-v|--version]\n",
            gettext("Usage:"), program);
    exit(exitCode);
 }
@@ -808,7 +836,7 @@ int main (int argc, char** argv)
       ( (MinActions < 0) || (Actions >= MinActions) ) &&
       ( (MaxActions < 0) || (Actions <= MaxActions) );
    if(!success) {
-      fputs(gettext("ERROR: Number of actions outside of limits set by min/max actions (--min-actions/-m/--max-actions/-M)!"), stderr);
+      fputs(gettext("ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!"), stderr);
       fputs("\n", stderr);
    }
    cleanUp( (success == true) ? 0 : 1 );

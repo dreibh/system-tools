@@ -490,7 +490,23 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
 // ###### Usage #############################################################
 [[ noreturn ]] static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "Usage: %s [-n|--newline] [-i indentation string|--ident indentation string] [-c string|--center string] [-I left right|--multiline-indent indentation left right]  [-C left right|--multiline-center left right] [-s border_left separator border_right|--separator border_left separator border_right] [-c columns|--columns columns] [-s string|--size string] [-l string|--length string] [-w string|--width string] [-a string|--size-length-width string] [-t|--terminal-info] [-h|--help] [-v|--version]\n", program);
+   fprintf(stderr, "%s %s"
+           " [-n|--newline]"
+           " [-i indentation string|--indent indentation string]"
+           " [-c string|--center string]"
+           " [-I left right|--multiline-indent indentation left right]"
+           " [-C left right|--multiline-center left right]"
+           " [-s border_left separator border_right|--separator border_left separator border_right]"
+           " [-c columns|--columns columns]"
+           " [-s string|--size string]"
+           " [-l string|--length string]"
+           " [-w string|--width string]"
+           " [-a string|--size-length-width string]"
+           " [-t|--terminal-info]"
+           " [-h|--help]"
+           " [-v|--version]\n",
+           gettext("Usage:"),
+           program);
    exit(exitCode);
 }
 
@@ -560,7 +576,7 @@ int main (int argc, char** argv)
                optind += 2;
             }
             else {
-               fputs(gettext("ERROR: Invalid arguments for multiline-ident!"), stderr);
+               fputs(gettext("ERROR: Invalid arguments for multiline-indent!"), stderr);
                fputs("\n", stderr);
                return 1;
             }
