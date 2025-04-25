@@ -836,7 +836,7 @@ int main (int argc, char** argv)
       ( (MinActions < 0) || (Actions >= MinActions) ) &&
       ( (MaxActions < 0) || (Actions <= MaxActions) );
    if(!success) {
-      fputs(gettext("ERROR: Number of actions outside of limits set by min/max actions (--min-actions/-m/--max-actions/-M)!"), stderr);
+      fputs(gettext("ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!"), stderr);
       fputs("\n", stderr);
    }
    cleanUp( (success == true) ? 0 : 1 );
