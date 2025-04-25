@@ -66,7 +66,11 @@ static double runiform(const double min, const  double max)
 // ###### Usage #############################################################
 [[ noreturn ]] static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "%s %s min_delay max_delay [-q|--quiet] [-w|--verbose] [-h|--help] [-v|--version]\n",
+   fprintf(stderr, "%s %s min_delay max_delay"
+           " [-q|--quiet]"
+           " [-w|--verbose]"
+           " [-h|--help]"
+           " [-v|--version]\n",
            gettext("Usage:"), program);
    exit(exitCode);
 }
