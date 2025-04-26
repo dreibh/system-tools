@@ -68,6 +68,7 @@ FOREACH(source IN LISTS sources)
                          --package-version="${BUILD_VERSION}"
                          --copyright-holder="${copyrightHolder}"
                          --msgid-bugs-address="${bugTrackerAddress}"
+                         --no-wrap
                          -p "${CMAKE_CURRENT_SOURCE_DIR}"
                          -o "${potFile}"
                          ${potInputFiles}
@@ -94,6 +95,7 @@ FOREACH(source IN LISTS sources)
       ADD_CUSTOM_COMMAND(OUTPUT "${poStampFile}"
                          COMMAND "${MSGMERGE}"
                             --update "${poFile}" "${potFile}"
+                            --no-wrap
                          COMMAND touch "${poStampFile}"
                          WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
                          DEPENDS ${generate_PotFile} "${potFile}")
