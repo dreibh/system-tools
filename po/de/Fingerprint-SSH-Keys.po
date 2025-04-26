@@ -1,7 +1,8 @@
+# ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 #        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ |
 #        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 #               |___/
 #                             --- System-Tools ---
@@ -9,7 +10,7 @@
 # ==========================================================================
 #
 # System-Tools
-# Copyright (C) 2013-2025 by Thomas Dreibholz
+# Copyright (C) 2024-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,13 +26,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Contact: thomas.dreibholz@gmail.com
-
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-11-12 12:59+0100\n"
+"POT-Creation-Date: 2025-04-26 12:07+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,21 +44,21 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Fingerprint-SSH-Keys:57
+#: src/Fingerprint-SSH-Keys:58
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Fingerprint-SSH-Keys:74
+#: src/Fingerprint-SSH-Keys:75
 #, sh-format
 msgid "Fingerprints of ${hostname} in raw format:"
 msgstr "Fingerabdrücke von ${hostname} im Rohformat:"
 
-#: src/Fingerprint-SSH-Keys:101
+#: src/Fingerprint-SSH-Keys:102
 #, sh-format
 msgid "Fingerprints of ${hostname} in SSH format:"
 msgstr "Fingerabdrücke von ${hostname} im SSH-Format:"
 
-#: src/Fingerprint-SSH-Keys:112
+#: src/Fingerprint-SSH-Keys:113
 #, sh-format
 msgid "Fingerprints of ${hostname} in DNS RR format:"
 msgstr "Fingerabdrücke von ${hostname} im DNS-RR-Format:"

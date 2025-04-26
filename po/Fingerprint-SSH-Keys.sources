@@ -1,1 +1,1 @@
-src/Fingerprint-SSH-Keys
+--language=Shell src/Fingerprint-SSH-Keys

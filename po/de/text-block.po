@@ -1,7 +1,8 @@
+# ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 #        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ |
 #        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 #               |___/
 #                             --- System-Tools ---
@@ -9,7 +10,7 @@
 # ==========================================================================
 #
 # System-Tools
-# Copyright (C) 2013-2025 by Thomas Dreibholz
+# Copyright (C) 2024-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,13 +26,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Contact: thomas.dreibholz@gmail.com
-
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-11-12 12:59+0100\n"
+"POT-Creation-Date: 2025-04-26 12:21+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,91 +44,91 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/text-block.c:118
+#: src/text-block.c:119
 #, c-format
 msgid "ERROR: Unable to open output file %s: %s"
 msgstr "FEHLER: Ausgabedatei %s kann nicht erstellt werden: %s"
 
-#: src/text-block.c:145
+#: src/text-block.c:146
 #, c-format
 msgid "ERROR: Unable to write to output file %s: %s"
 msgstr "FEHLER: Ausgabedatei %s kann nicht beschrieben werden: %s"
 
-#: src/text-block.c:181
+#: src/text-block.c:182
 #, c-format
 msgid "ERROR: Unable to read from insert file %s: %s"
 msgstr "FEHLER: Einfügedatei %s kann nicht gelesen werden: %s"
 
-#: src/text-block.c:325
+#: src/text-block.c:326
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/text-block.c:443
+#: src/text-block.c:444
 msgid "ERROR: Too few arguments for line selection (--select|-s)!"
 msgstr "FEHLER: Zu wenige Argumente für Zeilenauswahl (--select|-s)!"
 
-#: src/text-block.c:477
+#: src/text-block.c:478
 msgid "ERROR: Invalid value for enumeration format (--enumerate-format)!"
 msgstr "FEHLER: Ungültiger Wert für das Nummerierungsformat (--enumerate-format)!"
 
-#: src/text-block.c:523
+#: src/text-block.c:524
 msgid "ERROR: Too few arguments for highlight parameters (--highlight-params)!"
 msgstr "FEHLER: Zu wenige Argumente für Highlight-Parameter (--highlight-params)!"
 
-#: src/text-block.c:535
+#: src/text-block.c:536
 #, c-format
 msgid "ERROR: Invalid argument %s!"
 msgstr "FEHLER: Ungültiges Argument %s!"
 
-#: src/text-block.c:547
+#: src/text-block.c:548
 msgid "ERROR: Invalid min/max settings (--min-actions/-m/--max-actions/-M)!"
 msgstr "FEHLER: Ungültige Min/Max-Einstellungen (--min-actions/-m/--max-actions/-M)!"
 
-#: src/text-block.c:558
+#: src/text-block.c:559
 msgid "ERROR: Line selection (--select|-s) and tags (--begin-tag/-b/--end-tag/-e/--tag/-t) are mutually exclusive!"
 msgstr "FEHLER: Zeilenauswahl (--select|-s) und Tags (--begin-tag/-b/--end-tag/-e/--tag/-t) schließen sich gegenseitig aus!"
 
-#: src/text-block.c:570
+#: src/text-block.c:571
 msgid "WARNING: Begin/end tags (--begin-tag/-b/--end-tag/-e/--tag/-t) have no effect for Cat, Discard, or Enumerate!"
 msgstr "WARNUNG: Beginn-/End-Tags (--begin-tag/-b/--end-tag/-e/--tag/-t) haben keine Wirkung bei Cat, Discard oder Enumerate!"
 
-#: src/text-block.c:580
+#: src/text-block.c:581
 msgid "WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful for Extract, Remove, or Replace!"
 msgstr "WARNUNG: Identische Beginn/End-Tags (--tag/-t) mit ausgeschlossenen Tags (--exclude-tags/-x) sind nicht sinnvoll für Extract, Remove oder Replace!"
 
-#: src/text-block.c:599
+#: src/text-block.c:600
 #, c-format
 msgid "ERROR: Unable to open input file %s: %s"
 msgstr "FEHLER: Eingabedatei %s läßt sich nicht öffnen: %s"
 
-#: src/text-block.c:620
+#: src/text-block.c:621
 #, c-format
 msgid "WARNING: Line selection range (%lld — %lld) is not useful. Input file too short?"
 msgstr "WARNUNG: Zeilenauswahlbereich (%lld — %lld) ist nicht sinnvoll. Eingabedatei zu kurz?"
 
-#: src/text-block.c:627
+#: src/text-block.c:628
 msgid "ERROR: Select from end of file (negative line number) is only possible with input file!"
 msgstr "FEHLER: Zeilenauswahl vom Ende der Datei (negative Zeilennummer) ist nur mit Eingabedatei möglich!"
 
-#: src/text-block.c:638
+#: src/text-block.c:639
 #, c-format
 msgid "ERROR: Unable to create output file %s: %s"
 msgstr "FEHLER: Ausgabedatei %s kann nicht erstellt werden: %s"
 
-#: src/text-block.c:653
+#: src/text-block.c:654
 #, c-format
 msgid "ERROR: Unable to open insert file %s: %s"
 msgstr "FEHLER: Einfügedatei %s läßt sich nicht öffnen: %s"
 
-#: src/text-block.c:664
+#: src/text-block.c:665
 msgid "ERROR: No insert file provided!"
 msgstr "FEHLER: Keine Einfügedatei angegeben!"
 
-#: src/text-block.c:825
+#: src/text-block.c:826
 #, c-format
 msgid "ERROR: Read error: %s"
 msgstr "FEHLER: Lesefehler: %s"
 
-#: src/text-block.c:839
+#: src/text-block.c:840
 msgid "ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!"
 msgstr "FEHLER: Anzahl der Aktionen liegt außerhalb der festgelegten Grenzen (--min-actions/-m/--max-actions/-M)!"

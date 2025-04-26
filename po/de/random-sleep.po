@@ -1,7 +1,8 @@
+# ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 #        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ |
 #        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 #               |___/
 #                             --- System-Tools ---
@@ -9,7 +10,7 @@
 # ==========================================================================
 #
 # System-Tools
-# Copyright (C) 2013-2025 by Thomas Dreibholz
+# Copyright (C) 2024-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,13 +26,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Contact: thomas.dreibholz@gmail.com
-
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-11-12 12:59+0100\n"
+"POT-Creation-Date: 2025-04-26 12:07+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,24 +44,24 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/random-sleep.c:74
+#: src/random-sleep.c:75
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/random-sleep.c:126
+#: src/random-sleep.c:127
 #, c-format
 msgid "ERROR: Invalid argument %s!"
 msgstr "FEHLER: Ungültiges Argument %s!"
 
-#: src/random-sleep.c:136
+#: src/random-sleep.c:137
 msgid "ERROR: Invalid min_delay/max_delay"
 msgstr "FEHLER: Ungültiges min_delay/max_delay"
 
-#: src/random-sleep.c:154
+#: src/random-sleep.c:155
 #, c-format
 msgid "Sleeping for %1.6f s ..."
 msgstr "Schlafe für %1.6f s ..."
 
-#: src/random-sleep.c:159
+#: src/random-sleep.c:160
 msgid "Woke up!"
 msgstr "Aufgewacht!"

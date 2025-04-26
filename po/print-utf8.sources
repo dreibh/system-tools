@@ -1,1 +1,1 @@
-src/print-utf8.c
+--language=C src/print-utf8.c

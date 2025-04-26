@@ -1,7 +1,8 @@
+# ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 #        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ |
 #        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 #               |___/
 #                             --- System-Tools ---
@@ -9,7 +10,7 @@
 # ==========================================================================
 #
 # System-Tools
-# Copyright (C) 2013-2025 by Thomas Dreibholz
+# Copyright (C) 2024-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,13 +26,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Contact: thomas.dreibholz@gmail.com
-
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2024-11-12 12:59+0100\n"
+"POT-Creation-Date: 2025-04-26 12:07+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,89 +44,89 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Reset-Machine-ID:161
+#: src/Reset-Machine-ID:162
 #, sh-format
 msgid "ERROR: Invalid hostname ${hostname}!"
 msgstr "FEHLER: Ungültiger hostname ${hostname}!"
 
-#: src/Reset-Machine-ID:178
+#: src/Reset-Machine-ID:179
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Reset-Machine-ID:238
+#: src/Reset-Machine-ID:239
 msgid "Update hostname?"
 msgstr "Hostname aktualisieren?"
 
-#: src/Reset-Machine-ID:262
+#: src/Reset-Machine-ID:263
 #, sh-format
 msgid "The current machine ID is ${machineID}. Reset it?"
 msgstr "Die aktuelle Maschinen-ID ist ${machineID}. Zurücksetzen?"
 
-#: src/Reset-Machine-ID:298
+#: src/Reset-Machine-ID:299
 #, sh-format
 msgid "Install Zabbix agent?"
 msgstr ""
 
-#: src/Reset-Machine-ID:330
+#: src/Reset-Machine-ID:331
 #, sh-format
 msgid "Apply suggested Zabbix Agent changes in ${zabbixConfig}?"
 msgstr ""
 "Vorgeschlagene Änderungen für Zabbix-Agent in ${zabbixConfig} durchführen?"
 
-#: src/Reset-Machine-ID:341 src/Reset-Machine-ID:414 src/Reset-Machine-ID:502
-#: src/Reset-Machine-ID:555
+#: src/Reset-Machine-ID:342 src/Reset-Machine-ID:415 src/Reset-Machine-ID:503
+#: src/Reset-Machine-ID:556
 msgid "Skipped!"
 msgstr "Übersprungen!"
 
-#: src/Reset-Machine-ID:377
+#: src/Reset-Machine-ID:378
 msgid "Checking SSH configuration ..."
 msgstr "Untersuche SSH-Konfiguration ..."
 
-#: src/Reset-Machine-ID:403
+#: src/Reset-Machine-ID:404
 msgid "Suggested ssh_config changes:"
 msgstr "Vorgeschlagene Änderungen in ssh_config:"
 
-#: src/Reset-Machine-ID:407
+#: src/Reset-Machine-ID:408
 msgid "Apply suggested ssh_config changes?"
 msgstr "Vorgeschlagene Änderungen in ssh_config durchführen?"
 
-#: src/Reset-Machine-ID:476
+#: src/Reset-Machine-ID:477
 msgid "Suggested removal of sshd_config.d/50-cloud-init.conf:"
 msgstr "Vorgeschlagene Entfernung von sshd_config.d/50-cloud-init.conf:"
 
-#: src/Reset-Machine-ID:484
+#: src/Reset-Machine-ID:485
 msgid "Suggested sshd_config changes:"
 msgstr "Vorgeschlagene Änderungen in sshd_config:"
 
-#: src/Reset-Machine-ID:489
+#: src/Reset-Machine-ID:490
 msgid "Apply suggested sshd_config changes?"
 msgstr "Vorgeschlagene Änderungen in sshd_config durchführen?"
 
-#: src/Reset-Machine-ID:497 src/Reset-Machine-ID:549
+#: src/Reset-Machine-ID:498 src/Reset-Machine-ID:550
 msgid "Trying to restart SSH daemon ..."
 msgstr "Versuche Restart des SSH-Daemons ..."
 
-#: src/Reset-Machine-ID:516
+#: src/Reset-Machine-ID:517
 msgid "Remove existing SSH host keys and generate new ones?"
 msgstr "Existierende SSH-Schlüssel entfernen und neue Schlüssel erstellen?"
 
-#: src/Reset-Machine-ID:522
+#: src/Reset-Machine-ID:523
 #, sh-format
 msgid "Making backup of current keys in ${backupDirectory} ..."
 msgstr "Erstelle Backup der gegenwärtigen Schlüssel in ${backupDirectory} ..."
 
-#: src/Reset-Machine-ID:540
+#: src/Reset-Machine-ID:541
 msgid "Generating new ED25519 key ..."
 msgstr "Erstelle neuen ED25519-Schlüssel ..."
 
-#: src/Reset-Machine-ID:542
+#: src/Reset-Machine-ID:543
 msgid "Generating new ECDSA key ..."
 msgstr "Erstelle neuen ECDSA-Schlüssel ..."
 
-#: src/Reset-Machine-ID:544
+#: src/Reset-Machine-ID:545
 msgid "Generating new RSA key; this may take some time ..."
 msgstr "Erstelle neuen RSA-Schlüssel; dieses kann einen Moment dauern ..."
 
-#: src/Reset-Machine-ID:547
+#: src/Reset-Machine-ID:548
 msgid "Done!"
 msgstr "Erledigt!"
