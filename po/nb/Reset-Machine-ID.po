@@ -22,7 +22,7 @@ msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.0.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
 "POT-Creation-Date: 2024-12-18 13:26+0100\n"
-"PO-Revision-Date: 2024-03-14 13:14+0100\n"
+"PO-Revision-Date: 2025-04-26 08:14+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
 "Language: nb\n"
@@ -79,9 +79,8 @@ msgid "Apply suggested ssh_config changes?"
 msgstr "Vil du bruke foreslåtte ssh_config-endringer?"
 
 #: src/Reset-Machine-ID:476
-#, fuzzy
 msgid "Suggested removal of sshd_config.d/50-cloud-init.conf:"
-msgstr "Foreslått fjerning av /etc/ssh/sshd_config.d/50-cloud-init.conf:"
+msgstr "Foreslått fjerning av sshd_config.d/50-cloud-init.conf:"
 
 #: src/Reset-Machine-ID:484
 msgid "Suggested sshd_config changes:"

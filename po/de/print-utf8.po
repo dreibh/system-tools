@@ -33,9 +33,8 @@ msgid "Usage:"
 msgstr "Aufruf:"
 
 #: src/print-utf8.c:579
-#, fuzzy
 msgid "ERROR: Invalid arguments for multiline-indent!"
-msgstr "FEHLER: Ungültige Argumente für Multiline-Ident!"
+msgstr "FEHLER: Ungültige Argumente für Multiline-Indent!"
 
 #: src/print-utf8.c:592
 msgid "ERROR: Invalid arguments for multiline-center!"
