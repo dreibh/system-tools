@@ -440,7 +440,7 @@ int main (int argc, char** argv)
                optind++;
             }
             else {
-               fputs(gettext("ERROR: Too few arguments for select!"), stderr);
+               fputs(gettext("ERROR: Too few arguments for line selection (--select|-s)!"), stderr);
                fputs("\n", stderr);
                return 1;
             }
@@ -474,7 +474,7 @@ int main (int argc, char** argv)
             for(unsigned int i = 0; i < strlen(optarg); i++) {
                if( (optarg[i] == '%') ||
                    !( (isalnum(optarg[i]) || (optarg[i] != '-') || (optarg[i] != '\'') ) ) ) {
-                  fputs(gettext("ERROR: Invalid value for enumeration-format!"), stderr);
+                  fputs(gettext("ERROR: Invalid value for enumeration format (--enumerate-format)!"), stderr);
                   fputs("\n", stderr);
                   return 1;
                }
@@ -520,7 +520,7 @@ int main (int argc, char** argv)
                optind += 5;
             }
             else {
-               fputs(gettext("ERROR: Too few arguments for highlight-params!"), stderr);
+               fputs(gettext("ERROR: Too few arguments for highlight parameters (--highlight-params)!"), stderr);
                fputs("\n", stderr);
                return 1;
             }
@@ -544,7 +544,7 @@ int main (int argc, char** argv)
 
    // ====== Check parameters ===============================================
    if( (MaxActions >= 0) && (MinActions > MaxActions) ) {
-      fputs(gettext("ERROR: Invalid min/max actions settings!"), stderr);
+      fputs(gettext("ERROR: Invalid min/max settings (--min-actions/-m/--max-actions/-M)!"), stderr);
       fputs("\n", stderr);
       return 1;
    }
@@ -555,7 +555,7 @@ int main (int argc, char** argv)
       EndTag = BeginTag;
    }
    if( (BeginTag) && ((SelectBegin != 0) || (SelectEnd != 0)) ) {
-      fputs(gettext("ERROR: Select (--select|-s) and tags (--begin-tag/-b/--end-tag/-e/--tag/-t) are mutually exclusive!"), stderr);
+      fputs(gettext("ERROR: Line selection (--select|-s) and tags (--begin-tag/-b/--end-tag/-e/--tag/-t) are mutually exclusive!"), stderr);
       fputs("\n", stderr);
       return 1;
    }
@@ -567,7 +567,7 @@ int main (int argc, char** argv)
       case Discard:
       case Enumerate:
          if( showWarnings && ( (BeginTag != nullptr) || (EndTag != nullptr) ) ) {
-            fputs(gettext("WARNING: Begin/end tags (--begin-tag/-b/--end-tag/-e/--tag/-t) have no effect in Cat, Discard, or Enumerate Mode!"), stderr);
+            fputs(gettext("WARNING: Begin/end tags (--begin-tag/-b/--end-tag/-e/--tag/-t) have no effect for Cat, Discard, or Enumerate!"), stderr);
             fputs("\n", stderr);
          }
          BeginTag = nullptr;
@@ -577,7 +577,7 @@ int main (int argc, char** argv)
       case Remove:
       case Replace:
          if( showWarnings && (BeginTag != nullptr) && (BeginTag == EndTag) && (!IncludeTags) )  {
-            fputs(gettext("WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful in Extract, Remove, or Replace Mode!"), stderr);
+            fputs(gettext("WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful for Extract, Remove, or Replace!"), stderr);
             fputs("\n", stderr);
          }
        break;
@@ -617,7 +617,7 @@ int main (int argc, char** argv)
       }
       if(showWarnings && ( (SelectEnd < SelectBegin) && (SelectEnd != 0)) ) {
          fprintf(stderr,
-                 gettext("WARNING: Select range (%lld — %lld) is not useful. Input file too short?"),
+                 gettext("WARNING: Line selection range (%lld — %lld) is not useful. Input file too short?"),
                  SelectBegin, SelectEnd);
          fputs("\n", stderr);
       }
@@ -635,7 +635,7 @@ int main (int argc, char** argv)
    if(OutputFileName != nullptr) {
       OutputFile = fopen(OutputFileName, (OpenOutputAppend == false) ? "w" : "a");
       if(OutputFile == nullptr) {
-         fprintf(stderr, gettext("ERROR: Unable to open output file %s: %s"),
+         fprintf(stderr, gettext("ERROR: Unable to create output file %s: %s"),
                  OutputFileName, strerror(errno));
          fputs("\n", stderr);
          cleanUp(1);
