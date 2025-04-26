@@ -1,3 +1,15 @@
+commit d8719e1bad49eac1982bb5e2ed3f183a89e028ea
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 26 12:47:39 2025 +0200
+
+    Manpage fix.
+
+commit 233fbc872a1d8103fe6be7fc10138a6936caa9a7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Apr 14 09:35:39 2025 +0200
+
+    New release td-system-tools-2.0.9.
+
 commit 500b32a221701b592108c9744ec0b12799abc5f7
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Mar 5 13:38:06 2025 +0100
