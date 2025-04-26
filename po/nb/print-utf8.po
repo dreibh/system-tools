@@ -26,7 +26,7 @@ msgstr "FEIL: malloc() mislyktes!"
 
 #: src/print-utf8.c:271
 msgid "ERROR: mbstowcs() failed!"
-msgstr "FEIL: mbstowcs () mislyktes!"
+msgstr "FEIL: mbstowcs() mislyktes!"
 
 #: src/print-utf8.c:508
 msgid "Usage:"
@@ -42,7 +42,7 @@ msgstr "FEIL: Ugyldige argumenter for multiline-center!"
 
 #: src/print-utf8.c:609
 msgid "ERROR: Invalid separator setting!"
-msgstr "FEIL: Ugyldig separatorinnstilling!"
+msgstr "FEIL: Ugyldig separator-innstilling!"
 
 #: src/print-utf8.c:621
 #, c-format
@@ -52,4 +52,4 @@ msgstr "FEIL: Ugyldig konsollbredde %u!"
 #: src/print-utf8.c:663
 #, c-format
 msgid "WARNING: Unhandled parameter %s!"
-msgstr "ADVARSEL: Ugyldig parameter %s!"
+msgstr "ADVARSEL: Ubehandlet parameter %s!"
