@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+echo -en "\e[2J\e[H"
+print-utf8 -n -s "\e[1;31;40;5m█" "▀" "█\e[0m"
+echo -e "Software Failure.   Press left mouse button to continue.\nGuru Meditation #00000004.48454C50" | \
+print-utf8 -n -C "\e[1;31;40;5m█\e[25m" "\e[5m█\e[0m"
+print-utf8 -n -s "\e[1;31;40;5m█" "▄" "█\e[0m"
