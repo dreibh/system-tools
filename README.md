@@ -48,9 +48,18 @@ System-Maintenance runs some system maintenance tasks to keep the system clean a
 - Updating firmware,
 - Trimming SSDs and virtual storage.
 
+The typical usage is quite simple, e.g.:
+
+``sudo System-Maintenance``
+
 ### Print-UTF8
 
-Print-UTF8 is a simple program to print UTF-8 strings in the console with options for indentation, centering, separator as well as size/length/width information. It can e.g.&nbsp;be utilised for printing System-Info banners.
+Print-UTF8 is a simple program to print UTF-8 strings in the console with options for indentation, centering, separator as well as size/length/width information. It can e.g.&nbsp;be utilised for printing System-Info banners, or for displaying error messages like this classic Amiga [Guru Meditation](https://en.wikipedia.org/wiki/Guru_Meditation) example:
+
+    print-utf8 -n -s "\e[1;31;40;5m█" "▀" "█\e[0m"
+    echo -e "Software Failure.   Press left mouse button to continue.\nGuru Meditation #00000004.48454C50" | \
+    print-utf8 -n -C "\e[1;31;40;5m█\e[25m" "\e[5m█\e[0m"
+    print-utf8 -n -s "\e[1;31;40;5m█" "▄" "█\e[0m"
 
 ### Text-Block
 
@@ -69,11 +78,13 @@ For example, the publications list in [index.html](https://www.nntb.no/~dreibh/i
 
 ### Fingerprint-SSH-Keys
 
-Fingerprint-SSH-Keys prints the SSH key fingerprints of the local machine in different formats: SSH hash, DNS SSHFP RR, or Python dictionary.
+Fingerprint-SSH-Keys prints the SSH key fingerprints of the local machine in different formats: SSH hash, DNS SSHFP RR, or Python dictionary. Its typical usage is straightforward:
+
+``Fingerprint-SSH-Keys``
 
 ### Configure-Grub
 
-Configure-Grub adjusts a GRUB configuration file by applying a configuration from a template, and merging the existing configurations settings with additional customisations. It can for example be used to set a custom screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE option).
+Configure-Grub adjusts a GRUB configuration file by applying a configuration from a template, and merging the existing configurations settings with additional customisations. It can for example be used to set a custom screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE option). The [VM Image Builder Scripts](https://github.com/simula/nornet-vmimage-builder-scripts) use Configure-Grub to configure the screen resolution and a boot splash image.
 
 ### Try-Hard
 
