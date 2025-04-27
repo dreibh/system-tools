@@ -33,13 +33,17 @@ share/locale/de/LC_MESSAGES/Fingerprint-SSH-Keys.mo
 share/locale/de/LC_MESSAGES/Reset-Machine-ID.mo
 share/locale/de/LC_MESSAGES/System-Info.mo
 share/locale/de/LC_MESSAGES/System-Maintenance.mo
+share/locale/de/LC_MESSAGES/print-utf8.mo
 share/locale/de/LC_MESSAGES/random-sleep.mo
+share/locale/de/LC_MESSAGES/text-block.mo
 share/locale/de/LC_MESSAGES/try-hard.mo
 share/locale/nb/LC_MESSAGES/Fingerprint-SSH-Keys.mo
 share/locale/nb/LC_MESSAGES/Reset-Machine-ID.mo
 share/locale/nb/LC_MESSAGES/System-Info.mo
 share/locale/nb/LC_MESSAGES/System-Maintenance.mo
+share/locale/nb/LC_MESSAGES/print-utf8.mo
 share/locale/nb/LC_MESSAGES/random-sleep.mo
+share/locale/nb/LC_MESSAGES/text-block.mo
 share/locale/nb/LC_MESSAGES/try-hard.mo
 share/man/man1/Fingerprint-SSH-Keys.1.gz
 share/man/man1/Reset-Machine-ID.1.gz
@@ -51,3 +55,7 @@ share/man/man1/print-utf8.1.gz
 share/man/man1/random-sleep.1.gz
 share/man/man1/text-block.1.gz
 share/man/man1/try-hard.1.gz
+share/text-block/example1.txt
+share/text-block/example2.txt
+share/text-block/insert.txt
+share/text-block/numbers.txt
