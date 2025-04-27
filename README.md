@@ -14,7 +14,7 @@ System Tools is a collection of helpful tools for basic system management of Lin
 - [Try-Hard](#try-hard) (run a command, with configurable retries on failure),
 - [Random-Sleep](#random-sleep) (wait for random time span, with support of fractional seconds).
 
-### System-information
+### System-Info
 
 System-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System-Info can be configured to be automatically run when logging in, providing the user an up-to-date overview of the system.
 
