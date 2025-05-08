@@ -116,7 +116,6 @@ msgid "ERROR: Unable to create output file %s: %s"
 msgstr "FEHLER: Ausgabedatei %s kann nicht erstellt werden: %s"
 
 #: src/text-block.c:665
-#, fuzzy
 msgid "ERROR: Insert from standard input requires an input file!"
 msgstr "FEHLER: Einfügen von der Standardeingabe erfordert eine Eingabedatei!"
 
