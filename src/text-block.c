@@ -110,7 +110,9 @@ static const char*     Pointer;
 [[ noreturn ]] static void cleanUp(int exitCode)
 {
    if(InsertFile) {
-      fclose(InsertFile);
+      if(InsertFile != stdin) {
+         fclose(InsertFile);
+      }
       InsertFile = nullptr;
    }
 
@@ -162,7 +164,9 @@ static long long countLines(FILE* inputFile)
       lines++;
       line = Buffer;
    }
-   rewind(inputFile);
+   if(inputFile != stdin) {
+      rewind(inputFile);
+   }
 
    return lines;
 }
@@ -171,8 +175,6 @@ static long long countLines(FILE* inputFile)
 // ###### Write contents of insert file #####################################
 static void copyInsertFileIntoOutputFile()
 {
-   rewind(InsertFile);
-
    char    buffer[65536];
    ssize_t bytesRead;
    while( (bytesRead = fread((char*)&buffer, 1, sizeof(buffer), InsertFile)) > 0 ) {
@@ -183,6 +185,9 @@ static void copyInsertFileIntoOutputFile()
               InsertFileName, strerror(errno));
       fputs("\n", stderr);
       cleanUp(1);
+   }
+   if(InsertFile != stdin) {
+      rewind(InsertFile);
    }
 }
 
@@ -594,6 +599,9 @@ int main (int argc, char** argv)
 
    // ====== Open input file ================================================
    InputFile = stdin;
+   if( (InputFileName != nullptr) && (strcmp(InputFileName, "-") == 0) ) {
+      InputFileName = nullptr;   // Special case: - => stdin
+   }
    if(InputFileName != nullptr) {
       InputFile = fopen(InputFileName, "r");
       if(InputFile == nullptr) {
@@ -633,6 +641,9 @@ int main (int argc, char** argv)
 
    // ====== Open output file ===============================================
    OutputFile = stdout;
+   if( (OutputFileName != nullptr) && (strcmp(OutputFileName, "-") == 0) ) {
+      OutputFileName = nullptr;   // Special case: - => stdout
+   }
    if(OutputFileName != nullptr) {
       OutputFile = fopen(OutputFileName, (OpenOutputAppend == false) ? "w" : "a");
       if(OutputFile == nullptr) {
@@ -648,6 +659,15 @@ int main (int argc, char** argv)
    }
 
    // ====== Open insert file ===============================================
+   if( (InsertFileName != nullptr) && (strcmp(InsertFileName, "-") == 0) ) {
+      InsertFileName = nullptr;   // Special case: - => stdin
+      if(InputFile == stdin) {
+         fputs(gettext("ERROR: Insert from stdin requires an input file!"), stderr);
+         fputs("\n", stderr);
+         cleanUp(1);
+      }
+      InsertFile = stdin;
+   }
    if(InsertFileName != nullptr) {
       InsertFile = fopen(InsertFileName, "r");
       if(InsertFile == nullptr) {
@@ -660,7 +680,7 @@ int main (int argc, char** argv)
       posix_fadvise(fileno(InputFile), 0, 0, POSIX_FADV_SEQUENTIAL|POSIX_FADV_WILLNEED);
 #endif
    }
-   else {
+   if(InputFile == nullptr) {
       if( (Mode == InsertFront) || (Mode == InsertBack) || (Mode == Replace) ) {
          fputs(gettext("ERROR: No insert file provided!"), stderr);
          fputs("\n", stderr);

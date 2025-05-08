@@ -36,7 +36,7 @@
 .\" -------------------------------------------------------------------------
 .\"
 .\" ###### Setup ############################################################
-.Dd April 6, 2025
+.Dd May 9, 2025
 .Dt text-block 1
 .Os text-block
 .\" ###### Name #############################################################
@@ -169,10 +169,16 @@ Run in Highlight mode.
 Run in Delete mode.
 .It Fl F Ar insert_file | Fl Fl insert-front Ar insert_file
 Run in Insert-Front mode.
+"-" is placeholder for inserting from standard input.
+In this case, an input file is required.
 .It Fl B Ar insert_file | Fl Fl insert-back Ar insert_file
 Run in Insert-Back mode.
+"-" is placeholder for inserting from standard input.
+In this case, an input file is required.
 .It Fl R Ar insert_file | Fl Fl replace Ar insert_file
 Run in Replace mode.
+"-" is placeholder for replacing from standard input.
+In this case, an input file is required.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
 .It Fl v | Fl Fl version
@@ -196,8 +202,10 @@ Sets a combined begin/end tag, i.e. the tag marks begin and end.
 Tags are mutually exclusive with line selection (--select|-s).
 .It Fl i | Fl Fl input Ar input_file
 Sets the input file.
+"-" is placeholder for reading from standard input (default).
 .It Fl o | Fl Fl output Ar output_file
 Sets the output file. By default, an existing output file will be overwritten.
+"-" is placeholder for writing to standard output (default)
 .It Fl a | Fl Fl append
 Opens the output file in append mode, appending new output instead of overwriting an existing file.
 .Op Fl m | Fl Fl min-actions
