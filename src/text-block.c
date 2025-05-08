@@ -662,7 +662,7 @@ int main (int argc, char** argv)
    if( (InsertFileName != nullptr) && (strcmp(InsertFileName, "-") == 0) ) {
       InsertFileName = nullptr;   // Special case: - => stdin
       if(InputFile == stdin) {
-         fputs(gettext("ERROR: Insert from stdin requires an input file!"), stderr);
+         fputs(gettext("ERROR: Insert from standard input requires an input file!"), stderr);
          fputs("\n", stderr);
          cleanUp(1);
       }
