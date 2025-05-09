@@ -88,9 +88,11 @@ static const char*     InputFileName        = nullptr;
 static FILE*           InputFile            = nullptr;
 static bool            OpenInputFile        = false;
 static const char*     OutputFileName       = nullptr;
+static char*           OutputTempFileName   = nullptr;
 static FILE*           OutputFile           = nullptr;
 static bool            OpenOutputFile       = false;
 static bool            OpenOutputAppend     = false;
+static bool            InPlaceUpdate        = false;
 static const char*     InsertFileName       = nullptr;
 static FILE*           InsertFile           = nullptr;
 static bool            InMarkedBlock        = false;
@@ -137,6 +139,19 @@ static const char*     Pointer;
    }
 
    exit(exitCode);
+}
+
+
+// ###### Generate temporary output file name ###############################
+static char* makeTempOutputFileName(const char* outputFileName)
+{
+   const size_t ouputFileNameLength = strlen(outputFileName);
+   OutputTempFileName = malloc(ouputFileNameLength + 2);
+   strncpy(OutputTempFileName, outputFileName, ouputFileNameLength);
+   OutputTempFileName[ouputFileNameLength + 0] = '~';
+   OutputTempFileName[ouputFileNameLength + 1] = 0x00;
+   printf("INPLACE=%s\n", OutputTempFileName);
+   return OutputTempFileName;
 }
 
 
@@ -312,6 +327,7 @@ static void processMarked(const char*   text,
            " [-i|--input input_file]"
            " [-o|--output output_file]"
            " [-a|--append]"
+           " [-p|--in-place]"
            " [--min-actions|-m actions]"
            " [--max-actions|-M actions]"
            " [-s|--select from_line to_line]"
@@ -361,6 +377,7 @@ int main (int argc, char** argv)
       { "input",               required_argument, 0, 'i' },
       { "output",              required_argument, 0, 'o' },
       { "append",              no_argument,       0, 'a' },
+      { "in-place",            no_argument,       0, 'p' },
       { "min-actions",         required_argument, 0, 'm' },
       { "max-actions",         required_argument, 0, 'M' },
 
@@ -392,7 +409,7 @@ int main (int argc, char** argv)
 
    int option;
    int longIndex;
-   while( (option = getopt_long(argc, argv, "C0HEXDF:B:R:i:o:am:M:b:e:t:s:xyfgqhv", long_options, &longIndex)) != -1 ) {
+   while( (option = getopt_long(argc, argv, "C0HEXDF:B:R:i:o:apm:M:b:e:t:s:xyfgqhv", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'C':
             Mode = Cat;
@@ -432,6 +449,9 @@ int main (int argc, char** argv)
           break;
          case 'a':
             OpenOutputAppend = true;
+          break;
+         case 'p':
+            InPlaceUpdate = true;
           break;
          case 'm':
             MinActions = atoi(optarg);
@@ -635,7 +655,12 @@ int main (int argc, char** argv)
       if((SelectBegin < 0) || (SelectEnd < 0)) {
          fputs(gettext("ERROR: Select from end of file (negative line number) is only possible with input file!"), stderr);
          fputs("\n", stderr);
-         return 1;
+         cleanUp(1);
+      }
+      if(InPlaceUpdate) {
+         fputs(gettext("ERROR: In-place update requires and input file!"), stderr);
+         fputs("\n", stderr);
+         cleanUp(1);
       }
    }
 
@@ -645,6 +670,11 @@ int main (int argc, char** argv)
       OutputFileName = nullptr;   // Special case: - => stdout
    }
    if(OutputFileName != nullptr) {
+      if(InPlaceUpdate) {
+         fputs(gettext("ERROR: In-place update does not make sense with output file!"), stderr);
+         fputs("\n", stderr);
+         cleanUp(1);
+      }
       OutputFile = fopen(OutputFileName, (OpenOutputAppend == false) ? "w" : "a");
       if(OutputFile == nullptr) {
          fprintf(stderr, gettext("ERROR: Unable to create output file %s: %s"),
