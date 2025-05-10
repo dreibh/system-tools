@@ -186,7 +186,6 @@ static char* makeTempOutputFileName(const char* outputFileName)
    strncpy(OutputTempFileName, outputFileName, ouputFileNameLength);
    OutputTempFileName[ouputFileNameLength + 0] = '~';
    OutputTempFileName[ouputFileNameLength + 1] = 0x00;
-   printf("INPLACE=%s\n", OutputTempFileName);
    return OutputTempFileName;
 }
 

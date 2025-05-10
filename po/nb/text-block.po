@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-05-10 11:39+0200\n"
+"POT-Creation-Date: 2025-05-10 17:06+0200\n"
 "PO-Revision-Date: 2025-05-10 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -59,102 +59,102 @@ msgstr "FEIL: Kan ikke slette den ødelagte utgangsfilen %s: %s"
 msgid "ERROR: Unable to change name of temporary output file from %s to %s: %s"
 msgstr "FEIL: Kan ikke endre navnet på den midlertidige utdatafilen fra %s til %s: %s"
 
-#: src/text-block.c:199
+#: src/text-block.c:198
 #, c-format
 msgid "ERROR: Unable to write to output file %s: %s"
 msgstr "FEIL: Kan ikke skrive til utdata %s: %s"
 
-#: src/text-block.c:235
+#: src/text-block.c:234
 #, c-format
 msgid "ERROR: Unable to read from insert file %s: %s"
 msgstr "FEIL: Kan ikke lese for å sette inn fil %s: %s"
 
-#: src/text-block.c:384
+#: src/text-block.c:383
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/text-block.c:510
+#: src/text-block.c:509
 msgid "ERROR: Too few arguments for line selection (--select|-s)!"
 msgstr "FEIL: For få argumenter for linjeutvalg (--select|-s)!"
 
-#: src/text-block.c:544
+#: src/text-block.c:543
 msgid "ERROR: Invalid value for enumeration format (--enumerate-format)!"
 msgstr "FEIL: Ugyldig verdi for tallformat (--enumerate-format)!"
 
-#: src/text-block.c:590
+#: src/text-block.c:589
 msgid "ERROR: Too few arguments for highlight parameters (--highlight-params)!"
 msgstr "FEIL: For få argumenter for highlight-parametere (--highlight-params)!"
 
-#: src/text-block.c:602
+#: src/text-block.c:601
 #, c-format
 msgid "ERROR: Invalid argument %s!"
 msgstr "FEIL: Ugyldig argument %s!"
 
-#: src/text-block.c:614
+#: src/text-block.c:613
 msgid "ERROR: Invalid min/max settings (--min-actions/-m/--max-actions/-M)!"
 msgstr "FEIL: Ugyldige min/maks-innstillinger (--min-actions/-m/--max-actions/-M)!"
 
-#: src/text-block.c:626
+#: src/text-block.c:625
 msgid "ERROR: Line selection (--select|-s) and tags (--begin-tag/-b/--end-tag/-e/--tag/-t) are mutually exclusive!"
 msgstr "FEIL: Linjeutvalg (--select|-s) og merker (--begin-tag/-b/--end-tag/-e/--tag/-t) er gjensidig utelukkende!"
 
-#: src/text-block.c:638
+#: src/text-block.c:637
 msgid "WARNING: Begin/end tags (--begin-tag/-b/--end-tag/-e/--tag/-t) have no effect for Cat, Discard, or Enumerate!"
 msgstr "ADVARSEL: Begynn-/sluttmerker (--begin-tag/-b/--end-tag/-e/--tag/-t) har ingen effekt ved Cat, Discard og Enumerate!"
 
-#: src/text-block.c:648
+#: src/text-block.c:647
 msgid "WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful for Extract, Remove, or Replace!"
 msgstr "ADVARSEL: Identiske begynn-/sluttmerker (--tag/-t) med ekskluderte merker (--exclude-tags/-x) er ikke nyttige ved Extract, Remove og Replace!"
 
-#: src/text-block.c:670
+#: src/text-block.c:669
 #, c-format
 msgid "ERROR: Unable to open input file %s: %s"
 msgstr "FEIL: Kan ikke åpne inngangsfil %s: %s"
 
-#: src/text-block.c:691
+#: src/text-block.c:690
 #, c-format
 msgid "WARNING: Line selection range (%lld — %lld) is not useful. Input file too short?"
 msgstr "ADVARSEL: Linjeutvalg (%lld — %lld) er ikke nyttig. Input File for kort?"
 
-#: src/text-block.c:698
+#: src/text-block.c:697
 msgid "ERROR: Select from end of file (negative line number) is only possible with input file!"
 msgstr "FEIL: Velg fra slutten av filen (negativ linjenummer) er bare mulig med inndatafil!"
 
-#: src/text-block.c:703
+#: src/text-block.c:702
 msgid "ERROR: In-place update (--in-place|-p) requires an input file (--input/-i)!"
 msgstr "FEHLER: Für die direkte Aktualisierung (--in-place|-p) ist eine Eingabedatei (--input/-i) erforderlich!"
 
-#: src/text-block.c:716
+#: src/text-block.c:715
 msgid "ERROR: In-place update (--in-place|-p) and output file (--output/-o) are mutually exclusive!"
 msgstr "FEIL: Oppdatering på stedet (--inplace|-p) og utdatafil (--output/-o) utelukker hverandre!"
 
-#: src/text-block.c:721
+#: src/text-block.c:720
 msgid "ERROR: Cannot generate temporary output file name!"
 msgstr "FEIL: Kan ikke opprette filnavn for midlertidig utdatafil!"
 
-#: src/text-block.c:731
+#: src/text-block.c:730
 #, c-format
 msgid "ERROR: Unable to create output file %s: %s"
 msgstr "FEIL: Kan ikke opprette utdatafilen %s: %s"
 
-#: src/text-block.c:746
+#: src/text-block.c:745
 msgid "ERROR: Insert from standard input requires an input file!"
 msgstr "FEIL: Innsetting fra standardinngang krever en inndatafil!"
 
-#: src/text-block.c:755
+#: src/text-block.c:754
 #, c-format
 msgid "ERROR: Unable to open insert file %s: %s"
 msgstr "FEIL: Kan ikke åpne innsettingsfil %s: %s"
 
-#: src/text-block.c:767
+#: src/text-block.c:766
 msgid "ERROR: No insert file provided!"
 msgstr "FEIL: Ingen innsettingsfil oppgitt!"
 
-#: src/text-block.c:927
+#: src/text-block.c:926
 #, c-format
 msgid "ERROR: Read error: %s"
 msgstr "FEIL: Lesefeil: %s"
 
-#: src/text-block.c:941
+#: src/text-block.c:940
 msgid "ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!"
 msgstr "FEIL: Antall handlinger utenfor sette grenser (--min-actions/-m/--max-actions/-M)!"
