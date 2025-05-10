@@ -62,6 +62,30 @@ typedef enum printmode {
 } printmode_t;
 
 
+static char* Utf8String  = nullptr;
+static char* BorderLeft  = nullptr;
+static char* BorderRight = nullptr;
+
+
+// ###### Clean up ##########################################################
+[[ noreturn ]] static void cleanUp(int exitCode)
+{
+   if(Utf8String) {
+      free(Utf8String);
+      Utf8String = nullptr;
+   }
+   if(BorderLeft) {
+      free(BorderLeft);
+      BorderLeft = nullptr;
+   }
+   if(BorderRight) {
+      free(BorderRight);
+      BorderRight = nullptr;
+   }
+   exit(exitCode);
+}
+
+
 // ###### Obtain console size ###############################################
 static bool ioctlTIOCGWINSZ(struct winsize* w)
 {
@@ -296,7 +320,7 @@ static int stringwidth(const char* originalString,
                              nullptr, &wide_string_length);
    const int width = wcswidth(wide_string, wide_string_length);
    free(wide_string);
-   return width;
+   return ((width >= 0) ? width : 0);
 }
 
 
@@ -397,11 +421,18 @@ static void separator(const char* separaterBorderLeft,
                       const int   consoleWidth)
 {
    const int separaterLeftWidth   = stringwidth(separaterBorderLeft, true);
-   const int separatorStringWidth = stringwidth(separatorString, true);
    const int separaterRightWidth  = stringwidth(separaterBorderRight, true);
+   int       separatorStringWidth = stringwidth(separatorString, true);
+   int       i;
+   if(separatorStringWidth < 1) {
+      // The separator string must have a width >= 1, to fill the line.
+      // Using default " ":
+      separatorString      = " ";
+      separatorStringWidth = 1;
+   }
 
-   int i = separaterLeftWidth + separaterRightWidth;   // Border width
    fputs(separaterBorderLeft, stdout);
+   i = separaterLeftWidth + separaterRightWidth;   // Border width
    while(i + separatorStringWidth <= consoleWidth) {
       fputs(separatorString, stdout);
       i += separatorStringWidth;
@@ -526,9 +557,6 @@ int main (int argc, char** argv)
    // ====== Handle arguments ===============================================
    printmode_t mode                = Indent;
    int         indentWidth         = 0;
-   char*       utf8String          = nullptr;
-   char*       borderLeft          = nullptr;
-   char*       borderRight         = nullptr;
    bool        newline             = false;
    const int   defaultConsoleWidth = getConsoleWidth();
    int         consoleWidth        = defaultConsoleWidth;
@@ -572,44 +600,62 @@ int main (int argc, char** argv)
             mode = MultiLineIndent;
             if(optind + 1 < argc) {
                indentWidth = atoi(argv[optind - 1]);
-               borderLeft  = unescape(argv[optind + 0]);
-               borderRight = unescape(argv[optind + 1]);
+               if(BorderLeft) {
+                  free(BorderLeft);
+               }
+               BorderLeft  = unescape(argv[optind + 0]);
+               if(BorderRight) {
+                  free(BorderRight);
+               }
+               BorderRight = unescape(argv[optind + 1]);
                optind += 2;
             }
             else {
                fputs(gettext("ERROR: Invalid arguments for multiline-indent!"), stderr);
                fputs("\n", stderr);
-               return 1;
+               cleanUp(1);
             }
           break;
          case 'C':
             mode = MultiLineCenter;
             if(optind < argc) {
-               borderLeft  = unescape(argv[optind - 1]);
-               borderRight = unescape(argv[optind - 0]);
+               if(BorderLeft) {
+                  free(BorderLeft);
+               }
+               BorderLeft  = unescape(argv[optind - 1]);
+               if(BorderRight) {
+                  free(BorderRight);
+               }
+               BorderRight = unescape(argv[optind - 0]);
                optind++;
             }
             else {
                fputs(gettext("ERROR: Invalid arguments for multiline-center!"), stderr);
                fputs("\n", stderr);
-               return 1;
+               cleanUp(1);
             }
           break;
          case 's':
             mode = Separator;
             if(optind + 1 < argc) {
-               borderLeft  = unescape(argv[optind - 1]);
-               borderRight = unescape(argv[optind + 1]);
-               if(utf8String) {
-                  free(utf8String);
+               if(BorderLeft) {
+                  free(BorderLeft);
                }
-               utf8String  = unescape(argv[optind + 0]);
+               BorderLeft  = unescape(argv[optind - 1]);
+               if(BorderRight) {
+                  free(BorderRight);
+               }
+               BorderRight = unescape(argv[optind + 1]);
+               if(Utf8String) {
+                  free(Utf8String);
+               }
+               Utf8String  = unescape(argv[optind + 0]);
                optind += 2;
             }
             else {
                fputs(gettext("ERROR: Invalid separator setting!"), stderr);
                fputs("\n", stderr);
-               return 1;
+               cleanUp(1);
             }
           break;
          case 'x':
@@ -621,7 +667,7 @@ int main (int argc, char** argv)
                if(consoleWidth > 4096) {
                   fprintf(stderr, gettext("ERROR: Invalid console width %u!"), consoleWidth);
                   fputs("\n", stderr);
-                  return 1;
+                  cleanUp(1);
                }
             }
           break;
@@ -656,10 +702,10 @@ int main (int argc, char** argv)
       }
    }
    if(optind < argc) {
-      if(utf8String) {
-         free(utf8String);
+      if(Utf8String) {
+         free(Utf8String);
       }
-      utf8String = unescape(argv[optind++]);
+      Utf8String = unescape(argv[optind++]);
       while(optind < argc) {
          fprintf(stderr, gettext("WARNING: Unhandled parameter %s!"), argv[optind++]);
          fputs("\n", stderr);
@@ -669,43 +715,43 @@ int main (int argc, char** argv)
    // ====== Handle command =================================================
    switch(mode) {
       case Indent:
-         if(utf8String) {
-            indented(utf8String, indentWidth);
+         if(Utf8String) {
+            indented(Utf8String, indentWidth);
          }
          break;
       case Center:
-         if(utf8String) {
-            centered(utf8String, consoleWidth, false);
+         if(Utf8String) {
+            centered(Utf8String, consoleWidth, false);
          }
          break;
       case MultiLineIndent:
       case MultiLineCenter:
-         doMultiLineIndentOrCenter(borderLeft, borderRight,
+         doMultiLineIndentOrCenter(BorderLeft, BorderRight,
                                     consoleWidth, indentWidth, mode);
          break;
       case Separator:
-         if(utf8String) {
-            separator(borderLeft, utf8String, borderRight, consoleWidth);
+         if(Utf8String) {
+            separator(BorderLeft, Utf8String, BorderRight, consoleWidth);
          }
          break;
       case Width:
-         if(utf8String) {
-            stringSizeLengthWidth(utf8String, true, false, false, true);
+         if(Utf8String) {
+            stringSizeLengthWidth(Utf8String, true, false, false, true);
          }
          break;
       case Length:
-         if(utf8String) {
-            stringSizeLengthWidth(utf8String, true, false, true, false);
+         if(Utf8String) {
+            stringSizeLengthWidth(Utf8String, true, false, true, false);
          }
          break;
       case Size:
-         if(utf8String) {
-            stringSizeLengthWidth(utf8String, true, true, false, false);
+         if(Utf8String) {
+            stringSizeLengthWidth(Utf8String, true, true, false, false);
          }
          break;
       case SizeLengthWidth:
-         if(utf8String) {
-            stringSizeLengthWidth(utf8String, true, true, true, true);
+         if(Utf8String) {
+            stringSizeLengthWidth(Utf8String, true, true, true, true);
          }
          break;
       case TerminalInfo:
@@ -716,15 +762,5 @@ int main (int argc, char** argv)
       fputs("\n", stdout);
    }
 
-   if(utf8String) {
-      free(utf8String);
-   }
-   if(borderLeft) {
-      free(borderLeft);
-   }
-   if(borderRight) {
-      free(borderRight);
-   }
-
-   return 0;
+   cleanUp(0);
 }
