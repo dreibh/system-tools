@@ -118,6 +118,10 @@ _text_block()
 --output
 -a
 --append
+-p
+--in-place
+-k
+--keep-broken
 -m
 --min-actions
 -M
