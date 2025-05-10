@@ -113,26 +113,34 @@ static const char*     Pointer;
 // ###### Clean up ##########################################################
 [[ noreturn ]] static void cleanUp(int exitCode)
 {
+   // ====== Close insert file ==============================================
    if(OpenInsertFile) {
-      fclose(InsertFile);
+      if(InsertFile) {
+         fclose(InsertFile);
+      }
       OpenInsertFile = false;
    }
    InsertFile = nullptr;
 
+   // ====== Close output file ==============================================
    if(OpenOutputFile) {
-      if(fclose(OutputFile) != 0) {
-         fprintf(stderr, gettext("ERROR: Unable to open output file %s: %s"),
-                 OutputFileName, strerror(errno));
-         fputs("\n", stderr);
-         exitCode = 1;
+      if(OutputFile) {
+         if(fclose(OutputFile) != 0) {
+            fprintf(stderr, gettext("ERROR: Unable to open output file %s: %s"),
+                  OutputFileName, strerror(errno));
+            fputs("\n", stderr);
+            exitCode = 1;
+         }
       }
       if( (exitCode != 0) && (OutputDeleteOnError) ) {
          const char* brokenFileName = (OutputTempFileName != nullptr) ?
                                          OutputTempFileName : OutputFileName;
-         if(unlink(brokenFileName) != 0) {
-            fprintf(stderr, gettext("ERROR: Unable to delete broken output file %s: %s"),
-                    brokenFileName, strerror(errno));
-            fputs("\n", stderr);
+         if(brokenFileName) {
+            if(unlink(brokenFileName) != 0) {
+               fprintf(stderr, gettext("ERROR: Unable to delete broken output file %s: %s"),
+                     brokenFileName, strerror(errno));
+               fputs("\n", stderr);
+            }
          }
       }
       else if( (exitCode == 0) && (OutputTempFileName != nullptr) ) {
@@ -142,6 +150,7 @@ static const char*     Pointer;
             fputs("\n", stderr);
          }
       }
+      OpenOutputFile = false;
    }
    OutputFile = nullptr;
 
@@ -150,11 +159,16 @@ static const char*     Pointer;
       OutputTempFileName = nullptr;
    }
 
+   // ====== Close input file ===============================================
    if(OpenInputFile) {
-      fclose(InputFile);
+      if(InputFile) {
+         fclose(InputFile);
+      }
+      OpenInputFile = false;
    }
    InputFile = nullptr;
 
+   // ====== Free buffer ====================================================
    if(Buffer) {
       free(Buffer);
       Buffer = nullptr;
@@ -604,7 +618,8 @@ int main (int argc, char** argv)
    if( (BeginTag != nullptr) && (BeginTag[0] == 0x00) ) {
       BeginTag = nullptr;
    }
-   if( (EndTag == nullptr) || (EndTag[0] == 0x00) || (strcmp(EndTag, BeginTag) == 0) ) {
+   if( (EndTag   == nullptr) || (EndTag[0] == 0x00) ||
+       (BeginTag == nullptr) || (strcmp(EndTag, BeginTag) == 0) ) {
       EndTag = BeginTag;
    }
    if( (BeginTag) && ((SelectBegin != 0) || (SelectEnd != 0)) ) {
@@ -747,7 +762,7 @@ int main (int argc, char** argv)
       posix_fadvise(fileno(InputFile), 0, 0, POSIX_FADV_SEQUENTIAL|POSIX_FADV_WILLNEED);
 #endif
    }
-   if(InputFile == nullptr) {
+   if(InsertFile == nullptr) {
       if( (Mode == InsertFront) || (Mode == InsertBack) || (Mode == Replace) ) {
          fputs(gettext("ERROR: No insert file provided!"), stderr);
          fputs("\n", stderr);

@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-04-26 12:21+0200\n"
+"POT-Creation-Date: 2025-05-10 10:17+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -44,91 +44,120 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/text-block.c:119
+#: src/text-block.c:129
 #, c-format
 msgid "ERROR: Unable to open output file %s: %s"
 msgstr "FEIL: Kan ikke åpne utgangsfil %s: %s"
 
-#: src/text-block.c:146
+#: src/text-block.c:140
+#, fuzzy, c-format
+msgid "ERROR: Unable to delete broken output file %s: %s"
+msgstr "FEIL: Kan ikke åpne utgangsfil %s: %s"
+
+#: src/text-block.c:148
+#, fuzzy, c-format
+msgid "ERROR: Unable to rename temporary output file %s to %s: %s"
+msgstr "FEIL: Kan ikke skrive til utgangsfil %s: %s"
+
+#: src/text-block.c:199
 #, c-format
 msgid "ERROR: Unable to write to output file %s: %s"
 msgstr "FEIL: Kan ikke skrive til utdata %s: %s"
 
-#: src/text-block.c:182
+#: src/text-block.c:235
 #, c-format
 msgid "ERROR: Unable to read from insert file %s: %s"
 msgstr "FEIL: Kan ikke lese for å sette inn fil %s: %s"
 
-#: src/text-block.c:326
+#: src/text-block.c:384
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/text-block.c:444
+#: src/text-block.c:510
 msgid "ERROR: Too few arguments for line selection (--select|-s)!"
 msgstr "FEIL: For få argumenter for linjeutvalg (--select|-s)!"
 
-#: src/text-block.c:478
+#: src/text-block.c:544
 msgid "ERROR: Invalid value for enumeration format (--enumerate-format)!"
 msgstr "FEIL: Ugyldig verdi for tallformat (--enumerate-format)!"
 
-#: src/text-block.c:524
+#: src/text-block.c:590
 msgid "ERROR: Too few arguments for highlight parameters (--highlight-params)!"
 msgstr "FEIL: For få argumenter for highlight-parametere (--highlight-params)!"
 
-#: src/text-block.c:536
+#: src/text-block.c:602
 #, c-format
 msgid "ERROR: Invalid argument %s!"
 msgstr "FEIL: Ugyldig argument %s!"
 
-#: src/text-block.c:548
+#: src/text-block.c:614
 msgid "ERROR: Invalid min/max settings (--min-actions/-m/--max-actions/-M)!"
 msgstr "FEIL: Ugyldige min/maks-innstillinger (--min-actions/-m/--max-actions/-M)!"
 
-#: src/text-block.c:559
+#: src/text-block.c:626
 msgid "ERROR: Line selection (--select|-s) and tags (--begin-tag/-b/--end-tag/-e/--tag/-t) are mutually exclusive!"
 msgstr "FEIL: Linjeutvalg (--select|-s) og merker (--begin-tag/-b/--end-tag/-e/--tag/-t) er gjensidig utelukkende!"
 
-#: src/text-block.c:571
+#: src/text-block.c:638
 msgid "WARNING: Begin/end tags (--begin-tag/-b/--end-tag/-e/--tag/-t) have no effect for Cat, Discard, or Enumerate!"
 msgstr "ADVARSEL: Begynn-/sluttmerker (--begin-tag/-b/--end-tag/-e/--tag/-t) har ingen effekt ved Cat, Discard og Enumerate!"
 
-#: src/text-block.c:581
+#: src/text-block.c:648
 msgid "WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful for Extract, Remove, or Replace!"
 msgstr "ADVARSEL: Identiske begynn-/sluttmerker (--tag/-t) med ekskluderte merker (--exclude-tags/-x) er ikke nyttige ved Extract, Remove og Replace!"
 
-#: src/text-block.c:600
+#: src/text-block.c:670
 #, c-format
 msgid "ERROR: Unable to open input file %s: %s"
 msgstr "FEIL: Kan ikke åpne inngangsfil %s: %s"
 
-#: src/text-block.c:621
+#: src/text-block.c:691
 #, c-format
 msgid "WARNING: Line selection range (%lld — %lld) is not useful. Input file too short?"
 msgstr "ADVARSEL: Linjeutvalg (%lld — %lld) er ikke nyttig. Input File for kort?"
 
-#: src/text-block.c:628
+#: src/text-block.c:698
 msgid "ERROR: Select from end of file (negative line number) is only possible with input file!"
 msgstr "FEIL: Velg fra slutten av filen (negativ linjenummer) er bare mulig med inndatafil!"
 
-#: src/text-block.c:639
+#: src/text-block.c:703
+#, fuzzy
+msgid "ERROR: In-place update requires and input file!"
+msgstr "FEIL: Kan ikke åpne inngangsfil %s: %s"
+
+#: src/text-block.c:716
+#, fuzzy
+msgid "ERROR: In-place update and output file are mutually exclusive!"
+msgstr "FEIL: Kan ikke åpne inngangsfil %s: %s"
+
+#: src/text-block.c:721
+#, fuzzy
+msgid "ERROR: Cannot create temporary output file name!"
+msgstr "FEIL: Kan ikke skrive til utgangsfil %s: %s"
+
+#: src/text-block.c:731
 #, c-format
 msgid "ERROR: Unable to create output file %s: %s"
 msgstr "FEIL: Kan ikke skrive til utgangsfil %s: %s"
 
-#: src/text-block.c:654
+#: src/text-block.c:746
+msgid "ERROR: Insert from stdin requires an input file!"
+msgstr ""
+
+#: src/text-block.c:755
 #, c-format
 msgid "ERROR: Unable to open insert file %s: %s"
 msgstr "FEIL: Kan ikke åpne innsettingsfil %s: %s"
 
-#: src/text-block.c:665
+#: src/text-block.c:767
 msgid "ERROR: No insert file provided!"
 msgstr "FEIL: Ingen innsettingsfil oppgitt!"
 
-#: src/text-block.c:826
+#: src/text-block.c:927
 #, c-format
 msgid "ERROR: Read error: %s"
 msgstr "FEIL: Lesefeil: %s"
 
-#: src/text-block.c:840
+#: src/text-block.c:941
 msgid "ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!"
 msgstr "FEIL: Antall handlinger utenfor sette grenser (--min-actions/-m/--max-actions/-M)!"
