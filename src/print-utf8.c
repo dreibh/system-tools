@@ -320,7 +320,7 @@ static int stringwidth(const char* originalString,
                              nullptr, &wide_string_length);
    const int width = wcswidth(wide_string, wide_string_length);
    free(wide_string);
-   return width;
+   return ((width >= 0) ? width : 0);
 }
 
 
@@ -421,11 +421,18 @@ static void separator(const char* separaterBorderLeft,
                       const int   consoleWidth)
 {
    const int separaterLeftWidth   = stringwidth(separaterBorderLeft, true);
-   const int separatorStringWidth = stringwidth(separatorString, true);
    const int separaterRightWidth  = stringwidth(separaterBorderRight, true);
+   int       separatorStringWidth = stringwidth(separatorString, true);
+   int       i;
+   if(separatorStringWidth < 1) {
+      // The separator string must have a width >= 1, to fill the line.
+      // Using default " ":
+      separatorString      = " ";
+      separatorStringWidth = 1;
+   }
 
-   int i = separaterLeftWidth + separaterRightWidth;   // Border width
    fputs(separaterBorderLeft, stdout);
+   i = separaterLeftWidth + separaterRightWidth;   // Border width
    while(i + separatorStringWidth <= consoleWidth) {
       fputs(separatorString, stdout);
       i += separatorStringWidth;

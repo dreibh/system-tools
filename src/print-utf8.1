@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd December 13, 2024
+.Dd May 10, 2025
 .Dt print-utf8 1
 .Os print-utf8
 .\" ###### Name #############################################################
@@ -92,6 +92,7 @@ Center the string, using indentation based on the current console width.
 Reads multiple lines from stdin, pads them to the same length, and prints them centered with given borders on left and right side.
 .It Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
 Make a separator, consisting of a left part, a variable number of separator string occurrences, as well as a right part.
+The separator string must have a width >= 1 to fill the line. Otherwise, a space (" ") is used instead.
 .It Fl x Ar console_width | Fl Fl columns Ar console_width
 Set number of columns (console width) for "center", "multiline-center", and
 "separator" functions (see above).
