@@ -92,9 +92,11 @@ static char*           OutputTempFileName   = nullptr;
 static FILE*           OutputFile           = nullptr;
 static bool            OpenOutputFile       = false;
 static bool            OpenOutputAppend     = false;
+static bool            OutputDeleteOnError  = true;
 static bool            InPlaceUpdate        = false;
 static const char*     InsertFileName       = nullptr;
 static FILE*           InsertFile           = nullptr;
+static bool            OpenInsertFile       = false;
 static bool            InMarkedBlock        = false;
 static char*           Buffer               = nullptr;
 static size_t          BufferSize           = 65536;
@@ -111,12 +113,11 @@ static const char*     Pointer;
 // ###### Clean up ##########################################################
 [[ noreturn ]] static void cleanUp(int exitCode)
 {
-   if(InsertFile) {
-      if(InsertFile != stdin) {
-         fclose(InsertFile);
-      }
-      InsertFile = nullptr;
+   if(OpenInsertFile) {
+      fclose(InsertFile);
+      OpenInsertFile = false;
    }
+   InsertFile = nullptr;
 
    if(OpenOutputFile) {
       if(fclose(OutputFile) != 0) {
@@ -125,8 +126,29 @@ static const char*     Pointer;
          fputs("\n", stderr);
          exitCode = 1;
       }
+      if( (exitCode != 0) && (OutputDeleteOnError) ) {
+         const char* brokenFileName = (OutputTempFileName != nullptr) ?
+                                         OutputTempFileName : OutputFileName;
+         if(unlink(brokenFileName) != 0) {
+            fprintf(stderr, gettext("ERROR: Unable to delete broken output file %s: %s"),
+                    brokenFileName, strerror(errno));
+            fputs("\n", stderr);
+         }
+      }
+      else if( (exitCode == 0) && (OutputTempFileName != nullptr) ) {
+         if(rename(OutputTempFileName, InputFileName) != 0) {
+            fprintf(stderr, gettext("ERROR: Unable to rename temporary output file %s to %s: %s"),
+                    OutputTempFileName, InputFileName, strerror(errno));
+            fputs("\n", stderr);
+         }
+      }
    }
    OutputFile = nullptr;
+
+   if(OutputTempFileName) {
+      free(OutputTempFileName);
+      OutputTempFileName = nullptr;
+   }
 
    if(OpenInputFile) {
       fclose(InputFile);
@@ -328,6 +350,7 @@ static void processMarked(const char*   text,
            " [-o|--output output_file]"
            " [-a|--append]"
            " [-p|--in-place]"
+           " [-k|--keep-broken]"
            " [--min-actions|-m actions]"
            " [--max-actions|-M actions]"
            " [-s|--select from_line to_line]"
@@ -378,6 +401,7 @@ int main (int argc, char** argv)
       { "output",              required_argument, 0, 'o' },
       { "append",              no_argument,       0, 'a' },
       { "in-place",            no_argument,       0, 'p' },
+      { "keep-broken",         no_argument,       0, 'k' },
       { "min-actions",         required_argument, 0, 'm' },
       { "max-actions",         required_argument, 0, 'M' },
 
@@ -409,7 +433,7 @@ int main (int argc, char** argv)
 
    int option;
    int longIndex;
-   while( (option = getopt_long(argc, argv, "C0HEXDF:B:R:i:o:apm:M:b:e:t:s:xyfgqhv", long_options, &longIndex)) != -1 ) {
+   while( (option = getopt_long(argc, argv, "C0HEXDF:B:R:i:o:apkm:M:b:e:t:s:xyfgqhv", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'C':
             Mode = Cat;
@@ -452,6 +476,9 @@ int main (int argc, char** argv)
           break;
          case 'p':
             InPlaceUpdate = true;
+          break;
+         case 'k':
+            OutputDeleteOnError = false;
           break;
          case 'm':
             MinActions = atoi(optarg);
@@ -669,13 +696,22 @@ int main (int argc, char** argv)
    if( (OutputFileName != nullptr) && (strcmp(OutputFileName, "-") == 0) ) {
       OutputFileName = nullptr;   // Special case: - => stdout
    }
-   if(OutputFileName != nullptr) {
-      if(InPlaceUpdate) {
-         fputs(gettext("ERROR: In-place update does not make sense with output file!"), stderr);
+   if(InPlaceUpdate) {
+      if(OutputFileName != nullptr) {
+         fputs(gettext("ERROR: In-place update and output file are mutually exclusive!"), stderr);
          fputs("\n", stderr);
          cleanUp(1);
       }
-      OutputFile = fopen(OutputFileName, (OpenOutputAppend == false) ? "w" : "a");
+      if(makeTempOutputFileName(InputFileName) == nullptr) {
+         fputs(gettext("ERROR: Cannot create temporary output file name!"), stderr);
+         fputs("\n", stderr);
+         cleanUp(1);
+      }
+   }
+   if( (OutputFileName != nullptr) || (OutputTempFileName != nullptr) ) {
+      OutputFile = fopen( (OutputTempFileName != nullptr) ?
+                             OutputTempFileName : OutputFileName,
+                          (OpenOutputAppend == false) ? "w" : "a");
       if(OutputFile == nullptr) {
          fprintf(stderr, gettext("ERROR: Unable to create output file %s: %s"),
                  OutputFileName, strerror(errno));
@@ -706,6 +742,7 @@ int main (int argc, char** argv)
          fputs("\n", stderr);
          cleanUp(1);
       }
+      OpenInsertFile = true;
 #ifdef POSIX_FADV_SEQUENTIAL
       posix_fadvise(fileno(InputFile), 0, 0, POSIX_FADV_SEQUENTIAL|POSIX_FADV_WILLNEED);
 #endif
@@ -746,7 +783,6 @@ int main (int argc, char** argv)
              (unsigned long long)LineNo, (unsigned int)lineLength, MarkerTag,
              Line);
 #endif
-
 
       // ====== Tag handling ================================================
       if(MarkerTag != nullptr) {

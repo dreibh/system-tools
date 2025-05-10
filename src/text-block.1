@@ -36,7 +36,7 @@
 .\" -------------------------------------------------------------------------
 .\"
 .\" ###### Setup ############################################################
-.Dd May 9, 2025
+.Dd May 10, 2025
 .Dt text-block 1
 .Os text-block
 .\" ###### Name #############################################################
@@ -83,6 +83,8 @@
 .Op Fl i | Fl Fl input Ar input_file
 .Op Fl o | Fl Fl output Ar output_file
 .Op Fl a | Fl Fl append
+.Op Fl p | Fl Fl in-place
+.Op Fl k | Fl Fl keep-broken
 .Op Fl m | Fl Fl min-actions
 .Op Fl M | Fl Fl max-actions
 .Op Fl s | Fl Fl select Ar from_line Ar to_line
@@ -208,6 +210,10 @@ Sets the output file. By default, an existing output file will be overwritten.
 "-" is placeholder for writing to standard output (default)
 .It Fl a | Fl Fl append
 Opens the output file in append mode, appending new output instead of overwriting an existing file.
+.It Fl p | Fl Fl in-place
+In-place update into the input file. The output is written to a temporary file with extension "~" first, which replaces the input file on success.
+.It Fl k | Fl Fl keep-broken
+Keep broken output in case of error (default: off).
 .Op Fl m | Fl Fl min-actions
 Set lower limit for number of marking actions. If the number of applied markings falls below this limit, an error is returned.
 .Op Fl M | Fl Fl max-actions
