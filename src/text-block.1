@@ -36,7 +36,7 @@
 .\" -------------------------------------------------------------------------
 .\"
 .\" ###### Setup ############################################################
-.Dd May 10, 2025
+.Dd May 11, 2025
 .Dt text-block 1
 .Os text-block
 .\" ###### Name #############################################################
@@ -105,7 +105,7 @@
 .Op Fl Fl highlight-unmarked2 Ar string
 .Op Fl Fl highlight-marked1 Ar string
 .Op Fl Fl highlight-marked2 Ar string
-.Op Fl Fl highlight-param Fl begin_label Fl end_label Fl unmarked1_label Fl unmarked2_label Fl marked1_label Fl marked2_label
+.Op Fl Fl highlight-param Ar begin_\%label Ar end_\%label Ar unmarked1_\%label Ar unmarked2_\%label Ar marked1_\%label Ar marked2_\%label
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm text-block
@@ -259,7 +259,7 @@ For Highlight mode: Sets string to visualise the begin of a marked text fragment
 (enables red colour output).
 .It Fl Fl highlight-marked2 Ar string
 For Highlight mode: Sets string to visualise the end of a marked text fragment. Default: $\[aq]\ex1b[0m \[aq] (disables colour output).
-.It Fl Fl highlight-param Fl begin_label Fl end_label Fl unmarked1_label Fl unmarked2_label Fl marked1_label Fl marked2_label
+.It Fl Fl highlight-param Ar begin_label Ar end_label Ar unmarked1_label Ar unmarked2_label Ar marked1_label Ar marked2_label
 A shortcut to set all 6 highlight parameters at once.
 .El
 .\" ###### Examples #########################################################
