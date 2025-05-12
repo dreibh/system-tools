@@ -1,3 +1,112 @@
+commit 69294977b70873d0d5e7c78447da495134900a69
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 12 22:24:25 2025 +0200
+
+    Updated CI configuration
+
+commit 48b58d6e44d1597bba157b089fd4d88c7ef15d63
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 12 22:24:22 2025 +0200
+
+    Updated CI scripts
+
+commit 4f90161dd8b4a76f423a050987ea45904b593ddf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 12 22:24:19 2025 +0200
+
+    Updated build scripts
+
+commit 0d347201f4ffe1173f7884674c51d76fbb6ff3db
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 11 21:02:12 2025 +0200
+
+    Improved manpage. Also fixed too-long lines with hyphenation suggestions \% => no need for Lintian override any more.
+
+commit fa24c68be02a7dfca8812eb4cccafaedb70c7d23
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 10 17:07:06 2025 +0200
+
+    Removed debug output.
+
+commit 712ad3f568e7a633aade4dd0650d5d8f063f65c1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 10 11:42:31 2025 +0200
+
+    Added missing Text-Block options to shell completion.
+
+commit 62da1ead12bb5af8efd2a3975ce2d15ba21baadd
+Merge: 0103c17 3e5c731
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 10 11:41:32 2025 +0200
+
+    Merge branch 'dreibh/text-block'
+
+commit 3e5c731430793a9a53a2d12b779ffb7b552b7fc5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 10 11:19:03 2025 +0200
+
+    Updated test script.
+
+commit b43e614ea08c702d018583893cf2a904bd616f7a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 10 11:15:50 2025 +0200
+
+    Bugfix: Separator must have a separator string of width >= 1, in order to not cause an infinite loop.
+
+commit 3314cc5aedc15ba15c6e3b94fb4ce3a56015c6e1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 10 10:34:44 2025 +0200
+
+    Bugfix: Fixed possible memory leaks found by static analysis.
+
+commit a445cdb71f99c6776f3242ee1aba4f865b85df54
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 10 10:17:39 2025 +0200
+
+    Bugfix: Fixed potential error cases found by static analysis.
+
+commit bad03668230a56adbf2e081f291729a9304ceebe
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 10 10:05:15 2025 +0200
+
+    Improved in-place and keep-broken options handling.
+
+commit 828d25bbd8b2d4fdd1f7ef64ded53b4ba63c4ffa
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 9 08:54:51 2025 +0200
+
+    Some work on update options.
+
+commit 0103c17d1f97ed6d9f1b0e9c9d2dd4bd9272671b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 8 22:45:42 2025 +0200
+
+    Minor fix.
+
+commit c122646e6fe56ba0910c5b832d97864b734a0f05
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 8 22:44:40 2025 +0200
+
+    Some message clean-ups.
+
+commit 604701627678832cc43bd83f4683e1a458b8ffed
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 8 22:25:08 2025 +0200
+
+    Added missing insert/replace from standard input.
+
+commit f106ac799ce228e5157fcd3e2fab206b52aeff27
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Apr 27 20:19:29 2025 +0200
+
+    Updated FreeBSD port.
+
+commit 8ff347c38ce733a5455ff54ef75da871deacc419
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Apr 27 14:15:09 2025 +0200
+
+    New release td-system-tools-2.1.0.
+
 commit aefe815f79164563e32917e464225c768a1523d8
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun Apr 27 12:09:31 2025 +0200
