@@ -111,14 +111,6 @@ function print-system-information ()
    # Set the variables:
    eval "$(get-system-info)"
 
-   # ====== Work-around for messed up built-in printf in Bash 5.2 ===========
-   # -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1081424
-   # -> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1078556
-   local printf="printf"
-   if [[ "${BASH_VERSION}" =~ ^5\.2\. ]] ; then
-      printf="$(which printf || echo "printf")"
-   fi
-
    # ====== Obtain operating system information =============================
    DISTRIB_ID="$(gettext "Unknown")"   # Unknown, yet.
    DISTRIB_RELEASE="${DISTRIB_ID}"     # Unknown, yet.
@@ -164,15 +156,15 @@ function print-system-information ()
    # ------ Uptime ----------------------------------------------------------
    print-utf8 -i "${indent}" "$(gettext "Uptime:")"
    # shellcheck disable=SC2059
-   ${printf} "$(gettext "%s, %s, %s, and %s")\n" \
-      "$(${printf} "$(ngettext "%'d day" "%'d days" "${uptime_days}")" "${uptime_days}")" \
-      "$(${printf} "$(ngettext "%'d hour" "%'d hours" "${uptime_hours}")" "${uptime_hours}")" \
-      "$(${printf} "$(ngettext "%'d minute" "%'d minutes" "${uptime_mins}")" "${uptime_mins}")" \
-      "$(${printf} "$(ngettext "%'d second" "%'d seconds" "${uptime_secs}")" "${uptime_secs}")"
+   printf "$(gettext "%s, %s, %s, and %s")\n" \
+      "$(printf "$(ngettext "%'d day" "%'d days" "${uptime_days}")" "${uptime_days}")" \
+      "$(printf "$(ngettext "%'d hour" "%'d hours" "${uptime_hours}")" "${uptime_hours}")" \
+      "$(printf "$(ngettext "%'d minute" "%'d minutes" "${uptime_mins}")" "${uptime_mins}")" \
+      "$(printf "$(ngettext "%'d second" "%'d seconds" "${uptime_secs}")" "${uptime_secs}")"
 
    # ------ Operating System ------------------------------------------------
    print-utf8 -i "${indent}" "$(gettext "Operating System:")"
-   ${printf} "%s $(gettext "with kernel") %s\n" \
+   printf "%s $(gettext "with kernel") %s\n" \
       "${os_label}" \
       "${system_release}"
 
@@ -181,7 +173,7 @@ function print-system-information ()
    processesString="$(gettext "%'d processes")"
    usersString="$(ngettext "%'d user" "%'d users" "${system_users}")"
    # shellcheck disable=SC2059
-   ${printf} "$(gettext "%d × %s; ${processesString}; ${usersString}")\n" \
+   printf "$(gettext "%d × %s; ${processesString}; ${usersString}")\n" \
       "${system_cores}" \
       "${system_machine}" \
       "${system_procs}" \
@@ -190,7 +182,7 @@ function print-system-information ()
    # ------ Load ------------------------------------------------------------
    print-utf8 -i "${indent}" "$(gettext "Load (1/5/15 min):")"
    # shellcheck disable=SC2059
-   ${printf} "$(gettext "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
+   printf "$(gettext "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
       "${system_load_avg1min}" \
       "${system_load_avg5min}" \
       "${system_load_avg15min}"
@@ -244,7 +236,7 @@ function print-system-information ()
          fi
          capacity="${!capacityVariable}"
          # shellcheck disable=SC2059
-         ${printf} "${colorBattery}$(gettext "#%u %s, %u %%")${colorBasic}" \
+         printf "${colorBattery}$(gettext "#%u %s, %u %%")${colorBasic}" \
             "${number}" \
             "${status}" \
             "${capacity}"
@@ -255,7 +247,7 @@ function print-system-information ()
    # ------ Memory ---------------------------------------------------------
    print-utf8 -i "${indent}" "$(gettext "Used Memory:")"
    # shellcheck disable=SC2059
-   ${printf} "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
+   printf "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
       "$((system_mem_used  / 1048576))" \
       "$((system_mem_total / 1048576))" \
       "$((system_mem_free  / 1048576))" \
@@ -263,7 +255,7 @@ function print-system-information ()
    if [ "${system_swap_total}" != "" ] && [ "${system_swap_total}" -gt 0 ] ; then
       print-utf8 -i "${indent}" "$(gettext "Used Swap:")"
       # shellcheck disable=SC2059
-      ${printf} "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
+      printf "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
       "$((system_swap_used  / 1048576))" \
       "$((system_swap_total / 1048576))" \
       "$((system_swap_free  / 1048576))" \
@@ -298,7 +290,7 @@ function print-system-information ()
             colorDisk="${colorDiskNormal}"
          fi
          # shellcheck disable=SC2059
-         ${printf} "${colorDisk}$(gettext "%1.0f %% on %s")${colorBasic}" \
+         printf "${colorDisk}$(gettext "%1.0f %% on %s")${colorBasic}" \
             "${!mountPointVariable}" \
             "${mountPoint}"
       fi
