@@ -1,3 +1,27 @@
+commit 623a40e4cb30f74e0590866b168dae825866aab0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 17 23:07:08 2025 +0200
+
+    Minor clean-ups.
+
+commit 9614bfd481c5816dd5ba5f3acc167a4c4857cf39
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 17 23:03:33 2025 +0200
+
+    Removed now unnecessary Bash 5.2.21 "printf" bug work-around.
+
+commit e21318394e5cde2a1f99433a2e05ea93f070e0d8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 13 11:35:12 2025 +0200
+
+    Updated FreeBSD port.
+
+commit 6585fdd3b7615d9190dbe23218c0aa42b78ef7e1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 12 22:51:07 2025 +0200
+
+    New release td-system-tools-2.1.1.
+
 commit 69294977b70873d0d5e7c78447da495134900a69
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon May 12 22:24:25 2025 +0200
