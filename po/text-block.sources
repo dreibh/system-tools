@@ -1,1 +1,1 @@
---language=C src/text-block.c
+--language=C src/Text-Block/text-block.c
