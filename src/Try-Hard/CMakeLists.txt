@@ -29,45 +29,11 @@
 
 
 #############################################################################
-#### VERSION FILE                                                        ####
-#############################################################################
-
-CONFIGURE_FILE (
-   "${CMAKE_CURRENT_SOURCE_DIR}/package-version.h.in"
-   "${CMAKE_CURRENT_BINARY_DIR}/package-version.h"
-)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-
-
-#############################################################################
 #### PROGRAMS                                                            ####
 #############################################################################
-
-ADD_EXECUTABLE(print-utf8 print-utf8.c)
-SET_PROPERTY(TARGET print-utf8 PROPERTY C_STANDARD 23)
-TARGET_LINK_LIBRARIES(print-utf8 ${Intl_LIBRARIES})
-INSTALL(TARGETS print-utf8 DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES print-utf8.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES              print-utf8.bash-completion
-        DESTINATION        ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME             print-utf8)
 
 INSTALL(PROGRAMS    try-hard   DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES       try-hard.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       try-hard.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      try-hard)
-
-
-#############################################################################
-#### SUBDIRECTORIES                                                      ####
-#############################################################################
-
-ADD_SUBDIRECTORY(System-Info)
-ADD_SUBDIRECTORY(System-Maintenance)
-ADD_SUBDIRECTORY(Fingerprint-SSH-Keys)
-ADD_SUBDIRECTORY(Reset-Machine-ID)
-ADD_SUBDIRECTORY(Configure-GRUB)
-ADD_SUBDIRECTORY(Random-Sleep)
-ADD_SUBDIRECTORY(Try-Hard)
-ADD_SUBDIRECTORY(Text-Block)
