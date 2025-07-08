@@ -1,3 +1,75 @@
+commit fc8f40511d68eff335b9dae933e672398de6b891
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 8 12:17:36 2025 +0200
+
+    Added missing translations.
+
+commit 1fc8138e5b7106834dc990ab5df1ce349d6ec256
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 8 12:08:03 2025 +0200
+
+    Moved Print-UTF8 into separate subdirectory.
+
+commit 2490adeecbd9924b23334a60bfc9adbdce65b241
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 8 12:03:33 2025 +0200
+
+    Moved Try-Hard into separate subdirectory.
+
+commit 5e5f426a22ffcca73a6792948f8360a6c2b5dfe5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 8 12:01:44 2025 +0200
+
+    Moved Text-Block into separate subdirectory.
+
+commit 31ff3d692d8a782e62fcc988eb3ae5d469fac68b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 8 11:58:04 2025 +0200
+
+    Moved Random-Sleep into separate subdirectory.
+
+commit 6bb41273899b5c5d966535a8ab53198adc0ec043
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 8 11:54:32 2025 +0200
+
+    Moved Configure-GRUB into separate subdirectory.
+
+commit ee61d52e17220e905b82d3ca5610e282e27a1a09
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 8 11:51:59 2025 +0200
+
+    Moved Reset-Machine-ID into separate subdirectory.
+
+commit a0bc7b39f34509f2cfdd5a8e15597349befe4beb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 8 11:49:47 2025 +0200
+
+    Moved Fingerprint-SSH-Keys into separate subdirectory.
+
+commit c91123a1c0966c8f7a03a73e731989b52f5e1220
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 8 11:47:17 2025 +0200
+
+    Moved System-Maintenance into separate subdirectory.
+
+commit 065cff940d01d0523bc0075b4bd9a80bcec574d3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 8 11:42:29 2025 +0200
+
+    Moved System-Info into separate subdirectory.
+
+commit d6fb4e831c6fcb347ac53d0305240395646c35de
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 18 10:17:54 2025 +0200
+
+    Updated distinfo.
+
+commit a13fcff65ae1d4697fd7d85538857a2af4cde235
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 18 10:04:23 2025 +0200
+
+    New release td-system-tools-2.1.2.
+
 commit 623a40e4cb30f74e0590866b168dae825866aab0
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Jun 17 23:07:08 2025 +0200
