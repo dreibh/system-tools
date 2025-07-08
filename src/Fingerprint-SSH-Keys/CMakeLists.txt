@@ -2,7 +2,7 @@
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 #        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ |
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
 #        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 #               |___/
 #                             --- System-Tools ---
@@ -10,7 +10,7 @@
 # ==========================================================================
 #
 # System-Tools
-# Copyright (C) 2024-2025 by Thomas Dreibholz
+# Copyright (C) 2013-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,39 +26,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Contact: thomas.dreibholz@gmail.com
-#
-#, fuzzy
-msgid ""
-msgstr ""
-"Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
-"Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-07-08 11:49+0200\n"
-"PO-Revision-Date: 2025-04-26 11:43+0100\n"
-"Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
-"Language-Team:\n"
-"Language: nb\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Language: nb\n"
-"X-Source-Language: en_GB\n"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:58
-msgid "Usage:"
-msgstr "Bruk:"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:75
-#, sh-format
-msgid "Fingerprints of ${hostname} in raw format:"
-msgstr "Fingeravtrykk av ${hostname} i råformat:"
+#############################################################################
+#### PROGRAMS                                                            ####
+#############################################################################
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:102
-#, sh-format
-msgid "Fingerprints of ${hostname} in SSH format:"
-msgstr "Fingeravtrykk av ${hostname} i SSH-format:"
-
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:113
-#, sh-format
-msgid "Fingerprints of ${hostname} in DNS RR format:"
-msgstr "Fingeravtrykk av ${hostname} i DNS-RR-format:"
+INSTALL(PROGRAMS Fingerprint-SSH-Keys DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES Fingerprint-SSH-Keys.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       Fingerprint-SSH-Keys.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      Fingerprint-SSH-Keys)

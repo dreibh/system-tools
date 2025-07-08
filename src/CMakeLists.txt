@@ -49,12 +49,6 @@ INSTALL(FILES       Reset-Machine-ID.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      Reset-Machine-ID)
 
-INSTALL(PROGRAMS Fingerprint-SSH-Keys DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES Fingerprint-SSH-Keys.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       Fingerprint-SSH-Keys.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      Fingerprint-SSH-Keys)
-
 INSTALL(PROGRAMS configure-grub DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES configure-grub.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       configure-grub.bash-completion
@@ -115,3 +109,4 @@ INSTALL(FILES text-block-tests/example1.txt
 
 ADD_SUBDIRECTORY(System-Info)
 ADD_SUBDIRECTORY(System-Maintenance)
+ADD_SUBDIRECTORY(Fingerprint-SSH-Keys)
