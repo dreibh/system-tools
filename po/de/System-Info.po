@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-06-17 23:06+0200\n"
+"POT-Creation-Date: 2025-07-08 11:36+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -44,164 +44,165 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/System-Info:82
+#: src/System-Info/System-Info:82
 msgid "ERROR: get-system-info not found in search path!"
 msgstr "FEHLER: get-system-info nicht im Suchpfad gefunden!"
 
-#: src/System-Info:115
+#: src/System-Info/System-Info:115
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: src/System-Info:153
+#: src/System-Info/System-Info:153
 msgid "Host:"
 msgstr "Rechner:"
 
-#: src/System-Info:157
+#: src/System-Info/System-Info:157
 msgid "Uptime:"
 msgstr "Betriebszeit:"
 
-#: src/System-Info:159
+#: src/System-Info/System-Info:159
 msgid "%s, %s, %s, and %s"
 msgstr "%s, %s, %s und %s"
 
-#: src/System-Info:160
+#: src/System-Info/System-Info:160
 msgid "%'d day"
 msgid_plural "%'d days"
 msgstr[0] "%'d Tag"
 msgstr[1] "%'d Tage"
 
-#: src/System-Info:161
+#: src/System-Info/System-Info:161
 msgid "%'d hour"
 msgid_plural "%'d hours"
 msgstr[0] "%'d Stunde"
 msgstr[1] "%'d Stunden"
 
-#: src/System-Info:162
+#: src/System-Info/System-Info:162
 msgid "%'d minute"
 msgid_plural "%'d minutes"
 msgstr[0] "%'d Minute"
 msgstr[1] "%'d Minuten"
 
-#: src/System-Info:163
+#: src/System-Info/System-Info:163
 msgid "%'d second"
 msgid_plural "%'d seconds"
 msgstr[0] "%'d Sekunde"
 msgstr[1] "%'d Sekunden"
 
-#: src/System-Info:166
+#: src/System-Info/System-Info:166
 msgid "Operating System:"
 msgstr "Betriebssystem:"
 
-#: src/System-Info:167
+#: src/System-Info/System-Info:167
 msgid "with kernel"
 msgstr "mit Kernel"
 
-#: src/System-Info:172
+#: src/System-Info/System-Info:172
 msgid "Processor:"
 msgstr "Prozessor:"
 
-#: src/System-Info:173
+#: src/System-Info/System-Info:173
 msgid "%'d processes"
 msgstr "%'d Prozesse"
 
-#: src/System-Info:174
+#: src/System-Info/System-Info:174
 msgid "%'d user"
 msgid_plural "%'d users"
 msgstr[0] "%'d Benutzer"
 msgstr[1] "%'d Benutzer"
 
-#: src/System-Info:183
+#: src/System-Info/System-Info:183
 msgid "Load (1/5/15 min):"
 msgstr "Last (1/5/15 Min.):"
 
-#: src/System-Info:185
+#: src/System-Info/System-Info:185
 msgid "%1.1f %% / %1.1f %% / %1.1f %%"
 msgstr "%1.1f %% / %1.1f %% / %1.1f %%"
 
-#: src/System-Info:205
+#: src/System-Info/System-Info:205
 msgid "Battery:"
 msgstr "Batterie:"
 
-#: src/System-Info:220
+#: src/System-Info/System-Info:220
 msgid "unknown"
 msgstr "unbekannt"
 
-#: src/System-Info:224
+#: src/System-Info/System-Info:224
 msgid "not charging"
 msgstr "lädt nicht"
 
-#: src/System-Info:227
+#: src/System-Info/System-Info:227
 msgid "charging"
 msgstr "lädt"
 
-#: src/System-Info:230
+#: src/System-Info/System-Info:230
 msgid "full"
 msgstr "vollständig aufgeladen"
 
-#: src/System-Info:233
+#: src/System-Info/System-Info:233
 msgid "discharging"
 msgstr "entlädt"
 
-#: src/System-Info:239
+#: src/System-Info/System-Info:239
 msgid "#%u %s, %u %%"
 msgstr "%u. %s, %u %%"
 
-#: src/System-Info:248
+#: src/System-Info/System-Info:248
 msgid "Used Memory:"
 msgstr "Belegtes RAM:"
 
-#: src/System-Info:250 src/System-Info:258
+#: src/System-Info/System-Info:250 src/System-Info/System-Info:258
 msgid "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)"
 msgstr "%'6.0f MiB von %'6.0f MiB (%'6.0f MiB verfügbar: %'5.1f %%)"
 
-#: src/System-Info:256 src/System-Info:264
+#: src/System-Info/System-Info:256 src/System-Info/System-Info:264
 msgid "Used Swap:"
 msgstr "Belegter Swap:"
 
-#: src/System-Info:265
+#: src/System-Info/System-Info:265
 msgid "no swap available!"
 msgstr "Swap nicht vorhanden!"
 
-#: src/System-Info:269
+#: src/System-Info/System-Info:269
 msgid "Used Diskspace:"
 msgstr "Speicherplatz:"
 
-#: src/System-Info:293
+#: src/System-Info/System-Info:293
 msgid "%1.0f %% on %s"
 msgstr "%1.0f %% auf %s"
 
-#: src/System-Info:305
+#: src/System-Info/System-Info:305
 msgid "Network:"
 msgstr "Netzwerk:"
 
-#: src/System-Info:335
+#: src/System-Info/System-Info:335
 msgid "(No IPv4)"
 msgstr "(Kein IPv4)"
 
-#: src/System-Info:373
+#: src/System-Info/System-Info:373
 msgid "SSH Keys:"
 msgstr "SSH-Schlüssel:"
 
-#: src/System-Info:379
+#: src/System-Info/System-Info:379
 msgid "#%u %s"
 msgstr "%u. %s"
 
-#: src/System-Info:403
+#: src/System-Info/System-Info:403
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/System-Info:412
+#: src/System-Info/System-Info:412
 msgid "System information on %s"
 msgstr "Systeminformation am %s"
 
-#: src/system-info.d/01-example:56 src/system-info.d/10-company-logo-example:71
+#: src/System-Info/system-info.d/01-example:56
+#: src/System-Info/system-info.d/10-company-logo-example:71
 msgid "You can change this banner in /etc/system-info.d!"
 msgstr "Dieses Banner kann in /etc/system-info.d geändert werden!"
 
-#: src/system-info.d/09-hostname-example:49
+#: src/System-Info/system-info.d/09-hostname-example:49
 msgid "Welcome on the System"
 msgstr "Willkommen auf dem System"
 
-#: src/system-info.d/10-company-logo-example:51
+#: src/System-Info/system-info.d/10-company-logo-example:51
 msgid "Welcome to"
 msgstr "Willkommen bei"

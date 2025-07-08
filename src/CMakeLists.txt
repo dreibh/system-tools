@@ -43,12 +43,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 #### PROGRAMS                                                            ####
 #############################################################################
 
-INSTALL(PROGRAMS System-Info DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES System-Info.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       System-Info.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      System-Info)
-
 INSTALL(PROGRAMS System-Maintenance DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES System-Maintenance.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       System-Maintenance.bash-completion
@@ -72,14 +66,6 @@ INSTALL(FILES configure-grub.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       configure-grub.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      configure-grub)
-
-ADD_EXECUTABLE(get-system-info get-system-info.c)
-SET_PROPERTY(TARGET get-system-info PROPERTY C_STANDARD 23)
-INSTALL(TARGETS get-system-info DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES get-system-info.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       get-system-info.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      get-system-info)
 
 ADD_EXECUTABLE(print-utf8 print-utf8.c)
 SET_PROPERTY(TARGET print-utf8 PROPERTY C_STANDARD 23)
@@ -119,23 +105,12 @@ INSTALL(FILES       try-hard.bash-completion
 #### CONFIGURATION FILES                                                 ####
 #############################################################################
 
-INSTALL(PROGRAMS system-info.d/01-example    DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-info.d)
-INSTALL(PROGRAMS system-info.d/banner-helper DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-info.d)
-
 INSTALL(PROGRAMS system-maintenance.d/XX-example DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-maintenance.d)
-
-INSTALL(FILES profile.d/system-info.sh  DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/profile.d)
-INSTALL(FILES profile.d/system-info.csh DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/profile.d)
 
 
 #############################################################################
 #### EXAMPLES                                                            ####
 #############################################################################
-
-INSTALL(PROGRAMS system-info.d/01-example              DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
-INSTALL(PROGRAMS system-info.d/09-hostname-example     DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
-INSTALL(PROGRAMS system-info.d/10-company-logo-example DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
-INSTALL(PROGRAMS system-info.d/banner-helper           DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
 
 INSTALL(FILES grub-defaults-nornet   DESTINATION ${CMAKE_INSTALL_DATADIR}/configure-grub)
 INSTALL(FILES grub-defaults-standard DESTINATION ${CMAKE_INSTALL_DATADIR}/configure-grub)
@@ -145,3 +120,10 @@ INSTALL(FILES text-block-tests/example1.txt
               text-block-tests/insert.txt
               text-block-tests/numbers.txt
         DESTINATION ${CMAKE_INSTALL_DATADIR}/text-block)
+
+
+#############################################################################
+#### SUBDIRECTORIES                                                      ####
+#############################################################################
+
+ADD_SUBDIRECTORY(System-Info)

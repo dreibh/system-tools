@@ -1,4 +1,4 @@
---language=Shell src/System-Info
---language=Shell src/system-info.d/01-example
---language=Shell src/system-info.d/09-hostname-example
---language=Shell src/system-info.d/10-company-logo-example
+--language=Shell src/System-Info/System-Info
+--language=Shell src/System-Info/system-info.d/01-example
+--language=Shell src/System-Info/system-info.d/09-hostname-example
+--language=Shell src/System-Info/system-info.d/10-company-logo-example
