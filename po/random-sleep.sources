@@ -1,1 +1,1 @@
---language=C src/random-sleep.c
+--language=C src/Random-Sleep/random-sleep.c

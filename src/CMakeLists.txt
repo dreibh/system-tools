@@ -52,15 +52,6 @@ INSTALL(FILES              print-utf8.bash-completion
         DESTINATION        ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME             print-utf8)
 
-ADD_EXECUTABLE(random-sleep random-sleep.c)
-SET_PROPERTY(TARGET random-sleep PROPERTY C_STANDARD 23)
-TARGET_LINK_LIBRARIES(random-sleep ${Intl_LIBRARIES})
-INSTALL(TARGETS     random-sleep   DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES       random-sleep.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       random-sleep.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      random-sleep)
-
 ADD_EXECUTABLE(text-block text-block.c)
 SET_PROPERTY(TARGET text-block PROPERTY C_STANDARD 23)
 TARGET_LINK_LIBRARIES(text-block ${Intl_LIBRARIES})
@@ -97,3 +88,4 @@ ADD_SUBDIRECTORY(System-Maintenance)
 ADD_SUBDIRECTORY(Fingerprint-SSH-Keys)
 ADD_SUBDIRECTORY(Reset-Machine-ID)
 ADD_SUBDIRECTORY(Configure-GRUB)
+ADD_SUBDIRECTORY(Random-Sleep)

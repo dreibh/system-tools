@@ -2,7 +2,7 @@
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 #        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ |
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
 #        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 #               |___/
 #                             --- System-Tools ---
@@ -10,7 +10,7 @@
 # ==========================================================================
 #
 # System-Tools
-# Copyright (C) 2024-2025 by Thomas Dreibholz
+# Copyright (C) 2013-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,42 +26,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Contact: thomas.dreibholz@gmail.com
-#
-#, fuzzy
-msgid ""
-msgstr ""
-"Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
-"Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-07-08 11:57+0200\n"
-"PO-Revision-Date: 2025-04-26 11:43+0100\n"
-"Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
-"Language-Team:\n"
-"Language: de\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Language: de\n"
-"X-Source-Language: en_GB\n"
 
-#: src/Random-Sleep/random-sleep.c:75
-msgid "Usage:"
-msgstr "Aufruf:"
 
-#: src/Random-Sleep/random-sleep.c:127
-#, c-format
-msgid "ERROR: Invalid argument %s!"
-msgstr "FEHLER: Ungültiges Argument %s!"
+#############################################################################
+#### PROGRAMS                                                            ####
+#############################################################################
 
-#: src/Random-Sleep/random-sleep.c:137
-msgid "ERROR: Invalid min_delay/max_delay"
-msgstr "FEHLER: Ungültiges min_delay/max_delay"
-
-#: src/Random-Sleep/random-sleep.c:155
-#, c-format
-msgid "Sleeping for %1.6f s ..."
-msgstr "Schlafe für %1.6f s ..."
-
-#: src/Random-Sleep/random-sleep.c:160
-msgid "Woke up!"
-msgstr "Aufgewacht!"
+ADD_EXECUTABLE(random-sleep random-sleep.c)
+SET_PROPERTY(TARGET random-sleep PROPERTY C_STANDARD 23)
+TARGET_LINK_LIBRARIES(random-sleep ${Intl_LIBRARIES})
+INSTALL(TARGETS     random-sleep   DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES       random-sleep.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       random-sleep.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      random-sleep)
