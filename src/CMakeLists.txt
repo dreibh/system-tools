@@ -43,12 +43,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 #### PROGRAMS                                                            ####
 #############################################################################
 
-INSTALL(PROGRAMS System-Maintenance DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES System-Maintenance.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       System-Maintenance.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      System-Maintenance)
-
 INSTALL(PROGRAMS Reset-Machine-ID DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES Reset-Machine-ID.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       Reset-Machine-ID.bash-completion
@@ -102,13 +96,6 @@ INSTALL(FILES       try-hard.bash-completion
 
 
 #############################################################################
-#### CONFIGURATION FILES                                                 ####
-#############################################################################
-
-INSTALL(PROGRAMS system-maintenance.d/XX-example DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-maintenance.d)
-
-
-#############################################################################
 #### EXAMPLES                                                            ####
 #############################################################################
 
@@ -127,3 +114,4 @@ INSTALL(FILES text-block-tests/example1.txt
 #############################################################################
 
 ADD_SUBDIRECTORY(System-Info)
+ADD_SUBDIRECTORY(System-Maintenance)

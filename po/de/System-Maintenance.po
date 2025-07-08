@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-04-26 12:07+0200\n"
+"POT-Creation-Date: 2025-07-08 11:45+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -44,90 +44,91 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/System-Maintenance:48
+#: src/System-Maintenance/System-Maintenance:48
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/System-Maintenance:56
+#: src/System-Maintenance/System-Maintenance:56
 msgid "ERROR: /etc/os-release not found!"
 msgstr "FEHLER: /etc/os-release nicht gefunden!"
 
-#: src/System-Maintenance:64
+#: src/System-Maintenance/System-Maintenance:64
 msgid "Stopping AutoFS service ..."
 msgstr "Stoppe AutoFS-Dienst ..."
 
-#: src/System-Maintenance:70
+#: src/System-Maintenance/System-Maintenance:70
 msgid "Applying package fixes, if necessary ..."
 msgstr "Repariere Pakete, falls notwendig ..."
 
-#: src/System-Maintenance:78 src/System-Maintenance:81
+#: src/System-Maintenance/System-Maintenance:78
+#: src/System-Maintenance/System-Maintenance:81
 msgid "Updating package repositories ..."
 msgstr "Aktualisiere Paketquellen ..."
 
-#: src/System-Maintenance:91
+#: src/System-Maintenance/System-Maintenance:91
 msgid "Installing missing dependencies, if necessary ..."
 msgstr "Installiere fehlende Abhängigkeiten, falls notwendig ..."
 
-#: src/System-Maintenance:99
+#: src/System-Maintenance/System-Maintenance:99
 msgid "Installing updates ..."
 msgstr "Installiere Aktualisierungen ..."
 
-#: src/System-Maintenance:153
+#: src/System-Maintenance/System-Maintenance:153
 msgid "Cleaning up ..."
 msgstr "Räume auf ..."
 
-#: src/System-Maintenance:186
+#: src/System-Maintenance/System-Maintenance:186
 msgid "Removing obsolete kernels ..."
 msgstr "Entferne obsolete Kernels ..."
 
-#: src/System-Maintenance:192
+#: src/System-Maintenance/System-Maintenance:192
 msgid "Kernel Type:        "
 msgstr "Kernel-Typ:          "
 
-#: src/System-Maintenance:193
+#: src/System-Maintenance/System-Maintenance:193
 msgid "Kernel Boot Version:"
 msgstr "Kernel Boot-Version: "
 
-#: src/System-Maintenance:194
+#: src/System-Maintenance/System-Maintenance:194
 msgid "Kernel Disk Version:"
 msgstr "Kernel Disk-Version: "
 
-#: src/System-Maintenance:263
+#: src/System-Maintenance/System-Maintenance:263
 msgid "To be removed:"
 msgstr "Zu entfernen:"
 
-#: src/System-Maintenance:266
+#: src/System-Maintenance/System-Maintenance:266
 msgid "To be kept:"
 msgstr "Zu behalten:"
 
-#: src/System-Maintenance:291
+#: src/System-Maintenance/System-Maintenance:291
 msgid "Refreshing snaps ..."
 msgstr "Aktualisiere Snaps ..."
 
-#: src/System-Maintenance:297
+#: src/System-Maintenance/System-Maintenance:297
 msgid "Checking for firmware updates ..."
 msgstr "Prüfe auf Firmwareaktualisierungen ..."
 
-#: src/System-Maintenance:302
+#: src/System-Maintenance/System-Maintenance:302
 msgid "Updating caches ..."
 msgstr "Aktualisiere Caches ..."
 
-#: src/System-Maintenance:322
+#: src/System-Maintenance/System-Maintenance:322
 msgid "Starting AutoFS service ..."
 msgstr "Starte AutoFS-Dienst ..."
 
-#: src/System-Maintenance:328
+#: src/System-Maintenance/System-Maintenance:328
 msgid "Synchronising system time ..."
 msgstr "Synchronisiere Systemzeit ..."
 
-#: src/System-Maintenance:364
+#: src/System-Maintenance/System-Maintenance:364
 msgid "Running fstrim ..."
 msgstr "Führe Trimming durch ..."
 
-#: src/System-Maintenance:368
+#: src/System-Maintenance/System-Maintenance:368
 msgid "Running zpool trim ..."
 msgstr "Führe ZFS-Trimming durch ..."
 
-#: src/System-Maintenance:377
+#: src/System-Maintenance/System-Maintenance:377
 msgid "Done!"
 msgstr "Erledigt!"
