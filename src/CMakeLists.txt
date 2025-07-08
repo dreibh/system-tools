@@ -43,12 +43,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 #### PROGRAMS                                                            ####
 #############################################################################
 
-INSTALL(PROGRAMS configure-grub DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES configure-grub.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       configure-grub.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      configure-grub)
-
 ADD_EXECUTABLE(print-utf8 print-utf8.c)
 SET_PROPERTY(TARGET print-utf8 PROPERTY C_STANDARD 23)
 TARGET_LINK_LIBRARIES(print-utf8 ${Intl_LIBRARIES})
@@ -87,9 +81,6 @@ INSTALL(FILES       try-hard.bash-completion
 #### EXAMPLES                                                            ####
 #############################################################################
 
-INSTALL(FILES grub-defaults-nornet   DESTINATION ${CMAKE_INSTALL_DATADIR}/configure-grub)
-INSTALL(FILES grub-defaults-standard DESTINATION ${CMAKE_INSTALL_DATADIR}/configure-grub)
-
 INSTALL(FILES text-block-tests/example1.txt
               text-block-tests/example2.txt
               text-block-tests/insert.txt
@@ -104,3 +95,5 @@ INSTALL(FILES text-block-tests/example1.txt
 ADD_SUBDIRECTORY(System-Info)
 ADD_SUBDIRECTORY(System-Maintenance)
 ADD_SUBDIRECTORY(Fingerprint-SSH-Keys)
+ADD_SUBDIRECTORY(Reset-Machine-ID)
+ADD_SUBDIRECTORY(Configure-GRUB)
