@@ -65,7 +65,7 @@ msgstr "Die aktuelle Maschinen-ID ist ${machineID}. Zurücksetzen?"
 #: src/Reset-Machine-ID/Reset-Machine-ID:299
 #, sh-format
 msgid "Install Zabbix agent?"
-msgstr ""
+msgstr "Zabbix-Agent installieren?"
 
 #: src/Reset-Machine-ID/Reset-Machine-ID:331
 #, sh-format
