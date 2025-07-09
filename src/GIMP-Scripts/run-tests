@@ -48,7 +48,7 @@ if [ ! -e "${INPUT2}"  ] ; then
 fi
 
 
-# ------ Make-Text ----------------------------------------------------------
+# ------ Make-GlossyText ----------------------------------------------------
 ./Make-GlossyText NorNet1.png "NorNet Testbed" 128
 
 # Requires: fonts-lobster
@@ -77,8 +77,8 @@ fi
 ./Make-Cloth Image1.png Cloth1.png
 ./Make-Cloth Image1.png Cloth2.png --depth 8
 
-./Make-Painting Image1.png Painting1.png --masksize 8 --mode intensity
-./Make-Painting Image1.png Painting2.png --masksize 8 --mode rgb
+./Make-OilPainting Image1.png Painting1.png --masksize 8 --mode intensity
+./Make-OilPainting Image1.png Painting2.png --masksize 8 --mode rgb
 
 ./Make-Background Image2.png Background1.png
 ./Make-Mosaic Background1.png Background2.png 18 4 4 --type hexagons --surface smooth --neatness 0.5

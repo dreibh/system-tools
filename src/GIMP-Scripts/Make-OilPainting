@@ -33,8 +33,8 @@ set -eu
 
 
 # Example:
-# Make-Painting Image1.jpeg Painting1.png
-# Make-Painting Image1.jpeg Painting2.png --masksize 5
+# Make-OilPainting Image1.jpeg Painting1.png
+# Make-OilPainting Image1.jpeg Painting2.png --masksize 5
 
 
 # ====== Handle arguments ===================================================
