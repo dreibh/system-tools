@@ -32,8 +32,20 @@
 set -eux
 
 
-INPUT1="../Input/Zollverein.jpeg"
-INPUT2="../Input/Background.png"
+INPUT1="examples/Bergen.jpeg"
+INPUT2="examples/Background.png"
+
+# Use FractGen to generate the example image:
+if [ ! -e "${INPUT2}"  ] ; then
+   if [ -e "/usr/share/fractgen/examples/alpha07.fsf" ] ; then
+      clifractgen  /usr/share/fractgen/examples/alpha07.fsf "${INPUT2}" -W 1920 -H 1080 -M 2048
+   elif [ -e "/usr/share/fractgen/examples/alpha07.fsf" ] ; then
+      clifractgen  /usr/local/share/fractgen/examples/alpha07.fsf "${INPUT2}" -W 1920 -H 1080 -M 2048
+   else
+      echo >&2 "ERROR: Input FSF file not found!"
+      exit 1
+   fi
+fi
 
 
 # ------ Make-Text ----------------------------------------------------------
@@ -52,8 +64,8 @@ INPUT2="../Input/Background.png"
 
 
 # ------ Make-<Conversion> Scripts ------------------------------------------
-./Resize-with-Cropping "${INPUT1}" Image1.png 16:9 1024
-./Resize-with-Cropping "${INPUT2}" Image2.png 16:9 1024
+./Resize-with-Cropping "${INPUT1}" Image1.png 16:9 1920
+./Resize-with-Cropping "${INPUT2}" Image2.png 16:9 1920
 
 
 ./Make-Mosaic Image1.png Mosaic1-H.png 24 4 4 --type hexagons --surface rough
