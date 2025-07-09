@@ -49,12 +49,12 @@ fi
 
 
 # ------ Make-Text ----------------------------------------------------------
-./Make-Text NorNet1.png "NorNet Testbed" 128
+./Make-GlossyText NorNet1.png "NorNet Testbed" 128
 
 # Requires: fonts-lobster
-./Make-Text NorNet2.png "NorNet Testbed" 128 --bordersize 5 \
+./Make-GlossyText NorNet2.png "NorNet Testbed" 128 --bordersize 5 \
    --colorscheme "Brushed Aluminium" --font "Noto Sans Bold"
-./Make-Text NorNet3.png "NorNet Testbed" 128 --bordersize 5 \
+./Make-GlossyText NorNet3.png "NorNet Testbed" 128 --bordersize 5 \
    --colorscheme "Golden" --font "Lobster Two Bold Italic" || true
 
 
