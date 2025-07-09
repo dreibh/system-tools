@@ -1,0 +1,692 @@
+#!/usr/bin/env bash
+#
+# Glossy Text Script
+# Copyright (C) 2017-2025 by Thomas Dreibholz
+#
+# Including glossy-300.scm code from https://github.com/vitforlinux-gimp/scm
+# Copyright (C) 1998 by Hrvoje Horvat (included GIMP script)
+# Copyright (C) 1995 by Spencer Kimball and Peter Mattis (included GIMP script)
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -eu
+
+
+# Examples:
+# Make-Text NorNet1.png "NorNet Testbed" 128 --bordersize 5 --colorscheme Golden --font "Noto Sans Regular"
+# Make-Text NorNet2.png "NorNet Testbed" 128 --bordersize 5 --colorscheme "Brushed Aluminium" --font "Comic Sans MS Bold"
+# Hint: List available fonts with "fc-list"!
+
+
+# ====== Handle arguments ===================================================
+usage () {
+   local exitCode="$1"
+   echo >&2 "Usage: $0 filename content font_size [--bordersize|-b size] [--colorscheme|-c schemename] [--font|-f fontname] [-p|--patterntext pattern] [-o|--patternoutline pattern] [-l|--patternoverlay pattern] [--verbose|-v] [--quiet|-q] [--help|-h]"
+   echo >&2 "Example: $0 NorNet1.png \"NorNet Testbed\" 128 --bordersize 5 --colorscheme Golden --font \"Noto Sans Regular\""
+   exit "${exitCode}"
+}
+
+GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
+# shellcheck disable=SC2068
+options="$(${GETOPT} -o b:c:f:p:o:l:vqh --long bordersize:,colorscheme:,font:,patterntext:,patternoutline:,patternoverlay:,verbose,quiet,help -a -- "$@")"
+eval set -- "${options}"
+
+BORDER_SIZE=5
+COLORSCHEME="Golden"
+FONT_NAME="Noto Sans Regular"
+PATTERN_TEXT="Electric Blue"
+PATTERN_OUTLINE="Electric Blue"
+PATTERN_OVERLAY="Parque #1"
+VERBOSE=0
+while [ $# -gt 0 ] ; do
+   case "$1" in
+      -b | --bordersize)
+         BORDER_SIZE="$2"
+         shift 2
+         ;;
+      -c | --colorscheme)
+         COLORSCHEME="$2"
+         shift 2
+         ;;
+      -f | --font)
+         FONT_NAME="$2"
+         shift 2
+         ;;
+      -p | --patterntext)
+         PATTERN_TEXT="$2"
+         shift 2
+         ;;
+      -o | --patternoutline)
+         PATTERN_OUTLINE="$2"
+         shift 2
+         ;;
+      -l | --patternoverlay)
+         PATTERN_OVERLAY="$2"
+         shift 2
+         ;;
+      -v | --verbose)
+         VERBOSE=1
+         shift
+         ;;
+      -q | --quiet)
+         VERBOSE=0
+         shift
+         ;;
+      -h | --help)
+         usage 0
+         ;;
+      --)
+         shift
+         break
+         ;;
+      *)
+         usage 1
+         ;;
+  esac
+done
+
+if [ $# -ne 3 ] ; then
+   usage 1
+fi
+OUTPUT_FILENAME="$1"
+CONTENT="$2"
+FONT_SIZE=$3
+
+if [[ ! "${FONT_SIZE}" =~ ^([0-9]+)$ ]] ; then
+   echo >&2 "ERROR: Invalid font size ${FONT_SIZE}!"
+   exit 1
+fi
+if [[ ! "${BORDER_SIZE}" =~ ^([0-9]+)$ ]] ; then
+   echo >&2 "ERROR: Invalid border size ${BORDER_SIZE}!"
+   exit 1
+fi
+
+
+# ====== Obtain GIMP call options ===========================================
+if ! whereis gimp-console >/dev/null ; then
+   echo >&2 "ERROR: Gimp is not available!"
+   exit 1
+fi
+GIMP_VERSION="$(LANG=C gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
+if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
+   # Gimp 2.x:
+   GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+else
+   # Gimp 3.x:
+   GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+fi
+
+
+# ====== Call GIMP ==========================================================
+rm -f "${OUTPUT_FILENAME}"
+# shellcheck disable=SC2086
+( cat <<EOF
+
+; This is the glossy-300.scm from https://github.com/vitforlinux-gimp/scm.
+; The only difference is the commented out "gimp-display-new" for non-GUI run.
+
+; ****** Begin of glossy-300.scm ********************************************
+
+;Modernized with ModernizeMatic8 for Gimp 2.10.28 by vitforlinux.wordpress.com - dont remove
+
+; glossy-patterned-shadowed-and-bump-mapped-logo
+; creates anything you can create with it :)
+; (use it wisely, use it in peace...)
+;
+; GIMP - The GNU Image Manipulation Program
+; Copyright (C) 1995 Spencer Kimball and Peter Mattis
+;
+; glossy gives a glossy outlook to your fonts (unlogical name, isn't it?)
+; Copyright (C) 1998 Hrvoje Horvat
+;
+; This program is free software: you can redistribute it and/or modify
+; it under the terms of the GNU General Public License as published by
+; the Free Software Foundation; either version 3 of the License, or
+; (at your option) any later version.
+;
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+;
+; You should have received a copy of the GNU General Public License
+; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+; Fix code for gimp-console 2.99.6 working in 2.10
+(cond ((not (defined? 'gimp-drawable-get-width)) (define gimp-drawable-get-width gimp-drawable-width)))
+(cond ((not (defined? 'gimp-drawable-get-height)) (define gimp-drawable-get-height gimp-drawable-height)))
+(cond ((not (defined? 'gimp-drawable-get-offsets)) (define gimp-drawable-get-offsets gimp-drawable-offsets)))
+(cond ((not (defined? 'gimp-image-get-width)) (define gimp-image-get-width gimp-image-width)))
+(cond ((not (defined? 'gimp-image-get-height)) (define gimp-image-get-height gimp-image-height)))
+
+(cond ((not (defined? 'gimp-text-fontname)) (define (gimp-text-fontname fn1 fn2 fn3 fn4 fn5 fn6 fn7 fn8 PIXELS fn9) (gimp-text-font fn1 fn2 fn3 fn4 fn5 fn6 fn7 fn8 fn9))))
+
+; Gimp 2.8 compatibility:
+(cond ((not (defined? 'LAYER-MODE-NORMAL-LEGACY)) (define LAYER-MODE-NORMAL-LEGACY NORMAL-MODE)))
+(cond ((not (defined? 'LAYER-MODE-SCREEN-LEGACY)) (define LAYER-MODE-SCREEN-LEGACY SCREEN-MODE)))
+
+		(define  (apply-drop-shadow img fond x y blur color opacity number) (begin
+				(gimp-image-select-item img 2 fond)
+				(gimp-selection-translate img x y)
+				(gimp-selection-feather img blur)
+				(gimp-context-set-foreground color)
+				(gimp-context-set-opacity opacity)
+				(gimp-image-select-item img 1 fond)
+				(gimp-drawable-edit-fill fond FILL-FOREGROUND)
+				(gimp-context-set-opacity 100)
+				(gimp-selection-none img)
+			))
+
+(define (gimp-layer-new-ng ln1 ln2 ln3 ln4 ln5 ln6 ln7)
+(if (not (defined? 'gimp-drawable-filter-new))
+(gimp-layer-new ln1 ln2 ln3 ln4 ln5 ln6 ln7)
+(gimp-layer-new ln1 ln5 ln2 ln3 ln4 ln6 ln7)))
+
+
+(define (apply-glossy-300-logo-effect img
+                                  logo-layer
+                                  blend-gradient-text
+                                  blend-gradient-text-reverse
+                                  blend-gradient-outline
+                                  blend-gradient-outline-reverse
+                                  grow-size
+                                  bg-color
+                                  use-pattern-text
+                                  pattern-text
+                                  use-pattern-outline
+                                  pattern-outline
+                                  use-pattern-overlay
+                                  pattern-overlay
+                                  noninteractive
+                                  shadow-toggle
+                                  s-offset-x
+                                  s-offset-y)
+  (let* (
+        (width (car (gimp-drawable-get-width logo-layer)))
+        (height (car (gimp-drawable-get-height logo-layer)))
+        (posx (- (car (gimp-drawable-get-offsets logo-layer))))
+        (posy (- (cadr (gimp-drawable-get-offsets logo-layer))))
+        (bg-layer (car (gimp-layer-new-ng img width height RGB-IMAGE "Background" 100 LAYER-MODE-NORMAL-LEGACY)))
+        (grow-me (car (gimp-layer-copy logo-layer TRUE)))
+        (dont-drop-me 0)
+        )
+
+    (gimp-context-push)
+    	(gimp-context-set-paint-mode 0)
+    (gimp-context-set-defaults)
+
+    (script-fu-util-image-resize-from-layer img logo-layer)
+    (script-fu-util-image-add-layers img grow-me bg-layer)
+    (gimp-item-set-name grow-me "Grow-me")
+    (if (defined? 'gimp-item-transform-translate)
+      (begin  ; New Gimp > 2.8 API:
+        ; New Gimp > 2.8 API:
+        (gimp-item-transform-translate grow-me posx posy)
+      )
+      (begin  ; Old Gimp <= 2.8 API:
+        (gimp-layer-translate grow-me posx posy)
+      )
+    )
+
+    (gimp-context-set-background bg-color)
+    (gimp-selection-all img)
+    ;(gimp-drawable-edit-bucket-fill bg-layer FILL-BACKGROUND  100 0 )
+
+    (if (defined? 'gimp-drawable-edit-fill)
+      (begin  ; New Gimp > 2.8 API:
+        ; New Gimp > 2.8 API:
+        (gimp-drawable-edit-fill bg-layer FILL-BACKGROUND)
+      )
+      (begin  ; Old Gimp <= 2.8 API:
+        (gimp-edit-bucket-fill bg-layer BG-BUCKET-FILL NORMAL-MODE 100 0 FALSE 0 0)
+      )
+    )
+
+    (gimp-selection-none img)
+
+    (gimp-image-select-item img CHANNEL-OP-REPLACE logo-layer)
+
+; if we are going to use transparent gradients for text, we will (maybe) need to uncomment this
+; this clears black letters first so you don't end up with black where the transparent should be
+;    (gimp-drawable-edit-clear img logo-layer)
+
+    (if (= use-pattern-text TRUE)
+      (begin
+        (gimp-context-set-pattern pattern-text)
+        (if (defined? 'gimp-drawable-edit-fill)
+          (begin  ; New Gimp > 2.8 API:
+            ; New Gimp > 2.8 API:
+            (gimp-drawable-edit-fill logo-layer FILL-PATTERN)
+          )
+          (begin  ; Old Gimp <= 2.8 API:
+            (gimp-drawable-edit-bucket-fill logo-layer BUCKET-FILL-PATTERN  100 0 )
+          )
+        )
+      )
+    )
+
+    (if (= use-pattern-text FALSE)
+      (begin
+        (gimp-context-set-gradient blend-gradient-text)
+        (if (defined? 'gimp-drawable-edit-gradient-fill)
+          (begin  ; New Gimp > 2.8 API:
+             (gimp-context-set-gradient-reverse blend-gradient-text-reverse)
+             (gimp-drawable-edit-gradient-fill logo-layer GRADIENT-LINEAR 0 0 1 0 0 0 0 0 (+ height 5)) ; Fill with gradient
+          )
+          (begin  ; Old Gimp <= 2.8 API:
+            (gimp-edit-blend logo-layer CUSTOM-MODE NORMAL-MODE
+                                        GRADIENT-LINEAR 100 0 REPEAT-NONE
+                                        blend-gradient-text-reverse
+                                        FALSE 0 0 TRUE
+                                        0 0 0 (+ height 5))
+          )
+        )
+      )
+    )
+
+    (gimp-selection-none img)
+
+    (gimp-image-select-item img CHANNEL-OP-REPLACE grow-me)
+    (gimp-selection-grow img (- grow-size 2))
+    (gimp-selection-feather img 2)
+
+; if we are going to use transparent gradients for outline, we will (maybe) need to uncomment this
+; I didn't put it in the options because there are already enough settings there and anyway, transparent
+; gradients will be used very rarely (if ever)
+;    (gimp-drawable-edit-clear img grow-me)
+
+    (if (= use-pattern-outline TRUE)
+      (begin
+        (gimp-context-set-pattern pattern-outline)
+        ;(gimp-drawable-edit-bucket-fill grow-me BUCKET-FILL-PATTERN  100 0 )
+           	(gimp-drawable-edit-fill grow-me FILL-PATTERN)
+
+      )
+    )
+
+    (if (= use-pattern-outline FALSE)
+      (begin
+        (gimp-context-set-gradient blend-gradient-outline)
+
+        (if (defined? 'gimp-drawable-edit-gradient-fill)
+          (begin  ; New Gimp > 2.8 API:
+             (gimp-context-set-gradient-reverse blend-gradient-outline-reverse)
+             (gimp-drawable-edit-gradient-fill grow-me GRADIENT-LINEAR 0 0 1 0 0 0 0 0 (+ height 5)) ; Fill with gradient
+          )
+          (begin  ; Old Gimp <= 2.8 API:
+            (gimp-edit-blend grow-me CUSTOM-MODE NORMAL-MODE
+                                     GRADIENT-LINEAR 100 0 REPEAT-NONE
+                                     blend-gradient-outline-reverse
+                                     FALSE 0 0 TRUE
+                                     0 0 0 (+ height 5))
+          )
+        )
+      )
+    )
+
+    (gimp-selection-none img)
+
+	(cond((not(defined? 'plug-in-bump-map))
+	    (let* ((filter (car (gimp-drawable-filter-new grow-me "gegl:bump-map" ""))))
+      (gimp-drawable-filter-configure filter LAYER-MODE-REPLACE 1.0
+                                      "azimuth" 110 "elevation" 45 "depth" 3
+                                      "offset-x" 0 "offset-y" 0 "waterlevel" 0.0 "ambient" 0
+                                      "compensate" TRUE "invert" FALSE "type" "linear"
+                                      "tiled" FALSE)
+      (gimp-drawable-filter-set-aux-input filter "aux" logo-layer)
+      (gimp-drawable-merge-filter grow-me filter)
+    ))
+    (else
+    (plug-in-bump-map (if (= noninteractive TRUE)
+        RUN-NONINTERACTIVE
+        RUN-INTERACTIVE)
+          img grow-me logo-layer
+                      110.0 45.0 3 0 0 0 0 TRUE FALSE 0)))
+    (gimp-layer-set-mode logo-layer LAYER-MODE-SCREEN-LEGACY)
+
+    (if (= use-pattern-overlay TRUE)
+      (begin
+        (gimp-image-select-item img CHANNEL-OP-REPLACE grow-me)
+        (gimp-context-set-pattern pattern-overlay)
+       ; (gimp-drawable-edit-bucket-fill grow-me BUCKET-FILL-PATTERN LAYER-MODE-OVERLAY-LEGACY 100 0 )
+                  	(gimp-drawable-edit-fill grow-me FILL-PATTERN)
+        (gimp-selection-none img)
+      )
+    )
+
+    (if (= shadow-toggle TRUE)
+      (begin
+        (gimp-image-select-item img CHANNEL-OP-REPLACE logo-layer)
+	  (if (not (defined? 'gimp-drawable-filter-new))
+        (set! dont-drop-me (car (script-fu-drop-shadow img logo-layer
+                                                       s-offset-x s-offset-y
+                                                       15 '(0 0 0) 80 TRUE)))
+	(set! dont-drop-me (car (script-fu-drop-shadow img (vector logo-layer)
+                                                       s-offset-x s-offset-y
+                                                       15 '(0 0 0) 80 TRUE))))
+        (set! width (car (gimp-image-get-width img)))
+        (set! height (car (gimp-image-get-height img)))
+        (gimp-selection-none img)
+      )
+    )
+
+    (gimp-context-pop)
+  )
+)
+
+
+(define (script-fu-glossy-300-logo-alpha img
+                                     logo-layer
+                                     blend-gradient-text
+                                     blend-gradient-text-reverse
+                                     blend-gradient-outline
+                                     blend-gradient-outline-reverse
+                                     grow-size
+                                     bg-color
+                                     use-pattern-text
+                                     pattern-text
+                                     use-pattern-outline
+                                     pattern-outline
+                                     use-pattern-overlay
+                                     pattern-overlay
+                                     noninteractive
+                                     shadow-toggle
+                                     s-offset-x
+                                     s-offset-y)
+  (begin
+    (gimp-image-undo-group-start img)
+    	(gimp-context-push)
+	(gimp-context-set-paint-mode 0)
+    (apply-glossy-300-logo-effect img logo-layer
+                              blend-gradient-text
+                              blend-gradient-text-reverse
+                              blend-gradient-outline
+                              blend-gradient-outline-reverse
+                              grow-size bg-color
+                              use-pattern-text pattern-text
+                              use-pattern-outline pattern-outline
+                              use-pattern-overlay pattern-overlay
+                              noninteractive shadow-toggle
+                              s-offset-x s-offset-y)
+			          	(gimp-context-pop)
+    (gimp-image-undo-group-end img)
+    (gimp-displays-flush)
+  )
+)
+
+
+(script-fu-register "script-fu-glossy-300-logo-alpha"
+  _"Glo_ssy 300 ALPHA..."
+  _"Add gradients, patterns, shadows, and bump maps to the selected region (or alpha)"
+  "Hrvoje Horvat (hhorvat@open.hr)"
+  "Hrvoje Horvat"
+  "14/04/1998"
+  "RGBA"
+  SF-IMAGE      "Image"                     0
+  SF-DRAWABLE   "Drawable"                  0
+  SF-GRADIENT   _"Blend gradient (text) Shadows 2"    "Shadows 2"
+  SF-TOGGLE     _"Text gradient reverse"    FALSE
+  SF-GRADIENT   _"Blend gradient (outline) Shadows 2" "Shadows 2"
+  SF-TOGGLE     _"Outline gradient reverse" FALSE
+  SF-ADJUSTMENT _"Outline size"             '(5 2 250 1 10 0 0)
+  SF-COLOR      _"Background color"         "white"
+  SF-TOGGLE     _"Use pattern for text instead of gradient" FALSE
+  SF-PATTERN    _"Pattern (text) Electric Blue"           "Electric Blue"
+  SF-TOGGLE     _"Use pattern for outline instead of gradient" FALSE
+  SF-PATTERN    _"Pattern (outline) Electric Blue"        "Electric Blue"
+  SF-TOGGLE     _"Use pattern overlay"      FALSE
+  SF-PATTERN    _"Pattern (overlay) Parque #1"        "Parque #1"
+  SF-TOGGLE     _"Default bumpmap settings" TRUE
+  SF-TOGGLE     _"Shadow"                   TRUE
+  SF-ADJUSTMENT _"Shadow X offset"          '(8 0 100 1 10 0 0)
+  SF-ADJUSTMENT _"Shadow Y offset"          '(8 0 100 1 10 0 0)
+)
+
+(script-fu-menu-register "script-fu-glossy-300-logo-alpha"
+                         "<Image>/Filters/Alpha to Logo")
+
+
+(define (script-fu-glossy-300-logo text
+                               size
+                               font
+			       justification
+			       letter-spacing
+		               line-spacing
+                               blend-gradient-text
+                               blend-gradient-text-reverse
+                               blend-gradient-outline
+                               blend-gradient-outline-reverse
+                               grow-size
+                               bg-color
+                               use-pattern-text
+                               pattern-text
+                               use-pattern-outline
+                               pattern-outline
+                               use-pattern-overlay
+                               pattern-overlay
+                               noninteractive
+                               shadow-toggle
+                               s-offset-x
+                               s-offset-y)
+  (let* (
+        (img (car (gimp-image-new 256 256 RGB)))
+        (text-layer (car (gimp-text-fontname img -1 0 0 text 30 TRUE size PIXELS font)))
+		  (justification (cond ((= justification 0) 2)
+						       ((= justification 1) 0)
+						       ((= justification 2) 1)
+						       ((= justification 3) 3)))
+        )
+    	(gimp-context-push)
+	(gimp-context-set-paint-mode 0)
+    (gimp-image-undo-disable img)
+    	(gimp-text-layer-set-justification text-layer justification) ; Text Justification (Rev Value)
+	(gimp-text-layer-set-letter-spacing text-layer letter-spacing)  ; Set Letter Spacing
+	(gimp-text-layer-set-line-spacing text-layer line-spacing)      ; Set Line Spacing
+    (apply-glossy-300-logo-effect img text-layer
+                              blend-gradient-text
+                              blend-gradient-text-reverse
+                              blend-gradient-outline
+                              blend-gradient-outline-reverse
+                              grow-size bg-color
+                              use-pattern-text pattern-text
+                              use-pattern-outline pattern-outline
+                              use-pattern-overlay pattern-overlay
+                              noninteractive shadow-toggle
+                              s-offset-x s-offset-y)
+			      	(gimp-context-pop)
+    (gimp-image-undo-enable img)
+    ; (gimp-display-new img)   ; <<-- !!! Commened out! !!!
+  )
+)
+
+(script-fu-register "script-fu-glossy-300-logo"
+  _"Glo_ssy 300 LOGO..."
+  _"Create a logo with gradients, patterns, shadows, and bump maps"
+  "Hrvoje Horvat (hhorvat@open.hr)"
+  "Hrvoje Horvat"
+  "14/04/1998"
+  ""
+  SF-TEXT     _"Text"                     "Glossy"
+  SF-ADJUSTMENT _"Font size (pixels)"       '(100 2 1000 1 10 0 1)
+  SF-FONT       _"Font"                     "QTEraType Medium"
+  SF-OPTION     _"Text Justification"    '("Centered" "Left" "Right" "Fill")
+  SF-ADJUSTMENT  "Letter Spacing"        '(0 -50 50 1 5 0 0)
+  SF-ADJUSTMENT  "Line Spacing"          '(-5 -300 300 1 10 0 0)
+  SF-GRADIENT   _"Blend gradient (text) Shadows 2"    "Shadows 2"
+  SF-TOGGLE     _"Text gradient reverse"    FALSE
+  SF-GRADIENT   _"Blend gradient (outline) Shadows 2" "Shadows 2"
+  SF-TOGGLE     _"Outline gradient reverse" FALSE
+  SF-ADJUSTMENT _"Outline size"             '(5 2 250 1 10 0 0)
+  SF-COLOR      _"Background color"         "white"
+  SF-TOGGLE     _"Use pattern for text instead of gradient" FALSE
+  SF-PATTERN    _"Pattern (text) Electric Blue"           "Electric Blue"
+  SF-TOGGLE     _"Use pattern for outline instead of gradient" FALSE
+  SF-PATTERN    _"Pattern (outline) Electric Blue"        "Electric Blue"
+  SF-TOGGLE     _"Use pattern overlay"      FALSE
+  SF-PATTERN    _"Pattern (overlay) Parque #1"        "Parque #1"
+  SF-TOGGLE     _"Default bumpmap settings" TRUE
+  SF-TOGGLE     _"Shadow"                   TRUE
+  SF-ADJUSTMENT _"Shadow X offset"          '(8 0 100 1 10 0 0)
+  SF-ADJUSTMENT _"Shadow Y offset"          '(8 0 100 1 10 0 0)
+)
+
+(script-fu-menu-register "script-fu-glossy-300-logo"
+                         "<Image>/File/Create/Logos")
+
+; ****** End of glossy-300.scm **********************************************
+
+
+(let*
+   ; ------ Initialise ------------------------------------------------------
+   ((outputFileName   "${OUTPUT_FILENAME}")
+    (logoText    "${CONTENT}")
+    (font)
+    (fontSize     ${FONT_SIZE})
+    (borderSize   ${BORDER_SIZE})
+    (colorScheme)
+    (patternText)
+    (patternOutline)
+    (patternOverlay)
+    (image)
+    (layers)
+    (num-layers)
+    (bg-layer)
+    (layer)
+   )
+
+   (if (not (defined? 'gimp-image-get-active-layer))
+      (set! font (car (gimp-font-get-by-name "${FONT_NAME}")))
+      (set! font "${FONT_NAME}"))
+   ; (newline) (display "font=") (display font) (newline)
+   (if (and (not (defined? 'gimp-image-get-active-layer)) (= font -1)) (
+      (gimp-message "ERROR: Font \"${FONT_NAME}\" is not available! Check installed fonts with fc-list!")
+      (quit FALSE)
+   ))
+
+   (if (not (defined? 'gimp-image-get-active-layer))
+      (set! colorScheme (car (gimp-gradient-get-by-name "${COLORSCHEME}")))
+      (set! colorScheme "${COLORSCHEME}"))
+   ; (display "colorScheme=") (display colorScheme) (newline)
+   (if (and (not (defined? 'gimp-image-get-active-layer)) (= colorScheme -1)) (
+      (gimp-message "ERROR: Color scheme \"${COLORSCHEME}\" is not available!")
+      (quit FALSE)
+   ))
+
+   (if (not (defined? 'gimp-image-get-active-layer))
+      (set! patternText (car (gimp-pattern-get-by-name "${PATTERN_TEXT}")))
+      (set! patternText "${PATTERN_TEXT}"))
+   ; (display "patternText=") (display patternText) (newline)
+   (if (and (not (defined? 'gimp-image-get-active-layer)) (= patternText -1)) (
+      (gimp-message "ERROR: Pattern \"${PATTERN_TEXT}\" is not available!")
+      (quit FALSE)
+   ))
+
+   (if (not (defined? 'gimp-image-get-active-layer))
+      (set! patternOutline (car (gimp-pattern-get-by-name "${PATTERN_OUTLINE}")))
+      (set! patternOutline "${PATTERN_OUTLINE}"))
+   ; (display "patternOutline=") (display patternOutline) (newline)
+   (if (and (not (defined? 'gimp-image-get-active-layer)) (= patternOutline -1)) (
+      (gimp-message "ERROR: Pattern \"${PATTERN_OUTLINE}\" is not available!")
+      (quit FALSE)
+   ))
+
+   (if (not (defined? 'gimp-image-get-active-layer))
+      (set! patternOverlay (car (gimp-pattern-get-by-name "${PATTERN_OVERLAY}")))
+      (set! patternOverlay "${PATTERN_OVERLAY}"))
+   ; (display "patternOverlay=") (display patternOverlay) (newline)
+   (if (and (not (defined? 'gimp-image-get-active-layer)) (= patternOverlay -1)) (
+      (gimp-message "ERROR: Pattern \"${PATTERN_OVERLAY}\" is not available!")
+      (quit FALSE)
+   ))
+
+   ; ------ Generate text ---------------------------------------------------
+   (set! image (car (script-fu-glossy-300-logo logoText fontSize font 0 8 8 colorScheme FALSE colorScheme FALSE borderSize "white" FALSE patternText FALSE patternOutline FALSE patternOverlay TRUE TRUE 8 8)))
+   ; (display "image=") (display image) (newline)
+
+   (set! layers (if (not (defined? 'gimp-image-get-active-layer))
+                    ; New Gimp 3.0 API:
+                    (set! layers (car (gimp-image-get-layers image)))
+                    ; Old Gimp 2.x API:
+                    (set! layers (car (cdr (gimp-image-get-layers image))))
+                ))
+   ; (display "layers=") (display layers) (newline)
+   (set! num-layers (vector-length layers))
+   ; (display "num-layers=") (display num-layers) (newline)
+   (set! bg-layer (vector-ref layers (- num-layers 1)))
+   ; (display "bg-layer=") (display bg-layer) (newline)
+
+   (gimp-item-set-visible bg-layer FALSE)
+   (gimp-displays-flush)
+   (gimp-image-merge-visible-layers image EXPAND-AS-NECESSARY)
+
+   (set! layer (if (not (defined? 'gimp-image-get-active-layer))
+                   ; New Gimp 3.0 API:
+                   (car (list (vector-ref (car (gimp-image-get-selected-layers image)) 0)))
+                   ; Old Gimp 2.x API:
+                   (car (gimp-image-get-active-layer image)))
+                  )
+
+   ; ------ Save result -----------------------------------------------------
+   (if (defined? 'gimp-drawable-merge-new-filter)
+      (begin  ; New Gimp >= 3.0 API:
+         ; FIXME: This does not work when running in Gimp 2.x!
+         ; (file-png-export
+         ;    #:run-mode         RUN-NONINTERACTIVE
+         ;    #:image            image
+         ;    #:file             outputFileName
+         ;    #:options          -1
+         ;    #:interlaced       TRUE
+         ;    #:compression      6
+         ;    #:bkgd             TRUE
+         ;    #:offs             FALSE
+         ;    #:phys             TRUE
+         ;    #:time             TRUE
+         ;    #:save-transparent FALSE
+         ;    #:optimize-palette TRUE
+         ; )
+         (file-png-export RUN-NONINTERACTIVE image
+            outputFileName -1
+            TRUE 6 TRUE FALSE TRUE TRUE FALSE TRUE)
+      )
+      (begin  ; Old Gimp < 3.0 API:
+         (file-png-save2 RUN-NONINTERACTIVE image
+            (car (gimp-image-get-active-layer image))
+            outputFileName outputFileName
+            TRUE 6 TRUE TRUE FALSE TRUE TRUE FALSE TRUE)
+      )
+   )
+
+   ; ------ Clean up --------------------------------------------------------
+   (gimp-image-delete image)
+)
+(gimp-quit TRUE)
+EOF
+) | env LANG=C HOME=/tmp gimp-console ${GIMP_OPTIONS} 2>&1 | \
+(
+   if [ ${VERBOSE} -ne 0 ] ; then
+      cat
+   else
+      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
+   fi
+)
+
+
+# ====== Check result =======================================================
+if [ ! -e "${OUTPUT_FILENAME}" ] ; then
+   echo >&2 "ERROR: ${OUTPUT_FILENAME} has not been produced. Something went wrong!"
+   exit 1
+fi

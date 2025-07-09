@@ -1,0 +1,193 @@
+#!/usr/bin/env bash
+#
+# Clothify Script
+# Copyright (C) 2018-2025 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -eu
+
+
+# Example:
+# Make-Cloth Image1.jpeg Cloth1.png
+# Make-Cloth Image1.jpeg Cloth2.png --depth 8
+
+
+# ====== Handle arguments ===================================================
+usage () {
+   local exitCode="$1"
+   echo >&2 "Usage: $0 input_filename output_filename [--depth|-d depth] [--verbose|-v] [--quiet|-q] [--help|-h]"
+   echo >&2 "Example: $0 Image.jpeg Cloth.png --depth 5"
+   exit "${exitCode}"
+}
+
+GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
+# shellcheck disable=SC2068
+options="$(${GETOPT} -o d:vqh --long depth:,verbose,quiet,help -a -- "$@")"
+eval set -- "${options}"
+
+DEPTH=5
+VERBOSE=0
+while [ $# -gt 0 ] ; do
+   case "$1" in
+      -d | --depth)
+         DEPTH="$2"
+         shift 2
+         ;;
+      -v | --verbose)
+         VERBOSE=1
+         shift
+         ;;
+      -q | --quiet)
+         VERBOSE=0
+         shift
+         ;;
+      -h | --help)
+         usage 0
+         ;;
+      --)
+         shift
+         break
+         ;;
+      *)
+         usage 1
+         ;;
+  esac
+done
+
+if [ $# -ne 2 ] ; then
+   usage 1
+fi
+INPUT_FILENAME="$1"
+OUTPUT_FILENAME="$2"
+
+if [ ! -f "${INPUT_FILENAME}" ] ; then
+   echo >&2 "ERROR: Input file ${INPUT_FILENAME} does not exist!"
+   exit 1
+fi
+if [[ ! "${DEPTH}" =~ ^([0-9]+)$ ]] ; then
+   echo >&2 "ERROR: Invalid depth ${DEPTH}!"
+   exit 1
+fi
+
+
+# ====== Obtain GIMP call options ===========================================
+if ! whereis gimp-console >/dev/null ; then
+   echo >&2 "ERROR: Gimp is not available!"
+   exit 1
+fi
+GIMP_VERSION="$(LANG=C gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
+if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
+   # Gimp 2.x:
+   GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+else
+   # Gimp 3.x:
+   GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+fi
+
+# This script does not use fonts, or gradients/palettes/brushes:
+GIMP_OPTIONS="${GIMP_OPTIONS} --no-fonts --no-data"
+
+
+# ====== Call GIMP ==========================================================
+rm -f "${OUTPUT_FILENAME}"
+# shellcheck disable=SC2086
+( cat <<EOF
+(let*
+   ; ------ Initialise and load image ---------------------------------------
+   ((inputFileName    "${INPUT_FILENAME}")
+    (outputFileName   "${OUTPUT_FILENAME}")
+    (depth            ${DEPTH})
+    (image            (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
+    (imageType        (if (not (defined? 'gimp-image-get-active-layer))
+                         ; New Gimp 3.0 API:
+                         (car (gimp-image-get-base-type image))
+                         ; Old Gimp 2.x API:
+                         (car (gimp-image-base-type image)))
+                      )
+    (layer            (if (not (defined? 'gimp-image-get-active-layer))
+                         ; New Gimp 3.0 API:
+                         (car (list (vector-ref (car (gimp-image-get-selected-layers image)) 0)))
+                         ; Old Gimp 2.x API:
+                         (car (gimp-image-get-active-layer image)))
+                      )
+   )
+
+   ; ------ Apply filter ----------------------------------------------------
+   ; First, make sure that the image is RGB, not indexed color mode!
+   (if (not (= RGB imageType))
+      (gimp-image-convert-rgb image))
+
+   (cond( (not(defined? 'plug-in-bump-map))
+      ; New Gimp 3.0 API:
+      (script-fu-clothify image (vector layer) 1 1 135.0 45.0 depth)
+   )
+   (else
+      ; Old Gimp 2.x API:
+      (script-fu-clothify image layer 1 1 135.0 45.0 depth)
+   ))
+
+   ; ------ Save result -----------------------------------------------------
+   (if (defined? 'gimp-drawable-merge-new-filter)
+      (begin  ; New Gimp >= 3.0 API:
+         ; FIXME: This does not work when running in Gimp 2.x!
+         ; (file-png-export
+         ;    #:run-mode         RUN-NONINTERACTIVE
+         ;    #:image            image
+         ;    #:file             outputFileName
+         ;    #:options          -1
+         ;    #:interlaced       TRUE
+         ;    #:compression      6
+         ;    #:bkgd             TRUE
+         ;    #:offs             FALSE
+         ;    #:phys             TRUE
+         ;    #:time             TRUE
+         ;    #:save-transparent FALSE
+         ;    #:optimize-palette TRUE
+         ; )
+         (file-png-export RUN-NONINTERACTIVE image
+            outputFileName -1
+            TRUE 6 TRUE FALSE TRUE TRUE FALSE TRUE)
+      )
+      (begin  ; Old Gimp < 3.0 API:
+         (file-png-save2 RUN-NONINTERACTIVE image
+            (car (gimp-image-get-active-layer image))
+            outputFileName outputFileName
+            TRUE 6 TRUE TRUE FALSE TRUE TRUE FALSE TRUE)
+      )
+   )
+
+   ; ------ Clean up --------------------------------------------------------
+   (gimp-image-delete image)
+)
+(gimp-quit TRUE)
+EOF
+) | env LANG=C HOME=/tmp gimp-console ${GIMP_OPTIONS} 2>&1 | \
+(
+   if [ ${VERBOSE} -ne 0 ] ; then
+      cat
+   else
+      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
+   fi
+)
+
+
+# ====== Check result =======================================================
+if [ ! -e "${OUTPUT_FILENAME}" ] ; then
+   echo >&2 "ERROR: ${OUTPUT_FILENAME} has not been produced. Something went wrong!"
+   exit 1
+fi

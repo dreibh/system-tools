@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+#
+# Test GIMP
+# Copyright (C) 2018-2025 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -eu
+
+
+# ====== Handle arguments ===================================================
+usage () {
+   local exitCode="$1"
+   echo >&2 "Usage: $0 [--verbose|-v] [--quiet|-q] [--help|-h]"
+   echo >&2 "Example: $0 --verbose"
+   exit "${exitCode}"
+}
+
+GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
+# shellcheck disable=SC2068
+options="$(${GETOPT} -o vqh --long verbose,quiet,help -a -- "$@")"
+eval set -- "${options}"
+
+VERBOSE=0
+while [ $# -gt 0 ] ; do
+   case "$1" in
+      -v | --verbose)
+         VERBOSE=1
+         shift
+         ;;
+      -q | --quiet)
+         VERBOSE=0
+         shift
+         ;;
+      -h | --help)
+         usage 0
+         ;;
+      --)
+         shift
+         break
+         ;;
+      *)
+         usage 1
+         ;;
+  esac
+done
+
+if [ $# -ne 0 ] ; then
+   usage 1
+fi
+
+if [ ! -v GIMP3_DIRECTORY ] ; then
+   echo >&2 "ERROR: Environment variable GIMP3_DIRECTORY is not defined!"
+   exit 1
+fi
+
+
+# ====== Make sure that GIMP directory exists ===============================
+if [ "${GIMP3_DIRECTORY}" != "" ] ; then
+   echo "Creating GIMP directory ${GIMP3_DIRECTORY} ..."
+   for subdir in brushes dynamics patterns gradients palettes ; do
+      mkdir -p "${GIMP3_DIRECTORY}/${subdir}"
+   done
+
+   # FIXME!
+   # Gimp 3.0 wastes a lot of CPU, for whatever reason. Just
+   # using 1 core seems to provide the best performance:
+   echo "(num-processors 1)" >>"${GIMP3_DIRECTORY}/gimprc"
+fi
+
+
+# ====== Obtain GIMP call options ===========================================
+if ! whereis gimp-console >/dev/null ; then
+   echo >&2 "ERROR: Gimp is not available!"
+   exit 1
+fi
+GIMP_VERSION="$(LANG=C gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
+if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
+   # Gimp 2.x:
+   GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+else
+   # Gimp 3.x:
+   GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+fi
+
+# This script does not use fonts, or gradients/palettes/brushes:
+GIMP_OPTIONS="${GIMP_OPTIONS} --no-fonts --no-data"
+
+
+# ====== Try to start GIMP ==================================================
+# shellcheck disable=SC2086
+( cat <<EOF
+(gimp-quit TRUE)
+EOF
+) | env LANG=C HOME=/tmp gimp-console ${GIMP_OPTIONS} 2>&1 | \
+(
+   if [ ${VERBOSE} -ne 0 ] ; then
+      cat
+   else
+      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
+   fi
+)

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -eux
+
+INPUT1="../Input/Zollverein.jpeg"
+INPUT2="../Input/Background.png"
+
+
+# ------ Make-Text ----------------------------------------------------------
+./Make-Text NorNet1.png "NorNet Testbed" 128
+
+# Requires: fonts-lobster
+./Make-Text NorNet2.png "NorNet Testbed" 128 --bordersize 5 \
+   --colorscheme "Brushed Aluminium" --font "Noto Sans Bold"
+./Make-Text NorNet3.png "NorNet Testbed" 128 --bordersize 5 \
+   --colorscheme "Golden" --font "Lobster Two Bold Italic" || true
+
+
+# ------ Make-Caption -------------------------------------------------------
+./Make-Caption Caption1.png "Caption Text $(LANG=C date)" 1024 42 "Noto Sans Bold" 60 \
+   --foreground "#02266b" --background "#ffd700" --transparency 26
+
+
+# ------ Make-<Conversion> Scripts ------------------------------------------
+./Resize-with-Cropping "${INPUT1}" Image1.png 16:9 1024
+./Resize-with-Cropping "${INPUT2}" Image2.png 16:9 1024
+
+
+./Make-Mosaic Image1.png Mosaic1-H.png 24 4 4 --type hexagons --surface rough
+./Make-Mosaic Image1.png Mosaic1-O.png 24 4 4 --type octagons --surface smooth --neatness 1.0
+
+./Make-OldPhoto Image1.png OldPhoto1.png
+./Make-OldPhoto Image1.png OldPhoto2.png --bordersize 20
+
+./Make-Cloth Image1.png Cloth1.png
+./Make-Cloth Image1.png Cloth2.png --depth 8
+
+./Make-Painting Image1.png Painting1.png --masksize 8 --mode intensity
+./Make-Painting Image1.png Painting2.png --masksize 8 --mode rgb
+
+./Make-Background Image2.png Background1.png
+./Make-Mosaic Background1.png Background2.png 18 4 4 --type hexagons --surface smooth --neatness 0.5

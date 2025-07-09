@@ -1,0 +1,247 @@
+#!/usr/bin/env bash
+#
+# Caption Script
+# Copyright (C) 2017-2025 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -eu
+
+
+# Example:
+# Make-Caption Caption.png "Caption Text" 1024 42 "Noto Sans Bold" 60
+# Make-Caption Caption.png "Caption Text" 1024 42 "Noto Sans Bold" 60 --foreground "#02266b" --background "#ffd700" --transparency 26
+
+
+# ====== Handle arguments ===================================================
+usage () {
+   local exitCode="$1"
+   echo >&2 "Usage: $0 output_filename caption_text caption_width caption_height font font_size_percent [--foreground|-f color] [--background|-b color] [--transparency|-t percentage] [--verbose|-v] [--quiet|-q] [--help|-h]"
+   echo >&2 "Example: $0 Caption.png \"Caption Text\" 1024 42 \"Noto Sans Bold\" 60 \"#02266b\" \"#ffd700\" 26"
+   exit "${exitCode}"
+}
+
+GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
+# shellcheck disable=SC2068
+options="$(${GETOPT} -o f:b:t:vqh --long foreground:,background:,transparency:,verbose,quiet,help -a -- "$@")"
+eval set -- "${options}"
+
+COLOR_FOREGROUND="#02266b"   # Dark Blue
+COLOR_BACKGROUND="#ffd700"   # Gold
+TRANSPARENCY=25              # %
+VERBOSE=0
+while [ $# -gt 0 ] ; do
+   case "$1" in
+      -f | --foreground)
+         COLOR_FOREGROUND="$2"
+         shift 2
+         ;;
+      -b | --background)
+         COLOR_BACKGROUND="$2"
+         shift 2
+         ;;
+      -t | --transparency)
+         TRANSPARENCY="$2"
+         shift 2
+         ;;
+      -v | --verbose)
+         VERBOSE=1
+         shift
+         ;;
+      -q | --quiet)
+         VERBOSE=0
+         shift
+         ;;
+      -h | --help)
+         usage 0
+         ;;
+      --)
+         shift
+         break
+         ;;
+      *)
+         usage 1
+         ;;
+  esac
+done
+
+if [ $# -ne 6 ] ; then
+   usage 1
+fi
+OUTPUT_FILENAME="$1"
+CAPTION_TEXT="$2"
+CAPTION_WIDTH=$3
+CAPTION_HEIGHT=$4
+FONT_NAME="$5"
+FONT_SIZE=$6
+
+if [[ ! "${TRANSPARENCY}" =~ ^([0-9]+)$ ]] || [ "${TRANSPARENCY}" -lt 0 ] || [ "${TRANSPARENCY}" -gt 100 ] ; then
+   echo >&2 "ERROR: Invalid transparency value!"
+   exit 1
+fi
+if [[ ! "${CAPTION_WIDTH}" =~ ^([0-9]+)$ ]] ; then
+   echo >&2 "ERROR: Invalid caption width!"
+   exit 1
+fi
+if [[ ! "${CAPTION_HEIGHT}" =~ ^([0-9]+)$ ]] ; then
+   echo >&2 "ERROR: Invalid caption height!"
+   exit 1
+fi
+
+
+# ====== Obtain GIMP call options ===========================================
+if ! whereis gimp-console >/dev/null ; then
+   echo >&2 "ERROR: Gimp is not available!"
+   exit 1
+fi
+GIMP_VERSION="$(LANG=C gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
+if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
+   # Gimp 2.x:
+   GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+else
+   # Gimp 3.x:
+   GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+fi
+
+# This script does not use gradients/palettes/brushes:
+GIMP_OPTIONS="${GIMP_OPTIONS} --no-data"
+
+
+# ====== Call GIMP ==========================================================
+rm -f "${OUTPUT_FILENAME}"
+# shellcheck disable=SC2086
+( cat <<EOF
+
+; Gimp 2.8 compatibility:
+(cond ((not (defined? 'LAYER-MODE-NORMAL-LEGACY)) (define LAYER-MODE-NORMAL-LEGACY NORMAL-MODE)))
+(cond ((not (defined? 'FILL-BACKGROUND)) (define FILL-BACKGROUND BACKGROUND-FILL)))
+
+(let*
+   ; ------ Initialise ------------------------------------------------------
+   ((outputFileName   "${OUTPUT_FILENAME}")
+    (captionText      "${CAPTION_TEXT}")
+    (captionWidth     ${CAPTION_WIDTH})
+    (captionHeight    ${CAPTION_HEIGHT})
+    (captionFont)
+    (captionFontSize  (/ (* ${FONT_SIZE} captionHeight) 100))
+    (captionOpacity   (- 100 ${TRANSPARENCY}))
+    (captionFGColor   "${COLOR_FOREGROUND}")
+    (captionBGColor   "${COLOR_BACKGROUND}")
+    (theText)
+    (image (car (gimp-image-new captionWidth captionHeight RGB)))
+    ; (layer1 (car (gimp-layer-new image captionWidth captionHeight RGBA-IMAGE "Layer 1" captionOpacity LAYER-MODE-NORMAL-LEGACY)))
+    (layer1           (if (not (defined? 'gimp-image-get-active-layer))
+                         ; New Gimp 3.0 API:
+                         (car (gimp-layer-new image "Layer 1" captionWidth captionHeight RGBA-IMAGE captionOpacity LAYER-MODE-NORMAL-LEGACY))
+                         ; Old Gimp 2.x API:
+                         (car (gimp-layer-new image captionWidth captionHeight RGBA-IMAGE "Layer 1" captionOpacity LAYER-MODE-NORMAL-LEGACY))
+                      ))
+    ; (layer2 (car (gimp-layer-new image captionWidth captionHeight RGBA-IMAGE "Layer 2" 100 LAYER-MODE-NORMAL-LEGACY)))
+    (layer2           (if (not (defined? 'gimp-image-get-active-layer))
+                         ; New Gimp 3.0 API:
+                         (car (gimp-layer-new image "Layer 2" captionWidth captionHeight RGBA-IMAGE 100 LAYER-MODE-NORMAL-LEGACY))
+                         ; Old Gimp 2.x API:
+                         (car (gimp-layer-new image captionWidth captionHeight RGBA-IMAGE "Layer 2" 100 LAYER-MODE-NORMAL-LEGACY))
+                      ))
+   )
+
+   (if (not (defined? 'gimp-image-get-active-layer))
+      (set! captionFont (car (gimp-font-get-by-name "${FONT_NAME}")))
+      (set! captionFont "${FONT_NAME}"))
+   ; (newline) (display "captionFont=") (display captionFont) (newline)
+   (if (and (not (defined? 'gimp-image-get-active-layer)) (= captionFont -1)) (
+      (gimp-message "ERROR: Font \"${FONT_NAME}\" is not available! Check installed fonts with fc-list!")
+      (quit FALSE)
+   ))
+
+   ; ------ Generate caption ------------------------------------------------
+   (gimp-image-insert-layer image layer1 -1 0)
+   (gimp-image-insert-layer image layer2 -1 0)
+   (gimp-context-set-background captionBGColor)
+   (gimp-context-set-foreground captionFGColor)
+   (gimp-drawable-fill layer1 FILL-BACKGROUND)
+
+   (if (defined? 'gimp-drawable-merge-new-filter)
+      (begin  ; New Gimp >= 3.0 API:
+         (set! theText (car (gimp-text-font image layer2 0 0 captionText 0 TRUE captionFontSize captionFont) ))
+         (gimp-layer-set-offsets
+            theText
+            (/ (- captionWidth  (car (gimp-drawable-get-width  theText))) 2)
+            (/ (- captionHeight (car (gimp-drawable-get-height theText))) 2))
+      )
+      (begin  ; Old Gimp < 3.0 API:
+         (set! theText (car (gimp-text-fontname image layer2 0 0 captionText 0 TRUE captionFontSize PIXELS captionFont) ) )
+         (gimp-layer-set-offsets
+           theText
+           (/ (- captionWidth  (car (gimp-drawable-width  theText))) 2)
+           (/ (- captionHeight (car (gimp-drawable-height theText))) 2))
+      )
+   )
+
+   (gimp-image-merge-visible-layers image CLIP-TO-IMAGE)
+   ; (gimp-display-new image)
+
+   ; ------ Save result -----------------------------------------------------
+   (if (defined? 'gimp-drawable-merge-new-filter)
+      (begin  ; New Gimp >= 3.0 API:
+         ; FIXME: This does not work when running in Gimp 2.x!
+         ; (file-png-export
+         ;    #:run-mode         RUN-NONINTERACTIVE
+         ;    #:image            image
+         ;    #:file             outputFileName
+         ;    #:options          -1
+         ;    #:interlaced       TRUE
+         ;    #:compression      6
+         ;    #:bkgd             TRUE
+         ;    #:offs             FALSE
+         ;    #:phys             TRUE
+         ;    #:time             TRUE
+         ;    #:save-transparent FALSE
+         ;    #:optimize-palette TRUE
+         ; )
+         (file-png-export RUN-NONINTERACTIVE image
+            outputFileName -1
+            TRUE 6 TRUE FALSE TRUE TRUE FALSE TRUE)
+      )
+      (begin  ; Old Gimp < 3.0 API:
+         (file-png-save2 RUN-NONINTERACTIVE image
+            (car (gimp-image-get-active-layer image))
+            outputFileName outputFileName
+            TRUE 6 TRUE TRUE FALSE TRUE TRUE FALSE TRUE)
+      )
+   )
+
+   ; ------ Clean up --------------------------------------------------------
+   (gimp-image-delete image)
+)
+(gimp-quit TRUE)
+EOF
+) | env LANG=C HOME=/tmp gimp-console ${GIMP_OPTIONS} 2>&1 | \
+(
+   if [ ${VERBOSE} -ne 0 ] ; then
+      cat
+   else
+      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
+   fi
+)
+
+
+# ====== Check result =======================================================
+if [ ! -e "${OUTPUT_FILENAME}" ] ; then
+   echo >&2 "ERROR: ${OUTPUT_FILENAME} has not been produced. Something went wrong!"
+   exit 1
+fi
