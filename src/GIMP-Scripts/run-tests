@@ -35,7 +35,8 @@ set -eux
 INPUT1="examples/Bergen.jpeg"
 INPUT2="examples/Background.png"
 
-# Use FractGen to generate the example image:
+# ------ Use FractGen to generate the example image -------------------------
+# Requires: clifractgen
 if [ ! -e "${INPUT2}"  ] ; then
    if [ -e "/usr/share/fractgen/examples/alpha07.fsf" ] ; then
       clifractgen  /usr/share/fractgen/examples/alpha07.fsf "${INPUT2}" -W 1920 -H 1080 -M 2048
@@ -51,9 +52,10 @@ fi
 # ------ Make-GlossyText ----------------------------------------------------
 ./Make-GlossyText NorNet1.png "NorNet Testbed" 128
 
-# Requires: fonts-lobster
 ./Make-GlossyText NorNet2.png "NorNet Testbed" 128 --bordersize 5 \
    --colorscheme "Brushed Aluminium" --font "Noto Sans Bold"
+
+# Requires: fonts-lobster
 ./Make-GlossyText NorNet3.png "NorNet Testbed" 128 --bordersize 5 \
    --colorscheme "Golden" --font "Lobster Two Bold Italic" || true
 
@@ -80,5 +82,5 @@ fi
 ./Make-OilPainting Image1.png Painting1.png --masksize 8 --mode intensity
 ./Make-OilPainting Image1.png Painting2.png --masksize 8 --mode rgb
 
-./Make-Background Image2.png Background1.png
+./Make-BumpMap Image2.png Background1.png
 ./Make-Mosaic Background1.png Background2.png 18 4 4 --type hexagons --surface smooth --neatness 0.5
