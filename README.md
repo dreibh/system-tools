@@ -25,13 +25,10 @@ One main purpose of System-Info is to run on login, to particularly show a nice 
 - ``60-department-logo``,
 - ``50-company-logo``,
 - ``01-example``.
-</ul>
-<p class="description">
+
 The names of all scripts MUST begin with two decimal numbers. That is, scripts must be named [0-9][0-9]... to be processed by System-Info!
-</p>
-<p class="description">
+
 If one of the scripts exits with non-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script 95-application-logo).
-</p>
 
 ### System-Maintenance
 
