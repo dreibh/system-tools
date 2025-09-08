@@ -2,6 +2,7 @@
  System-Tools<br />
  <span style="font-size: 75%">Tools for Basic System Management</span><br />
  <a href="https://www.nntb.no/~dreibh/system-tools/">
+  <img alt="" src="src/System-Info/figures/screenshot.webp" width="60%" /><br />
   <span style="font-size: 75%;">https://www.nntb.no/~dreibh/system-tools</span>
  </a>
 </h1>
