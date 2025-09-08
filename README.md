@@ -11,7 +11,7 @@
 
 System-Tools is a collection of helpful tools for basic system management of Linux and FreeBSD systems:
 
-- [System-Info](#System-Info) (display banners and system information),
+- [System-Info](#system-info) (display banners and system information),
 - [System-Maintenance](#system-maintenance) (run basic system maintenance tasks),
 - [Reset-Machine-ID](#reset-machine-id) (reset the machine identity state, particularly for a cloned VM),
 - [Print-UTF8](#print-utf8) (print UTF-8 text with options for centering, adjusting, etc.),
