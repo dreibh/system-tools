@@ -32,56 +32,56 @@ One main purpose of System-Info is to run on login, to particularly show a nice 
 * <tt>50-company-logo</tt>,
 * <tt>01-example</tt>.
 
-The names of all scripts MUST begin with two decimal numbers. That is, scripts must be named [0-9][0-9]... to be processed by System-Info!
+The names of all scripts MUST begin with two decimal numbers. That is, scripts must be named <tt>[0-9][0-9]...</tt> to be processed by System-Info!
 
-If one of the scripts exits with non-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script 95-application-logo).
+If one of the scripts exits with non-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script <tt>95-application-logo</tt>).
 
-Some examples, using the [banner-helper](src/System-Info/system-info.d/banner-helper) library provided by System-Info:
+Some examples, using the <tt>[banner-helper](src/System-Info/system-info.d/banner-helper)</tt> library provided by System-Info:
 
 <table summary="System-Info Banner Examples">
   <tr>
     <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/system-info.d/01-example.webp">
-     <img alt="" src="src/System-Info/figures/01-example.webp" width="100%" height="100%" />
+     <a href="src/System-Info/figures/01-example.webp">
+      <img alt="" src="src/System-Info/figures/01-example.webp" width="100%" height="100%" />
      </a><br />
-     <a href="src/System-Info/system-info.d/01-example">01-example</a><br />
+     <tt><a href="src/System-Info/system-info.d/01-example">01-example</a></tt><br />
      The default example.
     </td>
     <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/system-info.d/09-hostname-example.webp">
-     <img alt="" src="src/System-Info/figures/09-hostname-example.webp" width="100%" height="100%" />
+     <a href="src/System-Info/figures/09-hostname-example.webp">
+      <img alt="" src="src/System-Info/figures/09-hostname-example.webp" width="100%" height="100%" />
      </a><br />
-     <a href="src/System-Info/system-info.d/09-hostname-example">09-hostname-example</a><br />
+     <tt><a href="src/System-Info/system-info.d/09-hostname-example">09-hostname-example</a></tt><br />
      Dynamically showing the hostname of the machine.
     </td>
     <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/system-info.d/10-company-logo-example.webp">
-     <img alt="" src="src/System-Info/figures/10-company-logo-example.webp" width="100%" height="100%" />
+     <a href="src/System-Info/figures/10-company-logo-example.webp">
+      <img alt="" src="src/System-Info/figures/10-company-logo-example.webp" width="100%" height="100%" />
      </a><br />
-     <a href="src/System-Info/system-info.d/10-company-logo-example">10-company-logo-example</a><br />
+     <tt><a href="src/System-Info/system-info.d/10-company-logo-example">10-company-logo-example</a></tt><br />
      A <a href="https://www.simulamet.no/">SimulaMet</a> company branding.
     </td>
   </tr>
   <tr>
     <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/system-info.d/10-nornet.webp">
-     <img alt="" src="src/System-Info/figures/10-nornet.webp" width="100%" height="100%" />
+     <a href="src/System-Info/figures/10-nornet.webp">
+      <img alt="" src="src/System-Info/figures/10-nornet.webp" width="100%" height="100%" />
      </a><br />
-     <a href="src/System-Info/system-info.d/10-nornet">10-nornet</a><br />
+     <tt><a href="src/System-Info/system-info.d/10-nornet">10-nornet</a></tt><br />
      A <a href="https://www.nntb.no/">NorNet</a> project branding.
     </td>
     <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/system-info.d/18-neat.webp">
-     <img alt="" src="src/System-Info/figures/18-neat.webp" width="100%" height="100%" />
+     <a href="src/System-Info/figures/18-neat.webp">
+      <img alt="" src="src/System-Info/figures/18-neat.webp" width="100%" height="100%" />
      </a><br />
-     <a href="src/System-Info/system-info.d/18-neat">18-neat</a><br />
+     <tt><a href="src/System-Info/system-info.d/18-neat">18-neat</a></tt><br />
      A <a href="https://neat.nntb.no/">NEAT</a> project branding.
     </td>
     <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/system-info.d/30-rsplib.webp">
-     <img alt="" src="src/System-Info/figures/30-rsplib.webp" width="100%" height="100%" />
+     <a href="src/System-Info/figures/30-rsplib.webp">
+      <img alt="" src="src/System-Info/figures/30-rsplib.webp" width="100%" height="100%" />
      </a><br />
-     <a href="src/System-Info/system-info.d/30-rsplib">30-rsplib</a><br />
+     <tt><a href="src/System-Info/system-info.d/30-rsplib">30-rsplib</a></tt><br />
      A <a href="https://www.nntb.no/~dreibh/rserpool/">RSPLIB</a> project branding.
     </td>
   </tr>
@@ -122,7 +122,7 @@ print-utf8 -n -s "\e[1;31;40;5m█" "▄" "█\e[0m"
 </pre>
 
 <p style="text-align: center;">
- <a href="guru.webp">
+ <a href="src/Print-UTF8/figures/guru.webp">
   <img alt="A Guru Meditation Example with Print-UTF8" src="src/Print-UTF8/figures/guru.webp" width="50%" />
  </a>
 </p>
@@ -265,3 +265,7 @@ See [https://www.nntb.no/~dreibh/system-tools/#current-stable-release](https://w
 
 * [NetPerfMeter – A TCP/MPTCP/UDP/SCTP/DCCP Network Performance Meter Tool](https://www.nntb.no/~dreibh/netperfmeter/index.html)
 * [HiPerConTracer – High-Performance Connectivity Tracer](https://www.nntb.no/~dreibh/hipercontracer/index.html)
+* [SubNetCalc – An IPv4/IPv6 Subnet Calculator](https://www.nntb.no/~dreibh/subnetcalc/index.html)
+* [NorNet – A Real-World, Large-Scale Multi-Homing Testbed](https://www.nntb.no/)
+* [NEAT – A New, Evolutive API and Transport-Layer Architecture for the Internet](https://neat.nntb.no/)
+* [Thomas Dreibholz's Reliable Server Pooling (RSerPool) Page – The RSPLIB Project](https://www.nntb.no/~dreibh/rserpool/)
