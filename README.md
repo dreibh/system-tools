@@ -42,49 +42,61 @@ Some examples, using the <tt>[banner-helper](src/System-Info/system-info.d/banne
 
 <table summary="System-Info Banner Examples">
   <tr>
-    <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/figures/01-example.webp">
-      <img alt="" src="src/System-Info/figures/01-example.webp" width="100%" height="100%" />
-     </a><br />
-     <tt><a href="src/System-Info/system-info.d/01-example">01-example</a></tt><br />
-     The default example.
+    <td style="vertical-align: center;">
+     <p align="center">
+      <a href="src/System-Info/figures/01-example.webp">
+        <img alt="" src="src/System-Info/figures/01-example.webp" width="100%" height="100%" />
+      </a><br />
+      <tt><a href="src/System-Info/system-info.d/01-example">01-example</a></tt><br />
+      The default example.
+      </p>
     </td>
-    <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/figures/09-hostname-example.webp">
-      <img alt="" src="src/System-Info/figures/09-hostname-example.webp" width="100%" height="100%" />
-     </a><br />
-     <tt><a href="src/System-Info/system-info.d/09-hostname-example">09-hostname-example</a></tt><br />
-     Dynamically showing the hostname of the machine.
+    <td style="vertical-align: center;">
+     <p align="center">
+      <a href="src/System-Info/figures/09-hostname-example.webp">
+        <img alt="" src="src/System-Info/figures/09-hostname-example.webp" width="100%" height="100%" />
+      </a><br />
+      <tt><a href="src/System-Info/system-info.d/09-hostname-example">09-hostname-example</a></tt><br />
+      Dynamically showing the hostname of the machine.
+     </p>
     </td>
-    <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/figures/10-company-logo-example.webp">
-      <img alt="" src="src/System-Info/figures/10-company-logo-example.webp" width="100%" height="100%" />
-     </a><br />
-     <tt><a href="src/System-Info/system-info.d/10-company-logo-example">10-company-logo-example</a></tt><br />
-     A <a href="https://www.simulamet.no/">SimulaMet</a> company branding.
+    <td style="vertical-align: center;">
+     <p align="center">
+      <a href="src/System-Info/figures/10-company-logo-example.webp">
+        <img alt="" src="src/System-Info/figures/10-company-logo-example.webp" width="100%" height="100%" />
+      </a><br />
+      <tt><a href="src/System-Info/system-info.d/10-company-logo-example">10-company-logo-example</a></tt><br />
+      A <a href="https://www.simulamet.no/">SimulaMet</a> company branding.
+     </p>
     </td>
   </tr>
   <tr>
-    <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/figures/10-nornet.webp">
-      <img alt="" src="src/System-Info/figures/10-nornet.webp" width="100%" height="100%" />
-     </a><br />
-     <tt><a href="src/System-Info/system-info.d/10-nornet">10-nornet</a></tt><br />
-     A <a href="https://www.nntb.no/">NorNet</a> project branding.
+    <td style="vertical-align: center;">
+     <p align="center">
+      <a href="src/System-Info/figures/10-nornet.webp">
+        <img alt="" src="src/System-Info/figures/10-nornet.webp" width="100%" height="100%" />
+      </a><br />
+      <tt><a href="src/System-Info/system-info.d/10-nornet">10-nornet</a></tt><br />
+      A <a href="https://www.nntb.no/">NorNet</a> project branding.
+     </p>
     </td>
-    <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/figures/18-neat.webp">
-      <img alt="" src="src/System-Info/figures/18-neat.webp" width="100%" height="100%" />
-     </a><br />
-     <tt><a href="src/System-Info/system-info.d/18-neat">18-neat</a></tt><br />
-     A <a href="https://neat.nntb.no/">NEAT</a> project branding.
+    <td style="vertical-align: center;">
+     <p align="center">
+      <a href="src/System-Info/figures/18-neat.webp">
+        <img alt="" src="src/System-Info/figures/18-neat.webp" width="100%" height="100%" />
+      </a><br />
+      <tt><a href="src/System-Info/system-info.d/18-neat">18-neat</a></tt><br />
+      A <a href="https://neat.nntb.no/">NEAT</a> project branding.
+     </p>
     </td>
-    <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/figures/30-rsplib.webp">
-      <img alt="" src="src/System-Info/figures/30-rsplib.webp" width="100%" height="100%" />
-     </a><br />
-     <tt><a href="src/System-Info/system-info.d/30-rsplib">30-rsplib</a></tt><br />
-     A <a href="https://www.nntb.no/~dreibh/rserpool/">RSPLIB</a> project branding.
+    <td style="vertical-align: center;">
+     <p align="center">
+      <a href="src/System-Info/figures/30-rsplib.webp">
+        <img alt="" src="src/System-Info/figures/30-rsplib.webp" width="100%" height="100%" />
+      </a><br />
+      <tt><a href="src/System-Info/system-info.d/30-rsplib">30-rsplib</a></tt><br />
+      A <a href="https://www.nntb.no/~dreibh/rserpool/">RSPLIB</a> project branding.
+     </p>
     </td>
   </tr>
 </table>
@@ -160,11 +172,11 @@ print-utf8 -n -C "\e[1;31;40;5m█\e[25m" "\e[5m█\e[0m"
 print-utf8 -n -s "\e[1;31;40;5m█" "▄" "█\e[0m"
 </pre>
 
-<span style="display:block; text-align:center;">
- <a href="src/Print-UTF8/figures/guru.webp">
- <img alt="A Guru Meditation Example with Print-UTF8" src="src/Print-UTF8/figures/guru.webp" width="50%" />
- </a>
-</span>
+<p align="center">
+  <a href="src/Print-UTF8/figures/guru.webp">
+   <img alt="A Guru Meditation Example with Print-UTF8" src="src/Print-UTF8/figures/guru.webp" width="50%" />
+  </a>
+</p>
 
 The manpage of Print-UTF8 contains details and various further examples:
 
