@@ -171,7 +171,7 @@ Two:
 <p align="center">
  ![A Guru Meditation Example with Print-UTF8](src/Print-UTF8/figures/guru.webp)<br/>
  ![A Guru Meditation Example with Print-UTF8](src/Print-UTF8/figures/guru.webp){width="50%"}<br/>
- [![A Guru Meditation Example with Print-UTF8](src/Print-UTF8/figures/guru.webp){width="50%"}](src/Print-UTF8/figures/guru.webp)<br />
+ [<img alt="A Guru Meditation Example with Print-UTF8" src="src/Print-UTF8/figures/guru.webp" width="50%" />](src/Print-UTF8/figures/guru.webp)<br />
  text<br />
  text2<br />
 </p>
