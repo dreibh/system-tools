@@ -162,10 +162,18 @@ print-utf8 -n -s "\e[1;31;40;5m█" "▄" "█\e[0m"
 
 <p style="text-align: center;">
  <div style="text-align: center;">
+ <span style="text-align: center;">
   <a href="src/Print-UTF8/figures/guru.webp">
    <img alt="A Guru Meditation Example with Print-UTF8" src="src/Print-UTF8/figures/guru.webp" width="50%" />
   </a>
+ </span>
  </div>
+</p>
+
+<p align="center">
+  <a href="src/Print-UTF8/figures/guru.webp">
+   <img alt="A Guru Meditation Example with Print-UTF8" src="src/Print-UTF8/figures/guru.webp" width="50%" />
+  </a>
 </p>
 
 The manpage of Print-UTF8 contains details and various further examples:
