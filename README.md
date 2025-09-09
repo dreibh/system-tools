@@ -44,26 +44,30 @@ Some examples, using the <tt>[banner-helper](src/System-Info/system-info.d/banne
   <tr>
     <td style="text-align: center; vertical-align: center;">
      <p align="center">
-     <a href="src/System-Info/figures/01-example.webp">
-      <img alt="" src="src/System-Info/figures/01-example.webp" width="100%" height="100%" />
-     </a><br />
-     <tt><a href="src/System-Info/system-info.d/01-example">01-example</a></tt><br />
-     The default example.
+      <a href="src/System-Info/figures/01-example.webp">
+        <img alt="" src="src/System-Info/figures/01-example.webp" width="100%" height="100%" />
+      </a><br />
+      <tt><a href="src/System-Info/system-info.d/01-example">01-example</a></tt><br />
+      The default example.
+      </p>
+    </td>
+    <td style="text-align: center; vertical-align: center;">
+     <p align="center">
+      <a href="src/System-Info/figures/09-hostname-example.webp">
+        <img alt="" src="src/System-Info/figures/09-hostname-example.webp" width="100%" height="100%" />
+      </a><br />
+      <tt><a href="src/System-Info/system-info.d/09-hostname-example">09-hostname-example</a></tt><br />
+      Dynamically showing the hostname of the machine.
      </p>
     </td>
     <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/figures/09-hostname-example.webp">
-      <img alt="" src="src/System-Info/figures/09-hostname-example.webp" width="100%" height="100%" />
-     </a><br />
-     <tt><a href="src/System-Info/system-info.d/09-hostname-example">09-hostname-example</a></tt><br />
-     Dynamically showing the hostname of the machine.
-    </td>
-    <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/figures/10-company-logo-example.webp">
-      <img alt="" src="src/System-Info/figures/10-company-logo-example.webp" width="100%" height="100%" />
-     </a><br />
-     <tt><a href="src/System-Info/system-info.d/10-company-logo-example">10-company-logo-example</a></tt><br />
-     A <a href="https://www.simulamet.no/">SimulaMet</a> company branding.
+     <p align="center">
+      <a href="src/System-Info/figures/10-company-logo-example.webp">
+        <img alt="" src="src/System-Info/figures/10-company-logo-example.webp" width="100%" height="100%" />
+      </a><br />
+      <tt><a href="src/System-Info/system-info.d/10-company-logo-example">10-company-logo-example</a></tt><br />
+      A <a href="https://www.simulamet.no/">SimulaMet</a> company branding.
+     </p>
     </td>
   </tr>
   <tr>
