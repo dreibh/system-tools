@@ -280,26 +280,26 @@ Please use the issue tracker at [https://github.com/dreibh/system-tools/issues](
 
 ## Ubuntu Linux
 
-For ready-to-install Ubuntu Linux packages of System-Tools, see [Launchpad PPA for Thomas Dreibholz](https://launchpad.net/~dreibh/+archive/ubuntu/ppa/+packages?field.name_filter=system-tools&field.status_filter=published&field.series_filter=)!
+For ready-to-install Ubuntu Linux packages of System-Tools, see [Launchpad PPA for Thomas Dreibholz](https://launchpad.net/~dreibh/+archive/ubuntu/ppa/+packages?field.name_filter=td-system-tools&field.status_filter=published&field.series_filter=)!
 
 <pre>
 sudo apt-add-repository -sy ppa:dreibh/ppa
 sudo apt-get update
-sudo apt-get install system-tools
+sudo apt-get install td-system-tools
 </pre>
 
 ## Fedora Linux
 
-For ready-to-install Fedora Linux packages of System-Tools, see [COPR PPA for Thomas Dreibholz](https://copr.fedorainfracloud.org/coprs/dreibh/ppa/package/system-tools/)!
+For ready-to-install Fedora Linux packages of System-Tools, see [COPR PPA for Thomas Dreibholz](https://copr.fedorainfracloud.org/coprs/dreibh/ppa/package/td-system-tools/)!
 
 <pre>
 sudo dnf copr enable -y dreibh/ppa
-sudo dnf install system-tools
+sudo dnf install td-system-tools
 </pre>
 
 ## FreeBSD
 
-For ready-to-install FreeBSD packages of System-Tools, it is included in the ports collection, see [FreeBSD ports tree index of net/system-tools/](https://cgit.freebsd.org/ports/tree/net/system-tools/)!
+For ready-to-install FreeBSD packages of System-Tools, it is included in the ports collection, see [FreeBSD ports tree index of net/td-system-tools/](https://cgit.freebsd.org/ports/tree/net/td-system-tools/)!
 
 <pre>
 pkg install system-tools
@@ -308,7 +308,7 @@ pkg install system-tools
 Alternatively, to compile it from the ports sources:
 
 <pre>
-cd /usr/ports/net/system-tools
+cd /usr/ports/net/td-system-tools
 make
 make install
 </pre>
