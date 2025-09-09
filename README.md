@@ -42,7 +42,7 @@ Some examples, using the <tt>[banner-helper](src/System-Info/system-info.d/banne
 
 <table summary="System-Info Banner Examples">
   <tr>
-    <td style="text-align: center; vertical-align: center;">
+    <td style="vertical-align: center;">
      <p align="center">
       <a href="src/System-Info/figures/01-example.webp">
         <img alt="" src="src/System-Info/figures/01-example.webp" width="100%" height="100%" />
@@ -51,7 +51,7 @@ Some examples, using the <tt>[banner-helper](src/System-Info/system-info.d/banne
       The default example.
       </p>
     </td>
-    <td style="text-align: center; vertical-align: center;">
+    <td style="vertical-align: center;">
      <p align="center">
       <a href="src/System-Info/figures/09-hostname-example.webp">
         <img alt="" src="src/System-Info/figures/09-hostname-example.webp" width="100%" height="100%" />
@@ -60,7 +60,7 @@ Some examples, using the <tt>[banner-helper](src/System-Info/system-info.d/banne
       Dynamically showing the hostname of the machine.
      </p>
     </td>
-    <td style="text-align: center; vertical-align: center;">
+    <td style="vertical-align: center;">
      <p align="center">
       <a href="src/System-Info/figures/10-company-logo-example.webp">
         <img alt="" src="src/System-Info/figures/10-company-logo-example.webp" width="100%" height="100%" />
@@ -71,7 +71,7 @@ Some examples, using the <tt>[banner-helper](src/System-Info/system-info.d/banne
     </td>
   </tr>
   <tr>
-    <td style="text-align: center; vertical-align: center;">
+    <td style="vertical-align: center;">
      <p align="center">
       <a href="src/System-Info/figures/10-nornet.webp">
         <img alt="" src="src/System-Info/figures/10-nornet.webp" width="100%" height="100%" />
@@ -80,7 +80,7 @@ Some examples, using the <tt>[banner-helper](src/System-Info/system-info.d/banne
       A <a href="https://www.nntb.no/">NorNet</a> project branding.
      </p>
     </td>
-    <td style="text-align: center; vertical-align: center;">
+    <td style="vertical-align: center;">
      <p align="center">
       <a href="src/System-Info/figures/18-neat.webp">
         <img alt="" src="src/System-Info/figures/18-neat.webp" width="100%" height="100%" />
@@ -89,7 +89,7 @@ Some examples, using the <tt>[banner-helper](src/System-Info/system-info.d/banne
       A <a href="https://neat.nntb.no/">NEAT</a> project branding.
      </p>
     </td>
-    <td style="text-align: center; vertical-align: center;">
+    <td style="vertical-align: center;">
      <p align="center">
       <a href="src/System-Info/figures/30-rsplib.webp">
         <img alt="" src="src/System-Info/figures/30-rsplib.webp" width="100%" height="100%" />
