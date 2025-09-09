@@ -43,11 +43,13 @@ Some examples, using the <tt>[banner-helper](src/System-Info/system-info.d/banne
 <table summary="System-Info Banner Examples">
   <tr>
     <td style="text-align: center; vertical-align: center;">
+     <p align="center">
      <a href="src/System-Info/figures/01-example.webp">
       <img alt="" src="src/System-Info/figures/01-example.webp" width="100%" height="100%" />
      </a><br />
      <tt><a href="src/System-Info/system-info.d/01-example">01-example</a></tt><br />
      The default example.
+     </p>
     </td>
     <td style="text-align: center; vertical-align: center;">
      <a href="src/System-Info/figures/09-hostname-example.webp">
