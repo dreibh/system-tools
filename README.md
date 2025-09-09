@@ -72,25 +72,31 @@ Some examples, using the <tt>[banner-helper](src/System-Info/system-info.d/banne
   </tr>
   <tr>
     <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/figures/10-nornet.webp">
-      <img alt="" src="src/System-Info/figures/10-nornet.webp" width="100%" height="100%" />
-     </a><br />
-     <tt><a href="src/System-Info/system-info.d/10-nornet">10-nornet</a></tt><br />
-     A <a href="https://www.nntb.no/">NorNet</a> project branding.
+     <p align="center">
+      <a href="src/System-Info/figures/10-nornet.webp">
+        <img alt="" src="src/System-Info/figures/10-nornet.webp" width="100%" height="100%" />
+      </a><br />
+      <tt><a href="src/System-Info/system-info.d/10-nornet">10-nornet</a></tt><br />
+      A <a href="https://www.nntb.no/">NorNet</a> project branding.
+     </p>
     </td>
     <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/figures/18-neat.webp">
-      <img alt="" src="src/System-Info/figures/18-neat.webp" width="100%" height="100%" />
-     </a><br />
-     <tt><a href="src/System-Info/system-info.d/18-neat">18-neat</a></tt><br />
-     A <a href="https://neat.nntb.no/">NEAT</a> project branding.
+     <p align="center">
+      <a href="src/System-Info/figures/18-neat.webp">
+        <img alt="" src="src/System-Info/figures/18-neat.webp" width="100%" height="100%" />
+      </a><br />
+      <tt><a href="src/System-Info/system-info.d/18-neat">18-neat</a></tt><br />
+      A <a href="https://neat.nntb.no/">NEAT</a> project branding.
+     </p>
     </td>
     <td style="text-align: center; vertical-align: center;">
-     <a href="src/System-Info/figures/30-rsplib.webp">
-      <img alt="" src="src/System-Info/figures/30-rsplib.webp" width="100%" height="100%" />
-     </a><br />
-     <tt><a href="src/System-Info/system-info.d/30-rsplib">30-rsplib</a></tt><br />
-     A <a href="https://www.nntb.no/~dreibh/rserpool/">RSPLIB</a> project branding.
+     <p align="center">
+      <a href="src/System-Info/figures/30-rsplib.webp">
+        <img alt="" src="src/System-Info/figures/30-rsplib.webp" width="100%" height="100%" />
+      </a><br />
+      <tt><a href="src/System-Info/system-info.d/30-rsplib">30-rsplib</a></tt><br />
+      A <a href="https://www.nntb.no/~dreibh/rserpool/">RSPLIB</a> project branding.
+     </p>
     </td>
   </tr>
 </table>
