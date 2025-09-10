@@ -281,7 +281,7 @@ if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
       gettext "The new machine ID is ${machineID}."
       echo ""
 
-      # ------ Set new ID for Debian Popularity Contest, if installed -------
+      # ------ Set new ID in Debian Popularity Contest configuration --------
       if [ -e /etc/popularity-contest.conf ] ; then
          hostID="$(dbus-uuidgen)"
          sed -e "s/^MY_HOSTID=.*$/${hostID}/" -i /etc/popularity-contest.conf
