@@ -193,7 +193,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    echo "$(gettext "Kernel Boot Version:") ${kernelBootVersion}"
    echo "$(gettext "Kernel Disk Version:") ${kernelDiskVersion}"
 
-   packageVersionsFile=$(mktemp)
+   packageVersionsFile="$(mktemp)"
    apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | sort >"${packageVersionsFile}"
 
    packagesToRemove="
@@ -234,7 +234,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
       while read -r line ; do
          mayBeRemoved=0
          for packageToRemove in ${packagesToRemove} ; do
-            if [[ $line =~ ^${packageToRemove}.*$ ]] ; then
+            if [[ ${line} =~ ^${packageToRemove}.*$ ]] ; then
                mayBeRemoved=1
                break
             fi
@@ -242,8 +242,8 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
          if [ ${mayBeRemoved} -eq 1 ] ; then
             toBeKept=0
             for packageToKeep in ${packagesToKeep} ; do
-                if [[ $line =~ ^${packageToKeep}.*$ ]] ; then
-                   # echo >&2 "Keep: $line"
+                if [[ ${line} =~ ^${packageToKeep}.*$ ]] ; then
+                   # echo >&2 "Keep: ${line}"
                    echo -n "${line}+ "   # Ensure that this package is KEPT!
                    toBeKept=1
                    break
