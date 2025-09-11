@@ -185,13 +185,17 @@ fi
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Removing obsolete kernels ...")\x1b[0m"
 
-   kernelType=$(uname -r | sed 's/\([0-9]*.[0-9]*.[0-9]*\|[0-9]*.[0-9]*.[0-9]*.-[0-9]*\)-\([a-zA-Z0-9\.+]\)/\2/')
-   kernelBootVersion=$(uname -r | sed s/-"${kernelType}"//)
-   kernelDiskVersion=$(find /boot -name "vmlinuz-*-${kernelType}" | sort -rV | head -n1 | sed -e "s/\/boot\/vmlinuz-//" -e "s/-${kernelType}//")
+   kernelType=$(uname -r | sed 's/^\([0-9]*\.[0-9]*\.[0-9]*\|[0-9]*\.[0-9]*\.[0-9]*[-+][^-]*\)-\([a-zA-Z0-9\.+]*\)/\2/')
+   kernelBootVersion=$(uname -r | sed "s/-${kernelType}$//")
+   kernelDiskVersion=$(find /boot -name "vmlinuz-*-${kernelType}" | sort -rV | head -n1 | sed -e "s/^\/boot\/vmlinuz-//" -e "s/-${kernelType}$//")
 
    echo "$(gettext "Kernel Type:        ") ${kernelType}"
    echo "$(gettext "Kernel Boot Version:") ${kernelBootVersion}"
    echo "$(gettext "Kernel Disk Version:") ${kernelDiskVersion}"
+
+   # The version will be used in regexp: "+" => "\\+"!
+   kernelBootVersion="${kernelBootVersion/+/\\+}"
+   kernelDiskVersion="${kernelDiskVersion/+/\\+}"
 
    packageVersionsFile="$(mktemp)"
    apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | sort >"${packageVersionsFile}"
@@ -242,14 +246,15 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
          if [ ${mayBeRemoved} -eq 1 ] ; then
             toBeKept=0
             for packageToKeep in ${packagesToKeep} ; do
-                if [[ ${line} =~ ^${packageToKeep}.*$ ]] ; then
-                   # echo >&2 "Keep: ${line}"
-                   echo -n "${line}+ "   # Ensure that this package is KEPT!
-                   toBeKept=1
-                   break
-                fi
+               if [[ ${line} =~ ^${packageToKeep}.*$ ]] ; then
+                  # echo >&2 "Keep: ${line}"
+                  echo -n "${line}+ "   # Ensure that this package is KEPT!
+                  toBeKept=1
+                  break
+               fi
             done
             if [ ${toBeKept} -eq 0 ] ; then
+               # echo >&2 "Remove: ${line}"
                echo -n "${line} "
             fi
         fi
