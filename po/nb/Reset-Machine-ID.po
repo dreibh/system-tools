@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-07-08 11:51+0200\n"
+"POT-Creation-Date: 2025-09-11 20:48+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -62,73 +62,73 @@ msgstr "Oppdatere vertsnavn?"
 msgid "The current machine ID is ${machineID}. Reset it?"
 msgstr "Gjeldende maskin-ID er ${machineID}. Tilbakestille den?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:299
+#: src/Reset-Machine-ID/Reset-Machine-ID:307
 #, sh-format
 msgid "Install Zabbix agent?"
 msgstr "Installere Zabbix-agenten?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:331
+#: src/Reset-Machine-ID/Reset-Machine-ID:339
 #, sh-format
 msgid "Apply suggested Zabbix Agent changes in ${zabbixConfig}?"
 msgstr "Bruk foreslåtte Zabbix Agent endringer i ${zabbixConfig}?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:342
-#: src/Reset-Machine-ID/Reset-Machine-ID:415
-#: src/Reset-Machine-ID/Reset-Machine-ID:503
-#: src/Reset-Machine-ID/Reset-Machine-ID:556
+#: src/Reset-Machine-ID/Reset-Machine-ID:350
+#: src/Reset-Machine-ID/Reset-Machine-ID:423
+#: src/Reset-Machine-ID/Reset-Machine-ID:511
+#: src/Reset-Machine-ID/Reset-Machine-ID:564
 msgid "Skipped!"
 msgstr "Hoppet over!"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:378
+#: src/Reset-Machine-ID/Reset-Machine-ID:386
 msgid "Checking SSH configuration ..."
 msgstr "Sjekker SSH-konfigurasjon ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:404
+#: src/Reset-Machine-ID/Reset-Machine-ID:412
 msgid "Suggested ssh_config changes:"
 msgstr "Foreslåtte ssh_config endringer:"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:408
+#: src/Reset-Machine-ID/Reset-Machine-ID:416
 msgid "Apply suggested ssh_config changes?"
 msgstr "Vil du bruke foreslåtte ssh_config-endringer?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:477
+#: src/Reset-Machine-ID/Reset-Machine-ID:485
 msgid "Suggested removal of sshd_config.d/50-cloud-init.conf:"
 msgstr "Foreslått fjerning av sshd_config.d/50-cloud-init.conf:"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:485
+#: src/Reset-Machine-ID/Reset-Machine-ID:493
 msgid "Suggested sshd_config changes:"
 msgstr "Foreslåtte sshd_config endringer:"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:490
+#: src/Reset-Machine-ID/Reset-Machine-ID:498
 msgid "Apply suggested sshd_config changes?"
 msgstr "Vil du bruke foreslåtte sshd_config-endringer?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:498
-#: src/Reset-Machine-ID/Reset-Machine-ID:550
+#: src/Reset-Machine-ID/Reset-Machine-ID:506
+#: src/Reset-Machine-ID/Reset-Machine-ID:558
 msgid "Trying to restart SSH daemon ..."
 msgstr "Prøver å starte SSH-demonen på nytt ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:517
+#: src/Reset-Machine-ID/Reset-Machine-ID:525
 msgid "Remove existing SSH host keys and generate new ones?"
 msgstr "Vil du fjerne eksisterende SSH-vertsnøkler og generere nye?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:523
+#: src/Reset-Machine-ID/Reset-Machine-ID:531
 #, sh-format
 msgid "Making backup of current keys in ${backupDirectory} ..."
 msgstr "Ta sikkerhetskopi av gjeldende nøkler i ${backupDirectory} ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:541
+#: src/Reset-Machine-ID/Reset-Machine-ID:549
 msgid "Generating new ED25519 key ..."
 msgstr "Genererer ny ED25519 nøkkel ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:543
+#: src/Reset-Machine-ID/Reset-Machine-ID:551
 msgid "Generating new ECDSA key ..."
 msgstr "Genererer ny ECDSA nøkkel ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:545
+#: src/Reset-Machine-ID/Reset-Machine-ID:553
 msgid "Generating new RSA key; this may take some time ..."
 msgstr "Genererer ny RSA-nøkkel; dette kan ta litt tid ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:548
+#: src/Reset-Machine-ID/Reset-Machine-ID:556
 msgid "Done!"
 msgstr "Ferdig!"
