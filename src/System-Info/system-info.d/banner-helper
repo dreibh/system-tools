@@ -97,7 +97,7 @@ stringwidth()
 # ###### Center text in console #############################################
 function center ()
 {
-   print-utf8 --newline --center "$1"
+   print-utf8 --newline --center -- "$1"
 
    # ====== Old code without Print-UTF8 for reference =======================
    # local text="$1"

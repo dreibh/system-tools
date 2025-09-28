@@ -264,6 +264,7 @@ if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
       read -er applyChanges
    fi
    if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
+      # ------ Set new machine ID -------------------------------------------
       if [ -x /usr/bin/dbus-uuidgen ] || [ -x /usr/local/bin/dbus-uuidgen ] ; then
          # Generate new ID already now.
          rm -f /etc/machine-id
@@ -279,6 +280,13 @@ if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
       machineID="$(cat /etc/machine-id)"
       gettext "The new machine ID is ${machineID}."
       echo ""
+
+      # ------ Set new ID in Debian Popularity Contest configuration --------
+      if [ -e /etc/popularity-contest.conf ] ; then
+         hostID="$(dbus-uuidgen)"
+         sed -e "s/^MY_HOSTID=.*$/MY_HOSTID=\"${hostID}\"/" -i /etc/popularity-contest.conf
+         rm -f /var/lib/popularity-contest/lastsub /var/log/popularity-contest
+      fi
    fi
 fi
 
@@ -528,7 +536,7 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && [ -x "$(command -
       if [ -e ssh_config ] ; then
          cp ssh_config "${backupDirectory}/"
       fi
-      if [ -e sshd_config ] ; then 
+      if [ -e sshd_config ] ; then
          cp sshd_config "${backupDirectory}/"
       fi
 

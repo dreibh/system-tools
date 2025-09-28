@@ -37,7 +37,6 @@ set -eu
 
 # ====== Print banner =======================================================
 
-# Using 24-bit color codes. This may not work with all terminals!
 reset="\x1b[0m"
 color1="\x1b[34m"
 color2="\x1b[31m"

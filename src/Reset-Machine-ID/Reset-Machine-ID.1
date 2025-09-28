@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 11, 2025
+.Dd September 10, 2025
 .Dt Reset-Machine-ID 1
 .Os Reset-Machine-ID
 .\" ###### Name #############################################################
@@ -56,6 +56,8 @@ It performs the following tasks:
 * Reset /etc/machine-id,
 .br
 * Reset /var/lib/dbus/machine-id (symlink to /etc/machine-id),
+.br
+* Reset host ID in Debian Popularity Contest configuration file (if installed),
 .br
 * Change hostname, if a new one is provided (\-\-hostname parameter).
 .br
