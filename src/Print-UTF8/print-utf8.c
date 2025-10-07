@@ -526,7 +526,10 @@ static void version()
 
 
 // ###### Usage #############################################################
-[[ noreturn ]] static void usage(const char* program, const int exitCode)
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
+[[ noreturn ]]
+#endif
+static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "%s %s"
            " [-n|--newline]"
