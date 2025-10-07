@@ -696,7 +696,10 @@ static void showNetworkInformation(const bool filterLocalScope)
 
 
 // ###### Version ###########################################################
-[[ noreturn ]] static void version()
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
+[[ noreturn ]]
+#endif
+static void version()
 {
    printf("get-system-info %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -704,7 +707,10 @@ static void showNetworkInformation(const bool filterLocalScope)
 
 
 // ###### Usage #############################################################
-[[ noreturn ]] static void usage(const char* program, const int exitCode)
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
+[[ noreturn ]]
+#endif
+static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "Usage: %s [-h|--help] [-v|--version]\n", program);
    exit(exitCode);

@@ -57,7 +57,10 @@ static double runiform(const double min, const  double max)
 
 
 // ###### Version ###########################################################
-[[ noreturn ]] static void version()
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
+[[ noreturn ]]
+#endif
+static void version()
 {
    printf("random-sleep %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -65,7 +68,10 @@ static double runiform(const double min, const  double max)
 
 
 // ###### Usage #############################################################
-[[ noreturn ]] static void usage(const char* program, const int exitCode)
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
+[[ noreturn ]]
+#endif
+static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "%s %s min_delay max_delay"
            " [-q|--quiet]"
