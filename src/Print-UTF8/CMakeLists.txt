@@ -33,7 +33,7 @@
 #############################################################################
 
 ADD_EXECUTABLE(print-utf8 print-utf8.c)
-SET_PROPERTY(TARGET print-utf8 PROPERTY C_STANDARD 23)
+# SET_PROPERTY(TARGET print-utf8 PROPERTY C_STANDARD 23)
 TARGET_LINK_LIBRARIES(print-utf8 ${Intl_LIBRARIES})
 INSTALL(TARGETS print-utf8 DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES print-utf8.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
