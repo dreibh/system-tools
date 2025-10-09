@@ -1,3 +1,39 @@
+commit 8215df598ec2d420e6f4d993669c7485f391c44b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 8 01:10:36 2025 +0200
+
+    Updated configuration.
+
+commit 9276e1e5798e8cda1fe96bd50c79087eb36b2100
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 8 00:54:49 2025 +0200
+
+    Another C 17 update.
+
+commit 46c363f45cde64f26ffa036dd7bbebbb7b4c93d5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 8 00:53:06 2025 +0200
+
+    Relaxed C standard requirement, to allow build with C 17.
+
+commit d57df550f0683fba7d446368d8ba5ae8e909002c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 8 00:39:19 2025 +0200
+
+    Some testing.
+
+commit d8e87dd6ac9555945a1454050b3da6478ef2095a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Sep 25 17:14:58 2025 +0200
+
+    FreeBSD packaging update.
+
+commit 874f68f05be8d47145eb1a059952c0660dd8c4f5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Sep 21 18:06:34 2025 +0200
+
+    New release td-system-tools-2.1.4.
+
 commit 87609de908a0453e265fc5da5ac491a698be6a76
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Sep 11 20:50:44 2025 +0200

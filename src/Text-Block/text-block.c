@@ -111,7 +111,10 @@ static const char*     Pointer;
 
 
 // ###### Clean up ##########################################################
-[[ noreturn ]] static void cleanUp(int exitCode)
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
+[[ noreturn ]]
+#endif
+static void cleanUp(int exitCode)
 {
    // ====== Close insert file ==============================================
    if(OpenInsertFile) {
@@ -339,7 +342,10 @@ static void processMarked(const char*   text,
 
 
 // ###### Version ###########################################################
-[[ noreturn ]] static void version()
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
+[[ noreturn ]]
+#endif
+static void version()
 {
    printf("text-block %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -347,7 +353,10 @@ static void processMarked(const char*   text,
 
 
 // ###### Usage #############################################################
-[[ noreturn ]] static void usage(const char* program, const int exitCode)
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
+[[ noreturn ]]
+#endif
+static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "%s %s"
            " [-C|--cat]"

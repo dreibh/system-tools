@@ -39,7 +39,7 @@ INSTALL(FILES       System-Info.bash-completion
         RENAME      System-Info)
 
 ADD_EXECUTABLE(get-system-info get-system-info.c)
-SET_PROPERTY(TARGET get-system-info PROPERTY C_STANDARD 23)
+# SET_PROPERTY(TARGET get-system-info PROPERTY C_STANDARD 23)
 INSTALL(TARGETS get-system-info DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES get-system-info.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       get-system-info.bash-completion

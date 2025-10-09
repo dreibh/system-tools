@@ -33,7 +33,7 @@
 #############################################################################
 
 ADD_EXECUTABLE(random-sleep random-sleep.c)
-SET_PROPERTY(TARGET random-sleep PROPERTY C_STANDARD 23)
+# SET_PROPERTY(TARGET random-sleep PROPERTY C_STANDARD 23)
 TARGET_LINK_LIBRARIES(random-sleep ${Intl_LIBRARIES})
 INSTALL(TARGETS     random-sleep   DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES       random-sleep.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)

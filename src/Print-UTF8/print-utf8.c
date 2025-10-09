@@ -68,7 +68,10 @@ static char* BorderRight = nullptr;
 
 
 // ###### Clean up ##########################################################
-[[ noreturn ]] static void cleanUp(int exitCode)
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
+[[ noreturn ]]
+#endif
+static void cleanUp(int exitCode)
 {
    if(Utf8String) {
       free(Utf8String);
@@ -512,7 +515,10 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
 
 
 // ###### Version ###########################################################
-[[ noreturn ]] static void version()
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
+[[ noreturn ]]
+#endif
+static void version()
 {
    printf("print-utf8 %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -520,7 +526,10 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
 
 
 // ###### Usage #############################################################
-[[ noreturn ]] static void usage(const char* program, const int exitCode)
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
+[[ noreturn ]]
+#endif
+static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "%s %s"
            " [-n|--newline]"
