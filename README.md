@@ -346,12 +346,11 @@ Please use the issue tracker at [https://github.com/dreibh/system-tools/issues](
 
 The Git repository of the System-Tools sources can be found at [https://github.com/dreibh/system-tools](https://github.com/dreibh/system-tools):
 
-```bash
-git clone https://github.com/dreibh/system-tools
-cd system-tools
-cmake .
-make
-```
+<pre><code><span class="fu">git</span> clone <a href="https://github.com/dreibh/system-tools">https://github.com/dreibh/system-tools</a>
+<span class="bu">cd</span> system-tools
+<span class="fu">cmake</span> .
+<span class="fu">make</span>
+</code></pre>
 
 Contributions:
 
