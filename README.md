@@ -324,7 +324,7 @@ sudo dnf install td-system-tools
 For ready-to-install FreeBSD packages of System-Tools, it is included in the ports collection, see [FreeBSD ports tree index of net/td-system-tools/](https://cgit.freebsd.org/ports/tree/net/td-system-tools/)!
 
 ```bash
-pkg install system-tools
+sudo pkg install system-tools
 ```
 
 Alternatively, to compile it from the ports sources:
@@ -332,7 +332,7 @@ Alternatively, to compile it from the ports sources:
 ```bash
 cd /usr/ports/net/td-system-tools
 make
-make install
+sudo make install
 ```
 
 
