@@ -12,15 +12,15 @@
 
 System-Tools is a collection of helpful tools for basic system management of Linux and FreeBSD systems:
 
-- [System-Info](#system-info) (display banners and system information),
-- [System-Maintenance](#system-maintenance) (run basic system maintenance tasks),
-- [Reset-Machine-ID](#reset-machine-id) (reset the machine identity state, particularly for a cloned VM),
-- [Print-UTF8](#print-utf8) (print UTF-8 text with options for centering, adjusting, etc.),
-- [Text-Block](#text-block) (flexible tool for inserting, replacing or removing text blocks in files or streams),
-- [Fingerprint-SSH-Keys](#fingerprint-ssh-keys) (show the machine's SSH public key fingerprints in different formats),
-- [Configure-Grub](#configure-grub) (configure options for the GRUB boot loader),
-- [Try-Hard](#try-hard) (run a command, with configurable retries on failure),
-- [Random-Sleep](#random-sleep) (wait for random time span, with support of fractional seconds).
+- [System-Info](#-system-info) (display banners and system information),
+- [System-Maintenance](#-system-maintenance) (run basic system maintenance tasks),
+- [Reset-Machine-ID](#-reset-machine-id) (reset the machine identity state, particularly for a cloned VM),
+- [Print-UTF8](#-print-utf8) (print UTF-8 text with options for centering, adjusting, etc.),
+- [Text-Block](#-text-block) (flexible tool for inserting, replacing or removing text blocks in files or streams),
+- [Fingerprint-SSH-Keys](#-fingerprint-ssh-keys) (show the machine's SSH public key fingerprints in different formats),
+- [Configure-Grub](#-configure-grub) (configure options for the GRUB boot loader),
+- [Try-Hard](#-try-hard) (run a command, with configurable retries on failure),
+- [Random-Sleep](#-random-sleep) (wait for random time span, with support of fractional seconds).
 
 # 📚 System-Info
 
