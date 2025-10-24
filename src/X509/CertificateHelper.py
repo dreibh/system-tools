@@ -28,7 +28,6 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-import functools
 import ipaddress
 import netifaces
 import os
@@ -79,26 +78,9 @@ def execute(command : str, mayFail : bool = False) -> int:
    return result
 
 
-# ###### Helper function for sorting IP addresses ###########################
-def ip_address_comparator(a : ipaddress.ip_address,
-                          b : ipaddress.ip_address) -> int:
-   if a.version < b.version:
-      return -1
-   elif a.version > b.version:
-      return 1
-   else:
-      if a < b:
-         return -1
-      elif a > b:
-         return 1
-   return 0
-
-IP_COMPARATOR              = functools.cmp_to_key(ip_address_comparator)
-RE_USEREMAIL  : re.Pattern = \
-   re.compile(r'^(.*)( <)([a-zA-Z0–9. _%+-]+@[a-zA-Z0–9. -]+\.[a-zA-Z]{2,})(>)$')
-
-
 # ###### Make "subjectAltName" string #######################################
+RE_USEREMAIL : re.Pattern = \
+   re.compile(r'^(.*)( <)([a-zA-Z0–9. _%+-]+@[a-zA-Z0–9. -]+\.[a-zA-Z]{2,})(>)$')
 def prepareSubjectAltName(certType : CertificateType,
                           name     : str,
                           hint     : str | None) -> tuple[str,str]:
@@ -141,7 +123,7 @@ def prepareSubjectAltName(certType : CertificateType,
             addresses.add(address)
 
       # ====== Append IP addresses to subjectAltName ========================
-      addresses = sorted(addresses, key=IP_COMPARATOR)
+      addresses = sorted(addresses, key = lambda item: (item.version, int(item)))
       for address in addresses:
          subjectAltName = subjectAltName + ',IP:' + str(address)
 
