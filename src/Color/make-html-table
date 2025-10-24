@@ -2,6 +2,8 @@
 
 set -eu
 
+# Prepare HTML color names from table provided in "CSS Color Module Level 3"
+# specification (https://www.w3.org/TR/css-color-3/):
 (
    while read -r line ; do
       if [[ "${line}" =~ ^([a-zA-Z].*)([[:space:]]+)(#.*)([[:space:]]+)([0-9]+)([[:space:]]+)([0-9]+)([[:space:]]+)([0-9]+)$ ]] ; then
@@ -10,8 +12,7 @@ set -eu
          g="${BASH_REMATCH[7]}"
          b="${BASH_REMATCH[9]}"
          colorName="$(print-utf8 -i -26 "\"${name,,}\", ")"
-         printf "   { %s0x%02x, 0x%02x, 0x%02x },\n" "${colorName}" "${r}" "${g}" "${b}"
+         printf "   { %s0x%02x, 0x%02x, 0x%02x }\n" "${colorName}" "${r}" "${g}" "${b}"
       fi
    done <html-rgb.txt
-) | sort -u
-echo "   { nullptr,                  0x00, 0x00, 0x00 }"
+) | sort -u | sed '$!s/$/,/'
