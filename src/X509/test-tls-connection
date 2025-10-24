@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# ==========================================================================
+#         ____            _                     _____           _
+#        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+#               |___/
+#                             --- System-Tools ---
+#                  https://www.nntb.no/~dreibh/system-tools/
+# ==========================================================================
+#
+# TLS Connection Tester
+# Copyright (C) 2015-2025 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -eu
+
+
+# ###### Main program #######################################################
+if [ $# -lt 2 ] ; then
+   echo >&2 "Usage: $0 host:port cafile [openssl_args ...]"
+   exit 1
+fi
+ENDPOINT="$1"
+CAFILE="$2"
+shift 2
+if [ ! -e "${CAFILE}" ] ; then
+   echo >&2 "ERROR: ${CAFILE} does not exist!"
+   exit 1
+fi
+
+# shellcheck disable=SC2068
+echo "" | openssl s_client -showcerts -connect "${ENDPOINT}" -CAfile "${CAFILE}" $@ | head
