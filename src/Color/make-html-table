@@ -11,8 +11,7 @@ set -eu
          r="${BASH_REMATCH[5]}"
          g="${BASH_REMATCH[7]}"
          b="${BASH_REMATCH[9]}"
-         colorName="$(print-utf8 -i -26 "\"${name,,}\", ")"
-         printf "   { %s0x%02x, 0x%02x, 0x%02x }\n" "${colorName}" "${r}" "${g}" "${b}"
+         printf "   { %-26s CTET_RGB, { .RGB = { 0x%02x, 0x%02x, 0x%02x } } }\n" "\"${name}\"," "${r}" "${g}" "${b}"
       fi
    done <html-rgb.txt
 ) | sort -u | sed '$!s/$/,/'
