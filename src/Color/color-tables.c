@@ -4,6 +4,9 @@
 #include "color-tables.h"
 
 
+static const ColorTableEntry ColorTableANSI[] = {
+#include "colors-ansi.h"
+};
 static const ColorTableEntry ColorTableX11[] = {
 #include "colors-x11.h"
 };
@@ -22,9 +25,9 @@ static int comareColorTableEntries(const void* leftPtr, const void* rightPtr)
 
 
 // ###### Find entry in color table #########################################
-static const ColorTableEntry* colorLookup(const ColorTableEntry* table,
-                                          const unsigned int     entries,
-                                          const char*            colorName)
+static const ColorTableEntry* colorLookupFromTable(const ColorTableEntry* table,
+                                                   const unsigned int     entries,
+                                                   const char*            colorName)
 {
    const ColorTableEntry  key   = { colorName };
    const ColorTableEntry* found =
@@ -35,19 +38,28 @@ static const ColorTableEntry* colorLookup(const ColorTableEntry* table,
 }
 
 
+// ###### Find entry in ANSI color table #####################################
+const ColorTableEntry* colorLookupANSI(const char* ansiColorName)
+{
+   return colorLookupFromTable((const ColorTableEntry*)&ColorTableANSI,
+                               sizeof(ColorTableANSI) / sizeof(ColorTableANSI[0]),
+                               ansiColorName);
+}
+
+
 // ###### Find entry in X11 color table #####################################
 const ColorTableEntry* colorLookupX11(const char* x11ColorName)
 {
-   return colorLookup((const ColorTableEntry*)&ColorTableX11,
-                      sizeof(ColorTableX11) / sizeof(ColorTableX11[0]),
-                      x11ColorName);
+   return colorLookupFromTable((const ColorTableEntry*)&ColorTableX11,
+                               sizeof(ColorTableX11) / sizeof(ColorTableX11[0]),
+                               x11ColorName);
 }
 
 
 // ###### Find entry in HTML color table #####################################
-const ColorTableEntry* colorLookupX11HTML(const char* htmlColorName)
+const ColorTableEntry* colorLookupHTML(const char* htmlColorName)
 {
-   return colorLookup((const ColorTableEntry*)&ColorTableHTML,
-                      sizeof(ColorTableHTML) / sizeof(ColorTableHTML[0]),
-                      htmlColorName);
+   return colorLookupFromTable((const ColorTableEntry*)&ColorTableHTML,
+                               sizeof(ColorTableHTML) / sizeof(ColorTableHTML[0]),
+                               htmlColorName);
 }

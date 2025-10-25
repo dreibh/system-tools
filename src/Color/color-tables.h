@@ -33,6 +33,7 @@ typedef struct
 } ColorTableEntry;
 
 
+const ColorTableEntry* colorLookupANSI(const char* ansiColorName);
 const ColorTableEntry* colorLookupX11(const char* x11ColorName);
 const ColorTableEntry* colorLookupX11HTML(const char* htmlColorName);
 
