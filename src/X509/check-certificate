@@ -34,7 +34,7 @@ set -eu
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "Usage: $0 [-C|--crl crl] [-h|--help] ca_certificate certificate [...]"
+   echo >&2 "Usage: $0 [-C|--crl crl] [-h|--help] ca_certificate_file certificate_file [...]"
    exit 1
 }
 
