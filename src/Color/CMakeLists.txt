@@ -44,29 +44,29 @@ ADD_CUSTOM_COMMAND(OUTPUT colors-x11.h
 ADD_CUSTOM_TARGET(generate_colors_x11_h DEPENDS colors-x11.h)
 
 
-# # ====== liblibcolortables ================================================
-# LIST(APPEND libcolortables_headers
-#    colortables.h
-# )
-# LIST(APPEND libcolortables_sources
-#    colortables.c
-#    colors-html.h
-#    colors-x11.h
-# )
-#
-# INSTALL(FILES ${libcolortables_headers} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/system-tools)
-#
-# ADD_LIBRARY(libcolortables-shared SHARED ${libcolortables_sources})
-# ADD_LIBRARY(libcolortables-static STATIC ${libcolortables_sources})
-# FOREACH(TYPE shared;static)
-#    SET_TARGET_PROPERTIES(libcolortables-${TYPE} PROPERTIES OUTPUT_NAME colortables CLEAN_DIRECT_OUTPUT 1)
-#    SET_TARGET_PROPERTIES(libcolortables-${TYPE} PROPERTIES
-#       VERSION   ${BUILD_VERSION}
-#       SOVERSION ${BUILD_MAJOR}
-#    )
-#    # TARGET_LINK_LIBRARIES (libcolortables-${TYPE} m)
-#    INSTALL(TARGETS libcolortables-${TYPE} DESTINATION ${CMAKE_INSTALL_LIBDIR})
-# ENDFOREACH()
+# ====== libcolor-tables ====================================================
+LIST(APPEND libcolor-tables_headers
+   color-tables.h
+)
+LIST(APPEND libcolor-tables_sources
+   color-tables.c
+   colors-html.h
+   colors-x11.h
+)
+
+INSTALL(FILES ${libcolor-tables_headers} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/system-tools)
+
+ADD_LIBRARY(libcolor-tables-shared SHARED ${libcolor-tables_sources})
+ADD_LIBRARY(libcolor-tables-static STATIC ${libcolor-tables_sources})
+FOREACH(TYPE shared;static)
+   SET_TARGET_PROPERTIES(libcolor-tables-${TYPE} PROPERTIES OUTPUT_NAME color-tables CLEAN_DIRECT_OUTPUT 1)
+   SET_TARGET_PROPERTIES(libcolor-tables-${TYPE} PROPERTIES
+      VERSION   ${BUILD_VERSION}
+      SOVERSION ${BUILD_MAJOR}
+   )
+   # TARGET_LINK_LIBRARIES (libcolor-tables-${TYPE} m)
+   INSTALL(TARGETS libcolor-tables-${TYPE} DESTINATION ${CMAKE_INSTALL_LIBDIR})
+ENDFOREACH()
 
 
 #############################################################################
@@ -76,7 +76,7 @@ ADD_CUSTOM_TARGET(generate_colors_x11_h DEPENDS colors-x11.h)
 ADD_EXECUTABLE(print-color print-color.c)
 ADD_DEPENDENCIES(print-color generate_colors_html_h generate_colors_x11_h)
 # SET_PROPERTY(TARGET print-color PROPERTY C_STANDARD 23)
-TARGET_LINK_LIBRARIES(print-color ${Intl_LIBRARIES})
+TARGET_LINK_LIBRARIES(print-color libcolor-tables-shared ${Intl_LIBRARIES})
 INSTALL(TARGETS     print-color   DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES       print-color.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       print-color.bash-completion
