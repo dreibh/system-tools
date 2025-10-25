@@ -12,15 +12,15 @@
 
 System-Tools is a collection of helpful tools for basic system management of Linux and FreeBSD systems:
 
-- [System-Info](#system-info) (display banners and system information),
-- [System-Maintenance](#system-maintenance) (run basic system maintenance tasks),
-- [Reset-Machine-ID](#reset-machine-id) (reset the machine identity state, particularly for a cloned VM),
-- [Print-UTF8](#print-utf8) (print UTF-8 text with options for centering, adjusting, etc.),
-- [Text-Block](#text-block) (flexible tool for inserting, replacing or removing text blocks in files or streams),
-- [Fingerprint-SSH-Keys](#fingerprint-ssh-keys) (show the machine's SSH public key fingerprints in different formats),
-- [Configure-Grub](#configure-grub) (configure options for the GRUB boot loader),
-- [Try-Hard](#try-hard) (run a command, with configurable retries on failure),
-- [Random-Sleep](#random-sleep) (wait for random time span, with support of fractional seconds).
+- [System-Info](#-system-info) (display banners and system information),
+- [System-Maintenance](#-system-maintenance) (run basic system maintenance tasks),
+- [Reset-Machine-ID](#-reset-machine-id) (reset the machine identity state, particularly for a cloned VM),
+- [Print-UTF8](#-print-utf8) (print UTF-8 text with options for centering, adjusting, etc.),
+- [Text-Block](#-text-block) (flexible tool for inserting, replacing or removing text blocks in files or streams),
+- [Fingerprint-SSH-Keys](#-fingerprint-ssh-keys) (show the machine's SSH public key fingerprints in different formats),
+- [Configure-Grub](#-configure-grub) (configure options for the GRUB boot loader),
+- [Try-Hard](#-try-hard) (run a command, with configurable retries on failure),
+- [Random-Sleep](#-random-sleep) (wait for random time span, with support of fractional seconds).
 
 # 📚 System-Info
 
@@ -28,17 +28,17 @@ System-Info displays basic status information about the system: hostname, uptime
 
 One main purpose of System-Info is to run on login, to particularly show a nice login banner (for example, a project or company logo) and then present the basic system information. For this purpose, System-Info can be configured with banner scripts (by default looked up in /etc/system-info.d or /usr/local/etc/system-info.d), which are processed in alphabetically descending order by file name, like:
 
-* <tt>95-application-logo</tt>,
-* <tt>90-project-logo</tt>,
-* <tt>60-department-logo</tt>,
-* <tt>50-company-logo</tt>,
-* <tt>01-example</tt>.
+* `95-application-logo`,
+* `90-project-logo`,
+* `60-department-logo`,
+* `50-company-logo`,
+* `01-example`.
 
-The names of all scripts MUST begin with two decimal numbers. That is, scripts must be named <tt>[0-9][0-9]...</tt> to be processed by System-Info!
+The names of all scripts MUST begin with two decimal numbers. That is, scripts must be named `[0-9][0-9]...` to be processed by System-Info!
 
-If one of the scripts exits with non-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script <tt>95-application-logo</tt>).
+If one of the scripts exits with non-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script `95-application-logo`).
 
-Some examples, using the <tt>[banner-helper](src/System-Info/system-info.d/banner-helper)</tt> library provided by System-Info:
+Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-helper) library provided by System-Info:
 
 <table summary="System-Info Banner Examples">
   <tr>
@@ -119,70 +119,70 @@ System-Maintenance runs some system maintenance tasks to keep the system clean a
 
 The typical usage is quite simple, e.g.:
 
-<pre>
+```bash
 sudo System-Maintenance
-</pre>
+```
 
 The manpage of System-Maintenance contains details and further examples:
 
-<pre>
+```bash
 man System-Maintenance
-</pre>
+```
 
 
 # 📚 Reset-Machine-ID
 
 Reset-Machine-ID resets the machine identity state, particularly for a cloned VM, to make it appear as a new machine.  It performs the following tasks:
 
-* Reset <tt>/etc/machine-id</tt>,
-* Reset <tt>/var/lib/dbus/machine-id</tt> (symlink to <tt>/etc/machine-id</tt>),
+* Reset `/etc/machine-id`,
+* Reset `/var/lib/dbus/machine-id` (symlink to `/etc/machine-id`),
 * Change hostname, if a new one is provided.
 * Provide hardened settings for SSH client and server.
 * Create new SSH key pair.
 
-The changes are made interactively on request only, unless the option <tt>-</tt><tt>-yes-to-all-i-am-really-sure</tt> is used.
+The changes are made interactively on request only, unless the option `--yes-to-all-i-am-really-sure` is set.
 
 * Reset machine ID, without changing the hostname:
 
-  <pre>
+  ```bash
   sudo Reset-Machine-ID
-  </pre>
+  ```
 
 * Reset machine ID, with changing the hostname to new-hostname.domain.example:
 
-  <pre>
+  ```bash
   sudo Reset-Machine-ID --hostname new-hostname.domain.example
-  </pre>
+  ```
 
 * The manpage of Reset-Machine-ID contains details and further examples:
 
-  <pre>
+  ```bash
   man Reset-Machine-ID
-  </pre>
+  ```
 
 
 # 📚 Print-UTF8
 
 Print-UTF8 is a simple program to print UTF-8 strings in the console with options for indentation, centering, separator as well as size/length/width information. It can e.g.&nbsp;be utilised for printing System-Info banners, or for displaying error messages like this classic Amiga [Guru Meditation](https://en.wikipedia.org/wiki/Guru_Meditation) example:
 
-<pre>
+```bash
 print-utf8 -n -s "\e[1;31;40;5m█" "▀" "█\e[0m"
 echo -e "Software Failure.   Press left mouse button to continue.\nGuru Meditation #00000004.48454C50" | \
 print-utf8 -n -C "\e[1;31;40;5m█\e[25m" "\e[5m█\e[0m"
 print-utf8 -n -s "\e[1;31;40;5m█" "▄" "█\e[0m"
-</pre>
+```
 
 <p align="center">
   <a href="src/Print-UTF8/figures/guru.webp">
-   <img alt="A Guru Meditation Example with Print-UTF8" src="src/Print-UTF8/figures/guru.webp" width="50%" />
+   <img alt="A Guru Meditation Example with Print-UTF8" src="src/Print-UTF8/figures/guru.webp" width="70%" />
   </a>
 </p>
 
 The manpage of Print-UTF8 contains details and various further examples:
 
-<pre>
+```bash
 man print-utf8
-</pre>
+```
 
 
 # 📚 Text-Block
@@ -199,46 +199,55 @@ Text-Block is a flexible tool for automated editing operations of text blocks in
 
 The blocks to be modified can be selected by begin/end tags, or line numbers. The static pages of this website are generated by using Text-Block to insert contents like publications and project lists, add new software releases, etc.
 
-For example, the publications list in <tt>[index.html](https://www.nntb.no/~dreibh/index.html)</tt> is placed between the tags '&lt;!-- BEGIN-OF-PUBLICATIONS --&gt;' and '&lt;!-- END-OF-PUBLICATIONS --&gt;'. Text-Block can be used to manipulate this block:
+For example, the publications list in [`index.html`](https://www.nntb.no/~dreibh/index.html) is placed between the tags '&lt;!-- BEGIN-OF-PUBLICATIONS --&gt;' and '&lt;!-- END-OF-PUBLICATIONS --&gt;'. Text-Block can be used to manipulate this block:
 
 * To extract the publications list to standard output:
 
-  <pre>
-  text-block -i index.html --begin-tag '&lt;!-- BEGIN-OF-PUBLICATIONS --&gt;' --end-tag '&lt;!-- END-OF-PUBLICATIONS --&gt;' --extract
-  </pre>
+  ```bash
+  text-block -i index.html \
+     --begin-tag '<!-- BEGIN-OF-PUBLICATIONS -->' \
+     --end-tag '<!-- END-OF-PUBLICATIONS -->' \
+     --extract
+  ```
 
 * To delete the publications list and write the page to output.html:
 
-  <pre>
-  text-block -i index.html -o output.html --begin-tag '&lt;!-- BEGIN-OF-PUBLICATIONS --&gt;' --end-tag '&lt;!-- END-OF-PUBLICATIONS --&gt;' --delete``
-  </pre>
+  ```bash
+  text-block -i index.html -o output.html \
+     --begin-tag '<!-- BEGIN-OF-PUBLICATIONS -->' \
+     --end-tag '<!-- END-OF-PUBLICATIONS -->' \
+     --delete``
+  ```
 
-* To replace the publications list by contents from update.block (e.g.&nbsp; generated by [BibTeXConv](https://www.nntb.no/~dreibh/bibtexconv/)), and write the page to output.html:
+* To replace the publications list by contents from update.block (e.g.&nbsp; generated by [BibTeXConv](https://www.nntb.no/~dreibh/bibtexconv/), and write the page to output.html:
 
-  <pre>
-  text-block -i index.html -o output.html --begin-tag '&lt;!-- BEGIN-OF-PUBLICATIONS --&gt;' --end-tag '&lt;!-- END-OF-PUBLICATIONS --&gt;' --replace update.block
-  </pre>
+  ```bash
+  text-block -i index.html -o output.html \
+     --begin-tag '<!-- BEGIN-OF-PUBLICATIONS -->' \
+     --end-tag '<!-- END-OF-PUBLICATIONS -->' \
+     --replace update.block
+  ```
 
 * The manpage of Text-Block contains details and various further examples:
 
-  <pre>
+  ```bash
   man text-block
-  </pre>
+  ```
 
 
 # 📚 Fingerprint-SSH-Keys
 
 Fingerprint-SSH-Keys prints the SSH key fingerprints of the local machine in different formats: SSH hash, DNS SSHFP RR, or Python dictionary. Its typical usage is straightforward:
 
-<pre>
+```bash
 Fingerprint-SSH-Keys
-</pre>
+```
 
 The manpage of Fingerprint-SSH-Keys contains details and further examples:
 
-<pre>
+```bash
 man Fingerprint-SSH-Keys
-</pre>
+```
 
 
 # 📚 Configure-Grub
@@ -247,9 +256,9 @@ Configure-Grub adjusts a GRUB configuration file by applying a configuration fro
 
 The manpage of Configure-Grub contains details and further examples:
 
-<pre>
+```bash
 man Configure-Grub
-</pre>
+```
 
 
 # 📚 Try-Hard
@@ -258,15 +267,16 @@ Try-Hard runs a command and retries for a given number of times in case of error
 
 Example to try a file download up to 3&nbsp;times, with a delay of 60&nbsp;seconds between trials:
 
-<pre>
-try-hard 3 60 -- wget -O example.tar.gz https://www.example.net/example.tar.gz
-</pre>
+```bash
+try-hard 3 60 -- wget -O example.tar.gz \
+   https://www.example.net/example.tar.gz
+```
 
 The manpage of Try-Hard contains details and further examples:
 
-<pre>
+```bash
 man Try-Hard
-</pre>
+```
 
 
 # 📚 Random-Sleep
@@ -275,15 +285,15 @@ Random-Sleep waits for a random time, selected from a given interval, with suppo
 
 Example to wait between 0.5&nbsp;and 299.5&nbsp;seconds:
 
-<pre>
-random-sleep 0.5 299.5 &amp;&amp; echo "Finished waiting!"
-</pre>
+```bash
+random-sleep 0.5 299.5 && echo "Finished waiting!"
+```
 
 The manpage of Random-Sleep contains details and further examples:
 
-<pre>
+```bash
 man Random-Sleep
-</pre>
+```
 
 
 # 📦 Binary Package Installation
@@ -294,36 +304,36 @@ Please use the issue tracker at [https://github.com/dreibh/system-tools/issues](
 
 For ready-to-install Ubuntu Linux packages of System-Tools, see [Launchpad PPA for Thomas Dreibholz](https://launchpad.net/~dreibh/+archive/ubuntu/ppa/+packages?field.name_filter=td-system-tools&field.status_filter=published&field.series_filter=)!
 
-<pre>
+```bash
 sudo apt-add-repository -sy ppa:dreibh/ppa
 sudo apt-get update
 sudo apt-get install td-system-tools
-</pre>
+```
 
 ## Fedora Linux
 
 For ready-to-install Fedora Linux packages of System-Tools, see [COPR PPA for Thomas Dreibholz](https://copr.fedorainfracloud.org/coprs/dreibh/ppa/package/td-system-tools/)!
 
-<pre>
+```bash
 sudo dnf copr enable -y dreibh/ppa
 sudo dnf install td-system-tools
-</pre>
+```
 
 ## FreeBSD
 
 For ready-to-install FreeBSD packages of System-Tools, it is included in the ports collection, see [FreeBSD ports tree index of net/td-system-tools/](https://cgit.freebsd.org/ports/tree/net/td-system-tools/)!
 
-<pre>
-pkg install system-tools
-</pre>
+```bash
+sudo pkg install system-tools
+```
 
 Alternatively, to compile it from the ports sources:
 
-<pre>
+```bash
 cd /usr/ports/net/td-system-tools
 make
-make install
-</pre>
+sudo make install
+```
 
 
 # 💾 Build from Sources
@@ -336,12 +346,11 @@ Please use the issue tracker at [https://github.com/dreibh/system-tools/issues](
 
 The Git repository of the System-Tools sources can be found at [https://github.com/dreibh/system-tools](https://github.com/dreibh/system-tools):
 
-<pre>
-git clone https://github.com/dreibh/system-tools
-cd system-tools
-cmake .
-make
-</pre>
+<pre><code><span class="fu">git</span> clone <a href="https://github.com/dreibh/system-tools">https://github.com/dreibh/system-tools</a>
+<span class="bu">cd</span> system-tools
+<span class="fu">cmake</span> .
+<span class="fu">make</span>
+</code></pre>
 
 Contributions:
 
@@ -361,9 +370,9 @@ See [https://www.nntb.no/~dreibh/system-tools/#current-stable-release](https://w
 # 🔗 Useful Links
 
 * [VM Image Builder Scripts](https://github.com/simula/nornet-vmimage-builder-scripts)
-* [NetPerfMeter – A TCP/MPTCP/UDP/SCTP/DCCP Network Performance Meter Tool](https://www.nntb.no/~dreibh/netperfmeter/index.html)
-* [HiPerConTracer – High-Performance Connectivity Tracer](https://www.nntb.no/~dreibh/hipercontracer/index.html)
-* [SubNetCalc – An IPv4/IPv6 Subnet Calculator](https://www.nntb.no/~dreibh/subnetcalc/index.html)
+* [NetPerfMeter – A TCP/MPTCP/UDP/SCTP/DCCP Network Performance Meter Tool](https://www.nntb.no/~dreibh/netperfmeter/)
+* [HiPerConTracer – High-Performance Connectivity Tracer](https://www.nntb.no/~dreibh/hipercontracer/)
+* [SubNetCalc – An IPv4/IPv6 Subnet Calculator](https://www.nntb.no/~dreibh/subnetcalc/)
 * [NorNet – A Real-World, Large-Scale Multi-Homing Testbed](https://www.nntb.no/)
 * [NEAT – A New, Evolutive API and Transport-Layer Architecture for the Internet](https://neat.nntb.no/)
 * [Thomas Dreibholz's Reliable Server Pooling (RSerPool) Page – The RSPLIB Project](https://www.nntb.no/~dreibh/rserpool/)
