@@ -44,7 +44,7 @@ usage () {
 # ====== Handle arguments ===================================================
 DIRNAME=$(dirname "$0")
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o c:h --long crl:,help -a -- "$@")"
+options="$(${GETOPT} -o C:h --long crl:,help -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage

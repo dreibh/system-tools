@@ -1,0 +1,73 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" X.509 Certificate Checker
+.\" Copyright (C) 2025 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd October 25, 2025
+.Dt check-certificate 1
+.Os check-certificate
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm check-certificate
+.Nd Checks and validates X.509 certificates
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm check-certificate
+.Op Fl C Ar crl_file | Fl Fl crl Ar crl_file
+ca_certificate_file certificate_file ...
+.br
+.Nm check-certificate
+.Op Fl h | Fl Fl help
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm check-certificate
+Checks and validates X.509 certificates against a Certification Authority (CA)
+certificate and optionally a Certificate Revocation List (CRL). The check
+is made using OpenSSL, and if available GnuTSL and NSS, to ensure the
+certificates are working properly with all three TLS implementations.
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It Fl C Ar crl_file | Fl Fl crl Ar crl_file
+Specifies a CRL file.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It check-certificate My-CA-Certificate.crt My-Server-Certificate.crt
+.It check-certificate --crl CRL.crl My-CA-Certificate.crt My-Server-Certificate.crt
+.It check-certificate /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt www-nntb-no-chain.pem
+.It check-certificate --version
+.It check-certificate --help
+.El
