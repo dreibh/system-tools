@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-07-08 12:06+0200\n"
+"POT-Creation-Date: 2025-10-25 12:16+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -44,37 +44,37 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Print-UTF8/print-utf8.c:138 src/Print-UTF8/print-utf8.c:263
-#: src/Print-UTF8/print-utf8.c:290
+#: src/Print-UTF8/print-utf8.c:141 src/Print-UTF8/print-utf8.c:266
+#: src/Print-UTF8/print-utf8.c:293
 msgid "ERROR: malloc() failed!"
 msgstr "FEHLER: malloc() ist fehlgeschlagen!"
 
-#: src/Print-UTF8/print-utf8.c:296
+#: src/Print-UTF8/print-utf8.c:299
 msgid "ERROR: mbstowcs() failed!"
 msgstr "FEHLER: mbstowcs() ist fehlgeschlagen!"
 
-#: src/Print-UTF8/print-utf8.c:540
+#: src/Print-UTF8/print-utf8.c:549
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Print-UTF8/print-utf8.c:614
+#: src/Print-UTF8/print-utf8.c:623
 msgid "ERROR: Invalid arguments for multiline-indent!"
 msgstr "FEHLER: Ungültige Argumente für Multiline-Indent!"
 
-#: src/Print-UTF8/print-utf8.c:633
+#: src/Print-UTF8/print-utf8.c:642
 msgid "ERROR: Invalid arguments for multiline-center!"
 msgstr "FEHLER: Ungültige Argumente für Multiline-Center!"
 
-#: src/Print-UTF8/print-utf8.c:656
+#: src/Print-UTF8/print-utf8.c:665
 msgid "ERROR: Invalid separator setting!"
 msgstr "FEHLER: Ungültiger Separator!"
 
-#: src/Print-UTF8/print-utf8.c:668
+#: src/Print-UTF8/print-utf8.c:677
 #, c-format
 msgid "ERROR: Invalid console width %u!"
 msgstr "FEHLER: Ungültige Konsolenbreite %u!"
 
-#: src/Print-UTF8/print-utf8.c:710
+#: src/Print-UTF8/print-utf8.c:719
 #, c-format
 msgid "WARNING: Unhandled parameter %s!"
 msgstr "WARNUNG: Unbehandelter Parameter %s!"
