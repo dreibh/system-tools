@@ -29,27 +29,11 @@
 
 
 #############################################################################
-#### VERSION FILE                                                        ####
+#### PROGRAMS                                                            ####
 #############################################################################
 
-CONFIGURE_FILE (
-   "${CMAKE_CURRENT_SOURCE_DIR}/package-version.h.in"
-   "${CMAKE_CURRENT_BINARY_DIR}/package-version.h"
-)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-
-
-#############################################################################
-#### SUBDIRECTORIES                                                      ####
-#############################################################################
-
-ADD_SUBDIRECTORY(System-Info)
-ADD_SUBDIRECTORY(System-Maintenance)
-ADD_SUBDIRECTORY(Print-UTF8)
-ADD_SUBDIRECTORY(Text-Block)
-ADD_SUBDIRECTORY(Fingerprint-SSH-Keys)
-ADD_SUBDIRECTORY(Configure-GRUB)
-ADD_SUBDIRECTORY(Reset-Machine-ID)
-ADD_SUBDIRECTORY(Try-Hard)
-ADD_SUBDIRECTORY(Random-Sleep)
-ADD_SUBDIRECTORY(X509)
+INSTALL(PROGRAMS check-certificate DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES check-certificate.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       check-certificate.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      check-certificate)
