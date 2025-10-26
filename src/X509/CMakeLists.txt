@@ -37,3 +37,21 @@ INSTALL(FILES check-certificate.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       check-certificate.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      check-certificate)
+
+INSTALL(PROGRAMS view-certificate DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES view-certificate.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       view-certificate.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      view-certificate)
+
+INSTALL(PROGRAMS extract-pem DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES extract-pem.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       extract-pem.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      extract-pem)
+
+INSTALL(PROGRAMS test-tls-connection DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES test-tls-connection.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       test-tls-connection.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      test-tls-connection)
