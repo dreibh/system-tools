@@ -9,7 +9,7 @@
 .\"                  https://www.nntb.no/~dreibh/system-tools/
 .\" ==========================================================================
 .\"
-.\" X.509 Certificate Checker
+.\" X.509 Certificate Viewer
 .\" Copyright (C) 2025 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
@@ -29,45 +29,46 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd October 25, 2025
-.Dt check-certificate 1
-.Os check-certificate
+.Dt view-certificate 1
+.Os view-certificate
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm check-certificate
-.Nd Checks and validates X.509 certificates
+.Nm view-certificate
+.Nd Displays an X.509 certificate
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm check-certificate
-.Op Fl C Ar crl_file | Fl Fl crl Ar crl_file
-ca_certificate_file certificate_file ...
-.br
-.Nm check-certificate
+.Nm view-certificate
+certificate_file
+.Nm view-certificate
 .Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm check-certificate
-Checks and validates X.509 certificates against a Certification Authority (CA)
-certificate and optionally a Certificate Revocation List (CRL). The check
-is made using OpenSSL, and if available GnuTSL and NSS, to ensure the
-certificates are working properly with all three TLS implementations.
+.Nm view-certificate
+displays important details on an X.509 certificate, including:
+.Bl -tag -width indent
+.It * Common Name (CN),
+.It * Validity Range,
+.It * Key Usage and Extended Usage,
+.It * Basic Constraints,
+.It * Subject Alternative Name (SAN), as well as
+.It * the contained certificate chain (from the certificate up to the root CA).
+.El
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl C Ar crl_file | Fl Fl crl Ar crl_file
-Specifies a CRL file.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It check-certificate My-CA-Certificate.crt My-Server-Certificate.crt
-.It check-certificate --crl CRL.crl My-CA-Certificate.crt My-Server-Certificate.crt
-.It check-certificate /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt www-nntb-no-chain.pem
-.It check-certificate --help
-.It check-certificate -h
+.It view-certificate My-CA-Certificate.crt My-Server-Certificate.crt
+.It view-certificate /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
+.It view-certificate www-nntb-no-chain.pem
+.It view-certificate --help
+.It view-certificate -h
 .El
