@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 #        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
@@ -42,6 +42,6 @@ fi
 fullPackageList="$1"
 
 echo "====== Installed System-Tools Software ======================================="
-grep "^td-system-" "$fullPackageList"
+grep "^td-system-" "${fullPackageList}"
 
 exit 0
