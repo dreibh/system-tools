@@ -38,8 +38,8 @@ if [ $# -gt 0 ] ; then
 fi
 
 
-banners=( $(find system-info.d -name "[0-9][0-9]-*" | sort) )
-hostnames=( "",
+readarray -t banners < <(find system-info.d -mindepth 1 -maxdepth 1 -name "[0-9][0-9]-*" | sort)
+hostnames=( ""
             "kringsjaa.domain.example"
             "sognsvann.lab.smil"
             "svartkulp.lab.smil"
@@ -53,6 +53,7 @@ hostnames=( "",
 
 n=0
 for banner in "${banners[@]}" ; do
+   echo "Processing ${banner} ..."
    n=$((n+1))
    rm -rf "example-${n}"
    mkdir -p "example-${n}"
@@ -62,7 +63,7 @@ done
 
 if [ -d "example-${NUMBER}" ] ; then
    echo "Trying example ${NUMBER}, hostname is ${hostnames[$NUMBER]}"
-   sudo hostname "${hostnames[$NUMBER]}"  
+   sudo hostname "${hostnames[$NUMBER]}"
    sudo find /etc/system-info.d/ -mindepth 1 -maxdepth 1 -exec rm {} \;
    sudo cp "example-${NUMBER}/"* /etc/system-info.d/
    ls -l /etc/system-info.d/
