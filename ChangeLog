@@ -1,3 +1,81 @@
+commit aea3fbd71d9f5e4e09b9149a2d2593eda9b1e709
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:16:57 2025 +0100
+
+    Updated PO files.
+
+commit ff01d54927f32e5b24b3fe6383b56e805df39c57
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:16:43 2025 +0100
+
+    Yet another ShellCheck clean-up.
+
+commit 3d199b4f93883a52acf2b80da1df18898213333c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:14:46 2025 +0100
+
+    Some more ShellCheck clean-ups.
+
+commit 03211b14f9c0850039bdcbdca3e778e25a0a748e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:11:54 2025 +0100
+
+    ShellCheck clean-ups.
+
+commit 7f4d18ea327fdafdb25cc65c56493061c22ceee1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:00:37 2025 +0100
+
+    Minor update.
+
+commit 9b4531bcfb5db19336849704abec633681a081ca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 13:56:32 2025 +0100
+
+    Improved examples.
+
+commit 0a4927cef16e884b0b37ee84b1f57300b701d26f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 13:56:18 2025 +0100
+
+    Updated example.
+
+commit f6f7429978bb42e7060250389c604251de867bcd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 13:39:31 2025 +0100
+
+    Improved example.
+
+commit a1e7dd3854d2e2ad1dfdff62955ddf3b20e730f6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 25 12:16:27 2025 +0200
+
+    Updated PO files.
+
+commit ea9976d1441ae8ac3a2f1dff49c53fcf975d227d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 25 12:13:51 2025 +0200
+
+    Removed obsolete build scripts.
+
+commit f6dbdba60b03d9ea487edb0b043d24f296ee8ac6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 25 10:15:04 2025 +0200
+
+    Parameter handling improvement.
+
+commit b61b51833a1f16af0ff77a2830440b332e75acbd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 24 12:34:22 2025 +0200
+
+    Updated FreeBSD port.
+
+commit 3b9302b3f3d4e3f9b591b0058def77db76f2d3b0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 24 12:20:31 2025 +0200
+
+    New release td-system-tools-2.1.6.
+
 commit bfdb9e140cc4c13488ba41161e95c7f824816e4c
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Oct 14 20:32:11 2025 +0200
