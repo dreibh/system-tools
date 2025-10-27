@@ -1,0 +1,85 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" X.509 Certificate Checker
+.\" Copyright (C) 2025 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd October 27, 2025
+.Dt extract-pem 1
+.Os extract-pem
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm extract-pem
+.Nd Extract blocks of PEM files into separate files
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm extract-pem
+.Op Fl o Ar file_name_prefix | Fl Fl output-prefix Ar file_name_prefix
+.Op Fl f | Fl Fl skip-first-entry
+.Op Fl l | Fl Fl skip-last-entry
+.Op Fl q | Fl Fl quiet
+pem_file
+.Op ...
+.br
+.Nm extract-pem
+.Op Fl h | Fl Fl help
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm extract-pem
+xtracts the blocks of PEM files into separate files. The output files will be named with a given output prefix (default: "output-"), and a sequential number according to the occurrence. The output file extension will be chosen based on the content:
+.Bl -tag -width indent
+.It * .crt for a certificate,
+.It * .crl for a certificate revokation list (CRL),
+.It * .key for a key.
+.El
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It Fl o Ar file_name_prefix | Fl Fl output-prefix Ar file_name_prefix
+Sets the output file prefix (default: "output-").
+.It Fl f | Fl Fl skip-first-entry
+Do not extract the first entry (i.e. the certificate of e.g. a server itself, if the PEM file contains a chain of certificates).
+.It Fl l | Fl Fl skip-last-entry
+Do not extract the last entry (i.e. the certificate of the root CA, if the PEM file contains a chain of certificates).
+.It Fl q | Fl Fl quiet
+Quiet mode: only print information in case of errors.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It extract-pem My-CA-Certificate.pem --output-prefix my-certificate-
+.It extract-pem My-CA-Certificate.pem --skip-first-entry --skip-last-entry --output-prefix my-certificate-
+.It extract-pem My-CA-Certificate.pem -o my-certificate-
+.It extract-pem --help
+.It extract-pem -h
+.El
