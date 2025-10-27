@@ -229,7 +229,7 @@ BEGIN {
       good=0
       for type in "${!types[@]}" ; do
          setting="${types[$type]}"
-         "${CERTUTIL}" -V -e -u "${setting}" -n "My Certificate" -d "${db}" >/dev/null 2>&1 && \
+         command="\"${CERTUTIL}\" -V -e -u \"${setting}\" -n \"My Certificate\" -d \"${db}\"" && sh -c "${command}" >/dev/null 2>&1 && \
             good=$((good + 1)) && \
             if [ ${good} -eq 1 ] ; then echo -en "\e[32;1mOKAY\e[0m" ; fi && \
             echo -en "   \e[36m${type}\e[0m"
@@ -238,7 +238,7 @@ BEGIN {
       if [ ${good} -eq 0 ] ; then
          errors=$((errors + 1))
          echo -e "\e[31;1mFAILED!\e[0m"
-         "${CERTUTIL}" -V -e -u "${setting}" -n "My Certificate" -d "${db}" || true
+         sh -c "${command}" || true
          # "${CERTUTIL}" -L -d "${db}"
          # "${CRLUTIL}" -L -d "${db}"
       fi
