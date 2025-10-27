@@ -34,7 +34,7 @@ set -eu
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "Usage: $0 [-o|--output-prefix file_name_prefix] [-f|--skip-first-entry] [-l|--skip-last-entry] [-q|--quiet] pem_file [...]"
+   echo >&2 "Usage: $0 [-o|--output-prefix file_name_prefix] [-1|--only-first-entry] [-f|--skip-first-entry] [-l|--skip-last-entry] [-q|--quiet] pem_file [...]"
    exit 1
 }
 
@@ -43,15 +43,16 @@ usage () {
 
 # ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o o:flqh --long output-prefix:,skip-first-entry,skip-last-entry,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o o:1flqh --long output-prefix:,only-first-entry,skip-first-entry,skip-last-entry,quiet,help -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage
 fi
 
-OUTPUT_PREFIX="output"
-SKIP_FIRST=0
-SKIP_LAST=0
+OUTPUT_PREFIX="output-"
+ONLY_FIRST_ENTRY=0
+SKIP_FIRST_ENTRY=0
+SKIP_LAST_ENTRY=0
 QUIET=0
 eval set -- "${options}"
 while [ $# -gt 0 ] ; do
@@ -60,12 +61,16 @@ while [ $# -gt 0 ] ; do
          OUTPUT_PREFIX="$2"
          shift 2
          ;;
+      -1 | --only-first-entry)
+         ONLY_FIRST_ENTRY=1
+         shift
+         ;;
       -f | --skip-first-entry)
-         SKIP_FIRST=1
+         SKIP_FIRST_ENTRY=1
          shift
          ;;
       -l | --skip-last-entry)
-         SKIP_LAST=1
+         SKIP_LAST_ENTRY=1
          shift
          ;;
       -q | --quiet)
@@ -84,6 +89,12 @@ while [ $# -gt 0 ] ; do
 done
 if [ $# -lt 1 ] ; then
    usage
+fi
+if [ ${ONLY_FIRST_ENTRY} -eq 1 ] ; then
+   if [ ${SKIP_FIRST_ENTRY} -ne 0 ] || [ ${SKIP_LAST_ENTRY} -ne 0 ] ; then
+      echo >&2 "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
+      exit 1
+   fi
 fi
 
 # ====== Extract each PEM file ==============================================
@@ -138,8 +149,12 @@ while [ $# -gt 0 ] ; do
          if [[ "${line}" =~ ^(-----END )([^-]*)(-----) ]] ; then
             echo "${line}" >>"${outputFile}.tmp"
             mv "${outputFile}.tmp" "${outputFile}"
-            if [ ${SKIP_FIRST} -eq 1 ] && [ ${entry} -eq 1 ] ; then
-               rm "${outputFile}"
+            if [ ${entry} -eq 1 ] ; then
+               if [ ${ONLY_FIRST_ENTRY} -eq 1 ] ; then
+                  continue
+               elif [ ${SKIP_FIRST_ENTRY} -eq 1 ] ; then
+                  rm "${outputFile}"
+               fi
             fi
             lastOutputFile="${outputFile}"
             outputFile=""
@@ -149,7 +164,7 @@ while [ $# -gt 0 ] ; do
       fi
    done <"${PEM_FILE}"
 done
-if [ ${SKIP_LAST} -eq 1 ] && [ "${lastOutputFile}" != "" ] ; then
+if [ ${SKIP_LAST_ENTRY} -eq 1 ] && [ "${lastOutputFile}" != "" ] ; then
    rm "${lastOutputFile}"
 fi
 if [ ${QUIET} -eq 0 ] ; then
