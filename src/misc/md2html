@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#
+# MD to HTML Conversion
+# Copyright (C) 2012-2025 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -eu
+
+while [ $# -gt 0 ] ; do
+   input="$1"
+   shift 1
+   output="${input/.md/.html}"
+
+   if [ "${output}" != "${input}" ] ; then
+      echo "Converting ${input} -> ${output} ..."
+      pandoc -t html --metadata title="${output}" --highlight-style=kate -s -o "${output}" "${input}"
+   else
+      echo "ERROR: Unable to handle ${input}. No .md file?"
+      exit 1
+   fi
+done
