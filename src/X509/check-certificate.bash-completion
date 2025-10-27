@@ -50,18 +50,16 @@ _check_certificate()
       cword="${COMP_CWORD}"
    fi
 
+   if [ "${cword}" -le 2 ] ; then
+      _filedir '@(cert|crt|pem)'
+      return
+   fi
+
    case "${prev}" in
       #  ====== Special case: CRL file ======================================
       -C | --crl)
          _filedir '@(crl)'
          return
-         ;;
-      # ====== Default: certificate file ====================================
-      *)
-         if [ "${cword}" -gt 1 ] ; then
-            _filedir '@(cert|crt|pem)'
-            return
-         fi
          ;;
    esac
 

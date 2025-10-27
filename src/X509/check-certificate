@@ -34,7 +34,7 @@ set -eu
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "Usage: $0 [-C|--crl crl] [-h|--help] ca_certificate_file certificate_file [...]"
+   echo >&2 "Usage: $0 ca_certificate_file certificate_file [...] [-C|--crl crl] [-h|--help]"
    exit 1
 }
 
@@ -153,10 +153,16 @@ BEGIN {
       if [ "${CRL}" != "" ] ; then
          crlOption="--load-crl=\"${CRL}\""
       fi
-      command="\"${CERTTOOL}\" --verify --verify-profile=high --load-ca-certificate=\"${CA}\" ${crlOption} --infile=\"${CERT}\""
-      if sh -c "${command}" >/dev/null 2>&1 ; then
-         echo -e "\e[32;1mOKAY\e[0m"
-      else
+      profiles="low medium high ultra future"
+      good=0
+      for profile in ${profiles} ; do
+         command="\"${CERTTOOL}\" --verify --verify-profile=${profile} --load-ca-certificate=\"${CA}\" ${crlOption} --infile=\"${CERT}\"" && sh -c "${command}" >/dev/null 2>&1 &&
+         good=$((good + 1)) && \
+            if [ ${good} -eq 1 ] ; then echo -en "\e[32;1mOKAY\e[0m" ; fi && \
+            echo -en "   \e[32m${profile}\e[0m"
+      done
+      echo ""
+      if [ ${good} -eq 0 ] ; then
          errors=$((errors + 1))
          echo -e "\e[31;1mFAILED!\e[0m"
          sh -c "${command}" || true
