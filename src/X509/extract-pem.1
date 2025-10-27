@@ -40,12 +40,16 @@
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm extract-pem
-.Op Fl o Ar file_name_prefix | Fl Fl output-prefix Ar file_name_prefix
-.Op Fl f | Fl Fl skip-first-entry
-.Op Fl l | Fl Fl skip-last-entry
-.Op Fl q | Fl Fl quiet
 pem_file
 .Op ...
+.br
+.Op Fl o Ar file_name_prefix | Fl Fl output-prefix Ar file_name_prefix
+.br
+.Op Fl 1 | Fl Fl only-first-entry
+.Op Fl f | Fl Fl skip-first-entry
+.Op Fl l | Fl Fl skip-last-entry
+.br
+.Op Fl q | Fl Fl quiet
 .br
 .Nm extract-pem
 .Op Fl h | Fl Fl help
@@ -65,10 +69,12 @@ The following options are available:
 .Bl -tag -width indent
 .It Fl o Ar file_name_prefix | Fl Fl output-prefix Ar file_name_prefix
 Sets the output file prefix (default: "output-").
+.It Fl 1 | Fl Fl only-first-entry
+Extract only the first entry (i.e. extract the certificate of e.g. a server itself, if the PEM file contains a chain of certificates).
 .It Fl f | Fl Fl skip-first-entry
-Do not extract the first entry (i.e. the certificate of e.g. a server itself, if the PEM file contains a chain of certificates).
+Do not extract the first entry (i.e. do not extract the certificate of e.g. a server itself, if the PEM file contains a chain of certificates).
 .It Fl l | Fl Fl skip-last-entry
-Do not extract the last entry (i.e. the certificate of the root CA, if the PEM file contains a chain of certificates).
+Do not extract the last entry (i.e. do not extract the certificate of the root CA, if the PEM file contains a chain of certificates).
 .It Fl q | Fl Fl quiet
 Quiet mode: only print information in case of errors.
 .It Fl h | Fl Fl help

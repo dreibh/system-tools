@@ -34,7 +34,7 @@ set -eu
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "Usage: $0 [-o|--output-prefix file_name_prefix] [-1|--only-first-entry] [-f|--skip-first-entry] [-l|--skip-last-entry] [-q|--quiet] pem_file [...]"
+   echo >&2 "Usage: $0 pem_file [...] [-o|--output-prefix file_name_prefix] [-1|--only-first-entry] [-f|--skip-first-entry] [-l|--skip-last-entry] [-q|--quiet]"
    exit 1
 }
 
@@ -119,6 +119,9 @@ while [ $# -gt 0 ] ; do
    while read -r line ; do
       if [ "${outputFile}" == "" ] ; then
          if [[ "${line}" =~ ^(-----BEGIN )([^-]*)(-----) ]] ; then
+            if [ "${lastOutputFile}" != "" ] ; then
+               echo "=> ${lastOutputFile}"
+            fi
             type="${BASH_REMATCH[2]}"
             if [ "${type}" == "CERTIFICATE" ] ; then
                certificate=$((certificate + 1))
@@ -149,14 +152,16 @@ while [ $# -gt 0 ] ; do
          if [[ "${line}" =~ ^(-----END )([^-]*)(-----) ]] ; then
             echo "${line}" >>"${outputFile}.tmp"
             mv "${outputFile}.tmp" "${outputFile}"
+            lastOutputFile="${outputFile}"
             if [ ${entry} -eq 1 ] ; then
                if [ ${ONLY_FIRST_ENTRY} -eq 1 ] ; then
                   continue
                elif [ ${SKIP_FIRST_ENTRY} -eq 1 ] ; then
-                  rm "${outputFile}"
+                  rm "${lastOutputFile}"
+                  echo "=> SKIPPING ${lastOutputFile}"
+                  lastOutputFile=""
                fi
             fi
-            lastOutputFile="${outputFile}"
             outputFile=""
          else
             echo "${line}" >>"${outputFile}.tmp"
@@ -164,8 +169,13 @@ while [ $# -gt 0 ] ; do
       fi
    done <"${PEM_FILE}"
 done
-if [ ${SKIP_LAST_ENTRY} -eq 1 ] && [ "${lastOutputFile}" != "" ] ; then
-   rm "${lastOutputFile}"
+if [ "${lastOutputFile}" != "" ] ; then
+   if [ ${SKIP_LAST_ENTRY} -eq 1 ] ; then
+      rm "${lastOutputFile}"
+      echo "=> SKIPPING ${lastOutputFile}"
+   else
+      echo "=> ${lastOutputFile}"
+   fi
 fi
 if [ ${QUIET} -eq 0 ] ; then
    echo -e "\e[34mDone: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys\e[0m"

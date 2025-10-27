@@ -29,8 +29,8 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for check-certificate ##############################
-_check_certificate()
+# ###### Bash completion for extract-pem ####################################
+_extract_pem ()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -50,25 +50,31 @@ _check_certificate()
       cword="${COMP_CWORD}"
    fi
 
+   if [ "${cword}" -le 1 ] ; then
+      _filedir '@(cert|crt|pem)'
+      return
+   fi
+
    case "${prev}" in
       #  ====== Special case: CRL file ======================================
-      -C | --crl)
-         _filedir '@(crl)'
+      -o | --output-prefix)
+         _filedir
          return
-         ;;
-      # ====== Default: certificate file ====================================
-      *)
-         if [ "${cword}" -gt 1 ] ; then
-            _filedir '@(cert|crt|pem)'
-            return
-         fi
          ;;
    esac
 
    # ====== All options =====================================================
    local opts="
--C
---crl
+-o
+--output-prefix
+-1
+--only-first-entry
+-f
+--skip-first-entry
+-l
+--skip-last-entry
+-q
+--quiet
 -h
 --help
 "
@@ -77,4 +83,4 @@ _check_certificate()
    return 0
 }
 
-complete -F _check_certificate check-certificate
+complete -F _extract_pem extract-pem
