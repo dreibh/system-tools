@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-09-11 20:48+0200\n"
+"POT-Creation-Date: 2025-10-27 14:02+0100\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -194,15 +194,15 @@ msgstr "Bruk:"
 msgid "System information on %s"
 msgstr "Systeminformasjon på %s"
 
-#: src/System-Info/system-info.d/01-example:56
-#: src/System-Info/system-info.d/10-company-logo-example:71
+#: src/System-Info/system-info.d/01-example:58
+#: src/System-Info/system-info.d/10-company-logo-example:73
 msgid "You can change this banner in /etc/system-info.d!"
 msgstr "Du kan endre dette banneret i /etc/system-info.d!"
 
-#: src/System-Info/system-info.d/09-hostname-example:48
+#: src/System-Info/system-info.d/09-hostname-example:50
 msgid "Welcome on the System"
 msgstr "Velkommen på systemet"
 
-#: src/System-Info/system-info.d/10-company-logo-example:51
+#: src/System-Info/system-info.d/10-company-logo-example:53
 msgid "Welcome to"
 msgstr "Velkommen til"
