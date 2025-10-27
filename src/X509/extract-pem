@@ -120,7 +120,9 @@ while [ $# -gt 0 ] ; do
       if [ "${outputFile}" == "" ] ; then
          if [[ "${line}" =~ ^(-----BEGIN )([^-]*)(-----) ]] ; then
             if [ "${lastOutputFile}" != "" ] ; then
-               echo "=> ${lastOutputFile}"
+               if [ ${QUIET} -eq 0 ] ; then
+                  echo "=> ${lastOutputFile}"
+               fi
             fi
             type="${BASH_REMATCH[2]}"
             if [ "${type}" == "CERTIFICATE" ] ; then
@@ -158,7 +160,9 @@ while [ $# -gt 0 ] ; do
                   continue
                elif [ ${SKIP_FIRST_ENTRY} -eq 1 ] ; then
                   rm "${lastOutputFile}"
-                  echo "=> SKIPPING ${lastOutputFile}"
+                  if [ ${QUIET} -eq 0 ] ; then
+                     echo "=> SKIPPING ${lastOutputFile}"
+                  fi
                   lastOutputFile=""
                fi
             fi
@@ -172,9 +176,13 @@ done
 if [ "${lastOutputFile}" != "" ] ; then
    if [ ${SKIP_LAST_ENTRY} -eq 1 ] ; then
       rm "${lastOutputFile}"
-      echo "=> SKIPPING ${lastOutputFile}"
+      if [ ${QUIET} -eq 0 ] ; then
+         echo "=> SKIPPING ${lastOutputFile}"
+      fi
    else
-      echo "=> ${lastOutputFile}"
+      if [ ${QUIET} -eq 0 ] ; then
+         echo "=> ${lastOutputFile}"
+      fi
    fi
 fi
 if [ ${QUIET} -eq 0 ] ; then
