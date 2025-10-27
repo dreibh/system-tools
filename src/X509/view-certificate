@@ -85,7 +85,7 @@ while [ $# -gt 0 ] ; do
    fi
 
    echo -e "\e[34mCertificate ${CERT}:\e[0m"
-   "${OPENSSL}" x509 -in "${CERT}" -noout -subject -dates -ext subjectAltName,basicConstraints,keyUsage,extendedKeyUsage | (
+   "${OPENSSL}" x509 -in "${CERT}" -noout -subject -dates -ext subjectAltName,basicConstraints,keyUsage,extendedKeyUsage,subjectKeyIdentifier,authorityKeyIdentifier | (
       validityFrom="?"
       while read -r line ; do
          if [[ "${line}" =~ ^(subject=)(.*)$ ]] ; then
