@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 #        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
@@ -180,7 +181,7 @@ function make-banner ()
          # Read lines, and compute the maximum line length
          maxLineLength=0
          while IFS= read -r line ; do
-            if [ ${#line} -gt ${maxLineLength} ] ; then
+            if [ ${#line} -gt "${maxLineLength}" ] ; then
                maxLineLength=${#line}
             fi
             banner+=( "${line}" )
