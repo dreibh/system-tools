@@ -115,6 +115,23 @@ Description: Apply modifications to text
  standard output or a given file. On the text, various modifications can be
  applied, according to the operation mode.
 
+Package: td-x509
+Architecture: any
+Depends: gettext-base,
+         gnutls-bin,
+         libnss3-tools,
+         openssl,
+         td-text-block,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: X.509 certificate handling tools
+ This package contains four simple tools:
+ view-certificate displays an X.509 certificate and its hierarchy.
+ check-certificate verifies an X.509 certificate using a CA certificate
+ and optionally a revocation list.
+ extract-pem extracts a PEM file.
+ test-tls-connection tests a TCP TLS connection to a remote endpoint.
+
 Package: td-misc
 Architecture: any
 Depends: gettext-base,
@@ -136,6 +153,7 @@ Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
          td-system-info (>= ${source:Version}),
          td-system-maintenance (>= ${source:Version}),
          td-text-block (>= ${source:Version}),
+         td-x509 (>= ${source:Version}),
          ${misc:Depends}
 Provides: td-system-reset-machine-id
 Replaces: td-system-reset-machine-id

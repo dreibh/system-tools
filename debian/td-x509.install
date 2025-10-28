@@ -1,0 +1,12 @@
+usr/bin/check-certificate
+usr/bin/extract-pem
+usr/bin/test-tls-connection
+usr/bin/view-certificate
+usr/share/bash-completion/check-certificate
+usr/share/bash-completion/extract-pem
+usr/share/bash-completion/test-tls-connection
+usr/share/bash-completion/view-certificate
+usr/share/locale/*/LC_MESSAGES/check-certificate
+usr/share/locale/*/LC_MESSAGES/extract-pem
+usr/share/locale/*/LC_MESSAGES/test-tls-connection
+usr/share/locale/*/LC_MESSAGES/view-certificate

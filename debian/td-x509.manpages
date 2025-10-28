@@ -1,0 +1,4 @@
+usr/share/man/man1/check-certificate.1
+usr/share/man/man1/extract-pem.1
+usr/share/man/man1/test-tls-connection.1
+usr/share/man/man1/view-certificate.1

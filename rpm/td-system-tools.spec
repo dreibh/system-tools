@@ -20,6 +20,7 @@ Requires: td-system-tools-reset-machine-id = %{version}-%{release}
 Requires: td-system-tools-system-info = %{version}-%{release}
 Requires: td-system-tools-system-maintenance = %{version}-%{release}
 Requires: td-system-tools-text-block = %{version}-%{release}
+Requires: td-system-tools-x509 = %{version}-%{release}
 Recommends: td-system-tools-configure-grub = %{version}-%{release}
 
 
@@ -220,6 +221,41 @@ text-block reads text from standard input or given file, and writes it to standa
 %{_mandir}/man1/text-block.1.gz
 %{_datadir}/bash-completion/completions/text-block
 %{_datadir}/locale/*/LC_MESSAGES/text-block.mo
+
+
+%package x509
+Summary: X.509 certificate handling tools
+Group: Applications/System
+Requires: td-system-tools-text-block = %{version}-%{release}
+Requires: gnutls-utils
+Requires: nss-tools
+Requires: openssl
+
+%description x509
+ This package contains four simple tools:
+ view-certificate displays an X.509 certificate and its hierarchy.
+ check-certificate verifies an X.509 certificate using a CA certificate
+ and optionally a revocation list.
+ extract-pem extracts a PEM file.
+ test-tls-connection tests a TCP TLS connection to a remote endpoint.
+
+%files x509
+%{_bindir}/check-certificate
+%{_bindir}/extract-pem
+%{_bindir}/test-tls-connection
+%{_bindir}/view-certificate
+%{_datadir}/bash-completion/check-certificate
+%{_datadir}/bash-completion/extract-pem
+%{_datadir}/bash-completion/test-tls-connection
+%{_datadir}/bash-completion/view-certificate
+%{_datadir}/locale/*/LC_MESSAGES/check-certificate
+%{_datadir}/locale/*/LC_MESSAGES/extract-pem
+%{_datadir}/locale/*/LC_MESSAGES/test-tls-connection
+%{_datadir}/locale/*/LC_MESSAGES/view-certificate
+%{_mandir}/man1/check-certificate.1
+%{_mandir}/man1/extract-pem.1
+%{_mandir}/man1/test-tls-connection.1
+%{_mandir}/man1/view-certificate.1
 
 
 %package misc
