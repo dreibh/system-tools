@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-10-28 12:45+0100\n"
+"POT-Creation-Date: 2025-10-28 14:56+0100\n"
 "PO-Revision-Date: 2025-10-28 12:45+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -46,24 +46,44 @@ msgstr ""
 
 #: src/X509/view-certificate:44
 msgid "Usage:"
-msgstr ""
+msgstr "Aufruf:"
 
 #: src/X509/view-certificate:79
-msgid "ERROR: Unable to find OpenSSL!"
+msgid "ERROR: OpenSSL is not installed!"
+msgstr "FEHLER: OpenSSL ist nicht installiert!"
+
+#: src/X509/view-certificate:90
+#, sh-format
+msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
 msgstr ""
+
+#: src/X509/view-certificate:95
+#, sh-format
+msgid "Certificate in ${CERTIFICATE_FILE}:"
+msgstr "Zertifikat in ${CERTIFICATE_FILE}:"
 
 #: src/X509/view-certificate:129
 msgid "%-25s"
-msgstr ""
+msgstr "%-25s"
 
 #: src/X509/view-certificate:131
 msgid "Subject:"
-msgstr ""
+msgstr "Subjekt:"
 
 #: src/X509/view-certificate:133
 msgid "Subject Alt Name:"
-msgstr ""
+msgstr "Alternatives Subjekt:"
 
 #: src/X509/view-certificate:135
 msgid "Validity:"
-msgstr ""
+msgstr "Gültigkeit:"
+
+#: src/X509/view-certificate:146
+#, sh-format
+msgid "Hierarchy in ${CERTIFICATE_FILE}"
+msgstr "Hierarchie in ${CERTIFICATE_FILE}:"
+
+#: src/X509/view-certificate:154
+#, sh-format
+msgid "#${entry}."
+msgstr "${entry}."
