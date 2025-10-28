@@ -76,7 +76,7 @@ fi
 # ====== Check availability of tools ========================================
 OPENSSL="$(which openssl || true)"
 if [ "${OPENSSL}" == "" ] ; then
-   gettext >&2 "ERROR: Unable to find OpenSSL!"
+   gettext >&2 "ERROR: OpenSSL is not installed!"
    exit 1
 fi
 
