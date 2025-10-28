@@ -145,7 +145,7 @@ while [ $# -gt 0 ] ; do
          sh -c "${command}" || true
       fi
    else
-      gettext "(GnuTLS CertTool is not installed)"
+      gettext "(OpenSSL is not installed)"
       echo ""
    fi
 
@@ -256,6 +256,6 @@ done
 
 # ====== Check for errors ===================================================
 if [ ${errors} -gt 0 ] ; then
-   echo -e "\e[37;41;1m***** $(gettext "CERTIFICATE_FILEIFICATE CHECKS FAILED!") *****\e[0m"
+   echo -e "\e[37;41;1m***** $(gettext "CERTIFICATE VERIFICATIONS FAILED!") *****\e[0m"
    exit 1
 fi

@@ -41,7 +41,7 @@ export TEXTDOMAIN="extract-pem"
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "Usage: $0 pem_file [...] [-o|--output-prefix file_name_prefix] [-1|--only-first-entry] [-f|--skip-first-entry] [-l|--skip-last-entry] [-q|--quiet]"
+   echo >&2 "$(gettext "Usage:") $0 pem_file [...] [-o|--output-prefix file_name_prefix] [-1|--only-first-entry] [-f|--skip-first-entry] [-l|--skip-last-entry] [-q|--quiet]"
    exit 1
 }
 
@@ -184,7 +184,7 @@ if [ "${lastOutputFile}" != "" ] ; then
    if [ ${SKIP_LAST_ENTRY} -eq 1 ] ; then
       rm "${lastOutputFile}"
       if [ ${QUIET} -eq 0 ] ; then
-         echo "=> SKIPPING ${lastOutputFile}"
+         echo "=> $(gettext "SKIPPING") ${lastOutputFile}"
       fi
    else
       if [ ${QUIET} -eq 0 ] ; then
