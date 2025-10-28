@@ -94,13 +94,13 @@ CRLUTIL="$(which crlutil || true)"
 
 # ====== Look for CA certificate ============================================
 if [ ! -e "${CA_FILE}" ] ; then
-   gettext >&2 "ERROR: Unable to find CA certificate file ${CA_FILE}!"
+   gettext >&2 "ERROR: Unable to find CA certificate file \${CA_FILE}!"
    exit 1
 fi
 
 # ====== Look for CRL =======================================================
 if [ "${CRL}" != "" ] && [ ! -e "${CRL}" ] ; then
-   gettext >&2 "ERROR: Unable to find CRL file ${CRL}!"
+   gettext >&2 "ERROR: Unable to find CRL file \${CRL}!"
    exit 1
 fi
 
@@ -113,7 +113,7 @@ while [ $# -gt 0 ] ; do
    CERTIFICATE_FILE="$1"
    shift
    if [ ! -e "${CERTIFICATE_FILE}" ] ; then
-      gettext >&2 "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
+      gettext >&2 "ERROR: Unable to find certificate file \${CERTIFICATE_FILE}!"
       exit 1
    fi
 
@@ -124,7 +124,7 @@ while [ $# -gt 0 ] ; do
 
 
    # ====== Verify certificate with CA certificate ==========================
-   echo -e "\e[34m$(gettext "Verifying ${CERTIFICATE_FILE} with CA ${CA_FILE} ...")\e[0m"
+   echo -e "\e[34m$(gettext "Verifying \${CERTIFICATE_FILE} with CA \${CA_FILE} ...")\e[0m"
    if [ "${CA_FILE}" == "${CERTIFICATE_FILE}" ] ; then
       gettext >&2 "WARNING: Only checking self-signature!"
    fi
