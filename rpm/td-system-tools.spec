@@ -244,10 +244,10 @@ Requires: openssl
 %{_bindir}/extract-pem
 %{_bindir}/test-tls-connection
 %{_bindir}/view-certificate
-%{_datadir}/bash-completion/check-certificate
-%{_datadir}/bash-completion/extract-pem
-%{_datadir}/bash-completion/test-tls-connection
-%{_datadir}/bash-completion/view-certificate
+%{_datadir}/bash-completion/completions/check-certificate
+%{_datadir}/bash-completion/completions/extract-pem
+%{_datadir}/bash-completion/completions/test-tls-connection
+%{_datadir}/bash-completion/completions/view-certificate
 %{_datadir}/locale/*/LC_MESSAGES/check-certificate
 %{_datadir}/locale/*/LC_MESSAGES/extract-pem
 %{_datadir}/locale/*/LC_MESSAGES/test-tls-connection
