@@ -117,7 +117,7 @@ while [ $# -gt 0 ] ; do
             extension="${BASH_REMATCH[3]}"
             critical="${BASH_REMATCH[5]}"
             if [ "${critical}" != "" ] ; then
-               extensions["${extension}"]="\\e[1m${critical}\\e[22m   "
+               extensions["${extension}"]="\\e[4m${critical}:\\e[24m "
             else
                extensions["${extension}"]=""
             fi
@@ -151,7 +151,7 @@ while [ $# -gt 0 ] ; do
             if [[ "${line}" =~ ^(subject=)(.*)$ ]] ; then
                subject="${BASH_REMATCH[2]}"
                entry=$((entry + 1))
-               echo -en " \x1b[33m${entry}. "
+               echo -en " \x1b[33m$(gettext "#${entry}.") "
                subject="${subject//CN = /\\e[4mCN = }"
                if [ ${entry} -eq 1 ] ; then
                   echo -e "\e[35m${subject}\e[0m"
