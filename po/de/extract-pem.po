@@ -1,0 +1,53 @@
+# ==========================================================================
+#         ____            _                     _____           _
+#        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ |
+#        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+#               |___/
+#                             --- System-Tools ---
+#                  https://www.nntb.no/~dreibh/system-tools/
+# ==========================================================================
+#
+# System-Tools
+# Copyright (C) 2024-2025 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
+"Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
+"POT-Creation-Date: 2025-10-28 12:45+0100\n"
+"PO-Revision-Date: 2025-10-28 12:45+0100\n"
+"Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
+"Language-Team:\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Language: de\n"
+"X-Source-Language: en_GB\n"
+
+#: src/X509/extract-pem:102
+msgid "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
+msgstr ""
+
+#: src/X509/extract-pem:171
+msgid "SKIPPING"
+msgstr ""
