@@ -87,23 +87,49 @@ while [ $# -gt 0 ] ; do
    echo -e "\e[34mCertificate ${CERT}:\e[0m"
    "${OPENSSL}" x509 -in "${CERT}" -noout -subject -dates -ext subjectAltName,basicConstraints,keyUsage,extendedKeyUsage,subjectKeyIdentifier,authorityKeyIdentifier | (
       validityFrom="?"
+      validityTo="?"
+      subject="?"
+      declare -A extensions=(
+         ["Subject Alternative Name"]="(none)"
+         ["Key Usage"]="(none)"
+         ["Basic Constraints"]="(none)"
+         ["Extended Key Usage"]="(none)"
+         ["Subject Key Identifier"]="(none)"
+         ["Authority Key Identifier"]="(none)"
+      )
       while read -r line ; do
          if [[ "${line}" =~ ^(subject=)(.*)$ ]] ; then
             subject="${BASH_REMATCH[2]}"
-            echo -e "\e[33mSubject:  \e[35m${subject}\e[0m"
+            subject="${subject//CN = /\\e[4mCN = }"
          elif [[ "${line}" =~ ^(notBefore=)(.*)$ ]] ; then
             validityFrom="${BASH_REMATCH[2]}"
          elif [[ "${line}" =~ ^(notAfter=)(.*)$ ]] ; then
             validityTo="${BASH_REMATCH[2]}"
-            echo -e "\e[33mValidity: \e[36m${validityFrom} - ${validityTo}\e[0m"
-         elif [[ "${line}" =~ ^([ \t]*)(X509v3 .*:)(.*)$ ]] ; then
-            extension="${BASH_REMATCH[2]}"
-            critical="${BASH_REMATCH[3]}"
-            echo -en "\e[33m${extension}\e[32m${critical}\e[0m   "
-         elif [ "${extension}" != "" ] && [[ "${line}" =~ ^([ \t]*)(.*)$ ]] ; then
+         elif [[ "${line}" =~ ^([ \t]*)(X509v3 )(.*)(:[[:space:]]*)(.*)$ ]] ; then
+            extension="${BASH_REMATCH[3]}"
+            critical="${BASH_REMATCH[5]}"
+            if [ "${critical}" != "" ] ; then
+               extensions["${extension}"]="\\e[1m${critical}\\e[22m   "
+            else
+               extensions["${extension}"]=""
+            fi
+         elif [ "${extension}" != "" ] && [[ "${line}" =~ ^([[:space:]]*)(.*)$ ]] ; then
+            extensions["${extension}"]+="${BASH_REMATCH[2]}"
             extension=""
-            echo -e "\e[36m${BASH_REMATCH[2]}\e[0m"
          fi
+      done
+      label='%-25s'
+      printf "\e[33m${label} \e[35m%s\e[0m\n"          \
+         "Subject:"  "$(echo -e "${subject}")"
+      printf "\e[33m${label} \e[36m%s — %s\e[0m\n"     \
+         "Validity:" "${validityFrom}" "${validityTo}"
+      printf "\e[33m${label} \e[35m%s\e[0m\n"          \
+         "Subject Alt Name:"  "${extensions["Subject Alternative Name"]}"
+      for extension in "Basic Constraints" \
+                       "Key Usage" "Extended Key Usage" \
+                       "Subject Key Identifier" "Authority Key Identifier" ; do
+         printf "\e[33m${label} \e[33m%s\e[0m\n"      \
+            "${extension}:" "$(echo -e "${extensions["${extension}"]}")"
       done
    )
    echo -en "\e[0m"
@@ -116,7 +142,8 @@ while [ $# -gt 0 ] ; do
             if [[ "${line}" =~ ^(subject=)(.*)$ ]] ; then
                subject="${BASH_REMATCH[2]}"
                entry=$((entry + 1))
-               echo -en "\e[33m${entry}. "
+               echo -en " \x1b[33m${entry}. "
+               subject="${subject//CN = /\\e[4mCN = }"
                if [ ${entry} -eq 1 ] ; then
                   echo -e "\e[35m${subject}\e[0m"
                else
