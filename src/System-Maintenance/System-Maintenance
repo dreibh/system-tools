@@ -31,6 +31,7 @@
 # Bash options:
 set -eu
 
+# gettext options:
 export TEXTDOMAIN="System-Maintenance"
 # export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
 
