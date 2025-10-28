@@ -82,6 +82,9 @@ Prints command-line parameters.
 .It test-tls-connection www.heise.de:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
 .It test-tls-connection www.nntb.no:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt --no-view-certificate
 .It test-tls-connection www.nntb.no:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt --no-check-certificate
+.It test-tls-connection www.nntb.no:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt -save-certificate www.nntb.no.crt
+.It test-tls-connection www.heise.de:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt -n -c -s www.heise.de.crt
+.It test-tls-connection www.ietf.org:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt -s www.ietf.org.crt
 .It test-tls-connection --help
 .It test-tls-connection -h
 .El

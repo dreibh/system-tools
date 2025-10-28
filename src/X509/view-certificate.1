@@ -41,6 +41,7 @@
 .Sh SYNOPSIS
 .Nm view-certificate
 certificate_file
+.Op ...
 .Nm view-certificate
 .Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
@@ -61,6 +62,8 @@ displays important details on an X.509 certificate, including:
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
+.It certificate_file [...]
+Specifies one ore more certificate files to be displayed.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
 .El

@@ -52,19 +52,20 @@ ca_certificate_file certificate_file
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm check-certificate
-checks and verifies X.509 certificates against a Certification Authority (CA)
-certificate and optionally a Certificate Revocation List (CRL). The check
-is made using OpenSSL, and if available GnuTSL and NSS, to ensure the
-certificates are working properly with all three TLS implementations.
+verifies X.509 certificates against a Certification Authority (CA) certificate and optionally a Certificate Revocation List (CRL). The verification is made using OpenSSL, and if available GnuTSL and NSS, to ensure the certificates are working properly with all three TLS implementations.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
+.It ca_certificate_file
+Specifies the CA certificate file to verify certificates.
+.It certificate_file [...]
+Specifies one ore more certificate files to be verified.
 .It Fl C Ar crl_file | Fl Fl crl Ar crl_file
 Specifies a CRL file.
 .It Fl n | Fl Fl no-view-certificate
-Do not display certificate before verification.
+Do not display a certificate before verification.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
 .El
