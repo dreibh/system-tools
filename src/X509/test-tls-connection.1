@@ -1,0 +1,87 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" TLS Connection Tester
+.\" Copyright (C) 2015-2025 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd October 28, 2025
+.Dt test-tls-connection 1
+.Os test-tls-connection
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm test-tls-connection
+.Nd Tests TLS connection to a remote endpoint
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm test-tls-connection
+host:port ca_certificate_file
+.br
+.Op Fl s Ar certificate_file | Fl Fl save-certificate Ar certificate_file
+.br
+.Op Fl n | Fl Fl no-view-certificate
+.br
+.Op Fl c | Fl Fl no-check-certificate
+.br
+.Op \-\- openssl_args ...
+.Nm test-tls-connection
+.Op Fl h | Fl Fl help
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm test-tls-connection
+tests TLS connection to a remote endpoint. The certificate provided by the remote endpoint
+can be verified (by calling check-certificate) or only displayed (by using view-certificate). Optionally, it can also be saved as PEM file.
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It host:port
+Specifies hostname or IP address, and TCP port number of the remote endpoint to connect to.
+.It ca_certificate_file
+Specifies the CA certificate to verify the certificate of the remote endpoint.
+.It Fl s Ar certificate_file | Fl Fl save-certificate Ar certificate_file
+Specifies a file name to store the certificate of the remote endpoint (as PEM file).
+.It \-\- openssl_args ...
+Specifies optional OpenSSL arguments. All arguments after \-\- are passed to OpenSSL.
+.It Fl n | Fl Fl no-view-certificate
+Do not run view-certificate on the received certificate of the remote endpoint.
+.It Fl c | Fl Fl no-check-certificate
+Do not run check-certificate on the received certificate of the remote endpoint.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It test-tls-connection www.heise.de:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
+.It test-tls-connection www.nntb.no:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt --no-view-certificate
+.It test-tls-connection www.nntb.no:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt --no-check-certificate
+.It test-tls-connection --help
+.It test-tls-connection -h
+.El
