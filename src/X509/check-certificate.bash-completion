@@ -67,6 +67,8 @@ _check_certificate()
    local opts="
 -C
 --crl
+-n
+--no-view-certificate
 -h
 --help
 "

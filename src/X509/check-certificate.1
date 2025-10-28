@@ -34,7 +34,7 @@
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm check-certificate
-.Nd Checks and validates X.509 certificates
+.Nd Checks and verifies X.509 certificates
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
@@ -44,13 +44,14 @@ ca_certificate_file certificate_file
 .Op ...
 .br
 .Op Fl C Ar crl_file | Fl Fl crl Ar crl_file
+.Op Fl n | Fl Fl no-view-certificate
 .br
 .Nm check-certificate
 .Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm check-certificate
-checks and validates X.509 certificates against a Certification Authority (CA)
+checks and verifies X.509 certificates against a Certification Authority (CA)
 certificate and optionally a Certificate Revocation List (CRL). The check
 is made using OpenSSL, and if available GnuTSL and NSS, to ensure the
 certificates are working properly with all three TLS implementations.
@@ -61,6 +62,8 @@ The following options are available:
 .Bl -tag -width indent
 .It Fl C Ar crl_file | Fl Fl crl Ar crl_file
 Specifies a CRL file.
+.It Fl n | Fl Fl no-view-certificate
+Do not display certificate before verification.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
 .El

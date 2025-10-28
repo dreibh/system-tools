@@ -41,7 +41,7 @@ export TEXTDOMAIN="check-certificate"
 
 # ###### Usage ##############################################################
 usage () {
-   gettext >&2 "$(gettext "Usage:") $0 ca_certificate_file certificate_file [...] [-C|--crl crl] [-h|--help]"
+   gettext >&2 "$(gettext "Usage:") $0 ca_certificate_file certificate_file [...] [-C|--crl crl] [-n|--no-view-certificate] [-h|--help]"
    exit 1
 }
 
@@ -51,19 +51,24 @@ usage () {
 # ====== Handle arguments ===================================================
 DIRNAME="$(dirname "$0")"
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o C:h --long crl:,help -a -- "$@")"
+options="$(${GETOPT} -o C:nh --long crl:,no-view-certificate,help -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage
 fi
 
 CRL=""
+VIEW_CERTIFICATE=1
 eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -C | --crl)
          CRL="$2"
          shift 2
+         ;;
+      -n | --no-view-certificate)
+         VIEW_CERTIFICATE=0
+         shift
          ;;
       -h | --help)
          usage
@@ -113,7 +118,9 @@ while [ $# -gt 0 ] ; do
    fi
 
    # ====== Display certificate  and hierarchy ==============================
-   "${DIRNAME}/view-certificate" "${CERTIFICATE_FILE}"
+   if [ ${VIEW_CERTIFICATE} -eq 1 ] ; then
+      "${DIRNAME}/view-certificate" "${CERTIFICATE_FILE}"
+   fi
 
 
    # ====== Verify certificate with CA certificate ==========================
