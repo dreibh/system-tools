@@ -55,7 +55,7 @@ msgstr "FEHLER: OpenSSL ist nicht installiert!"
 #: src/X509/view-certificate:90
 #, sh-format
 msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
-msgstr ""
+msgstr "FEHLER: Zertifikatsdatei ${CERTIFICATE_FILE} wurde nicht gefunden!"
 
 #: src/X509/view-certificate:95
 #, sh-format

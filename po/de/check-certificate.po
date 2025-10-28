@@ -51,22 +51,22 @@ msgstr "Aufruf:"
 #: src/X509/check-certificate:97
 #, sh-format
 msgid "ERROR: Unable to find CA certificate file ${CA_FILE}!"
-msgstr ""
+msgstr "FEHLER: CA-Zertifikatsdatei ${CA_FILE} wurde nicht gefunden!"
 
 #: src/X509/check-certificate:103
 #, sh-format
 msgid "ERROR: Unable to find CRL file ${CRL}!"
-msgstr ""
+msgstr "FEHLER: CRL-Datei ${CRL} wurde nicht gefunden!"
 
 #: src/X509/check-certificate:116
 #, sh-format
 msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
-msgstr ""
+msgstr "FEHLER: Zertifikatsdatei ${CERTIFICATE_FILE} wurde nicht gefunden!"
 
 #: src/X509/check-certificate:127
 #, sh-format
 msgid "Verifying ${CERTIFICATE_FILE} with CA ${CA_FILE} ..."
-msgstr ""
+msgstr "Verifiziere ${CERTIFICATE_FILE} mit CA ${CA_FILE} ..."
 
 #: src/X509/check-certificate:129
 msgid "WARNING: Only checking self-signature!"

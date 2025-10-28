@@ -51,9 +51,9 @@ msgstr "Aufruf:"
 #: src/X509/test-tls-connection:95
 #, sh-format
 msgid "ERROR: Unable to find CA certificate file ${CA_FILE}!"
-msgstr "FEHLER: CA-Zertifikat ${CA_FILE} wurde nicht gefunden!"
+msgstr "FEHLER: CA-Zertifikatsdatei ${CA_FILE} wurde nicht gefunden!"
 
 #: src/X509/test-tls-connection:100
 #, sh-format
 msgid "Connecting to ${ENDPOINT} ..."
-msgstr "Verbinde zu ${ENDPOINT} ..."
+msgstr "Verbindung zu ${ENDPOINT} wird hergestellt ..."
