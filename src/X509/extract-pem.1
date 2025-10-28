@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 27, 2025
+.Dd October 28, 2025
 .Dt extract-pem 1
 .Os extract-pem
 .\" ###### Name #############################################################
@@ -83,9 +83,10 @@ Prints command-line parameters.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It extract-pem My-CA-Certificate.pem --output-prefix my-certificate-
-.It extract-pem My-CA-Certificate.pem --skip-first-entry --skip-last-entry --output-prefix my-certificate-
-.It extract-pem My-CA-Certificate.pem -o my-certificate-
+.It extract-pem my-server-certificate.pem --output-prefix extract-
+.It extract-pem my-server-certificate.pem -o extract-
+.It extract-pem my-server-certificate.pem --skip-first-entry --skip-last-entry -o extract-intermediate-
+.It extract-pem my-server-certificate.pem --only-first-entry -o extract-server-
 .It extract-pem --help
 .It extract-pem -h
 .El
