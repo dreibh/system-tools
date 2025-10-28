@@ -31,6 +31,13 @@
 # Bash options:
 set -eu
 
+# gettext options:
+export TEXTDOMAIN="extract-pem"
+# export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
+
+# shellcheck disable=SC1091
+. gettext.sh
+
 
 # ###### Usage ##############################################################
 usage () {
@@ -92,7 +99,7 @@ if [ $# -lt 1 ] ; then
 fi
 if [ ${ONLY_FIRST_ENTRY} -eq 1 ] ; then
    if [ ${SKIP_FIRST_ENTRY} -ne 0 ] || [ ${SKIP_LAST_ENTRY} -ne 0 ] ; then
-      echo >&2 "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
+      gettext >&2 "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
       exit 1
    fi
 fi
@@ -107,12 +114,12 @@ while [ $# -gt 0 ] ; do
    PEM_FILE="$1"
    shift
    if [ ! -e "${PEM_FILE}" ] ; then
-      echo >&2 "ERROR: Unable to find PEM file ${PEM_FILE}!"
+      gettext >&2 "ERROR: Unable to find PEM file ${PEM_FILE}!"
       exit 1
    fi
 
    if [ ${QUIET} -eq 0 ] ; then
-      echo -e "\e[34mExtracting ${PEM_FILE} ...\e[0m"
+      echo -e "\e[34m$(gettext "Extracting ${PEM_FILE} ...")\e[0m"
    fi
    outputFile=""
    entry=0
@@ -141,13 +148,13 @@ while [ $# -gt 0 ] ; do
                touch "${outputFile}"
                chmod 600 "${outputFile}"
             else
-               echo >&2 "ERROR: Unexpected type ${type} in ${PEM_FILE}!"
+               gettext >&2 "ERROR: Unexpected type ${type} in ${PEM_FILE}!"
                exit 1
             fi
             entry=$((entry + 1))
             echo "${line}" >>"${outputFile}.tmp"
          else
-            echo >&2 "ERROR: Unexpected data in ${PEM_FILE}!"
+            gettext >&2 "ERROR: Unexpected data in ${PEM_FILE}!"
             exit 1
          fi
       else
@@ -161,7 +168,7 @@ while [ $# -gt 0 ] ; do
                elif [ ${SKIP_FIRST_ENTRY} -eq 1 ] ; then
                   rm "${lastOutputFile}"
                   if [ ${QUIET} -eq 0 ] ; then
-                     echo "=> SKIPPING ${lastOutputFile}"
+                     echo "=> $(gettext "SKIPPING") ${lastOutputFile}"
                   fi
                   lastOutputFile=""
                fi
@@ -186,5 +193,5 @@ if [ "${lastOutputFile}" != "" ] ; then
    fi
 fi
 if [ ${QUIET} -eq 0 ] ; then
-   echo -e "\e[34mDone: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys\e[0m"
+   echo -e "\e[34m$(gettext "Done: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys")\e[0m"
 fi

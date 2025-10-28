@@ -31,7 +31,7 @@
 # Bash options:
 set -eu
 
-
+# gettext options:
 export TEXTDOMAIN="check-certificate"
 # export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
 
@@ -90,14 +90,12 @@ CRLUTIL="$(which crlutil || true)"
 # ====== Look for CA certificate ============================================
 if [ ! -e "${CA_FILE}" ] ; then
    gettext >&2 "ERROR: Unable to find CA certificate file ${CA_FILE}!"
-   echo ""
    exit 1
 fi
 
 # ====== Look for CRL =======================================================
 if [ "${CRL}" != "" ] && [ ! -e "${CRL}" ] ; then
    gettext >&2 "ERROR: Unable to find CRL file ${CRL}!"
-   echo ""
    exit 1
 fi
 
@@ -111,7 +109,6 @@ while [ $# -gt 0 ] ; do
    shift
    if [ ! -e "${CERTIFICATE_FILE}" ] ; then
       gettext >&2 "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
-      echo ""
       exit 1
    fi
 
@@ -123,7 +120,6 @@ while [ $# -gt 0 ] ; do
    echo -e "\e[34m$(gettext "Verifying ${CERTIFICATE_FILE} with CA ${CA_FILE} ...")\e[0m"
    if [ "${CA_FILE}" == "${CERTIFICATE_FILE}" ] ; then
       gettext >&2 "WARNING: Only checking self-signature!"
-      echo ""
    fi
 
    # ====== OpenSSL =========================================================
