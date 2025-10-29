@@ -28,44 +28,66 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -e
+set -eu
 
 
-if [ $# -lt 1 ] ; then
-   echo >&2 "Usage: $0 grub-defaults-template-file [--input|-i input-grub-defaults-file] [--output|-o output-grub-defaults-file] [--video|-V GRUB_GFXMODE] [--tune|-T GRUB_INIT_TUNE]"
+# ###### Usage ##############################################################
+usage () {
+   echo >&2 "Usage: $0 grub-defaults-template-file [-i|--input input-grub-defaults-file] [-o|--output output-grub-defaults-file] [-V|--video GRUB_GFXMODE] [-T|--tune GRUB_INIT_TUNE] [-h|--help]"
    exit 1
+}
+
+
+# ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
+GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+options="$(${GETOPT} -o i:o:V:T:h --long input:,output:,video:,tune:,help -a -- "$@")"
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+   usage
 fi
 
-
-# ====== Check input files ==================================================
 INPUT_CONFIGURATION="/etc/default/grub"
-TEMPLATE_CONFIGURATION="$1"
 OUTPUT_CONFIGURATION=""
 REPLACE_GRUB_GFXMODE=""
 REPLACE_GRUB_INIT_TUNE=""
-shift
+eval set -- "${options}"
 while [ $# -gt 0 ] ; do
-   if [ "$1" == "--output" ] || [ "$1" == "-o" ] ; then
-      OUTPUT_CONFIGURATION="$2"
-      shift
-   elif [ "$1" == "--input" ] || [ "$1" == "-i" ] ; then
-      INPUT_CONFIGURATION="$2"
-      shift
-   elif [ "$1" == "--video" ] || [ "$1" == "-V" ] ; then
-      REPLACE_GRUB_GFXMODE="$2"
-      shift
-   elif [ "$1" == "--tune" ] || [ "$1" == "-T" ] ; then
-      REPLACE_GRUB_INIT_TUNE="$2"
-      shift
-   else
-      echo >&2 "ERROR: Unknown option $1!"
-      exit 1
-   fi
-   shift
+   case "$1" in
+      -i | --input)
+         INPUT_CONFIGURATION="$2"
+         shift 2
+         ;;
+      -o | --output)
+         OUTPUT_CONFIGURATION="$2"
+         shift 2
+         ;;
+      -V | --video)
+         REPLACE_GRUB_GFXMODE="$2"
+         shift 2
+         ;;
+      -T | --tune)
+         REPLACE_GRUB_INIT_TUNE="$2"
+         shift 2
+         ;;
+      -h | --help)
+         usage
+         # shift
+         ;;
+      --)
+         shift
+         break
+         ;;
+  esac
 done
+if [ $# -ne 1 ] ; then
+   usage
+fi
 
+TEMPLATE_CONFIGURATION="$1"
 if [ ! -e "${INPUT_CONFIGURATION}" ] ; then
-   echo >&2 "ERROR: Template configuration ${INPUT_CONFIGURATION} not found!"
+   echo >&2 "ERROR: Input configuration ${INPUT_CONFIGURATION} not found!"
    exit 1
 fi
 if [ ! -e "${TEMPLATE_CONFIGURATION}" ] ; then

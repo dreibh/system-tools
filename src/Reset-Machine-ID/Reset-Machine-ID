@@ -45,7 +45,6 @@ RSA_BITS=16384
 # MODULI_BITS=8192
 
 
-
 # ###### Test SSH options and select supported choices in preferred order ###
 select-ssh-options ()
 {
@@ -135,6 +134,24 @@ EOF
 }
 
 
+# ###### Usage ##############################################################
+usage () {
+   echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--zabbix|-Z zabbix_server [--install-zabbix-agent|-A] [--yes-to-all-i-am-really-sure]"
+   exit 1
+}
+
+
+
+# ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
+GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+options="$(${GETOPT} -o H:MSKZ:Ah --long hostname,skip-machine-id,skip-ssh-configuration,skip-ssh-key-replacement,zabbix,install-zabbix-agent,yes-to-all-i-am-really-sure,help -a -- "$@")"
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+   usage
+fi
+
 
 # ###### Main program #######################################################
 
@@ -149,38 +166,58 @@ NEW_HOSTNAME_FQDN="${OLD_HOSTNAME_FQDN}"
 ZABBIX_SERVER=""
 INSTALL_ZABBIX_AGENT=0
 applyChanges=""
-
+eval set -- "${options}"
 while [ $# -gt 0 ] ; do
-   if [ "$1" == "--yes-to-all-i-am-really-sure" ] || [ "$1" == "-yes-to-all-i-am-really-sure" ] ; then
-      YES_TO_ALL=1
-      applyChanges="yes"
-   elif [ "$1" == "--hostname" ] || [ "$1" == "-H" ] || [ "$1" == "-hostname" ] ; then
-      hostname="$2"
-      shift
-      if [[ ! "${hostname}" =~ ^([a-zA-Z][a-zA-Z0-9-]+\.)*[a-zA-Z][a-zA-Z0-9-]*$ ]] ; then
-         # shellcheck disable=SC2005
-         echo >&2 "$(eval_gettext "ERROR: Invalid hostname \${hostname}!")"
-         exit 1
-      fi
-      NEW_HOSTNAME_FQDN="${hostname}"
-      NEW_HOSTNAME="${NEW_HOSTNAME_FQDN//.*/}"
-   elif [ "$1" == "--zabbix" ] || [ "$1" == "-Z" ] || [ "$1" == "-zabbix" ] ; then
-      ZABBIX_SERVER="$2"
-      shift
-   elif [ "$1" == "--install-zabbix-agent" ] || [ "$1" == "-A" ] || [ "$1" == "-install-zabbix-agent" ] ; then
-      INSTALL_ZABBIX_AGENT=1
-   elif [ "$1" == "--skip-machine-id" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-machine-id" ] ; then
-      SKIP_MACHINE_ID=1
-   elif [ "$1" == "--skip-ssh-configuration" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-ssh-configuration" ] ; then
-      SKIP_SSH_CONFIGURATION=1
-   elif [ "$1" == "--skip-ssh-key-replacement" ] || [ "$1" == "-K" ] || [ "$1" == "-skip-key-replacement" ] ; then
-      SKIP_SSH_KEY_REPLACEMENT=1
-   else
-      echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--zabbix|-Z zabbix_server [--install-zabbix-agent|-A] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--yes-to-all-i-am-really-sure]"
-      exit 1
-   fi
-   shift
+   case "$1" in
+      -H | --hostname)
+         hostname="$2"
+         shift
+         if [[ ! "${hostname}" =~ ^([a-zA-Z][a-zA-Z0-9-]+\.)*[a-zA-Z][a-zA-Z0-9-]*$ ]] ; then
+            # shellcheck disable=SC2005
+            echo >&2 "$(eval_gettext "ERROR: Invalid hostname \${hostname}!")"
+            exit 1
+         fi
+         NEW_HOSTNAME_FQDN="${hostname}"
+         NEW_HOSTNAME="${NEW_HOSTNAME_FQDN//.*/}"
+         ;;
+      -M | --skip-machine-id)
+         SKIP_MACHINE_ID=1
+         shift
+         ;;
+      -S | --skip-ssh-configuration)
+         SKIP_SSH_CONFIGURATION=1
+         shift
+         ;;
+      -K | --skip-key-replacement)
+         SKIP_SSH_KEY_REPLACEMENT=1
+         shift
+         ;;
+      -Z | --zabbix)
+         ZABBIX_SERVER="$2"
+         shift
+         ;;
+      -A | --install-zabbix-agent)
+         INSTALL_ZABBIX_AGENT=1
+         shift
+         ;;
+      --yes-to-all-i-am-really-sure)
+         YES_TO_ALL=1
+         applyChanges="yes"
+         shift
+         ;;
+      -h | --help)
+         usage
+         # shift
+         ;;
+      --)
+         shift
+         break
+         ;;
+  esac
 done
+if [ $# -ne 0 ] ; then
+   usage
+fi
 
 
 # ====== Change hostname ====================================================

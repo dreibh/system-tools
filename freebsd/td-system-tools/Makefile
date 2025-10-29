@@ -11,6 +11,7 @@ LICENSE=	GPLv3+
 LICENSE_FILE=	${WRKSRC}/COPYING
 
 RUN_DEPENDS=	bash:shells/bash \
+		getopt>=0:misc/getopt \
 		figlet:misc/figlet \
 		mbuffer:misc/mbuffer
 

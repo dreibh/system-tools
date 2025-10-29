@@ -39,33 +39,52 @@ export TEXTDOMAIN="try-hard"
 . gettext.sh
 
 
-# ====== Handle arguments ===================================================
-if [ $# -lt 4 ] ; then
-   echo >&2 "$(gettext "Usage:") $0 max_trials delay [-w|--verbose] [-q|--quiet] -- command ..."
+# ###### Usage ##############################################################
+usage () {
+   echo >&2 "$(gettext "Usage:") $0 max_trials delay [-w|--verbose] [-q|--quiet] [-h|--help] -- command ..."
    exit 1
+}
+
+
+# ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
+GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+options="$(${GETOPT} -o qwh --long quiet,verbose,help -a -- "$@")"
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+   usage
+fi
+
+VERBOSE=0
+eval set -- "${options}"
+while [ $# -gt 0 ] ; do
+   case "$1" in
+      -q | --quiet)
+         VERBOSE=0
+         shift
+         ;;
+      -w | --verbose)
+         VERBOSE=1
+         shift
+         ;;
+      -h | --help)
+         usage
+         # shift
+         ;;
+      --)
+         shift
+         break
+         ;;
+  esac
+done
+if [ $# -lt 3 ] ; then
+   usage
 fi
 
 MAX_TRIALS="$1"
 DELAY="$2"
-VERBOSE=0
 shift 2
-
-while [ $# -gt 0 ] ; do
-   arg="$1"
-   shift
-   if [ "${arg}" == "-q" ] || [ "${arg}" == "--quiet" ] ; then
-      VERBOSE=0
-   elif [ "${arg}" == "-w" ] || [ "${arg}" == "--verbose" ] ; then
-      VERBOSE=1
-   elif  [ "${arg}" == "--" ] ; then
-      break
-   else
-      eval_gettext >&2 "ERROR: Invalid argument \${arg}!"
-      echo >&2
-      exit 1
-   fi
-done
-
 if [[ ! "${MAX_TRIALS}" =~ ^[0-9]*$ ]] || [ "${MAX_TRIALS}" -lt 1 ] ; then
    eval_gettext >&2 "ERROR: Invalid maximum trials \${MAX_TRIALS}!"
    echo >&2
