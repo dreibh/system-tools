@@ -68,7 +68,6 @@ try:
         'keylen-cert='
       ])
    for option, optarg in options:
-      print(f'{option}={optarg}')
       if option in ( '-s', '--server' ):
          certType = CertificateType.Server
       elif option in ( '-c', '--client' ):

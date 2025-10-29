@@ -92,12 +92,13 @@ ENDPOINT="$1"
 CA_FILE="$2"
 shift 2
 if [ ! -e "${CA_FILE}" ] ; then
-   gettext >&2 "ERROR: Unable to find CA certificate file \${CA_FILE}!"
+   eval_gettext >&2 "ERROR: Unable to find CA certificate file \${CA_FILE}!"
+   echo >&2
    exit 1
 fi
 
 # ====== Connect to endpoint ================================================
-echo -e "\e[34m$(gettext "Connecting to \${ENDPOINT} ...")\e[0m"
+echo -e "\e[34m$(eval_gettext "Connecting to \${ENDPOINT} ...")\e[0m"
 tempOutputFile=""
 tempCertFile=""
 trap 'rm -f "${tempCertFile}" "${tempOutputFile}"' EXIT INT TERM HUP

@@ -100,6 +100,7 @@ fi
 if [ ${ONLY_FIRST_ENTRY} -eq 1 ] ; then
    if [ ${SKIP_FIRST_ENTRY} -ne 0 ] || [ ${SKIP_LAST_ENTRY} -ne 0 ] ; then
       gettext >&2 "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
+      echo >&2
       exit 1
    fi
 fi
@@ -114,12 +115,13 @@ while [ $# -gt 0 ] ; do
    PEM_FILE="$1"
    shift
    if [ ! -e "${PEM_FILE}" ] ; then
-      gettext >&2 "ERROR: Unable to find PEM file \${PEM_FILE}!"
+      eval_gettext >&2 "ERROR: Unable to find PEM file \${PEM_FILE}!"
+      echo >&2
       exit 1
    fi
 
    if [ ${QUIET} -eq 0 ] ; then
-      echo -e "\e[34m$(gettext "Extracting \${PEM_FILE} ...")\e[0m"
+      echo -e "\e[34m$(eval_gettext "Extracting \${PEM_FILE} ...")\e[0m"
    fi
    outputFile=""
    entry=0
@@ -148,13 +150,15 @@ while [ $# -gt 0 ] ; do
                touch "${outputFile}"
                chmod 600 "${outputFile}"
             else
-               gettext >&2 "ERROR: Unexpected type \${type} in \${PEM_FILE}!"
+               eval_gettext >&2 "ERROR: Unexpected type \${type} in \${PEM_FILE}!"
+               echo >&2
                exit 1
             fi
             entry=$((entry + 1))
             echo "${line}" >>"${outputFile}.tmp"
          else
-            gettext >&2 "ERROR: Unexpected data in \${PEM_FILE}!"
+            eval_gettext >&2 "ERROR: Unexpected data in \${PEM_FILE}!"
+            echo >&2
             exit 1
          fi
       else
@@ -193,5 +197,5 @@ if [ "${lastOutputFile}" != "" ] ; then
    fi
 fi
 if [ ${QUIET} -eq 0 ] ; then
-   echo -e "\e[34m$(gettext "Done: \${certificate} certificates, \${csr} CSRs, \${crl} CRLs, \${key} keys")\e[0m"
+   echo -e "\e[34m$(eval_gettext "Done: \${certificate} certificates, \${csr} CSRs, \${crl} CRLs, \${key} keys")\e[0m"
 fi

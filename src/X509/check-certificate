@@ -94,13 +94,15 @@ CRLUTIL="$(which crlutil || true)"
 
 # ====== Look for CA certificate ============================================
 if [ ! -e "${CA_FILE}" ] ; then
-   gettext >&2 "ERROR: Unable to find CA certificate file \${CA_FILE}!"
+   eval_gettext >&2 "ERROR: Unable to find CA certificate file \${CA_FILE}!"
+   echo >&2
    exit 1
 fi
 
 # ====== Look for CRL =======================================================
 if [ "${CRL}" != "" ] && [ ! -e "${CRL}" ] ; then
-   gettext >&2 "ERROR: Unable to find CRL file \${CRL}!"
+   eval_gettext >&2 "ERROR: Unable to find CRL file \${CRL}!"
+   echo >&2
    exit 1
 fi
 
@@ -113,7 +115,8 @@ while [ $# -gt 0 ] ; do
    CERTIFICATE_FILE="$1"
    shift
    if [ ! -e "${CERTIFICATE_FILE}" ] ; then
-      gettext >&2 "ERROR: Unable to find certificate file \${CERTIFICATE_FILE}!"
+      eval_gettext >&2 "ERROR: Unable to find certificate file \${CERTIFICATE_FILE}!"
+      echo >&2
       exit 1
    fi
 
@@ -124,9 +127,10 @@ while [ $# -gt 0 ] ; do
 
 
    # ====== Verify certificate with CA certificate ==========================
-   echo -e "\e[34m$(gettext "Verifying \${CERTIFICATE_FILE} with CA \${CA_FILE} ...")\e[0m"
+   echo -e "\e[34m$(eval_gettext "Verifying \${CERTIFICATE_FILE} with CA \${CA_FILE} ...")\e[0m"
    if [ "${CA_FILE}" == "${CERTIFICATE_FILE}" ] ; then
       gettext >&2 "WARNING: Only checking self-signature!"
+      echo >&2
    fi
 
    # ====== OpenSSL =========================================================
@@ -146,7 +150,7 @@ while [ $# -gt 0 ] ; do
       fi
    else
       gettext "(OpenSSL is not installed)"
-      echo ""
+      echo
    fi
 
 
@@ -165,7 +169,7 @@ while [ $# -gt 0 ] ; do
             if [ ${good} -eq 1 ] ; then echo -en "\e[32;1m$(gettext "✓OKAY")\e[0m" ; fi && \
             echo -en "   \e[32m${profile}\e[0m"
       done
-      echo ""
+      echo
       if [ ${good} -eq 0 ] ; then
          errors=$((errors + 1))
          echo -e "\e[31;1m$(gettext "❌FAILED!")\e[0m"
@@ -173,7 +177,7 @@ while [ $# -gt 0 ] ; do
       fi
    else
       gettext "(GnuTLS CertTool is not installed)"
-      echo ""
+      echo
    fi
 
 
@@ -239,7 +243,7 @@ while [ $# -gt 0 ] ; do
             if [ ${good} -eq 1 ] ; then echo -en "\e[32;1m$(gettext "✓OKAY")\e[0m" ; fi && \
             echo -en "   \e[36m${type}\e[0m"
       done
-      echo ""
+      echo
       if [ ${good} -eq 0 ] ; then
          errors=$((errors + 1))
          echo -e "\e[31;1m$(gettext "$(gettext "❌FAILED!")")\e[0m"
@@ -249,7 +253,7 @@ while [ $# -gt 0 ] ; do
       fi
    else
       gettext "(NSS CertUtil is not installed)"
-      echo ""
+      echo
    fi
 
 done
