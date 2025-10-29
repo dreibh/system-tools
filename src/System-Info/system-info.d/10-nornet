@@ -46,7 +46,7 @@ center "#    ##  #    #  #   #  #    ##  #          #  "
 center "#     #   ####   #    # #     #  ######     #  "
 echo -en "\x1b[1;34m"
 if [ "${NORNET_VERSION}" != "" ] ; then
-   echo ""
+   echo
    center "${NORNET_VERSION}"
 fi
 separator "  " "=" "  "

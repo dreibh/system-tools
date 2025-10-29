@@ -49,11 +49,11 @@ color2="\x1b[38;2;33;27;87m"    # SimulaMet dark blue: #211B57
 # ------ Print top separator ------------------------------------------------
 echo -en "${color1}"
 separator " *💻" "=" "💻*"
-echo ""
+echo
 center "${color1}-- ${color2}$(gettext "Welcome to") ${color1}--"
 
 # ------ Print the logo -----------------------------------------------------
-echo ""
+echo
 center "${color1} #####                                          ${color2}#     #                "
 center "${color1}#     #     #    #    #  #    #  #         ##   ${color2}##   ##  ######   #####"
 center "${color1}#           #    ##  ##  #    #  #        #  #  ${color2}# # # #  #          #  "
@@ -61,7 +61,7 @@ center "${color1} #####      #    # ## #  #    #  #       #    # ${color2}#  #  
 center "${color1}      #     #    #    #  #    #  #       ###### ${color2}#     #  #          #  "
 center "${color1}#     #     #    #    #  #    #  #       #    # ${color2}#     #  #          #  "
 center "${color1} #####      #    #    #   ####   ######  #    # ${color2}#     #  ######     #  "
-echo ""
+echo
 center "${color2}-- ${color1}Simula Metropolitan Centre ${color2}for Digital Engineering ${color1}--"
 
 # ------ Print an additional information line from a file -------------------

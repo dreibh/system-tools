@@ -44,11 +44,11 @@ center "#  #  # #####   #     #    #   "
 center "#   # # #       #######    #   "
 center "#    ## #       #     #    #   "
 center "#     # ####### #     #    #   "
-echo ""
+echo
 center "-- A New, Evolutive API and Transport-Layer Architecture for the Internet --"
 echo -en "\x1b[1;34m"
 if [ "${NEAT_STUFF_VERSION}" != "" ] ; then
-   echo ""
+   echo
    center "${NEAT_STUFF_VERSION}"
 fi
 separator "  " "=" "  "

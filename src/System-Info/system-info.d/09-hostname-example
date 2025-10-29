@@ -46,7 +46,7 @@ color2="\x1b[31m"
 # ------ Print top separator ------------------------------------------------
 echo -en "${color1}"
 separator " *💻" "=" "💻*"
-echo ""
+echo
 center "${color1}-- ${color2}$(gettext "Welcome on the System") ${color1}--"
 
 # ------ Print the hostname FQDN as banner ----------------------------------

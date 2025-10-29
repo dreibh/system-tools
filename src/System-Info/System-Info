@@ -416,7 +416,7 @@ printf "\n$(gettext "System information on %s")\n\n" "${now}"
 # => prepare it in background, while printing other information.
 # shellcheck disable=SC2086
 (
-   echo ""
+   echo
    print-system-information
 ) 2>&1 | (
    print-banners ${scriptDirectories}

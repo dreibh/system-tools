@@ -38,7 +38,7 @@ export TEXTDOMAIN="System-Maintenance"
 . gettext.sh
 
 
-trap 'echo "" ; echo "Aborted." ; exit' INT
+trap 'echo ; echo "Aborted." ; exit' INT
 
 INTERACTIVE_KERNEL_REMOVAL=0
 while [ $# -gt 0 ] ; do
