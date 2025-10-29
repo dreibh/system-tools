@@ -38,18 +38,46 @@ export TEXTDOMAIN="System-Maintenance"
 . gettext.sh
 
 
-trap 'echo ; echo "Aborted." ; exit' INT
+# ###### Usage ##############################################################
+usage () {
+   echo 2>&1 "$(gettext "Usage:") $0 [-k|--interactive-kernel-removal] [-h|--help]"
+   exit 1
+}
+
+
+# ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
+GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+options="$(${GETOPT} -o kh --long interactive-kernel-removal,help -a -- "$@")"
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+   usage
+fi
 
 INTERACTIVE_KERNEL_REMOVAL=0
+eval set -- "${options}"
 while [ $# -gt 0 ] ; do
-   if [ "$1" == "-interactive-kernel-removal" ] || [ "$1" == "-k" ] ; then
-      INTERACTIVE_KERNEL_REMOVAL=1
-   else
-      echo 2>&1 "$(gettext "Usage:") $0 [-interactive-kernel-removal|-k]"
-      exit 1
-   fi
-   shift
+   case "$1" in
+      -k | --interactive-kernel-removal)
+         INTERACTIVE_KERNEL_REMOVAL=1
+         shift
+         ;;
+      -h | --help)
+         usage
+         # shift
+         ;;
+      --)
+         shift
+         break
+         ;;
+  esac
 done
+if [ $# -ne 0 ] ; then
+   usage
+fi
+
+trap 'echo ; echo "Aborted." ; exit' INT
 
 # ====== Find distribution variant ==========================================
 if [ ! -e /etc/os-release ] ; then
