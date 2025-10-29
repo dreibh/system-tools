@@ -279,7 +279,7 @@ if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
       fi
       machineID="$(cat /etc/machine-id)"
       gettext "The new machine ID is ${machineID}."
-      echo ""
+      echo
 
       # ------ Set new ID in Debian Popularity Contest configuration --------
       if [ -e /etc/popularity-contest.conf ] ; then
@@ -348,7 +348,7 @@ EOF
          done
       else
          gettext "Skipped!"
-         echo ""
+         echo
       fi
    fi
 fi
@@ -410,7 +410,7 @@ EOF
    # ====== Apply ssh_config updates ========================================
    if [ -e ssh_config ] ; then
       gettext "Suggested ssh_config changes:"
-      echo ""
+      echo
       if ! diff --color=always ssh_config ssh_config.suggested ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
             echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested ssh_config changes?") [yes/no]?\x1b[0m "
@@ -421,7 +421,7 @@ EOF
             mv ssh_config.suggested ssh_config
          else
             gettext "Skipped!"
-            echo ""
+            echo
          fi
       fi
    fi
@@ -471,7 +471,7 @@ EOF
       for sftp in /usr/lib/openssh/sftp-server /usr/libexec/sftp-server ; do
          if [ -e "$sftp" ] ; then
             (
-               echo ""
+               echo
                echo "Subsystem sftp $sftp"
             ) >>sshd_config.suggested
             break
@@ -483,7 +483,7 @@ EOF
       differences=0
       if [ -e sshd_config.d/50-cloud-init.conf ] ; then
          gettext "Suggested removal of sshd_config.d/50-cloud-init.conf:"
-         echo ""
+         echo
          cat sshd_config.d/50-cloud-init.conf
          differences=1
       fi
@@ -491,7 +491,7 @@ EOF
 
       # ====== Apply sshd_config updates ====================================
       gettext "Suggested sshd_config changes:"
-      echo ""
+      echo
       diff --color=always sshd_config sshd_config.suggested || differences=$(( differences+1))
       if [ ${differences} -gt 0 ] ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
@@ -509,7 +509,7 @@ EOF
                service ssh restart 2>/dev/null
          else
             gettext "Skipped!"
-            echo ""
+            echo
          fi
       fi
    fi
@@ -562,7 +562,7 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && [ -x "$(command -
 
    else
       gettext "Skipped!"
-      echo ""
+      echo
    fi
 
 fi

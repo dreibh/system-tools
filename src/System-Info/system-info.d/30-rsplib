@@ -55,11 +55,11 @@ center "|  _ \/ ___||  _ \| |   |_ _| __ ) "
 center "| |_) \___ \| |_) | |    | ||  _ \ "
 center "|  _ < ___) |  __/| |___ | || |_) |"
 center "|_| \_\____/|_|   |_____|___|____/ "
-echo ""
+echo
 center "◀◀◀ RSPLIB Project at the University of Duisburg-Essen ▶▶▶"
 echo -en "\x1b[1;34m"
 if [ "${RSERPOOLDEMO_VERSION}" != "" ] ; then
-   echo ""
+   echo
    center "${RSERPOOLDEMO_VERSION}"
 fi
 separator "  " "═" "  "

@@ -7,6 +7,6 @@ while [ $# -gt 0 ] ; do
    f="$1"
    print-utf8 -n -s "\x1b[32m====== $f " "=" "=\x1b[0m"
    cat "$f"
-   echo ""
+   echo
    shift
 done

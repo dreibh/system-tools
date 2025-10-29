@@ -15,9 +15,9 @@ c=0 ; while [ $c -lt 255 ] ; do
          printf "\x1b[38;2;%d;%d;%dm|%02x%02x%02x\x1b[0m" $a $b $c $a $b $c
          b=$((b+16))
       done
-      echo ""
+      echo
       a=$((a+16))
    done
-   echo ""
+   echo
    c=$((c+16))
 done
