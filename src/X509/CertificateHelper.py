@@ -141,6 +141,40 @@ def prepareSubjectAltName(certType : CertificateType,
    return ( name, '' )
 
 
+# ###### Make subject string for user #######################################
+RE_TITLE : re.Pattern = re.compile(r'^([A-Z][a-z]+\.)$')
+RE_EMAIL : re.Pattern = re.compile(r'^<[^<>]+@[^<>]+>$')
+def prepareUserSubject(name : str) -> str:
+   parts    : list[str] = name.split(' ')
+   titles   : list[str] = [ ]
+   names    : list[str] = [ ]
+   initials : list[str] = [ ]
+   email    : str       = ''
+   for part in parts:
+      if RE_TITLE.match(part):
+         titles.append(part)
+      elif RE_EMAIL.match(part):
+          email = part
+      else:
+         names.append(part)
+         initials.append(part[0] + '.')
+
+   if (len(names) < 2) or (len(initials) < 2):
+      sys.stderr.write(f'ERROR: Unsupported syntax for user: {name}\n')
+      sys.exit(1)
+
+   subject = ''
+   if len(titles) > 0:
+      subject += '/title=' + ' '.join(titles)
+   subject += '/givenName=' + ' '.join(names[0:len(names) - 1])
+   subject += '/initials='  + ' '.join(initials[0:len(initials) - 1])
+   subject += '/surname='   + names[len(names) - 1]
+   if email != '':
+      subject += '/emailAddress=' + email
+
+   print("==> " + subject)
+   return subject
+
 
 # ###### CA #################################################################
 GlobalCRLSet             : set[os.PathLike] = set([])
@@ -572,7 +606,7 @@ subjectAltName         = ${ENV::SAN}
          assert(os.path.isfile(globalCRLFileName))
 
 
-# ###### Server/User Certificate ############################################
+# ###### Server/Client/User Certificate #####################################
 class Certificate:
 
    # ###### Constructor #####################################################
