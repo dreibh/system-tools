@@ -41,7 +41,7 @@ export TEXTDOMAIN="try-hard"
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "$(gettext "Usage:") $0 max_trials delay [-w|--verbose] [-q|--quiet] -- command ..."
+   echo >&2 "$(gettext "Usage:") $0 max_trials delay [-w|--verbose] [-q|--quiet] [-h|--help] -- command ..."
    exit 1
 }
 
