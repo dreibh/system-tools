@@ -46,7 +46,7 @@ while [ $# -gt 0 ] ; do
    if [ "$1" == "-interactive-kernel-removal" ] || [ "$1" == "-k" ] ; then
       INTERACTIVE_KERNEL_REMOVAL=1
    else
-      echo 2>&1 "$(gettext "Usage:") $0 [-interactive-kernel-removal|-k]"
+      echo >&2 "$(gettext "Usage:") $0 [-interactive-kernel-removal|-k]"
       exit 1
    fi
    shift

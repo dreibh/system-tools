@@ -55,7 +55,7 @@ while [ $# -gt 0 ] ; do
    elif [ "$1" == "--include-raw-python" ] || [ "$1" == "-p" ] || [ "$1" == "-include-raw-python" ] ; then
       INCLUDE_RAW=2
    else
-      echo 2>&1 "$(gettext "Usage:") $0 [--include-deprecated|-d] [--include-raw|r] [--include-python|p]"
+      echo >&2 "$(gettext "Usage:") $0 [--include-deprecated|-d] [--include-raw|r] [--include-python|p]"
       exit 1
    fi
    shift
