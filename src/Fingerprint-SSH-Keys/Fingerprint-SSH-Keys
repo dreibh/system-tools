@@ -39,27 +39,55 @@ export TEXTDOMAIN="Fingerprint-SSH-Keys"
 . gettext.sh
 
 
+# ###### Usage ##############################################################
+usage () {
+   echo 2>&1 "$(gettext "Usage:") $0 [-d|--include-deprecated] [-r|--include-raw] [-p|--include-python] [-h|--help]"
+   exit 1
+}
+
 
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
+GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+options="$(${GETOPT} -o drph --long include-deprecated,include-raw,include-python -a -- "$@")"
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+   usage
+fi
+
+
 FORMATS="raw ssh dns"
 INCLUDE_DEPRECATED=0
 INCLUDE_RAW=0
-
+eval set -- "${options}"
 while [ $# -gt 0 ] ; do
-   if [ "$1" == "--include-deprecated" ] || [ "$1" == "-d" ] || [ "$1" == "-include-deprecated" ] ; then
-      INCLUDE_DEPRECATED=1
-   elif [ "$1" == "--include-raw" ] || [ "$1" == "-r" ] || [ "$1" == "-include-raw" ] ; then
-      INCLUDE_RAW=1
-   elif [ "$1" == "--include-raw-python" ] || [ "$1" == "-p" ] || [ "$1" == "-include-raw-python" ] ; then
-      INCLUDE_RAW=2
-   else
-      echo 2>&1 "$(gettext "Usage:") $0 [--include-deprecated|-d] [--include-raw|r] [--include-python|p]"
-      exit 1
-   fi
-   shift
+   case "$1" in
+      -d | --include-deprecated)
+         INCLUDE_DEPRECATED=1
+         shift
+         ;;
+      -r | --include-raw)
+         INCLUDE_RAW=1
+         shift
+         ;;
+      -p | --include-python)
+         INCLUDE_RAW=2
+         shift
+         ;;
+      -h | --help)
+         usage
+         # shift
+         ;;
+      --)
+         shift
+         break
+         ;;
+  esac
 done
+if [ $# -ne 0 ] ; then
+   usage
+fi
 
 
 # ====== Print SSH key fingerprints =========================================
