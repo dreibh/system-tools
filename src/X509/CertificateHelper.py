@@ -49,8 +49,8 @@ class CertificateType(Enum):
    User            = 6
 
 # Some defaults:
-DefaultCAKeyLength   : Final[int] = 8192
-DefaultCertKeyLength : Final[int] = 4096
+DefaultCAKeyLength   : Final[int] = 16384
+DefaultCertKeyLength : Final[int] = 16384
 
 # ***** TEST ONLY *******************************
 # These settings are for fast testing only:
@@ -309,12 +309,12 @@ organizationName                = optional
 organizationalUnitName          = optional
 streetAddress                   = optional
 postalCode                      = optional
-commonName                      = supplied
-emailAddress                    = optional
 title                           = optional
 surname                         = optional
 givenName                       = optional
 initials                        = optional
+emailAddress                    = optional
+commonName                      = supplied
 
 # ====== PKCS#10 certificate request and certificate settings ===============
 [ req ]
