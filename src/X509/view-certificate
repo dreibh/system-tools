@@ -109,8 +109,9 @@ while [ $# -gt 0 ] ; do
       )
       while read -r line ; do
          if [[ "${line}" =~ ^(subject=)(.*)$ ]] ; then
-            subject="${BASH_REMATCH[2]}"
-            subject="${subject//CN = /\\e[4mCN = }"
+            # Subject with underlined CN:
+            # shellcheck disable=SC2001
+            subject="$(echo "${BASH_REMATCH[2]}" | sed -e 's/\(CN = \)\([^,]*\)/\x1b[4m\1\2\x1b[24m/')"
          elif [[ "${line}" =~ ^(notBefore=)(.*)$ ]] ; then
             validityFrom="${BASH_REMATCH[2]}"
          elif [[ "${line}" =~ ^(notAfter=)(.*)$ ]] ; then
@@ -151,10 +152,12 @@ while [ $# -gt 0 ] ; do
          entry=0
          while read -r line ; do
             if [[ "${line}" =~ ^(subject=)(.*)$ ]] ; then
-               subject="${BASH_REMATCH[2]}"
+               # Subject with underlined CN:
+               # shellcheck disable=SC2001
+               subject="$(echo "${BASH_REMATCH[2]}" | sed -e 's/\(CN = \)\([^,]*\)/\x1b[4m\1\2\x1b[24m/')"
+
                entry=$((entry + 1))
                echo -en " \x1b[33m$(eval_gettext "#\${entry}.") "
-               subject="${subject//CN = /\\e[4mCN = }"
                if [ ${entry} -eq 1 ] ; then
                   echo -e "\e[35m${subject}\e[0m"
                else
