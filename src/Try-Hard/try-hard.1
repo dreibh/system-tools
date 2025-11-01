@@ -28,13 +28,13 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 11, 2025
+.Dd October 29, 2025
 .Dt try-hard 1
 .Os try-hard
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm try-hard
-.Nd retry a command multiple times in case of failure
+.Nd retries a command multiple times in case of failure
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
@@ -46,6 +46,8 @@ delay
 .Op Fl w | Fl Fl verbose
 --
 command ...
+.Nm try-hard
+.Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm try-hard
@@ -60,6 +62,8 @@ The following options are available:
 Quiet mode: no output is made.
 .It Fl w | Fl Fl verbose
 Verbose mode: print selected delay and wake-up.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES

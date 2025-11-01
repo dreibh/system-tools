@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd September 10, 2025
+.Dd October 29, 2025
 .Dt Reset-Machine-ID 1
 .Os Reset-Machine-ID
 .\" ###### Name #############################################################
@@ -41,12 +41,19 @@
 .Sh SYNOPSIS
 .Nm Reset-Machine-ID
 .Op Fl H Ar hostname | Fl Fl hostname Ar hostname
+.br
+.Op Fl M | Fl Fl skip-machine-id
+.br
+.Op Fl S | Fl Fl skip-ssh-configuration
+.br
+.Op Fl K | Fl Fl skip-ssh-key-replacement
+.br
 .Op Fl Z Ar zabbix_server | Fl Fl zabbix Ar zabbix_server
 .Op Fl A | Fl Fl install-zabbix-agent
-.Op Fl M | Fl Fl skip-machine-id
-.Op Fl S | Fl Fl skip-ssh-configuration
-.Op Fl K | Fl Fl skip-ssh-key-replacement
+.br
 .Op Fl Fl yes-to-all-i-am-really-sure
+.Nm Reset-Machine-ID
+.Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Reset-Machine-ID
@@ -73,19 +80,21 @@ The following options are available:
 .Bl -tag -width indent
 .It Fl H Ar hostname | Fl Fl hostname Ar hostname
 Set the given hostname.
-.It Fl Z Ar zabbix_server | Fl Fl zabbix Ar zabbix_server
-Configure an already-installed Zabbix Agent for a given Zabbix server.
-.It Fl A | Fl Fl install-zabbix-agent
-Try to install Zabbix Agent, if necessary, when a Zabbix server is given but no Zabbix Agent is installed. This will add the current Zabbix PPA on Debian/Ubuntu/Fedora systems. Note that a Zabbix PPA may not be available for the used distribution! On FreeBSD, the Zabbix Agent is installed from the FreeBSD Ports Collection.
 .It Fl M | Fl Fl skip-machine-id
 Do not reset the machine ID.
 .It Fl S | Fl Fl skip-ssh-configuration
 Do not make SSH configuration changes.
 .It Fl K | Fl Fl skip-ssh-key-replacement
 Do not replace SSH keys.
+.It Fl Z Ar zabbix_server | Fl Fl zabbix Ar zabbix_server
+Configure an already-installed Zabbix Agent for a given Zabbix server.
+.It Fl A | Fl Fl install-zabbix-agent
+Try to install Zabbix Agent, if necessary, when a Zabbix server is given but no Zabbix Agent is installed. This will add the current Zabbix PPA on Debian/Ubuntu/Fedora systems. Note that a Zabbix PPA may not be available for the used distribution! On FreeBSD, the Zabbix Agent is installed from the FreeBSD Ports Collection.
 .It Fl Fl yes-to-all-i-am-really-sure
 Create new keys (delete old ones) as well as replace sshd_config and
 ssh_config without interactively asking for confirmation.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
