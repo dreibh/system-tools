@@ -1,3 +1,136 @@
+commit 2945e77678b8bbd2606b425fb572ab2c77e7a091
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 1 18:08:21 2025 +0100
+
+    Updated PO files.
+
+commit e1e91beabbf2736670b767b4183306df52a12f66
+Merge: c1ae9b3 8fb54bf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 1 17:24:28 2025 +0100
+
+    Merge branch 'dreibh/getopt'
+
+commit 8fb54bf1ab5a076c25944bc5e3e85132b0908f7d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 1 17:20:36 2025 +0100
+
+    A small clean-up.
+
+commit c1ae9b366a2c7c9ec59baab26a83df13e7a341ca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 31 17:03:00 2025 +0100
+
+    Bugfix: Need to set errno=0 to obtain possible error code from getline().
+
+commit c3bbdae28b7ce683795f77f02e5120deeb32c6e7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 21:13:46 2025 +0100
+
+    Manpage improvements.
+
+commit 9a2c5f36ea391cf17e8cf0c8cabfffefec285579
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 21:13:22 2025 +0100
+
+    Configure-GRUB: some improvements, and change of parameter handling to getopt.
+
+commit 4059235d464541985e282789eeb33994d0e61c71
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:58:24 2025 +0100
+
+    Reset-Machine-ID: changed script parameter handling to getopt.
+
+commit 39c4727eb246d18fffdd1bf659574c3d8606afee
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:48:00 2025 +0100
+
+    Further manpage updates and small clean-ups.
+
+commit 161eaa2d07fc930c382ef48c9939334c88ee928e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:36:55 2025 +0100
+
+    Improved manpage.
+
+commit 43c0f7a2044fb5008b6b210e28596f175d35da80
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:31:48 2025 +0100
+
+    Small manpage improvements.
+
+commit 0a2108d223961be9321301c1b5e43338e0750179
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:31:39 2025 +0100
+
+    Further clean-ups and manpage update.
+
+commit f180a23ce7832f69a7ea9297b7a2d727d4e9c85e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:31:27 2025 +0100
+
+    Further clean-ups and manpage update.
+
+commit 0a0c30aa47c23cf05368d9c6b37227ba46184107
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:31:03 2025 +0100
+
+    System-Maintenance: changed script parameter handling to getopt.
+
+commit d611332031fd3c914ba22410a3337a993622f20e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:30:51 2025 +0100
+
+    System-Info: changed script parameter handling to getopt.
+
+commit 25302f6ea3976126d7007ac19bdb988941033a81
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:20:05 2025 +0100
+
+    Further clean-ups and manpage update.
+
+commit c26a2d7f5cd5eacc9f7662b26500bf71f0497b3f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:19:44 2025 +0100
+
+    Fingerprint-SSH-Keys: changed script parameter handling to getopt.
+
+commit 1fa0970a8bf2b75788d908c5f825e0f53009f32d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:19:25 2025 +0100
+
+    Further clean-ups and manpage update.
+
+commit 781402dec225ee1026dba9271f95eeccfc8595a3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:07:57 2025 +0100
+
+    FreeBSD needs getopt as dependency.
+
+commit 0d1178ff008ca827b315bfcf359341129aeaa1e1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:06:33 2025 +0100
+
+    Try-Hard: changed script parameter handling to getopt.
+
+commit 2f228cb24828349bc1a6a557d223c56af2346609
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 19:52:28 2025 +0100
+
+    Minor simplifications.
+
+commit 77c64d36c5f692057ab46fd3cc9d9d8be51b8e0f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:35:28 2025 +0100
+
+    Updated FreeBSD port.
+
+commit af880afe030457bdfdc5d7f8ecc78127a3c57522
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:27:54 2025 +0100
+
+    New release td-system-tools-2.1.7.
+
 commit aea3fbd71d9f5e4e09b9149a2d2593eda9b1e709
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon Oct 27 14:16:57 2025 +0100

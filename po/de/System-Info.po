@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-10-27 14:02+0100\n"
+"POT-Creation-Date: 2025-11-01 18:08+0100\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -186,11 +186,11 @@ msgstr "SSH-Schlüssel:"
 msgid "#%u %s"
 msgstr "%u. %s"
 
-#: src/System-Info/System-Info:403
+#: src/System-Info/System-Info:392
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/System-Info/System-Info:412
+#: src/System-Info/System-Info:434
 msgid "System information on %s"
 msgstr "Systeminformation am %s"
 
