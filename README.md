@@ -354,7 +354,7 @@ cmake .
 make
 ```
 
-Note: The script [`ci/get-dependencies`](https://github.com/dreibh/system-tools/blob/master/ci/get-dependencies) automatically  installs the build dependencies under Debian/Ubuntu Linux, Fedora Linux, and FreeBSD. For manual handling of the build dependencies, see the packaging configuration in [debian/control](https://github.com/dreibh/system-tools/blob/master/debian/control) (Debian/Ubuntu Linux), [system-tools.spec](https://github.com/dreibh/system-tools/blob/master/rpm/system-tools.spec) (Fedora Linux), and [Makefile](https://github.com/dreibh/system-tools/blob/master/freebsd/system-tools/Makefile) FreeBSD.
+Note: The script [`ci/get-dependencies`](https://github.com/dreibh/system-tools/blob/master/ci/get-dependencies) automatically  installs the build dependencies under Debian/Ubuntu Linux, Fedora Linux, and FreeBSD. For manual handling of the build dependencies, see the packaging configuration in [`debian/control`](https://github.com/dreibh/system-tools/blob/master/debian/control) (Debian/Ubuntu Linux), [`system-tools.spec`](https://github.com/dreibh/system-tools/blob/master/rpm/system-tools.spec) (Fedora Linux), and [`Makefile`](https://github.com/dreibh/system-tools/blob/master/freebsd/system-tools/Makefile) FreeBSD.
 
 Contributions:
 
