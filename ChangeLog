@@ -1,3 +1,39 @@
+commit 378d37750dd4e87994284db5e37da09076d63652
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 14 11:01:53 2025 +0100
+
+    Parameter handling fix.
+
+commit ebbbb1e709c3501c64bc1ccf38fd32e96f211c55
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 3 13:03:53 2025 +0100
+
+    Yet another documentation update.
+
+commit 4487f0f67b3d3c6b082f1db571e33ce86397a8a6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 3 12:49:49 2025 +0100
+
+    Minor documentation update.
+
+commit 3e3e893df0c18b33785e5eed6051f660eb4bc920
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 3 12:45:20 2025 +0100
+
+    Improved documentation.
+
+commit 8f972cb169d759fc3c979cd71519df4935561e95
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 1 18:15:18 2025 +0100
+
+    Updated FreeBSD port.
+
+commit 6aee224d8e8a5312c3baccc929ca2049a5ebdbb6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 1 18:08:35 2025 +0100
+
+    New release td-system-tools-2.1.8.
+
 commit 2945e77678b8bbd2606b425fb572ab2c77e7a091
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Nov 1 18:08:21 2025 +0100
