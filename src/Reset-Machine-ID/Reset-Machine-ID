@@ -152,10 +152,6 @@ if [[ $? -ne 0 ]]; then
    usage
 fi
 
-
-# ###### Main program #######################################################
-
-# ====== Handle arguments ===================================================
 YES_TO_ALL=0
 SKIP_MACHINE_ID=0
 SKIP_SSH_CONFIGURATION=0
