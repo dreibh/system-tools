@@ -34,7 +34,7 @@ set -eu
 while [ $# -gt 0 ] ; do
    input="$1"
    shift 1
-   output="${input/.md/.html}"
+   output="${input/\.md/.html}"
 
    if [ "${output}" != "${input}" ] ; then
       echo "Converting ${input} -> ${output} ..."
