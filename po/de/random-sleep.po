@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-07-08 11:57+0200\n"
+"POT-Creation-Date: 2025-10-25 12:13+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -44,11 +44,11 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Random-Sleep/random-sleep.c:75
+#: src/Random-Sleep/random-sleep.c:81
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Random-Sleep/random-sleep.c:127
+#: src/Random-Sleep/random-sleep.c:125
 #, c-format
 msgid "ERROR: Invalid argument %s!"
 msgstr "FEHLER: Ungültiges Argument %s!"

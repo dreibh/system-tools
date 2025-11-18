@@ -45,7 +45,6 @@ RSA_BITS=16384
 # MODULI_BITS=8192
 
 
-
 # ###### Test SSH options and select supported choices in preferred order ###
 select-ssh-options ()
 {
@@ -135,10 +134,24 @@ EOF
 }
 
 
+# ###### Usage ##############################################################
+usage () {
+   echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--zabbix|-Z zabbix_server [--install-zabbix-agent|-A] [--yes-to-all-i-am-really-sure]"
+   exit 1
+}
+
+
 
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
+GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+options="$(${GETOPT} -o H:MSKZ:Ah --long hostname,skip-machine-id,skip-ssh-configuration,skip-ssh-key-replacement,zabbix,install-zabbix-agent,yes-to-all-i-am-really-sure,help -a -- "$@")"
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+   usage
+fi
+
 YES_TO_ALL=0
 SKIP_MACHINE_ID=0
 SKIP_SSH_CONFIGURATION=0
@@ -149,38 +162,58 @@ NEW_HOSTNAME_FQDN="${OLD_HOSTNAME_FQDN}"
 ZABBIX_SERVER=""
 INSTALL_ZABBIX_AGENT=0
 applyChanges=""
-
+eval set -- "${options}"
 while [ $# -gt 0 ] ; do
-   if [ "$1" == "--yes-to-all-i-am-really-sure" ] || [ "$1" == "-yes-to-all-i-am-really-sure" ] ; then
-      YES_TO_ALL=1
-      applyChanges="yes"
-   elif [ "$1" == "--hostname" ] || [ "$1" == "-H" ] || [ "$1" == "-hostname" ] ; then
-      hostname="$2"
-      shift
-      if [[ ! "${hostname}" =~ ^([a-zA-Z][a-zA-Z0-9-]+\.)*[a-zA-Z][a-zA-Z0-9-]*$ ]] ; then
-         # shellcheck disable=SC2005
-         echo >&2 "$(eval_gettext "ERROR: Invalid hostname \${hostname}!")"
-         exit 1
-      fi
-      NEW_HOSTNAME_FQDN="${hostname}"
-      NEW_HOSTNAME="${NEW_HOSTNAME_FQDN//.*/}"
-   elif [ "$1" == "--zabbix" ] || [ "$1" == "-Z" ] || [ "$1" == "-zabbix" ] ; then
-      ZABBIX_SERVER="$2"
-      shift
-   elif [ "$1" == "--install-zabbix-agent" ] || [ "$1" == "-A" ] || [ "$1" == "-install-zabbix-agent" ] ; then
-      INSTALL_ZABBIX_AGENT=1
-   elif [ "$1" == "--skip-machine-id" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-machine-id" ] ; then
-      SKIP_MACHINE_ID=1
-   elif [ "$1" == "--skip-ssh-configuration" ] || [ "$1" == "-S" ] || [ "$1" == "-skip-ssh-configuration" ] ; then
-      SKIP_SSH_CONFIGURATION=1
-   elif [ "$1" == "--skip-ssh-key-replacement" ] || [ "$1" == "-K" ] || [ "$1" == "-skip-key-replacement" ] ; then
-      SKIP_SSH_KEY_REPLACEMENT=1
-   else
-      echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--zabbix|-Z zabbix_server [--install-zabbix-agent|-A] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--yes-to-all-i-am-really-sure]"
-      exit 1
-   fi
-   shift
+   case "$1" in
+      -H | --hostname)
+         hostname="$2"
+         shift 2
+         if [[ ! "${hostname}" =~ ^([a-zA-Z][a-zA-Z0-9-]+\.)*[a-zA-Z][a-zA-Z0-9-]*$ ]] ; then
+            # shellcheck disable=SC2005
+            echo >&2 "$(eval_gettext "ERROR: Invalid hostname \${hostname}!")"
+            exit 1
+         fi
+         NEW_HOSTNAME_FQDN="${hostname}"
+         NEW_HOSTNAME="${NEW_HOSTNAME_FQDN//.*/}"
+         ;;
+      -M | --skip-machine-id)
+         SKIP_MACHINE_ID=1
+         shift
+         ;;
+      -S | --skip-ssh-configuration)
+         SKIP_SSH_CONFIGURATION=1
+         shift
+         ;;
+      -K | --skip-key-replacement)
+         SKIP_SSH_KEY_REPLACEMENT=1
+         shift
+         ;;
+      -Z | --zabbix)
+         ZABBIX_SERVER="$2"
+         shift 2
+         ;;
+      -A | --install-zabbix-agent)
+         INSTALL_ZABBIX_AGENT=1
+         shift
+         ;;
+      --yes-to-all-i-am-really-sure)
+         YES_TO_ALL=1
+         applyChanges="yes"
+         shift
+         ;;
+      -h | --help)
+         usage
+         # shift
+         ;;
+      --)
+         shift
+         break
+         ;;
+  esac
 done
+if [ $# -ne 0 ] ; then
+   usage
+fi
 
 
 # ====== Change hostname ====================================================
@@ -279,7 +312,7 @@ if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
       fi
       machineID="$(cat /etc/machine-id)"
       gettext "The new machine ID is ${machineID}."
-      echo ""
+      echo
 
       # ------ Set new ID in Debian Popularity Contest configuration --------
       if [ -e /etc/popularity-contest.conf ] ; then
@@ -348,7 +381,7 @@ EOF
          done
       else
          gettext "Skipped!"
-         echo ""
+         echo
       fi
    fi
 fi
@@ -410,7 +443,7 @@ EOF
    # ====== Apply ssh_config updates ========================================
    if [ -e ssh_config ] ; then
       gettext "Suggested ssh_config changes:"
-      echo ""
+      echo
       if ! diff --color=always ssh_config ssh_config.suggested ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
             echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested ssh_config changes?") [yes/no]?\x1b[0m "
@@ -421,7 +454,7 @@ EOF
             mv ssh_config.suggested ssh_config
          else
             gettext "Skipped!"
-            echo ""
+            echo
          fi
       fi
    fi
@@ -471,7 +504,7 @@ EOF
       for sftp in /usr/lib/openssh/sftp-server /usr/libexec/sftp-server ; do
          if [ -e "$sftp" ] ; then
             (
-               echo ""
+               echo
                echo "Subsystem sftp $sftp"
             ) >>sshd_config.suggested
             break
@@ -483,7 +516,7 @@ EOF
       differences=0
       if [ -e sshd_config.d/50-cloud-init.conf ] ; then
          gettext "Suggested removal of sshd_config.d/50-cloud-init.conf:"
-         echo ""
+         echo
          cat sshd_config.d/50-cloud-init.conf
          differences=1
       fi
@@ -491,7 +524,7 @@ EOF
 
       # ====== Apply sshd_config updates ====================================
       gettext "Suggested sshd_config changes:"
-      echo ""
+      echo
       diff --color=always sshd_config sshd_config.suggested || differences=$(( differences+1))
       if [ ${differences} -gt 0 ] ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
@@ -509,7 +542,7 @@ EOF
                service ssh restart 2>/dev/null
          else
             gettext "Skipped!"
-            echo ""
+            echo
          fi
       fi
    fi
@@ -562,7 +595,7 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && [ -x "$(command -
 
    else
       gettext "Skipped!"
-      echo ""
+      echo
    fi
 
 fi

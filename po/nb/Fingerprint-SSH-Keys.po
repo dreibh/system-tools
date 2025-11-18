@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-07-08 11:49+0200\n"
+"POT-Creation-Date: 2025-11-01 18:08+0100\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -44,21 +44,21 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:58
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:44
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:75
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:103
 #, sh-format
 msgid "Fingerprints of ${hostname} in raw format:"
 msgstr "Fingeravtrykk av ${hostname} i råformat:"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:102
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:130
 #, sh-format
 msgid "Fingerprints of ${hostname} in SSH format:"
 msgstr "Fingeravtrykk av ${hostname} i SSH-format:"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:113
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:141
 #, sh-format
 msgid "Fingerprints of ${hostname} in DNS RR format:"
 msgstr "Fingeravtrykk av ${hostname} i DNS-RR-format:"

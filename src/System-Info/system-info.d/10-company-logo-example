@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 #        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
@@ -9,7 +10,7 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# System-Info
+# Company Logo System-Info system-info.d Script
 # Copyright (C) 2013-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -27,6 +28,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
+# Bash options:
 set -eu
 
 # Helper function library -> just return when it is not available.
@@ -47,11 +49,11 @@ color2="\x1b[38;2;33;27;87m"    # SimulaMet dark blue: #211B57
 # ------ Print top separator ------------------------------------------------
 echo -en "${color1}"
 separator " *💻" "=" "💻*"
-echo ""
+echo
 center "${color1}-- ${color2}$(gettext "Welcome to") ${color1}--"
 
 # ------ Print the logo -----------------------------------------------------
-echo ""
+echo
 center "${color1} #####                                          ${color2}#     #                "
 center "${color1}#     #     #    #    #  #    #  #         ##   ${color2}##   ##  ######   #####"
 center "${color1}#           #    ##  ##  #    #  #        #  #  ${color2}# # # #  #          #  "
@@ -59,7 +61,7 @@ center "${color1} #####      #    # ## #  #    #  #       #    # ${color2}#  #  
 center "${color1}      #     #    #    #  #    #  #       ###### ${color2}#     #  #          #  "
 center "${color1}#     #     #    #    #  #    #  #       #    # ${color2}#     #  #          #  "
 center "${color1} #####      #    #    #   ####   ######  #    # ${color2}#     #  ######     #  "
-echo ""
+echo
 center "${color2}-- ${color1}Simula Metropolitan Centre ${color2}for Digital Engineering ${color1}--"
 
 # ------ Print an additional information line from a file -------------------

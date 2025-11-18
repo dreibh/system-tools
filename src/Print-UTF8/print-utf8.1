@@ -28,45 +28,50 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 11, 2025
+.Dd October 29, 2025
 .Dt print-utf8 1
 .Os print-utf8
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm print-utf8
-.Nd Print UTF-8 strings
+.Nd prints UTF-8 strings
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm print-utf8
-.Op Fl h | Fl Fl help
-.Op Fl v | Fl Fl version
 .Op Fl n | Fl Fl newline
-.br
 .Op Fl i Ar indentation Ar string | Fl Fl indent Ar indentation Ar string
-.br
+.Nm print-utf8
+.Op Fl n | Fl Fl newline
 .Op Fl x Ar console_width | Fl Fl columns Ar console_width
 .Op Fl c Ar string | Fl Fl center Ar string
-.br
+.Nm print-utf8
+.Op Fl n | Fl Fl newline
 .Op Fl x Ar console_width | Fl Fl columns Ar console_width
 .Op Fl I Ar Ar indent\%ation Ar left Ar right | Fl Fl multiline-\%indent Ar indent\%ation Ar left Ar right
-.br
+.Nm print-utf8
+.Op Fl n | Fl Fl newline
 .Op Fl x Ar console_width | Fl Fl columns Ar console_width
 .Op Fl C Ar left Ar right | Fl Fl multiline-center Ar left Ar right
-.br
+.Nm print-utf8
+.Op Fl n | Fl Fl newline
 .Op Fl x Ar console_width | Fl Fl columns Ar console_width
 .Op Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
-.br
+.Nm print-utf8
 .Op Fl b Ar string | Fl Fl size Ar string
-.br
+.Nm print-utf8
 .Op Fl l Ar string | Fl Fl length Ar string
-.br
+.Nm print-utf8
 .Op Fl w Ar string | Fl Fl width Ar string
-.br
+.Nm print-utf8
 .Op Fl a Ar string | Fl Fl size-length-width Ar string
-.br
+.Nm print-utf8
 .Op Fl t | Fl Fl terminal-info
+.Nm print-utf8
+.Op Fl h | Fl Fl help
+.Nm print-utf8
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 print-utf8 is a simple program to print UTF-8 strings in the console with
@@ -78,10 +83,6 @@ default of 80x24 is assumed.
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl h | Fl Fl help
-Prints command-line parameters.
-.It Fl v | Fl Fl version
-Prints program version.
 .It Fl n | Fl Fl newline
 Add a newline to the output. Default: off.
 .It Fl i Ar indentation Ar string | Fl Fl indent Ar indentation Ar string
@@ -111,13 +112,14 @@ Printf the size, length and width of the string without ANSI control sequences.
 .It Fl t | Fl Fl terminal-info
 Print current width and height of the console.
 Note that if /dev/tty is not available, the default of 80x24 is returned!
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It print-utf8 -h
-.It print-utf8 --help
-.It print-utf8 --version
 .It print-utf8 --newline --center \[dq]This line is centered in console width!\[dq]
 .It print-utf8 --newline --columns 80 --center \[dq]This line is centered in 80 columns!\[dq]
 .It print-utf8 --newline --center \[aq]\ex1b[38;2;241;71;29mThis line is centered!\ex1b[0m\[aq]
@@ -141,6 +143,9 @@ Note that if /dev/tty is not available, the default of 80x24 is returned!
 .It print-utf8 -a \[dq]😀 Test 😀\[dq]
 .It print-utf8 --terminal-info
 .It print-utf8 -n -s \[dq]\[rs]e[1;34m╔\[dq] \[dq]═\[dq] \[dq]╗\[rs]e[0m\[dq]\~;
+.It print-utf8 -h
+.It print-utf8 --help
+.It print-utf8 --version
 .br
 date +\[dq]%d. %m. %Y %H:%M:%S\[dq] | figlet -w 128 | \[rs]
 .br
