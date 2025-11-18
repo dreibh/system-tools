@@ -387,24 +387,46 @@ function print-ssh-key-fingerprints ()
 }
 
 
+# ###### Usage ##############################################################
+usage () {
+   echo >&2 "$(gettext "Usage:") $0 [-S|--scripts scripts_directory] [-h|--help]"
+   exit 1
+}
+
+
 
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
-# shellcheck disable=SC2034
+GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+options="$(${GETOPT} -o S:h --long scripts:,help -a -- "$@")"
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+   usage
+fi
+
 now="$(date)"
 scriptDirectories="/etc/system-info.d /usr/local/etc/system-info.d"
-
+eval set -- "${options}"
 while [ $# -gt 0 ] ; do
-   if [ "$1" == "[--scripts" ] || [ "$1" == "-S" ] ; then
-      scriptDirectories="$2"
-      shift
-   else
-      echo >&2 "$(gettext "Usage:") $0 [--help|-h] [--scripts|-S scripts_directory]"
-      exit 1
-   fi
-   shift
+   case "$1" in
+      -S | --scripts)
+         scriptDirectories="$2"
+         shift 2
+         ;;
+      -h | --help)
+         usage
+         # shift
+         ;;
+      --)
+         shift
+         break
+         ;;
+  esac
 done
+if [ $# -ne 0 ] ; then
+   usage
+fi
 
 
 # ====== Startup ============================================================
@@ -416,7 +438,7 @@ printf "\n$(gettext "System information on %s")\n\n" "${now}"
 # => prepare it in background, while printing other information.
 # shellcheck disable=SC2086
 (
-   echo ""
+   echo
    print-system-information
 ) 2>&1 | (
    print-banners ${scriptDirectories}

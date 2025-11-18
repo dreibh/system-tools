@@ -796,6 +796,7 @@ int main (int argc, char** argv)
 
    char*   line       = Buffer;
    ssize_t lineLength;
+   errno = 0;
    while( (lineLength = (getline((char**)&line, &BufferSize, InputFile))) > 0 ) {
 
       // ====== Process line ================================================
@@ -929,7 +930,8 @@ int main (int argc, char** argv)
 
 
       // ====== Prepare next iteration ======================================
-      line = Buffer;
+      line  = Buffer;
+      errno = 0;
    }
    if( (lineLength < 0) && (errno != 0) ) {
       fprintf(stderr, gettext("ERROR: Read error: %s"), strerror(errno));

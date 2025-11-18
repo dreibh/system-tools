@@ -28,20 +28,26 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 11, 2025
+.Dd October 29, 2025
 .Dt configure-grub 1
 .Os configure-grub
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm configure-grub
-.Nd NorNet configure-grub
+.Nd helps to change some GRUB boot-loader options
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm configure-grub grub-defaults-template-file
+.br
 .Op Fl i Ar input-\%grub-\%defaults-\%file | Fl Fl input Ar input-\%grub-\%defaults-\%file
+.br
 .Op Fl o Ar output-\%grub-\%defaults-\%file | Fl Fl output Ar output-\%grub-\%defaults-\%file
+.br
 .Op Fl V Ar GRUB_GFXMODE | Fl Fl video Ar GRUB_GFXMODE
+.br
 .Op Fl T Ar GRUB_INIT_TUNE | Fl Fl tune Ar GRUB_INIT_TUNE
+.Nm configure-grub
+.Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm configure-grub
@@ -53,7 +59,7 @@ option).
 .Pp
 WARNING: This program is meant to be used by expert users! Do not modify
 a working GRUB configuration without knowing how to boot the system from
-a rescue media to fix a broken configuration!
+a rescue media to fix a broken setup!
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -67,6 +73,8 @@ Set name of output GRUB file to write.
 Replace GRUB_GFXMODE by the provided setting.
 .It Fl T Ar GRUB_INIT_TUNE | Fl Fl tune Ar GRUB_INIT_TUNE
 Replace GRUB_INIT_TUNE by the provided setting.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES

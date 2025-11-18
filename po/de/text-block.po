@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-10-25 12:13+0200\n"
+"POT-Creation-Date: 2025-11-01 18:08+0100\n"
 "PO-Revision-Date: 2025-05-10 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -150,11 +150,11 @@ msgstr "FEHLER: Einfügedatei %s läßt sich nicht öffnen: %s"
 msgid "ERROR: No insert file provided!"
 msgstr "FEHLER: Keine Einfügedatei angegeben!"
 
-#: src/Text-Block/text-block.c:935
+#: src/Text-Block/text-block.c:937
 #, c-format
 msgid "ERROR: Read error: %s"
 msgstr "FEHLER: Lesefehler: %s"
 
-#: src/Text-Block/text-block.c:949
+#: src/Text-Block/text-block.c:951
 msgid "ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!"
 msgstr "FEHLER: Anzahl der Aktionen liegt außerhalb der festgelegten Grenzen (--min-actions/-m/--max-actions/-M)!"
