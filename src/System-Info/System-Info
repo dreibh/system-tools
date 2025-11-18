@@ -389,7 +389,7 @@ function print-ssh-key-fingerprints ()
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "$(gettext "Usage:") $0 [-S|--scripts scripts_directory] [--help|-h]"
+   echo >&2 "$(gettext "Usage:") $0 [-S|--scripts scripts_directory] [-h|--help]"
    exit 1
 }
 
