@@ -1,15 +1,6 @@
 #!/usr/bin/env bash
-#         ____            _                     _____           _
-#        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
-#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
-#        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
-#               |___/
-#                             --- System-Tools ---
-#                  https://www.nntb.no/~dreibh/system-tools/
-# ==========================================================================
 #
-# System-Info
+# NEAT System-Info system-info.d Script
 # Copyright (C) 2013-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -27,6 +18,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
+# Bash options:
 set -eu
 
 # Helper function library -> just return when it is not available.
@@ -39,7 +31,7 @@ set -eu
 
 NEAT_STUFF_VERSION=""
 if [ -e /etc/neat/neat-stuff-version ] ; then
-   NEAT_STUFF_VERSION=`cat /etc/neat/neat-stuff-version`
+   NEAT_STUFF_VERSION="$(cat /etc/neat/neat-stuff-version)"
 fi
 
 echo -en "\x1b[1;34m"
@@ -52,11 +44,11 @@ center "#  #  # #####   #     #    #   "
 center "#   # # #       #######    #   "
 center "#    ## #       #     #    #   "
 center "#     # ####### #     #    #   "
-echo ""
+echo
 center "-- A New, Evolutive API and Transport-Layer Architecture for the Internet --"
 echo -en "\x1b[1;34m"
 if [ "${NEAT_STUFF_VERSION}" != "" ] ; then
-   echo ""
+   echo
    center "${NEAT_STUFF_VERSION}"
 fi
 separator "  " "=" "  "

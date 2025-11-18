@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 #        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
@@ -9,7 +10,7 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# System-Info
+# Hostname System-Info system-info.d Script
 # Copyright (C) 2013-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -27,6 +28,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
+# Bash options:
 set -eu
 
 # Helper function library -> just return when it is not available.
@@ -44,7 +46,7 @@ color2="\x1b[31m"
 # ------ Print top separator ------------------------------------------------
 echo -en "${color1}"
 separator " *💻" "=" "💻*"
-echo ""
+echo
 center "${color1}-- ${color2}$(gettext "Welcome on the System") ${color1}--"
 
 # ------ Print the hostname FQDN as banner ----------------------------------

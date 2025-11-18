@@ -87,9 +87,7 @@ static void usage(const char* program, const int exitCode)
 // ###### Main program ######################################################
 int main(int argc, char** argv)
 {
-   double delayMin = -1.0;
-   double delayMax = -1.0;
-   bool   verboseMode = false;
+   bool verboseMode = false;
 
    // ====== Initialise i18n support ========================================
    if(setlocale(LC_ALL, "") == nullptr) {
@@ -106,12 +104,6 @@ int main(int argc, char** argv)
       { "version", no_argument, 0, 'v' },
       {  nullptr,  0,           0, 0   }
    };
-
-   if(optind + 1 < argc) {
-      delayMin = atof(argv[optind + 0]);
-      delayMax = atof(argv[optind + 1]);
-      optind += 2;
-   }
 
    int option;
    int longIndex;
@@ -136,9 +128,11 @@ int main(int argc, char** argv)
           break;
       }
    }
-   if(optind < argc) {
+   if(optind + 2 != argc) {
       usage(argv[0], 1);
    }
+   const double delayMin = atof(argv[optind + 0]);
+   const double delayMax = atof(argv[optind + 1]);
    if( (delayMin < 0.0) || (delayMin > delayMax) ) {
       fputs(gettext("ERROR: Invalid min_delay/max_delay"), stderr);
       fputs("\n", stderr);

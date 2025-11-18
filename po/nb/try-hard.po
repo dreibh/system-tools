@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-07-08 12:03+0200\n"
+"POT-Creation-Date: 2025-11-01 18:08+0100\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -48,27 +48,26 @@ msgstr ""
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Try-Hard/try-hard:63
-#, sh-format
-msgid "ERROR: Invalid argument ${arg}!"
-msgstr "FEIL: Ugyldig argument ${arg}!"
-
-#: src/Try-Hard/try-hard:70
+#: src/Try-Hard/try-hard:89
 #, sh-format
 msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
 msgstr "FEIL: Ugyldige maksimale prøveperioder ${MAX_TRIALS}!"
 
-#: src/Try-Hard/try-hard:75
+#: src/Try-Hard/try-hard:94
 #, sh-format
 msgid "ERROR: Invalid delay ${DELAY}!"
 msgstr "FEIL: Ugyldig forsinkelse ${DELAY}!"
 
-#: src/Try-Hard/try-hard:94
+#: src/Try-Hard/try-hard:113
 #, sh-format
 msgid "Tried ${MAX_TRIALS} times -> giving up now!"
 msgstr "Prøvde ${MAX_TRIALS} ganger -> gir opp nå!"
 
-#: src/Try-Hard/try-hard:99
+#: src/Try-Hard/try-hard:118
 #, sh-format
 msgid "Waiting for ${DELAY} s before trying again ..."
 msgstr "Venter på ${DELAY} s før å prøve igjen ..."
+
+#, sh-format
+#~ msgid "ERROR: Invalid argument ${arg}!"
+#~ msgstr "FEIL: Ugyldig argument ${arg}!"

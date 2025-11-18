@@ -1,3 +1,250 @@
+commit 378d37750dd4e87994284db5e37da09076d63652
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 14 11:01:53 2025 +0100
+
+    Parameter handling fix.
+
+commit ebbbb1e709c3501c64bc1ccf38fd32e96f211c55
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 3 13:03:53 2025 +0100
+
+    Yet another documentation update.
+
+commit 4487f0f67b3d3c6b082f1db571e33ce86397a8a6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 3 12:49:49 2025 +0100
+
+    Minor documentation update.
+
+commit 3e3e893df0c18b33785e5eed6051f660eb4bc920
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 3 12:45:20 2025 +0100
+
+    Improved documentation.
+
+commit 8f972cb169d759fc3c979cd71519df4935561e95
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 1 18:15:18 2025 +0100
+
+    Updated FreeBSD port.
+
+commit 6aee224d8e8a5312c3baccc929ca2049a5ebdbb6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 1 18:08:35 2025 +0100
+
+    New release td-system-tools-2.1.8.
+
+commit 2945e77678b8bbd2606b425fb572ab2c77e7a091
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 1 18:08:21 2025 +0100
+
+    Updated PO files.
+
+commit e1e91beabbf2736670b767b4183306df52a12f66
+Merge: c1ae9b3 8fb54bf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 1 17:24:28 2025 +0100
+
+    Merge branch 'dreibh/getopt'
+
+commit 8fb54bf1ab5a076c25944bc5e3e85132b0908f7d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 1 17:20:36 2025 +0100
+
+    A small clean-up.
+
+commit c1ae9b366a2c7c9ec59baab26a83df13e7a341ca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 31 17:03:00 2025 +0100
+
+    Bugfix: Need to set errno=0 to obtain possible error code from getline().
+
+commit c3bbdae28b7ce683795f77f02e5120deeb32c6e7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 21:13:46 2025 +0100
+
+    Manpage improvements.
+
+commit 9a2c5f36ea391cf17e8cf0c8cabfffefec285579
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 21:13:22 2025 +0100
+
+    Configure-GRUB: some improvements, and change of parameter handling to getopt.
+
+commit 4059235d464541985e282789eeb33994d0e61c71
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:58:24 2025 +0100
+
+    Reset-Machine-ID: changed script parameter handling to getopt.
+
+commit 39c4727eb246d18fffdd1bf659574c3d8606afee
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:48:00 2025 +0100
+
+    Further manpage updates and small clean-ups.
+
+commit 161eaa2d07fc930c382ef48c9939334c88ee928e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:36:55 2025 +0100
+
+    Improved manpage.
+
+commit 43c0f7a2044fb5008b6b210e28596f175d35da80
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:31:48 2025 +0100
+
+    Small manpage improvements.
+
+commit 0a2108d223961be9321301c1b5e43338e0750179
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:31:39 2025 +0100
+
+    Further clean-ups and manpage update.
+
+commit f180a23ce7832f69a7ea9297b7a2d727d4e9c85e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:31:27 2025 +0100
+
+    Further clean-ups and manpage update.
+
+commit 0a0c30aa47c23cf05368d9c6b37227ba46184107
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:31:03 2025 +0100
+
+    System-Maintenance: changed script parameter handling to getopt.
+
+commit d611332031fd3c914ba22410a3337a993622f20e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:30:51 2025 +0100
+
+    System-Info: changed script parameter handling to getopt.
+
+commit 25302f6ea3976126d7007ac19bdb988941033a81
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:20:05 2025 +0100
+
+    Further clean-ups and manpage update.
+
+commit c26a2d7f5cd5eacc9f7662b26500bf71f0497b3f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:19:44 2025 +0100
+
+    Fingerprint-SSH-Keys: changed script parameter handling to getopt.
+
+commit 1fa0970a8bf2b75788d908c5f825e0f53009f32d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:19:25 2025 +0100
+
+    Further clean-ups and manpage update.
+
+commit 781402dec225ee1026dba9271f95eeccfc8595a3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:07:57 2025 +0100
+
+    FreeBSD needs getopt as dependency.
+
+commit 0d1178ff008ca827b315bfcf359341129aeaa1e1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 20:06:33 2025 +0100
+
+    Try-Hard: changed script parameter handling to getopt.
+
+commit 2f228cb24828349bc1a6a557d223c56af2346609
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 19:52:28 2025 +0100
+
+    Minor simplifications.
+
+commit 77c64d36c5f692057ab46fd3cc9d9d8be51b8e0f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:35:28 2025 +0100
+
+    Updated FreeBSD port.
+
+commit af880afe030457bdfdc5d7f8ecc78127a3c57522
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:27:54 2025 +0100
+
+    New release td-system-tools-2.1.7.
+
+commit aea3fbd71d9f5e4e09b9149a2d2593eda9b1e709
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:16:57 2025 +0100
+
+    Updated PO files.
+
+commit ff01d54927f32e5b24b3fe6383b56e805df39c57
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:16:43 2025 +0100
+
+    Yet another ShellCheck clean-up.
+
+commit 3d199b4f93883a52acf2b80da1df18898213333c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:14:46 2025 +0100
+
+    Some more ShellCheck clean-ups.
+
+commit 03211b14f9c0850039bdcbdca3e778e25a0a748e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:11:54 2025 +0100
+
+    ShellCheck clean-ups.
+
+commit 7f4d18ea327fdafdb25cc65c56493061c22ceee1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:00:37 2025 +0100
+
+    Minor update.
+
+commit 9b4531bcfb5db19336849704abec633681a081ca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 13:56:32 2025 +0100
+
+    Improved examples.
+
+commit 0a4927cef16e884b0b37ee84b1f57300b701d26f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 13:56:18 2025 +0100
+
+    Updated example.
+
+commit f6f7429978bb42e7060250389c604251de867bcd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 13:39:31 2025 +0100
+
+    Improved example.
+
+commit a1e7dd3854d2e2ad1dfdff62955ddf3b20e730f6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 25 12:16:27 2025 +0200
+
+    Updated PO files.
+
+commit ea9976d1441ae8ac3a2f1dff49c53fcf975d227d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 25 12:13:51 2025 +0200
+
+    Removed obsolete build scripts.
+
+commit f6dbdba60b03d9ea487edb0b043d24f296ee8ac6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 25 10:15:04 2025 +0200
+
+    Parameter handling improvement.
+
+commit b61b51833a1f16af0ff77a2830440b332e75acbd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 24 12:34:22 2025 +0200
+
+    Updated FreeBSD port.
+
+commit 3b9302b3f3d4e3f9b591b0058def77db76f2d3b0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 24 12:20:31 2025 +0200
+
+    New release td-system-tools-2.1.6.
+
 commit bfdb9e140cc4c13488ba41161e95c7f824816e4c
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Oct 14 20:32:11 2025 +0200

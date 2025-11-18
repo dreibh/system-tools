@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
+# ##########################################################################
 #
-# Print system information
+#              //===//   //=====   //===//   //       //   //===//
+#             //    //  //        //    //  //       //   //    //
+#            //===//   //=====   //===//   //       //   //===<<
+#           //   \\         //  //        //       //   //    //
+#          //     \\  =====//  //        //=====  //   //===//   Version III
+#
+#             ###################################################
+#           ======  D E M O N S T R A T I O N   S Y S T E M  ======
+#             ###################################################
+#
+# ############# An Efficient RSerPool Prototype Implementation #############
+#
+# RSPLIB System-Info system-info.d Script
 # Copyright (C) 2013-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -18,7 +31,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-
+# Bash options:
 set -eu
 
 # Helper function library -> just return when it is not available.
@@ -31,7 +44,7 @@ set -eu
 
 RSERPOOLDEMO_VERSION=""
 if [ -e /etc/simulamet/rserpooldemo-version ] ; then
-   RSERPOOLDEMO_VERSION=`cat /etc/simulamet/rserpooldemo-version`
+   RSERPOOLDEMO_VERSION="$(cat /etc/simulamet/rserpooldemo-version)"
 fi
 
 echo -en "\x1b[1;34m"
@@ -42,11 +55,11 @@ center "|  _ \/ ___||  _ \| |   |_ _| __ ) "
 center "| |_) \___ \| |_) | |    | ||  _ \ "
 center "|  _ < ___) |  __/| |___ | || |_) |"
 center "|_| \_\____/|_|   |_____|___|____/ "
-echo ""
+echo
 center "◀◀◀ RSPLIB Project at the University of Duisburg-Essen ▶▶▶"
 echo -en "\x1b[1;34m"
 if [ "${RSERPOOLDEMO_VERSION}" != "" ] ; then
-   echo ""
+   echo
    center "${RSERPOOLDEMO_VERSION}"
 fi
 separator "  " "═" "  "
