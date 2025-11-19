@@ -63,7 +63,6 @@ Requires: (figlet or toilet)
 Requires: gettext-runtime
 Requires: (mbuffer or buffer)
 Recommends: subnetcalc
-Suggests: banner
 
 %description system-info
 This program displays basic status information about the system:
@@ -155,7 +154,7 @@ Summary: Helper tool to adjust GRUB configuration
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
-Recommends: td-system-tools-system-info
+Recommends: td-system-tools-system-maintenance
 
 %description configure-grub
 This program adjusts a GRUB configuration file by applying a configuration

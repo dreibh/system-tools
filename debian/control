@@ -18,9 +18,7 @@ Depends: figlet | toilet,
          td-get-system-info (>= ${source:Version}),
          td-print-utf8 (>= ${source:Version}),
          ${misc:Depends}
-Recommends: iputils-ping,
-            iputils-tracepath,
-            subnetcalc
+Recommends: subnetcalc
 Description: Print basic system information and banners
  This program displays basic status information about the system:
  hostname, uptime, CPU, memory statistics, disk space statistics,
@@ -48,9 +46,6 @@ Architecture: all
 Depends: gettext-base,
          sudo,
          ${misc:Depends}
-Provides: td-system-reset-machine-id
-Replaces: td-system-reset-machine-id
-Breaks: td-system-reset-machine-id (<< ${source:Version})
 Recommends: td-system-info,
             td-system-maintenance
 Description: Reset machine identity state
@@ -62,9 +57,6 @@ Package: td-fingerprint-ssh-keys
 Architecture: all
 Depends: gettext-base,
          ${misc:Depends}
-Provides: td-system-fingerprint-ssh-keys
-Replaces: td-system-fingerprint-ssh-keys
-Breaks: td-system-fingerprint-ssh-keys (<< ${source:Version})
 Recommends: td-system-info
 Description: Print SSH key fingerprints
  This program prints the SSH key fingerprints of the local machine
@@ -137,9 +129,6 @@ Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
          td-system-maintenance (>= ${source:Version}),
          td-text-block (>= ${source:Version}),
          ${misc:Depends}
-Provides: td-system-reset-machine-id
-Replaces: td-system-reset-machine-id
-Breaks: td-system-reset-machine-id (<< ${source:Version})
 Recommends: td-system-configure-grub
 Description: Metapackage for system information and maintenance tools
  This package is a metapackage for the system information and maintenance
