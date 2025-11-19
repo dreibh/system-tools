@@ -138,7 +138,7 @@ while [ $# -gt 0 ] ; do
    if [ "${OPENSSL}" != "" ] ; then
       crlOption=""
       if [ "${CRL}" != "" ] ; then
-         crlOption="-CRLfile \"${CRL}\" -crl_check"
+         crlOption="-crl_check -CRLfile \"${CRL}\""
       fi
       command="\"${OPENSSL}\" verify -no-CApath -no-CAstore -CAfile \"${CA_FILE}\" ${crlOption} -untrusted \"${CERTIFICATE_FILE}\" \"${CERTIFICATE_FILE}\""
       if sh -c "${command}" >/dev/null 2>&1 ; then
