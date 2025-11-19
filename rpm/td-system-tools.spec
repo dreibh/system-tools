@@ -226,9 +226,9 @@ text-block reads text from standard input or given file, and writes it to standa
 Summary: X.509 certificate handling tools
 Group: Applications/System
 Requires: td-system-tools-text-block = %{version}-%{release}
-Requires: gnutls-utils
-Requires: nss-tools
 Requires: openssl
+Recommends: gnutls-utils
+Recommends: nss-tools
 
 %description x509
  This package contains four simple tools:
