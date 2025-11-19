@@ -21,6 +21,7 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 - [Configure-Grub](#-configure-grub) (configure options for the GRUB boot loader),
 - [Try-Hard](#-try-hard) (run a command, with configurable retries on failure),
 - [Random-Sleep](#-random-sleep) (wait for random time span, with support of fractional seconds).
+- [X.509-Tools](#-x.509-tools) (tools for viewing, verifying and testing X.509 certificates),
 
 # 📚 System-Info
 
@@ -294,6 +295,102 @@ The manpage of Random-Sleep contains details and further examples:
 ```bash
 man Random-Sleep
 ```
+
+
+# 📚 X.509-Tools
+
+The X.509-Tools are a set of tools for viewing, verifying and testing [X.509](https://en.wikipedia.org/wiki/X.509) certificates:
+
+## View-Certificate
+
+View-Certificate displays basic details of a certificate, like subject, common name, etc. Examples:
+
+* Display the Root CA certificate used by [Let's Encrypt](https://letsencrypt.org/), which is usually installed under `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt` (Debian/Ubuntu), `/etc/pki/ca-trust/extracted/pem/directory-hash/ISRG_Root_X1.pem` (Fedora), or `/usr/share/certs/trusted/ISRG_Root_X1.pem` (FreeBSD):
+
+  ```bash
+  view-certificate /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
+  ```
+
+* Display certificate in file `www.nntb.no.crt`:
+
+  ```bash
+  view-certificate www.nntb.no.crt
+  ```
+
+Also see the manpage of View-Certificate for further details and examples:
+
+  ```bash
+  man view-certificate
+  ```
+
+
+## Check-Certificate
+
+Check-Certificate verifies a certificate, by checking the chain from a given Root CA certificate and optionally a Certificate Revokation List&nbsp;(CRL). The check is made with [OpenSSL](https://www.openssl.org/). If [GnuTLS](https://gnutls.org/) and/or [Network Security Services&nbsp;(NSS)](https://firefox-source-docs.mozilla.org/security/nss/) are installed as well, the verification is also made by these implementations in addition. This ensures that – in case of success – the certificate and its chain work with all three major X.509 implementations. Examples:
+
+* Verify the server certificate in `My-Server-Certificate.crt` using the Root CA certificate in `My-CA-Certificate.crt`:
+
+  ```bash
+  check-certificate My-CA-Certificate.crt My-Server-Certificate.crt
+  ```
+
+* The same as above, but also checking the CRL in `CRL.crl`:
+
+  ```bash
+  check-certificate --crl CRL.crl \
+     My-CA-Certificate.crt My-Server-Certificate.crt
+  ```
+
+* Check the certificate in `www.nntb.no.crt` using the Let's Encrypt Root CA certificate in `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt`:
+
+  ```bash
+  check-certificate \
+     /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt \
+     www.nntb.no.crt
+  ```
+
+Also see the manpage of Check-Certificate for further details and examples:
+
+  ```bash
+  man check-certificate
+  ```
+
+
+## Extract-PEM
+
+TBD!
+
+Also see the manpage of Extract-PEM for further details and examples:
+
+  ```bash
+  man extract-pem
+  ```
+
+
+## Test-TLS-Connection
+
+Test-TLS-Connection establishes a Transport Layer Security&nbsp;(TLS) connection to a remote TCP server on a given port number. The X.509 certificate is then verified by [Check-Certificate](#check-certificate). Examples:
+
+* Connect to [www.heise.de]([https://www.heise.de:443) and verify the certificate with the Root CA certificate in `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt` (used by [Let's Encrypt](https://letsencrypt.org/)):
+
+  ```bash
+  test-tls-connection www.heise.de:443 \
+     /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
+  ```
+
+* Connect to [www.nntb.no]([https://www.nntb.no:443), store the received certificate in as ``, and verify the certificate with the Root CA certificate in `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt` (used by [Let's Encrypt](https://letsencrypt.org/)):
+
+  ```bash
+  test-tls-connection www.nntb.no:443 \
+     /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt \
+     --save-certificate www.nntb.no.crt
+  ```
+
+Also see the manpage of Test-TLS-Connection for further details and examples:
+
+  ```bash
+  man test-tls-connection
+  ```
 
 
 # 📦 Binary Package Installation
