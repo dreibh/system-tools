@@ -201,7 +201,7 @@ while [ $# -gt 0 ] ; do
       "${CERTUTIL}" -A -n "My Certificate" -t ",," -e -d "${db}" -a -i "${CERTIFICATE_FILE}"
 
       # ------ Extract certificate and process each sub-CA individually -----
-      "${DIRNAME}/extract-pem" "${CERTIFICATE_FILE}" --skip-first-entry --skip-last-entry \
+      "${DIRNAME}/extract-pem" "${CERTIFICATE_FILE}" --skip-first-entry \
          --quiet --output-prefix "${db}/tmp/certificate-"
       subCA=0
       find "${db}/tmp" -name "certificate-[0-9]*.crt" | sort -r | \
