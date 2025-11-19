@@ -110,12 +110,12 @@ Description: Apply modifications to text
 Package: td-x509
 Architecture: any
 Depends: gettext-base,
-         gnutls-bin,
-         libnss3-tools,
          openssl,
          td-text-block,
          ${misc:Depends},
          ${shlibs:Depends}
+Recommends: gnutls-bin,
+            libnss3-tools
 Description: X.509 certificate handling tools
  This package contains four simple tools:
  view-certificate displays an X.509 certificate and its hierarchy.
