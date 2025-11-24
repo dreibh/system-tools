@@ -358,7 +358,20 @@ Also see the manpage of Check-Certificate for further details and examples:
 
 ## Extract-PEM
 
-TBD!
+Extract-PEM extracts an X.509 certificate bundle from a PEM file into separate files for each entry. The output files are named using a given prefix, with extension according to the entry type (i.e.&nbsp;`.crt` for a certificate, `.key` for a key, `.crl` for a CRL). The first entry (usually: the server, client or user certificate) and/or last entry (usually: the Root CA) may be skipped. Examples:
+
+* Extract the PEM file `My-Server-Certificate.crt`, into files `Certificate-<NUMBER>.<EXTENSION>`. The number is starting from&nbsp;1, and provides the position of an entry within the input file:
+
+  ```bash
+   extract-pem My-Server-Certificate.crt --output Certificate-
+  ```
+
+* Extract the PEM file `My-Server-Certificate.crt`, into files `Intermediate-<NUMBER>.<EXTENSION>`, skipping the first and last entry. That is, only the intermediate certificates are extracted:
+
+  ```bash
+   extract-pem My-Server-Certificate.crt \
+      --skip-first-entry --skip-last-entry --output Intermediate-
+  ```
 
 Also see the manpage of Extract-PEM for further details and examples:
 
