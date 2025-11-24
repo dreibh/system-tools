@@ -470,7 +470,7 @@ See [https://www.nntb.no/~dreibh/system-tools/#current-stable-release](https://w
 
 # 🔗 Useful Links
 
-* [VM Image Builder Scripts](https://github.com/simula/nornet-vmimage-builder-scripts)
+* [Virtual Machine Image Builder and System Installation Scripts](https://www.nntb.no/~dreibh/vmimage-builder-scripts/)
 * [NetPerfMeter – A TCP/MPTCP/UDP/SCTP/DCCP Network Performance Meter Tool](https://www.nntb.no/~dreibh/netperfmeter/)
 * [HiPerConTracer – High-Performance Connectivity Tracer](https://www.nntb.no/~dreibh/hipercontracer/)
 * [SubNetCalc – An IPv4/IPv6 Subnet Calculator](https://www.nntb.no/~dreibh/subnetcalc/)
