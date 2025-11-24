@@ -299,7 +299,7 @@ man Random-Sleep
 
 # 📚 X.509-Tools
 
-The X.509-Tools are a set of tools for viewing, verifying and testing [X.509](https://en.wikipedia.org/wiki/X.509) certificates:
+The X.509-Tools are a set of utilities for viewing, verifying and testing [X.509](https://en.wikipedia.org/wiki/X.509) certificates:
 
 ## View-Certificate
 
@@ -311,7 +311,7 @@ View-Certificate displays basic details of a certificate, like subject, common n
   view-certificate /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
   ```
 
-* Display certificate in file `www.nntb.no.crt`:
+* Display the details of the certificate in file `www.nntb.no.crt`:
 
   ```bash
   view-certificate www.nntb.no.crt
@@ -326,7 +326,7 @@ Also see the manpage of View-Certificate for further details and examples:
 
 ## Check-Certificate
 
-Check-Certificate verifies a certificate, by checking the chain from a given Root CA certificate and optionally a Certificate Revokation List&nbsp;(CRL). The check is made with [OpenSSL](https://www.openssl.org/). If [GnuTLS](https://gnutls.org/) and/or [Network Security Services&nbsp;(NSS)](https://firefox-source-docs.mozilla.org/security/nss/) are installed as well, the verification is also made by these implementations in addition. This ensures that – in case of success – the certificate and its chain work with all three major X.509 implementations. Examples:
+Check-Certificate verifies a certificate, by verifying its chain from a given Root CA certificate, and optionally a Certificate Revokation List&nbsp;(CRL) for certificate revokations. The checks are made using [OpenSSL](https://www.openssl.org/). If [GnuTLS](https://gnutls.org/) and/or [Network Security Services&nbsp;(NSS)](https://firefox-source-docs.mozilla.org/security/nss/) are installed as well, the verification is also made by these implementations in addition. This ensures that – in case of success – the certificate and its chain works with all three major X.509 implementations. Examples:
 
 * Verify the server certificate in `My-Server-Certificate.crt` using the Root CA certificate in `My-CA-Certificate.crt`:
 
@@ -334,14 +334,14 @@ Check-Certificate verifies a certificate, by checking the chain from a given Roo
   check-certificate My-CA-Certificate.crt My-Server-Certificate.crt
   ```
 
-* The same as above, but also checking the CRL in `CRL.crl`:
+* The same as above, but in addtion also checking the CRL in `CRL.crl` for certificate revokations:
 
   ```bash
   check-certificate --crl CRL.crl \
      My-CA-Certificate.crt My-Server-Certificate.crt
   ```
 
-* Check the certificate in `www.nntb.no.crt` using the Let's Encrypt Root CA certificate in `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt`:
+* Verify the certificate in `www.nntb.no.crt` using the [Let's Encrypt](https://letsencrypt.org/) Root CA certificate in `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt`:
 
   ```bash
   check-certificate \
@@ -378,7 +378,7 @@ Test-TLS-Connection establishes a Transport Layer Security&nbsp;(TLS) connection
      /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
   ```
 
-* Connect to [www.nntb.no]([https://www.nntb.no:443), store the received certificate in as ``, and verify the certificate with the Root CA certificate in `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt` (used by [Let's Encrypt](https://letsencrypt.org/)):
+* Connect to [www.nntb.no]([https://www.nntb.no:443), store the received certificate in `www.nntb.no.crt`, and verify the certificate with the Root CA certificate in `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt` (used by [Let's Encrypt](https://letsencrypt.org/)):
 
   ```bash
   test-tls-connection www.nntb.no:443 \
