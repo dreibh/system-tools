@@ -251,10 +251,10 @@ Recommends: nss-tools
 %{_datadir}/locale/*/LC_MESSAGES/extract-pem.mo
 %{_datadir}/locale/*/LC_MESSAGES/test-tls-connection.mo
 %{_datadir}/locale/*/LC_MESSAGES/view-certificate.mo
-%{_mandir}/man1/check-certificate.1
-%{_mandir}/man1/extract-pem.1
-%{_mandir}/man1/test-tls-connection.1
-%{_mandir}/man1/view-certificate.1
+%{_mandir}/man1/check-certificate.1.gz
+%{_mandir}/man1/extract-pem.1.gz
+%{_mandir}/man1/test-tls-connection.1.gz
+%{_mandir}/man1/view-certificate.1.gz
 
 
 %package misc
