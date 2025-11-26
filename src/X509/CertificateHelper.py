@@ -94,7 +94,7 @@ RE_USEREMAIL : re.Pattern = \
    re.compile(r'^(.*)( <)([a-zA-Z0–9. _%+-]+@[a-zA-Z0–9. -]+\.[a-zA-Z]{2,})(>)$')
 def prepareSubjectAltName(certType : CertificateType,
                           name     : str,
-                          hint     : str) -> tuple[str,str]:
+                          hint     : str | None) -> tuple[str,str]:
 
    # ====== Server or client cerfificate ====================================
    if (certType == CertificateType.Server) or (certType == CertificateType.Client):
