@@ -35,8 +35,8 @@ import shutil
 import socket
 import sys
 
-# This library needs at least Python 3.9:
-MIN_PYTHON = (3, 9)
+# This library needs at least Python 3.10:
+MIN_PYTHON = (3, 10)
 if sys.version_info < MIN_PYTHON:
    sys.exit('Python %s.%s or later is required!' % MIN_PYTHON)
 
@@ -94,7 +94,7 @@ RE_USEREMAIL : re.Pattern = \
    re.compile(r'^(.*)( <)([a-zA-Z0–9. _%+-]+@[a-zA-Z0–9. -]+\.[a-zA-Z]{2,})(>)$')
 def prepareSubjectAltName(certType : CertificateType,
                           name     : str,
-                          hint     : str | None) -> tuple[str,str]:
+                          hint     : str) -> tuple[str,str]:
 
    # ====== Server or client cerfificate ====================================
    if (certType == CertificateType.Server) or (certType == CertificateType.Client):
