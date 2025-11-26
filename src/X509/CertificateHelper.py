@@ -35,6 +35,12 @@ import re
 import shutil
 import socket
 import sys
+
+# This library needs at least Python 3.9:
+MIN_PYTHON = (3, 9)
+if sys.version_info < MIN_PYTHON:
+   sys.exit("Python %s.%s or later is required!" % MIN_PYTHON)
+
 from typing import Final
 from enum   import Enum
 
