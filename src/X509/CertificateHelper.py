@@ -29,7 +29,6 @@
 # Contact: thomas.dreibholz@gmail.com
 
 import ipaddress
-import netifaces
 import os
 import re
 import shutil
@@ -39,7 +38,13 @@ import sys
 # This library needs at least Python 3.9:
 MIN_PYTHON = (3, 9)
 if sys.version_info < MIN_PYTHON:
-   sys.exit("Python %s.%s or later is required!" % MIN_PYTHON)
+   sys.exit('Python %s.%s or later is required!' % MIN_PYTHON)
+
+# This library also requires the netifaces package:
+try:
+   import netifaces
+except ImportError:
+   sys.exit('The Python netifaces package is required!')
 
 from typing import Final
 from enum   import Enum
