@@ -107,7 +107,7 @@ Description: Apply modifications to text
  standard output or a given file. On the text, various modifications can be
  applied, according to the operation mode.
 
-Package: td-x509
+Package: td-x509-tools
 Architecture: any
 Depends: gettext-base,
          openssl,
@@ -145,7 +145,7 @@ Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
          td-system-info (>= ${source:Version}),
          td-system-maintenance (>= ${source:Version}),
          td-text-block (>= ${source:Version}),
-         td-x509 (>= ${source:Version}),
+         td-x509-tools (>= ${source:Version}),
          ${misc:Depends}
 Recommends: td-system-configure-grub
 Description: Metapackage for system information and maintenance tools

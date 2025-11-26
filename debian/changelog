@@ -1,3 +1,9 @@
+td-system-tools (2.2.0~rc1-1ubuntu1) forky; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Wed, 26 Nov 2025 11:20:50 +0100
+
 td-system-tools (2.1.9-1ubuntu1) forky; urgency=medium
 
   * New upstream release.

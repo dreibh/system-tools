@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.1.9
+Version: 2.2.0~rc1
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -20,7 +20,7 @@ Requires: td-system-tools-reset-machine-id = %{version}-%{release}
 Requires: td-system-tools-system-info = %{version}-%{release}
 Requires: td-system-tools-system-maintenance = %{version}-%{release}
 Requires: td-system-tools-text-block = %{version}-%{release}
-Requires: td-system-tools-x509 = %{version}-%{release}
+Requires: td-system-tools-x509-tools = %{version}-%{release}
 Recommends: td-system-tools-configure-grub = %{version}-%{release}
 
 
@@ -222,7 +222,7 @@ text-block reads text from standard input or given file, and writes it to standa
 %{_datadir}/locale/*/LC_MESSAGES/text-block.mo
 
 
-%package x509
+%package x509-tools
 Summary: X.509 certificate handling tools
 Group: Applications/System
 Requires: td-system-tools-text-block = %{version}-%{release}
@@ -230,7 +230,7 @@ Requires: openssl
 Recommends: gnutls-utils
 Recommends: nss-tools
 
-%description x509
+%description x509-tools
  This package contains four simple tools:
  view-certificate displays an X.509 certificate and its hierarchy.
  check-certificate verifies an X.509 certificate using a CA certificate
@@ -238,7 +238,7 @@ Recommends: nss-tools
  extract-pem extracts a PEM file.
  test-tls-connection tests a TCP TLS connection to a remote endpoint.
 
-%files x509
+%files x509-tools
 %{_bindir}/check-certificate
 %{_bindir}/extract-pem
 %{_bindir}/test-tls-connection
