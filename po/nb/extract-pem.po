@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-10-28 20:40+0100\n"
+"POT-Creation-Date: 2025-11-26 12:10+0100\n"
 "PO-Revision-Date: 2025-10-28 12:45+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -52,31 +52,31 @@ msgstr "Bruk:"
 msgid "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
 msgstr "FEIL: --only-first-entry og --skip-first-entry/--skip-last-entry utelukker hverandre!"
 
-#: src/X509/extract-pem:117
+#: src/X509/extract-pem:118
 #, sh-format
 msgid "ERROR: Unable to find PEM file ${PEM_FILE}!"
 msgstr "FEIL: Finner ikke PEM-filen ${PEM_FILE}!"
 
-#: src/X509/extract-pem:122
+#: src/X509/extract-pem:124
 #, sh-format
 msgid "Extracting ${PEM_FILE} ..."
 msgstr "Ekstraherer ${PEM_FILE} ..."
 
-#: src/X509/extract-pem:151
+#: src/X509/extract-pem:153
 #, sh-format
 msgid "ERROR: Unexpected type ${type} in ${PEM_FILE}!"
 msgstr "FEIL: Uventet type ${type} i ${PEM_FILE}!"
 
-#: src/X509/extract-pem:157
+#: src/X509/extract-pem:160
 #, sh-format
 msgid "ERROR: Unexpected data in ${PEM_FILE}!"
 msgstr "FEIL: Uventede data i ${PEM_FILE}!"
 
-#: src/X509/extract-pem:171 src/X509/extract-pem:187
+#: src/X509/extract-pem:175 src/X509/extract-pem:191
 msgid "SKIPPING"
 msgstr "HOPPES OVER"
 
-#: src/X509/extract-pem:196
+#: src/X509/extract-pem:200
 #, sh-format
 msgid "Done: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys"
 msgstr "Ferdig: ${certificate} sertifikater, ${csr} CSR-er, ${crl} CRL-er, ${key} nøkler"

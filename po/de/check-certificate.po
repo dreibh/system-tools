@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-10-28 14:52+0100\n"
+"POT-Creation-Date: 2025-11-26 12:10+0100\n"
 "PO-Revision-Date: 2025-10-28 12:45+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -53,47 +53,47 @@ msgstr "Aufruf:"
 msgid "ERROR: Unable to find CA certificate file ${CA_FILE}!"
 msgstr "FEHLER: CA-Zertifikatsdatei ${CA_FILE} wurde nicht gefunden!"
 
-#: src/X509/check-certificate:103
+#: src/X509/check-certificate:104
 #, sh-format
 msgid "ERROR: Unable to find CRL file ${CRL}!"
 msgstr "FEHLER: CRL-Datei ${CRL} wurde nicht gefunden!"
 
-#: src/X509/check-certificate:116
+#: src/X509/check-certificate:118
 #, sh-format
 msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
 msgstr "FEHLER: Zertifikatsdatei ${CERTIFICATE_FILE} wurde nicht gefunden!"
 
-#: src/X509/check-certificate:127
+#: src/X509/check-certificate:130
 #, sh-format
 msgid "Verifying ${CERTIFICATE_FILE} with CA ${CA_FILE} ..."
 msgstr "Verifiziere ${CERTIFICATE_FILE} mit CA ${CA_FILE} ..."
 
-#: src/X509/check-certificate:129
+#: src/X509/check-certificate:132
 msgid "WARNING: Only checking self-signature!"
 msgstr "WARNING: Es wird nur die Eigensignatur überprüft!"
 
-#: src/X509/check-certificate:141 src/X509/check-certificate:165
-#: src/X509/check-certificate:239
+#: src/X509/check-certificate:145 src/X509/check-certificate:169
+#: src/X509/check-certificate:249
 msgid "✓OKAY"
 msgstr "✓IN ORDNUNG"
 
-#: src/X509/check-certificate:144 src/X509/check-certificate:171
-#: src/X509/check-certificate:245
+#: src/X509/check-certificate:148 src/X509/check-certificate:175
+#: src/X509/check-certificate:255
 msgid "❌FAILED!"
 msgstr "❌FEHLGESCHLAGEN!"
 
-#: src/X509/check-certificate:148
+#: src/X509/check-certificate:152
 msgid "(OpenSSL is not installed)"
 msgstr "(OpenSSL ist nicht installiert)"
 
-#: src/X509/check-certificate:175
+#: src/X509/check-certificate:179
 msgid "(GnuTLS CertTool is not installed)"
 msgstr "(GnuTLS CerTool ist nicht installiert)"
 
-#: src/X509/check-certificate:251
+#: src/X509/check-certificate:261
 msgid "(NSS CertUtil is not installed)"
 msgstr "(NSS CertUtil ist nicht installiert)"
 
-#: src/X509/check-certificate:259
+#: src/X509/check-certificate:269
 msgid "CERTIFICATE VERIFICATIONS FAILED!"
 msgstr "ZERTIFIKATVERIFIZIERUNG IST FEHLGESCHLAGEN!"

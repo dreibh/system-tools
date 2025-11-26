@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-10-28 14:49+0100\n"
+"POT-Creation-Date: 2025-11-26 12:10+0100\n"
 "PO-Revision-Date: 2025-10-28 12:45+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -53,7 +53,7 @@ msgstr "Aufruf:"
 msgid "ERROR: Unable to find CA certificate file ${CA_FILE}!"
 msgstr "FEHLER: CA-Zertifikatsdatei ${CA_FILE} wurde nicht gefunden!"
 
-#: src/X509/test-tls-connection:100
+#: src/X509/test-tls-connection:101
 #, sh-format
 msgid "Connecting to ${ENDPOINT} ..."
 msgstr "Verbindung zu ${ENDPOINT} wird hergestellt ..."
