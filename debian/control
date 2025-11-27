@@ -114,6 +114,9 @@ Depends: gettext-base,
          td-text-block,
          ${misc:Depends},
          ${shlibs:Depends}
+Provides: td-x509
+Replaces: td-x509
+Breaks: td-x509 (<< ${source:Version})
 Recommends: gnutls-bin,
             libnss3-tools
 Description: X.509 certificate handling tools
