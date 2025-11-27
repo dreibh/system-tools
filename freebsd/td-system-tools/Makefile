@@ -11,9 +11,10 @@ LICENSE=	GPLv3+
 LICENSE_FILE=	${WRKSRC}/COPYING
 
 RUN_DEPENDS=	bash:shells/bash \
-		getopt>=0:misc/getopt \
 		figlet:misc/figlet \
-		mbuffer:misc/mbuffer
+		getopt>=0:misc/getopt \
+		mbuffer:misc/mbuffer \
+		openssl:security/openssl
 
 USES=		cmake gettext tar:xz
 CMAKE_ARGS=	-DCMAKE_INSTALL_MANDIR=${PREFIX}/share/man
