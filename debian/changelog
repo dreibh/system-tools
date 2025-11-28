@@ -1,9 +1,9 @@
-td-system-tools (2.2.1~rc1.1-1ubuntu1) unstable; urgency=medium
+td-system-tools (2.2.1-1ubuntu1) unstable; urgency=medium
 
   * New upstream release.
   * Closes: #1073548 (ITP).
 
- -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Fri, 28 Nov 2025 10:37:30 +0100
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Fri, 28 Nov 2025 16:23:27 +0100
 
 td-system-tools (2.2.0-1ubuntu1) forky; urgency=medium
 
