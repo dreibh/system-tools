@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.2.1~rc1.1
+Version: 2.2.1
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -288,6 +288,8 @@ support for fractional seconds.
 
 
 %changelog
+* Fri Nov 28 2025 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.2.1-1
+- New upstream release.
 * Wed Nov 26 2025 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.2.0-1
 - New upstream release.
 * Fri Nov 14 2025 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.1.9-1
