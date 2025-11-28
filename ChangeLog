@@ -1,3 +1,211 @@
+commit b2ac5364ddc4f9a57e5e1cc402b2ccd52e7e00a9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 26 14:03:04 2025 +0100
+
+    A fix.
+
+commit f67abf56a5b0d466828494cb1a42ebd21b25bc39
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 26 12:11:06 2025 +0100
+
+    Updated translations files.
+
+commit 2534cc574d1614b38a379b626d0b458a171cfdf3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 26 11:59:26 2025 +0100
+
+    A small documentation update.
+
+commit 314514160f0bf50e90dd0a4731bbef94303d9ec8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 26 11:51:00 2025 +0100
+
+    Minor typing fix.
+
+commit 19035c1eca47fbfde7215ed901d6fbd74ecb7170
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 26 10:41:41 2025 +0000
+
+    Minimum Python version for the certificate example is 3.10.
+
+commit 931c1bc87ea337a851e58ab948fc543f0e7019b6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 26 11:40:42 2025 +0100
+
+    Improved script.
+
+commit 8978f5398b7e26f6a27ba47c31805cf1cc718be0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 26 11:36:45 2025 +0100
+
+    Improved missing package handling.
+
+commit ac5090f7990723277afce5e3dbb9a685cb089467
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 26 11:33:54 2025 +0100
+
+    Improved script.
+
+commit 1a23695a572d9f4d773e9ee04b814523f5f5d5d3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 26 11:20:57 2025 +0100
+
+    Improved sub-package naming.
+
+commit b6bcec776b1fba0a9f06fb9668a83879c9f6b1fe
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 26 11:20:23 2025 +0100
+
+    Some clean-ups in the examples code.
+
+commit ab684dac76f8609860d42968f3ffe154ef0709c7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 26 11:20:17 2025 +0100
+
+    Updated manpages.
+
+commit 58012ec78e6872ddb6077d2b6126d274d5a7869f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 24 16:06:36 2025 +0100
+
+    Updated CI scripts
+
+commit 9bcf59c5cca64e947537d6537d0fb169c6846ef1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 24 13:27:54 2025 +0100
+
+    RPM spec update.
+
+commit 11fdc49300f1fe4c0d1214e35ad4e2568ef48e52
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 24 13:11:48 2025 +0100
+
+    Further documentation improvements.
+
+commit 596d7cab4f0663926e1508f1d4e1cf78dac37c02
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 24 12:58:00 2025 +0100
+
+    Improved documentation.
+
+commit c6f53856fcd3e366e2ed3ab1cc1d8a7d4153f982
+Merge: 83998bb fcd19ca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Nov 24 09:52:59 2025 +0100
+
+    Merge branch 'master' into dreibh/x509
+
+commit fcd19ca737d9774a0a60b6a72cb1ae3a574a8ea3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Nov 23 21:07:09 2025 +0100
+
+    Small documentation updates.
+
+commit 83998bb3961affe215276269dc15a2d31387a498
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 19 17:07:24 2025 +0100
+
+    Improved documentation.
+
+commit 8853163b6d636a3cbf7a62c8dd882e0b70988dab
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 19 17:07:15 2025 +0100
+
+    Updated manpage.
+
+commit 77f7e510717803a4d3d470908f663a1d2c8667d9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 19 16:24:14 2025 +0100
+
+    Updated manpages.
+
+commit 423e96491a2e81db487c503b410e27241f64f0ca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 19 16:24:09 2025 +0100
+
+    Improved script.
+
+commit 2c0ad9d36f10dd4b863ccf69e60a2ed714a80071
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 19 15:42:06 2025 +0100
+
+    A fix.
+
+commit 7507de3386ce52ca080ce542629fc5c0875578da
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 19 15:21:05 2025 +0100
+
+    RPM spec update.
+
+commit fd683145826f84afa680aee9f0ca18ccc91980b3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 19 15:20:06 2025 +0100
+
+    Further OpenSSL parameter improvements.
+
+commit df345b029faf893780de73eeca0b1267f58073a4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 19 14:49:51 2025 +0100
+
+    Improved OpenSSL options for certificate verification.
+
+commit f0a47995490857e0bd912ff18f93873e3faaaf39
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 19 14:03:46 2025 +0100
+
+    Package dependency improvements.
+
+commit 5563bde6b8371c9c1b2787a3f9aa79345c8e5045
+Merge: 4e4e963 5cd4200
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 19 14:02:14 2025 +0100
+
+    Merge branch 'master' into dreibh/x509
+
+commit 5cd4200ca0d1187ceda44b80b970b7a270bc5292
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 19 13:59:57 2025 +0100
+
+    Package dependency clean-ups.
+
+commit 4e4e963d848fc05961f8e9b89f94ca0107d64647
+Merge: 50657c2 6cd106c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 18 15:57:19 2025 +0100
+
+    Merge branch 'master' into dreibh/x509
+
+commit 6cd106c2f5d826e6998892f4735bac15580ce364
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 14 13:06:40 2025 +0100
+
+    Minor usage string update.
+
+commit 7f268830328afbf14bd00d3ec8f5ee8de7552e49
+Merge: b0c57ab 45872eb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 14 12:41:22 2025 +0100
+
+    Merge branch 'master' of github.com:dreibh/system-tools
+
+commit b0c57ab9ad77da977fef149215f0c96f9687750f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 14 12:36:00 2025 +0100
+
+    Minor clean-up.
+
+commit 45872eb2cca38ea4e4fd0ec8c1a4f9257a817e51
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 14 11:36:07 2025 +0100
+
+    Updated FreeBSD port.
+
+commit 054f3f469fba8652802302957459c7dc9ed5ce8a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 14 11:06:46 2025 +0100
+
+    New release td-system-tools-2.1.9.
+
 commit 378d37750dd4e87994284db5e37da09076d63652
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Nov 14 11:01:53 2025 +0100
@@ -22,6 +230,13 @@ Date:   Mon Nov 3 12:45:20 2025 +0100
 
     Improved documentation.
 
+commit 50657c2d92994b3512a635aced8e14a12ece6a4b
+Merge: 0b5ae3d 6aee224
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 1 18:24:58 2025 +0100
+
+    Merge branch 'master' into dreibh/x509
+
 commit 8f972cb169d759fc3c979cd71519df4935561e95
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Nov 1 18:15:18 2025 +0100
@@ -40,6 +255,13 @@ Date:   Sat Nov 1 18:08:21 2025 +0100
 
     Updated PO files.
 
+commit 0b5ae3d096856e1b998510e13f4e2e71f6ec0ee2
+Merge: 658bb18 e1e91be
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 1 17:24:45 2025 +0100
+
+    Merge branch 'master' into dreibh/x509
+
 commit e1e91beabbf2736670b767b4183306df52a12f66
 Merge: c1ae9b3 8fb54bf
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -53,11 +275,42 @@ Date:   Sat Nov 1 17:20:36 2025 +0100
 
     A small clean-up.
 
+commit d327a527ee660d43ec84a5618db65795576464e6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 1 17:20:36 2025 +0100
+
+    A small clean-up.
+
 commit c1ae9b366a2c7c9ec59baab26a83df13e7a341ca
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Oct 31 17:03:00 2025 +0100
 
     Bugfix: Need to set errno=0 to obtain possible error code from getline().
+
+commit 9446326a60e3112de1b6dfe6ec48306b25a0b1de
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 31 16:26:38 2025 +0100
+
+    Fixed typo.
+
+commit ee6bda047adf4b3872d80e5641ba5600b037301b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Oct 30 17:09:58 2025 +0100
+
+    Some improvements.
+
+commit 2c298edb114e8e23ccb9036e5c896a866c6cf768
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Oct 30 15:52:42 2025 +0100
+
+    Some output improvements.
+
+commit 7d266750193c8ce22e41725acc7f206e77560be4
+Merge: d5fe0e2 c3bbdae
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 21:47:45 2025 +0100
+
+    Merge branch 'dreibh/getopt' into dreibh/x509
 
 commit c3bbdae28b7ce683795f77f02e5120deeb32c6e7
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -149,11 +402,242 @@ Date:   Wed Oct 29 20:06:33 2025 +0100
 
     Try-Hard: changed script parameter handling to getopt.
 
+commit d5fe0e2d6cdac84c4796eb39bbde881433c2a16f
+Merge: 8019734 2f228cb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 19:52:56 2025 +0100
+
+    Merge branch 'master' into dreibh/x509
+
 commit 2f228cb24828349bc1a6a557d223c56af2346609
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Oct 29 19:52:28 2025 +0100
 
     Minor simplifications.
+
+commit 8019734da92784f85100ea9e23069d5295eedc31
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 19:48:48 2025 +0100
+
+    Minor fixes.
+
+commit 62a5f97f14c622a284c07f130939ca21cfc47f86
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 19:46:23 2025 +0100
+
+    Some clean-ups.
+
+commit 73471dbcac47812d5014298ee121b2294a9a9bee
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 13:13:54 2025 +0100
+
+    Added test script.
+
+commit a8247fb8066be128d35ea88fc066a6316b19523c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 29 13:13:43 2025 +0100
+
+    Improved scripts.
+
+commit 7e962df88c7c7133ccb9ee51c462ab3542b4d612
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 21:04:44 2025 +0100
+
+    Some updates.
+
+commit 52a39fbdfbd1af2ec5b720e1386095b38a520a5d
+Merge: ba56fb2 c5bb241
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 21:00:50 2025 +0100
+
+    Merge branch 'dreibh/x509' of github.com:dreibh/system-tools into dreibh/x509
+
+commit ba56fb240fd7861101908f53bbd248c9a079819c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 21:00:38 2025 +0100
+
+    Some updates.
+
+commit c5bb2411806e6f5e64ad4e52887b53407a841347
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 14:58:06 2025 +0100
+
+    Some progress.
+
+commit ab1158c831b8d2f2a7bd7d2640e90a3bc0572d1e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 14:56:58 2025 +0100
+
+    Some updates and clean-ups.
+
+commit 93935927835fcb72aa8b5ca0ce747342cd065301
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 14:46:54 2025 +0100
+
+    Further script improvements.
+
+commit 0b2933f62e8efd06b6c1356a65472f619649d269
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 14:46:35 2025 +0100
+
+    Minor update.
+
+commit b6b6ffeea1034e19e545de42dd42df84bdad09ec
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 14:18:24 2025 +0100
+
+    Minor fixes.
+
+commit 7e40bb5e85dbcfc3dc6abcd05bacff685f42c238
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 12:58:10 2025 +0100
+
+    Added initial translation files for X.509 Tools.
+
+commit 049d2173d7e7a68f2856e903c76b3d37c0e8dadc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 12:58:03 2025 +0100
+
+    Packaging updates.
+
+commit 1b28b8bbd88f899013817a9862e293214d7e4a0a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 12:44:01 2025 +0100
+
+    Further packaging updates.
+
+commit f3a2d2d31db2b36c198e76ee581c3d4c223c59f6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 12:21:29 2025 +0100
+
+    Improved manpage documentation.
+
+commit bd5029c30446732ba15e67ce6009eabf275f9da9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 12:12:45 2025 +0100
+
+    Added manpage and shell completion.
+
+commit ba5ac47d2d43bea4a3dcc83052e37c09146914d5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 11:55:16 2025 +0100
+
+    Improved script.
+
+commit 40b47e897d18c04062421d2bd541e1f844bba1bb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 11:04:32 2025 +0100
+
+    Improved manpages.
+
+commit f68254080b917c17228cb1acf57425b31e33e74d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 10:58:52 2025 +0100
+
+    Added build configurations.
+
+commit 47b80796777b06c49484409368d8b7275173aeb2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 10:55:41 2025 +0100
+
+    Added option to skip displaying the certificate before verification.
+
+commit 19263dbf80f8f87434fb22d2b40c1c890c1dbef6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 10:50:56 2025 +0100
+
+    Further improvements and clean-ups.
+
+commit 88a0e076f23f1ddade1c0febfc4f0f152469a56f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 10:39:34 2025 +0100
+
+    Added comment.
+
+commit 4e72b8efbffdeaeeaea9ed343ae3ee23cb039515
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 10:39:27 2025 +0100
+
+    Further improvements.
+
+commit 9fe365b91a496b245100f3025c2e77806e40672f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 10:26:36 2025 +0100
+
+    Added gettext support.
+
+commit 8eb32ea8eec13bcc54e32594b2ebae7cde90897b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 10:06:13 2025 +0100
+
+    Minor clean-ups.
+
+commit f07403a41c93aa9ba0dd7f93c3c587820bebe9ee
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Oct 28 10:03:20 2025 +0100
+
+    Improved script.
+
+commit e00cdc656a95081020930e07d117ff50ab899f0f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 16:59:41 2025 +0100
+
+    Updated manpage and shell completion.
+
+commit 2859501fa303c6acc3acd0c7a11c1340fb0ecf0f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 16:59:31 2025 +0100
+
+    Some output improvements.
+
+commit 722b2df06ded8f5ec379414065eb27124983e928
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 16:33:16 2025 +0100
+
+    Some clean-ups.
+
+commit bea0566455513e4f3fbb199bf7acbff29855ab92
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 16:29:43 2025 +0100
+
+    Improved script, shell completion, and manpage.
+
+commit 1b6932709224de8794c7a79e5b9ace5496455a3d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 16:29:31 2025 +0100
+
+    Improved log output.
+
+commit 60a1bef77859d38828d95827a085cb0939dd8d7a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 16:08:05 2025 +0100
+
+    Improved script, shell completion, and manpage.
+
+commit da14a0e63be937d291867ddafc6950ef9e8acb0a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 15:46:23 2025 +0100
+
+    Added option to only extract the first entry.
+
+commit 0b9c2a2776673252aa7c83b13b0f7698d08e4937
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 15:34:00 2025 +0100
+
+    Minor update.
+
+commit c8c25d503839c154883e33d0d069090ef8b23399
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 15:33:49 2025 +0100
+
+    Added manpage.
+
+commit 326ca6dd5648a058188c6ad47b442646c058edf1
+Merge: e94a66e af880af
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Oct 27 14:38:15 2025 +0100
+
+    Merge branch 'master' into dreibh/x509
 
 commit 77c64d36c5f692057ab46fd3cc9d9d8be51b8e0f
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -215,6 +699,49 @@ Date:   Mon Oct 27 13:39:31 2025 +0100
 
     Improved example.
 
+commit e94a66e3bf0f07a3805b173f354f36fb493c8bc6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Oct 26 11:56:06 2025 +0100
+
+    Updated CMakeLists.txt.
+
+commit 575f08ad50afe27827a14fb7e91c5754c51dd114
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Oct 26 11:52:41 2025 +0100
+
+    Added manpage and shell completion for view-certificate.
+
+commit f5aaa5bc4e350d6bf3db160c76dc2aa01b89252d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 25 13:19:28 2025 +0200
+
+    Minor update.
+
+commit 962abcafa63a280247bea148075f3509d6a86443
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 25 13:00:20 2025 +0200
+
+    Some improvements.
+
+commit 2bc0587d5d0fee680762cec7588c2be575bfd6a8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 25 12:53:07 2025 +0200
+
+    Updated CMakeLists.txt.
+
+commit 60d327d3dc69fd4277113d1bf3ac2fd307187413
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 25 12:51:10 2025 +0200
+
+    Minor improvements. Added manpage and bash completion.
+
+commit f478d7071a89fcbae3b6f193078e224498e1078d
+Merge: 98a79c1 a1e7dd3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 25 12:16:49 2025 +0200
+
+    Merge branch 'master' into dreibh/x509
+
 commit a1e7dd3854d2e2ad1dfdff62955ddf3b20e730f6
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Oct 25 12:16:27 2025 +0200
@@ -233,6 +760,13 @@ Date:   Sat Oct 25 10:15:04 2025 +0200
 
     Parameter handling improvement.
 
+commit 98a79c11fa1b5e8cf926a3b17c3e2551b6ad6315
+Merge: 4a7bfe8 3b9302b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 24 13:23:57 2025 +0200
+
+    Merge branch 'master' into dreibh/x509
+
 commit b61b51833a1f16af0ff77a2830440b332e75acbd
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Oct 24 12:34:22 2025 +0200
@@ -244,6 +778,18 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Oct 24 12:20:31 2025 +0200
 
     New release td-system-tools-2.1.6.
+
+commit 4a7bfe875032bbef8859c05f48f2258007d65379
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 24 12:11:33 2025 +0200
+
+    Simplified IP address sorting.
+
+commit f3253e2ea89f79c29a319ef6af2d25be23657cd1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 24 12:09:20 2025 +0200
+
+    Added original HiPerConTracer helper scripts.
 
 commit bfdb9e140cc4c13488ba41161e95c7f824816e4c
 Author: Thomas Dreibholz <dreibh@simula.no>

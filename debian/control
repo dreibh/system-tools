@@ -18,9 +18,7 @@ Depends: figlet | toilet,
          td-get-system-info (>= ${source:Version}),
          td-print-utf8 (>= ${source:Version}),
          ${misc:Depends}
-Recommends: iputils-ping,
-            iputils-tracepath,
-            subnetcalc
+Recommends: subnetcalc
 Description: Print basic system information and banners
  This program displays basic status information about the system:
  hostname, uptime, CPU, memory statistics, disk space statistics,
@@ -48,9 +46,6 @@ Architecture: all
 Depends: gettext-base,
          sudo,
          ${misc:Depends}
-Provides: td-system-reset-machine-id
-Replaces: td-system-reset-machine-id
-Breaks: td-system-reset-machine-id (<< ${source:Version})
 Recommends: td-system-info,
             td-system-maintenance
 Description: Reset machine identity state
@@ -62,9 +57,6 @@ Package: td-fingerprint-ssh-keys
 Architecture: all
 Depends: gettext-base,
          ${misc:Depends}
-Provides: td-system-fingerprint-ssh-keys
-Replaces: td-system-fingerprint-ssh-keys
-Breaks: td-system-fingerprint-ssh-keys (<< ${source:Version})
 Recommends: td-system-info
 Description: Print SSH key fingerprints
  This program prints the SSH key fingerprints of the local machine
@@ -115,6 +107,26 @@ Description: Apply modifications to text
  standard output or a given file. On the text, various modifications can be
  applied, according to the operation mode.
 
+Package: td-x509-tools
+Architecture: any
+Depends: gettext-base,
+         openssl,
+         td-text-block,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Provides: td-x509
+Replaces: td-x509
+Breaks: td-x509 (<< ${source:Version})
+Recommends: gnutls-bin,
+            libnss3-tools
+Description: X.509 certificate handling tools
+ This package contains four simple tools:
+ view-certificate displays an X.509 certificate and its hierarchy.
+ check-certificate verifies an X.509 certificate using a CA certificate
+ and optionally a revocation list.
+ extract-pem extracts a PEM file.
+ test-tls-connection tests a TCP TLS connection to a remote endpoint.
+
 Package: td-misc
 Architecture: any
 Depends: gettext-base,
@@ -136,10 +148,8 @@ Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
          td-system-info (>= ${source:Version}),
          td-system-maintenance (>= ${source:Version}),
          td-text-block (>= ${source:Version}),
+         td-x509-tools (>= ${source:Version}),
          ${misc:Depends}
-Provides: td-system-reset-machine-id
-Replaces: td-system-reset-machine-id
-Breaks: td-system-reset-machine-id (<< ${source:Version})
 Recommends: td-system-configure-grub
 Description: Metapackage for system information and maintenance tools
  This package is a metapackage for the system information and maintenance

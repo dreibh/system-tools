@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.1.9
+Version: 2.2.1~rc1.1
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -20,6 +20,7 @@ Requires: td-system-tools-reset-machine-id = %{version}-%{release}
 Requires: td-system-tools-system-info = %{version}-%{release}
 Requires: td-system-tools-system-maintenance = %{version}-%{release}
 Requires: td-system-tools-text-block = %{version}-%{release}
+Requires: td-system-tools-x509-tools = %{version}-%{release}
 Recommends: td-system-tools-configure-grub = %{version}-%{release}
 
 
@@ -63,7 +64,6 @@ Requires: (figlet or toilet)
 Requires: gettext-runtime
 Requires: (mbuffer or buffer)
 Recommends: subnetcalc
-Suggests: banner
 
 %description system-info
 This program displays basic status information about the system:
@@ -155,7 +155,7 @@ Summary: Helper tool to adjust GRUB configuration
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
-Recommends: td-system-tools-system-info
+Recommends: td-system-tools-system-maintenance
 
 %description configure-grub
 This program adjusts a GRUB configuration file by applying a configuration
@@ -222,6 +222,41 @@ text-block reads text from standard input or given file, and writes it to standa
 %{_datadir}/locale/*/LC_MESSAGES/text-block.mo
 
 
+%package x509-tools
+Summary: X.509 certificate handling tools
+Group: Applications/System
+Requires: td-system-tools-text-block = %{version}-%{release}
+Requires: openssl
+Recommends: gnutls-utils
+Recommends: nss-tools
+
+%description x509-tools
+ This package contains four simple tools:
+ view-certificate displays an X.509 certificate and its hierarchy.
+ check-certificate verifies an X.509 certificate using a CA certificate
+ and optionally a revocation list.
+ extract-pem extracts a PEM file.
+ test-tls-connection tests a TCP TLS connection to a remote endpoint.
+
+%files x509-tools
+%{_bindir}/check-certificate
+%{_bindir}/extract-pem
+%{_bindir}/test-tls-connection
+%{_bindir}/view-certificate
+%{_datadir}/bash-completion/completions/check-certificate
+%{_datadir}/bash-completion/completions/extract-pem
+%{_datadir}/bash-completion/completions/test-tls-connection
+%{_datadir}/bash-completion/completions/view-certificate
+%{_datadir}/locale/*/LC_MESSAGES/check-certificate.mo
+%{_datadir}/locale/*/LC_MESSAGES/extract-pem.mo
+%{_datadir}/locale/*/LC_MESSAGES/test-tls-connection.mo
+%{_datadir}/locale/*/LC_MESSAGES/view-certificate.mo
+%{_mandir}/man1/check-certificate.1.gz
+%{_mandir}/man1/extract-pem.1.gz
+%{_mandir}/man1/test-tls-connection.1.gz
+%{_mandir}/man1/view-certificate.1.gz
+
+
 %package misc
 Summary: Miscellaneous tools
 Group: Applications/System
@@ -253,6 +288,8 @@ support for fractional seconds.
 
 
 %changelog
+* Wed Nov 26 2025 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.2.0-1
+- New upstream release.
 * Fri Nov 14 2025 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.1.9-1
 - New upstream release.
 * Sat Nov 01 2025 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.1.8-1

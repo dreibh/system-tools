@@ -30,6 +30,7 @@
 
 set -eu
 
+# gettext options:
 export TEXTDOMAIN="System-Info"
 
 
