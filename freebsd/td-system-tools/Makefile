@@ -13,10 +13,9 @@ LICENSE_FILE=	${WRKSRC}/COPYING
 RUN_DEPENDS=	bash:shells/bash \
 		figlet:misc/figlet \
 		getopt>=0:misc/getopt \
-		mbuffer:misc/mbuffer \
-		openssl:security/openssl
+		mbuffer:misc/mbuffer
 
-USES=		cmake gettext tar:xz
+USES=		cmake gettext ssl:run tar:xz
 CMAKE_ARGS=	-DCMAKE_INSTALL_MANDIR=${PREFIX}/share/man
 
 .include <bsd.port.mk>
