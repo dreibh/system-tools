@@ -3,9 +3,7 @@ Section: utils
 Priority: optional
 Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 Homepage: https://www.nntb.no/~dreibh/system-tools/
-Vcs-Git: https://github.com/dreibh/system-tools.git
-Vcs-Browser: https://github.com/dreibh/system-tools
-Build-Depends: cmake (>= 3.5),
+Build-Depends: cmake,
                debhelper-compat (= 13)
 Standards-Version: 4.7.2
 Rules-Requires-Root: no

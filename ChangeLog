@@ -1,3 +1,70 @@
+commit 28de909adfa7b35e18beb26d448f08afb65e1d6b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 16:23:12 2025 +0100
+
+    Another fix.
+
+commit cc6690f1895315828e9d282aa01383deafc53c66
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 16:21:02 2025 +0100
+
+    Minor packaging update.
+
+commit 379b4cc3858aa7b667689d2ea071c142673effd8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 15:49:02 2025 +0100
+
+    Updated CI scripts
+
+commit 8afaf2d809776ed5e57f02d65ad10e45a71f7e29
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 11:27:04 2025 +0100
+
+    Updated CI scripts
+
+commit 348bbe71524e32089bbe7b45dc0423790f9a1e6d
+Merge: 4acd8a4 b31a00c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 10:38:29 2025 +0100
+
+    Merge branch 'master' of github.com:dreibh/system-tools
+
+commit 4acd8a420c9c76971f04cecd33a46afc9b8364f8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 10:38:05 2025 +0100
+
+    Workflow update.
+
+commit 96ca1a9832dc213749cc145dd513315da2159572
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 10:15:38 2025 +0100
+
+    Minor manpage update.
+
+commit b31a00c98af714c45cc8d3e10b815901c7adf156
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 10:12:18 2025 +0100
+
+    FreeBSD port improvement.
+
+commit 1c7f006a16444f024dd48db258b3e411082bf70d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Nov 27 12:13:03 2025 +0100
+
+    Dependency fix.
+
+commit 84d63a55ed79d2528d84d822b3e9a0a49d5c6dfe
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Nov 27 09:59:06 2025 +0100
+
+    Updated FreeBSD port.
+
+commit 5cd8e803783113643145f7c2ba0a6a0cc4079a47
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 26 14:07:17 2025 +0100
+
+    New release td-system-tools-2.2.0.
+
 commit b2ac5364ddc4f9a57e5e1cc402b2ccd52e7e00a9
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Nov 26 14:03:04 2025 +0100
