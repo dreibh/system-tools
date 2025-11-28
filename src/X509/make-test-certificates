@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -eu
+
+# # NOTE: This line must use the local hostname:
+# ./generate-test-certificates TestCA --client --san LOCAL  "$(hostname -f)"
+#
+# # NOTE: These lines must contain resolvable (/etc/hosts or DNS) hostnames:
+# ./generate-test-certificates TestCA --server --san LOOKUP besserud.proxmox.crnalab.net
+# ./generate-test-certificates TestCA --server --san LOOKUP lillevann.proxmox.crnalab.net
+# ./generate-test-certificates TestCA --server --san LOOKUP midtstuen.proxmox.crnalab.net
+
+./generate-test-certificates TestCA --user "Dr. Al Bundy <al.bundy@company.example>"
+./generate-test-certificates TestCA --user "James Bond <james.bond@company.example>"
