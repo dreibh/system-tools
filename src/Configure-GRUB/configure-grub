@@ -48,7 +48,7 @@ if [[ $? -ne 0 ]]; then
    usage
 fi
 
-INPUT_CONFIGURATION="/etc/default/grub"
+INPUT_CONFIGURATION=""
 OUTPUT_CONFIGURATION=""
 REPLACE_GRUB_GFXMODE=""
 REPLACE_GRUB_INIT_TUNE=""
@@ -86,6 +86,15 @@ if [ $# -ne 1 ] ; then
 fi
 
 TEMPLATE_CONFIGURATION="$1"
+if [ "${INPUT_CONFIGURATION}" == "" ] ; then
+   if [ -e "/etc/default/grub" ] ; then
+      # Use existing configuration as input:
+      INPUT_CONFIGURATION="/etc/default/grub"
+   else
+      # Use empty file (/dev/null) as input:
+      INPUT_CONFIGURATION="/dev/null"
+   fi
+fi
 if [ ! -e "${INPUT_CONFIGURATION}" ] ; then
    echo >&2 "ERROR: Input configuration ${INPUT_CONFIGURATION} not found!"
    exit 1
