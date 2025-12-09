@@ -258,6 +258,49 @@ Recommends: nss-tools
 %{_mandir}/man1/view-certificate.1.gz
 
 
+%package gimp-scripts
+Summary: GIMP image processing scripts
+Group: Applications/System
+BuildArch: noarch
+Requires: gimp
+Requires: GraphicsMagick
+Requires: util-linux
+
+%description gimp-scripts
+ This package contains some GIMP scripts for automated image processing.
+ The main purpose of this script is to generate background images for
+ desktops, boot splashes, etc. with some branding.
+
+%files gimp-scripts
+%{_bindir}/Make-BumpMap
+%{_bindir}/Make-Caption
+%{_bindir}/Make-Cloth
+%{_bindir}/Make-GlossyText
+%{_bindir}/Make-Mosaic
+%{_bindir}/Make-OilPainting
+%{_bindir}/Make-OldPhoto
+%{_bindir}/Resize-with-Cropping
+%{_bindir}/Test-Gimp
+%{_datadir}/bash-completion/completions/Make-BumpMap
+%{_datadir}/bash-completion/completions/Make-Caption
+%{_datadir}/bash-completion/completions/Make-Cloth
+%{_datadir}/bash-completion/completions/Make-GlossyText
+%{_datadir}/bash-completion/completions/Make-Mosaic
+%{_datadir}/bash-completion/completions/Make-OilPainting
+%{_datadir}/bash-completion/completions/Make-OldPhoto
+%{_datadir}/bash-completion/completions/Resize-with-Cropping
+%{_datadir}/bash-completion/completions/Test-Gimp
+%{_mandir}/man1/Make-BumpMap.1
+%{_mandir}/man1/Make-Caption.1
+%{_mandir}/man1/Make-Cloth.1
+%{_mandir}/man1/Make-GlossyText.1
+%{_mandir}/man1/Make-Mosaic.1
+%{_mandir}/man1/Make-OilPainting.1
+%{_mandir}/man1/Make-OldPhoto.1
+%{_mandir}/man1/Resize-with-Cropping.1
+%{_mandir}/man1/Test-Gimp.1
+
+
 %package misc
 Summary: Miscellaneous tools
 Group: Applications/System
