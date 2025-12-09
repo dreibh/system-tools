@@ -125,6 +125,17 @@ Description: X.509 certificate handling tools
  extract-pem extracts a PEM file.
  test-tls-connection tests a TCP TLS connection to a remote endpoint.
 
+Package: td-gimp-scripts
+Architecture: all
+Depends: gimp,
+         graphicsmagick,
+         util-linux,
+         ${misc:Depends}
+Description: GIMP Scripts
+ This package contains some GIMP scripts for automated image processing.
+ The main purpose of this script is to generate background images for
+ desktops, boot splashes, etc. with some branding.
+
 Package: td-misc
 Architecture: any
 Depends: gettext-base,
@@ -141,6 +152,7 @@ Description: Miscellaneous tools
 Package: td-system-tools
 Architecture: all
 Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
+         td-gimp-scripts (>= ${source:Version}),
          td-misc (>= ${source:Version}),
          td-reset-machine-id  (>= ${source:Version}),
          td-system-info (>= ${source:Version}),
