@@ -10,7 +10,7 @@
 # ==========================================================================
 #
 # System-Tools
-# Copyright (C) 2013-2025 by Thomas Dreibholz
+# Copyright (C) 2013-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,28 +29,25 @@
 
 
 #############################################################################
-#### VERSION FILE                                                        ####
+#### PROGRAMS                                                            ####
 #############################################################################
 
-CONFIGURE_FILE (
-   "${CMAKE_CURRENT_SOURCE_DIR}/package-version.h.in"
-   "${CMAKE_CURRENT_BINARY_DIR}/package-version.h"
+SET(gimpScripts
+   Make-BumpMap
+   Make-Caption
+   Make-Cloth
+   Make-GlossyText
+   Make-Mosaic
+   Make-OilPainting
+   Make-OldPhoto
+   Resize-with-Cropping
+   Test-Gimp
 )
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-
-#############################################################################
-#### SUBDIRECTORIES                                                      ####
-#############################################################################
-
-ADD_SUBDIRECTORY(System-Info)
-ADD_SUBDIRECTORY(System-Maintenance)
-ADD_SUBDIRECTORY(Print-UTF8)
-ADD_SUBDIRECTORY(Text-Block)
-ADD_SUBDIRECTORY(Fingerprint-SSH-Keys)
-ADD_SUBDIRECTORY(Configure-GRUB)
-ADD_SUBDIRECTORY(Reset-Machine-ID)
-ADD_SUBDIRECTORY(Try-Hard)
-ADD_SUBDIRECTORY(Random-Sleep)
-ADD_SUBDIRECTORY(X509)
-ADD_SUBDIRECTORY(GIMP-Scripts)
+FOREACH(gimpScript IN LISTS gimpScripts)
+   INSTALL(PROGRAMS ${gimpScript}   DESTINATION ${CMAKE_INSTALL_BINDIR})
+   INSTALL(FILES    ${gimpScript}.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+   INSTALL(FILES       ${gimpScript}.bash-completion
+           DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+           RENAME      ${gimpScript})
+ENDFOREACH()
