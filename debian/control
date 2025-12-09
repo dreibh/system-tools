@@ -108,12 +108,11 @@ Description: Apply modifications to text
  applied, according to the operation mode.
 
 Package: td-x509-tools
-Architecture: any
+Architecture: all
 Depends: gettext-base,
          openssl,
          td-text-block,
-         ${misc:Depends},
-         ${shlibs:Depends}
+         ${misc:Depends}
 Provides: td-x509
 Replaces: td-x509
 Breaks: td-x509 (<< ${source:Version})
