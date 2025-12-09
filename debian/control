@@ -3,6 +3,8 @@ Section: utils
 Priority: optional
 Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 Homepage: https://www.nntb.no/~dreibh/system-tools/
+Vcs-Git: https://github.com/dreibh/system-tools.git
+Vcs-Browser: https://github.com/dreibh/system-tools
 Build-Depends: cmake,
                debhelper-compat (= 13)
 Standards-Version: 4.7.2
@@ -106,12 +108,11 @@ Description: Apply modifications to text
  applied, according to the operation mode.
 
 Package: td-x509-tools
-Architecture: any
+Architecture: all
 Depends: gettext-base,
          openssl,
          td-text-block,
-         ${misc:Depends},
-         ${shlibs:Depends}
+         ${misc:Depends}
 Provides: td-x509
 Replaces: td-x509
 Breaks: td-x509 (<< ${source:Version})

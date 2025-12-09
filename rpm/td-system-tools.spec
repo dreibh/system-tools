@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.2.1
+Version: 2.2.2
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -225,6 +225,7 @@ text-block reads text from standard input or given file, and writes it to standa
 %package x509-tools
 Summary: X.509 certificate handling tools
 Group: Applications/System
+BuildArch: noarch
 Requires: td-system-tools-text-block = %{version}-%{release}
 Requires: openssl
 Recommends: gnutls-utils
@@ -288,6 +289,8 @@ support for fractional seconds.
 
 
 %changelog
+* Tue Dec 09 2025 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.2.2-1
+- New upstream release.
 * Fri Nov 28 2025 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.2.1-1
 - New upstream release.
 * Wed Nov 26 2025 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.2.0-1
