@@ -1,3 +1,21 @@
+commit ab7bacc76504943d665f4806376a1019d983087c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 16:09:11 2025 +0100
+
+    Updated CI scripts
+
+commit 3a16097bdd5879d105899797fd4ce6415a64f519
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 16:08:23 2025 +0100
+
+    Packaging fix: X.509 Tools is noarch, not architecture-specific.
+
+commit 2c16eb44cf39a5366031b2ade3e036e92f11d731
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 11:47:40 2025 +0100
+
+    New release td-system-tools-2.2.2.
+
 commit 29b12c2469d24e0be98bc4d7602186b216e26440
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon Dec 8 22:31:07 2025 +0100
