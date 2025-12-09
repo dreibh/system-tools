@@ -1,3 +1,117 @@
+commit 29b12c2469d24e0be98bc4d7602186b216e26440
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Dec 8 22:31:07 2025 +0100
+
+    Updated CI scripts
+
+commit 27c84b11bf386bf384070f8382a99a69d57b4594
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 5 15:48:02 2025 +0100
+
+    Updated CI scripts
+
+commit 2806c3b5edd9ebedb3b7ac55805ebe5746571797
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 5 15:47:17 2025 +0100
+
+    Packaging update.
+
+commit 19c9dc2bd1c66b9ccc01b264859dc25c4cdf467a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 5 14:18:51 2025 +0100
+
+    Fixed URLs in README.md.
+
+commit 93106f33e697bb450d6e567c0569dee96d6d4332
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 5 13:37:31 2025 +0100
+
+    Updated CI configuration
+
+commit 72073b8c0f32ff6aa3d51a3388ae73f1db9255b6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 5 13:37:20 2025 +0100
+
+    Updated CI scripts
+
+commit 823cba59fd7fac467e4ccbf57d49be5e6add2b73
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 5 11:37:51 2025 +0100
+
+    Updated build helper script.
+
+commit 3a5e00cfc403bb71262ff0cd984f556d1d650b41
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 5 11:34:28 2025 +0100
+
+    Updated CI configuration
+
+commit 1704a4d180278f70db043e8e12edfe14dda84e06
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 5 11:34:19 2025 +0100
+
+    Updated CI scripts
+
+commit e42ca798b3351c1e1ae5a1763f73cf769cb03847
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 17:58:31 2025 +0100
+
+    Updated CI scripts
+
+commit f61d03c85717f083c5720b592a65c4c2298b71cb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 17:23:26 2025 +0100
+
+    Updated CI configuration
+
+commit 900d663902acf66288f54f25877ea66e904eb3b8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 15:31:23 2025 +0100
+
+    Updated CI scripts
+
+commit f4ef573c8ef710113d6bed936b9043f222216c76
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 15:02:48 2025 +0100
+
+    Updated workflows.
+
+commit 3b65684a4c052b9fa3033bd5d7f5d6c8fa24a22e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 12:40:02 2025 +0100
+
+    Header updates.
+
+commit c94147a6db98040dda0e6913f28a11ee45b86bb2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 12:39:39 2025 +0100
+
+    Updated CI configuration
+
+commit 0c9945122912421b9322d85ecc755ff556e6b02d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 12:39:37 2025 +0100
+
+    Updated CI scripts
+
+commit dd7bc971cd42a3042e2770c5d87fe84b449fdc51
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Dec 3 15:21:45 2025 +0100
+
+    Updated CI scripts
+
+commit 8a7971c5eef4ae446c4a0abaf6c48868e1c7783e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Dec 3 15:19:16 2025 +0100
+
+    Configure-GRUB: On Ubuntu 25.10, /etc/default/grub does not exist => use empty file as default input in this case.
+
+commit 0573fe360d0e6537a99f80fa18f8486676fb4454
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 16:23:31 2025 +0100
+
+    New release td-system-tools-2.2.1.
+
 commit 28de909adfa7b35e18beb26d448f08afb65e1d6b
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Nov 28 16:23:12 2025 +0100

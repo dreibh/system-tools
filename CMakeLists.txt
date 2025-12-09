@@ -10,7 +10,7 @@
 # ==========================================================================
 #
 # System-Tools
-# Copyright (C) 2013-2025 by Thomas Dreibholz
+# Copyright (C) 2013-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ ENABLE_LANGUAGE(C)
 
 SET(BUILD_MAJOR "2")
 SET(BUILD_MINOR "2")
-SET(BUILD_PATCH "1")
+SET(BUILD_PATCH "2")
 SET(BUILD_VERSION ${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH})
 
 
