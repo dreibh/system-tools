@@ -31,6 +31,7 @@
 # Bash options:
 set -eu
 
+
 while [ $# -gt 0 ] ; do
    input="$1"
    shift 1
@@ -38,7 +39,17 @@ while [ $# -gt 0 ] ; do
 
    if [ "${output}" != "${input}" ] ; then
       echo "Converting ${input} -> ${output} ..."
-      pandoc -t html --metadata title="${output}" --highlight-style=kate -s -o "${output}" "${input}"
+
+      pandoc -t html \
+         --standalone \
+         --highlight-style=kate \
+         --metadata title="$(basename "${input}")" "${input}" | \
+      sed -e 's#lang=""#lang="en"#'         \
+         -e 's#<table>#<table summary="">#' \
+         -e 's/\( href="#\)-/\1/g'          \
+         >"${output}"
+
+      # tidy -q -o /dev/null --strict-tags-attributes yes "${output}"
    else
       echo "ERROR: Unable to handle ${input}. No .md file?"
       exit 1
