@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
@@ -9,8 +10,8 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# System-Tools
-# Copyright (C) 2013-2026 by Thomas Dreibholz
+# Compress PDF
+# Copyright (C) 2015-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,19 +28,19 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
+if [ $# -ne 2 ] ; then
+   echo >&2 "Usage: $0 input_pdf output_pdf"
+   exit 1
+fi
 
-#############################################################################
-#### PROGRAMS                                                            ####
-#############################################################################
+# -dPDFSETTINGS=configuration
+#     Presets the "distiller parameters" to one of four predefined settings:
+#
+#         /screen selects low-resolution output similar to the Acrobat Distiller "Screen Optimized" setting.
+#         /ebook selects medium-resolution output similar to the Acrobat Distiller "eBook" setting.
+#         /printer selects output similar to the Acrobat Distiller "Print Optimized" setting.
+#         /prepress selects output similar to Acrobat Distiller "Prepress Optimized" setting.
+#         /default selects output intended to be useful across a wide variety of uses, possibly at the expense of a larger output file.
 
-INSTALL(PROGRAMS    cls   DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES       cls.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-
-INSTALL(PROGRAMS    compresspdf   DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES       compresspdf.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-
-INSTALL(PROGRAMS    md2html   DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES       md2html.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       md2html.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      md2html)
+gs -sDEVICE=pdfwrite -dCompatibilityLevel=2.0 -dPDFSETTINGS=/prepress -dNOPAUSE -dQUIET -dBATCH "-sOutputFile=$2" "$1"
+ls -al "$1" "$2"
