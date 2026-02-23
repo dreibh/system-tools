@@ -392,7 +392,7 @@ if [ ${SKIP_SSH_CONFIGURATION} -eq 0 ] && [ -d /etc/ssh ] && [ -x "$(command -v 
 
    sshCiphers=$(select-ssh-options       Ciphers       cipher   aes256-gcm@openssh.com chacha20-poly1305@openssh.com)
    sshMACs=$(select-ssh-options          MACs          mac      hmac-sha2-512-etm@openssh.com hmac-sha2-256-etm@openssh.com)
-   sshKexAlgorithms=$(select-ssh-options KexAlgorithms kex      sntrup761x25519-sha512 diffie-hellman-group16-sha512 diffie-hellman-group18-sha512 curve25519-sha256@libssh.org)
+   sshKexAlgorithms=$(select-ssh-options KexAlgorithms kex      sntrup761x25519-sha512 sntrup761x25519-sha512@openssh.com diffie-hellman-group16-sha512 diffie-hellman-group18-sha512 curve25519-sha256@libssh.org)
    sshPubkeyAcceptedKeyTypes=$(select-ssh-options       PubkeyAcceptedKeyTypes    PubkeyAcceptedKeyTypes    ssh-ed25519-cert-v01@openssh.com ssh-ed25519 rsa-sha2-512-cert-v01@openssh.com ssh-rsa-cert-v01@openssh.com rsa-sha2-512)
    sshHostbasedAcceptedKeyTypes=$(select-ssh-options    HostbasedAcceptedKeyTypes HostbasedAcceptedKeyTypes ssh-ed25519-cert-v01@openssh.com ssh-ed25519 ssh-rsa-cert-v01@openssh.com ssh-rsa)
    sshHostKeyAlgorithms=$(select-ssh-options            HostKeyAlgorithms         HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com ssh-ed25519 ssh-rsa-cert-v01@openssh.com ssh-rsa)
