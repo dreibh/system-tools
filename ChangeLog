@@ -1,3 +1,63 @@
+commit 05d587a4d35f387a50924e2b747496e94c682cbe
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Feb 23 15:56:48 2026 +0100
+
+    Also added sntrup761x25519-sha512@openssh.com for post-quantum kex exchange on earlier versions of SSH.
+
+commit 114823d12fa20c933595841b58ab6ecb47443b2c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Feb 23 15:37:34 2026 +0100
+
+    Added sntrup761x25519-sha512 to SSH options to enable post-quantum key exchange.
+
+commit aeef2552ee5f29124d5c84f91b118ed6951d92f3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Feb 9 15:48:32 2026 +0100
+
+    New release td-system-tools-2.2.4.
+
+commit aae8dd79d0eddc70950e708139fd8d4bea6a8ac0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Feb 9 13:10:44 2026 +0100
+
+    Minor output fix.
+
+commit aaf9183d9a76727e5dc88244bb040692bed55882
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 12 18:55:32 2025 +0100
+
+    Updated documentation.
+
+commit 637a22f7e5a50365f5d1064776c3fe7ebff2cdae
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Dec 10 09:40:17 2025 +0100
+
+    Updated FreeBSD port.
+
+commit b88f9345c195b0a34b1241d2a81a571993d0a182
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 17:04:21 2025 +0100
+
+    New release td-system-tools-2.2.3.
+
+commit ab7bacc76504943d665f4806376a1019d983087c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 16:09:11 2025 +0100
+
+    Updated CI scripts
+
+commit 3a16097bdd5879d105899797fd4ce6415a64f519
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 16:08:23 2025 +0100
+
+    Packaging fix: X.509 Tools is noarch, not architecture-specific.
+
+commit 2c16eb44cf39a5366031b2ade3e036e92f11d731
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 11:47:40 2025 +0100
+
+    New release td-system-tools-2.2.2.
+
 commit 29b12c2469d24e0be98bc4d7602186b216e26440
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon Dec 8 22:31:07 2025 +0100
