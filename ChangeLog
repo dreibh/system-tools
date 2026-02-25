@@ -1,3 +1,21 @@
+commit 05d587a4d35f387a50924e2b747496e94c682cbe
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Feb 23 15:56:48 2026 +0100
+
+    Also added sntrup761x25519-sha512@openssh.com for post-quantum kex exchange on earlier versions of SSH.
+
+commit 114823d12fa20c933595841b58ab6ecb47443b2c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Feb 23 15:37:34 2026 +0100
+
+    Added sntrup761x25519-sha512 to SSH options to enable post-quantum key exchange.
+
+commit aeef2552ee5f29124d5c84f91b118ed6951d92f3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Feb 9 15:48:32 2026 +0100
+
+    New release td-system-tools-2.2.4.
+
 commit aae8dd79d0eddc70950e708139fd8d4bea6a8ac0
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon Feb 9 13:10:44 2026 +0100
