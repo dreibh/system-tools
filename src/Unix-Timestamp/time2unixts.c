@@ -2,7 +2,7 @@
 //         ____            _                     _____           _
 //        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 //        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ |
+//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
 //        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 //               |___/
 //                             --- System-Tools ---
@@ -41,7 +41,7 @@
 #define nullptr NULL
 #endif
 
-// #include "package-version.h"
+#include "package-version.h"
 
 
 // ###### Version ###########################################################
@@ -50,7 +50,7 @@
 #endif
 static void version()
 {
-   // printf("time2unixts %s\n", SYSTEMTOOLS_VERSION);
+   printf("time2unixts %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
 }
 
@@ -61,9 +61,10 @@ static void version()
 #endif
 static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "%s %s [time]"
-           " [-f|--float]"
-           " [-i|--integer]"
+   fprintf(stderr, "%s %s [time_string]"
+           " [-F|--float]"
+           " [-I|--integer]"
+           " [-H|--human-readable]"
            " [-m|--milliseconds]"
            " [-u|--microseconds]"
            " [-n|--nanoseconds]"
@@ -102,17 +103,17 @@ int main(int argc, char** argv)
 
    int          option;
    int          longIndex;
-   bool         useFloat      = false;
+   bool         useInteger    = true;
    bool         humanReadable = false;
    unsigned int divideBy      = 1;
    const char*  unit          = "ns";
    while( (option = getopt_long(argc, argv, "FIHsmunvh", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'F':
-            useFloat = true;
+            useInteger = false;
           break;
          case 'I':
-            useFloat = false;
+            useInteger = true;
           break;
          case 'H':
             humanReadable = true;
@@ -185,10 +186,13 @@ int main(int argc, char** argv)
    }
 
    // ====== Convert timespec to Unix timestamp =============================
-   const long long unixTSinNanoseconds =
+   const long long unixTS =
       (1000000000ULL * ts.tv_sec) + ts.tv_nsec;
 
-   if(useFloat) {
+   if(useInteger) {
+      printf("%lld", unixTS / divideBy);
+   }
+   else {
        const char* format;
        if(divideBy == 1000000000) {
            format = "%1.9f";
@@ -202,10 +206,7 @@ int main(int argc, char** argv)
        else {
            format = "%1.0f";
        }
-       printf(format, (double)unixTSinNanoseconds / (double)divideBy);
-   }
-   else {
-      printf("%lld", unixTSinNanoseconds / divideBy);
+       printf(format, (double)unixTS / (double)divideBy);
    }
    if(humanReadable) {
        printf(gettext(" %s since the Unix Epoch"), unit);
