@@ -37,7 +37,7 @@ set -eu
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input output aspect|H:V|HxV|An [new_width] [--verbose|-v] [--quiet|-q] [--help|-h]"
+   echo >&2 "Usage: $0 input_image output_image aspect_ratio|H:V|HxV|An|keep [new_width] [--verbose|-v] [--quiet|-q] [--help|-h]"
    exit "${exitCode}"
 }
 
@@ -84,18 +84,20 @@ fi
 
 
 # ====== Prepare output aspect ratio ========================================
-outputAspectRatio=1
-if [[ "${ASPECT}" =~ ^([0-9]+\.{0,1}[0-9]*)([:x])([0-9]+\.{0,1}[0-9]*)$ ]] ; then
-   outputAspectRatio=$(LC_NUMERIC=C awk "BEGIN { print ${BASH_REMATCH[1]}/${BASH_REMATCH[3]} }")
-else
-   if [[ "${ASPECT}" =~ ^([0-9]+\.{0,1}[0-9]*)$ ]] ; then
-      outputAspectRatio="${BASH_REMATCH[1]}"
+outputAspectRatio=0
+if [ "${ASPECT}" != "keep" ] ; then
+   if [[ "${ASPECT}" =~ ^([0-9]+\.{0,1}[0-9]*)([:x])([0-9]+\.{0,1}[0-9]*)$ ]] ; then
+      outputAspectRatio=$(LC_NUMERIC=C awk "BEGIN { print ${BASH_REMATCH[1]}/${BASH_REMATCH[3]} }")
    else
-      if [[ "${ASPECT}" =~ ^[Aa][0-9]$ ]] ; then
-         outputAspectRatio="1.414213562373"   # DIN A<n> is sqrt(2):1 in landscape format
+      if [[ "${ASPECT}" =~ ^([0-9]+\.{0,1}[0-9]*)$ ]] ; then
+         outputAspectRatio="${BASH_REMATCH[1]}"
       else
-         echo >&2 "ERROR: Bad aspect specification: ${ASPECT}!"
-         exit 1
+         if [[ "${ASPECT}" =~ ^[Aa][0-9n]$ ]] ; then
+            outputAspectRatio="1.414213562373"   # DIN A<n> is sqrt(2):1 in landscape format
+         else
+            echo >&2 "ERROR: Bad aspect specification: ${ASPECT}!"
+            exit 1
+         fi
       fi
    fi
 fi
@@ -108,12 +110,15 @@ if [ ! -f "${INPUT_FILENAME}" ] ; then
 fi
 inputImageSize="$(gm identify -format "%wx%h" "$INPUT_FILENAME")"
 # shellcheck disable=SC2001
-inputWidth=$(echo "${inputImageSize}" | sed -e "s/x[0-9]*$//")
+inputWidth="$(echo "${inputImageSize}" | sed -e "s/x[0-9]*$//")"
 # shellcheck disable=SC2001
-inputHeight=$(echo "${inputImageSize}" | sed -e "s/^[0-9]*x//")
-inputAspect=$(LC_NUMERIC=C awk "BEGIN { print ${inputWidth}/${inputHeight} }")
+inputHeight="$(echo "${inputImageSize}" | sed -e "s/^[0-9]*x//")"
+inputAspect="$(LC_NUMERIC=C awk "BEGIN { printf \"%.16f\\n\", ${inputWidth}/${inputHeight} }")"
 if [[ "$inputAspect" =~ ^- ]] ; then
-   inputAspect=$(LC_NUMERIC=C awk "BEGIN { print 1/${inputAspect} }")   # Input image is in portrait format => convert aspect
+   inputAspect="$(LC_NUMERIC=C awk "BEGIN { printf \"%.16f\\n\", 1/${inputAspect} }")"   # Input image is in portrait format => convert aspect
+fi
+if [ "${outputAspectRatio}" -eq 0 ] ; then
+   outputAspectRatio="${inputAspect}"
 fi
 if [ ${VERBOSE} -ne 0 ] ; then
    echo "Input: ${inputWidth}*${inputHeight} (${inputAspect})"
@@ -123,19 +128,19 @@ if [ "${NEW_WIDTH}" -eq 0 ] ; then
    # shellcheck disable=SC2001
    NEW_WIDTH=$(echo "${inputImageSize}" | sed -e "s/x[0-9]*$//")
 fi
-newHeight=$(LC_NUMERIC=C awk "BEGIN { print (${NEW_WIDTH}/${outputAspectRatio})+0.5 }")
+newHeight="$(LC_NUMERIC=C awk "BEGIN { print int(${NEW_WIDTH}/${outputAspectRatio}) }")"
 
 
 # ====== Crop image =========================================================
 if [[ "$(LC_NUMERIC=C awk "BEGIN { print ${inputAspect}-${outputAspectRatio} }")" =~ ^- ]] ; then   # inputAspect < outputAspectRatio
    croppedInputWidth=${inputWidth}
-   croppedInputHeight=$(LC_NUMERIC=C awk "BEGIN { print int(${croppedInputWidth}/${outputAspectRatio})+0.5 }")
+   croppedInputHeight="$(LC_NUMERIC=C awk "BEGIN { print int(${croppedInputWidth}/${outputAspectRatio}) }")"
 else
    croppedInputHeight=${inputHeight}
-   croppedInputWidth=$(LC_NUMERIC=C awk "BEGIN { print int(${inputHeight}*${outputAspectRatio})+0.5 }")
+   croppedInputWidth="$(LC_NUMERIC=C awk "BEGIN { print int(${inputHeight}*${outputAspectRatio}) }")"
 fi
-cx=$(LC_NUMERIC=C awk "BEGIN { print int(${inputWidth}-${croppedInputWidth})/2+0.5 }")
-cy=$(LC_NUMERIC=C awk "BEGIN { print int(${inputHeight}-${croppedInputHeight})/2+0.5 }")
+cx="$(LC_NUMERIC=C awk "BEGIN { print int(${inputWidth}-${croppedInputWidth})/2 }")"
+cy="$(LC_NUMERIC=C awk "BEGIN { print int(${inputHeight}-${croppedInputHeight})/2 }")"
 if [ ${VERBOSE} -ne 0 ] ; then
    echo "Crop: ${croppedInputWidth}*${croppedInputHeight} [cx=${cx} cy=${cy}] (${outputAspectRatio}:1)"
 fi

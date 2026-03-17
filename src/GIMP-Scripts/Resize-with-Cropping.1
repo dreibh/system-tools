@@ -43,7 +43,7 @@
 input_image
 output_image
 .br
-aspect_ratio | H:V | HxV | An
+aspect_ratio | H:V | HxV | An | keep
 .br
 .Op new_width
 .br
@@ -66,8 +66,8 @@ The following options are available:
 The input image. Any format support by GraphicsMagick can be used. The format will be detected automatically.
 .It output_image
 The name for the output image to be written. Any format support by GraphicsMagick can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It aspect_ratio|H:V|HxV|An
-Specifies the aspect ratio: directly as value (e.g. 1.414214), as ratio H:V or HxV (e.g. 16:9 or 16x9), or DIN An format ratio (A1, A2, ..., A9, or An; i.e. sqrt(2):1 ≈ 1.414213562373).
+.It aspect_ratio | H:V | HxV | An | keep
+Specifies the aspect ratio: directly as value (e.g. 1.414214), as ratio H:V or HxV (e.g. 16:9 or 16x9), or DIN An format ratio (A1, A2, ..., A9, or An; i.e. sqrt(2):1 ≈ 1.414213562373). Alternatively, "keep" leaves the aspect ratio unchanged.
 .It Fl q | Fl Fl quiet
 Quiet mode: no output is made.
 .It Fl w | Fl Fl verbose
