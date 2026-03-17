@@ -43,7 +43,7 @@ set -eu
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 filename content font_size [--bordersize|-b size] [--colorscheme|-c schemename] [--font|-f fontname] [-p|--patterntext pattern] [-o|--patternoutline pattern] [-l|--patternoverlay pattern] [--verbose|-v] [--quiet|-q] [--help|-h]"
+   echo >&2 "Usage: $0 filename content font_size [--bordersize|-b size] [--colorscheme|-c schemename] [--font|-f fontname] [-p|--patterntext pattern] [-o|--patternoutline pattern] [-l|--patternoverlay pattern] [-w|--verbose] [-q|--quiet] [-h|--help]"
    echo >&2 "Example: $0 NorNet1.png \"NorNet Testbed\" 128 --bordersize 5 --colorscheme Golden --font \"Noto Sans Regular\""
    exit "${exitCode}"
 }

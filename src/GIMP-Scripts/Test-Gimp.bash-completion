@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for Test-Gimp ###########################
+# ###### Bash completion for Test-Gimp ######################################
 _Test_Gimp()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/

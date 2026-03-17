@@ -32,18 +32,12 @@
 set -eu
 
 
-# Example:
-# Make-Cloth Image1.jpeg Cloth1.png
-# Make-Cloth Image1.jpeg Cloth2.png --depth 8
-
-
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_filename output_filename [--depth|-d depth] [--verbose|-v] [--quiet|-q] [--help|-h]"
-   echo >&2 "Example: $0 Image.jpeg Cloth.png --depth 5"
+   echo >&2 "Usage: $0 input_filename output_filename [-d|--depth depth] [-w|--verbose] [-q|--quiet] [-h|--help]"
    exit "${exitCode}"
 }
 

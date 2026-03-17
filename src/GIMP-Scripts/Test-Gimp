@@ -38,7 +38,6 @@ set -eu
 usage () {
    local exitCode="$1"
    echo >&2 "Usage: $0 [-w|--verbose] [-q|--quiet] [-h|--help]"
-   echo >&2 "Example: $0 --verbose"
    exit "${exitCode}"
 }
 

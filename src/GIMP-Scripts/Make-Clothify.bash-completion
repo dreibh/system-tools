@@ -29,8 +29,8 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for Make-OldPhoto ##################################
-_Make_OldPhoto()
+# ###### Bash completion for Make-Clothify ##################################
+_Make_Clothify()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -81,4 +81,4 @@ _Make_OldPhoto()
    return 0
 }
 
-complete -F _Make_OldPhoto Make-OldPhoto
+complete -F _Make_Clothify Make-Clothify

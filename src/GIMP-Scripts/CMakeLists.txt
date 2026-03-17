@@ -35,7 +35,7 @@
 SET(gimpScripts
    Make-BumpMap
    Make-Caption
-   Make-Cloth
+   Make-Clothify
    Make-GlossyText
    Make-Mosaic
    Make-OilPainting

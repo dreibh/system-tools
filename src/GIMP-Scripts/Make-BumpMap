@@ -41,7 +41,7 @@ set -eu
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_filename output_filename [--verbose|-v] [--quiet|-q] [--help|-h]"
+   echo >&2 "Usage: $0 input_filename output_filename [-w|--verbose] [-q|--quiet] [-h|--help]"
    echo >&2 "Example: $0 Demo-Fractal-8192x6144.png Background1.png"
    exit "${exitCode}"
 }
