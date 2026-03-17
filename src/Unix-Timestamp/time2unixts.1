@@ -1,0 +1,107 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" Time to Unix Timestamp Conversion
+.\" Copyright (C) 2026 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd March 17, 2026
+.Dt time2unixts 1
+.Os time2unixts
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm time2unixts
+.Nd converts time string to an Unix timestamp
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm time2unixts
+.Op time_string
+.br
+.Op Fl -F | Fl Fl float
+.Op Fl -I | Fl Fl integer
+.br
+.Op Fl -H | Fl Fl human-readable
+.br
+.Op Fl -s | Fl Fl seconds
+.Op Fl -m | Fl Fl milliseconds
+.Op Fl -u | Fl Fl microseconds
+.Op Fl -n | Fl Fl nanoseconds
+.Nm time2unixts
+.Op Fl h | Fl Fl help
+.Nm time2unixts
+.Op Fl v | Fl Fl version
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm time2unixts
+converts a time string in the format %Y-%m-%d %H:%M:%S to an Unix timestamp,
+which is the time (nanoseconds, microseconds, milliseconds, or seconds) since
+the Unix Epoch, i.e. Jaunary 1, 1970, 00:00:00.000000000 UTC.
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It time_string
+The time string to be converted, as %Y-%m-%d %H:%M:%S. The seconds part may
+be fractional.
+.It Fl -F | Fl Fl float
+Print the Unix timestamp as a floating-point number.
+.It Fl -I | Fl Fl integer
+Print the Unix timestamp as an integer number.
+.It Fl -H | Fl Fl human-readable
+Provide the output in human-readable form. Default: off.
+.It Fl -s | Fl Fl seconds
+The Unix timestamp is printed in seconds. Default is in nanoseconds.
+.It Fl -m | Fl Fl milliseconds
+The Unix timestamp is printed in milliseconds. Default is in nanoseconds.
+.It Fl -u | Fl Fl microseconds
+The Unix timestamp is printed in microseconds. Default is in nanoseconds.
+.It Fl -n | Fl Fl nanoseconds
+The Unix timestamp is printed in nanoseconds. This is the default.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It time2unixts
+.It time2unixts "2026-03-17 10:52:35" --seconds
+.It time2unixts "1969-12-20 10:13:20"
+.It env LC_ALL=en_US.UTF-8 time2unixts "1955-12-24 22:22:22.000" --milliseconds
+.It env LC_ALL=nb_NO.UTF-8 ./time2unixts "1955-12-24 22:22:22,000" --milliseconds
+.It time2unixts "2026-03-17 08:31:19" --human-readable --seconds
+.It time2unixts "2026-03-17 08:31:19" -s
+.It env LC_ALL=de_DE.UTF-8 time2unixts "1976-09-29 12:10:00,000" --milliseconds
+.It env LC_ALL=de_DE.UTF-8 time2unixts "1976-09-29 12:10:08,123456789" -H
+.It env LC_ALL=en_US.UTF-8 time2unixts "1976-09-29 12:12:03.123" -m
+.It env LC_ALL=de_DE.UTF-8 time2unixts "1976-09-29 12:12:03,123456789" -n
+.It time2unixts --version
+.It time2unixts --help
+.El
