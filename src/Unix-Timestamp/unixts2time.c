@@ -65,6 +65,7 @@ static void usage(const char* program, const int exitCode)
            " [-F|--float]"
            " [-I|--integer]"
            " [-H|--human-readable]"
+           " [-s|--seconds]"
            " [-m|--milliseconds]"
            " [-u|--microseconds]"
            " [-n|--nanoseconds]"
@@ -140,6 +141,8 @@ int main(int argc, char** argv)
          case 'h':
             usage(argv[0], 0);
           break;
+         case '-':
+          break;
          default:
             fprintf(stderr, gettext("ERROR: Invalid argument %s!"), argv[optind - 1]);
             fputs("\n", stderr);
@@ -158,16 +161,16 @@ int main(int argc, char** argv)
       unixTS = (1000000000ULL * ts.tv_sec) + ts.tv_nsec;
    }
    else if(optind + 1 == argc) {
-      int scanResult;
+      char* endptr;
       if(useInteger) {
-         scanResult = sscanf(argv[optind], "%lld", &unixTS);
+         unixTS = strtoll(argv[optind], &endptr, 0);
+         unixTS *= divideBy;
       }
       else {
-         double unixTSasDouble;
-         scanResult = sscanf(argv[optind], "%lf", &unixTSasDouble);
-         unixTS = unixTSasDouble /divideBy;
+         const double unixTSasDouble = strtod(argv[optind], &endptr);
+         unixTS = unixTSasDouble * divideBy;
       }
-      if(scanResult != 1) {
+      if( (endptr == nullptr) || (*endptr != 0x00) ) {
          fputs(gettext("Unable to parse Unix timestamp!"), stderr);
          fputs("\n", stderr);
          exit(1);
@@ -224,7 +227,7 @@ int main(int argc, char** argv)
    else {
       char ustring[64];
       snprintf((char*)&ustring, sizeof(ustring), format,
-               (double)unixTS /divideBy);
+               unixTS / (double)divideBy);
       fprintf(stdout, gettext("%s%s is %lld %s since the Unix Epoch"),
               tstring, &fstring[1], unixTS /divideBy, unit);
    }
