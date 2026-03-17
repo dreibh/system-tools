@@ -34,7 +34,7 @@
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm unixts2time
-.Nd converts a Unix timestamp to a time string
+.Nd converts an Unix timestamp to a time string
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
@@ -58,7 +58,7 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm unixts2time
-converts a Unix timestamp to a time string in the format %Y-%m-%d %H:%M:%S.
+converts an Unix timestamp to a time string in the format %Y-%m-%d %H:%M:%S.
 The Unix timestamp is the time (nanoseconds, microseconds, milliseconds, or
 seconds) since the Unix Epoch, i.e. Jaunary 1, 1970, 00:00:00.000000000 UTC.
 By default the timestamp is in nanoseconds.
@@ -95,6 +95,7 @@ Prints program version.
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It unixts2time
+.It unixts2time --human-readable
 .It unixts2time --human-readable --seconds 1773744755
 .It unixts2time --human-readable --seconds -- -1000000
 .It unixts2time --human-readable --milliseconds -- -442460258000
@@ -104,8 +105,8 @@ Prints program version.
 .It unixts2time 212847008123456789 -H
 .It unixts2time 0x179cb2ae8af3dd89
 .It unixts2time 0x179cb2ae8af3dd89 -H
-.It env LANG=en.UTF8 ./unixts2time 212847123.123 -Fs
-.It env LANG=de_DE.UTF8 ./unixts2time 212847123,123456789 -Fs
+.It env LC_ALL=en.UTF-8 unixts2time 212847123.123 -Fs
+.It env LC_ALL=de_DE.UTF-8 unixts2time 212847123,123456789 -Fs
 .It unixts2time --version
 .It unixts2time --help
 .El
