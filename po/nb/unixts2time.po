@@ -1,0 +1,44 @@
+# Norwegian Bokmal translations for "td-system-tools" package.
+# Copyright (C) 2026 "Copyright (C) 2013-2026 by Thomas Dreibholz"
+# This file is distributed under the same license as the "td-system-tools" package.
+# Automatically generated, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \"td-system-tools\" \"2.2.5\"\n"
+"Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
+"POT-Creation-Date: 2026-03-17 16:57+0100\n"
+"PO-Revision-Date: 2026-03-17 11:56+0100\n"
+"Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
+"Language-Team:\n"
+"Language: nb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/Unix-Timestamp/unixts2time.c:74
+msgid "Usage:"
+msgstr "Bruk:"
+
+#: src/Unix-Timestamp/unixts2time.c:147
+#, c-format
+msgid "ERROR: Invalid argument %s!"
+msgstr "FEIL: Ugyldig argument %s!"
+
+#: src/Unix-Timestamp/unixts2time.c:158
+msgid "clock_gettime() failed"
+msgstr "clock_gettime() mislyktes"
+
+#: src/Unix-Timestamp/unixts2time.c:174
+msgid "ERROR: Invalid Unix timestamp!"
+msgstr "FEIL: Ugyldig Unix-tidsstempel!"
+
+#: src/Unix-Timestamp/unixts2time.c:192 src/Unix-Timestamp/unixts2time.c:199
+msgid "ERROR: strftime() failed!"
+msgstr "FEIL: strftime() mislyktes!"
+
+#: src/Unix-Timestamp/unixts2time.c:231
+#, c-format
+msgid "%s%s is %lld %s since the Unix Epoch"
+msgstr "%s%s er %lld %s siden Unix-epoken"

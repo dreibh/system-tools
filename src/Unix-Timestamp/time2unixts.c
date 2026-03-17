@@ -176,7 +176,7 @@ int main(int argc, char** argv)
          }
       }
       if(remainder == nullptr) {
-         fputs(gettext("Unable to parse time string!"), stderr);
+         fputs(gettext("ERROR: Invalid time string!"), stderr);
          fputs("\n", stderr);
          exit(1);
       }

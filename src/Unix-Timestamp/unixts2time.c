@@ -171,7 +171,7 @@ int main(int argc, char** argv)
          unixTS = unixTSasDouble * divideBy;
       }
       if( (endptr == nullptr) || (*endptr != 0x00) ) {
-         fputs(gettext("Unable to parse Unix timestamp!"), stderr);
+         fputs(gettext("ERROR: Invalid Unix timestamp!"), stderr);
          fputs("\n", stderr);
          exit(1);
       }
