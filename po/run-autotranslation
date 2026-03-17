@@ -20,7 +20,7 @@ for program in ${PROGRAMS} ; do
 
    for language in ${LANGUAGES} ; do
       mkdir -p "${language}"
-      rm -f "${language}/${program}.po"
+      # rm -f "${language}/${program}.po"
       msginit --input "${program}.pot" \
          --locale "${language}.UTF-8" \
          --output-file "${language}/${program}.po" \
