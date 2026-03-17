@@ -64,6 +64,7 @@ static void usage(const char* program, const int exitCode)
    fprintf(stderr, "%s %s [unix_timestamp]"
            " [-F|--float]"
            " [-I|--integer]"
+           " [-H|--human-readable]"
            " [-m|--milliseconds]"
            " [-u|--microseconds]"
            " [-n|--nanoseconds]"
@@ -90,6 +91,7 @@ int main(int argc, char** argv)
    const static struct option long_options[] = {
       { "float",          no_argument, 0, 'F' },
       { "integer",        no_argument, 0, 'I' },
+      { "human-readable", no_argument, 0, 'H' },
       { "seconds",        no_argument, 0, 's' },
       { "milliseconds",   no_argument, 0, 'm' },
       { "microseconds",   no_argument, 0, 'u' },
@@ -101,9 +103,11 @@ int main(int argc, char** argv)
 
    int          option;
    int          longIndex;
-   bool         useInteger = true;
-   unsigned int multiplyBy = 1;
-   while( (option = getopt_long(argc, argv, "FIsmunvh", long_options, &longIndex)) != -1 ) {
+   bool         useInteger    = true;
+   bool         humanReadable = false;
+   unsigned int divideBy      = 1;
+   const char*  unit          = "ns";
+   while( (option = getopt_long(argc, argv, "FIHsmunvh", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'F':
             useInteger = false;
@@ -111,17 +115,24 @@ int main(int argc, char** argv)
          case 'I':
             useInteger = true;
           break;
+         case 'H':
+            humanReadable = true;
+          break;
          case 'n':
-            multiplyBy = 1;
+            divideBy = 1;
+            unit     = "ns";
           break;
          case 'u':
-            multiplyBy = 1000;
+            divideBy = 1000;
+            unit     = "µs";
           break;
          case 'm':
-            multiplyBy = 1000000;
+            divideBy = 1000000;
+            unit     = "ms";
           break;
          case 's':
-            multiplyBy = 1000000000;
+            divideBy = 1000000000;
+            unit     = "s";
           break;
          case 'v':
             version();
@@ -154,7 +165,7 @@ int main(int argc, char** argv)
       else {
          double unixTSasDouble;
          scanResult = sscanf(argv[optind], "%lf", &unixTSasDouble);
-         unixTS = unixTSasDouble * multiplyBy;
+         unixTS = unixTSasDouble /divideBy;
       }
       if(scanResult != 1) {
          fputs(gettext("Unable to parse Unix timestamp!"), stderr);
@@ -190,13 +201,13 @@ int main(int argc, char** argv)
    // ------ Fractional seconds ---------------------------------------------
    char fstring[16];
    const char* format;
-   if(multiplyBy == 1) {
+   if(divideBy == 1) {
       format = "%1.9f";
    }
-   else if(multiplyBy == 1000) {
+   else if(divideBy == 1000) {
       format = "%1.6f";
    }
-   else if(multiplyBy == 1000000) {
+   else if(divideBy == 1000000) {
       format = "%1.3f";
    }
    else {
@@ -206,8 +217,17 @@ int main(int argc, char** argv)
             (double)ts.tv_nsec / 1000000000.0);
 
    // ------ Print result ---------------------------------------------------
-   fputs(tstring, stdout);
-   fputs(&fstring[1], stdout);   // Omit "0" before comma
+   if(!humanReadable) {
+      fputs(tstring, stdout);
+      fputs(&fstring[1], stdout);   // Omit "0" before comma
+   }
+   else {
+      char ustring[64];
+      snprintf((char*)&ustring, sizeof(ustring), format,
+               (double)unixTS /divideBy);
+      fprintf(stdout, gettext("%s%s is %lld %s since the Unix Epoch"),
+              tstring, &fstring[1], unixTS /divideBy, unit);
+   }
    fputs("\n", stdout);
 
    return 0;
