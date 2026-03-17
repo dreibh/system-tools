@@ -29,28 +29,23 @@
 
 
 #############################################################################
-#### VERSION FILE                                                        ####
+#### PROGRAMS                                                            ####
 #############################################################################
 
-CONFIGURE_FILE (
-   "${CMAKE_CURRENT_SOURCE_DIR}/package-version.h.in"
-   "${CMAKE_CURRENT_BINARY_DIR}/package-version.h"
-)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+ADD_EXECUTABLE(time2unixts time2unixts.c)
+# SET_PROPERTY(TARGET time2unixts PROPERTY C_STANDARD 23)
+TARGET_LINK_LIBRARIES(time2unixts ${Intl_LIBRARIES})
+INSTALL(TARGETS     time2unixts   DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES       time2unixts.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       time2unixts.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      time2unixts)
 
-
-#############################################################################
-#### SUBDIRECTORIES                                                      ####
-#############################################################################
-
-ADD_SUBDIRECTORY(System-Info)
-ADD_SUBDIRECTORY(System-Maintenance)
-ADD_SUBDIRECTORY(Print-UTF8)
-ADD_SUBDIRECTORY(Text-Block)
-ADD_SUBDIRECTORY(Fingerprint-SSH-Keys)
-ADD_SUBDIRECTORY(Configure-GRUB)
-ADD_SUBDIRECTORY(Reset-Machine-ID)
-ADD_SUBDIRECTORY(Try-Hard)
-ADD_SUBDIRECTORY(Random-Sleep)
-ADD_SUBDIRECTORY(Unix-Timestamp)
-ADD_SUBDIRECTORY(X509)
+ADD_EXECUTABLE(unixts2time unixts2time.c)
+# SET_PROPERTY(TARGET unixts2time PROPERTY C_STANDARD 23)
+TARGET_LINK_LIBRARIES(unixts2time ${Intl_LIBRARIES})
+INSTALL(TARGETS     unixts2time   DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES       unixts2time.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       unixts2time.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      unixts2time)
