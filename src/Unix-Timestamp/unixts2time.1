@@ -1,0 +1,94 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" Unix Timestamp to Time Conversion
+.\" Copyright (C) 2026 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd March 17, 2026
+.Dt unixts2time 1
+.Os unixts2time
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm unixts2time
+.Nd converts a Unix timestamp to time string
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm unixts2time
+.Op unix_timestamp
+.Op Fl -F | Fl Fl --float
+.Op Fl -I | Fl Fl --integer
+.Op Fl -H | Fl Fl --human-readable
+.Op Fl -s | Fl Fl --seconds
+.Op Fl -m | Fl Fl --milliseconds
+.Op Fl -u | Fl Fl --microseconds
+.Op Fl -n | Fl Fl --nanoseconds
+.Nm unixts2time
+.Op Fl h | Fl Fl help
+.Nm unixts2time
+.Op Fl v | Fl Fl version
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm unixts2time
+converts a Unix timestamp to time string. The Unix timestamp is the time
+(nanoseconds, microseconds, milliseconds, or seconds) since the Unix Epoch
+on Jaunary 1, 1970, 00:00:00.000000000 UTC. By default the timestamp is in
+nanoseconds. If no timestamp is provided, the current system time is used.
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It Fl -F | Fl Fl --float
+Parse the Unix timestamp as a floating-point number.
+.It Fl -I | Fl Fl --integer
+Parse the Unix timestamp as an integer number.
+.It Fl -H | Fl Fl --human-readable
+Provide the output in human-readable form. Default: off.
+.It Fl -s | Fl Fl --seconds
+The Unix timestamp is given in seconds. Default is in nanoseconds.
+.It Fl -m | Fl Fl --milliseconds
+The Unix timestamp is given in milliseconds. Default is in nanoseconds.
+.It Fl -u | Fl Fl --microseconds
+The Unix timestamp is given in microseconds. Default is in nanoseconds.
+.It Fl -n | Fl Fl --nanoseconds
+The Unix timestamp is given in nanoseconds. This is the default.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It unixts2time 1773736279 --human-readable --seconds
+.It unixts2time 1773736279 -s
+.It unixts2time 212847000000 --milliseconds
+.It unixts2time --version
+.It unixts2time --help
+.El
