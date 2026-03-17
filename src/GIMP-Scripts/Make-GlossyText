@@ -126,15 +126,15 @@ fi
 
 # ====== Obtain GIMP call options ===========================================
 if ! whereis gimp-console >/dev/null ; then
-   echo >&2 "ERROR: Gimp is not available!"
+   echo >&2 "ERROR: GIMP is not available!"
    exit 1
 fi
 GIMP_VERSION="$(LANG=C gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
 if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
-   # Gimp 2.x:
+   # GIMP 2.x:
    GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 else
-   # Gimp 3.x:
+   # GIMP 3.x:
    GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 fi
 
@@ -149,7 +149,7 @@ rm -f "${OUTPUT_FILENAME}"
 
 ; ****** Begin of glossy-300.scm ********************************************
 
-;Modernized with ModernizeMatic8 for Gimp 2.10.28 by vitforlinux.wordpress.com - dont remove
+;Modernized with ModernizeMatic8 for GIMP 2.10.28 by vitforlinux.wordpress.com - dont remove
 
 ; glossy-patterned-shadowed-and-bump-mapped-logo
 ; creates anything you can create with it :)
@@ -183,7 +183,7 @@ rm -f "${OUTPUT_FILENAME}"
 
 (cond ((not (defined? 'gimp-text-fontname)) (define (gimp-text-fontname fn1 fn2 fn3 fn4 fn5 fn6 fn7 fn8 PIXELS fn9) (gimp-text-font fn1 fn2 fn3 fn4 fn5 fn6 fn7 fn8 fn9))))
 
-; Gimp 2.8 compatibility:
+; GIMP 2.8 compatibility:
 (cond ((not (defined? 'LAYER-MODE-NORMAL-LEGACY)) (define LAYER-MODE-NORMAL-LEGACY NORMAL-MODE)))
 (cond ((not (defined? 'LAYER-MODE-SCREEN-LEGACY)) (define LAYER-MODE-SCREEN-LEGACY SCREEN-MODE)))
 
@@ -241,11 +241,11 @@ rm -f "${OUTPUT_FILENAME}"
     (script-fu-util-image-add-layers img grow-me bg-layer)
     (gimp-item-set-name grow-me "Grow-me")
     (if (defined? 'gimp-item-transform-translate)
-      (begin  ; New Gimp > 2.8 API:
-        ; New Gimp > 2.8 API:
+      (begin  ; New GIMP > 2.8 API:
+        ; New GIMP > 2.8 API:
         (gimp-item-transform-translate grow-me posx posy)
       )
-      (begin  ; Old Gimp <= 2.8 API:
+      (begin  ; Old GIMP <= 2.8 API:
         (gimp-layer-translate grow-me posx posy)
       )
     )
@@ -255,11 +255,11 @@ rm -f "${OUTPUT_FILENAME}"
     ;(gimp-drawable-edit-bucket-fill bg-layer FILL-BACKGROUND  100 0 )
 
     (if (defined? 'gimp-drawable-edit-fill)
-      (begin  ; New Gimp > 2.8 API:
-        ; New Gimp > 2.8 API:
+      (begin  ; New GIMP > 2.8 API:
+        ; New GIMP > 2.8 API:
         (gimp-drawable-edit-fill bg-layer FILL-BACKGROUND)
       )
-      (begin  ; Old Gimp <= 2.8 API:
+      (begin  ; Old GIMP <= 2.8 API:
         (gimp-edit-bucket-fill bg-layer BG-BUCKET-FILL NORMAL-MODE 100 0 FALSE 0 0)
       )
     )
@@ -276,11 +276,11 @@ rm -f "${OUTPUT_FILENAME}"
       (begin
         (gimp-context-set-pattern pattern-text)
         (if (defined? 'gimp-drawable-edit-fill)
-          (begin  ; New Gimp > 2.8 API:
-            ; New Gimp > 2.8 API:
+          (begin  ; New GIMP > 2.8 API:
+            ; New GIMP > 2.8 API:
             (gimp-drawable-edit-fill logo-layer FILL-PATTERN)
           )
-          (begin  ; Old Gimp <= 2.8 API:
+          (begin  ; Old GIMP <= 2.8 API:
             (gimp-drawable-edit-bucket-fill logo-layer BUCKET-FILL-PATTERN  100 0 )
           )
         )
@@ -291,11 +291,11 @@ rm -f "${OUTPUT_FILENAME}"
       (begin
         (gimp-context-set-gradient blend-gradient-text)
         (if (defined? 'gimp-drawable-edit-gradient-fill)
-          (begin  ; New Gimp > 2.8 API:
+          (begin  ; New GIMP > 2.8 API:
              (gimp-context-set-gradient-reverse blend-gradient-text-reverse)
              (gimp-drawable-edit-gradient-fill logo-layer GRADIENT-LINEAR 0 0 1 0 0 0 0 0 (+ height 5)) ; Fill with gradient
           )
-          (begin  ; Old Gimp <= 2.8 API:
+          (begin  ; Old GIMP <= 2.8 API:
             (gimp-edit-blend logo-layer CUSTOM-MODE NORMAL-MODE
                                         GRADIENT-LINEAR 100 0 REPEAT-NONE
                                         blend-gradient-text-reverse
@@ -331,11 +331,11 @@ rm -f "${OUTPUT_FILENAME}"
         (gimp-context-set-gradient blend-gradient-outline)
 
         (if (defined? 'gimp-drawable-edit-gradient-fill)
-          (begin  ; New Gimp > 2.8 API:
+          (begin  ; New GIMP > 2.8 API:
              (gimp-context-set-gradient-reverse blend-gradient-outline-reverse)
              (gimp-drawable-edit-gradient-fill grow-me GRADIENT-LINEAR 0 0 1 0 0 0 0 0 (+ height 5)) ; Fill with gradient
           )
-          (begin  ; Old Gimp <= 2.8 API:
+          (begin  ; Old GIMP <= 2.8 API:
             (gimp-edit-blend grow-me CUSTOM-MODE NORMAL-MODE
                                      GRADIENT-LINEAR 100 0 REPEAT-NONE
                                      blend-gradient-outline-reverse
@@ -626,9 +626,9 @@ rm -f "${OUTPUT_FILENAME}"
    ; (display "image=") (display image) (newline)
 
    (set! layers (if (not (defined? 'gimp-image-get-active-layer))
-                    ; New Gimp 3.0 API:
+                    ; New GIMP 3.0 API:
                     (set! layers (car (gimp-image-get-layers image)))
-                    ; Old Gimp 2.x API:
+                    ; Old GIMP 2.x API:
                     (set! layers (car (cdr (gimp-image-get-layers image))))
                 ))
    ; (display "layers=") (display layers) (newline)
@@ -642,16 +642,16 @@ rm -f "${OUTPUT_FILENAME}"
    (gimp-image-merge-visible-layers image EXPAND-AS-NECESSARY)
 
    (set! layer (if (not (defined? 'gimp-image-get-active-layer))
-                   ; New Gimp 3.0 API:
+                   ; New GIMP 3.0 API:
                    (car (list (vector-ref (car (gimp-image-get-selected-layers image)) 0)))
-                   ; Old Gimp 2.x API:
+                   ; Old GIMP 2.x API:
                    (car (gimp-image-get-active-layer image)))
                   )
 
    ; ------ Save result -----------------------------------------------------
    (if (defined? 'gimp-drawable-merge-new-filter)
-      (begin  ; New Gimp >= 3.0 API:
-         ; FIXME: This does not work when running in Gimp 2.x!
+      (begin  ; New GIMP >= 3.0 API:
+         ; FIXME: This does not work when running in GIMP 2.x!
          ; (file-png-export
          ;    #:run-mode         RUN-NONINTERACTIVE
          ;    #:image            image
@@ -670,7 +670,7 @@ rm -f "${OUTPUT_FILENAME}"
             outputFileName -1
             TRUE 6 TRUE FALSE TRUE TRUE FALSE TRUE)
       )
-      (begin  ; Old Gimp < 3.0 API:
+      (begin  ; Old GIMP < 3.0 API:
          (file-png-save2 RUN-NONINTERACTIVE image
             (car (gimp-image-get-active-layer image))
             outputFileName outputFileName

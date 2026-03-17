@@ -41,7 +41,7 @@ SET(gimpScripts
    Make-OilPainting
    Make-OldPhoto
    Resize-with-Cropping
-   Test-Gimp
+   Test-GIMP
 )
 
 FOREACH(gimpScript IN LISTS gimpScripts)

@@ -117,15 +117,15 @@ fi
 
 # ====== Obtain GIMP call options ===========================================
 if ! whereis gimp-console >/dev/null ; then
-   echo >&2 "ERROR: Gimp is not available!"
+   echo >&2 "ERROR: GIMP is not available!"
    exit 1
 fi
 GIMP_VERSION="$(LANG=C gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
 if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
-   # Gimp 2.x:
+   # GIMP 2.x:
    GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 else
-   # Gimp 3.x:
+   # GIMP 3.x:
    GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 fi
 
@@ -138,7 +138,7 @@ rm -f "${OUTPUT_FILENAME}"
 # shellcheck disable=SC2086
 ( cat <<EOF
 
-; Gimp 2.8 compatibility:
+; GIMP 2.8 compatibility:
 (cond ((not (defined? 'LAYER-MODE-NORMAL-LEGACY)) (define LAYER-MODE-NORMAL-LEGACY NORMAL-MODE)))
 (cond ((not (defined? 'FILL-BACKGROUND)) (define FILL-BACKGROUND BACKGROUND-FILL)))
 
@@ -157,16 +157,16 @@ rm -f "${OUTPUT_FILENAME}"
     (image (car (gimp-image-new captionWidth captionHeight RGB)))
     ; (layer1 (car (gimp-layer-new image captionWidth captionHeight RGBA-IMAGE "Layer 1" captionOpacity LAYER-MODE-NORMAL-LEGACY)))
     (layer1           (if (not (defined? 'gimp-image-get-active-layer))
-                         ; New Gimp 3.0 API:
+                         ; New GIMP 3.0 API:
                          (car (gimp-layer-new image "Layer 1" captionWidth captionHeight RGBA-IMAGE captionOpacity LAYER-MODE-NORMAL-LEGACY))
-                         ; Old Gimp 2.x API:
+                         ; Old GIMP 2.x API:
                          (car (gimp-layer-new image captionWidth captionHeight RGBA-IMAGE "Layer 1" captionOpacity LAYER-MODE-NORMAL-LEGACY))
                       ))
     ; (layer2 (car (gimp-layer-new image captionWidth captionHeight RGBA-IMAGE "Layer 2" 100 LAYER-MODE-NORMAL-LEGACY)))
     (layer2           (if (not (defined? 'gimp-image-get-active-layer))
-                         ; New Gimp 3.0 API:
+                         ; New GIMP 3.0 API:
                          (car (gimp-layer-new image "Layer 2" captionWidth captionHeight RGBA-IMAGE 100 LAYER-MODE-NORMAL-LEGACY))
-                         ; Old Gimp 2.x API:
+                         ; Old GIMP 2.x API:
                          (car (gimp-layer-new image captionWidth captionHeight RGBA-IMAGE "Layer 2" 100 LAYER-MODE-NORMAL-LEGACY))
                       ))
    )
@@ -188,14 +188,14 @@ rm -f "${OUTPUT_FILENAME}"
    (gimp-drawable-fill layer1 FILL-BACKGROUND)
 
    (if (defined? 'gimp-drawable-merge-new-filter)
-      (begin  ; New Gimp >= 3.0 API:
+      (begin  ; New GIMP >= 3.0 API:
          (set! theText (car (gimp-text-font image layer2 0 0 captionText 0 TRUE captionFontSize captionFont) ))
          (gimp-layer-set-offsets
             theText
             (/ (- captionWidth  (car (gimp-drawable-get-width  theText))) 2)
             (/ (- captionHeight (car (gimp-drawable-get-height theText))) 2))
       )
-      (begin  ; Old Gimp < 3.0 API:
+      (begin  ; Old GIMP < 3.0 API:
          (set! theText (car (gimp-text-fontname image layer2 0 0 captionText 0 TRUE captionFontSize PIXELS captionFont) ) )
          (gimp-layer-set-offsets
            theText
@@ -209,8 +209,8 @@ rm -f "${OUTPUT_FILENAME}"
 
    ; ------ Save result -----------------------------------------------------
    (if (defined? 'gimp-drawable-merge-new-filter)
-      (begin  ; New Gimp >= 3.0 API:
-         ; FIXME: This does not work when running in Gimp 2.x!
+      (begin  ; New GIMP >= 3.0 API:
+         ; FIXME: This does not work when running in GIMP 2.x!
          ; (file-png-export
          ;    #:run-mode         RUN-NONINTERACTIVE
          ;    #:image            image
@@ -229,7 +229,7 @@ rm -f "${OUTPUT_FILENAME}"
             outputFileName -1
             TRUE 6 TRUE FALSE TRUE TRUE FALSE TRUE)
       )
-      (begin  ; Old Gimp < 3.0 API:
+      (begin  ; Old GIMP < 3.0 API:
          (file-png-save2 RUN-NONINTERACTIVE image
             (car (gimp-image-get-active-layer image))
             outputFileName outputFileName

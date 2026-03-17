@@ -88,7 +88,7 @@ if [ "${GIMP3_DIRECTORY}" != "" ] ; then
    done
 
    # FIXME!
-   # Gimp 3.0 wastes a lot of CPU, for whatever reason. Just
+   # GIMP 3.0 wastes a lot of CPU, for whatever reason. Just
    # using 1 core seems to provide the best performance:
    echo "(num-processors 1)" >>"${GIMP3_DIRECTORY}/gimprc"
 fi
@@ -96,15 +96,15 @@ fi
 
 # ====== Obtain GIMP call options ===========================================
 if ! whereis gimp-console >/dev/null ; then
-   echo >&2 "ERROR: Gimp is not available!"
+   echo >&2 "ERROR: GIMP is not available!"
    exit 1
 fi
 GIMP_VERSION="$(LANG=C gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
 if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
-   # Gimp 2.x:
+   # GIMP 2.x:
    GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 else
-   # Gimp 3.x:
+   # GIMP 3.x:
    GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 fi
 

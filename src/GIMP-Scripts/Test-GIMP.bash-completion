@@ -29,8 +29,8 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for Test-Gimp ######################################
-_Test_Gimp()
+# ###### Bash completion for Test-GIMP ######################################
+_Test_GIMP()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -64,4 +64,4 @@ _Test_Gimp()
    return 0
 }
 
-complete -F _Test_Gimp Test-Gimp
+complete -F _Test_GIMP Test-GIMP
