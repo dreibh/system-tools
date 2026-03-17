@@ -56,10 +56,25 @@ _Resize_with_Cropping()
    elif [ "${cword}" -eq 2 ] ; then
       _filedir
       return
+   else
+      case "${prev}" in
+         #  ====== Generic value ============================================
+         -A | --aspect | \
+         -W | --width  | \
+         -H | --height)
+            return
+            ;;
+      esac
    fi
 
    # ====== All options =====================================================
    local opts="
+-A
+--aspect
+-W
+--width
+-H
+--height
 -q
 --quiet
 -w

@@ -43,9 +43,17 @@
 input_image
 output_image
 .br
-aspect_ratio | H:V | HxV | An | keep
+.Op Fl A aspect_ratio | Fl Fl aspect Ar aspect_ratio
 .br
-.Op new_width
+.Op Fl A Ar H:V|HxV | Fl Fl aspect Ar H:V|HxV
+.br
+.Op Fl A Ar A0|...|A9|An | Fl Fl aspect Ar A0|...|A9|An
+.br
+.Op Fl A Ar keep | Fl Fl aspect Ar keep
+.br
+.Op Fl W Ar new_width | Fl Fl width Ar new_width
+.br
+.Op Fl H Ar new_height | Fl Fl height Ar new_height
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
@@ -66,8 +74,18 @@ The following options are available:
 The input image. Any format support by GraphicsMagick can be used. The format will be detected automatically.
 .It output_image
 The name for the output image to be written. Any format support by GraphicsMagick can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It aspect_ratio | H:V | HxV | An | keep
-Specifies the aspect ratio: directly as value (e.g. 1.414214), as ratio H:V or HxV (e.g. 16:9 or 16x9), or DIN An format ratio (A1, A2, ..., A9, or An; i.e. sqrt(2):1 ≈ 1.414213562373). Alternatively, "keep" leaves the aspect ratio unchanged.
+.It Fl A aspect_ratio | Fl Fl aspect Ar aspect_ratio
+Specifies the aspect ratio directly as value (e.g. 1.414214).
+.It Fl A Ar H:V|HxV | Fl Fl aspect Ar H:V|HxV
+Specifies the aspect ratio as H:V or HxV (e.g. 16:9 or 16x9).
+.It Fl A Ar A0|...|A9|An | Fl Fl aspect Ar A0|...|A9|An
+Specifies the aspect ratio as DIN An format ratio (A1, A2, ..., A9, or An; i.e. sqrt(2):1 ≈ 1.414213562373).
+.It Fl A Ar keep | Fl Fl aspect Ar keep
+Leaves the aspect ratio unchanged. This is the default.
+.It Fl W Ar new_width | Fl Fl width Ar new_width
+Specifies the new width. Then, the new height is calculated based on the configured aspect ratio.
+.It Fl H Ar new_height | Fl Fl height Ar new_height
+Specifies the new height. Then, the new width is calculated based on the configured aspect ratio.
 .It Fl q | Fl Fl quiet
 Quiet mode: no output is made.
 .It Fl w | Fl Fl verbose
@@ -82,4 +100,5 @@ Prints command-line parameters.
 .It Resize-with-Cropping Bergen.jpeg Bergen-1920-16:9.png 16x9 1920
 .It Resize-with-Cropping Bergen.jpeg Bergen-3860-A3.pdf A3 3840
 .It Resize-with-Cropping Bergen.jpeg Bergen-1024-An.jpeg 1.414214 1024
+.It Resize-with-Cropping Portobello.jpeg Portobello-2048-16:9.jpeg -A 16:9 --width 2048 -v
 .El

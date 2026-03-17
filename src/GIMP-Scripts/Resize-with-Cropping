@@ -37,18 +37,33 @@ set -eu
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_image output_image aspect_ratio|H:V|HxV|An|keep [new_width] [--verbose|-v] [--quiet|-q] [--help|-h]"
+   echo >&2 "Usage: $0 input_image output_image [-A|--aspect aspect_ratio|H:V|HxV|An|keep] [-W|--width new_width] [-H|--height new_height] [--verbose|-v] [--quiet|-q] [--help|-h]"
    exit "${exitCode}"
 }
 
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o b:vqh --long verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o A:W:H:vqh --long aspect:,width:,height:,verbose,quiet,help -a -- "$@")"
 eval set -- "${options}"
 
 VERBOSE=0
+ASPECT="keep"
+NEW_WIDTH=""
+NEW_HEIGHT=""
 while [ $# -gt 0 ] ; do
    case "$1" in
+      -A | --aspect)
+         ASPECT="$2"
+         shift 2
+         ;;
+      -W | --width)
+         NEW_WIDTH="$2"
+         shift 2
+         ;;
+      -H | --height)
+         NEW_HEIGHT="$2"
+         shift 2
+         ;;
       -v | --verbose)
          VERBOSE=1
          shift
@@ -70,21 +85,15 @@ while [ $# -gt 0 ] ; do
   esac
 done
 
-if [ $# -lt 3 ] ; then
+if [ $# -ne 2 ] ; then
    usage 1
 fi
 INPUT_FILENAME="$1"
 OUTPUT_FILENAME="$2"
-ASPECT="$3"
-if [ $# -eq 4 ] ; then
-   NEW_WIDTH="$4"
-else
-   NEW_WIDTH=0
-fi
 
 
 # ====== Prepare output aspect ratio ========================================
-outputAspectRatio=0
+outputAspectRatio=
 if [ "${ASPECT}" != "keep" ] ; then
    if [[ "${ASPECT}" =~ ^([0-9]+\.{0,1}[0-9]*)([:x])([0-9]+\.{0,1}[0-9]*)$ ]] ; then
       outputAspectRatio=$(LC_NUMERIC=C awk "BEGIN { print ${BASH_REMATCH[1]}/${BASH_REMATCH[3]} }")
@@ -101,6 +110,18 @@ if [ "${ASPECT}" != "keep" ] ; then
       fi
    fi
 fi
+if [ "${NEW_WIDTH}" != "" ] && [ "${NEW_HEIGHT}" != "" ] ; then
+   echo >&2 "ERROR: -W|--width and -H|--height are mutually exclusive!"
+   exit 1
+fi
+if [[ ! "${NEW_WIDTH}" =~ ^(|[0-9]+)$ ]] ; then
+   echo >&2 "ERROR: Invalid width ${NEW_WIDTH}!"
+   exit 1
+fi
+if [[ ! "${NEW_HEIGHT}" =~ ^(|[0-9]+)$ ]] ; then
+   echo >&2 "ERROR: Invalid height ${NEW_HEIGHT}!"
+   exit 1
+fi
 
 
 # ====== Obtain image width and height ======================================
@@ -113,26 +134,36 @@ inputImageSize="$(gm identify -format "%wx%h" "$INPUT_FILENAME")"
 inputWidth="$(echo "${inputImageSize}" | sed -e "s/x[0-9]*$//")"
 # shellcheck disable=SC2001
 inputHeight="$(echo "${inputImageSize}" | sed -e "s/^[0-9]*x//")"
-inputAspect="$(LC_NUMERIC=C awk "BEGIN { printf \"%.16f\\n\", ${inputWidth}/${inputHeight} }")"
-if [[ "$inputAspect" =~ ^- ]] ; then
-   inputAspect="$(LC_NUMERIC=C awk "BEGIN { printf \"%.16f\\n\", 1/${inputAspect} }")"   # Input image is in portrait format => convert aspect
+inputAspectRatio="$(LC_NUMERIC=C awk "BEGIN { printf \"%.16f\\n\", ${inputWidth}/${inputHeight} }")"
+if [[ "${inputAspectRatio}" =~ ^- ]] ; then
+   # Input image is in portrait format => convert aspect
+   inputAspectRatio="$(LC_NUMERIC=C awk "BEGIN { printf \"%.16f\\n\", 1.0/${inputAspectRatio} }")"
 fi
-if [ "${outputAspectRatio}" -eq 0 ] ; then
-   outputAspectRatio="${inputAspect}"
+if [ "${outputAspectRatio}" == "" ] ; then
+   outputAspectRatio="${inputAspectRatio}"
 fi
 if [ ${VERBOSE} -ne 0 ] ; then
-   echo "Input: ${inputWidth}*${inputHeight} (${inputAspect})"
+   echo "Input: ${inputWidth}*${inputHeight} (${inputAspectRatio})"
 fi
 
-if [ "${NEW_WIDTH}" -eq 0 ] ; then
-   # shellcheck disable=SC2001
-   NEW_WIDTH=$(echo "${inputImageSize}" | sed -e "s/x[0-9]*$//")
+
+# ===== Set new width or height =============================================
+echo "W1=${NEW_WIDTH}"
+if [ "${NEW_WIDTH}" != "" ] ; then
+   NEW_HEIGHT="$(LC_NUMERIC=C awk "BEGIN { print int(${NEW_WIDTH}/${outputAspectRatio}) }")"
+elif [ "${NEW_HEIGHT}" != "" ] ; then
+   NEW_WIDTH="$(LC_NUMERIC=C awk "BEGIN { print int(${NEW_HEIGHT}*${outputAspectRatio}) }")"
+else
+   NEW_WIDTH="${inputWidth}"
+   NEW_HEIGHT="${inputHeight}"
 fi
-newHeight="$(LC_NUMERIC=C awk "BEGIN { print int(${NEW_WIDTH}/${outputAspectRatio}) }")"
+if [ ${VERBOSE} -ne 0 ] ; then
+   echo "Resize: ${NEW_WIDTH}*${NEW_HEIGHT} + (${outputAspectRatio}:1)"
+fi
 
 
 # ====== Crop image =========================================================
-if [[ "$(LC_NUMERIC=C awk "BEGIN { print ${inputAspect}-${outputAspectRatio} }")" =~ ^- ]] ; then   # inputAspect < outputAspectRatio
+if [[ "$(LC_NUMERIC=C awk "BEGIN { print ${inputAspectRatio}-${outputAspectRatio} }")" =~ ^- ]] ; then   # inputAspect < outputAspectRatio
    croppedInputWidth=${inputWidth}
    croppedInputHeight="$(LC_NUMERIC=C awk "BEGIN { print int(${croppedInputWidth}/${outputAspectRatio}) }")"
 else
@@ -147,16 +178,12 @@ fi
 
 
 # ====== Run "convert" ======================================================
-if [ ${VERBOSE} -ne 0 ] ; then
-   if [ "${NEW_WIDTH}" != "" ] ; then
-      echo "Resize: ${NEW_WIDTH}*${newHeight} + (${outputAspectRatio}:1)"
-   fi
-fi
 rm -f "${OUTPUT_FILENAME}"
 gm convert "$INPUT_FILENAME" \
    -crop "${croppedInputWidth}"x"${croppedInputHeight}"+"${cx}"+"${cy}" \
-   -resize "${NEW_WIDTH}"x"${newHeight}" \
+   -resize "${NEW_WIDTH}"x"${NEW_HEIGHT}" \
    +repage \
+   -auto-orient \
    "${OUTPUT_FILENAME}"
 
 if [ ${VERBOSE} -ne 0 ] ; then
