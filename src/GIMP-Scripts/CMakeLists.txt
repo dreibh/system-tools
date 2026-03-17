@@ -38,7 +38,7 @@ SET(gimpScripts
    Make-Clothify
    Make-GlossyText
    Make-Mosaic
-   Make-OilPainting
+   Make-Oilify
    Make-OldPhoto
    Resize-with-Cropping
    Test-GIMP

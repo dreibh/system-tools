@@ -42,7 +42,7 @@ set -eu
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 output_filename caption_text caption_width caption_height font font_size_percent [--foreground|-f color] [--background|-b color] [--transparency|-t percentage] [-w|--verbose] [-q|--quiet] [-h|--help]"
+   echo >&2 "Usage: $0 output_filename caption_text caption_width caption_height font font_size_percent [-f|--foreground color] [-b|--background color] [|-t|--transparency percentage] [-w|--verbose] [-q|--quiet] [-h|--help]"
    echo >&2 "Example: $0 Caption.png \"Caption Text\" 1024 42 \"Noto Sans Bold\" 60 \"#02266b\" \"#ffd700\" 26"
    exit "${exitCode}"
 }
