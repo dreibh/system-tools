@@ -50,7 +50,7 @@ usage () {
 
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o b:c:f:p:o:l:vqh --long bordersize:,colorscheme:,font:,patterntext:,patternoutline:,patternoverlay:,verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o b:c:f:p:o:l:wqh --long bordersize:,colorscheme:,font:,patterntext:,patternoutline:,patternoverlay:,verbose,quiet,help -a -- "$@")"
 eval set -- "${options}"
 
 BORDER_SIZE=5
@@ -86,7 +86,7 @@ while [ $# -gt 0 ] ; do
          PATTERN_OVERLAY="$2"
          shift 2
          ;;
-      -v | --verbose)
+      -w | --verbose)
          VERBOSE=1
          shift
          ;;

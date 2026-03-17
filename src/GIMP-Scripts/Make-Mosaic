@@ -49,7 +49,7 @@ usage () {
 
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o t:s:n:l:c:vqh --long type:,surface:,neatness:,lightdirection:,colorvariation:,verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o t:s:n:l:c:wqh --long type:,surface:,neatness:,lightdirection:,colorvariation:,verbose,quiet,help -a -- "$@")"
 eval set -- "${options}"
 
 TILE_NEATNESS=0.65
@@ -88,7 +88,7 @@ while [ $# -gt 0 ] ; do
          COLOR_VARIATION="$2"
          shift 2
          ;;
-      -v | --verbose)
+      -w | --verbose)
          VERBOSE=1
          shift
          ;;

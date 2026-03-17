@@ -48,13 +48,13 @@ usage () {
 
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o vqh --long verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o wqh --long verbose,quiet,help -a -- "$@")"
 eval set -- "${options}"
 
 VERBOSE=0
 while [ $# -gt 0 ] ; do
    case "$1" in
-      -v | --verbose)
+      -w | --verbose)
          VERBOSE=1
          shift
          ;;

@@ -66,8 +66,8 @@ fi
 
 
 # ------ Make-<Conversion> Scripts ------------------------------------------
-./Resize-with-Cropping "${INPUT1}" Image1.png 16:9 1920
-./Resize-with-Cropping "${INPUT2}" Image2.png 16:9 1920
+./Resize-with-Cropping "${INPUT1}" Image1.png -A 16:9 -W 1920
+./Resize-with-Cropping "${INPUT2}" Image2.png --aspect 16:9 --width 1920
 
 
 ./Make-Mosaic Image1.png Mosaic1-H.png 24 4 4 --type hexagons --surface rough
