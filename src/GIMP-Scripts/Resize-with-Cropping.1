@@ -40,8 +40,8 @@
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm Resize-with-Cropping
-input_image
-output_image
+input_filename
+output_filename
 .br
 .Op Fl A aspect_ratio | Fl Fl aspect Ar aspect_ratio
 .br
@@ -68,9 +68,9 @@ resizes an image, including cropping to fit a changed aspect ratio.
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It input_image
+.It input_filename
 The input image. Any format support by GraphicsMagick can be used. The format will be detected automatically.
-.It output_image
+.It output_filename
 The name for the output image to be written. Any format support by GraphicsMagick can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
 .It Fl A aspect_ratio | Fl Fl aspect Ar aspect_ratio
 Specifies the aspect ratio directly as value (e.g. 1.414214).

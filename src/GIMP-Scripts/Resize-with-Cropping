@@ -37,7 +37,7 @@ set -eu
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_image output_image [-A|--aspect aspect_ratio|H:V|HxV|An|keep] [-W|--width new_width] [-H|--height new_height] [--verbose|-v] [--quiet|-q] [--help|-h]"
+   echo >&2 "Usage: $0 input_filename output_filename [-A|--aspect aspect_ratio|H:V|HxV|An|keep] [-W|--width new_width] [-H|--height new_height] [--verbose|-v] [--quiet|-q] [--help|-h]"
    exit "${exitCode}"
 }
 
