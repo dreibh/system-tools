@@ -1,0 +1,85 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" GIMP Scripts
+.\" Copyright (C) 2013-2026 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd March 17, 2026
+.Dt Resize-with-Cropping 1
+.Os Resize-with-Cropping
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm Resize-with-Cropping
+.Nd resizes an image, including cropping to fit a changed aspect ratio.
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm Resize-with-Cropping
+input_image
+output_image
+.br
+aspect_ratio | H:V | HxV | An
+.br
+.Op new_width
+.br
+.Op Fl q | Fl Fl quiet
+.Op Fl w | Fl Fl verbose
+.Nm Resize-with-Cropping
+.Op Fl h | Fl Fl help
+.Nm Resize-with-Cropping
+.Op Fl v | Fl Fl version
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm Resize-with-Cropping
+resizes an image, including cropping to fit a changed aspect ratio.
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It input_image
+The input image. Any format support by GraphicsMagick can be used. The format will be detected automatically.
+.It output_image
+The name for the output image to be written. Any format support by GraphicsMagick can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
+.It aspect_ratio|H:V|HxV|An
+Specifies the aspect ratio: directly as value (e.g. 1.414214), as ratio H:V or HxV (e.g. 16:9 or 16x9), or DIN An format ratio (A1, A2, ..., A9, or An; i.e. sqrt(2):1 ≈ 1.414213562373).
+.It Fl q | Fl Fl quiet
+Quiet mode: no output is made.
+.It Fl w | Fl Fl verbose
+Verbose mode: print selected delay and wake-up.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It Resize-with-Cropping Bergen.jpeg Bergen-1920-4:3.webp 4:3 1920 --verbose
+.It Resize-with-Cropping Bergen.jpeg Bergen-1920-16:9.png 16x9 1920
+.It Resize-with-Cropping Bergen.jpeg Bergen-3860-A3.pdf A3 3840
+.It Resize-with-Cropping Bergen.jpeg Bergen-1024-An.jpeg 1.414214 1024
+.El
