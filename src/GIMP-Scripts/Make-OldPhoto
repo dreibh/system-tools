@@ -32,24 +32,18 @@
 set -eu
 
 
-# Examples:
-# Make-OldPhoto Image1.jpeg OldPhoto1.png
-# Make-OldPhoto Image1.jpeg OldPhoto2.png --bordersize 20
-
-
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_filename output_filename [--bordersize|-b size] [--verbose|-v] [--quiet|-q] [--help|-h]"
-   echo >&2 "Example: $0 Image.jpeg OldPhoto.png --bordersize 20"
+   echo >&2 "Usage: $0 input_filename output_filename [-b|--bordersize border_size] [-w|--verbose] [-q|--quiet] [-h|--help]"
    exit "${exitCode}"
 }
 
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o b:vqh --long bordersize:,verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o b:wqh --long bordersize:,verbose,quiet,help -a -- "$@")"
 eval set -- "${options}"
 
 BORDER_SIZE=10
@@ -60,7 +54,7 @@ while [ $# -gt 0 ] ; do
          BORDER_SIZE="$2"
          shift 2
          ;;
-      -v | --verbose)
+      -w | --verbose)
          VERBOSE=1
          shift
          ;;
