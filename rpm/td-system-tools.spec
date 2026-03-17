@@ -20,6 +20,7 @@ Requires: td-system-tools-reset-machine-id = %{version}-%{release}
 Requires: td-system-tools-system-info = %{version}-%{release}
 Requires: td-system-tools-system-maintenance = %{version}-%{release}
 Requires: td-system-tools-text-block = %{version}-%{release}
+Requires: td-system-tools-unix-timestamp-tools = %{version}-%{release}
 Requires: td-system-tools-x509-tools = %{version}-%{release}
 Recommends: td-system-tools-configure-grub = %{version}-%{release}
 
@@ -232,12 +233,12 @@ Recommends: gnutls-utils
 Recommends: nss-tools
 
 %description x509-tools
- This package contains four simple tools:
- view-certificate displays an X.509 certificate and its hierarchy.
- check-certificate verifies an X.509 certificate using a CA certificate
- and optionally a revocation list.
- extract-pem extracts a PEM file.
- test-tls-connection tests a TCP TLS connection to a remote endpoint.
+This package contains four simple tools:
+view-certificate displays an X.509 certificate and its hierarchy.
+check-certificate verifies an X.509 certificate using a CA certificate
+and optionally a revocation list.
+extract-pem extracts a PEM file.
+test-tls-connection tests a TCP TLS connection to a remote endpoint.
 
 %files x509-tools
 %{_bindir}/check-certificate
@@ -256,6 +257,29 @@ Recommends: nss-tools
 %{_mandir}/man1/extract-pem.1.gz
 %{_mandir}/man1/test-tls-connection.1.gz
 %{_mandir}/man1/view-certificate.1.gz
+
+
+%package unixtimestamp-tools
+Summary: Unix timestamp handling tools
+Group: Applications/System
+
+%description unixtimestamp-tools
+This package contains two simple tools:
+time2unixts converts a time string to an Unix timestamp.
+unixts2time converts an Unix timestamp to a time string.
+These tools support Unix timestamps (i.e. the time since
+Jaunary 1, 1970, 00:00:00.000000000 UTC) in seconds,
+milliseconds, microseconds, and nanoseconds.
+
+%files unixtimestamp-tools
+%{_bindir}/time2unixts
+%{_bindir}/unixts2time
+%{_datadir}/bash-completion/completions/time2unixts
+%{_datadir}/bash-completion/completions/unixts2time
+%{_datadir}/locale/*/LC_MESSAGES/time2unixts.mo
+%{_datadir}/locale/*/LC_MESSAGES/unixts2time.mo
+%{_mandir}/man1/time2unixts.1.gz
+%{_mandir}/man1/unixts2time.1.gz
 
 
 %package misc

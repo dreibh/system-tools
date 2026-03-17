@@ -126,6 +126,19 @@ Description: X.509 certificate handling tools
  extract-pem extracts a PEM file.
  test-tls-connection tests a TCP TLS connection to a remote endpoint.
 
+Package: td-unixtimestamp-tools
+Architecture: any
+Depends: gettext-base,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: Unix timestamp conversion tools
+ This package contains two simple tools:
+ time2unixts converts a time string to an Unix timestamp.
+ unixts2time converts an Unix timestamp to a time string.
+ These tools support Unix timestamps (i.e. the time since
+ Jaunary 1, 1970, 00:00:00.000000000 UTC) in seconds,
+ milliseconds, microseconds, and nanoseconds.
+
 Package: td-misc
 Architecture: any
 Depends: gettext-base,
@@ -147,6 +160,7 @@ Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
          td-system-info (>= ${source:Version}),
          td-system-maintenance (>= ${source:Version}),
          td-text-block (>= ${source:Version}),
+         td-unixtimestamp-tools (>= ${source:Version}),
          td-x509-tools (>= ${source:Version}),
          ${misc:Depends}
 Recommends: td-system-configure-grub
