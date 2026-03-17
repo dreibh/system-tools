@@ -34,20 +34,23 @@
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm unixts2time
-.Nd converts a Unix timestamp to time string
+.Nd converts a Unix timestamp to a time string
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm unixts2time
 .Op unix_timestamp
-.Op Fl -F | Fl Fl --float
-.Op Fl -I | Fl Fl --integer
-.Op Fl -H | Fl Fl --human-readable
-.Op Fl -s | Fl Fl --seconds
-.Op Fl -m | Fl Fl --milliseconds
-.Op Fl -u | Fl Fl --microseconds
-.Op Fl -n | Fl Fl --nanoseconds
+.br
+.Op Fl -F | Fl Fl float
+.Op Fl -I | Fl Fl integer
+.br
+.Op Fl -H | Fl Fl human-readable
+.br
+.Op Fl -s | Fl Fl seconds
+.Op Fl -m | Fl Fl milliseconds
+.Op Fl -u | Fl Fl microseconds
+.Op Fl -n | Fl Fl nanoseconds
 .Nm unixts2time
 .Op Fl h | Fl Fl help
 .Nm unixts2time
@@ -55,28 +58,33 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm unixts2time
-converts a Unix timestamp to time string. The Unix timestamp is the time
-(nanoseconds, microseconds, milliseconds, or seconds) since the Unix Epoch
-on Jaunary 1, 1970, 00:00:00.000000000 UTC. By default the timestamp is in
-nanoseconds. If no timestamp is provided, the current system time is used.
+converts a Unix timestamp to a time string in the format %Y-%m-%d %H:%M:%S.
+The Unix timestamp is the time (nanoseconds, microseconds, milliseconds, or
+seconds) since the Unix Epoch, i.e. Jaunary 1, 1970, 00:00:00.000000000 UTC.
+By default the timestamp is in nanoseconds.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl -F | Fl Fl --float
+.It unix_timestamp
+The Unix timestamp to be converted. If not provided, the current system time is used.
+.It Fl -F | Fl Fl float
 Parse the Unix timestamp as a floating-point number.
-.It Fl -I | Fl Fl --integer
+.It Fl -I | Fl Fl integer
 Parse the Unix timestamp as an integer number.
-.It Fl -H | Fl Fl --human-readable
+A prefex of 0x is interpreted as hexadecimal (base 16),
+a prefex of 0 is interpreted as octal (base 8).
+Otherwise, the number is interpreted as decimal (base 10).
+.It Fl -H | Fl Fl human-readable
 Provide the output in human-readable form. Default: off.
-.It Fl -s | Fl Fl --seconds
+.It Fl -s | Fl Fl seconds
 The Unix timestamp is given in seconds. Default is in nanoseconds.
-.It Fl -m | Fl Fl --milliseconds
+.It Fl -m | Fl Fl milliseconds
 The Unix timestamp is given in milliseconds. Default is in nanoseconds.
-.It Fl -u | Fl Fl --microseconds
+.It Fl -u | Fl Fl microseconds
 The Unix timestamp is given in microseconds. Default is in nanoseconds.
-.It Fl -n | Fl Fl --nanoseconds
+.It Fl -n | Fl Fl nanoseconds
 The Unix timestamp is given in nanoseconds. This is the default.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
@@ -86,9 +94,16 @@ Prints program version.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
+.It unixts2time
+.It unixts2time --human-readable --seconds 1773744755
 .It unixts2time 1773736279 --human-readable --seconds
 .It unixts2time 1773736279 -s
 .It unixts2time 212847000000 --milliseconds
+.It unixts2time 212847008123456789 -H
+.It unixts2time 0x179cb2ae8af3dd89
+.It unixts2time 0x179cb2ae8af3dd89 -H
+.It env LANG=en.UTF8 ./unixts2time 212847123.123 -Fs
+.It env LANG=de_DE.UTF8 ./unixts2time 212847123,123456789 -Fs
 .It unixts2time --version
 .It unixts2time --help
 .El
