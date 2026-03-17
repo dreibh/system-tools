@@ -1,0 +1,79 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" GIMP Scripts
+.\" Copyright (C) 2013-2026 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd March 17, 2026
+.Dt Make-OldPhoto 1
+.Os Make-OldPhoto
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm Make-OldPhoto
+.Nd applies the "Old Photo" effect
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm Make-OldPhoto
+input_filename
+output_filename
+.br
+.Op Fl b Ar border_size | Fl Fl bordersize Ar border_size
+.br
+.Op Fl q | Fl Fl quiet
+.Op Fl w | Fl Fl verbose
+.Nm Make-OldPhoto
+.Op Fl h | Fl Fl help
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm Make-OldPhoto
+runs Gimp to load an image, apply the "Old Photo" effect, and store the
+resulting image.
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It input_filename
+The input image. Any format support by GraphicsMagick can be used. The format will be detected automatically.
+.It output_filename
+The name for the output image to be written. Any format support by GraphicsMagick can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
+.It Fl b Ar border_size | Fl Fl bordersize Ar border_size
+Sets the border size for the "Old Photo" effect.
+.It Fl w | Fl Fl verbose
+Verbose mode: print selected delay and wake-up.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It Make-OldPhoto Bergen.jpeg Bergen-OldPhoto.jpeg
+.It Make-OldPhoto Bergen.jpeg Bergen-OldPhoto-with-Border20.jpeg --bordersize 20
+.It Make-OldPhoto Portobello.jpeg Portobello-OldPhoto.jpeg --verbose
+.El
