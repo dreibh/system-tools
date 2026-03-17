@@ -37,6 +37,8 @@ set -eu
 # Make-OilPainting Image1.jpeg Painting2.png --masksize 5
 
 
+# ###### Main program #######################################################
+
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"

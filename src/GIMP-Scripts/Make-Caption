@@ -37,6 +37,8 @@ set -eu
 # Make-Caption Caption.png "Caption Text" 1024 42 "Noto Sans Bold" 60 --foreground "#02266b" --background "#ffd700" --transparency 26
 
 
+# ###### Main program #######################################################
+
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"

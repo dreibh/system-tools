@@ -37,6 +37,8 @@ set -eu
 # Make-Cloth Image1.jpeg Cloth2.png --depth 8
 
 
+# ###### Main program #######################################################
+
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"

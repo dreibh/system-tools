@@ -37,6 +37,8 @@ set -eu
 # Make-Mosaic Image1.jpeg Mosaic2.png 32 4 2 --type octagons --surface smooth
 
 
+# ###### Main program #######################################################
+
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"

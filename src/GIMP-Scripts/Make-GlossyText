@@ -38,6 +38,8 @@ set -eu
 # Hint: List available fonts with "fc-list"!
 
 
+# ###### Main program #######################################################
+
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"

@@ -37,6 +37,8 @@ set -eu
 # Make-OldPhoto Image1.jpeg OldPhoto2.png --bordersize 20
 
 
+# ###### Main program #######################################################
+
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"

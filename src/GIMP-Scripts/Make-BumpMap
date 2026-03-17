@@ -36,6 +36,8 @@ set -eu
 # Make-Background Demo-Fractal-8192x6144.png Background1.png
 
 
+# ###### Main program #######################################################
+
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
