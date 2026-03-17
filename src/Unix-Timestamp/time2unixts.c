@@ -65,6 +65,7 @@ static void usage(const char* program, const int exitCode)
            " [-F|--float]"
            " [-I|--integer]"
            " [-H|--human-readable]"
+           " [-s|--seconds]"
            " [-m|--milliseconds]"
            " [-u|--microseconds]"
            " [-n|--nanoseconds]"
@@ -156,23 +157,22 @@ int main(int argc, char** argv)
       }
    }
    else if(optind + 1 == argc) {
-      struct tm tm = {0};
+      struct tm tm = { };
       const char* remainder = strptime(argv[optind], "%Y-%m-%d %H:%M:%S", &tm);
       if(remainder != nullptr) {
          ts.tv_sec = mktime(&tm);
          if(remainder[0] != 0x00) {
-            double fraction;
-            if(sscanf(remainder, "%lf", &fraction) == 1) {
-                if(fraction >= 0.0) {
-                   ts.tv_nsec = (unsigned long)(fraction * 1e9);
-                }
-                else {
-                   remainder = nullptr;   // parse error
-                }
+            char*        endptr;
+            const double fraction = strtod(remainder, &endptr);
+            if( (endptr == nullptr) || (*endptr != 0x00) || (fraction < 0.0) ) {
+               remainder = nullptr;   // parse error
             }
             else {
-                remainder = nullptr;   // parse error
+               ts.tv_nsec = (long long)(fraction * 1e9);
             }
+         }
+         else {
+            ts.tv_nsec = 0;
          }
       }
       if(remainder == nullptr) {
