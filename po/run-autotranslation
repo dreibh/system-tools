@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -eu
+
+# ====== Dependencies =======================================================
+# python3 -m venv ~/python-environments/gpt-po-translator
+# . ~/python-environments/gpt-po-translator/bin/activate
+# pip install gpt-po-translator
+# ===========================================================================
+
+MODEL="translategemma:27b"   # ministral-3:14b
+PROGRAMS="System-Info"
+LANGUAGES="bs cz dk es fi fr hr hu jp kr mi nl nn pt ru se sk zh"
+
+for program in ${PROGRAMS} ; do
+   context="
+      $(cat ../README.md)
+      $(awk '{ print "../" $2 }' <"${program}.sources" | xargs cat)
+   "
+
+   for language in ${LANGUAGES} ; do
+      mkdir -p "${language}"
+      rm -f "${language}/${program}.po"
+      msginit --input "${program}.pot" \
+         --locale "${language}.UTF-8" \
+         --output-file "${language}/${program}.po" \
+         --no-translator
+   done
+
+   gpt-po-translator \
+      --provider ollama \
+      --model "${MODEL}" \
+      --folder . \
+      --bulk --verbose \
+      --default-context "${context}"
+done
