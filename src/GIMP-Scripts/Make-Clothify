@@ -134,7 +134,7 @@ if ! whereis gimp-console >/dev/null ; then
    echo >&2 "ERROR: GIMP is not available!"
    exit 1
 fi
-GIMP_VERSION="$(LANG=C gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
+GIMP_VERSION="$(LC_ALL=C.UTF-8 gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
 if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
    # GIMP 2.x:
    GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"

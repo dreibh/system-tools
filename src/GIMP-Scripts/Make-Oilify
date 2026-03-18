@@ -114,7 +114,7 @@ if ! whereis gimp-console >/dev/null ; then
    echo >&2 "ERROR: GIMP is not available!"
    exit 1
 fi
-GIMP_VERSION="$(LANG=C gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
+GIMP_VERSION="$(LC_ALL=C.UTF-8 gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
 if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
    # GIMP 2.x:
    GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
@@ -209,12 +209,12 @@ rm -f "${OUTPUT_FILENAME}"
 )
 (gimp-quit TRUE)
 EOF
-) | env LANG=C HOME=/tmp gimp-console ${GIMP_OPTIONS} 2>&1 | \
+) | env LC_ALL=C.UTF-8 HOME=/tmp gimp-console ${GIMP_OPTIONS} 2>&1 | \
 (
    if [ ${VERBOSE} -ne 0 ] ; then
       cat
    else
-      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
+      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|^gimp_color_transform_new: using babl|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
    fi
 )
 

@@ -61,7 +61,7 @@ fi
 
 
 # ------ Make-Caption -------------------------------------------------------
-./Make-Caption Caption1.png "Caption Text $(LANG=C date)" 1024 42 "Noto Sans Bold" 60 \
+./Make-Caption Caption1.png "Caption Text $(LC_ALL=C.UTF-8 date)" 1024 42 "Noto Sans Bold" 60 \
    --foreground "#02266b" --background "#ffd700" --transparency 26
 
 
