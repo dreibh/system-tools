@@ -70,8 +70,9 @@ fi
 ./Resize-with-Cropping "${INPUT2}" Image2.png --aspect 16:9 --width 1920
 
 
-./Make-Mosaic Image1.png Mosaic1-H.png 24 4 4 --type hexagons --surface rough
-./Make-Mosaic Image1.png Mosaic1-O.png 24 4 4 --type octagons --surface smooth --neatness 1.0
+./Make-Mosaic Image1.png Mosaic1-Hexagons.png --tile-size 24 --tile-height 4 --tile-spacing 4 --tile-type hexagons --tile-surface rough
+./Make-Mosaic Image1.png Mosaic2-Octagons.png -S 24 -H 4 -X 4 -T octagons -F smooth -T hexagons -N 1.0
+./Make-Mosaic Image1.png Mosaic3-Octagons.png -S 32 -H 8 -X 8 -T octagons -F smooth -N 1.0
 
 ./Make-OldPhoto Image1.png OldPhoto1.png
 ./Make-OldPhoto Image1.png OldPhoto2.png --defocus on --bordersize 20 --sepia on --mottle on
