@@ -33,7 +33,9 @@ set -eux
 
 
 INPUT1="examples/Bergen.jpeg"
-INPUT2="examples/Background.png"
+INPUT2="examples/Portobello.jpeg"
+INPUT3="examples/Background.png"
+
 
 # ------ Use FractGen to generate the example image -------------------------
 # Requires: clifractgen
@@ -108,7 +110,7 @@ for defocus in on off ; do
             --border-size "${borderSize}" \
             --sepia "${sepia}" \
             --mottle on
-         ./Make-OldPhoto Image1.png "OldPhoto1-D${defocus}-B${borderSize}-S${sepia}-Moff.png" \
+         ./Make-OldPhoto Image2.png "OldPhoto2-D${defocus}-B${borderSize}-S${sepia}-Moff.png" \
             -D "${defocus}" \
             -B "${borderSize}" \
             -S "${sepia}" \
@@ -129,7 +131,7 @@ for blurX in 3 6 ; do
                --azimut "${azimut}" \
                --elevation "${elevation}" \
                --depth 4
-            ./Make-Clothify Image1.png "Cloth1-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D8.png" \
+            ./Make-Clothify Image2.png "Cloth2-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D8.png" \
                -X ${blurX} \
                -Y ${blurY} \
                -A "${azimut}" \
@@ -141,9 +143,16 @@ for blurX in 3 6 ; do
 done
 
 # ------ Make-Oilify --------------------------------------------------------
-./Make-Oilify Image1.png Oilify1.png --masksize 8 --mode intensity
-./Make-Oilify Image1.png Oilify2.png --masksize 8 --mode rgb
+for maskSize 4 8 16 ; do
+   ./Make-Oilify Image1.png "Oilify1-S${maskSize}-Ion.png" \
+      --mask-size "${maskSize}" \
+      --intensity-mode on
+   ./Make-Oilify Image2.png "Oilify2-S${maskSize}-Ioff.png" \
+      -S "${maskSize}" \
+      -I off
+done
 
 # ------ Make-BumpMap -------------------------------------------------------
-./Make-BumpMap Image2.png Background1.png
-./Make-Mosaic Background1.png Background2.png 18 4 4 --type hexagons --surface smooth --neatness 0.5
+./Make-BumpMap Image3.png Background1.png
+./Make-Mosaic Background1.png Background2.png \
+   -T hexagons -S 18 -H 4 -X 4 -F smooth -N 0.5
