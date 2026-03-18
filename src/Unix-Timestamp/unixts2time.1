@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd March 17, 2026
+.Dd March 18, 2026
 .Dt unixts2time 1
 .Os unixts2time
 .\" ###### Name #############################################################
@@ -42,15 +42,15 @@
 .Nm unixts2time
 .Op unix_timestamp
 .br
-.Op Fl -F | Fl Fl float
-.Op Fl -I | Fl Fl integer
+.Op Fl F | Fl Fl float
+.Op Fl I | Fl Fl integer
 .br
-.Op Fl -H | Fl Fl human-readable
+.Op Fl H | Fl Fl human-readable
 .br
-.Op Fl -s | Fl Fl seconds
-.Op Fl -m | Fl Fl milliseconds
-.Op Fl -u | Fl Fl microseconds
-.Op Fl -n | Fl Fl nanoseconds
+.Op Fl s | Fl Fl seconds
+.Op Fl m | Fl Fl milliseconds
+.Op Fl u | Fl Fl microseconds
+.Op Fl n | Fl Fl nanoseconds
 .Nm unixts2time
 .Op Fl h | Fl Fl help
 .Nm unixts2time
@@ -58,10 +58,10 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm unixts2time
-converts an Unix timestamp to a time string in the format %Y-%m-%d %H:%M:%S.
-The Unix timestamp is the time (nanoseconds, microseconds, milliseconds, or
-seconds) since the Unix Epoch, i.e. Jaunary 1, 1970, 00:00:00.000000000 UTC.
-By default the timestamp is in nanoseconds.
+converts an Unix timestamp to a time string in the format
+%Y-%m-%d %H:%M:%S.SSSSSSSSS. The Unix timestamp is the time (nanoseconds,
+microseconds, milliseconds, or seconds) since the Unix Epoch, i.e. Jaunary 1,
+1970, 00:00:00.000000000 UTC. By default the timestamp is in nanoseconds.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -69,22 +69,22 @@ The following options are available:
 .Bl -tag -width indent
 .It unix_timestamp
 The Unix timestamp to be converted. If not provided, the current system time is used.
-.It Fl -F | Fl Fl float
+.It Fl F | Fl Fl float
 Parse the Unix timestamp as a floating-point number.
-.It Fl -I | Fl Fl integer
+.It Fl I | Fl Fl integer
 Parse the Unix timestamp as an integer number.
 A prefex of 0x is interpreted as hexadecimal (base 16),
 a prefex of 0 is interpreted as octal (base 8).
 Otherwise, the number is interpreted as decimal (base 10).
-.It Fl -H | Fl Fl human-readable
+.It Fl H | Fl Fl human-readable
 Provide the output in human-readable form. Default: off.
-.It Fl -s | Fl Fl seconds
+.It Fl s | Fl Fl seconds
 The Unix timestamp is given in seconds. Default is in nanoseconds.
-.It Fl -m | Fl Fl milliseconds
+.It Fl m | Fl Fl milliseconds
 The Unix timestamp is given in milliseconds. Default is in nanoseconds.
-.It Fl -u | Fl Fl microseconds
+.It Fl u | Fl Fl microseconds
 The Unix timestamp is given in microseconds. Default is in nanoseconds.
-.It Fl -n | Fl Fl nanoseconds
+.It Fl n | Fl Fl nanoseconds
 The Unix timestamp is given in nanoseconds. This is the default.
 .It Fl h | Fl Fl help
 Prints command-line parameters.

@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd March 17, 2026
+.Dd March 18, 2026
 .Dt time2unixts 1
 .Os time2unixts
 .\" ###### Name #############################################################
@@ -42,15 +42,15 @@
 .Nm time2unixts
 .Op time_string
 .br
-.Op Fl -F | Fl Fl float
-.Op Fl -I | Fl Fl integer
+.Op Fl F | Fl Fl float
+.Op Fl I | Fl Fl integer
 .br
-.Op Fl -H | Fl Fl human-readable
+.Op Fl H | Fl Fl human-readable
 .br
-.Op Fl -s | Fl Fl seconds
-.Op Fl -m | Fl Fl milliseconds
-.Op Fl -u | Fl Fl microseconds
-.Op Fl -n | Fl Fl nanoseconds
+.Op Fl s | Fl Fl seconds
+.Op Fl m | Fl Fl milliseconds
+.Op Fl u | Fl Fl microseconds
+.Op Fl n | Fl Fl nanoseconds
 .Nm time2unixts
 .Op Fl h | Fl Fl help
 .Nm time2unixts
@@ -67,21 +67,21 @@ the Unix Epoch, i.e. Jaunary 1, 1970, 00:00:00.000000000 UTC.
 The following options are available:
 .Bl -tag -width indent
 .It time_string
-The time string to be converted, as %Y-%m-%d %H:%M:%S. The seconds part may
-be fractional.
-.It Fl -F | Fl Fl float
+The time string to be converted, as %Y-%m-%d %H:%M:%S[.SSSSSSSSS].
+The seconds part may be fractional; the fraction is optional.
+.It Fl F | Fl Fl float
 Print the Unix timestamp as a floating-point number.
-.It Fl -I | Fl Fl integer
+.It Fl I | Fl Fl integer
 Print the Unix timestamp as an integer number.
-.It Fl -H | Fl Fl human-readable
+.It Fl H | Fl Fl human-readable
 Provide the output in human-readable form. Default: off.
-.It Fl -s | Fl Fl seconds
+.It Fl s | Fl Fl seconds
 The Unix timestamp is printed in seconds. Default is in nanoseconds.
-.It Fl -m | Fl Fl milliseconds
+.It Fl m | Fl Fl milliseconds
 The Unix timestamp is printed in milliseconds. Default is in nanoseconds.
-.It Fl -u | Fl Fl microseconds
+.It Fl u | Fl Fl microseconds
 The Unix timestamp is printed in microseconds. Default is in nanoseconds.
-.It Fl -n | Fl Fl nanoseconds
+.It Fl n | Fl Fl nanoseconds
 The Unix timestamp is printed in nanoseconds. This is the default.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
@@ -92,16 +92,16 @@ Prints program version.
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It time2unixts
-.It time2unixts "2026-03-17 10:52:35" --seconds
-.It time2unixts "1969-12-20 10:13:20"
-.It env LC_ALL=en_US.UTF-8 time2unixts "1955-12-24 22:22:22.000" --milliseconds
-.It env LC_ALL=nb_NO.UTF-8 ./time2unixts "1955-12-24 22:22:22,000" --milliseconds
-.It time2unixts "2026-03-17 08:31:19" --human-readable --seconds
-.It time2unixts "2026-03-17 08:31:19" -s
-.It env LC_ALL=de_DE.UTF-8 time2unixts "1976-09-29 12:10:00,000" --milliseconds
-.It env LC_ALL=de_DE.UTF-8 time2unixts "1976-09-29 12:10:08,123456789" -H
-.It env LC_ALL=en_US.UTF-8 time2unixts "1976-09-29 12:12:03.123" -m
-.It env LC_ALL=de_DE.UTF-8 time2unixts "1976-09-29 12:12:03,123456789" -n
+.It time2unixts \(dq2026-03-17 10:52:35\(dq --seconds
+.It time2unixts \(dq1969-12-20 10:13:20\(dq
+.It env LC_ALL=en_US.UTF-8 time2unixts \(dq1955-12-24 22:22:22.000\(dq --milliseconds
+.It env LC_ALL=nb_NO.UTF-8 ./time2unixts \(dq1955-12-24 22:22:22,000\(dq --milliseconds
+.It time2unixts \(dq2026-03-17 08:31:19\(dq --human-readable --seconds
+.It time2unixts \(dq2026-03-17 08:31:19\(dq -s
+.It env LC_ALL=de_DE.UTF-8 time2unixts \(dq1976-09-29 12:10:00,000\(dq --milliseconds
+.It env LC_ALL=de_DE.UTF-8 time2unixts \(dq1976-09-29 12:10:08,123456789\(dq -H
+.It env LC_ALL=en_US.UTF-8 time2unixts \(dq1976-09-29 12:12:03.123\(dq -m
+.It env LC_ALL=de_DE.UTF-8 time2unixts \(dq1976-09-29 12:12:03,123456789\(dq -n
 .It time2unixts --version
 .It time2unixts --help
 .El
