@@ -42,50 +42,140 @@ set -eu
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_filename output_filename tile_size tile_height tile_spacing [-t|--type squares|hexagons|octagons|triangles] [-s|--surface smooth|rough] [-n|--neatness neatness] [-l|--lightdirection direction] [--colorvariation|-c variation] [-w|--verbose] [-q|--quiet] [-h|--help]"
-   echo >&2 "Example: $0 Image.jpeg Mosaic.png 24 4 4 --type hexagons --surface rough"
+   echo >&2 "Usage: $0 input_filename output_filename [-T|--tile-type triangles|squares|hexagons|octagons] [-S|--tile-size size] [-H|--tile-height height] [-N|--tile-neatness neatness] [-F|--tile-surface smooth|rough] [-X|--tile-spacing spacing] [-I|--tile-allow-split on|off] [-C|--color-variation variation] [-G|--color-averaging on|off] [-A|--antialiasing on|off] [-L|--light-direction degrees] [-w|--verbose] [-q|--quiet] [-h|--help]"
    exit "${exitCode}"
 }
 
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o t:s:n:l:c:wqh --long type:,surface:,neatness:,lightdirection:,colorvariation:,verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o T:S:H:N:F:X:I:C:G:A:L:wqh --long tile-type:,tile-size:,tile-height:,tile-neatness:,tile-surface:,tile-spacing:,tile-allow-split:,color-variation:,color-averaging:,antialiasing:,light-direction:,verbose,quiet,help -a -- "$@")"
+
 eval set -- "${options}"
 
-TILE_NEATNESS=0.65
+TILE_TYPE=6
 TILE_TYPESTRING="hexagons"
-TILE_TYPE="6"
-TILE_SURFACE=0
-LIGHT_DIRECTION=135
+TILE_SIZE=15.0
+TILE_HEIGHT=4.0
+TILE_NEATNESS=0.65
+TILE_SURFACE="TRUE"
+TILE_SPACING=4.0
+TILE_ALLOW_SPLIT="TRUE"
 COLOR_VARIATION=0.2
+COLOR_AVERAGING="TRUE"
+ANTIALIASING="TRUE"
+LIGHT_DIRECTION=135.0
 VERBOSE=0
 while [ $# -gt 0 ] ; do
    case "$1" in
-      -t | --type)
+      -T | --tile-type)
          TILE_TYPESTRING="$2"
-         shift 2
-         ;;
-      -s | --surface)
-         if [ "$2" == "smooth" ] ; then
-            TILE_SURFACE=0
-         elif [ "$2" == "rough" ] ; then
-            TILE_SURFACE=1
+         if [ "${TILE_TYPESTRING}" = "squares" ] ; then
+            TILE_TYPE=0
+         elif [ "${TILE_TYPESTRING}" = "hexagons" ] ; then
+            TILE_TYPE=1
+         elif [ "${TILE_TYPESTRING}" = "octagons" ] ; then
+            TILE_TYPE=2
+         elif [ "${TILE_TYPESTRING}" = "triangles" ] ; then
+            TILE_TYPE=3
          else
-            echo >&2 "Invalid tile surface: $2"
+            echo "ERROR: Invalid value ${TILE_TYPESTRING} for -T|--tile-type!"
             exit 1
          fi
          shift 2
          ;;
-      -n | --neatness)
+      -S | --tile-size)
+         TILE_SIZE="$2"
+         if [[ ! "${TILE_SIZE}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($TILE_SIZE < 1.0) || ($TILE_SIZE > 1000.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${TILE_SIZE} for -S|--tile-size!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -H | --tile-height)
+         TILE_HEIGHT="$2"
+         if [[ ! "${TILE_HEIGHT}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($TILE_HEIGHT < 1.0) || ($TILE_HEIGHT > 1000.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${TILE_HEIGHT} for -H|--tile-height!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -N | --tile-neatness)
          TILE_NEATNESS="$2"
+         if [[ ! "${TILE_NEATNESS}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($TILE_NEATNESS < 0.0) || ($TILE_NEATNESS > 1.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${TILE_NEATNESS} for -N|--tile-neatness!"
+            exit 1
+         fi
          shift 2
          ;;
-      -l | --lightdirection)
-         LIGHT_DIRECTION="$2"
+      -F | --tile-surface)
+         if [ "$2" == "smooth" ] ; then
+            TILE_SURFACE="FALSE"
+         elif [ "$2" == "rough" ] ; then
+            TILE_SURFACE="TRUE"
+         else
+            echo "ERROR: Invalid value ${TILE_SURFACE} for -F|--tile-surface!"
+            exit 1
+         fi
          shift 2
          ;;
-      -c | --colorvariation)
+      -I | --tile-allow-split)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            TILE_ALLOW_SPLIT="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            TILE_ALLOW_SPLIT="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -I|--tile-allow-split!"
+         fi
+         shift 2
+         ;;
+      -X | --tile-spacing)
+         TILE_SPACING="$2"
+         if [[ ! "${TILE_SPACING}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($TILE_SPACING < 0.0) || ($TILE_SPACING > 1000.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${TILE_SPACING} for -X|--tile-spacing!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -C | --color-variation)
          COLOR_VARIATION="$2"
+         if [[ ! "${COLOR_VARIATION}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($COLOR_VARIATION < 0.0) || ($COLOR_VARIATION > 1.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${COLOR_VARIATION} for -C|--color-variation!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -g | --color-averaging)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            COLOR_AVERAGING="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            COLOR_AVERAGING="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -g|--color-averaging!"
+         fi
+         shift 2
+         ;;
+      -A | --antialiasing)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            ANTIALIASING="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            ANTIALIASING="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -A|--antialiasing!"
+         fi
+         shift 2
+         ;;
+      -L | --light-direction)
+         LIGHT_DIRECTION="$2"
+         if [[ ! "${LIGHT_DIRECTION}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($LIGHT_DIRECTION < 0.0) || ($LIGHT_DIRECTION > 360.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${LIGHT_DIRECTION} for -C|--light-direction!"
+            exit 1
+         fi
          shift 2
          ;;
       -w | --verbose)
@@ -109,53 +199,14 @@ while [ $# -gt 0 ] ; do
   esac
 done
 
-if [ $# -ne 5 ] ; then
+if [ $# -ne 2 ] ; then
    usage 1
 fi
 INPUT_FILENAME="$1"
 OUTPUT_FILENAME="$2"
-TILE_SIZE=$3
-TILE_HEIGHT=$4
-TILE_SPACING=$5
 
 if [ ! -f "${INPUT_FILENAME}" ] ; then
    echo >&2 "ERROR: Input file ${INPUT_FILENAME} does not exist!"
-   exit 1
-fi
-if [[ ! "${TILE_SIZE}" =~ ^[0-9]+$ ]] ; then
-   echo >&2 "ERROR: Invalid tile size!"
-   exit 1
-fi
-if [[ ! "${TILE_HEIGHT}" =~ ^[0-9]+$ ]] ; then
-   echo >&2 "ERROR: Invalid tile height!"
-   exit 1
-fi
-if [[ ! "${TILE_SPACING}" =~ ^[0-9]+$ ]] ; then
-   echo >&2 "ERROR: Invalid tile spacing!"
-   exit 1
-fi
-if [ "${TILE_TYPESTRING}" = "squares" ] ; then
-   TILE_TYPE=0
-elif [ "${TILE_TYPESTRING}" = "hexagons" ] ; then
-   TILE_TYPE=1
-elif [ "${TILE_TYPESTRING}" = "octagons" ] ; then
-   TILE_TYPE=2
-elif [ "${TILE_TYPESTRING}" = "triangles" ] ; then
-   TILE_TYPE=3
-else
-   echo >&2 "Invalid tile type ${TILE_TYPESTRING}!"
-   exit 1
-fi
-if [[ ! "${TILE_NEATNESS}" =~ ^([0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
-   echo >&2 "ERROR: Invalid tile neatness ${TILE_NEATNESS}!"
-   exit 1
-fi
-if [[ ! "${COLOR_VARIATION}" =~ ^([0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
-   echo >&2 "ERROR: Invalid color variation ${COLOR_VARIATION}!"
-   exit 1
-fi
-if [[ ! "${LIGHT_DIRECTION}" =~ ^([0-9]+)$ ]] ; then
-   echo >&2 "ERROR: Invalid light direction ${LIGHT_DIRECTION}!"
    exit 1
 fi
 
@@ -190,11 +241,14 @@ rm -f "${OUTPUT_FILENAME}"
     (tileTypeString   "${TILE_TYPESTRING}")
     (tileSize         ${TILE_SIZE})
     (tileHeight       ${TILE_HEIGHT})
-    (tileSpacing      ${TILE_SPACING})
     (tileNeatness     ${TILE_NEATNESS})
-    (tileSurface      ${TILE_SURFACE})
-    (lightDirection   ${LIGHT_DIRECTION})
     (colorVariation   ${COLOR_VARIATION})
+    (colorAveraging   ${COLOR_AVERAGING})
+    (tileSurface      ${TILE_SURFACE})
+    (tileAllowSplit   ${TILE_ALLOW_SPLIT})
+    (tileSpacing      ${TILE_SPACING})
+    (antialiasing     ${ANTIALIASING})
+    (lightDirection   ${LIGHT_DIRECTION})
     (image            (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
     (imageType        (if (not (defined? 'gimp-image-get-active-layer))
                          ; New GIMP 3.0 API:
@@ -222,16 +276,18 @@ rm -f "${OUTPUT_FILENAME}"
    (cond( (not(defined? 'plug-in-mosaic))
       ; New GIMP 3.0 API:
       (gimp-drawable-merge-new-filter layer "gegl:mosaic" 0 LAYER-MODE-REPLACE 1.0
-          "tile-size"       tileSize
-          "tile-height"     tileHeight
-          "tile-spacing"    tileSpacing
-          "tile-neatness"   tileNeatness
-          "antialiasing"    TRUE
-          "light-dir"       lightDirection
-          "color-variation" colorVariation
-          "tile-type"       tileTypeString
-          "tile-surface"    tileSurface
-          "seed"            0
+          "tile-type"        tileTypeString
+          "tile-size"        tileSize
+          "tile-height"      tileHeight
+          "tile-neatness"    tileNeatness
+          "color-variation"  colorVariation
+          "color-averaging " colorAveraging
+          "tile-surface"     tileSurface
+          "tile-allow-split" tileAllowSplit
+          "tile-spacing"     tileSpacing
+          "antialiasing"     TRUE
+          "light-dir"        lightDirection
+          "seed"             0
       )
    )
    (else
