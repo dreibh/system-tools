@@ -32,11 +32,6 @@
 set -eu
 
 
-# Example:
-# Make-Mosaic Image1.jpeg Mosaic1.png 24 4 4 --type hexagons --surface rough
-# Make-Mosaic Image1.jpeg Mosaic2.png 32 4 2 --type octagons --surface smooth
-
-
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
@@ -149,7 +144,7 @@ while [ $# -gt 0 ] ; do
          fi
          shift 2
          ;;
-      -g | --color-averaging)
+      -G | --color-averaging)
          if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
             COLOR_AVERAGING="TRUE"
          elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
@@ -281,7 +276,7 @@ rm -f "${OUTPUT_FILENAME}"
           "tile-height"      tileHeight
           "tile-neatness"    tileNeatness
           "color-variation"  colorVariation
-          "color-averaging " colorAveraging
+          "color-averaging"  colorAveraging
           "tile-surface"     tileSurface
           "tile-allow-split" tileAllowSplit
           "tile-spacing"     tileSpacing
