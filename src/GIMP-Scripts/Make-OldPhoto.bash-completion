@@ -59,15 +59,15 @@ _Make_OldPhoto()
    else
       case "${prev}" in
          #  ====== On or off ================================================
-         -d | --defocus    | \
-         -s | --sepia      | \
-         -m | --mottle)
+         -D | --defocus    | \
+         -S | --sepia      | \
+         -M | --mottle)
             # shellcheck disable=SC2207
             COMPREPLY=( $(compgen -W "on off" --  "${cur}") )
             return
             ;;
          #  ====== Generic value ============================================
-         -b | --bordersize)
+         -B | --border-size)
             return
             ;;
       esac
@@ -75,13 +75,13 @@ _Make_OldPhoto()
 
    # ====== All options =====================================================
    local opts="
--d
+-D
 --defocus
--b
---bordersize
--s
+-B
+--border-size
+-S
 --sepia
--m
+-M
 --mottle
 -q
 --quiet

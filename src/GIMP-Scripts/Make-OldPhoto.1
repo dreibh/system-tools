@@ -43,13 +43,13 @@
 input_filename
 output_filename
 .br
-.Op Fl d Ar on|off | Fl Fl defocus Ar on|off
+.Op Fl D Ar on|off | Fl Fl defocus Ar on|off
 .br
-.Op Fl b  Ar border_size | Fl Fl bordersize Ar border_size
+.Op Fl B  Ar border_size | Fl Fl border-size Ar border_size
 .br
-.Op Fl s Ar on|off | Fl Fl sepia Ar on|off
+.Op Fl S Ar on|off | Fl Fl sepia Ar on|off
 .br
-.Op Fl m Ar on|off | Fl Fl mottle Ar on|off
+.Op Fl M Ar on|off | Fl Fl mottle Ar on|off
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
@@ -69,13 +69,13 @@ The following options are available:
 The input image. Any format support by GIMP can be used. The format will be detected automatically.
 .It output_filename
 The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It Fl d Ar on|off | Fl Fl defocus Ar on|off
+.It Fl D Ar on|off | Fl Fl defocus Ar on|off
 Turns defocus on or off. Default: on.
-.It Fl b Ar border_size | Fl Fl bordersize Ar border_size
+.It Fl B Ar border_size | Fl Fl border-size Ar border_size
 Sets the border size for the "Old Photo" filter. Default: 10.
-.It Fl s Ar on|off | Fl Fl sepia Ar on|off
+.It Fl S Ar on|off | Fl Fl sepia Ar on|off
 Turns sepia on or off. Default: on.
-.It Fl m Ar on|off | Fl Fl mottle Ar on|off
+.It Fl M Ar on|off | Fl Fl mottle Ar on|off
 Turns defocus on or off. Default: off.
 .It Fl w | Fl Fl verbose
 Verbose mode: print selected delay and wake-up.
@@ -86,7 +86,7 @@ Prints command-line parameters.
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It Make-OldPhoto Bergen.jpeg Bergen-OldPhoto.jpeg
-.It Make-OldPhoto Bergen.jpeg Bergen-OldPhoto-with-Border20.jpeg --bordersize 20 --verbose
-.It Make-OldPhoto Bergen.jpeg Bergen-OldPhoto-with-Border40.jpeg -b 40
+.It Make-OldPhoto Bergen.jpeg Bergen-OldPhoto-with-Border20.jpeg --border-size 20 --verbose
+.It Make-OldPhoto Bergen.jpeg Bergen-OldPhoto-with-Border40.jpeg -B 40
 .It Make-OldPhoto Portobello.jpeg Portobello-OldPhoto.jpeg --verbose --sepia off --mottle on
 .El
