@@ -118,9 +118,27 @@ for defocus in on off ; do
 done
 
 # ------ Make-Clothify ------------------------------------------------------
-./Make-Clothify Image1.png Cloth1.png
-./Make-Clothify Image1.png Cloth2.png --blur-x 5 --blur-y 5 --azimut 175.0 --elevation 62.5 --depth 8
-./Make-Clothify Image1.png Cloth3.png -x 4 -y 4 -a 125.0 -e 25.5 -d 5
+for blurX in 3 6 ; do
+   blurY="${blurX}"
+   for azimut in 90.0 135.0 180.0 ; do
+      for elevation in 10.0 45.0 80.0 ; do
+         for depth in 4 ; do
+            ./Make-Clothify Image1.png "Cloth1-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D4.png" \
+               --blur-x ${blurX} \
+               --blur-y ${blurY} \
+               --azimut "${azimut}" \
+               --elevation "${elevation}" \
+               --depth 4
+            ./Make-Clothify Image1.png "Cloth1-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D8.png" \
+               -X ${blurX} \
+               -Y ${blurY} \
+               -A "${azimut}" \
+               -E "${elevation}" \
+               -D 8
+         done
+      done
+   done
+done
 
 # ------ Make-Oilify --------------------------------------------------------
 ./Make-Oilify Image1.png Oilify1.png --masksize 8 --mode intensity

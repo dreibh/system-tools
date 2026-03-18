@@ -43,15 +43,15 @@
 input_filename
 output_filename
 .br
-.Op Fl x Ar value | Fl Fl blur-x Ar value
+.Op Fl X Ar value | Fl Fl blur-x Ar value
 .br
-.Op Fl y Ar value | Fl Fl blur-y Ar value
+.Op Fl Y Ar value | Fl Fl blur-y Ar value
 .br
-.Op Fl a Ar bearing | Fl Fl azimut Ar bearing
+.Op Fl A Ar bearing | Fl Fl azimut Ar bearing
 .br
-.Op Fl e Ar bearing | Fl Fl elevation Ar bearing
+.Op Fl E Ar bearing | Fl Fl elevation Ar bearing
 .br
-.Op Fl d Ar depth | Fl Fl depth Ar depth
+.Op Fl D Ar depth | Fl Fl depth Ar depth
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
@@ -71,15 +71,15 @@ The following options are available:
 The input image. Any format support by GIMP can be used. The format will be detected automatically.
 .It output_filename
 The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It Fl x Ar value | Fl Fl blur-x Ar value
+.It Fl X Ar value | Fl Fl blur-x Ar value
 Sets the blur X parameter for the "Clothify" filter. Range: 3-100. Default: 3.
-.It Fl y Ar value | Fl Fl blur-y Ar value
+.It Fl Y Ar value | Fl Fl blur-y Ar value
 Sets the blur Y parameter for the "Clothify" filter. Range: 3-100. Default: 3.
-.It Fl a Ar bearing | Fl Fl azimut Ar bearing
+.It Fl A Ar bearing | Fl Fl azimut Ar bearing
 Sets the azimut parameter for the "Clothify" filter. Range: 0.0-360.0. Default: 135.0.
-.It Fl e Ar bearing | Fl Fl elevation Ar bearing
+.It Fl E Ar bearing | Fl Fl elevation Ar bearing
 Sets the elevation parameter for the "Clothify" filter. Range: 0.5-90.0. Default: 45.0.
-.It Fl d Ar depth | Fl Fl depth Ar depth
+.It Fl D Ar depth | Fl Fl depth Ar depth
 Sets the depth parameter for the "Clothify" filter. Range: 1-65. Default: 5.
 .It Fl w | Fl Fl verbose
 Verbose mode: print selected delay and wake-up.
@@ -91,5 +91,5 @@ Prints command-line parameters.
 .Bl -tag -width indent
 .It Make-Clothify Bergen.jpeg Bergen-Clothify.jpeg
 .It Make-Clothify Bergen.jpeg Bergen-Clothify-with-Border8.jpeg --depth 8 --verbose
-.It Make-Clothify Bergen.jpeg Bergen-Clothify-with-Depth5.jpeg -d 5
+.It Make-Clothify Bergen.jpeg Bergen-Clothify-with-Depth5.jpeg -D 5
 .El

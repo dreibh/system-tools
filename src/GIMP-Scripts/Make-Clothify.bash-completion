@@ -59,11 +59,11 @@ _Make_Clothify()
    else
       case "${prev}" in
          #  ====== Generic value ============================================
-         -x | --blur-x    | \
-         -y | --blur-y    | \
-         -a | --azimut    | \
-         -e | --elevation | \
-         -d | --depth)
+         -X | --blur-x    | \
+         -Y | --blur-y    | \
+         -A | --azimut    | \
+         -E | --elevation | \
+         -D | --depth)
             return
             ;;
       esac
@@ -71,15 +71,15 @@ _Make_Clothify()
 
    # ====== All options =====================================================
    local opts="
--x
+-X
 --blur-x
--y
+-Y
 --blur-y
--a
+-A
 --azimut
--e
+-E
 --elevation
--d
+-D
 --depth
 -q
 --quiet
