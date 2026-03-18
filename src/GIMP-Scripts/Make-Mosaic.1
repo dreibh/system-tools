@@ -1,0 +1,116 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" GIMP Scripts
+.\" Copyright (C) 2013-2026 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd March 18, 2026
+.Dt Make-Mosaic 1
+.Os Make-Mosaic
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm Make-Mosaic
+.Nd applies the GIMP GEGL "Mosaic" filter on an image
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm Make-Mosaic
+input_filename
+output_filename
+.br
+.Op Fl T Ar triangles|squares|hexagons|octagons | --tile-type Ar triangles|squares|hexagons|octagons
+.br
+.Op Fl S Ar size | Fl Fl tile-size Ar size
+.br
+.Op Fl H Ar height | Fl Fl tile-height Ar height
+.br
+.Op Fl N Ar neatness | Fl Fl tile-neatness Ar neatness
+.br
+.Op Fl F Ar smooth|rough | Fl Fl tile-surface Ar smooth|rough
+.br
+.Op Fl X Ar spacing | Fl Fl tile-spacing Ar spacing
+.br
+.Op Fl I Ar on|off | Fl Fl tile-allow-split Ar on|off
+.br
+.Op Fl C Ar variation | Fl Fl color-variation Ar variation
+.br
+.Op Fl G Ar on|off | Fl Fl color-averaging Ar on|off
+.br
+.Op Fl A Ar on|off | Fl Fl antialiasing Ar on|off
+.br
+.Op Fl L Ar degrees | Fl Fl light-direction Ar degrees
+.Nm Make-Mosaic
+.Op Fl h | Fl Fl help
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm Make-Mosaic
+runs GIMP to load an image, and applies the GIMP GEGL "Mosaic" filter
+(details: https://gegl.org/operations/gegl-mosaic.html).
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It input_filename
+The input image. Any format support by GIMP can be used. The format will be detected automatically.
+.It output_filename
+The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
+.It Fl T Ar triangles|squares|hexagons|octagons | --tile-type Ar triangles|squares|hexagons|octagons
+Sets the tile type: triangles, squares, hexagons, octagons. Default: hexagons.
+.It Fl S Ar size | Fl Fl tile-size Ar size
+Specifies the tile size. Range: 1.0-1000.0. Default: 15.0.
+.It Fl H Ar height | Fl Fl tile-height Ar height
+Specifies the tile height. Range: 1.0-1000.0. Default: 4.0.
+.It Fl N Ar neatness | Fl Fl tile-neatness Ar neatness
+Specifies the tile neatness. Range: 0.0-1.0. Default: 0.65.
+.It Fl F Ar smooth|rough | Fl Fl tile-surface Ar smooth|rough
+Sets the tile surface to smooth or rough. Default: rough.
+.It Fl X Ar spacing | Fl Fl tile-spacing Ar spacing
+Specifies the tile spacing. Range: 0.0-1000.0. Default: 4.0.
+.It Fl I Ar on|off | Fl Fl tile-allow-split Ar on|off
+Turns allowing tile split on sharp edges on or off. Default: on.
+.It Fl C Ar variation | Fl Fl color-variation Ar variation
+Specifies the color variation. Range: 0.0-1.0. Default: 0.2.
+.It Fl G Ar on|off | Fl Fl color-averaging Ar on|off
+Turns color averaging on or off. Default: on.
+.It Fl A Ar on|off | Fl Fl antialiasing Ar on|off
+Turns antialiasing on or off. Default: on.
+.It Fl L Ar degrees | Fl Fl light-direction Ar degrees
+Specifies the light direction in degrees. Range: 0.0-360.0. Default: 135.0.
+.It Fl w | Fl Fl verbose
+Verbose mode: print selected delay and wake-up.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It Make-Mosaic Bergen.jpeg Bergen-Hexagons.png --tile-size 24 --tile-height 4 --tile-spacing 4 --tile-type hexagons --tile-surface rough
+.It Make-Mosaic Bergen.jpeg Bergen-Octagons.webp -S 24 -H 4 -X 4 -T octagons -F smooth -T hexagons -N 1.0
+.It Make-Mosaic Portobello.jpeg Portobello-Octagons.jpeg -S 32 -H 8 -X 8 -T octagons -F smooth -N 1.0
+.El
