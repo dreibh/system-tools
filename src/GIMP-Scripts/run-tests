@@ -65,25 +65,67 @@ fi
    --foreground "#02266b" --background "#ffd700" --transparency 26
 
 
-# ------ Make-<Conversion> Scripts ------------------------------------------
+# ------ Resize-with-Cropping -----------------------------------------------
 ./Resize-with-Cropping "${INPUT1}" Image1.png -A 16:9 -W 1920
 ./Resize-with-Cropping "${INPUT2}" Image2.png --aspect 16:9 --width 1920
 
+# ------ Make-Mosaic --------------------------------------------------------
+for tileType in triangles squares hexagons octagons ; do
+   for tileSurface in smooth rough ; do
+      for tileSize in 12 24 ; do
+         ./Make-Mosaic Image1.png "Mosaic1-T${tileType}-S${tileSize}-F${tileSurface}.png" \
+            --tile-type "${tileType}" \
+            --tile-size "${tileSize}" \
+            --tile-height 4.0 \
+            --tile-neatness 0.25 \
+            --tile-surface "${tileSurface}" \
+            --tile-spacing 4.0 \
+            --tile-allow-split on \
+            --color-variation 0.15 \
+            --color-averaging on \
+            --light-direction 275.5
+         ./Make-Mosaic Image2.png "Mosaic2-T${tileType}-S${tileSize}-F${tileSurface}.png" \
+            -T "${tileType}" \
+            -S "${tileSize}" \
+            -H 5.0 \
+            -M 0.25 \
+            -F "${tileSurface}" \
+            -X 5.0 \
+            -I off \
+            -C 0.25 \
+            -G off \
+            -L 75.5
+      done
+   done
+done
 
-./Make-Mosaic Image1.png Mosaic1-Hexagons.png --tile-size 24 --tile-height 4 --tile-spacing 4 --tile-type hexagons --tile-surface rough
-./Make-Mosaic Image1.png Mosaic2-Octagons.png -S 24 -H 4 -X 4 -T octagons -F smooth -T hexagons -N 1.0
-./Make-Mosaic Image1.png Mosaic3-Octagons.png -S 32 -H 8 -X 8 -T octagons -F smooth -N 1.0
+# ------ Make-OldPhoto ------------------------------------------------------
+for defocus in on off ; do
+   for borderSize in 10 20 ; do
+      for sepia in on off ; do
+         ./Make-OldPhoto Image1.png "OldPhoto1-D${defocus}-B${borderSize}-S${sepia}-Mon.png" \
+            --defocus "${defocus}" \
+            --border-size "${borderSize}" \
+            --sepia "${sepia}" \
+            --mottle on
+         ./Make-OldPhoto Image1.png "OldPhoto1-D${defocus}-B${borderSize}-S${sepia}-Moff.png" \
+            -D "${defocus}" \
+            -B "${borderSize}" \
+            -S "${sepia}" \
+            -M off
+      done
+   done
+done
 
-./Make-OldPhoto Image1.png OldPhoto1.png
-./Make-OldPhoto Image1.png OldPhoto2.png --defocus on --bordersize 20 --sepia on --mottle on
-./Make-OldPhoto Image1.png OldPhoto3.png -d off -b 20 -s on -m on
-
+# ------ Make-Clothify ------------------------------------------------------
 ./Make-Clothify Image1.png Cloth1.png
 ./Make-Clothify Image1.png Cloth2.png --blur-x 5 --blur-y 5 --azimut 175.0 --elevation 62.5 --depth 8
 ./Make-Clothify Image1.png Cloth3.png -x 4 -y 4 -a 125.0 -e 25.5 -d 5
 
+# ------ Make-Oilify --------------------------------------------------------
 ./Make-Oilify Image1.png Oilify1.png --masksize 8 --mode intensity
 ./Make-Oilify Image1.png Oilify2.png --masksize 8 --mode rgb
 
+# ------ Make-BumpMap -------------------------------------------------------
 ./Make-BumpMap Image2.png Background1.png
 ./Make-Mosaic Background1.png Background2.png 18 4 4 --type hexagons --surface smooth --neatness 0.5
