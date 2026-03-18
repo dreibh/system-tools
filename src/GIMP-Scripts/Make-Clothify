@@ -89,7 +89,10 @@ while [ $# -gt 0 ] ; do
          shift 2
          ;;
       -d | --depth)
-         DEPTH="$2"
+         if [[ ! "${DEPTH}" =~ ^[0-9]+$ ]] || [ "${DEPTH}" -lt 1 ] || [ "${DEPTH}" -gt 65 ] ; then
+            echo "ERROR: Invalid value ${DEPTH} for -d|--depth!"
+            exit 1
+         fi
          shift 2
          ;;
       -w | --verbose)
@@ -121,10 +124,6 @@ OUTPUT_FILENAME="$2"
 
 if [ ! -f "${INPUT_FILENAME}" ] ; then
    echo >&2 "ERROR: Input file ${INPUT_FILENAME} does not exist!"
-   exit 1
-fi
-if [[ ! "${DEPTH}" =~ ^([0-9]+)$ ]] ; then
-   echo >&2 "ERROR: Invalid depth ${DEPTH}!"
    exit 1
 fi
 

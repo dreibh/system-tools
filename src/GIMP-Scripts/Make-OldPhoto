@@ -65,6 +65,10 @@ while [ $# -gt 0 ] ; do
          ;;
       -b | --bordersize)
          BORDER_SIZE="$2"
+         if [[ ! "${BORDER_SIZE}" =~ ^[0-9]+$ ]] ; then
+            echo "ERROR: Invalid value ${BORDER_SIZE} for -b|--bordersize!"
+            eyit 1
+         fi
          shift 2
          ;;
       -s | --sepia)
@@ -116,10 +120,6 @@ OUTPUT_FILENAME="$2"
 
 if [ ! -f "${INPUT_FILENAME}" ] ; then
    echo >&2 "ERROR: Input file ${INPUT_FILENAME} does not exist!"
-   exit 1
-fi
-if [[ ! "${BORDER_SIZE}" =~ ^([0-9]+)$ ]] ; then
-   echo >&2 "ERROR: Invalid border size ${BORDER_SIZE}!"
    exit 1
 fi
 
