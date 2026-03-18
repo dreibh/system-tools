@@ -1,0 +1,104 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" GIMP Scripts
+.\" Copyright (C) 2013-2026 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd March 18, 2026
+.Dt Make-Caption 1
+.Os Make-Caption
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm Make-Caption
+.Nd generates a caption image with given text using a configurable font
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm Make-Caption
+output_filename
+.br
+caption_width
+.br
+caption_height
+.br
+caption_text
+.br
+.Op Fl F Ar font | Fl Fl font-name Ar font
+.br
+.Op Fl S Ar percentage | Fl Fl font-size Ar percentage
+.br
+.Op Fl f Ar color | Fl Fl foreground Ar color
+.br
+.Op Fl b Ar color | Fl Fl background Ar color
+.br
+.Op Fl t Ar percentage | Fl Fl transparency Ar percentage
+.br
+.Op Fl q | Fl Fl quiet
+.Op Fl w | Fl Fl verbose
+.Nm Make-Caption
+.Op Fl h | Fl Fl help
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm Make-Caption
+runs GIMP to
+generate a caption image with given text using a specific font. The foreground and background color, transparency, font, and font size are configurable.
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It output_filename
+The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
+.It caption_width
+The width of the image to be generated.
+.It caption_height
+The height of the image to be generated.
+.It caption_text
+The caption text.
+.It Fl F Ar font | Fl Fl font-name Ar font
+Specifies the font to be used. Note: use `fc-list` to list the installed fonts.
+.It  Fl S Ar percentage | Fl Fl font-size Ar percentage
+Specifies the font size, in percentage of the caption height. Range: 1-100. Default: 50.
+.It  Fl f Ar color | Fl Fl foreground Ar color
+Specifies the foreground color, as \(dq#RRGGBB\(dq in hexadecimal. Default: \(dq#02266b\(dq (dark blue).
+.It  Fl b Ar color | Fl Fl background Ar color
+Specifies the background color, as \(dq#RRGGBB\(dq in hexadecimal. Default: \(dq#ffd700\(dq (gold).
+.It  Fl t Ar percentage | Fl Fl transparency Ar percentage
+Specifies the transparency of the caption box in percent. Range: 0-100. Default: 25.
+.It Fl w | Fl Fl verbose
+Verbose mode: print selected delay and wake-up.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It Make-Caption Caption1.png 1024 42 \(dqTest!\(dq
+.It Make-Caption Caption2.png 1024 42 \(dqThis is a test!\(dq --font-name \(dqNoto Sans Bold\(dq --font-size 70 --foreground \(dq#02266b\(dq --background \(dq#ffd7cc\(dq --transparency 50
+.It Make-Caption Caption3.png 1920 64 \(dqAnother test!\(dq -F \(dqLobster Two Bold Italic\(dq -S 70 -f \(dq#02266b\(dq -b \(dq#ffd700\(dq -t 26
+.El
