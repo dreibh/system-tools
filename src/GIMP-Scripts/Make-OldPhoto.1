@@ -34,7 +34,7 @@
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm Make-OldPhoto
-.Nd applies the GIMP "Old Photo" effect on an image
+.Nd applies the GIMP Script-Fu "Old Photo" filter on an image
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
@@ -43,7 +43,13 @@
 input_filename
 output_filename
 .br
-.Op Fl b Ar border_size | Fl Fl bordersize Ar border_size
+.Op Fl d Ar on|off | Fl Fl defocus Ar on|off
+.br
+.Op Fl b  Ar border_size | Fl Fl bordersize Ar border_size
+.br
+.Op Fl s Ar on|off | Fl Fl sepia Ar on|off
+.br
+.Op Fl m Ar on|off | Fl Fl mottle Ar on|off
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
@@ -52,8 +58,8 @@ output_filename
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Make-OldPhoto
-runs GIMP to load an image, apply the "Old Photo" effect, and store the
-resulting image.
+runs GIMP to load an image, and applies the GIMP Script-Fu "Old Photo" filter
+(details: https://docs.gimp.org/3.0/en/script-fu-old-photo.html).
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -63,8 +69,14 @@ The following options are available:
 The input image. Any format support by GIMP can be used. The format will be detected automatically.
 .It output_filename
 The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
+.It Fl d Ar on|off | Fl Fl defocus Ar on|off
+Turns defocus on or off. Default: on.
 .It Fl b Ar border_size | Fl Fl bordersize Ar border_size
-Sets the border size for the "Old Photo" effect.
+Sets the border size for the "Old Photo" filter. Default: 10.
+.It Fl s Ar on|off | Fl Fl sepia Ar on|off
+Turns sepia on or off. Default: on.
+.It Fl m Ar on|off | Fl Fl mottle Ar on|off
+Turns defocus on or off. Default: off.
 .It Fl w | Fl Fl verbose
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
@@ -76,5 +88,5 @@ Prints command-line parameters.
 .It Make-OldPhoto Bergen.jpeg Bergen-OldPhoto.jpeg
 .It Make-OldPhoto Bergen.jpeg Bergen-OldPhoto-with-Border20.jpeg --bordersize 20 --verbose
 .It Make-OldPhoto Bergen.jpeg Bergen-OldPhoto-with-Border40.jpeg -b 40
-.It Make-OldPhoto Portobello.jpeg Portobello-OldPhoto.jpeg --verbose
+.It Make-OldPhoto Portobello.jpeg Portobello-OldPhoto.jpeg --verbose --sepia off --mottle on
 .El

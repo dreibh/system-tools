@@ -37,21 +37,54 @@ set -eu
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_filename output_filename [-b|--bordersize border_size] [-w|--verbose] [-q|--quiet] [-h|--help]"
+   echo >&2 "Usage: $0 input_filename output_filename [-d|--defocus on|off] [-b|--bordersize border_size] [-s|--sepia on|off] [-m|--mottle on|off] [-w|--verbose] [-q|--quiet] [-h|--help]"
    exit "${exitCode}"
 }
 
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o b:wqh --long bordersize:,verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o d:b:s:m:wqh --long defocus:,bordersize:,sepia:,mottle:,verbose,quiet,help -a -- "$@")"
 eval set -- "${options}"
 
+DEFOCUS="TRUE"
 BORDER_SIZE=10
+SEPIA="TRUE"
+MOTTLE="FALSE"
 VERBOSE=0
 while [ $# -gt 0 ] ; do
    case "$1" in
+      -d | --defocus)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            DEFOCUS="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            DEFOCUS="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -d|--defocus!"
+         fi
+         shift 2
+         ;;
       -b | --bordersize)
          BORDER_SIZE="$2"
+         shift 2
+         ;;
+      -s | --sepia)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            SEPIA="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            SEPIA="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -d|--sepia!"
+         fi
+         shift 2
+         ;;
+      -m | --mottle)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            MOTTLE="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            MOTTLE="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -d|--mottle!"
+         fi
          shift 2
          ;;
       -w | --verbose)
@@ -117,7 +150,10 @@ rm -f "${OUTPUT_FILENAME}"
    ; ------ Initialise and load image ---------------------------------------
    ((inputFileName    "${INPUT_FILENAME}")
     (outputFileName   "${OUTPUT_FILENAME}")
+    (defocus          ${DEFOCUS})
     (borderSize       ${BORDER_SIZE})
+    (sepia            ${SEPIA})
+    (mottle           ${MOTTLE})
     (image            (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
     (imageType        (if (not (defined? 'gimp-image-get-active-layer))
                          ; New GIMP 3.0 API:
@@ -139,7 +175,7 @@ rm -f "${OUTPUT_FILENAME}"
       (gimp-image-convert-rgb image))
 
    (script-fu-old-photo image layer
-                        TRUE borderSize TRUE FALSE FALSE)
+                        defocus borderSize sepia mottle FALSE)
 
    ; ------ Save result -----------------------------------------------------
    (if (defined? 'gimp-drawable-merge-new-filter)
@@ -176,12 +212,12 @@ rm -f "${OUTPUT_FILENAME}"
 )
 (gimp-quit TRUE)
 EOF
-) | env LANG=C HOME=/tmp gimp-console ${GIMP_OPTIONS} 2>&1 | \
+) | env LC_ALL=C.UTF-8 HOME=/tmp gimp-console ${GIMP_OPTIONS} 2>&1 | \
 (
    if [ ${VERBOSE} -ne 0 ] ; then
       cat
    else
-      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
+      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|^gimp_color_transform_new: using babl|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
    fi
 )
 
