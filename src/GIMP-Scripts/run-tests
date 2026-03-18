@@ -133,26 +133,24 @@ for blurX in 3 6 ; do
    blurY="${blurX}"
    for azimut in 90.0 135.0 180.0 ; do
       for elevation in 10.0 45.0 80.0 ; do
-         for depth in 4 ; do
-            ./Make-Clothify Image1.png "Cloth1-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D4.png" \
-               --blur-x ${blurX} \
-               --blur-y ${blurY} \
-               --azimut "${azimut}" \
-               --elevation "${elevation}" \
-               --depth 4
-            ./Make-Clothify Image2.png "Cloth2-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D8.png" \
-               -X ${blurX} \
-               -Y ${blurY} \
-               -A "${azimut}" \
-               -E "${elevation}" \
-               -D 8
-         done
+         ./Make-Clothify Image1.png "Cloth1-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D4.png" \
+            --blur-x ${blurX} \
+            --blur-y ${blurY} \
+            --azimut "${azimut}" \
+            --elevation "${elevation}" \
+            --depth 4
+         ./Make-Clothify Image2.png "Cloth2-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D8.png" \
+            -X ${blurX} \
+            -Y ${blurY} \
+            -A "${azimut}" \
+            -E "${elevation}" \
+            -D 8
       done
    done
 done
 
 # ====== Make-Oilify ========================================================
-for maskSize 4 8 16 ; do
+for maskSize in 4 8 16 ; do
    ./Make-Oilify Image1.png "Oilify1-S${maskSize}-Ion.png" \
       --mask-size "${maskSize}" \
       --intensity-mode on
