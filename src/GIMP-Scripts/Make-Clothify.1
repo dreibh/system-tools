@@ -34,7 +34,7 @@
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm Make-Clothify
-.Nd applies the GIMP "Clothify" effect on an image
+.Nd applies the GIMP Script-Fu "Clothify" filter on an image
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
@@ -42,6 +42,14 @@
 .Nm Make-Clothify
 input_filename
 output_filename
+.br
+.Op Fl x Ar value | Fl Fl blur-x Ar value
+.br
+.Op Fl y Ar value | Fl Fl blur-y Ar value
+.br
+.Op Fl a Ar bearing | Fl Fl azimut Ar bearing
+.br
+.Op Fl e Ar bearing | Fl Fl elevation Ar bearing
 .br
 .Op Fl d Ar depth | Fl Fl depth Ar depth
 .br
@@ -52,8 +60,8 @@ output_filename
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Make-Clothify
-runs GIMP to load an image, apply the "Clothify" effect, and store the
-resulting image.
+runs GIMP to load an image, and applies the GIMP Script-Fu "Clothify" filter
+(details: https://docs.gimp.org/2.10/en/script-fu-clothify.html).
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -63,8 +71,16 @@ The following options are available:
 The input image. Any format support by GIMP can be used. The format will be detected automatically.
 .It output_filename
 The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
+.It Fl x Ar value | Fl Fl blur-x Ar value
+Sets the blur X parameter for the "Clothify" filter. Range: 3-100, Default: 3.
+.It Fl y Ar value | Fl Fl blur-y Ar value
+Sets the blur Y parameter for the "Clothify" filter. Range: 3-100, Default: 3.
+.It Fl a Ar bearing | Fl Fl azimut Ar bearing
+Sets the azimut parameter for the "Clothify" filter. Range: 0.0-360.0, Default: 135.0.
+.It Fl e Ar bearing | Fl Fl elevation Ar bearing
+Sets the elevation parameter for the "Clothify" filter. Range: 0.5-90.0, Default: 45.0.
 .It Fl d Ar depth | Fl Fl depth Ar depth
-Sets the depth for the "Clothify" effect.
+Sets the depth parameter for the "Clothify" filter. Range: 1-65, Default: 5.
 .It Fl w | Fl Fl verbose
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
