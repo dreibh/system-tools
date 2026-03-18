@@ -128,10 +128,12 @@ Description: X.509 certificate handling tools
 
 Package: td-gimp-scripts
 Architecture: all
-Depends: gimp,
+Depends: fontconfig,
+         gimp,
          graphicsmagick,
          util-linux,
          ${misc:Depends}
+Recommends: clifractgen
 Description: GIMP Scripts
  This package contains some GIMP scripts for automated image processing.
  The main purpose of this script is to generate background images for
@@ -153,7 +155,6 @@ Description: Miscellaneous tools
 Package: td-system-tools
 Architecture: all
 Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
-         td-gimp-scripts (>= ${source:Version}),
          td-misc (>= ${source:Version}),
          td-reset-machine-id  (>= ${source:Version}),
          td-system-info (>= ${source:Version}),
@@ -161,7 +162,8 @@ Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
          td-text-block (>= ${source:Version}),
          td-x509-tools (>= ${source:Version}),
          ${misc:Depends}
-Recommends: td-system-configure-grub
+Recommends: td-gimp-scripts (>= ${source:Version}),
+            td-system-configure-grub  (>= ${source:Version})
 Description: Metapackage for system information and maintenance tools
  This package is a metapackage for the system information and maintenance
  tools.
