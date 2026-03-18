@@ -51,7 +51,7 @@ output_filename
 .br
 .Op Fl N Ar neatness | Fl Fl tile-neatness Ar neatness
 .br
-.Op Fl F Ar smooth|rough | Fl Fl tile-surface Ar smooth|rough
+.Op Fl F Ar rough|smooth | Fl Fl tile-surface Ar rough|smooth
 .br
 .Op Fl X Ar spacing | Fl Fl tile-spacing Ar spacing
 .br
@@ -64,6 +64,9 @@ output_filename
 .Op Fl A Ar on|off | Fl Fl antialiasing Ar on|off
 .br
 .Op Fl L Ar degrees | Fl Fl light-direction Ar degrees
+.br
+.Op Fl q | Fl Fl quiet
+.Op Fl w | Fl Fl verbose
 .Nm Make-Mosaic
 .Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
@@ -88,8 +91,8 @@ Specifies the tile size. Range: 1.0-1000.0. Default: 15.0.
 Specifies the tile height. Range: 1.0-1000.0. Default: 4.0.
 .It Fl N Ar neatness | Fl Fl tile-neatness Ar neatness
 Specifies the tile neatness. Range: 0.0-1.0. Default: 0.65.
-.It Fl F Ar smooth|rough | Fl Fl tile-surface Ar smooth|rough
-Sets the tile surface to smooth or rough. Default: rough.
+.It Fl F Ar rough|smooth | Fl Fl tile-surface Ar rough|smooth
+Sets the tile surface to rough or smooth. Default: rough.
 .It Fl X Ar spacing | Fl Fl tile-spacing Ar spacing
 Specifies the tile spacing. Range: 0.0-1000.0. Default: 4.0.
 .It Fl I Ar on|off | Fl Fl tile-allow-split Ar on|off
