@@ -34,16 +34,16 @@ set -eux
 
 INPUT1="examples/Bergen.jpeg"
 INPUT2="examples/Portobello.jpeg"
-INPUT3="examples/Background.png"
+INPUT3="Background.png"
 
 
-# ------ Use FractGen to generate the example image -------------------------
+# ====== Use FractGen to generate the example image =========================
 # Requires: clifractgen
 if [ ! -e "${INPUT2}"  ] ; then
    if [ -e "/usr/share/fractgen/examples/alpha07.fsf" ] ; then
-      clifractgen  /usr/share/fractgen/examples/alpha07.fsf "${INPUT2}" -W 1920 -H 1080 -M 2048
+      clifractgen  /usr/share/fractgen/examples/alpha07.fsf "${INPUT3}" -W 1920 -H 1080 -M 2048
    elif [ -e "/usr/local/share/fractgen/examples/alpha07.fsf" ] ; then
-      clifractgen  /usr/local/share/fractgen/examples/alpha07.fsf "${INPUT2}" -W 1920 -H 1080 -M 2048
+      clifractgen  /usr/local/share/fractgen/examples/alpha07.fsf "${INPUT3}" -W 1920 -H 1080 -M 2048
    else
       echo >&2 "ERROR: Input FSF file not found!"
       exit 1
@@ -51,7 +51,25 @@ if [ ! -e "${INPUT2}"  ] ; then
 fi
 
 
-# ------ Make-GlossyText ----------------------------------------------------
+# ====== Resize-with-Cropping ===============================================
+./Resize-with-Cropping "${INPUT1}" Image1.png -A 16:9 -W 1920
+./Resize-with-Cropping "${INPUT2}" Image2.png --aspect 16:9 --width 1920
+
+
+# ====== Make-Caption =======================================================
+./Make-Caption Caption1.png 1024 42 \
+   "Caption Text $(LC_ALL=C.UTF-8 date)" \
+   --font-name "Noto Sans Bold" \
+   --font-size 70 \
+   --foreground "#02266b" --background "#ffd7cc" --transparency 50
+./Make-Caption Caption2.png 1920 64 \
+   "This is yet another test on $(LC_ALL=C.UTF-8 date)!" \
+   -F "Lobster Two Bold Italic" \
+   -S 70 \
+   -f "#02266b" -b "#ffd700" -t 26
+
+
+# ====== Make-GlossyText ====================================================
 ./Make-GlossyText NorNet1.png "NorNet Testbed" 128
 
 ./Make-GlossyText NorNet2.png "NorNet Testbed" 128 --bordersize 5 \
@@ -62,16 +80,7 @@ fi
    --colorscheme "Golden" --font "Lobster Two Bold Italic" || true
 
 
-# ------ Make-Caption -------------------------------------------------------
-./Make-Caption Caption1.png "Caption Text $(LC_ALL=C.UTF-8 date)" 1024 42 "Noto Sans Bold" 60 \
-   --foreground "#02266b" --background "#ffd700" --transparency 26
-
-
-# ------ Resize-with-Cropping -----------------------------------------------
-./Resize-with-Cropping "${INPUT1}" Image1.png -A 16:9 -W 1920
-./Resize-with-Cropping "${INPUT2}" Image2.png --aspect 16:9 --width 1920
-
-# ------ Make-Mosaic --------------------------------------------------------
+# ====== Make-Mosaic ========================================================
 for tileType in triangles squares hexagons octagons ; do
    for tileSurface in smooth rough ; do
       for tileSize in 12 24 ; do
@@ -101,7 +110,7 @@ for tileType in triangles squares hexagons octagons ; do
    done
 done
 
-# ------ Make-OldPhoto ------------------------------------------------------
+# ====== Make-OldPhoto ======================================================
 for defocus in on off ; do
    for borderSize in 10 20 ; do
       for sepia in on off ; do
@@ -119,7 +128,7 @@ for defocus in on off ; do
    done
 done
 
-# ------ Make-Clothify ------------------------------------------------------
+# ====== Make-Clothify ======================================================
 for blurX in 3 6 ; do
    blurY="${blurX}"
    for azimut in 90.0 135.0 180.0 ; do
@@ -142,7 +151,7 @@ for blurX in 3 6 ; do
    done
 done
 
-# ------ Make-Oilify --------------------------------------------------------
+# ====== Make-Oilify ========================================================
 for maskSize 4 8 16 ; do
    ./Make-Oilify Image1.png "Oilify1-S${maskSize}-Ion.png" \
       --mask-size "${maskSize}" \
@@ -152,7 +161,7 @@ for maskSize 4 8 16 ; do
       -I off
 done
 
-# ------ Make-BumpMap -------------------------------------------------------
+# ====== Make-BumpMap =======================================================
 ./Make-BumpMap Image3.png Background1.png
 ./Make-Mosaic Background1.png Background2.png \
    -T hexagons -S 18 -H 4 -X 4 -F smooth -N 0.5
