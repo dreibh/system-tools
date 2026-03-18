@@ -229,7 +229,7 @@ EOF
    if [ ${VERBOSE} -ne 0 ] ; then
       cat
    else
-      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
+      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|^gimp_color_transform_new: using babl|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
    fi
 )
 

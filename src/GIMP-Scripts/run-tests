@@ -74,10 +74,12 @@ fi
 ./Make-Mosaic Image1.png Mosaic1-O.png 24 4 4 --type octagons --surface smooth --neatness 1.0
 
 ./Make-OldPhoto Image1.png OldPhoto1.png
-./Make-OldPhoto Image1.png OldPhoto2.png --bordersize 20
+./Make-OldPhoto Image1.png OldPhoto2.png --defocus on --bordersize 20 --sepia on --mottle on
+./Make-OldPhoto Image1.png OldPhoto3.png -d off -b 20 -s on -m on
 
-./Make-Cloth Image1.png Cloth1.png
-./Make-Cloth Image1.png Cloth2.png --depth 8
+./Make-Clothify Image1.png Cloth1.png
+./Make-Clothify Image1.png Cloth2.png --blur-x 5 --blur-y 5 --azimut 175.0 --elevation 62.5 --depth 8
+./Make-Clothify Image1.png Cloth3.png -x 4 -y 4 -a 125.0 -e 25.5 -d 5
 
 ./Make-Oilify Image1.png Oilify1.png --masksize 8 --mode intensity
 ./Make-Oilify Image1.png Oilify2.png --masksize 8 --mode rgb
