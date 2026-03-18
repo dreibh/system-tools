@@ -32,18 +32,12 @@
 set -eu
 
 
-# Example:
-# Make-OilPainting Image1.jpeg Painting1.png
-# Make-OilPainting Image1.jpeg Painting2.png --masksize 5
-
-
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_filename output_filename [-s|--masksize masksize] [-m|--mode rgb|intensity] [-w|--verbose] [-q|--quiet] [-h|--help]"
-   echo >&2 "Example: $0 Image.jpeg Cloth.png --masksize 5"
+   echo >&2 "Usage: $0 input_filename output_filename [-S|--mask-size masksize] [-I|--intensity-mode on|off] [-w|--verbose] [-q|--quiet] [-h|--help]"
    exit "${exitCode}"
 }
 
@@ -52,23 +46,22 @@ GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 options="$(${GETOPT} -o s:m:wqh --long masksize:,mode:,verbose,quiet,help -a -- "$@")"
 eval set -- "${options}"
 
-MASKSIZE=8
-MODE=1
+MASK_SIZE=8
+INTENSITY_MODE="TRUE"
 VERBOSE=0
 while [ $# -gt 0 ] ; do
    case "$1" in
-      -s | --masksize)
-         MASKSIZE="$2"
+      -S | --mask-size)
+         MASK_SIZE="$2"
          shift 2
          ;;
-      -m | --mode)
-         if [ "$2" == "rgb" ] ; then
-            MODE=0
-         elif [ "$2" == "intensity" ] ; then
-            MODE=1
+      -I | --intensity-mode)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            INTENSITY_MODE="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            INTENSITY_MODE="FALSE"
          else
-            echo >&2 "ERROR: Invalid mode!"
-            exit 1
+            echo "ERROR: Invalid value $2 for -I|--intensity-mode!"
          fi
          shift 2
          ;;
@@ -103,8 +96,8 @@ if [ ! -f "${INPUT_FILENAME}" ] ; then
    echo >&2 "ERROR: Input file ${INPUT_FILENAME} does not exist!"
    exit 1
 fi
-if [[ ! "${MASKSIZE}" =~ ^([0-9]+)$ ]] ; then
-   echo >&2 "ERROR: Invalid mask size ${MASKSIZE}!"
+if [[ ! "${MASK_SIZE}" =~ ^([0-9]+)$ ]] ; then
+   echo >&2 "ERROR: Invalid mask size ${MASK_SIZE}!"
    exit 1
 fi
 
@@ -135,8 +128,8 @@ rm -f "${OUTPUT_FILENAME}"
    ; ------ Initialise and load image ---------------------------------------
    ((inputFileName    "${INPUT_FILENAME}")
     (outputFileName   "${OUTPUT_FILENAME}")
-    (maskSize         ${MASKSIZE})
-    (mode             ${MODE})
+    (maskSize         ${MASK_SIZE})
+    (intensityMode    ${INTENSITY_MODE})
     (image            (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
     (imageType        (if (not (defined? 'gimp-image-get-active-layer))
                          ; New GIMP 3.0 API:
@@ -163,15 +156,15 @@ rm -f "${OUTPUT_FILENAME}"
 
    (cond( (not(defined? 'plug-in-mosaic))
       ; New GIMP 3.0 API:
-      (gimp-drawable-merge-new-filter layer "gegl:oilify" 0 LAYER-MODE-REPLACE 1.0
+      (gimp-drawable-merge-new-filter layer "gegl:oilify" 0 LAYER-INTENSITY_MODE-REPLACE 1.0
           "mask-radius" (max 1 (/ maskSize 2))
-          "use-inten"   mode
+          "use-inten"   intensityMode
       )
    )
    (else
       ; Old GIMP 2.x API:
       (display maskSize) (newline)
-      (plug-in-oilify RUN-NONINTERACTIVE image layer maskSize mode)
+      (plug-in-oilify RUN-NONINTERACTIVE image layer maskSize intensityMode)
    ))
 
    ; ------ Save result -----------------------------------------------------
