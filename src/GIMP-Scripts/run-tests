@@ -40,7 +40,7 @@ INPUT2="examples/Background.png"
 if [ ! -e "${INPUT2}"  ] ; then
    if [ -e "/usr/share/fractgen/examples/alpha07.fsf" ] ; then
       clifractgen  /usr/share/fractgen/examples/alpha07.fsf "${INPUT2}" -W 1920 -H 1080 -M 2048
-   elif [ -e "/usr/share/fractgen/examples/alpha07.fsf" ] ; then
+   elif [ -e "/usr/local/share/fractgen/examples/alpha07.fsf" ] ; then
       clifractgen  /usr/local/share/fractgen/examples/alpha07.fsf "${INPUT2}" -W 1920 -H 1080 -M 2048
    else
       echo >&2 "ERROR: Input FSF file not found!"

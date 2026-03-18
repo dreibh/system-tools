@@ -114,11 +114,11 @@ if [ "${NEW_WIDTH}" != "" ] && [ "${NEW_HEIGHT}" != "" ] ; then
    echo >&2 "ERROR: -W|--width and -H|--height are mutually exclusive!"
    exit 1
 fi
-if [[ ! "${NEW_WIDTH}" =~ ^(|[0-9]+)$ ]] ; then
+if [[ ! "${NEW_WIDTH}" =~ ^([0-9]*)$ ]] ; then
    echo >&2 "ERROR: Invalid width ${NEW_WIDTH}!"
    exit 1
 fi
-if [[ ! "${NEW_HEIGHT}" =~ ^(|[0-9]+)$ ]] ; then
+if [[ ! "${NEW_HEIGHT}" =~ ^([0-9]*)$ ]] ; then
    echo >&2 "ERROR: Invalid height ${NEW_HEIGHT}!"
    exit 1
 fi
