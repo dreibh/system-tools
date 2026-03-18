@@ -10,7 +10,7 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# Print-UTF8
+# Run ShellCheck
 # Copyright (C) 2024-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -31,12 +31,13 @@
 # Bash options:
 set -eu
 
+# Automatically find all shell scripts in subdirectories:
 SCRIPTS="$(
 (
    find . -type f -executable -and -not -name "*~"
    find . -name "*.bash-completion" -and -not -name "*~"
 ) | while read -r name ; do
-   if [[ "$(head -n1 "${name}")" =~ (bash) ]] ; then
+   if [[ "$(head -n1 "${name}")" =~ (bash|/bin/sh) ]] ; then
       echo "${name}"
    fi
 done
