@@ -148,7 +148,6 @@ fi
 
 
 # ===== Set new width or height =============================================
-echo "W1=${NEW_WIDTH}"
 if [ "${NEW_WIDTH}" != "" ] ; then
    NEW_HEIGHT="$(LC_NUMERIC=C awk "BEGIN { print int(${NEW_WIDTH}/${outputAspectRatio}) }")"
 elif [ "${NEW_HEIGHT}" != "" ] ; then
