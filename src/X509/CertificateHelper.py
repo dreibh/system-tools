@@ -65,8 +65,8 @@ DefaultCertKeyLength : Final[int] = 16384
 
 # ***** TEST ONLY *******************************
 # These settings are for fast testing only:
-# DefaultCAKeyLength   : Final[int] = 4096
-# DefaultCertKeyLength : Final[int] = 4096
+# DefaultCAKeyLength   : Final[int] = 1024
+# DefaultCertKeyLength : Final[int] = 1024
 # ***********************************************
 
 # Enable verbose logging for debugging here:
