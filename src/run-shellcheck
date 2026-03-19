@@ -37,7 +37,7 @@ SCRIPTS="$(
    find . -type f -executable -and -not -name "*~"
    find . -name "*.bash-completion" -and -not -name "*~"
 ) | while read -r name ; do
-   if [[ "$(head -n1 "${name}")" =~ (bash|/bin/sh) ]] ; then
+   if [[ "$(head -n1 "${name}" | strings)" =~ (bash|/bin/sh) ]] ; then
       echo "${name}"
    fi
 done
