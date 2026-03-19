@@ -107,24 +107,50 @@ ENDIF()
 
 
 #############################################################################
+#### OPTIONS                                                             ####
+#############################################################################
+
+OPTION(WITH_I18N "Build with Internationalization (i18n) support" 1)
+
+OPTION(WITH_SYSTEM_INFO           "Include System-Info"          1)
+OPTION(WITH_SYSTEM_MAINTENANCE    "Include System-Maintenance"   1)
+OPTION(WITH_PRINT_UTF8            "Include Print-UTF8"           1)
+OPTION(WITH_TEXT_BLOCK            "Include Text-Block"           1)
+OPTION(WITH_FINGERPRINT_SSH_KEYS  "Include Fingerprint-SSH-Keys" 1)
+OPTION(WITH_CONFIGURE_GRUB        "Include Configure-GRUB"       1)
+OPTION(WITH_RESET_MACHINE_ID      "Include Reset-Machine-ID"     1)
+OPTION(WITH_TRY_HARD              "Include Try-Hard"             1)
+OPTION(WITH_RANDOM_SLEEP          "Include Random-Sleep"         1)
+OPTION(WITH_X509_TOOLS            "Include X509 Tools"           1)
+
+IF (WITH_SYSTEM_INFO AND NOT WITH_PRINT_UTF8)
+   MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO requires WITH_PRINT_UTF8!")
+ENDIF()
+
+
+#############################################################################
 #### INTERNATIONALISATION (I18N)                                         ####
 #############################################################################
 
-FIND_PACKAGE (Intl)
-IF (Intl_FOUND)
-   MESSAGE(STATUS "Internationalization (i18n) found:")
-   MESSAGE(STATUS " INTL_INCLUDE_DIRS: ${Intl_INCLUDE_DIRS}")
-   MESSAGE(STATUS " INTL_LIBRARIES: ${Intl_LIBRARIES}")
-   MESSAGE(STATUS " Version: ${Intl_VERSION}")
-   INCLUDE_DIRECTORIES(${Intl_INCLUDE_DIRS})
-   LINK_DIRECTORIES(${Intl_LIBRARY_DIRS})
-ELSE()
-   MESSAGE(STATUS "Internationalization (i18n) not found!")
-ENDIF()
+IF (WITH_I18N)
+   FIND_PACKAGE (Intl)
+   IF (Intl_FOUND)
+      MESSAGE(STATUS "Internationalization (i18n) found:")
+      MESSAGE(STATUS " INTL_INCLUDE_DIRS: ${Intl_INCLUDE_DIRS}")
+      MESSAGE(STATUS " INTL_LIBRARIES: ${Intl_LIBRARIES}")
+      MESSAGE(STATUS " Version: ${Intl_VERSION}")
+      INCLUDE_DIRECTORIES(${Intl_INCLUDE_DIRS})
+      LINK_DIRECTORIES(${Intl_LIBRARY_DIRS})
+   ELSE()
+      MESSAGE(FATAL_ERROR "Internationalization (i18n) not found!")
+   ENDIF()
 
-FIND_PROGRAM(XGETTEXT xgettext REQUIRED)
-FIND_PROGRAM(MSGMERGE msgmerge REQUIRED)
-FIND_PROGRAM(MSGFMT   msgfmt   REQUIRED)
+   FIND_PROGRAM(XGETTEXT xgettext REQUIRED)
+   FIND_PROGRAM(MSGMERGE msgmerge REQUIRED)
+   FIND_PROGRAM(MSGFMT   msgfmt   REQUIRED)
+
+   ADD_COMPILE_DEFINITIONS(ENABLE_NLS)
+ENDIF()
 
 
 #############################################################################
@@ -132,4 +158,7 @@ FIND_PROGRAM(MSGFMT   msgfmt   REQUIRED)
 #############################################################################
 
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(po)
+
+IF (WITH_I18N)
+   ADD_SUBDIRECTORY(po)
+ENDIF()
