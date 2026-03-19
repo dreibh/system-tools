@@ -29,7 +29,6 @@
 
 #include <getopt.h>
 #include <ifaddrs.h>
-#include <libintl.h>
 #include <locale.h>
 #include <netdb.h>
 #include <stdbool.h>
@@ -56,6 +55,16 @@
 #endif
 #ifndef nullptr
 #define nullptr NULL
+#endif
+
+#ifdef ENABLE_NLS
+#include <libintl.h>
+#else
+#warning NLS is disabled!
+#define bindtextdomain(domain, dirname) { }
+#define textdomain(domain) { }
+#define gettext(string) string
+#define ngettext(singular, plural, n) ((n) == 1 ? (singular) : (plural))
 #endif
 
 // FIXME: For some reasons, IFF_LOWER_UP seems to be undefined here.
