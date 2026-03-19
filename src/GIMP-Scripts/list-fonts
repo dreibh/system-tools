@@ -1,0 +1,2 @@
+#!/bin/sh
+fc-list : family style -f "%{family[0]} %{style[0]}\n" | sort -u
