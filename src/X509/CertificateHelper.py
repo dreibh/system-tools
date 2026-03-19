@@ -65,8 +65,8 @@ DefaultCertKeyLength : Final[int] = 16384
 
 # ***** TEST ONLY *******************************
 # These settings are for fast testing only:
-# DefaultCAKeyLength   : Final[int] = 1024
-# DefaultCertKeyLength : Final[int] = 1024
+# DefaultCAKeyLength   : Final[int] = 4096
+# DefaultCertKeyLength : Final[int] = 4096
 # ***********************************************
 
 # Enable verbose logging for debugging here:
@@ -188,8 +188,8 @@ def prepareUserSubject(name : str) -> str:
 
 
 # ###### CA #################################################################
-GlobalCRLSet             : set[str]   = set([])
-DefaultGlobalCRLFileName : Final[str] = 'Test.crl'
+GlobalCRLDictionary      : dict[str, int] = { }
+DefaultGlobalCRLFileName : Final[str]     = 'Test-Combined-CRLs.crl'
 
 class CA:
 
@@ -530,7 +530,7 @@ subjectAltName         = ${ENV::SAN}
 
 
       # ====== Generate initial CRL =========================================
-      GlobalCRLSet.add(self.CRLFileName)
+      self.addToGlobalCRLDictionary(self)
       self.generateCRL()
 
 
@@ -633,11 +633,22 @@ subjectAltName         = ${ENV::SAN}
       self.generateGlobalCRL(self.GlobalCRLFileName)
 
 
+   # ###### Add CA to global CRL dictionary #################################
+   def addToGlobalCRLDictionary(self, ca : 'CA') -> None:
+      level : int         = 1
+      currentCA    : 'CA' = ca
+      while currentCA.ParentCA != None:
+         level = level + 1
+         currentCA = currentCA.ParentCA
+      GlobalCRLDictionary[ca.CRLFileName] = level
+
+
    # ###### Generate global CRL #############################################
    def generateGlobalCRL(self, globalCRLFileName : str) -> None:
-      if len(GlobalCRLSet) > 0:
+      if len(GlobalCRLDictionary) > 0:
          cmd = 'cat'
-         for crlFileName in sorted(GlobalCRLSet):
+         for crlFileName, level in sorted(GlobalCRLDictionary.items(),
+                                          key = lambda item : ( item[1], item[0] ) ):
             cmd = cmd + ' ' + crlFileName
          cmd = cmd + ' >' + globalCRLFileName
          execute(cmd)
