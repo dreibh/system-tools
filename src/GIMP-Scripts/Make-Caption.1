@@ -81,7 +81,8 @@ The height of the image to be generated.
 .It caption_text
 The caption text.
 .It Fl F Ar font | Fl Fl font-name Ar font
-Specifies the font to be used. Note: use `fc-list` to list the installed fonts.
+Specifies the font and style to be used. Font and style are space separated, e.g. \(dqURW Gothic Book Oblique\(dq for font \(dqURW Gothic\(dq in style \(dqURW Gothic Book Oblique\(dq.
+Use `fc-list\~: family style -f \(dq%{family[0]} %{style[0]}\[rs]n\(dq | sort -u` to list all installed fonts and styles.
 .It  Fl S Ar percentage | Fl Fl font-size Ar percentage
 Specifies the font size, in percentage of the caption height. Range: 1-100. Default: 50.
 .It  Fl f Ar color | Fl Fl foreground Ar color
@@ -101,4 +102,5 @@ Prints command-line parameters.
 .It Make-Caption Caption1.png 1024 42 \(dqTest!\(dq
 .It Make-Caption Caption2.png 1024 42 \(dqThis is a test!\(dq --font-name \(dqNoto Sans Bold\(dq --font-size 70 --foreground \(dq#02266b\(dq --background \(dq#ffd7cc\(dq --transparency 50
 .It Make-Caption Caption3.png 1920 64 \(dqAnother test!\(dq -F \(dqLobster Two Bold Italic\(dq -S 70 -f \(dq#02266b\(dq -b \(dq#ffd700\(dq -t 26
+.It fc-list\~: family style -f \(dq%{family[0]} %{style[0]}\[rs]n\(dq | sort -u
 .El
