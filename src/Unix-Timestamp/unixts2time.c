@@ -80,7 +80,6 @@ static void usage(const char* program, const int exitCode)
 // ###### Main program ######################################################
 int main(int argc, char** argv)
 {
-
    // ====== Initialise i18n support ========================================
    if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
@@ -106,8 +105,8 @@ int main(int argc, char** argv)
    int          longIndex;
    bool         useInteger    = true;
    bool         humanReadable = false;
-   unsigned int divideBy      = 1;
-   const char*  unit          = "ns";
+   unsigned int divideBy      = 0;         // auto-detect later
+   const char*  unit          = nullptr;   // auto-detect later
    while( (option = getopt_long(argc, argv, "FIHsmunvh", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'F':
@@ -151,6 +150,7 @@ int main(int argc, char** argv)
       }
    }
 
+   // ====== Obtain Unix timestamp in ns ====================================
    long long unixTS;
    if(optind == argc) {
       struct timespec ts;
@@ -158,13 +158,35 @@ int main(int argc, char** argv)
          perror(gettext("clock_gettime() failed"));
          exit(1);
       }
-      unixTS = (1000000000ULL * ts.tv_sec) + ts.tv_nsec;
+      unixTS = (1000000000ULL * ts.tv_sec) + ts.tv_nsec;   // already in ns
+      if(divideBy != 0) {
+         divideBy = 1;
+         unit     = "ns";
+      }
    }
    else if(optind + 1 == argc) {
       char* endptr;
       if(useInteger) {
          unixTS = strtoll(argv[optind], &endptr, 0);
-         unixTS *= divideBy;
+         if(divideBy == 0) {
+            if( (unixTS > -5000000000LL) && (unixTS < 5000000000LL) ) {
+               divideBy = 1000000000;
+               unit     = "s";
+            }
+            else if( (unixTS > -5000000000000LL) && (unixTS < 5000000000000LL) ) {
+               divideBy = 1000000;
+               unit     = "ms";
+            }
+            else if( (unixTS > -5000000000000000LL) && (unixTS < 5000000000000000LL) ) {
+               divideBy = 1000;
+               unit     = "µs";
+            }
+            else {
+               divideBy = 1;
+               unit     = "ns";
+            }
+         }
+         unixTS *= divideBy;   // convert to ns
       }
       else {
          const double unixTSasDouble = strtod(argv[optind], &endptr);
@@ -219,7 +241,7 @@ int main(int argc, char** argv)
    snprintf((char*)&fstring, sizeof(fstring), format,
             (double)ts.tv_nsec / 1000000000.0);
 
-   // ------ Print result ---------------------------------------------------
+   // ====== Print result ===================================================
    if(!humanReadable) {
       fputs(tstring, stdout);
       fputs(&fstring[1], stdout);   // Omit "0" before comma

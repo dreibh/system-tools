@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd March 18, 2026
+.Dd March 19, 2026
 .Dt unixts2time 1
 .Os unixts2time
 .\" ###### Name #############################################################
@@ -61,7 +61,29 @@
 converts an Unix timestamp to a time string in the format
 %Y-%m-%d %H:%M:%S.SSSSSSSSS. The Unix timestamp is the time (nanoseconds,
 microseconds, milliseconds, or seconds) since the Unix Epoch, i.e. Jaunary 1,
-1970, 00:00:00.000000000 UTC. By default the timestamp is in nanoseconds.
+1970, 00:00:00.000000000 UTC.
+.br
+By default, the timestamp-granularity is
+auto-detected using the following heuristic:
+.Bl -bullet -offset indent
+.It
+Seconds (s): from
+0 (1970-01-01 00:00:00) to 4999999999 = 5e9-1 (2128-06-11 08:53:19), and
+-1 (1969-12-31 23:59:59) to -4999999999 = -5e9 (1811-07-23 15:06:41);
+.It
+Milliseconds (ms): from
+5000000000 = 5e9 (1970-02-27 20:53:20,000) to 4999999999999 = 5e12-1 (2128-06-11 08:53:19,999), and
+-5000000000 = -5e9 (1969-11-04 03:06:40,000) to -4999999999999 = -5e12-1 (1811-07-23 15:06:410,999);
+.It
+Microseconds (µs) from
+5000000000000 = 5e12 (1970-02-27 20:53:20,000000) to 4999999999999999 = 5e15-1 (2128-06-11 08:53:19,999999), and
+-5000000000000 = 5e12 (1969-11-04 03:06:40,000000) to -4999999999999999 = 5e15-1 (1811-07-23 15:06:410,999999);
+.It
+Nanoseconds (ns) from
+5000000000000000 = 5e15 (1970-02-27 20:53:20,000000000), and
+-5000000000000000 = 5e15 (1969-11-04 03:06:40,000000000).
+.El
+That is, unless using dates around 1969/1970, ancient past, or distant future, the auto-detection should work reasonably well. Optionally, the timestamp granularity can be specified explicitly.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -79,13 +101,13 @@ Otherwise, the number is interpreted as decimal (base 10).
 .It Fl H | Fl Fl human-readable
 Provide the output in human-readable form. Default: off.
 .It Fl s | Fl Fl seconds
-The Unix timestamp is given in seconds. Default is in nanoseconds.
+The Unix timestamp is given in seconds. Default is auto-detection (see above).
 .It Fl m | Fl Fl milliseconds
-The Unix timestamp is given in milliseconds. Default is in nanoseconds.
+The Unix timestamp is given in milliseconds. Default is auto-detection (see above).
 .It Fl u | Fl Fl microseconds
-The Unix timestamp is given in microseconds. Default is in nanoseconds.
+The Unix timestamp is given in microseconds. Default is auto-detection (see above).
 .It Fl n | Fl Fl nanoseconds
-The Unix timestamp is given in nanoseconds. This is the default.
+The Unix timestamp is given in nanoseconds. Default is auto-detection (see above).
 .It Fl h | Fl Fl help
 Prints command-line parameters.
 .It Fl v | Fl Fl version
@@ -99,14 +121,14 @@ Prints program version.
 .It unixts2time --human-readable --seconds 1773744755
 .It unixts2time --human-readable --seconds -- -1000000
 .It unixts2time --human-readable --milliseconds -- -442460258000
-.It unixts2time 1773736279 --human-readable --seconds
-.It unixts2time 1773736279 -s
-.It unixts2time 212847000000 --milliseconds
-.It unixts2time 212847008123456789 -H
+.It unixts2time --human-readable --seconds 1773736279
+.It unixts2time -s 1773736279
+.It unixts2time --milliseconds 212847000000
+.It unixts2time -H 212847008123456789
 .It unixts2time 0x179cb2ae8af3dd89
-.It unixts2time 0x179cb2ae8af3dd89 -H
-.It env LC_ALL=en.UTF-8 unixts2time 212847123.123 -Fs
-.It env LC_ALL=de_DE.UTF-8 unixts2time 212847123,123456789 -Fs
+.It unixts2time -H 0x179cb2ae8af3dd89
+.It env LC_ALL=en.UTF-8 unixts2time -Fs 212847123.123
+.It env LC_ALL=de_DE.UTF-8 unixts2time -Fs 212847123,123456789
 .It unixts2time --version
 .It unixts2time --help
 .El
