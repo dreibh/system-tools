@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
@@ -9,8 +10,8 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# System-Tools
-# Copyright (C) 2013-2026 by Thomas Dreibholz
+# Manpage to HTML Conversion
+# Copyright (C) 2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,25 +28,29 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
+# Bash options:
+set -eu
 
-#############################################################################
-#### PROGRAMS                                                            ####
-#############################################################################
 
-INSTALL(PROGRAMS    cls   DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES       cls.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+# ###### Main program #######################################################
 
-INSTALL(PROGRAMS    compresspdf   DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES       compresspdf.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+while [ $# -gt 0 ] ; do
+   input="$1"
+   shift 1
+   output="${input/\.[0-9]/.html}"
 
-INSTALL(PROGRAMS    manpage2html   DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES       manpage2html.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       manpage2html.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      manpage2html)
+   if [ "${output}" != "${input}" ] ; then
+      echo "Converting ${input} -> ${output} ..."
 
-INSTALL(PROGRAMS    md2html   DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES       md2html.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       md2html.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      md2html)
+      groff -mandoc -Thtml <"${input}" | \
+      sed -e 's#lang=""#lang="en"#'          \
+          -e 's#<table>#<table summary="">#' \
+          -e 's/\( href="#\)-/\1/g'          \
+         >"${output}"
+
+      # tidy -q -o /dev/null --strict-tags-attributes yes "${output}"
+   else
+      echo "ERROR: Unable to handle ${input}. No .md file?"
+      exit 1
+   fi
+done
