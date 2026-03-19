@@ -133,7 +133,9 @@ Depends: fontconfig,
          graphicsmagick,
          util-linux,
          ${misc:Depends}
-Recommends: clifractgen
+Recommends: clifractgen,
+            fonts-open-sans,
+            fonts-urw-base35
 Description: GIMP Scripts
  This package contains some GIMP scripts for automated image processing.
  The main purpose of this script is to generate background images for
