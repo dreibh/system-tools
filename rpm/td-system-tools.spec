@@ -266,6 +266,9 @@ Requires: fontconfig
 Requires: gimp
 Requires: GraphicsMagick
 Requires: util-linux
+Recommends: fractgen-clifractgen
+Recommends: open-sans-fonts
+Recommends: urw-base35-fonts
 
 %description gimp-scripts
  This package contains some GIMP scripts for automated image processing.
