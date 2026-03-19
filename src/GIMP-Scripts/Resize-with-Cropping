@@ -124,12 +124,25 @@ if [[ ! "${NEW_HEIGHT}" =~ ^([0-9]*)$ ]] ; then
 fi
 
 
+# ====== Detect GraphicsMagick ==============================================
+GM="$(which gm 2>/dev/null || true)"
+if [ "${GM}" == "" ] ; then
+   echo >&2 "ERROR: GraphicsMagick is not installed! Try:"
+   echo >&2 " * Ubuntu/Debian: sudo apt install -y graphicsmagick"
+   echo >&2 " * Fedora:        sudo dnf install -y GraphicsMagick"
+   echo >&2 " * SuSE:          sudo zypper install -y GraphicsMagick"
+   echo >&2 " * Alpine:        sudo apk add graphicsmagick"
+   echo >&2 " * FreeBSD:       sudo pkg install -y GraphicsMagick"
+   exit 1
+fi
+
+
 # ====== Obtain image width and height ======================================
 if [ ! -f "${INPUT_FILENAME}" ] ; then
    echo >&2 "ERROR: Input file ${INPUT_FILENAME} does not exist!"
    exit 1
 fi
-inputImageSize="$(gm identify -format "%wx%h" "$INPUT_FILENAME")"
+inputImageSize="$("${GM}" identify -format "%wx%h" "${INPUT_FILENAME}")"
 # shellcheck disable=SC2001
 inputWidth="$(echo "${inputImageSize}" | sed -e "s/x[0-9]*$//")"
 # shellcheck disable=SC2001
@@ -178,7 +191,7 @@ fi
 
 # ====== Run "convert" ======================================================
 rm -f "${OUTPUT_FILENAME}"
-gm convert "$INPUT_FILENAME" \
+"${GM}" convert "${INPUT_FILENAME}" \
    -crop "${croppedInputWidth}"x"${croppedInputHeight}"+"${cx}"+"${cy}" \
    -resize "${NEW_WIDTH}"x"${NEW_HEIGHT}" \
    +repage \
@@ -187,5 +200,5 @@ gm convert "$INPUT_FILENAME" \
 
 if [ ${VERBOSE} -ne 0 ] ; then
    echo -n "Done: "
-   gm identify "${OUTPUT_FILENAME}"
+   "${GM}" identify "${OUTPUT_FILENAME}"
 fi
