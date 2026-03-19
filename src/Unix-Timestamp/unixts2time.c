@@ -228,8 +228,8 @@ int main(int argc, char** argv)
       char ustring[64];
       snprintf((char*)&ustring, sizeof(ustring), format,
                unixTS / (double)divideBy);
-      fprintf(stdout, gettext("%s%s is %lld %s since the Unix Epoch"),
-              tstring, &fstring[1], unixTS /divideBy, unit);
+      fprintf(stdout, gettext("%s%s is %lld (0x%llx) %s since the Unix Epoch"),
+              tstring, &fstring[1], unixTS /divideBy, unixTS /divideBy, unit);
    }
    fputs("\n", stdout);
 
