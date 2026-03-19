@@ -76,7 +76,7 @@ VerboseMode : bool = False
 
 # ###### Execute command ####################################################
 def execute(command : str, mayFail : bool = False) -> int:
-   result = 1
+   result : int = 1
    try:
       if VerboseMode:
          sys.stdout.write('\x1b[37m' + command + '\x1b[0m\n')
@@ -90,7 +90,7 @@ def execute(command : str, mayFail : bool = False) -> int:
 
 
 # ###### Make "subjectAltName" string #######################################
-RE_USEREMAIL : re.Pattern = \
+RE_USEREMAIL : Final[re.Pattern[str]] = \
    re.compile(r'^(.*)( <)([a-zA-Z0–9. _%+-]+@[a-zA-Z0–9. -]+\.[a-zA-Z]{2,})(>)$')
 def prepareSubjectAltName(certType : CertificateType,
                           name     : str,
@@ -153,8 +153,8 @@ def prepareSubjectAltName(certType : CertificateType,
 
 
 # ###### Make subject string for user #######################################
-RE_TITLE : re.Pattern = re.compile(r'^([A-Z][a-z]+\.)$')
-RE_EMAIL : re.Pattern = re.compile(r'^<[^<>]+@[^<>]+>$')
+RE_TITLE : Final[re.Pattern[str]] = re.compile(r'^([A-Z][a-z]+\.)$')
+RE_EMAIL : Final[re.Pattern[str]] = re.compile(r'^<[^<>]+@[^<>]+>$')
 def prepareUserSubject(name : str) -> str:
    parts    : list[str] = name.split(' ')
    titles   : list[str] = [ ]
@@ -637,7 +637,7 @@ subjectAltName         = ${ENV::SAN}
    def addToGlobalCRLDictionary(self, ca : 'CA') -> None:
       level : int         = 1
       currentCA    : 'CA' = ca
-      while currentCA.ParentCA != None:
+      while currentCA.ParentCA is not None:
          level = level + 1
          currentCA = currentCA.ParentCA
       GlobalCRLDictionary[ca.CRLFileName] = level
