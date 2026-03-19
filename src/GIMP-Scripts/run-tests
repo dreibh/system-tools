@@ -39,7 +39,7 @@ INPUT3="Background.png"
 
 # ====== Test-GIMP ==========================================================
 export GIMP3_DIRECTORY
-GIMP3_DIRECTORY="$(mktemp --tmpdir -d "gimp-XXXXXXXXXX.tmp")"
+GIMP3_DIRECTORY="$(mktemp -d -t gimp-tmp-XXXXXXXXXX)"
 trap 'if [ -d "${GIMP3_DIRECTORY}" ] ; then rm -rf "${GIMP3_DIRECTORY}" ; fi ; export GIMP3_DIRECTORY=""' EXIT INT TERM HUP
 ./Test-GIMP
 
