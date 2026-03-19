@@ -135,14 +135,20 @@ ENDIF()
 IF (WITH_I18N)
    FIND_PACKAGE (Intl)
    IF (Intl_FOUND)
-      MESSAGE(STATUS "Internationalization (i18n) found:")
+      MESSAGE(STATUS "Internationalization (i18n) support found:")
       MESSAGE(STATUS " INTL_INCLUDE_DIRS: ${Intl_INCLUDE_DIRS}")
       MESSAGE(STATUS " INTL_LIBRARIES: ${Intl_LIBRARIES}")
       MESSAGE(STATUS " Version: ${Intl_VERSION}")
       INCLUDE_DIRECTORIES(${Intl_INCLUDE_DIRS})
       LINK_DIRECTORIES(${Intl_LIBRARY_DIRS})
    ELSE()
-      MESSAGE(FATAL_ERROR "Internationalization (i18n) not found!")
+      MESSAGE(FATAL_ERROR
+            " Cannot find Internationalization (i18n) support! Try:\n"
+            " * Ubuntu/Debian: sudo apt install -y libc6-dev\n"
+            " * Fedora:        sudo dnf install -y gettext-devel\n"
+            " * SuSE:          sudo zypper install -y gettext-devel\n"
+            " * Alpine:        sudo apk add gettext-dev\n"
+            " * FreeBSD:       sudo pkg install -y gettext-runtime")
    ENDIF()
 
    FIND_PROGRAM(XGETTEXT xgettext REQUIRED)
