@@ -190,8 +190,9 @@ while [ $# -gt 0 ] ; do
       # necessary to extract each CA, and then process them individually!
 
       # ------ Create temporary directory for database ----------------------
-      trap 'rm -rf "${db}"' EXIT
-      db=$(mktemp --tmpdir -d "check-certificate-nss.XXXXXXXXXX")
+      db=""
+      trap 'rm -rf "${db}"' EXIT INT TERM HUP
+      db="$(mktemp -d -t "check-certificate-nss.XXXXXXXXXX")"
       mkdir -p "${db}/tmp"
 
       "${CERTUTIL}" --empty-password -N -d "${db}"
@@ -212,9 +213,7 @@ while [ $# -gt 0 ] ; do
 
       # If the Root CA is in the certificate bundle, trust was reset to ",,"
       # => Set it as trusted again:
-      if [ "${CA_FILE}" != "${CERTIFICATE_FILE}" ] ; then
          "${CERTUTIL}" -A -n "My Root CA" -t "CT,C,C" -e -d "${db}" -a -i "${CA_FILE}" -u L
-      fi
 
       # "${CERTUTIL}" -L -d "${db}"
 
