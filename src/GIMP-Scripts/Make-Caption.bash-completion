@@ -51,15 +51,22 @@ _Make_Caption()
    fi
 
    if [ "${cword}" -eq 1 ] ; then
-      _filedir '@(jpeg|jpg|JPG|png|PNG|dng|DNG|cr2|CR2|gif|GIF|webp|pdf)'
-      return
-   elif [ "${cword}" -eq 2 ] ; then
       _filedir
+      return
+   elif [ "${cword}" -lt 4 ] ; then
       return
    else
       case "${prev}" in
-         #  ====== Generic value ============================================
-         -F | --font-name  | \
+         # ====== Special case: font name ===================================
+         -F | --font-name)
+            local fonts="$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | sort -u)"
+            local oldifs="${IFS}"
+            IFS=$'\n'
+            COMPREPLY=( $(compgen -W "${fonts}" -- "${cur}") )
+            IFS="${oldifs}"
+            return
+            ;;
+         # ====== Generic value =============================================
          -S | --font-size  | \
          -f | --foreground | \
          -b | --background | \
