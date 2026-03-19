@@ -262,6 +262,7 @@ Recommends: nss-tools
 Summary: GIMP image processing scripts
 Group: Applications/System
 BuildArch: noarch
+Requires: fontconfig
 Requires: gimp
 Requires: GraphicsMagick
 Requires: util-linux
