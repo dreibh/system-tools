@@ -55,7 +55,11 @@ _time2unixts()
 -F
 --float
 -I
---integer
+--integer-decimal
+-X
+--integer-hexadecimal
+-0
+--integer-0x-hexadecimal
 -H
 --human-readable
 -s

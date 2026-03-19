@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd March 18, 2026
+.Dd March 19, 2026
 .Dt time2unixts 1
 .Os time2unixts
 .\" ###### Name #############################################################
@@ -43,7 +43,9 @@
 .Op time_string
 .br
 .Op Fl F | Fl Fl float
-.Op Fl I | Fl Fl integer
+.Op Fl I | Fl Fl integer-decimal
+.Op Fl X | Fl Fl integer-hexadecimal
+.Op Fl 0 | Fl Fl integer-0x-hexadecimal
 .br
 .Op Fl H | Fl Fl human-readable
 .br
@@ -71,8 +73,12 @@ The time string to be converted, as %Y-%m-%d %H:%M:%S[.SSSSSSSSS].
 The seconds part may be fractional; the fraction is optional.
 .It Fl F | Fl Fl float
 Print the Unix timestamp as a floating-point number.
-.It Fl I | Fl Fl integer
-Print the Unix timestamp as an integer number.
+.It Fl I | Fl Fl integer-decimal
+Print the Unix timestamp as a decimal integer number. This is the default.
+.It Fl X | Fl Fl integer-hexadecimal
+Print the Unix timestamp as a hexadecimal integer number.
+.It Fl 0 | Fl Fl integer-0x-hexadecimal
+Print the Unix timestamp as a hexadecimal integer number, prefixed by 0x.
 .It Fl H | Fl Fl human-readable
 Provide the output in human-readable form. Default: off.
 .It Fl s | Fl Fl seconds
@@ -92,6 +98,8 @@ Prints program version.
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It time2unixts
+.It time2unixts --integer-0x-hexadecimal
+.It time2unixts --integer-hexadecimal --seconds
 .It time2unixts \(dq2026-03-17 10:52:35\(dq --seconds
 .It time2unixts \(dq1969-12-20 10:13:20\(dq
 .It env LC_ALL=en_US.UTF-8 time2unixts \(dq1955-12-24 22:22:22.000\(dq --milliseconds

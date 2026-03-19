@@ -90,31 +90,39 @@ int main(int argc, char** argv)
 
    // ====== Handle arguments ===============================================
    const static struct option long_options[] = {
-      { "float",          no_argument, 0, 'F' },
-      { "integer",        no_argument, 0, 'I' },
-      { "human-readable", no_argument, 0, 'H' },
-      { "seconds",        no_argument, 0, 's' },
-      { "milliseconds",   no_argument, 0, 'm' },
-      { "microseconds",   no_argument, 0, 'u' },
-      { "nanoseconds",    no_argument, 0, 'n' },
-      { "help",           no_argument, 0, 'h' },
-      { "version",        no_argument, 0, 'v' },
-      {  nullptr,         0,           0, 0   }
+      { "float",                  no_argument, 0, 'F' },
+      { "integer-decimal",        no_argument, 0, 'I' },
+      { "integer-hexadecimal",    no_argument, 0, 'X' },
+      { "integer-0x-hexadecimal", no_argument, 0, '0' },
+      { "human-readable",         no_argument, 0, 'H' },
+      { "seconds",                no_argument, 0, 's' },
+      { "milliseconds",           no_argument, 0, 'm' },
+      { "microseconds",           no_argument, 0, 'u' },
+      { "nanoseconds",            no_argument, 0, 'n' },
+      { "help",                   no_argument, 0, 'h' },
+      { "version",                no_argument, 0, 'v' },
+      {  nullptr,                 0,           0, 0   }
    };
 
    int          option;
    int          longIndex;
-   bool         useInteger    = true;
+   int          useInteger    = 10;
    bool         humanReadable = false;
    unsigned int divideBy      = 1;
    const char*  unit          = "ns";
-   while( (option = getopt_long(argc, argv, "FIHsmunvh", long_options, &longIndex)) != -1 ) {
+   while( (option = getopt_long(argc, argv, "FIX0Hsmunvh", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'F':
-            useInteger = false;
+            useInteger = 0;
           break;
          case 'I':
-            useInteger = true;
+            useInteger = 10;
+          break;
+         case 'X':
+            useInteger = 16;
+          break;
+         case '0':
+            useInteger = -16;
           break;
          case 'H':
             humanReadable = true;
@@ -189,8 +197,16 @@ int main(int argc, char** argv)
    const long long unixTS =
       (1000000000ULL * ts.tv_sec) + ts.tv_nsec;
 
-   if(useInteger) {
-      printf("%lld", unixTS / divideBy);
+   if(useInteger != 0) {
+      if(useInteger == 16) {
+         printf("%llx", unixTS / divideBy);
+      }
+      else if(useInteger == -16) {
+         printf("0x%llx", unixTS / divideBy);
+      }
+      else {
+         printf("%lld", unixTS / divideBy);
+      }
    }
    else {
        const char* format;
