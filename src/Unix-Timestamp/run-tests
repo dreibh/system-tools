@@ -1,0 +1,61 @@
+#!/bin/sh
+
+make
+
+
+echo "++++++ Manual, positive ++++++"
+
+./unixts2time 0 -s
+./unixts2time 4999999999 -s
+echo "-----"
+./unixts2time 5000000000 -m
+./unixts2time 4999999999999 -m
+echo "-----"
+./unixts2time 5000000000000 -u
+./unixts2time 4999999999999999 -u
+echo "-----"
+./unixts2time 5000000000000000 -n
+./unixts2time 4999999999999999999 -n
+
+echo "++++++ Automatic, positive ++++++"
+
+./unixts2time 0
+./unixts2time 4999999999
+echo "-----"
+./unixts2time 5000000000
+./unixts2time 4999999999999
+echo "-----"
+./unixts2time 5000000000000
+./unixts2time 4999999999999999
+echo "-----"
+./unixts2time 5000000000000000
+./unixts2time 4999999999999999999
+
+
+echo "++++++ Manual, negative ++++++"
+
+./unixts2time -s -- 0
+./unixts2time -s -- -4999999999
+echo "-----"
+./unixts2time -m -- -5000000000
+./unixts2time -m -- -4999999999999
+echo "-----"
+./unixts2time -u -- -5000000000000
+./unixts2time -u -- -4999999999999999
+echo "-----"
+./unixts2time -n -- -5000000000000000
+./unixts2time -n -- -4999999999999999999
+
+echo "++++++ Automatic, negative ++++++"
+
+./unixts2time -- 0
+./unixts2time -- -4999999999
+echo "-----"
+./unixts2time -- -5000000000
+./unixts2time -- -4999999999999
+echo "-----"
+./unixts2time -- -5000000000000
+./unixts2time -- -4999999999999999
+echo "-----"
+./unixts2time -- -5000000000000000
+./unixts2time -- -4999999999999999999
