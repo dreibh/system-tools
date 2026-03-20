@@ -33,8 +33,8 @@ set -eu
 
 
 # Examples:
-# Make-GlossyText NorNet1.png "NorNet Testbed" 128 --bordersize 5 --colorscheme Golden --font "Noto Sans Regular"
-# Make-GlossyText NorNet2.png "NorNet Testbed" 128 --bordersize 5 --colorscheme "Brushed Aluminium" --font "Comic Sans MS Bold"
+# Make-GlossyText NorNet1.png "NorNet Testbed" 128 --border-size 5 --colorscheme Golden --font "Noto Sans Regular"
+# Make-GlossyText NorNet2.png "NorNet Testbed" 128 --border-size 5 --colorscheme "Brushed Aluminium" --font "Comic Sans MS Bold"
 # Hint: List available fonts with "fc-list"!
 
 
@@ -43,49 +43,159 @@ set -eu
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 filename content font_size [--bordersize|-b size] [--colorscheme|-c schemename] [--font|-f fontname] [-p|--patterntext pattern] [-o|--patternoutline pattern] [-l|--patternoverlay pattern] [-w|--verbose] [-q|--quiet] [-h|--help]"
-   echo >&2 "Example: $0 NorNet1.png \"NorNet Testbed\" 128 --bordersize 5 --colorscheme Golden --font \"Noto Sans Regular\""
+   echo >&2 "Usage: $0 filename text [-F|--font-name font] [-S|--font-size size] [-G|--blend-gradient-text gradient] [-g|--blend-gradient-text-reverse on|off] [-L|--blend-gradient-outline gradient] [-l|--blend-gradient-outline-reverse on|off] [-O|--outline-size size] [-B|--background-color color] [-I|--pattern-text pattern] [-i|--use-pattern-text on|off] [-J|--pattern-outline pattern] [-j|--use-pattern-outline on|off] [-R|--pattern-overlay pattern] [-r|--use-pattern-overlay on|off] [-s|--use-shadow on|off] [-X|--shadow-offset-x offset] [-Y|--shadow-offset-y offset] [-w|--verbose] [-q|--quiet] [-h|--help]"
    exit "${exitCode}"
 }
 
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o b:c:f:p:o:l:wqh --long bordersize:,colorscheme:,font:,patterntext:,patternoutline:,patternoverlay:,verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o F:S:G:g:L:l:O:B:I:i:J:j:R:r:s:X:Y:wqh --long font-name:,font-size:,blend-gradient-text:,blend-gradient-text-reverse:,blend-gradient-outline:,blend-gradient-outline-reverse:,outline-size:,background-color:,pattern-text:,use-pattern-text:,pattern-outline:,use-pattern-outline:,pattern-overlay:,use-pattern-overlay:,use-shadow:,shadow-offset-x:,shadow-offset-y:,verbose,quiet,help -a -- "$@")"
 eval set -- "${options}"
 
-BORDER_SIZE=5
-COLORSCHEME="Golden"
-FONT_NAME="Noto Sans Regular"
+FONT_NAME="Noto Sans Bold"
+FONT_SIZE="50"
+BLEND_GRADIENT_TEXT="Golden"
+BLEND_GRADIENT_TEXT_REVERSE="FALSE"
+BLEND_GRADIENT_OUTLINE="Golden"
+BLEND_GRADIENT_OUTLINE_REVERSE="FALSE"
+OUTLINE_SIZE=5
+BACKGROUND_COLOR="white"
 PATTERN_TEXT="Electric Blue"
+USE_PATTERN_TEXT="FALSE"
 PATTERN_OUTLINE="Electric Blue"
+USE_PATTERN_OUTLINE="FALSE"
 PATTERN_OVERLAY="Parque #1"
+USE_PATTERN_OVERLAY="FALSE"
+USE_SHADOW="TRUE"
+SHADOW_OFFSET_X=8
+SHADOW_OFFSET_Y=8
 VERBOSE=0
 while [ $# -gt 0 ] ; do
    case "$1" in
-      -b | --bordersize)
-         BORDER_SIZE="$2"
-         shift 2
-         ;;
-      -c | --colorscheme)
-         COLORSCHEME="$2"
-         shift 2
-         ;;
-      -f | --font)
+      -F | --font-name)
          FONT_NAME="$2"
          shift 2
          ;;
-      -p | --patterntext)
+      -S | --font-size)
+         FONT_SIZE="$2"
+         if [[ ! "${FONT_SIZE}" =~ ^[0-9]+$ ]] || [ "${FONT_SIZE}" -lt 1 ] ; then
+            echo "ERROR: Invalid value ${FONT_SIZE} for -S|--font-size!"
+            exit 1
+         fi
+         shift 2
+         ;;
+
+      -G | --blend-gradient-text)
+         BLEND_GRADIENT_TEXT="$2"
+         shift 2
+         ;;
+      -g | --blend-gradient-text-reverse)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            BLEND_GRADIENT_TEXT_REVERSE="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            BLEND_GRADIENT_TEXT_REVERSE="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -g|--blend-gradient-text-reverse!"
+         fi
+         shift 2
+         ;;
+      -L | --blend-gradient-outline)
+         BLEND_GRADIENT_OUTLINE="$2"
+         shift 2
+         ;;
+      -l | --blend-gradient-outline-reverse)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            BLEND_GRADIENT_OUTLINE_REVERSE="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            BLEND_GRADIENT_OUTLINE_REVERSE="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -l|--blend-gradient-outline-reverse!"
+         fi
+         shift 2
+         ;;
+      -O | --outline-size)
+         OUTLINE_SIZE="$2"
+         if [[ ! "${OUTLINE_SIZE}" =~ ^[0-9]+$ ]] || [ "${OUTLINE_SIZE}" -lt 2 ] || [ "${OUTLINE_SIZE}" -gt 250 ] ; then
+            echo "ERROR: Invalid value ${OUTLINE_SIZE} for -O|--outline-size!"
+            eyit 1
+         fi
+         shift 2
+         ;;
+      -B | --background-color)
+         BACKGROUND_COLOR="$2"
+         shift 2
+         ;;
+
+      -I | --pattern-text)
          PATTERN_TEXT="$2"
          shift 2
          ;;
-      -o | --patternoutline)
+      -i | --use-pattern-text)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            USE_PATTERN_TEXT="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            USE_PATTERN_TEXT="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -i|--use-pattern-text!"
+         fi
+         shift 2
+         ;;
+      -J | --pattern-outline)
          PATTERN_OUTLINE="$2"
          shift 2
          ;;
-      -l | --patternoverlay)
+      -j | --use-pattern-outline)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            USE_PATTERN_OUTLINE="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            USE_PATTERN_OUTLINE="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -j|--use-pattern-outline!"
+         fi
+         shift 2
+         ;;
+      -R | --pattern-overlay)
          PATTERN_OVERLAY="$2"
          shift 2
          ;;
+      -r | --use-pattern-overlay)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            USE_PATTERN_OVERLAY="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            USE_PATTERN_OVERLAY="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -r|--use-pattern-overlay!"
+         fi
+         shift 2
+         ;;
+
+      -s | --use-shadow)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            USE_SHADOW="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            USE_SHADOW="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -s|--use-shadow!"
+         fi
+         shift 2
+         ;;
+      -X | --shadow-offset-x)
+         SHADOW_OFFSET_X="$2"
+         if [[ ! "${SHADOW_OFFSET_X}" =~ ^[0-9]+$ ]] || [ "${SHADOW_OFFSET_X}" -lt 1 ] ; then
+            echo "ERROR: Invalid value ${SHADOW_OFFSET_X} for -X|--shadow-offset-x!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -Y | --shadow-offet-y)
+         SHADOW_OFFSET_Y="$2"
+         if [[ ! "${SHADOW_OFFSET_Y}" =~ ^[0-9]+$ ]] || [ "${SHADOW_OFFSET_Y}" -lt 1 ] ; then
+            echo "ERROR: Invalid value ${SHADOW_OFFSET_Y} for -Y|--shadow-offet-y!"
+            exit 1
+         fi
+         shift 2
+         ;;
+
       -w | --verbose)
          VERBOSE=1
          shift
@@ -107,21 +217,11 @@ while [ $# -gt 0 ] ; do
   esac
 done
 
-if [ $# -ne 3 ] ; then
+if [ $# -ne 2 ] ; then
    usage 1
 fi
 OUTPUT_FILENAME="$1"
-CONTENT="$2"
-FONT_SIZE=$3
-
-if [[ ! "${FONT_SIZE}" =~ ^([0-9]+)$ ]] ; then
-   echo >&2 "ERROR: Invalid font size ${FONT_SIZE}!"
-   exit 1
-fi
-if [[ ! "${BORDER_SIZE}" =~ ^([0-9]+)$ ]] ; then
-   echo >&2 "ERROR: Invalid border size ${BORDER_SIZE}!"
-   exit 1
-fi
+TEXT="$2"
 
 
 # ====== Detect GIMP, and determine version-specific call options ===========
@@ -565,16 +665,27 @@ rm -f "${OUTPUT_FILENAME}"
 
 
 (let*
+
    ; ------ Initialise ------------------------------------------------------
-   ((outputFileName   "${OUTPUT_FILENAME}")
-    (logoText    "${CONTENT}")
+   ((outputFileName             "${OUTPUT_FILENAME}")
+    (text                       "${TEXT}")
     (font)
-    (fontSize     ${FONT_SIZE})
-    (borderSize   ${BORDER_SIZE})
-    (colorScheme)
+    (fontSize                    ${FONT_SIZE})
+    (blendGradientText)
+    (blendGradientTextReverse    ${BLEND_GRADIENT_TEXT_REVERSE})
+    (blendGradientOutline)
+    (blendGradientOutlineReverse ${BLEND_GRADIENT_OUTLINE_REVERSE})
+    (outlineSize                 ${OUTLINE_SIZE})
+    (backgroundColor             "${BACKGROUND_COLOR}")
+    (usePatternText              ${USE_PATTERN_TEXT})
     (patternText)
+    (usePatternOutline           ${USE_PATTERN_OUTLINE})
     (patternOutline)
+    (usePatternOverlay           ${USE_PATTERN_OVERLAY})
     (patternOverlay)
+    (useShadow                   ${USE_SHADOW})
+    (shadowOffsetX               ${SHADOW_OFFSET_X})
+    (shadowOffsetY               ${SHADOW_OFFSET_Y})
     (image)
     (layers)
     (num-layers)
@@ -587,16 +698,25 @@ rm -f "${OUTPUT_FILENAME}"
       (set! font "${FONT_NAME}"))
    ; (newline) (display "font=") (display font) (newline)
    (if (and (not (defined? 'gimp-image-get-active-layer)) (= font -1)) (
-      (gimp-message "ERROR: Font \"${FONT_NAME}\" is not available! Check installed fonts with fc-list!")
+      (gimp-message "ERROR: Font \"${FONT_NAME}\" is not available! Check installed fonts using fc-list!")
       (quit FALSE)
    ))
 
    (if (not (defined? 'gimp-image-get-active-layer))
-      (set! colorScheme (car (gimp-gradient-get-by-name "${COLORSCHEME}")))
-      (set! colorScheme "${COLORSCHEME}"))
-   ; (display "colorScheme=") (display colorScheme) (newline)
-   (if (and (not (defined? 'gimp-image-get-active-layer)) (= colorScheme -1)) (
-      (gimp-message "ERROR: Color scheme \"${COLORSCHEME}\" is not available!")
+      (set! blendGradientText (car (gimp-gradient-get-by-name "${BLEND_GRADIENT_TEXT}")))
+      (set! blendGradientText "${BLEND_GRADIENT_TEXT}"))
+   ; (display "blendGradientText=") (display blendGradientText) (newline)
+   (if (and (not (defined? 'gimp-image-get-active-layer)) (= blendGradientText -1)) (
+      (gimp-message "ERROR: Gradient \"${BLEND_GRADIENT_TEXT}\" is not available!")
+      (quit FALSE)
+   ))
+
+   (if (not (defined? 'gimp-image-get-active-layer))
+      (set! blendGradientOutline (car (gimp-gradient-get-by-name "${BLEND_GRADIENT_OUTLINE}")))
+      (set! blendGradientOutline "${BLEND_GRADIENT_OUTLINE}"))
+   ; (display "blendGradientOutline=") (display blendGradientOutline) (newline)
+   (if (and (not (defined? 'gimp-image-get-active-layer)) (= blendGradientOutline -1)) (
+      (gimp-message "ERROR: Gradient \"${BLEND_GRADIENT_OUTLINE}\" is not available!")
       (quit FALSE)
    ))
 
@@ -628,7 +748,7 @@ rm -f "${OUTPUT_FILENAME}"
    ))
 
    ; ------ Generate text ---------------------------------------------------
-   (set! image (car (script-fu-glossy-300-logo logoText fontSize font 0 8 8 colorScheme FALSE colorScheme FALSE borderSize "white" FALSE patternText FALSE patternOutline FALSE patternOverlay TRUE TRUE 8 8)))
+   (set! image (car (script-fu-glossy-300-logo text fontSize font 0 8 8 blendGradientText blendGradientTextReverse blendGradientOutline blendGradientOutlineReverse outlineSize backgroundColor usePatternText patternText usePatternOutline patternOutline usePatternOverlay patternOverlay TRUE useShadow shadowOffsetX shadowOffsetY)))
    ; (display "image=") (display image) (newline)
 
    (set! layers (if (not (defined? 'gimp-image-get-active-layer))

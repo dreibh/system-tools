@@ -1,0 +1,141 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" GIMP Scripts
+.\" Copyright (C) 2013-2026 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd March 20, 2026
+.Dt Make-GlossyText 1
+.Os Make-GlossyText
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm Make-GlossyText
+.Nd applies the GIMP Script-Fu "Glossy" filter on an image
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm Make-GlossyText
+output_filename
+text
+.Op Fl F Ar font | Fl Fl font-name Ar font
+.Op Fl S Ar size | Fl Fl font-size Ar size
+.br
+.Op Fl G Ar gradient | Fl Fl blend-gradient-text Ar gradient
+.Op Fl g Ar on|off | Fl Fl blend-gradient-text-reverse Ar on|off
+.br
+.Op Fl L Ar gradient | Fl Fl blend-gradient-outline Ar gradient
+.Op Fl l Ar on|off | Fl Fl blend-gradient-outline-reverse Ar on|off
+.br
+.Op Fl O Ar size | Fl Fl outline-size Ar size
+.br
+.Op Fl B Ar color | Fl Fl background-color Ar color
+.br
+.Op Fl I Ar pattern | Fl Fl pattern-text Ar pattern
+.Op Fl i Ar on|off | Fl Fl use-pattern-text Ar on|off
+.br
+.Op Fl J Ar pattern | Fl Fl pattern-outline Ar pattern
+.Op Fl j Ar on|off | Fl Fl use-pattern-outline Ar on|off
+.br
+.Op Fl R Ar pattern | Fl Fl pattern-overlay Ar pattern
+.Op Fl r Ar on|off | Fl Fl use-pattern-overlay Ar on|off
+.br
+.Op Fl s Ar on|off | Fl Fl use-shadow Ar on|off
+.br
+.Op Fl X Ar offset | Fl Fl shadow-offset-x Ar offset
+.Op Fl Y Ar offset | Fl Fl shadow-offset-y Ar offset
+.br
+.Op Fl q | Fl Fl quiet
+.Op Fl w | Fl Fl verbose
+.Nm Make-GlossyText
+.Op Fl h | Fl Fl help
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm Make-GlossyText
+runs GIMP to load an image, and applies the GIMP Script-Fu "Glossy" filter
+(details: https://docs.gimp.org/2.8/en/script-fu-glossy-logo-alpha.html).
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It output_filename
+The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
+.It text
+The text to be printed.
+.It Fl F Ar font | Fl Fl font-name Ar font
+Specifies the font and style to be used. Font and style are space separated, e.g. \(dqURW Gothic Book Oblique\(dq for font \(dqURW Gothic\(dq in style \(dqURW Gothic Book Oblique\(dq.
+Use `fc-list\~: family style -f \(dq%{family[0]} %{style[0]}\[rs]n\(dq | sort -u` to list all installed fonts and styles.
+.It  Fl S Ar percentage | Fl Fl font-size Ar percentage
+Specifies the font size, in percentage of the caption height. Range: 1-100. Default: 50.
+.It Fl G Ar gradient | Fl Fl blend-gradient-text Ar gradient
+Specifies the blend gradient for the text, e.g. \(dqGolden\(dq. The name must be a gradient in GIMP. Default: Golden.
+.It Fl g Ar on|off | Fl Fl blend-gradient-text-reverse Ar on|off
+Turns reversing the blend gradient for the text on or off. Default: off.
+.It Fl L Ar gradient | Fl Fl blend-gradient-outline Ar gradient
+Specifies the blend gradient for the outline, e.g. \(dqGolden\(dq. The name must be a gradient in GIMP. Default: Golden.
+.It Fl l Ar on|off | Fl Fl blend-gradient-outline-reverse Ar on|off
+Turns reversing the blend gradient for the outline on or off. Default: off.
+.It Fl O Ar size | Fl Fl outline-size Ar size
+Specifies the outline size. Range: 2-250. Default: 5.
+.It Fl B Ar color | Fl Fl background-color Ar color
+Specifies the background color, as \(dq#RRGGBB\(dq in hexadecimal (e.g. \(dq#02266b\(dq for dark blue) or name (e.g. \(dqwhite\(dq). Default: white.
+.It Fl I Ar pattern | Fl Fl pattern-text Ar pattern
+Specifies a pattern for the text, e.g. \(dqElectric Blue\(dq. The name must be a pattern in GIMP. Default: Electric Blue.
+.br
+Note: The usage of the pattern still needs to be enabled by `\-\-use-pattern-text on`!
+.It Fl i Ar on|off | Fl Fl use-pattern-text Ar on|off
+Turns usage of a pattern for the text on or off. Default: off.
+.It Fl J Ar pattern | Fl Fl pattern-outline Ar pattern
+Specifies a pattern for the outline, e.g. \(dqElectric Blue\(dq. The name must be a pattern in GIMP. Default: Electric Blue.
+.br
+Note: The usage of the pattern still needs to be enabled by `\-\-use-pattern-outline on`!
+.It Fl j Ar on|off | Fl Fl use-pattern-outline Ar on|off
+Turns usage of a pattern for the outline on or off. Default: off.
+.It Fl R Ar pattern | Fl Fl pattern-overlay Ar pattern
+Specifies a pattern for the overlay, e.g. \(dqParque #1\(dq. The name must be a pattern in GIMP. Default: Parque #1.
+.br
+Note: The usage of the pattern still needs to be enabled by `\-\-use-pattern-overlay on`!
+.It Fl r Ar on|off | Fl Fl use-pattern-overlay Ar on|off
+Turns usage of a pattern for the overlay on or off. Default: off.
+.It Fl s Ar on|off | Fl Fl use-shadow Ar on|off
+Turns usage of shadow on or off. Default: on.
+.It Fl X Ar offset | Fl Fl shadow-offset-x Ar offset
+Sets the x-offset for the shadow. Range: 0-100. Default: 8.
+.It Fl Y Ar offset | Fl Fl shadow-offset-y Ar offset
+Sets the y-offset for the shadow. Range: 0-100. Default: 8.
+.It Fl w | Fl Fl verbose
+Verbose mode: print selected delay and wake-up.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It Make-GlossyText M2EC.webp \(dqM²EC 2026\(dq --font-name \(dqLobster Two Bold Italic\(dq --font-size 128 --outline-size 12
+.It Make-GlossyText Chinese.png \(dq托马斯博士\(dq -F \(dqNoto Sans Bold\(dq -S 256 -O 24
+.El
