@@ -59,7 +59,8 @@ _Make_Caption()
       case "${prev}" in
          # ====== Special case: font name ===================================
          -F | --font-name)
-            local fonts="$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | sort -u)"
+            local fonts
+            fonts="$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | sort -u)"
             local oldifs="${IFS}"
             IFS=$'\n'
             COMPREPLY=( $(compgen -W "${fonts}" -- "${cur}") )
