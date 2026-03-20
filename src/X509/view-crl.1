@@ -1,0 +1,72 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" X.509 Certificate Viewer
+.\" Copyright (C) 2025-2026 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd November 28, 2025
+.Dt view-crl 1
+.Os view-crl
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm view-crl
+.Nd Displays an X.509 CRL
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm view-crl
+CRL_file
+.Op ...
+.Nm view-crl
+.Op Fl h | Fl Fl help
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm view-crl
+displays important details on an X.509 CRL, including the serial numbers and
+dates of revoked certificates.
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It crl_file [...]
+Specifies one ore more CRL files to be displayed.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It view-crl My-CA-CRL.ctl
+.It view-crl /usr/lib/python3.12/test/certdata/revocation.crl
+.It curl -o google-crl.der http://c.pki.goog/wr2/GSyT1N4PBrg.crl && \
+openssl crl -inform DER -in google-crl.der -outform PEM -out google.crl && \
+view-crl google.crl
+.It view-crl --help
+.It view-crl -h
+.El
