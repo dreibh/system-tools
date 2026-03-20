@@ -181,7 +181,7 @@ while [ $# -gt 0 ] ; do
          ;;
       -X | --shadow-offset-x)
          SHADOW_OFFSET_X="$2"
-         if [[ ! "${SHADOW_OFFSET_X}" =~ ^[0-9]+$ ]] || [ "${SHADOW_OFFSET_X}" -lt 1 ] ; then
+         if [[ ! "${SHADOW_OFFSET_X}" =~ ^[0-9]+$ ]] || [ "${SHADOW_OFFSET_X}" -lt 1 ] || [ "${SHADOW_OFFSET_X}" -gt 100 ] ; then
             echo "ERROR: Invalid value ${SHADOW_OFFSET_X} for -X|--shadow-offset-x!"
             exit 1
          fi
@@ -189,7 +189,7 @@ while [ $# -gt 0 ] ; do
          ;;
       -Y | --shadow-offet-y)
          SHADOW_OFFSET_Y="$2"
-         if [[ ! "${SHADOW_OFFSET_Y}" =~ ^[0-9]+$ ]] || [ "${SHADOW_OFFSET_Y}" -lt 1 ] ; then
+         if [[ ! "${SHADOW_OFFSET_Y}" =~ ^[0-9]+$ ]] || [ "${SHADOW_OFFSET_Y}" -lt 1 ] || [ "${SHADOW_OFFSET_Y}" -gt 100 ] ; then
             echo "ERROR: Invalid value ${SHADOW_OFFSET_Y} for -Y|--shadow-offet-y!"
             exit 1
          fi
