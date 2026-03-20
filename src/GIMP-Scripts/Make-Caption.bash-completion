@@ -63,6 +63,7 @@ _Make_Caption()
             fonts="$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | sort -u)"
             local oldifs="${IFS}"
             IFS=$'\n'
+            # shellcheck disable=SC2207
             COMPREPLY=( $(compgen -W "${fonts}" -- "${cur}") )
             IFS="${oldifs}"
             return
