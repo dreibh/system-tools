@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-11-26 12:10+0100\n"
+"POT-Creation-Date: 2026-03-20 13:23+0100\n"
 "PO-Revision-Date: 2025-10-28 12:45+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -51,6 +51,11 @@ msgstr "Bruk:"
 #: src/X509/view-certificate:79
 msgid "ERROR: OpenSSL is not installed!"
 msgstr "FEIL: OpenSSL er ikke installert!"
+
+#: src/X509/view-certificate:91
+#, sh-format
+msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
+msgstr "FEIL: Finner ikke sertifikatfilen ${CERTIFICATE_FILE}!"
 
 #: src/X509/view-certificate:97
 #, sh-format
@@ -82,7 +87,3 @@ msgstr "Hierarki i ${CERTIFICATE_FILE}"
 #, sh-format
 msgid "#${entry}."
 msgstr "№${entry}"
-
-#, sh-format
-#~ msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
-#~ msgstr "FEIL: Finner ikke sertifikatfilen ${CERTIFICATE_FILE}!"
