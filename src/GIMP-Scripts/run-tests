@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eux
+set -eu
 
 
 INPUT1="examples/Bergen.jpeg"
@@ -37,11 +37,69 @@ INPUT2="examples/Portobello.jpeg"
 INPUT3="examples/Background.png"
 
 
+# ###### Helper function to show failure ####################################
+exit-failed ()
+{
+   echo
+   "${PRINT_UTF8}" -n -s "\e[1;31;5m█" "▀" "█\e[0m" ;
+   echo "CHECK FAILED!" | "${FIGLET}" -w "${COLUMNS}" | "${PRINT_UTF8}" -n -C "\e[1;31;5m█\e[25m" "\e[5m█\e[0m" ;
+   "${PRINT_UTF8}" -n -s "\e[1;31;5m█" "▄" "█\e[0m"
+   exit 1
+}
+
+
+# ###### Helper function to show success ####################################
+exit-success ()
+{
+   echo
+   "${PRINT_UTF8}" -n -s "\e[1;32m█" "▀" "█\e[0m" ;
+   echo "ALL CHECKS SUCCEEDED!" | "${FIGLET}" -w "${COLUMNS}" | "${PRINT_UTF8}" -n -C "\e[1;32m█\e[25m" "█\e[0m" ;
+   "${PRINT_UTF8}" -n -s "\e[1;32m█" "▄" "█\e[0m"
+   exit 0
+}
+
+
+# ###### Helper function to show script information #########################
+show-script ()
+{
+   local script="$1"
+
+   "${PRINT_UTF8}" -n -s "\e[1;36m█" "▀" "█\e[0m" ;
+   "${FIGLET}" -w "${COLUMNS}" "$(basename "${script}")" | "${PRINT_UTF8}" -n -C "\e[1;36m█\e[25m" "█\e[0m" ;
+   "${PRINT_UTF8}" -n -s "\e[1;36m█" "▄" "█\e[0m"
+}
+
+
+
+# ###### Main program #######################################################
+
+# ====== Find tools =========================================================
+PRINT_UTF8="$(which print-utf8 2>/dev/null || true)"
+if [ ! -x "${PRINT_UTF8}" ] ; then
+   echo >&2 "ERROR: Print-UTF8 (from System-Tools) is not installed!"
+   echo >&2 "Try this:"
+   echo >&2 "* Ubuntu:  sudo apt-add-repository -sy ppa:dreibh/ppa"
+   echo >&2 "           sudo apt install -y td-system-tools"
+   echo >&2 "* Fedora:  sudo dnf copr enable -y dreibh/ppa"
+   echo >&2 "           sudo dnf install -y td-system-tools"
+   echo >&2 "* FreeBSD: sudo pkg install -y td-system-tools"
+   exit 1
+fi
+FIGLET="$(which figlet 2>/dev/null || true)"
+if [ ! -x "${FIGLET}" ] ; then
+   echo >&2 "ERROR: Figlet is not installed!"
+   echo >&2 "* Ubuntu:  sudo apt install -y figlet"
+   echo >&2 "* Fedora:  sudo dnf install -y figlet"
+   echo >&2 "* FreeBSD: sudo pkg install -y figlet"
+   exit 1
+fi
+
+
 # ====== Test-GIMP ==========================================================
 export GIMP3_DIRECTORY
 GIMP3_DIRECTORY="$(mktemp -d -t gimp-tmp-XXXXXXXXXX)"
 trap 'if [ -d "${GIMP3_DIRECTORY}" ] ; then rm -rf "${GIMP3_DIRECTORY}" ; fi ; export GIMP3_DIRECTORY=""' EXIT INT TERM HUP
-./Test-GIMP
+./Test-GIMP || exit-failed
 
 
 # ====== Use FractGen to generate the example image =========================
@@ -59,35 +117,40 @@ fi
 
 
 # ====== Resize-with-Cropping ===============================================
-./Resize-with-Cropping "${INPUT1}" Image1.png -A 16:9 -W 1920
-./Resize-with-Cropping "${INPUT2}" Image2.png --aspect 16:9 --width 1920
+show-script "Resize-with-Cropping"
+./Resize-with-Cropping "${INPUT1}" Image1.png -A 16:9 -W 1920 || exit-failed
+./Resize-with-Cropping "${INPUT2}" Image2.png --aspect 16:9 --width 1920 || exit-failed
+./Resize-with-Cropping "${INPUT3}" Image3.png --aspect keep --width 1920 || exit-failed
 
 
 # ====== Make-Caption =======================================================
+show-script "Make-Caption"
 ./Make-Caption Caption1.png 1024 42 \
    "Caption Text $(LC_ALL=C.UTF-8 date)" \
    --font-name "Noto Sans Bold" \
    --font-size 70 \
-   --foreground "#02266b" --background "#ffd7cc" --transparency 50
+   --foreground "#02266b" --background "#ffd7cc" --transparency 50 || exit-failed
 ./Make-Caption Caption2.png 1920 64 \
    "This is yet another test on $(LC_ALL=C.UTF-8 date)!" \
    -F "Lobster Two Bold Italic" \
    -S 70 \
-   -f "#02266b" -b "#ffd700" -t 26
+   -f "#02266b" -b "#ffd700" -t 26 || exit-failed
 
 
 # ====== Make-GlossyText ====================================================
+show-script "Make-GlossyText"
 ./Make-GlossyText NorNet1.png "NorNet Testbed" 128
 
 ./Make-GlossyText NorNet2.png "NorNet Testbed" 128 --bordersize 5 \
-   --colorscheme "Brushed Aluminium" --font "Noto Sans Bold"
+   --colorscheme "Brushed Aluminium" --font "Noto Sans Bold" || exit-failed
 
 # Requires: fonts-lobster
 ./Make-GlossyText NorNet3.png "NorNet Testbed" 128 --bordersize 5 \
-   --colorscheme "Golden" --font "Lobster Two Bold Italic" || true
+   --colorscheme "Golden" --font "Lobster Two Bold Italic" || exit-failed
 
 
 # ====== Make-Mosaic ========================================================
+show-script "Make-Mosaic"
 for tileType in triangles squares hexagons octagons ; do
    for tileSurface in smooth rough ; do
       for tileSize in 12 24 ; do
@@ -101,7 +164,7 @@ for tileType in triangles squares hexagons octagons ; do
             --tile-allow-split on \
             --color-variation 0.15 \
             --color-averaging on \
-            --light-direction 275.5
+            --light-direction 275.5 || exit-failed
          ./Make-Mosaic Image2.png "Mosaic2-T${tileType}-S${tileSize}-F${tileSurface}.png" \
             -T "${tileType}" \
             -S "${tileSize}" \
@@ -112,12 +175,13 @@ for tileType in triangles squares hexagons octagons ; do
             -I off \
             -C 0.25 \
             -G off \
-            -L 75.5
+            -L 75.5 || exit-failed
       done
    done
 done
 
 # ====== Make-OldPhoto ======================================================
+show-script "Make-OldPhoto"
 for defocus in on off ; do
    for borderSize in 10 20 ; do
       for sepia in on off ; do
@@ -125,17 +189,18 @@ for defocus in on off ; do
             --defocus "${defocus}" \
             --border-size "${borderSize}" \
             --sepia "${sepia}" \
-            --mottle on
+            --mottle on || exit-failed
          ./Make-OldPhoto Image2.png "OldPhoto2-D${defocus}-B${borderSize}-S${sepia}-Moff.png" \
             -D "${defocus}" \
             -B "${borderSize}" \
             -S "${sepia}" \
-            -M off
+            -M off || exit-failed
       done
    done
 done
 
 # ====== Make-Clothify ======================================================
+show-script "Make-Clothify"
 for blurX in 3 6 ; do
    blurY="${blurX}"
    for azimut in 90.0 135.0 180.0 ; do
@@ -145,28 +210,67 @@ for blurX in 3 6 ; do
             --blur-y ${blurY} \
             --azimut "${azimut}" \
             --elevation "${elevation}" \
-            --depth 4
+            --depth 4 || exit-failed
          ./Make-Clothify Image2.png "Cloth2-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D8.png" \
             -X ${blurX} \
             -Y ${blurY} \
             -A "${azimut}" \
             -E "${elevation}" \
-            -D 8
+            -D 8 || exit-failed
       done
    done
 done
 
 # ====== Make-Oilify ========================================================
+show-script "Make-Oilify"
 for maskSize in 4 8 16 ; do
    ./Make-Oilify Image1.png "Oilify1-S${maskSize}-Ion.png" \
       --mask-size "${maskSize}" \
       --intensity-mode on
    ./Make-Oilify Image2.png "Oilify2-S${maskSize}-Ioff.png" \
       -S "${maskSize}" \
-      -I off
+      -I off || exit-failed
 done
 
 # ====== Make-BumpMap =======================================================
-./Make-BumpMap "${INPUT3}" Background1.png
+show-script "Make-BumpMap"
+
+./Make-BumpMap Image3.png Background1.png
 ./Make-Mosaic Background1.png Background2.png \
-   -T hexagons -S 18 -H 4 -X 4 -F smooth -N 0.5
+   -T hexagons -S 18 -H 4 -X 4 -F smooth -N 0.5 || exit-failed
+
+for offsetX in 0 32 ; do
+   offsetY="${offsetX}"
+   for azimut in 90.0 135.0 180.0 ; do
+      for elevation in 10.0 45.0 ; do
+         ./Make-BumpMap Image1.png "BumpMap1-X${offsetX}-Y${offsetY}-A${azimut}$-E${elevation}-D20.png" \
+            --azimut "${azimut}" \
+            --elevation "${elevation}" \
+            --depth 20 \
+            --offset-x ${offsetX} \
+            --offset-y ${offsetY} \
+            --compensate-darkening on \
+            --waterlevel 0.1 \
+            --invert off \
+            --tiled on || exit-failed
+         ./Make-BumpMap Image2.png "BumpMap2-X${offsetX}-Y${offsetY}-A${azimut}$-E${elevation}-D5.png" \
+            -X ${offsetX} \
+            -Y ${offsetY} \
+            -A "${azimut}" \
+            -E "${elevation}" \
+            -D 5 \
+            -C off \
+            -W 0.1 \
+            -I off \
+            -T off || exit-failed
+         ./Make-BumpMap Image3.png "BumpMap3-X${offsetX}-Y${offsetY}-A${azimut}$-E${elevation}-D30.png" \
+            --azimut "${azimut}" \
+            --elevation "${elevation}" \
+            --depth 30 \
+            --offset-x ${offsetX} \
+            --offset-y ${offsetY} || exit-failed
+      done
+   done
+done
+
+exit-success
