@@ -32,28 +32,122 @@
 set -eu
 
 
-# Example:
-# Make-Background Demo-Fractal-8192x6144.png Background1.png
-
-
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_filename output_filename [-w|--verbose] [-q|--quiet] [-h|--help]"
-   echo >&2 "Example: $0 Demo-Fractal-8192x6144.png Background1.png"
+   echo >&2 "Usage: $0 input_filename output_filename [-C|--compensate-darkening on|off] [-I|--invert on|off] [-T|--tiled on|off] [-A|--azimut bearing] [-E|--elevation bearing] [-D|--depth depth] [-X|--offset-x value] [-Y|--offset-y value] [-W|--waterlevel level] [-B|--ambient factor] [-w|--verbose] [-q|--quiet] [-h|--help]"
    exit "${exitCode}"
 }
 
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o wqh --long verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o C:I:T:A:E:D:X:Y:W:B:wqh --long compensate-darkening:,invert:,tiled:,azimut:,elevation:,depth:,offset-x:,offset-y:,waterlevel:,ambient:,verbose,quiet,help -a -- "$@")"
 eval set -- "${options}"
 
+COMPENSATE="TRUE"
+INVERT="FALSE"
+TILED="FALSE"
+AZIMUT=135.0
+ELEVATION=45.0
+DEPTH=20
+OFFSET_X=0
+OFFSET_Y=0
+WATERLEVEL=0.0
+AMBIENT=0.0
 VERBOSE=0
 while [ $# -gt 0 ] ; do
    case "$1" in
+      -C | --compensate-darkening)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            COMPENSATE="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            COMPENSATE="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -C|--compensate-darkening!"
+         fi
+         shift 2
+         ;;
+      -I | --invert)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            TILED="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            TILED="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -I|--invert!"
+         fi
+         shift 2
+         ;;
+      -T | --tiled)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            TILED="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            TILED="FALSE"
+         else
+            echo "ERROR: Invalid value $2 for -T|--tiled!"
+         fi
+         shift 2
+         ;;
+      -A | --azimut)
+         AZIMUT="$2"
+         if [[ ! "${AZIMUT}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($AZIMUT < 0.0) || ($AZIMUT > 360.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${AZIMUT} for -A|--azimut!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -E | --elevation)
+         ELEVATION="$2"
+         if [[ ! "${ELEVATION}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($ELEVATION < 0.5) || ($ELEVATION > 90.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${ELEVATION} for -E|--elevation!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -D | --depth)
+         if [[ ! "${DEPTH}" =~ ^[0-9]+$ ]] || [ "${DEPTH}" -lt 1 ] || [ "${DEPTH}" -gt 65 ] ; then
+            echo "ERROR: Invalid value ${DEPTH} for -D|--depth!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -X | --offset-x)
+         OFFSET_X="$2"
+         if [[ ! "${OFFSET_X}" =~ ^[0-9]+$ ]] || [ "${OFFSET_X}" -lt -20000 ] || [ "${OFFSET_X}" -gt 20000 ] ; then
+            echo "ERROR: Invalid value ${OFFSET_X} for -X|--offset-x!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -Y | --offset-y)
+         OFFSET_Y="$2"
+         if [[ ! "${OFFSET_Y}" =~ ^[0-9]+$ ]] || [ "${OFFSET_Y}" -lt -20000 ] || [ "${OFFSET_Y}" -gt 20000 ] ; then
+            echo "ERROR: Invalid value ${OFFSET_Y} for -Y|--offset-y!"
+            eyit 1
+         fi
+         shift 2
+         ;;
+      -W | --waterlevel)
+         WATERLEVEL="$2"
+         if [[ ! "${WATERLEVEL}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($WATERLEVEL < 0.0) || ($WATERLEVEL > 1.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${WATERLEVEL} for -W|--waterlevel!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -B | --ambient)
+         AMBIENT="$2"
+         if [[ ! "${AMBIENT}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($AMBIENT < 0.0) || ($AMBIENT > 1.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${AMBIENT} for -B|--ambient!"
+            exit 1
+         fi
+         shift 2
+         ;;
       -w | --verbose)
          VERBOSE=1
          shift
@@ -113,6 +207,15 @@ rm -f "${OUTPUT_FILENAME}"
    ; ------ Initialise and load image ---------------------------------------
    ((inputFileName    "${INPUT_FILENAME}")
     (outputFileName   "${OUTPUT_FILENAME}")
+    (azimut           ${AZIMUT})
+    (elevation        ${ELEVATION})
+    (depth            ${DEPTH})
+    (offsetX          ${OFFSET_X})
+    (offsetY          ${OFFSET_Y})
+    (waterlevel       ${WATERLEVEL})
+    (compgensate      ${COMPENSATE})
+    (invert           ${INVERT})
+    (tiled            ${TILED})
     (image            (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
     (imageType        (if (not (defined? 'gimp-image-get-active-layer))
                          ; New GIMP 3.0 API:
@@ -144,23 +247,24 @@ rm -f "${OUTPUT_FILENAME}"
    (if (defined? 'gimp-drawable-merge-new-filter)
       (begin  ; New GIMP >= 3.0 API:
         (gimp-drawable-merge-new-filter layer "gegl:bump-map" 0 LAYER-MODE-REPLACE 1.0
-            "azimuth"         30.0
-            "elevation"       45.0
-            "depth"           20.0
-            "offset-x"        0
-            "offset-y"        0
-            "waterlevel"      0.0
-            "ambient"         0.0
-            "compensate"      TRUE
-            "invert"          FALSE
+            "azimuth"         azimut
+            "elevation"       elevation
+            "depth"           depth
+            "offset-x"        offsetX
+            "offset-y"        offsetY
+            "waterlevel"      waterlevel
+            "ambient"         ambient
+            "compensate"      compensate
+            "invert"          invert
+            "tiled"           tiled
             "type"            "linear"
         )
       )
       (begin  ; Old GIMP < 3.0 API:
          (plug-in-bump-map RUN-NONINTERACTIVE image layer layer
-           30.0 45.0 20
-           0 0 0 0
-           TRUE FALSE 0)
+           azimut elevation depth
+           offsetX offsetY waterlevel ambient
+           compensate invert tiled)
       )
    )
 

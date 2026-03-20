@@ -1,0 +1,113 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" GIMP Scripts
+.\" Copyright (C) 2013-2026 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd March 20, 2026
+.Dt Make-BumpMap 1
+.Os Make-BumpMap
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm Make-BumpMap
+.Nd applies the GIMP GEGL "Bump Map" filter on an image
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm Make-BumpMap
+input_filename
+output_filename
+.br
+.Op Fl C Ar on|off | Fl Fl compensate-darkening Ar on|off
+.br
+.Op Fl I Ar on|off | Fl Fl invert Ar on|off
+.br
+.Op Fl T Ar on|off | Fl Fl tiled Ar on|off
+.br
+.Op Fl A Ar bearing | Fl Fl azimut Ar bearing
+.br
+.Op Fl E Ar bearing | Fl Fl elevation Ar bearing
+.br
+.Op Fl D Ar depth | Fl Fl depth Ar depth
+.br
+.Op Fl X Ar value | Fl Fl offset-x Ar value
+.br
+.Op Fl Y Ar value | Fl Fl offset-y Ar value
+.br
+.Op Fl W Ar level | Fl Fl waterlevel Ar level
+.br
+.Op Fl B Ar factor | Fl Fl ambient Ar factor
+.br
+.Op Fl q | Fl Fl quiet
+.Op Fl w | Fl Fl verbose
+.Nm Make-BumpMap
+.Op Fl h | Fl Fl help
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm Make-BumpMap
+runs GIMP to load an image, and applies the GIMP GEGL "Bump Map" filter
+(details: https://gegl.org/operations/gegl-bump-map.html).
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It input_filename
+The input image. Any format support by GIMP can be used. The format will be detected automatically.
+.It output_filename
+The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
+.It Fl C Ar on|off | Fl Fl compensate-darkening Ar on|off
+Turns compensation for darkening on or off. Default: on.
+.It Fl I Ar on|off | Fl Fl invert Ar on|off
+Turns inversion on or off. Default: off.
+.It Fl T Ar on|off | Fl Fl tiled Ar on|off
+Turns tiling on or off. Default: off.
+.It Fl A Ar bearing | Fl Fl azimut Ar bearing
+Sets the azimut parameter for the "Bump Map" filter. Range: 0.0-360.0. Default: 135.0.
+.It Fl E Ar bearing | Fl Fl elevation Ar bearing
+Sets the elevation parameter for the "Bump Map" filter. Range: 0.5-90.0. Default: 45.0.
+.It Fl D Ar depth | Fl Fl depth Ar depth
+Sets the depth parameter for the "Bump Map" filter. Range: 1-65. Default: 20.
+.It Fl X Ar value | Fl Fl offset-x Ar value
+Sets the offset X parameter for the "Bump Map" filter. Range: -20000-20000. Default: 0.
+.It Fl Y Ar value | Fl Fl offset-y Ar value
+Sets the offset Y parameter for the "Bump Map" filter. Range: -20000-20000. Default: 0.
+.It Fl W Ar level | Fl Fl waterlevel Ar level
+Sets the water level (level that full transparency should represent). Range: 0.0-1.0. Default: 0.0.
+.It Fl B Ar factor | Fl Fl ambient Ar factor
+Sets the ambient lighting factor. Range: 0.0-1.0. Default: 0.0.
+.It Fl w | Fl Fl verbose
+Verbose mode: print selected delay and wake-up.
+.It Fl h | Fl Fl help
+Prints command-line parameters.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It FIXME!
+.El
