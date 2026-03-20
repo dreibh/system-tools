@@ -1,0 +1,165 @@
+#!/usr/bin/env bash
+# ==========================================================================
+#         ____            _                     _____           _
+#        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+#               |___/
+#                             --- System-Tools ---
+#                  https://www.nntb.no/~dreibh/system-tools/
+# ==========================================================================
+#
+# X.509 CRL Viewer
+# Copyright (C) 2026 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -eu
+
+# gettext options:
+export TEXTDOMAIN="view-crl"
+# export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
+
+# shellcheck disable=SC1091
+. gettext.sh
+
+
+# ###### Usage ##############################################################
+usage () {
+   echo >&2 "$(gettext "Usage:") $0 [-h|--help] crl [...]"
+   exit 1
+}
+
+
+# ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
+GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+options="$(${GETOPT} -o h --long help -a -- "$@")"
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+   usage
+fi
+
+eval set -- "${options}"
+while [ $# -gt 0 ] ; do
+   case "$1" in
+      -h | --help)
+         usage
+         # shift
+         ;;
+      --)
+         shift
+         break
+         ;;
+  esac
+done
+if [ $# -lt 1 ] ; then
+   usage
+fi
+
+# ====== Check availability of tools ========================================
+OPENSSL="$(which openssl || true)"
+if [ "${OPENSSL}" == "" ] ; then
+   gettext >&2 "ERROR: OpenSSL is not installed!"
+   echo >&2
+   exit 1
+fi
+
+# ====== Check each CRL =====================================================
+while [ $# -gt 0 ] ; do
+
+   # ====== Look for CRL ====================================================
+   CRL_FILE="$1"
+   shift
+   if [ ! -e "${CRL_FILE}" ] ; then
+      eval_gettext >&2 "ERROR: Unable to find CRL file ${CRL_FILE}!"
+      echo >&2
+      exit 1
+   fi
+
+   # ====== Display CRL details =============================================
+   echo -e "\e[34m$(eval_gettext "CRL in \${CRL_FILE}:")\e[0m"
+
+   awk '/BEGIN X509 CRL/,/END X509 CRL/' "${CRL_FILE}" | (
+      # ------ Extract each CRL of a combined CRL file ----------------------
+      encodedCRL=""
+      while read -r line; do
+         if [[ "${line}" == *"BEGIN X509 CRL"* ]]; then
+            encodedCRL=""
+         fi
+         encodedCRL+="${line}\n"
+         if [[ "${line}" == *"END X509 CRL"* ]]; then
+            echo -e "${encodedCRL}" | "${OPENSSL}" crl -noout -text | (
+               # ------ Print the contents ----------------------------------
+               while read -r line ; do
+                  issuer="?"
+                  lastUpdate="?"
+                  nextUpdate="?"
+                  lastSerialNumber=""
+                  declare -A serialNumbers=( )
+                  while read -r line ; do
+                     if [[ "${line}" =~ ^(Issuer: )(.*)$ ]] ; then
+                        # Subject with underlined CN:
+                        # shellcheck disable=SC2001
+                        issuer="$(echo "${BASH_REMATCH[2]}" | sed -e 's/\(CN = \)\([^,]*\)/\x1b[4m\1\2\x1b[24m/')"
+                     elif [[ "${line}" =~ ^(Last Update: )(.*)$ ]] ; then
+                        lastUpdate="${BASH_REMATCH[2]}"
+                     elif [[ "${line}" =~ ^(Next Update: )(.*)$ ]] ; then
+                        nextUpdate="${BASH_REMATCH[2]}"
+                     elif [[ "${line}" =~ ^([ ]*Serial Number: )(.*)$ ]] ; then
+                        lastSerialNumber="${BASH_REMATCH[2]}"
+                        serialNumbers+=( [ "${lastSerialNumber}" ]="?" )
+                     elif [[ "${line}" =~ ^([ ]*Revocation Date: )(.*)$ ]] ; then
+                        serialNumbers["${lastSerialNumber}"]="${BASH_REMATCH[2]}"
+                     fi
+                  done
+
+                  label="$(gettext "%-7s")"
+                  printf "\e[33m${label} \e[35m%s\e[0m\n"          \
+                     "$(gettext "Issuer:")"  "$(echo -e "${issuer}")"
+                  printf "\e[33m${label} \e[36m%s — %s\e[0m\n"     \
+                     "$(gettext "Range:")" "$(TZ=UTC date -d "${lastUpdate}")" "$(TZ=UTC date -d "${nextUpdate}")"
+
+                  entry=0
+                  for serialNumber in $(echo "${!serialNumbers[@]}" | tr ' ' '\n' | sort -n) ; do
+                     revokationDate="$(TZ=UTC date -d "${serialNumbers[${serialNumber}]}")"
+                     entry=$((entry + 1))
+                     echo -en " \x1b[31m$(eval_gettext "#\${entry}.") "
+                     eval_gettext "Ccertificate ${serialNumber} revoked on ${revokationDate}"
+                     echo -e "\x1b[0m"
+                  done
+               done
+            ) | (
+               # Try output via mbuffer. This is faster for console printing, particularly
+               # with complex banners and long interface lists. If unavailable, try buffer.
+               # Just use cat as fallback, if neither mbuffer nor buffer are available.
+               if ! mbuffer -q -s 16k 2>/dev/null ; then
+                  if ! buffer -s 16k 2>/dev/null ; then
+                     cat
+                  fi
+               fi
+            )
+            encodedCRL=""
+         fi
+      done
+   )
+
+   echo -en "\e[0m"
+
+done
