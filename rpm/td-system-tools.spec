@@ -234,6 +234,7 @@ Recommends: nss-tools
 %description x509-tools
  This package contains four simple tools:
  view-certificate displays an X.509 certificate and its hierarchy.
+ view-crl shows an X.509 certificate revokation list (CRL).
  check-certificate verifies an X.509 certificate using a CA certificate
  and optionally a revocation list.
  extract-pem extracts a PEM file.
