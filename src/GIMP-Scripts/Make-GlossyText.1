@@ -93,11 +93,11 @@ Use `fc-list\~: family style -f \(dq%{family[0]} %{style[0]}\[rs]n\(dq | sort -u
 .It  Fl S Ar percentage | Fl Fl font-size Ar percentage
 Specifies the font size, in percentage of the caption height. Range: 1-100. Default: 50.
 .It Fl G Ar gradient | Fl Fl blend-gradient-text Ar gradient
-Specifies the blend gradient for the text, e.g. \(dqGolden\(dq. The name must be a gradient in GIMP. Default: Golden.
+Specifies the blend gradient for the text, e.g. \(dqGolden\(dq. The name must be a gradient in GIMP (.ggr file, usually in /usr/share/gimp/*/gradients/ or /usr/local/share/gimp/*/gradients/). Default: Golden.
 .It Fl g Ar on|off | Fl Fl blend-gradient-text-reverse Ar on|off
 Turns reversing the blend gradient for the text on or off. Default: off.
 .It Fl L Ar gradient | Fl Fl blend-gradient-outline Ar gradient
-Specifies the blend gradient for the outline, e.g. \(dqGolden\(dq. The name must be a gradient in GIMP. Default: Golden.
+Specifies the blend gradient for the outline, e.g. \(dqGolden\(dq. The name must be a gradient in GIMP (.ggr file, usually in /usr/share/gimp/*/gradients/ or /usr/local/share/gimp/*/gradients/). Default: Golden.
 .It Fl l Ar on|off | Fl Fl blend-gradient-outline-reverse Ar on|off
 Turns reversing the blend gradient for the outline on or off. Default: off.
 .It Fl O Ar size | Fl Fl outline-size Ar size
@@ -105,19 +105,19 @@ Specifies the outline size. Range: 2-250. Default: 5.
 .It Fl B Ar color | Fl Fl background-color Ar color
 Specifies the background color, as \(dq#RRGGBB\(dq in hexadecimal (e.g. \(dq#02266b\(dq for dark blue) or name (e.g. \(dqwhite\(dq). Default: white.
 .It Fl I Ar pattern | Fl Fl pattern-text Ar pattern
-Specifies a pattern for the text, e.g. \(dqElectric Blue\(dq. The name must be a pattern in GIMP. Default: Electric Blue.
+Specifies a pattern for the text, e.g. \(dqElectric Blue\(dq. The name must be a pattern in GIMP (.pat file, usually in /usr/share/gimp/*/patterns/ or /usr/local/share/gimp/*/patterns/). Default: Electric Blue.
 .br
 Note: The usage of the pattern still needs to be enabled by `\-\-use-pattern-text on`!
 .It Fl i Ar on|off | Fl Fl use-pattern-text Ar on|off
 Turns usage of a pattern for the text on or off. Default: off.
 .It Fl J Ar pattern | Fl Fl pattern-outline Ar pattern
-Specifies a pattern for the outline, e.g. \(dqElectric Blue\(dq. The name must be a pattern in GIMP. Default: Electric Blue.
+Specifies a pattern for the outline, e.g. \(dqElectric Blue\(dq. The name must be a pattern in GIMP (.pat file, usually in /usr/share/gimp/*/patterns/ or /usr/local/share/gimp/*/patterns/). Default: Electric Blue.
 .br
 Note: The usage of the pattern still needs to be enabled by `\-\-use-pattern-outline on`!
 .It Fl j Ar on|off | Fl Fl use-pattern-outline Ar on|off
 Turns usage of a pattern for the outline on or off. Default: off.
 .It Fl R Ar pattern | Fl Fl pattern-overlay Ar pattern
-Specifies a pattern for the overlay, e.g. \(dqParque #1\(dq. The name must be a pattern in GIMP. Default: Parque #1.
+Specifies a pattern for the overlay, e.g. \(dqParque #1\(dq. The name must be a pattern in GIMP (.pat file, usually in /usr/share/gimp/*/patterns/ or /usr/local/share/gimp/*/patterns/). Default: Parque #1.
 .br
 Note: The usage of the pattern still needs to be enabled by `\-\-use-pattern-overlay on`!
 .It Fl r Ar on|off | Fl Fl use-pattern-overlay Ar on|off
@@ -138,6 +138,10 @@ Prints command-line parameters.
 .Bl -tag -width indent
 .It Make-GlossyText NorNet1.png \(dqNorNet Testbed\(dq --font-name \(dqNoto Sans Bold\(dq --font-size 128 --outline-size 5
 .It Make-GlossyText NorNet2.png \(dqNorNet Testbed\(dq --font-name \(dqComic Sans MS Bold\(dq --font-size 256 --outline-size 32
+.It Make-GlossyText NorNet3.png \(dqNorNet Testbed\(dq --font-name \(dqComic Sans MS Bold\(dq --font-size 256 --outline-size 32 --blend-gradient-text \(dqBrushed Aluminium\(dq --blend-gradient-outline \(dqGolden\(dq
+.It Make-GlossyText Test1.png \(dqTest\(dq --font-size 256 --outline-size 32 --blend-gradient-text \(dqLand 1\(dq  --pattern-outline \(dqMarble #3\(dq --use-pattern-outline on
+.It Make-GlossyText Test2.png \(dqTest\(dq --font-size 256 --outline-size 16 -I \(dqMarble #1\(dq -i on  -J \(dqMarble #2\(dq -j on
+.It Make-GlossyText Test3.png \(dqTest\(dq --font-size 256 --outline-size 16 -G \(dqYellow Orange\(dq -L \(dqCold Steel\(dq
 .It Make-GlossyText M2EC.webp \(dqM²EC 2026\(dq --font-name \(dqLobster Two Bold Italic\(dq --font-size 128 --outline-size 12
 .It Make-GlossyText Chinese.png \(dq托马斯博士\(dq -F \(dqNoto Sans Bold\(dq -S 256 -O 24
 .El
