@@ -124,7 +124,6 @@ while [ $# -gt 0 ] ; do
                         nextUpdate="${BASH_REMATCH[2]}"
                      elif [[ "${line}" =~ ^([ ]*Serial Number: )(.*)$ ]] ; then
                         lastSerialNumber="${BASH_REMATCH[2]}"
-                        serialNumbers+=( [ "${lastSerialNumber}" ]="?" )
                      elif [[ "${line}" =~ ^([ ]*Revocation Date: )(.*)$ ]] ; then
                         serialNumbers["${lastSerialNumber}"]="${BASH_REMATCH[2]}"
                      fi
@@ -137,7 +136,7 @@ while [ $# -gt 0 ] ; do
                      "$(gettext "Range:")" "$(TZ=UTC date -d "${lastUpdate}")" "$(TZ=UTC date -d "${nextUpdate}")"
 
                   entry=0
-                  for serialNumber in $(echo "${!serialNumbers[@]}" | tr ' ' '\n' | sort -n) ; do
+                  for serialNumber in $(echo "${!serialNumbers[@]}" | tr ' ' '\n' | sort) ; do
                      revokationDate="$(TZ=UTC date -d "${serialNumbers[${serialNumber}]}")"
                      entry=$((entry + 1))
                      echo -en " \x1b[31m$(eval_gettext "#\${entry}.") "
