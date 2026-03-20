@@ -244,18 +244,22 @@ Recommends: nss-tools
 %{_bindir}/extract-pem
 %{_bindir}/test-tls-connection
 %{_bindir}/view-certificate
+%{_bindir}/view-crl
 %{_datadir}/bash-completion/completions/check-certificate
 %{_datadir}/bash-completion/completions/extract-pem
 %{_datadir}/bash-completion/completions/test-tls-connection
 %{_datadir}/bash-completion/completions/view-certificate
+%{_datadir}/bash-completion/completions/view-crl
 %{_datadir}/locale/*/LC_MESSAGES/check-certificate.mo
 %{_datadir}/locale/*/LC_MESSAGES/extract-pem.mo
 %{_datadir}/locale/*/LC_MESSAGES/test-tls-connection.mo
 %{_datadir}/locale/*/LC_MESSAGES/view-certificate.mo
+%{_datadir}/locale/*/LC_MESSAGES/view-crl.mo
 %{_mandir}/man1/check-certificate.1.gz
 %{_mandir}/man1/extract-pem.1.gz
 %{_mandir}/man1/test-tls-connection.1.gz
 %{_mandir}/man1/view-certificate.1.gz
+%{_mandir}/man1/view-crl.1.gz
 
 
 %package misc

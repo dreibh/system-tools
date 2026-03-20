@@ -44,6 +44,12 @@ INSTALL(FILES       view-certificate.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      view-certificate)
 
+INSTALL(PROGRAMS view-crl DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES view-crl.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       view-crl.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      view-crl)
+
 INSTALL(PROGRAMS extract-pem DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES extract-pem.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       extract-pem.bash-completion
