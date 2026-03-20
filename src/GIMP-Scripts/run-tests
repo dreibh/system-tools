@@ -34,7 +34,7 @@ set -eux
 
 INPUT1="examples/Bergen.jpeg"
 INPUT2="examples/Portobello.jpeg"
-INPUT3="Background.png"
+INPUT3="examples/Background.png"
 
 
 # ====== Test-GIMP ==========================================================
@@ -46,7 +46,7 @@ trap 'if [ -d "${GIMP3_DIRECTORY}" ] ; then rm -rf "${GIMP3_DIRECTORY}" ; fi ; e
 
 # ====== Use FractGen to generate the example image =========================
 # Requires: clifractgen
-if [ ! -e "${INPUT2}"  ] ; then
+if [ ! -e "${INPUT3}"  ] ; then
    if [ -e "/usr/share/fractgen/examples/alpha07.fsf" ] ; then
       clifractgen  /usr/share/fractgen/examples/alpha07.fsf "${INPUT3}" -W 1920 -H 1080 -M 2048
    elif [ -e "/usr/local/share/fractgen/examples/alpha07.fsf" ] ; then
@@ -167,6 +167,6 @@ for maskSize in 4 8 16 ; do
 done
 
 # ====== Make-BumpMap =======================================================
-./Make-BumpMap Image3.png Background1.png
+./Make-BumpMap "${INPUT3}" Background1.png
 ./Make-Mosaic Background1.png Background2.png \
    -T hexagons -S 18 -H 4 -X 4 -F smooth -N 0.5
