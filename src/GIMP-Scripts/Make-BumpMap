@@ -275,7 +275,7 @@ rm -f "${OUTPUT_FILENAME}"
          (gimp-drawable-hue-saturation layer HUE-RANGE-ALL 0 -15 0 0)
       )
       (begin  ; Old GIMP <= 2.8 API:
-         (gimp-hue-saturation layer ALL-HUES 0 -15 0)
+         (gimp-hue-saturation layer ALL-HUES 0 -15 0 0)
       )
    )
 
