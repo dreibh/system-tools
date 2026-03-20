@@ -88,7 +88,7 @@ while [ $# -gt 0 ] ; do
    CERTIFICATE_FILE="$1"
    shift
    if [ ! -e "${CERTIFICATE_FILE}" ] ; then
-      eval_gettext >&2 "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
+      eval_gettext >&2 "ERROR: Unable to find certificate file \${CERTIFICATE_FILE}!"
       echo >&2
       exit 1
    fi

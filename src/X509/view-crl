@@ -88,7 +88,7 @@ while [ $# -gt 0 ] ; do
    CRL_FILE="$1"
    shift
    if [ ! -e "${CRL_FILE}" ] ; then
-      eval_gettext >&2 "ERROR: Unable to find CRL file ${CRL_FILE}!"
+      eval_gettext >&2 "ERROR: Unable to find CRL file \${CRL_FILE}!"
       echo >&2
       exit 1
    fi
