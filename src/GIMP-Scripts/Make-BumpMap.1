@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd March 20, 2026
+.Dd March 21, 2026
 .Dt Make-BumpMap 1
 .Os Make-BumpMap
 .\" ###### Name #############################################################
@@ -63,6 +63,16 @@ output_filename
 .br
 .Op Fl B Ar factor | Fl Fl ambient Ar factor
 .br
+.Op Fl H Ar all|red|yellow|green|cyan|blue|magenta | Fl Fl hue-range Ar all|red|yellow|green|cyan|blue|magenta
+.br
+.Op Fl O Ar degrees | Fl Fl hue-offset Ar degrees
+.br
+.Op Fl L Ar adjustment | Fl Fl lightness Ar adjustment
+.br
+.Op Fl S Ar adjustment | Fl Fl saturation Ar adjustment
+.br
+.Op Fl V Ar overlap | Fl Fl overlap Ar overlap
+.br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
 .Nm Make-BumpMap
@@ -71,7 +81,9 @@ output_filename
 .Sh DESCRIPTION
 .Nm Make-BumpMap
 runs GIMP to load an image, and applies the GIMP GEGL "Bump Map" filter
-(details: https://gegl.org/operations/gegl-bump-map.html).
+(details: https://gegl.org/operations/gegl-bump-map.html) as well as
+"Hue-Saturation" adjustment
+(details: https://docs.gimp.org/3.0/en/gimp-tool-hue-saturation.html).
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -101,6 +113,16 @@ Sets the offset Y parameter for the "Bump Map" filter. Range: -20000-20000. Defa
 Sets the water level (level that full transparency should represent). Range: 0.0-1.0. Default: 0.0.
 .It Fl B Ar factor | Fl Fl ambient Ar factor
 Sets the ambient lighting factor. Range: 0.0-1.0. Default: 0.0.
+.It Fl H Ar all|red|yellow|green|cyan|blue|magenta | Fl Fl hue-range Ar all|red|yellow|green|cyan|blue|magenta
+Sets the hue range (affected colors): red, yellow, green, cyan, blue, magenta, or all. Default: all.
+.It Fl O Ar degrees | Fl Fl hue-offset Ar degrees
+Sets the hue offset. Range: -180.0-180.0. Default: .
+.It Fl L Ar adjustment | Fl Fl lightness Ar adjustment
+Sets the lightness adjustment. Range: -100.0-100.0. Default: 0.0.
+.It Fl S Ar adjustment | Fl Fl saturation Ar adjustment
+Sets the saturation adjustment. Range: -100.0-100.0. Default: 0.0.
+.It Fl V Ar overlap | Fl Fl overlap Ar overlap
+Sets the overlap. Range: 0.0-100.0. Default: 0.0.
 .It Fl w | Fl Fl verbose
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
@@ -109,5 +131,6 @@ Prints command-line parameters.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It FIXME!
+.It Make-BumpMap Image1.png BumpMap1.png
+.It Make-BumpMap Image3.png BumpMap3.png --hue-range all -hue-offset 120.0 --lightness -15.0
 .El
