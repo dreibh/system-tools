@@ -1,0 +1,8 @@
+#!/bin/sh
+(
+   for b in /usr/local/share /usr/share ; do
+     if [ -d $b/gimp ] ; then
+        find $b/gimp -name "*.ggr" -exec basename {} .ggr \;
+     fi
+  done
+) | tr '_' ' ' | sort -u
