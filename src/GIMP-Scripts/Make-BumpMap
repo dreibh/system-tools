@@ -254,17 +254,17 @@ rm -f "${OUTPUT_FILENAME}"
    (if (defined? 'gimp-drawable-merge-new-filter)
       (begin  ; New GIMP >= 3.0 API:
         (gimp-drawable-merge-new-filter layer "gegl:bump-map" 0 LAYER-MODE-REPLACE 1.0
-            "azimuth"         azimut
-            "elevation"       elevation
-            "depth"           depth
-            "offset-x"        offsetX
-            "offset-y"        offsetY
-            "waterlevel"      waterlevel
-            "ambient"         ambient
-            "compensate"      compensate
-            "invert"          invert
-            "tiled"           tiled
-            "type"            "linear"
+            "azimuth"    azimut
+            "elevation"  elevation
+            "depth"      depth
+            "offset-x"   offsetX
+            "offset-y"   offsetY
+            "waterlevel" waterlevel
+            "ambient"    ambient
+            "compensate" compensate
+            "invert"     invert
+            "tiled"      tiled
+            "type"       "linear"
         )
       )
       (begin  ; Old GIMP < 3.0 API:
