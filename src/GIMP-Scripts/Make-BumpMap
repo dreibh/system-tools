@@ -37,14 +37,7 @@ set -eu
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_filename output_filename [-C|--compensate-darkening on|off] [-I|--invert on|off] [-T|--tiled on|off] [-A|--azimut bearing] [-E|--elevation bearing] [-D|--depth depth] [-X|--offset-x value] [-Y|--offset-y value] [-W|--waterlevel level] [-B|--ambient factor] [-w|--verbose] [-q|--quiet] [-h|--help]"
-
-#    [-H|--hue-range all|red|yellow|green|cyan|blue|magenta]
-#    [-O|--hue-offset degrees]
-#    [-L|--lightness adjustment]
-#    [-S|--saturation adjustment]
-#    [-V|--overlap overlap]
-
+   echo >&2 "Usage: $0 input_filename output_filename [-C|--compensate-darkening on|off] [-I|--invert on|off] [-T|--tiled on|off] [-A|--azimut bearing] [-E|--elevation bearing] [-D|--depth depth] [-X|--offset-x value] [-Y|--offset-y value] [-W|--waterlevel level] [-B|--ambient factor] [-H|--hue-range all|red|yellow|green|cyan|blue|magenta] [-O|--hue-offset degrees] [-L|--lightness adjustment] [-S|--saturation adjustment] [-V|--overlap overlap] [-w|--verbose] [-q|--quiet] [-h|--help]"
    exit "${exitCode}"
 }
 
@@ -74,8 +67,8 @@ OFFSET_Y=0
 WATERLEVEL=0.0
 AMBIENT=0.0
 HUE_RANGE=0   # 0=all
-HUE_OFFSET=120.0
-LIGHTNESS=-15.0
+HUE_OFFSET=0.0
+LIGHTNESS=0.0
 SATURATION=0.0
 OVERLAP=0.0
 VERBOSE=0
@@ -113,7 +106,7 @@ while [ $# -gt 0 ] ; do
          ;;
       -A | --azimut)
          AZIMUT="$2"
-         if [[ ! "${AZIMUT}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+         if [[ ! "${AZIMUT}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] || \
             awk "BEGIN { exit ( ($AZIMUT < 0.0) || ($AZIMUT > 360.0) ? 0 : 1) }" ; then
             echo "ERROR: Invalid value ${AZIMUT} for -A|--azimut!"
             exit 1
@@ -122,7 +115,7 @@ while [ $# -gt 0 ] ; do
          ;;
       -E | --elevation)
          ELEVATION="$2"
-         if [[ ! "${ELEVATION}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+         if [[ ! "${ELEVATION}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($ELEVATION < 0.5) || ($ELEVATION > 90.0) ? 0 : 1) }" ; then
             echo "ERROR: Invalid value ${ELEVATION} for -E|--elevation!"
             exit 1
@@ -154,7 +147,7 @@ while [ $# -gt 0 ] ; do
          ;;
       -W | --waterlevel)
          WATERLEVEL="$2"
-         if [[ ! "${WATERLEVEL}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+         if [[ ! "${WATERLEVEL}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($WATERLEVEL < 0.0) || ($WATERLEVEL > 1.0) ? 0 : 1) }" ; then
             echo "ERROR: Invalid value ${WATERLEVEL} for -W|--waterlevel!"
             exit 1
@@ -163,7 +156,7 @@ while [ $# -gt 0 ] ; do
          ;;
       -B | --ambient)
          AMBIENT="$2"
-         if [[ ! "${AMBIENT}" =~ ^[0-9]*([0-9]|\.[0-9]*)$ ]] || \
+         if [[ ! "${AMBIENT}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($AMBIENT < 0.0) || ($AMBIENT > 1.0) ? 0 : 1) }" ; then
             echo "ERROR: Invalid value ${AMBIENT} for -B|--ambient!"
             exit 1
@@ -181,7 +174,7 @@ while [ $# -gt 0 ] ; do
          ;;
       -O | --hue-offset)
          HUE_OFFSET="$2"
-         if [[ ! "${HUE_OFFSET}" =~ ^[0-9-][0-9]*([0-9]|\.[0-9]*)$ ]] || \
+         if [[ ! "${HUE_OFFSET}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($HUE_OFFSET < -180.0) || ($HUE_OFFSET > 180.0) ? 0 : 1) }" ; then
             echo "ERROR: Invalid value ${HUE_OFFSET} for -O|--hue-offset!"
             exit 1
@@ -190,7 +183,7 @@ while [ $# -gt 0 ] ; do
          ;;
       -L | --lightness)
          LIGHTNESS="$2"
-         if [[ ! "${LIGHTNESS}" =~ ^[0-9-][0-9]*([0-9]|\.[0-9]*)$ ]] || \
+         if [[ ! "${LIGHTNESS}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($LIGHTNESS < -100.0) || ($LIGHTNESS > 100.0) ? 0 : 1) }" ; then
             echo "ERROR: Invalid value ${LIGHTNESS} for -L|--lightness!"
             exit 1
@@ -199,7 +192,7 @@ while [ $# -gt 0 ] ; do
          ;;
       -S | --saturation)
          SATURATION="$2"
-         if [[ ! "${SATURATION}" =~ ^[0-9-][0-9]*([0-9]|\.[0-9]*)$ ]] || \
+         if [[ ! "${SATURATION}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($SATURATION < -100.0) || ($SATURATION > 100.0) ? 0 : 1) }" ; then
             echo "ERROR: Invalid value ${SATURATION} for -S|--saturation!"
             exit 1
@@ -208,7 +201,7 @@ while [ $# -gt 0 ] ; do
          ;;
       -V | --overlap)
          OVERLAP="$2"
-         if [[ ! "${OVERLAP}" =~ ^[0-9-][0-9]*([0-9]|\.[0-9]*)$ ]] || \
+         if [[ ! "${OVERLAP}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($OVERLAP < 0.0) || ($OVERLAP > 100.0) ? 0 : 1) }" ; then
             echo "ERROR: Invalid value ${OVERLAP} for -V|--overlap!"
             exit 1
