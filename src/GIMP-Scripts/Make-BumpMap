@@ -38,13 +38,30 @@ set -eu
 usage () {
    local exitCode="$1"
    echo >&2 "Usage: $0 input_filename output_filename [-C|--compensate-darkening on|off] [-I|--invert on|off] [-T|--tiled on|off] [-A|--azimut bearing] [-E|--elevation bearing] [-D|--depth depth] [-X|--offset-x value] [-Y|--offset-y value] [-W|--waterlevel level] [-B|--ambient factor] [-w|--verbose] [-q|--quiet] [-h|--help]"
+
+#    [-H|--hue-range all|red|yellow|green|cyan|blue|magenta]
+#    [-O|--hue-offset degrees]
+#    [-L|--lightness adjustment]
+#    [-S|--saturation adjustment]
+#    [-V|--overlap overlap]
+
    exit "${exitCode}"
 }
 
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o C:I:T:A:E:D:X:Y:W:B:wqh --long compensate-darkening:,invert:,tiled:,azimut:,elevation:,depth:,offset-x:,offset-y:,waterlevel:,ambient:,verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o C:I:T:A:E:D:X:Y:W:B:H:O:L:S:V:wqh --long compensate-darkening:,invert:,tiled:,azimut:,elevation:,depth:,offset-x:,offset-y:,waterlevel:,ambient:,hue-range:,hue-offset:,lightness:,saturation:,overlap:,verbose,quiet,help -a -- "$@")"
 eval set -- "${options}"
+
+declare -A hueRanges=(
+ ["all"]=0
+ ["red"]=1
+ ["yellow"]=2
+ ["green"]=3
+ ["cyan"]=4
+ ["blue"]=5
+ ["magenta"]=6
+)
 
 COMPENSATE="TRUE"
 INVERT="FALSE"
@@ -56,6 +73,11 @@ OFFSET_X=0
 OFFSET_Y=0
 WATERLEVEL=0.0
 AMBIENT=0.0
+HUE_RANGE=0   # 0=all
+HUE_OFFSET=120.0
+LIGHTNESS=-15.0
+SATURATION=0.0
+OVERLAP=0.0
 VERBOSE=0
 while [ $# -gt 0 ] ; do
    case "$1" in
@@ -148,6 +170,52 @@ while [ $# -gt 0 ] ; do
          fi
          shift 2
          ;;
+
+      -H | --hue-range)
+         if [[ ! -v hueRanges["$2"] ]] ; then
+            echo "ERROR: Invalid value $2 for -H|--hue-range!"
+            exit 1
+         fi
+         HUE_RANGE="${hueRanges[$2]}"
+         shift 2
+         ;;
+      -O | --hue-offset)
+         HUE_OFFSET="$2"
+         if [[ ! "${HUE_OFFSET}" =~ ^[0-9-][0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($HUE_OFFSET < -180.0) || ($HUE_OFFSET > 180.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${HUE_OFFSET} for -O|--hue-offset!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -L | --lightness)
+         LIGHTNESS="$2"
+         if [[ ! "${LIGHTNESS}" =~ ^[0-9-][0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($LIGHTNESS < -100.0) || ($LIGHTNESS > 100.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${LIGHTNESS} for -L|--lightness!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -S | --saturation)
+         SATURATION="$2"
+         if [[ ! "${SATURATION}" =~ ^[0-9-][0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($SATURATION < -100.0) || ($SATURATION > 100.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${SATURATION} for -S|--saturation!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -V | --overlap)
+         OVERLAP="$2"
+         if [[ ! "${OVERLAP}" =~ ^[0-9-][0-9]*([0-9]|\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($OVERLAP < 0.0) || ($OVERLAP > 100.0) ? 0 : 1) }" ; then
+            echo "ERROR: Invalid value ${OVERLAP} for -V|--overlap!"
+            exit 1
+         fi
+         shift 2
+         ;;
+
       -w | --verbose)
          VERBOSE=1
          shift
@@ -223,6 +291,11 @@ rm -f "${OUTPUT_FILENAME}"
     (compensate       ${COMPENSATE})
     (invert           ${INVERT})
     (tiled            ${TILED})
+    (hueRange         ${HUE_RANGE})
+    (hueOffset        ${HUE_OFFSET})
+    (lightness        ${LIGHTNESS})
+    (saturation       ${SATURATION})
+    (overlap          ${OVERLAP})
     (image            (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
     (imageType        (if (not (defined? 'gimp-image-get-active-layer))
                          ; New GIMP 3.0 API:
@@ -239,14 +312,14 @@ rm -f "${OUTPUT_FILENAME}"
    )
 
    ; ------ Apply filter ----------------------------------------------------
-   ; First, make sure that the image is RGB, not indexed color mode!
+   ; Step 1: Adjust hue
    (if (defined? 'gimp-drawable-hue-saturation)
       (begin  ; New GIMP > 2.8 API:
          ; New GIMP > 2.8 API:
-         (gimp-drawable-hue-saturation layer HUE-RANGE-ALL 120.0 0 0 0)
+         (gimp-drawable-hue-saturation layer hueRange hueOffset 0.0 0.0 0.0)
       )
       (begin  ; Old GIMP <= 2.8 API:
-         (gimp-hue-saturation layer ALL-HUES 120.0 0 0)
+         (gimp-hue-saturation layer hueRange hueOffset 0.0 0.0 0.0)
       )
    )
 
@@ -275,14 +348,14 @@ rm -f "${OUTPUT_FILENAME}"
       )
    )
 
-   ; Step 3: Darken the result a little bit
+   ; Step 3: Adjust saturation, lightness, and overlap
    (if (defined? 'gimp-drawable-hue-saturation)
       (begin  ; New GIMP > 2.8 API:
          ; New GIMP > 2.8 API:
-         (gimp-drawable-hue-saturation layer HUE-RANGE-ALL 0 -15 0 0)
+         (gimp-drawable-hue-saturation layer hueRange 0.0 lightness saturation overlap)
       )
       (begin  ; Old GIMP <= 2.8 API:
-         (gimp-hue-saturation layer ALL-HUES 0 -15 0 0)
+         (gimp-hue-saturation layer hueRange 0.0 lightness saturation overlap)
       )
    )
 
