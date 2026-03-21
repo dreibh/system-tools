@@ -53,6 +53,10 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -S | --mask-size)
          MASK_SIZE="$2"
+         if [[ ! "${MASK_SIZE}" =~ ^([0-9]+)$ ]] ; then
+            echo >&2 "ERROR: Invalid value ${MASK_SIZE} for -S|--mask-size!"
+            exit 1
+         fi
          shift 2
          ;;
       -I | --intensity-mode)
@@ -61,7 +65,8 @@ while [ $# -gt 0 ] ; do
          elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             INTENSITY_MODE="FALSE"
          else
-            echo "ERROR: Invalid value $2 for -I|--intensity-mode!"
+            echo >&2 "ERROR: Invalid value $2 for -I|--intensity-mode!"
+            exit 1
          fi
          shift 2
          ;;
@@ -94,10 +99,6 @@ OUTPUT_FILENAME="$2"
 
 if [ ! -f "${INPUT_FILENAME}" ] ; then
    echo >&2 "ERROR: Input file ${INPUT_FILENAME} does not exist!"
-   exit 1
-fi
-if [[ ! "${MASK_SIZE}" =~ ^([0-9]+)$ ]] ; then
-   echo >&2 "ERROR: Invalid mask size ${MASK_SIZE}!"
    exit 1
 fi
 
