@@ -29,8 +29,8 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for Resize-with-Cropping ###########################
-_Resize_with_Cropping()
+# ###### Bash completion for gs-resize-with-cropping ###########################
+_gs_resize_with_cropping()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -87,4 +87,4 @@ _Resize_with_Cropping()
    return 0
 }
 
-complete -F _Resize_with_Cropping Resize-with-Cropping
+complete -F _gs_resize_with_cropping gs-resize-with-cropping

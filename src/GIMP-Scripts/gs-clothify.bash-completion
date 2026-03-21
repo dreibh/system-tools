@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for gs-clothify ##################################
+# ###### Bash completion for gs-clothify ####################################
 _gs_clothify()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/

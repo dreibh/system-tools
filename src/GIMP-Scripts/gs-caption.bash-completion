@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for gs-caption ##################################
+# ###### Bash completion for gs-caption #####################################
 _gs_caption()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/

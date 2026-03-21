@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for gs-oilify ####################################
+# ###### Bash completion for gs-oilify ######################################
 _gs_oilify()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
