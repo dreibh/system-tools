@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -eu
 (
    for b in /usr/local/share /usr/share ; do
      if [ -d $b/gimp ] ; then
