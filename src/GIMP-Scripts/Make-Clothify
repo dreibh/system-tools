@@ -57,7 +57,7 @@ while [ $# -gt 0 ] ; do
       -X | --blur-x)
          BLUR_X="$2"
          if [[ ! "${BLUR_X}" =~ ^[0-9]+$ ]] || [ "${BLUR_X}" -lt 3 ] || [ "${BLUR_X}" -gt 100 ] ; then
-            echo "ERROR: Invalid value ${BLUR_X} for -X|--blur-x!"
+            echo >&2 "ERROR: Invalid value ${BLUR_X} for -X|--blur-x!"
             exit 1
          fi
          shift 2
@@ -65,8 +65,8 @@ while [ $# -gt 0 ] ; do
       -Y | --blur-y)
          BLUR_Y="$2"
          if [[ ! "${BLUR_Y}" =~ ^[0-9]+$ ]] || [ "${BLUR_Y}" -lt 3 ] || [ "${BLUR_Y}" -gt 100 ] ; then
-            echo "ERROR: Invalid value ${BLUR_Y} for -Y|--blur-y!"
-            eyit 1
+            echo >&2 "ERROR: Invalid value ${BLUR_Y} for -Y|--blur-y!"
+            exit 1
          fi
          shift 2
          ;;
@@ -74,7 +74,7 @@ while [ $# -gt 0 ] ; do
          AZIMUT="$2"
          if [[ ! "${AZIMUT}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($AZIMUT < 0.0) || ($AZIMUT > 360.0) ? 0 : 1) }" ; then
-            echo "ERROR: Invalid value ${AZIMUT} for -A|--azimut!"
+            echo >&2 "ERROR: Invalid value ${AZIMUT} for -A|--azimut!"
             exit 1
          fi
          shift 2
@@ -83,14 +83,14 @@ while [ $# -gt 0 ] ; do
          ELEVATION="$2"
          if [[ ! "${ELEVATION}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($ELEVATION < 0.5) || ($ELEVATION > 90.0) ? 0 : 1) }" ; then
-            echo "ERROR: Invalid value ${ELEVATION} for -E|--elevation!"
+            echo >&2 "ERROR: Invalid value ${ELEVATION} for -E|--elevation!"
             exit 1
          fi
          shift 2
          ;;
       -D | --depth)
          if [[ ! "${DEPTH}" =~ ^[0-9]+$ ]] || [ "${DEPTH}" -lt 1 ] || [ "${DEPTH}" -gt 65 ] ; then
-            echo "ERROR: Invalid value ${DEPTH} for -D|--depth!"
+            echo >&2 "ERROR: Invalid value ${DEPTH} for -D|--depth!"
             exit 1
          fi
          shift 2

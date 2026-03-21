@@ -79,7 +79,7 @@ while [ $# -gt 0 ] ; do
       -S | --font-size)
          FONT_SIZE="$2"
          if [[ ! "${FONT_SIZE}" =~ ^[0-9]+$ ]] || [ "${FONT_SIZE}" -lt 1 ] ; then
-            echo "ERROR: Invalid value ${FONT_SIZE} for -S|--font-size!"
+            echo >&2 "ERROR: Invalid value ${FONT_SIZE} for -S|--font-size!"
             exit 1
          fi
          shift 2
@@ -95,7 +95,8 @@ while [ $# -gt 0 ] ; do
          elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             BLEND_GRADIENT_TEXT_REVERSE="FALSE"
          else
-            echo "ERROR: Invalid value $2 for -g|--blend-gradient-text-reverse!"
+            echo >&2 "ERROR: Invalid value $2 for -g|--blend-gradient-text-reverse!"
+            exit 1
          fi
          shift 2
          ;;
@@ -109,15 +110,16 @@ while [ $# -gt 0 ] ; do
          elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             BLEND_GRADIENT_OUTLINE_REVERSE="FALSE"
          else
-            echo "ERROR: Invalid value $2 for -l|--blend-gradient-outline-reverse!"
+            echo >&2 "ERROR: Invalid value $2 for -l|--blend-gradient-outline-reverse!"
+            exit 1
          fi
          shift 2
          ;;
       -O | --outline-size)
          OUTLINE_SIZE="$2"
          if [[ ! "${OUTLINE_SIZE}" =~ ^[0-9]+$ ]] || [ "${OUTLINE_SIZE}" -lt 2 ] || [ "${OUTLINE_SIZE}" -gt 250 ] ; then
-            echo "ERROR: Invalid value ${OUTLINE_SIZE} for -O|--outline-size!"
-            eyit 1
+            echo >&2 "ERROR: Invalid value ${OUTLINE_SIZE} for -O|--outline-size!"
+            exit 1
          fi
          shift 2
          ;;
@@ -136,7 +138,8 @@ while [ $# -gt 0 ] ; do
          elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             USE_PATTERN_TEXT="FALSE"
          else
-            echo "ERROR: Invalid value $2 for -i|--use-pattern-text!"
+            echo >&2 "ERROR: Invalid value $2 for -i|--use-pattern-text!"
+            exit 1
          fi
          shift 2
          ;;
@@ -150,7 +153,8 @@ while [ $# -gt 0 ] ; do
          elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             USE_PATTERN_OUTLINE="FALSE"
          else
-            echo "ERROR: Invalid value $2 for -j|--use-pattern-outline!"
+            echo >&2 "ERROR: Invalid value $2 for -j|--use-pattern-outline!"
+            exit 1
          fi
          shift 2
          ;;
@@ -164,7 +168,8 @@ while [ $# -gt 0 ] ; do
          elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             USE_PATTERN_OVERLAY="FALSE"
          else
-            echo "ERROR: Invalid value $2 for -r|--use-pattern-overlay!"
+            echo >&2 "ERROR: Invalid value $2 for -r|--use-pattern-overlay!"
+            exit 1
          fi
          shift 2
          ;;
@@ -175,14 +180,15 @@ while [ $# -gt 0 ] ; do
          elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             USE_SHADOW="FALSE"
          else
-            echo "ERROR: Invalid value $2 for -s|--use-shadow!"
+            echo >&2 "ERROR: Invalid value $2 for -s|--use-shadow!"
+            exit 1
          fi
          shift 2
          ;;
       -X | --shadow-offset-x)
          SHADOW_OFFSET_X="$2"
          if [[ ! "${SHADOW_OFFSET_X}" =~ ^[0-9]+$ ]] || [ "${SHADOW_OFFSET_X}" -lt 1 ] || [ "${SHADOW_OFFSET_X}" -gt 100 ] ; then
-            echo "ERROR: Invalid value ${SHADOW_OFFSET_X} for -X|--shadow-offset-x!"
+            echo >&2 "ERROR: Invalid value ${SHADOW_OFFSET_X} for -X|--shadow-offset-x!"
             exit 1
          fi
          shift 2
@@ -190,7 +196,7 @@ while [ $# -gt 0 ] ; do
       -Y | --shadow-offet-y)
          SHADOW_OFFSET_Y="$2"
          if [[ ! "${SHADOW_OFFSET_Y}" =~ ^[0-9]+$ ]] || [ "${SHADOW_OFFSET_Y}" -lt 1 ] || [ "${SHADOW_OFFSET_Y}" -gt 100 ] ; then
-            echo "ERROR: Invalid value ${SHADOW_OFFSET_Y} for -Y|--shadow-offet-y!"
+            echo >&2 "ERROR: Invalid value ${SHADOW_OFFSET_Y} for -Y|--shadow-offet-y!"
             exit 1
          fi
          shift 2

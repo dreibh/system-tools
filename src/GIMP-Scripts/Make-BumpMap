@@ -80,7 +80,8 @@ while [ $# -gt 0 ] ; do
          elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             COMPENSATE="FALSE"
          else
-            echo "ERROR: Invalid value $2 for -C|--compensate-darkening!"
+            echo >&2 "ERROR: Invalid value $2 for -C|--compensate-darkening!"
+            exit 1
          fi
          shift 2
          ;;
@@ -90,7 +91,8 @@ while [ $# -gt 0 ] ; do
          elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             TILED="FALSE"
          else
-            echo "ERROR: Invalid value $2 for -I|--invert!"
+            echo >&2 "ERROR: Invalid value $2 for -I|--invert!"
+            exit 1
          fi
          shift 2
          ;;
@@ -100,7 +102,8 @@ while [ $# -gt 0 ] ; do
          elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             TILED="FALSE"
          else
-            echo "ERROR: Invalid value $2 for -T|--tiled!"
+            echo >&2 "ERROR: Invalid value $2 for -T|--tiled!"
+            exit 1
          fi
          shift 2
          ;;
@@ -108,7 +111,7 @@ while [ $# -gt 0 ] ; do
          AZIMUT="$2"
          if [[ ! "${AZIMUT}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] || \
             awk "BEGIN { exit ( ($AZIMUT < 0.0) || ($AZIMUT > 360.0) ? 0 : 1) }" ; then
-            echo "ERROR: Invalid value ${AZIMUT} for -A|--azimut!"
+            echo >&2 "ERROR: Invalid value ${AZIMUT} for -A|--azimut!"
             exit 1
          fi
          shift 2
@@ -117,14 +120,14 @@ while [ $# -gt 0 ] ; do
          ELEVATION="$2"
          if [[ ! "${ELEVATION}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($ELEVATION < 0.5) || ($ELEVATION > 90.0) ? 0 : 1) }" ; then
-            echo "ERROR: Invalid value ${ELEVATION} for -E|--elevation!"
+            echo >&2 "ERROR: Invalid value ${ELEVATION} for -E|--elevation!"
             exit 1
          fi
          shift 2
          ;;
       -D | --depth)
          if [[ ! "${DEPTH}" =~ ^[0-9]+$ ]] || [ "${DEPTH}" -lt 1 ] || [ "${DEPTH}" -gt 65 ] ; then
-            echo "ERROR: Invalid value ${DEPTH} for -D|--depth!"
+            echo >&2 "ERROR: Invalid value ${DEPTH} for -D|--depth!"
             exit 1
          fi
          shift 2
@@ -132,7 +135,7 @@ while [ $# -gt 0 ] ; do
       -X | --offset-x)
          OFFSET_X="$2"
          if [[ ! "${OFFSET_X}" =~ ^[0-9]+$ ]] || [ "${OFFSET_X}" -lt -20000 ] || [ "${OFFSET_X}" -gt 20000 ] ; then
-            echo "ERROR: Invalid value ${OFFSET_X} for -X|--offset-x!"
+            echo >&2 "ERROR: Invalid value ${OFFSET_X} for -X|--offset-x!"
             exit 1
          fi
          shift 2
@@ -140,8 +143,8 @@ while [ $# -gt 0 ] ; do
       -Y | --offset-y)
          OFFSET_Y="$2"
          if [[ ! "${OFFSET_Y}" =~ ^[0-9]+$ ]] || [ "${OFFSET_Y}" -lt -20000 ] || [ "${OFFSET_Y}" -gt 20000 ] ; then
-            echo "ERROR: Invalid value ${OFFSET_Y} for -Y|--offset-y!"
-            eyit 1
+            echo >&2 "ERROR: Invalid value ${OFFSET_Y} for -Y|--offset-y!"
+            exit 1
          fi
          shift 2
          ;;
@@ -149,7 +152,7 @@ while [ $# -gt 0 ] ; do
          WATERLEVEL="$2"
          if [[ ! "${WATERLEVEL}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($WATERLEVEL < 0.0) || ($WATERLEVEL > 1.0) ? 0 : 1) }" ; then
-            echo "ERROR: Invalid value ${WATERLEVEL} for -W|--waterlevel!"
+            echo >&2 "ERROR: Invalid value ${WATERLEVEL} for -W|--waterlevel!"
             exit 1
          fi
          shift 2
@@ -158,7 +161,7 @@ while [ $# -gt 0 ] ; do
          AMBIENT="$2"
          if [[ ! "${AMBIENT}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($AMBIENT < 0.0) || ($AMBIENT > 1.0) ? 0 : 1) }" ; then
-            echo "ERROR: Invalid value ${AMBIENT} for -B|--ambient!"
+            echo >&2 "ERROR: Invalid value ${AMBIENT} for -B|--ambient!"
             exit 1
          fi
          shift 2
@@ -166,7 +169,7 @@ while [ $# -gt 0 ] ; do
 
       -H | --hue-range)
          if [[ ! -v hueRanges["$2"] ]] ; then
-            echo "ERROR: Invalid value $2 for -H|--hue-range!"
+            echo >&2 "ERROR: Invalid value $2 for -H|--hue-range!"
             exit 1
          fi
          HUE_RANGE="${hueRanges[$2]}"
@@ -176,7 +179,7 @@ while [ $# -gt 0 ] ; do
          HUE_OFFSET="$2"
          if [[ ! "${HUE_OFFSET}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($HUE_OFFSET < -180.0) || ($HUE_OFFSET > 180.0) ? 0 : 1) }" ; then
-            echo "ERROR: Invalid value ${HUE_OFFSET} for -O|--hue-offset!"
+            echo >&2 "ERROR: Invalid value ${HUE_OFFSET} for -O|--hue-offset!"
             exit 1
          fi
          shift 2
@@ -185,7 +188,7 @@ while [ $# -gt 0 ] ; do
          LIGHTNESS="$2"
          if [[ ! "${LIGHTNESS}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($LIGHTNESS < -100.0) || ($LIGHTNESS > 100.0) ? 0 : 1) }" ; then
-            echo "ERROR: Invalid value ${LIGHTNESS} for -L|--lightness!"
+            echo >&2 "ERROR: Invalid value ${LIGHTNESS} for -L|--lightness!"
             exit 1
          fi
          shift 2
@@ -194,7 +197,7 @@ while [ $# -gt 0 ] ; do
          SATURATION="$2"
          if [[ ! "${SATURATION}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($SATURATION < -100.0) || ($SATURATION > 100.0) ? 0 : 1) }" ; then
-            echo "ERROR: Invalid value ${SATURATION} for -S|--saturation!"
+            echo >&2 "ERROR: Invalid value ${SATURATION} for -S|--saturation!"
             exit 1
          fi
          shift 2
@@ -203,7 +206,7 @@ while [ $# -gt 0 ] ; do
          OVERLAP="$2"
          if [[ ! "${OVERLAP}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($OVERLAP < 0.0) || ($OVERLAP > 100.0) ? 0 : 1) }" ; then
-            echo "ERROR: Invalid value ${OVERLAP} for -V|--overlap!"
+            echo >&2 "ERROR: Invalid value ${OVERLAP} for -V|--overlap!"
             exit 1
          fi
          shift 2

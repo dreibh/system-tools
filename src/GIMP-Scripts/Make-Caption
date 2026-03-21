@@ -61,7 +61,7 @@ while [ $# -gt 0 ] ; do
       -S | --font-size)
          FONT_SIZE="$2"
          if [[ ! "${FONT_SIZE}" =~ ^[0-9]+$ ]] || [ "${FONT_SIZE}" -lt 1 ] || [ "${FONT_SIZE}" -gt 100 ] ; then
-            echo "ERROR: Invalid value ${FONT_SIZE} for -s|--font-size!"
+            echo >&2 "ERROR: Invalid value ${FONT_SIZE} for -s|--font-size!"
             exit 1
          fi
          shift 2
@@ -69,7 +69,7 @@ while [ $# -gt 0 ] ; do
       -f | --foreground)
          COLOR_FOREGROUND="$2"
          if [[ ! "${COLOR_FOREGROUND}" =~ ^#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]$ ]] ; then
-            echo "ERROR: Invalid value ${COLOR_FOREGROUND} for -f|--foreground!"
+            echo >&2 "ERROR: Invalid value ${COLOR_FOREGROUND} for -f|--foreground!"
             exit 1
          fi
          shift 2
@@ -77,7 +77,7 @@ while [ $# -gt 0 ] ; do
       -b | --background)
          COLOR_BACKGROUND="$2"
          if [[ ! "${COLOR_BACKGROUND}" =~ ^#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]$ ]] ; then
-            echo "ERROR: Invalid value ${COLOR_BACKGROUND} for -b|--background!"
+            echo >&2 "ERROR: Invalid value ${COLOR_BACKGROUND} for -b|--background!"
             exit 1
          fi
          shift 2
@@ -85,8 +85,8 @@ while [ $# -gt 0 ] ; do
       -t | --transparency)
          TRANSPARENCY="$2"
          if [[ ! "${TRANSPARENCY}" =~ ^[0-9]+$ ]] || [ "${TRANSPARENCY}" -lt 0 ] || [ "${TRANSPARENCY}" -gt 100 ]; then
-            echo "ERROR: Invalid value ${TRANSPARENCY} for -t|--transparency!"
-            eyit 1
+            echo >&2 "ERROR: Invalid value ${TRANSPARENCY} for -t|--transparency!"
+            exit 1
          fi
          TRANSPARENCY="$2"
          shift 2
