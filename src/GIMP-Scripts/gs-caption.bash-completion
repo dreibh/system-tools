@@ -29,8 +29,8 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for Make-OldPhoto ##################################
-_Make_OldPhoto()
+# ###### Bash completion for gs-caption ##################################
+_gs_caption()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -51,23 +51,28 @@ _Make_OldPhoto()
    fi
 
    if [ "${cword}" -eq 1 ] ; then
-      _filedir '@(jpeg|jpg|JPG|png|PNG|dng|DNG|cr2|CR2|gif|GIF|webp|pdf)'
-      return
-   elif [ "${cword}" -eq 2 ] ; then
       _filedir
+      return
+   elif [ "${cword}" -lt 4 ] ; then
       return
    else
       case "${prev}" in
-         #  ====== On or off ================================================
-         -D | --defocus    | \
-         -S | --sepia      | \
-         -M | --mottle)
+         # ====== Special case: font name ===================================
+         -F | --font-name)
+            local fonts
+            fonts="$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | sort -u)"
+            local oldifs="${IFS}"
+            IFS=$'\n'
             # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "on off" --  "${cur}") )
+            COMPREPLY=( $(compgen -W "${fonts}" -- "${cur}") )
+            IFS="${oldifs}"
             return
             ;;
-         #  ====== Generic value ============================================
-         -B | --border-size)
+         # ====== Generic value =============================================
+         -S | --font-size  | \
+         -f | --foreground | \
+         -b | --background | \
+         -t | --transparency)
             return
             ;;
       esac
@@ -75,14 +80,16 @@ _Make_OldPhoto()
 
    # ====== All options =====================================================
    local opts="
--D
---defocus
--B
---border-size
+-F
+--font-name
 -S
---sepia
--M
---mottle
+--font-size
+-f
+--foreground
+-b
+--background
+-t
+--transparency
 -q
 --quiet
 -w
@@ -95,4 +102,4 @@ _Make_OldPhoto()
    return 0
 }
 
-complete -F _Make_OldPhoto Make-OldPhoto
+complete -F _gs_caption gs-caption

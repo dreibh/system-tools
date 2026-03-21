@@ -95,11 +95,11 @@ if [ ! -x "${FIGLET}" ] ; then
 fi
 
 
-# ====== Test-GIMP ==========================================================
+# ====== gs-test-gimp ==========================================================
 export GIMP3_DIRECTORY
 GIMP3_DIRECTORY="$(mktemp -d -t gimp-tmp-XXXXXXXXXX)"
 trap 'if [ -d "${GIMP3_DIRECTORY}" ] ; then rm -rf "${GIMP3_DIRECTORY}" ; fi ; export GIMP3_DIRECTORY=""' EXIT INT TERM HUP
-./Test-GIMP || exit-failed
+./gs-test-gimp || exit-failed
 
 
 # ====== Use FractGen to generate the example image =========================
@@ -116,37 +116,37 @@ if [ ! -e "${INPUT3}"  ] ; then
 fi
 
 
-# ====== Resize-with-Cropping ===============================================
-show-script "Resize-with-Cropping"
-./Resize-with-Cropping "${INPUT1}" Image1.png -A 16:9 -W 1920 || exit-failed
-./Resize-with-Cropping "${INPUT2}" Image2.png --aspect 16:9 --width 1920 || exit-failed
-./Resize-with-Cropping "${INPUT3}" Image3.png --aspect keep --width 1920 || exit-failed
+# ====== gs-resize-with-cropping ===============================================
+show-script "gs-resize-with-cropping"
+./gs-resize-with-cropping "${INPUT1}" Image1.png -A 16:9 -W 1920 || exit-failed
+./gs-resize-with-cropping "${INPUT2}" Image2.png --aspect 16:9 --width 1920 || exit-failed
+./gs-resize-with-cropping "${INPUT3}" Image3.png --aspect keep --width 1920 || exit-failed
 
 
-# ====== Make-Caption =======================================================
-show-script "Make-Caption"
-./Make-Caption Caption1.png 1024 42 \
+# ====== gs-caption =======================================================
+show-script "gs-caption"
+./gs-caption Caption1.png 1024 42 \
    "Caption Text $(LC_ALL=C.UTF-8 date)" \
    --font-name "Noto Sans Bold" \
    --font-size 70 \
    --foreground "#02266b" --background "#ffd7cc" --transparency 50 || exit-failed
-./Make-Caption Caption2.png 1920 64 \
+./gs-caption Caption2.png 1920 64 \
    "This is yet another test on $(LC_ALL=C.UTF-8 date)!" \
    -F "Lobster Two Bold Italic" \
    -S 70 \
    -f "#02266b" -b "#ffd700" -t 26 || exit-failed
 
 
-# ====== Make-GlossyText ====================================================
-show-script "Make-GlossyText"
-./Make-GlossyText NorNet1.png "NorNet Testbed" -S 128  || exit-failed
-./Make-GlossyText NorNet2.png "NorNet Testbed" \
+# ====== gs-glossytext ====================================================
+show-script "gs-glossytext"
+./gs-glossytext NorNet1.png "NorNet Testbed" -S 128  || exit-failed
+./gs-glossytext NorNet2.png "NorNet Testbed" \
    --font-name "Noto Sans Bold" \
    --font-size 128 \
    --outline-size 16 \
    --blend-gradient-text "Brushed Aluminium" \
    --blend-gradient-outline "Golden" || exit-failed
-./Make-GlossyText NorNet3.png "NorNet Testbed" \
+./gs-glossytext NorNet3.png "NorNet Testbed" \
    -F "URW Gothic Book Oblique" \
    -S 128 \
    -O 5 \
@@ -154,12 +154,12 @@ show-script "Make-GlossyText"
    -L "Golden" || exit-failed
 
 
-# ====== Make-Mosaic ========================================================
-show-script "Make-Mosaic"
+# ====== gs-mosaic ========================================================
+show-script "gs-mosaic"
 for tileType in triangles squares hexagons octagons ; do
    for tileSurface in smooth rough ; do
       for tileSize in 12 24 ; do
-         ./Make-Mosaic Image1.png "Mosaic1-T${tileType}-S${tileSize}-F${tileSurface}.png" \
+         ./gs-mosaic Image1.png "Mosaic1-T${tileType}-S${tileSize}-F${tileSurface}.png" \
             --tile-type "${tileType}" \
             --tile-size "${tileSize}" \
             --tile-height 4.0 \
@@ -170,7 +170,7 @@ for tileType in triangles squares hexagons octagons ; do
             --color-variation 0.15 \
             --color-averaging on \
             --light-direction 275.5 || exit-failed
-         ./Make-Mosaic Image2.png "Mosaic2-T${tileType}-S${tileSize}-F${tileSurface}.png" \
+         ./gs-mosaic Image2.png "Mosaic2-T${tileType}-S${tileSize}-F${tileSurface}.png" \
             -T "${tileType}" \
             -S "${tileSize}" \
             -H 5.0 \
@@ -185,17 +185,17 @@ for tileType in triangles squares hexagons octagons ; do
    done
 done
 
-# ====== Make-OldPhoto ======================================================
-show-script "Make-OldPhoto"
+# ====== gs-oldphoto ======================================================
+show-script "gs-oldphoto"
 for defocus in on off ; do
    for borderSize in 10 20 ; do
       for sepia in on off ; do
-         ./Make-OldPhoto Image1.png "OldPhoto1-D${defocus}-B${borderSize}-S${sepia}-Mon.png" \
+         ./gs-oldphoto Image1.png "OldPhoto1-D${defocus}-B${borderSize}-S${sepia}-Mon.png" \
             --defocus "${defocus}" \
             --border-size "${borderSize}" \
             --sepia "${sepia}" \
             --mottle on || exit-failed
-         ./Make-OldPhoto Image2.png "OldPhoto2-D${defocus}-B${borderSize}-S${sepia}-Moff.png" \
+         ./gs-oldphoto Image2.png "OldPhoto2-D${defocus}-B${borderSize}-S${sepia}-Moff.png" \
             -D "${defocus}" \
             -B "${borderSize}" \
             -S "${sepia}" \
@@ -204,19 +204,19 @@ for defocus in on off ; do
    done
 done
 
-# ====== Make-Clothify ======================================================
-show-script "Make-Clothify"
+# ====== gs-clothify ======================================================
+show-script "gs-clothify"
 for blurX in 3 6 ; do
    blurY="${blurX}"
    for azimut in 90.0 135.0 180.0 ; do
       for elevation in 10.0 45.0 80.0 ; do
-         ./Make-Clothify Image1.png "Cloth1-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D4.png" \
+         ./gs-clothify Image1.png "Cloth1-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D4.png" \
             --blur-x ${blurX} \
             --blur-y ${blurY} \
             --azimut "${azimut}" \
             --elevation "${elevation}" \
             --depth 4 || exit-failed
-         ./Make-Clothify Image2.png "Cloth2-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D8.png" \
+         ./gs-clothify Image2.png "Cloth2-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D8.png" \
             -X ${blurX} \
             -Y ${blurY} \
             -A "${azimut}" \
@@ -226,29 +226,29 @@ for blurX in 3 6 ; do
    done
 done
 
-# ====== Make-Oilify ========================================================
-show-script "Make-Oilify"
+# ====== gs-oilify ========================================================
+show-script "gs-oilify"
 for maskSize in 4 8 16 ; do
-   ./Make-Oilify Image1.png "Oilify1-S${maskSize}-Ion.png" \
+   ./gs-oilify Image1.png "Oilify1-S${maskSize}-Ion.png" \
       --mask-size "${maskSize}" \
       --intensity-mode on
-   ./Make-Oilify Image2.png "Oilify2-S${maskSize}-Ioff.png" \
+   ./gs-oilify Image2.png "Oilify2-S${maskSize}-Ioff.png" \
       -S "${maskSize}" \
       -I off || exit-failed
 done
 
-# ====== Make-BumpMap =======================================================
-show-script "Make-BumpMap"
+# ====== gs-bumpmap =======================================================
+show-script "gs-bumpmap"
 
-./Make-BumpMap Image3.png Background1.png
-./Make-Mosaic Background1.png Background2.png \
+./gs-bumpmap Image3.png Background1.png
+./gs-mosaic Background1.png Background2.png \
    -T hexagons -S 18 -H 4 -X 4 -F smooth -N 0.5 || exit-failed
 
 for offsetX in 0 32 ; do
    offsetY="${offsetX}"
    for azimut in 90.0 135.0 180.0 ; do
       for elevation in 10.0 45.0 ; do
-         ./Make-BumpMap Image1.png "BumpMap1-X${offsetX}-Y${offsetY}-A${azimut}$-E${elevation}-D20.png" \
+         ./gs-bumpmap Image1.png "BumpMap1-X${offsetX}-Y${offsetY}-A${azimut}$-E${elevation}-D20.png" \
             --azimut "${azimut}" \
             --elevation "${elevation}" \
             --depth 20 \
@@ -258,7 +258,7 @@ for offsetX in 0 32 ; do
             --waterlevel 0.1 \
             --invert off \
             --tiled on || exit-failed
-         ./Make-BumpMap Image2.png "BumpMap2-X${offsetX}-Y${offsetY}-A${azimut}$-E${elevation}-D5.png" \
+         ./gs-bumpmap Image2.png "BumpMap2-X${offsetX}-Y${offsetY}-A${azimut}$-E${elevation}-D5.png" \
             -X ${offsetX} \
             -Y ${offsetY} \
             -A "${azimut}" \
@@ -268,7 +268,7 @@ for offsetX in 0 32 ; do
             -W 0.1 \
             -I off \
             -T off || exit-failed
-         ./Make-BumpMap Image3.png "BumpMap3-X${offsetX}-Y${offsetY}-A${azimut}$-E${elevation}-D30.png" \
+         ./gs-bumpmap Image3.png "BumpMap3-X${offsetX}-Y${offsetY}-A${azimut}$-E${elevation}-D30.png" \
             --azimut "${azimut}" \
             --elevation "${elevation}" \
             --depth 30 \

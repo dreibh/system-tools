@@ -29,8 +29,8 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for Make-Clothify ##################################
-_Make_Clothify()
+# ###### Bash completion for gs-clothify ##################################
+_gs_clothify()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -93,4 +93,4 @@ _Make_Clothify()
    return 0
 }
 
-complete -F _Make_Clothify Make-Clothify
+complete -F _gs_clothify gs-clothify

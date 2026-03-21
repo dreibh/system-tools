@@ -29,51 +29,39 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd March 18, 2026
-.Dt Make-Mosaic 1
-.Os Make-Mosaic
+.Dt gs-clothify 1
+.Os gs-clothify
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm Make-Mosaic
-.Nd applies the GIMP GEGL "Mosaic" filter on an image
+.Nm gs-clothify
+.Nd applies the GIMP Script-Fu "Clothify" filter on an image
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm Make-Mosaic
+.Nm gs-clothify
 input_filename
 output_filename
 .br
-.Op Fl T Ar triangles|squares|hexagons|octagons | --tile-type Ar triangles|squares|hexagons|octagons
+.Op Fl X Ar value | Fl Fl blur-x Ar value
 .br
-.Op Fl S Ar size | Fl Fl tile-size Ar size
+.Op Fl Y Ar value | Fl Fl blur-y Ar value
 .br
-.Op Fl H Ar height | Fl Fl tile-height Ar height
+.Op Fl A Ar bearing | Fl Fl azimut Ar bearing
 .br
-.Op Fl N Ar neatness | Fl Fl tile-neatness Ar neatness
+.Op Fl E Ar bearing | Fl Fl elevation Ar bearing
 .br
-.Op Fl F Ar rough|smooth | Fl Fl tile-surface Ar rough|smooth
-.br
-.Op Fl X Ar spacing | Fl Fl tile-spacing Ar spacing
-.br
-.Op Fl I Ar on|off | Fl Fl tile-allow-split Ar on|off
-.br
-.Op Fl C Ar variation | Fl Fl color-variation Ar variation
-.br
-.Op Fl G Ar on|off | Fl Fl color-averaging Ar on|off
-.br
-.Op Fl A Ar on|off | Fl Fl antialiasing Ar on|off
-.br
-.Op Fl L Ar degrees | Fl Fl light-direction Ar degrees
+.Op Fl D Ar depth | Fl Fl depth Ar depth
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
-.Nm Make-Mosaic
+.Nm gs-clothify
 .Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm Make-Mosaic
-runs GIMP to load an image, and applies the GIMP GEGL "Mosaic" filter
-(details: https://gegl.org/operations/gegl-mosaic.html).
+.Nm gs-clothify
+runs GIMP to load an image, and applies the GIMP Script-Fu "Clothify" filter
+(details: https://docs.gimp.org/3.0/en/script-fu-clothify.html).
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -83,28 +71,16 @@ The following options are available:
 The input image. Any format support by GIMP can be used. The format will be detected automatically.
 .It output_filename
 The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It Fl T Ar triangles|squares|hexagons|octagons | --tile-type Ar triangles|squares|hexagons|octagons
-Sets the tile type: triangles, squares, hexagons, octagons. Default: hexagons.
-.It Fl S Ar size | Fl Fl tile-size Ar size
-Specifies the tile size. Range: 1.0-1000.0. Default: 15.0.
-.It Fl H Ar height | Fl Fl tile-height Ar height
-Specifies the tile height. Range: 1.0-1000.0. Default: 4.0.
-.It Fl N Ar neatness | Fl Fl tile-neatness Ar neatness
-Specifies the tile neatness. Range: 0.0-1.0. Default: 0.65.
-.It Fl F Ar rough|smooth | Fl Fl tile-surface Ar rough|smooth
-Sets the tile surface to rough or smooth. Default: rough.
-.It Fl X Ar spacing | Fl Fl tile-spacing Ar spacing
-Specifies the tile spacing. Range: 0.0-1000.0. Default: 4.0.
-.It Fl I Ar on|off | Fl Fl tile-allow-split Ar on|off
-Turns allowing tile split on sharp edges on or off. Default: on.
-.It Fl C Ar variation | Fl Fl color-variation Ar variation
-Specifies the color variation. Range: 0.0-1.0. Default: 0.2.
-.It Fl G Ar on|off | Fl Fl color-averaging Ar on|off
-Turns color averaging on or off. Default: on.
-.It Fl A Ar on|off | Fl Fl antialiasing Ar on|off
-Turns antialiasing on or off. Default: on.
-.It Fl L Ar degrees | Fl Fl light-direction Ar degrees
-Specifies the light direction in degrees. Range: 0.0-360.0. Default: 135.0.
+.It Fl X Ar value | Fl Fl blur-x Ar value
+Sets the blur X parameter for the "Clothify" filter. Range: 3-100. Default: 3.
+.It Fl Y Ar value | Fl Fl blur-y Ar value
+Sets the blur Y parameter for the "Clothify" filter. Range: 3-100. Default: 3.
+.It Fl A Ar bearing | Fl Fl azimut Ar bearing
+Sets the azimut parameter for the "Clothify" filter. Range: 0.0-360.0. Default: 135.0.
+.It Fl E Ar bearing | Fl Fl elevation Ar bearing
+Sets the elevation parameter for the "Clothify" filter. Range: 0.5-90.0. Default: 45.0.
+.It Fl D Ar depth | Fl Fl depth Ar depth
+Sets the depth parameter for the "Clothify" filter. Range: 1-65. Default: 5.
 .It Fl w | Fl Fl verbose
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
@@ -113,7 +89,7 @@ Prints command-line parameters.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It Make-Mosaic Bergen.jpeg Bergen-Hexagons.png --tile-size 24 --tile-height 4 --tile-spacing 4 --tile-type hexagons --tile-surface rough
-.It Make-Mosaic Bergen.jpeg Bergen-Octagons.webp -S 24 -H 4 -X 4 -T octagons -F smooth -T hexagons -N 1.0
-.It Make-Mosaic Portobello.jpeg Portobello-Octagons.jpeg -S 32 -H 8 -X 8 -T octagons -F smooth -N 1.0
+.It gs-clothify Bergen.jpeg Bergen-Clothify.jpeg
+.It gs-clothify Bergen.jpeg Bergen-Clothify-with-Border8.jpeg --depth 8 --verbose
+.It gs-clothify Bergen.jpeg Bergen-Clothify-with-Depth5.jpeg -D 5
 .El

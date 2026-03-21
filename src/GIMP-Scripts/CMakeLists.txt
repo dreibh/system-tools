@@ -33,15 +33,15 @@
 #############################################################################
 
 SET(gimpScripts
-   Make-BumpMap
-   Make-Caption
-   Make-Clothify
-   Make-GlossyText
-   Make-Mosaic
-   Make-Oilify
-   Make-OldPhoto
-   Resize-with-Cropping
-   Test-GIMP
+   gs-bumpmap
+   gs-caption
+   gs-clothify
+   gs-glossytext
+   gs-mosaic
+   gs-oilify
+   gs-oldphoto
+   gs-resize-with-cropping
+   gs-test-gimp
 )
 
 FOREACH(gimpScript IN LISTS gimpScripts)

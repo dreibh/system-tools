@@ -33,8 +33,8 @@ set -eu
 
 
 # Examples:
-# Make-GlossyText NorNet1.png "NorNet Testbed" 128 --border-size 5 --colorscheme Golden --font "Noto Sans Regular"
-# Make-GlossyText NorNet2.png "NorNet Testbed" 128 --border-size 5 --colorscheme "Brushed Aluminium" --font "Comic Sans MS Bold"
+# gs-glossytext NorNet1.png "NorNet Testbed" 128 --border-size 5 --colorscheme Golden --font "Noto Sans Regular"
+# gs-glossytext NorNet2.png "NorNet Testbed" 128 --border-size 5 --colorscheme "Brushed Aluminium" --font "Comic Sans MS Bold"
 # Hint: List available fonts with "fc-list"!
 
 

@@ -29,17 +29,17 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd March 18, 2026
-.Dt Make-Caption 1
-.Os Make-Caption
+.Dt gs-caption 1
+.Os gs-caption
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm Make-Caption
+.Nm gs-caption
 .Nd generates a caption image with given text using a configurable font
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm Make-Caption
+.Nm gs-caption
 output_filename
 .br
 caption_width
@@ -60,11 +60,11 @@ caption_text
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
-.Nm Make-Caption
+.Nm gs-caption
 .Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm Make-Caption
+.Nm gs-caption
 runs GIMP to
 generate a caption image with given text using a specific font. The foreground and background color, transparency, font, and font size are configurable.
 .Pp
@@ -99,8 +99,8 @@ Prints command-line parameters.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It Make-Caption Caption1.png 1024 42 \(dqTest!\(dq
-.It Make-Caption Caption2.png 1024 42 \(dqThis is a test!\(dq --font-name \(dqNoto Sans Bold\(dq --font-size 70 --foreground \(dq#02266b\(dq --background \(dq#ffd7cc\(dq --transparency 50
-.It Make-Caption Caption3.png 1920 64 \(dqAnother test!\(dq -F \(dqLobster Two Bold Italic\(dq -S 70 -f \(dq#02266b\(dq -b \(dq#ffd700\(dq -t 26
+.It gs-caption Caption1.png 1024 42 \(dqTest!\(dq
+.It gs-caption Caption2.png 1024 42 \(dqThis is a test!\(dq --font-name \(dqNoto Sans Bold\(dq --font-size 70 --foreground \(dq#02266b\(dq --background \(dq#ffd7cc\(dq --transparency 50
+.It gs-caption Caption3.png 1920 64 \(dqAnother test!\(dq -F \(dqLobster Two Bold Italic\(dq -S 70 -f \(dq#02266b\(dq -b \(dq#ffd700\(dq -t 26
 .It fc-list\~: family style -f \(dq%{family[0]} %{style[0]}\[rs]n\(dq | sort -u
 .El

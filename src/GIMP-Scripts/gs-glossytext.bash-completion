@@ -29,8 +29,8 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for Make-Caption ##################################
-_Make_Caption()
+# ###### Bash completion for gs-glossytext ################################
+_gs_caption()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -53,7 +53,7 @@ _Make_Caption()
    if [ "${cword}" -eq 1 ] ; then
       _filedir
       return
-   elif [ "${cword}" -lt 4 ] ; then
+   elif [ "${cword}" -lt 3 ] ; then
       return
    else
       case "${prev}" in
@@ -68,11 +68,66 @@ _Make_Caption()
             IFS="${oldifs}"
             return
             ;;
+         # ====== Special case: gradient ====================================
+         -G | --blend-gradient-text | \
+         -L | --blend-gradient-outline)
+            # Suggest available gradients by GIMP's .ggr file names:
+            local gradients
+            gradients="$(
+(
+   for b in /usr/local/share /usr/share ; do
+     if [ -d $b/gimp ] ; then
+        find $b/gimp -name "*.ggr" -exec basename {} .ggr \;
+     fi
+  done
+) | tr '_' ' ' | sort -u
+)"
+            local oldifs="${IFS}"
+            IFS=$'\n'
+            # shellcheck disable=SC2207
+            COMPREPLY=( $(compgen -W "${gradients}" -- "${cur}") )
+            IFS="${oldifs}"
+            return
+            ;;
+         # ====== Special case: pattern =====================================
+         -I | --pattern-text    | \
+         -J | --pattern-outline | \
+         -R | --pattern-overlay)
+            # Suggest available patterns by GIMP's .pat file names:
+            local patterns
+            patterns="$(
+(
+   for b in /usr/local/share /usr/share ; do
+     if [ -d $b/gimp ] ; then
+        find $b/gimp -name "*.pat" -exec file {} \;
+     fi
+  done
+) | sed -e 's/^.*, //' | sort -u
+)"
+            local oldifs="${IFS}"
+            IFS=$'\n'
+            # shellcheck disable=SC2207
+            COMPREPLY=( $(compgen -W "${patterns}" -- "${cur}") )
+            IFS="${oldifs}"
+            return
+            ;;
+         #  ====== On or off ================================================
+         -g | --blend-gradient-text-reverse    | \
+         -l | --blend-gradient-outline-reverse | \
+         -i | --use-pattern-text               | \
+         -j | --use-pattern-outline            | \
+         -r | --use-pattern-overlay            | \
+         -s | --use-shadow)
+            # shellcheck disable=SC2207
+            COMPREPLY=( $(compgen -W "on off" --  "${cur}") )
+            return
+            ;;
          # ====== Generic value =============================================
-         -S | --font-size  | \
-         -f | --foreground | \
-         -b | --background | \
-         -t | --transparency)
+         -S | --font-size        | \
+         -O | --outline-size     | \
+         -B | --background-color | \
+         -X | --shadow-offset-x  | \
+         -Y | --shadow-offset-y)
             return
             ;;
       esac
@@ -84,12 +139,36 @@ _Make_Caption()
 --font-name
 -S
 --font-size
--f
---foreground
--b
---background
--t
---transparency
+-G
+--blend-gradient-text
+-g
+--blend-gradient-text-reverse
+-L
+--blend-gradient-outline
+-l
+--blend-gradient-outline-reverse
+-O
+--outline-size
+-B
+--background-color
+-I
+--pattern-text
+-i
+--use-pattern-text
+-J
+--pattern-outline
+-j
+--use-pattern-outline
+-R
+--pattern-overlay
+-r
+--use-pattern-overlay
+-s
+--use-shadow
+-X
+--shadow-offset-x
+-Y
+--shadow-offset-y
 -q
 --quiet
 -w
@@ -102,4 +181,4 @@ _Make_Caption()
    return 0
 }
 
-complete -F _Make_Caption Make-Caption
+complete -F _gs_caption gs-glossytext

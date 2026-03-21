@@ -29,39 +29,33 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd March 18, 2026
-.Dt Make-Clothify 1
-.Os Make-Clothify
+.Dt gs-oilify 1
+.Os gs-oilify
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm Make-Clothify
-.Nd applies the GIMP Script-Fu "Clothify" filter on an image
+.Nm gs-oilify
+.Nd applies the GIMP GEGL "Oilify" filter on an image
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm Make-Clothify
+.Nm gs-oilify
 input_filename
 output_filename
 .br
-.Op Fl X Ar value | Fl Fl blur-x Ar value
+.Op Fl S Ar masksize | Fl Fl mask-size Ar masksize
 .br
-.Op Fl Y Ar value | Fl Fl blur-y Ar value
-.br
-.Op Fl A Ar bearing | Fl Fl azimut Ar bearing
-.br
-.Op Fl E Ar bearing | Fl Fl elevation Ar bearing
-.br
-.Op Fl D Ar depth | Fl Fl depth Ar depth
+.Op Fl I on|off | Fl Fl intensity-mode Ar on|off
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
-.Nm Make-Clothify
+.Nm gs-oilify
 .Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm Make-Clothify
-runs GIMP to load an image, and applies the GIMP Script-Fu "Clothify" filter
-(details: https://docs.gimp.org/3.0/en/script-fu-clothify.html).
+.Nm gs-oilify
+runs GIMP to load an image, and applies the GIMP GEGL "Oilify" filter
+(details: https://gegl.org/operations/gegl-oilify.html).
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -71,16 +65,10 @@ The following options are available:
 The input image. Any format support by GIMP can be used. The format will be detected automatically.
 .It output_filename
 The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It Fl X Ar value | Fl Fl blur-x Ar value
-Sets the blur X parameter for the "Clothify" filter. Range: 3-100. Default: 3.
-.It Fl Y Ar value | Fl Fl blur-y Ar value
-Sets the blur Y parameter for the "Clothify" filter. Range: 3-100. Default: 3.
-.It Fl A Ar bearing | Fl Fl azimut Ar bearing
-Sets the azimut parameter for the "Clothify" filter. Range: 0.0-360.0. Default: 135.0.
-.It Fl E Ar bearing | Fl Fl elevation Ar bearing
-Sets the elevation parameter for the "Clothify" filter. Range: 0.5-90.0. Default: 45.0.
-.It Fl D Ar depth | Fl Fl depth Ar depth
-Sets the depth parameter for the "Clothify" filter. Range: 1-65. Default: 5.
+.It Fl S Ar masksize | Fl Fl mask-size Ar masksize
+Specifies the mask size. Range: 2-200. Default: 8
+.It Fl I on|off | Fl Fl intensity-mode Ar on|off
+Turns intensity mode on or off. Default: on.
 .It Fl w | Fl Fl verbose
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
@@ -89,7 +77,7 @@ Prints command-line parameters.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It Make-Clothify Bergen.jpeg Bergen-Clothify.jpeg
-.It Make-Clothify Bergen.jpeg Bergen-Clothify-with-Border8.jpeg --depth 8 --verbose
-.It Make-Clothify Bergen.jpeg Bergen-Clothify-with-Depth5.jpeg -D 5
+.It gs-oilify Bergen.jpeg Bergen-Hexagons.png --tile-size 24 --tile-height 4 --tile-spacing 4 --tile-type hexagons --tile-surface rough
+.It gs-oilify Bergen.jpeg Bergen-Octagons.webp -S 24 -H 4 -X 4 -T octagons -F smooth -T hexagons -N 1.0
+.It gs-oilify Portobello.jpeg Portobello-Octagons.jpeg -S 32 -H 8 -X 8 -T octagons -F smooth -N 1.0
 .El

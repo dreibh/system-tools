@@ -29,8 +29,8 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for Make-Oilify ####################################
-_Make_Oilify()
+# ###### Bash completion for gs-oldphoto ##################################
+_gs_oldphoto()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -59,13 +59,15 @@ _Make_Oilify()
    else
       case "${prev}" in
          #  ====== On or off ================================================
-         -I | --intensity-mode)
+         -D | --defocus    | \
+         -S | --sepia      | \
+         -M | --mottle)
             # shellcheck disable=SC2207
             COMPREPLY=( $(compgen -W "on off" --  "${cur}") )
             return
             ;;
          #  ====== Generic value ============================================
-         -S | --mask-size)
+         -B | --border-size)
             return
             ;;
       esac
@@ -73,8 +75,14 @@ _Make_Oilify()
 
    # ====== All options =====================================================
    local opts="
+-D
+--defocus
+-B
+--border-size
 -S
---mask-size
+--sepia
+-M
+--mottle
 -q
 --quiet
 -w
@@ -87,4 +95,4 @@ _Make_Oilify()
    return 0
 }
 
-complete -F _Make_Oilify Make-Oilify
+complete -F _gs_oldphoto gs-oldphoto

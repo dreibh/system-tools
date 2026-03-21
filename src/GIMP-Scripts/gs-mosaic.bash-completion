@@ -29,8 +29,8 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for Make-BumpMap ###################################
-_Make_BumpMap()
+# ###### Bash completion for gs-mosaic ####################################
+_gs_mosaic()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -58,22 +58,33 @@ _Make_BumpMap()
       return
    else
       case "${prev}" in
+         #  ====== Special value: tile-type =================================
+         -T | --tile-type)
+            # shellcheck disable=SC2207
+            COMPREPLY=( $(compgen -W "triangles squares hexagons octagons" --  "${cur}") )
+            return
+            ;;
+         #  ====== Special value: tile-surface ==============================
+         -F | --tile-surface)
+            # shellcheck disable=SC2207
+            COMPREPLY=( $(compgen -W "smooth rough" --  "${cur}") )
+            return
+            ;;
          #  ====== On or off ================================================
-         -C | --compensate-darkening | \
-         -I | --invert               | \
-         -T | --tiled)
+         -G | --color-averaging | \
+         -A | --antialiasing    | \
+         -I | --tile-allow-split)
             # shellcheck disable=SC2207
             COMPREPLY=( $(compgen -W "on off" --  "${cur}") )
             return
             ;;
          #  ====== Generic value ============================================
-         -A | --azimut     | \
-         -E | --elevation  | \
-         -D | --depth      | \
-         -X | --offset-x   | \
-         -Y | --offset-y   | \
-         -W | --waterlevel | \
-         -B | --ambient)
+         -S | --tile-size       | \
+         -H | --tile-height     | \
+         -N | --tile-neatness   | \
+         -X | --tile-spacing    | \
+         -C | --color-variation | \
+         -L | --light-direction)
             return
             ;;
       esac
@@ -81,26 +92,28 @@ _Make_BumpMap()
 
    # ====== All options =====================================================
    local opts="
--C
---compensate-darkening
--I
---invert
 -T
---tiled
--A
---azimut
--E
---elevation
--D
---depth
+--tile-type
+-S
+--tile-size
+-H
+--tile-height
+-N
+--tile-neatness
+-F
+--tile-surface
 -X
---offset-x
--Y
---offset-y
--W
---waterlevel
--B
---ambient
+--tile-spacing
+-I
+--tile-allow-split
+-C
+--color-variation
+-G
+--color-averaging
+-A
+--antialiasing
+-L
+--light-direction
 -q
 --quiet
 -w
@@ -113,4 +126,4 @@ _Make_BumpMap()
    return 0
 }
 
-complete -F _Make_BumpMap Make-BumpMap
+complete -F _gs_mosaic gs-mosaic

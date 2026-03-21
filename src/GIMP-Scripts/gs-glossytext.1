@@ -29,17 +29,17 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd March 20, 2026
-.Dt Make-GlossyText 1
-.Os Make-GlossyText
+.Dt gs-glossytext 1
+.Os gs-glossytext
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm Make-GlossyText
+.Nm gs-glossytext
 .Nd applies the GIMP Script-Fu "Glossy" filter on an image
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm Make-GlossyText
+.Nm gs-glossytext
 output_filename
 text
 .Op Fl F Ar font | Fl Fl font-name Ar font
@@ -71,11 +71,11 @@ text
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
-.Nm Make-GlossyText
+.Nm gs-glossytext
 .Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm Make-GlossyText
+.Nm gs-glossytext
 runs GIMP to load an image, and applies the GIMP Script-Fu "Glossy" filter
 (details: https://docs.gimp.org/2.8/en/script-fu-glossy-logo-alpha.html).
 .Pp
@@ -136,13 +136,13 @@ Prints command-line parameters.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It Make-GlossyText NorNet1.png \(dqNorNet Testbed\(dq --font-name \(dqNoto Sans Bold\(dq --font-size 128 --outline-size 5
-.It Make-GlossyText NorNet2.png \(dqNorNet Testbed\(dq --font-name \(dqComic Sans MS Bold\(dq --font-size 256 --outline-size 32
-.It Make-GlossyText NorNet3.png \(dqNorNet Testbed\(dq --font-name \(dqComic Sans MS Bold\(dq --font-size 256 --outline-size 32 --blend-gradient-text \(dqBrushed Aluminium\(dq --blend-gradient-outline \(dqGolden\(dq
-.It Make-GlossyText Test1.png \(dqTest\(dq --font-size 256 --outline-size 32 --blend-gradient-text \(dqLand 1\(dq  --pattern-outline \(dqMarble #3\(dq --use-pattern-outline on
-.It Make-GlossyText Test2.png \(dqTest\(dq --font-size 256 --outline-size 16 -I \(dqMarble #1\(dq -i on  -J \(dqMarble #2\(dq -j on
-.It Make-GlossyText Test3.png \(dqTest\(dq --font-size 256 --outline-size 16 -G \(dqYellow Orange\(dq -L \(dqCold Steel\(dq
-.It Make-GlossyText Test4.png \(dqGenerated on $(date -R)\(dq -F \(dqOpen Sans Bold\(dq -S 64 --use-shadow off
-.It Make-GlossyText M2EC.webp \(dqM²EC 2026\(dq --font-name \(dqLobster Two Bold Italic\(dq --font-size 128 --outline-size 12
-.It Make-GlossyText Chinese.png \(dq托马斯博士\(dq -F \(dqNoto Sans Bold\(dq -S 256 -O 24
+.It gs-glossytext NorNet1.png \(dqNorNet Testbed\(dq --font-name \(dqNoto Sans Bold\(dq --font-size 128 --outline-size 5
+.It gs-glossytext NorNet2.png \(dqNorNet Testbed\(dq --font-name \(dqComic Sans MS Bold\(dq --font-size 256 --outline-size 32
+.It gs-glossytext NorNet3.png \(dqNorNet Testbed\(dq --font-name \(dqComic Sans MS Bold\(dq --font-size 256 --outline-size 32 --blend-gradient-text \(dqBrushed Aluminium\(dq --blend-gradient-outline \(dqGolden\(dq
+.It gs-glossytext Test1.png \(dqTest\(dq --font-size 256 --outline-size 32 --blend-gradient-text \(dqLand 1\(dq  --pattern-outline \(dqMarble #3\(dq --use-pattern-outline on
+.It gs-glossytext Test2.png \(dqTest\(dq --font-size 256 --outline-size 16 -I \(dqMarble #1\(dq -i on  -J \(dqMarble #2\(dq -j on
+.It gs-glossytext Test3.png \(dqTest\(dq --font-size 256 --outline-size 16 -G \(dqYellow Orange\(dq -L \(dqCold Steel\(dq
+.It gs-glossytext Test4.png \(dqGenerated on $(date -R)\(dq -F \(dqOpen Sans Bold\(dq -S 64 --use-shadow off
+.It gs-glossytext M2EC.webp \(dqM²EC 2026\(dq --font-name \(dqLobster Two Bold Italic\(dq --font-size 128 --outline-size 12
+.It gs-glossytext Chinese.png \(dq托马斯博士\(dq -F \(dqNoto Sans Bold\(dq -S 256 -O 24
 .El

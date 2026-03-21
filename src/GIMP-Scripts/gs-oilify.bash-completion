@@ -29,8 +29,8 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for Make-Mosaic ####################################
-_Make_Mosaic()
+# ###### Bash completion for gs-oilify ####################################
+_gs_oilify()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -58,33 +58,14 @@ _Make_Mosaic()
       return
    else
       case "${prev}" in
-         #  ====== Special value: tile-type =================================
-         -T | --tile-type)
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "triangles squares hexagons octagons" --  "${cur}") )
-            return
-            ;;
-         #  ====== Special value: tile-surface ==============================
-         -F | --tile-surface)
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "smooth rough" --  "${cur}") )
-            return
-            ;;
          #  ====== On or off ================================================
-         -G | --color-averaging | \
-         -A | --antialiasing    | \
-         -I | --tile-allow-split)
+         -I | --intensity-mode)
             # shellcheck disable=SC2207
             COMPREPLY=( $(compgen -W "on off" --  "${cur}") )
             return
             ;;
          #  ====== Generic value ============================================
-         -S | --tile-size       | \
-         -H | --tile-height     | \
-         -N | --tile-neatness   | \
-         -X | --tile-spacing    | \
-         -C | --color-variation | \
-         -L | --light-direction)
+         -S | --mask-size)
             return
             ;;
       esac
@@ -92,28 +73,8 @@ _Make_Mosaic()
 
    # ====== All options =====================================================
    local opts="
--T
---tile-type
 -S
---tile-size
--H
---tile-height
--N
---tile-neatness
--F
---tile-surface
--X
---tile-spacing
--I
---tile-allow-split
--C
---color-variation
--G
---color-averaging
--A
---antialiasing
--L
---light-direction
+--mask-size
 -q
 --quiet
 -w
@@ -126,4 +87,4 @@ _Make_Mosaic()
    return 0
 }
 
-complete -F _Make_Mosaic Make-Mosaic
+complete -F _gs_oilify gs-oilify

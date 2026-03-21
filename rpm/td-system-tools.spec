@@ -276,32 +276,32 @@ Recommends: urw-base35-fonts
  desktops, boot splashes, etc. with some branding.
 
 %files gimp-scripts
-%{_bindir}/Make-BumpMap
-%{_bindir}/Make-Caption
+%{_bindir}/gs-bumpmap
+%{_bindir}/gs-caption
 %{_bindir}/Make-Cloth
-%{_bindir}/Make-GlossyText
-%{_bindir}/Make-Mosaic
+%{_bindir}/gs-glossytext
+%{_bindir}/gs-mosaic
 %{_bindir}/Make-OilPainting
-%{_bindir}/Make-OldPhoto
-%{_bindir}/Resize-with-Cropping
+%{_bindir}/gs-oldphoto
+%{_bindir}/gs-resize-with-cropping
 %{_bindir}/Test-Gimp
-%{_datadir}/bash-completion/completions/Make-BumpMap
-%{_datadir}/bash-completion/completions/Make-Caption
+%{_datadir}/bash-completion/completions/gs-bumpmap
+%{_datadir}/bash-completion/completions/gs-caption
 %{_datadir}/bash-completion/completions/Make-Cloth
-%{_datadir}/bash-completion/completions/Make-GlossyText
-%{_datadir}/bash-completion/completions/Make-Mosaic
+%{_datadir}/bash-completion/completions/gs-glossytext
+%{_datadir}/bash-completion/completions/gs-mosaic
 %{_datadir}/bash-completion/completions/Make-OilPainting
-%{_datadir}/bash-completion/completions/Make-OldPhoto
-%{_datadir}/bash-completion/completions/Resize-with-Cropping
+%{_datadir}/bash-completion/completions/gs-oldphoto
+%{_datadir}/bash-completion/completions/gs-resize-with-cropping
 %{_datadir}/bash-completion/completions/Test-Gimp
-%{_mandir}/man1/Make-BumpMap.1
-%{_mandir}/man1/Make-Caption.1
+%{_mandir}/man1/gs-bumpmap.1
+%{_mandir}/man1/gs-caption.1
 %{_mandir}/man1/Make-Cloth.1
-%{_mandir}/man1/Make-GlossyText.1
-%{_mandir}/man1/Make-Mosaic.1
+%{_mandir}/man1/gs-glossytext.1
+%{_mandir}/man1/gs-mosaic.1
 %{_mandir}/man1/Make-OilPainting.1
-%{_mandir}/man1/Make-OldPhoto.1
-%{_mandir}/man1/Resize-with-Cropping.1
+%{_mandir}/man1/gs-oldphoto.1
+%{_mandir}/man1/gs-resize-with-cropping.1
 %{_mandir}/man1/Test-Gimp.1
 
 

@@ -29,17 +29,17 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd March 21, 2026
-.Dt Make-BumpMap 1
-.Os Make-BumpMap
+.Dt gs-bumpmap 1
+.Os gs-bumpmap
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm Make-BumpMap
+.Nm gs-bumpmap
 .Nd applies the GIMP GEGL "Bump Map" filter on an image
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm Make-BumpMap
+.Nm gs-bumpmap
 input_filename
 output_filename
 .br
@@ -75,11 +75,11 @@ output_filename
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
-.Nm Make-BumpMap
+.Nm gs-bumpmap
 .Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm Make-BumpMap
+.Nm gs-bumpmap
 runs GIMP to load an image, and applies the GIMP GEGL "Bump Map" filter
 (details: https://gegl.org/operations/gegl-bump-map.html) as well as
 "Hue-Saturation" adjustment
@@ -131,6 +131,6 @@ Prints command-line parameters.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It Make-BumpMap Image1.png BumpMap1.png
-.It Make-BumpMap Image3.png BumpMap3.png --hue-range all -hue-offset 120.0 --lightness -15.0
+.It gs-bumpmap Image1.png BumpMap1.png
+.It gs-bumpmap Image3.png BumpMap3.png --hue-range all -hue-offset 120.0 --lightness -15.0
 .El

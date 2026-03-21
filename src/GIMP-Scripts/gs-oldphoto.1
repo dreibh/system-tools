@@ -29,17 +29,17 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd March 18, 2026
-.Dt Make-OldPhoto 1
-.Os Make-OldPhoto
+.Dt gs-oldphoto 1
+.Os gs-oldphoto
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm Make-OldPhoto
+.Nm gs-oldphoto
 .Nd applies the GIMP Script-Fu "Old Photo" filter on an image
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm Make-OldPhoto
+.Nm gs-oldphoto
 input_filename
 output_filename
 .br
@@ -53,11 +53,11 @@ output_filename
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
-.Nm Make-OldPhoto
+.Nm gs-oldphoto
 .Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm Make-OldPhoto
+.Nm gs-oldphoto
 runs GIMP to load an image, and applies the GIMP Script-Fu "Old Photo" filter
 (details: https://docs.gimp.org/3.0/en/script-fu-old-photo.html).
 .Pp
@@ -85,8 +85,8 @@ Prints command-line parameters.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It Make-OldPhoto Bergen.jpeg Bergen-OldPhoto.jpeg
-.It Make-OldPhoto Bergen.jpeg Bergen-OldPhoto-with-Border20.jpeg --border-size 20 --verbose
-.It Make-OldPhoto Bergen.jpeg Bergen-OldPhoto-with-Border40.jpeg -B 40
-.It Make-OldPhoto Portobello.jpeg Portobello-OldPhoto.jpeg --verbose --sepia off --mottle on
+.It gs-oldphoto Bergen.jpeg Bergen-OldPhoto.jpeg
+.It gs-oldphoto Bergen.jpeg Bergen-OldPhoto-with-Border20.jpeg --border-size 20 --verbose
+.It gs-oldphoto Bergen.jpeg Bergen-OldPhoto-with-Border40.jpeg -B 40
+.It gs-oldphoto Portobello.jpeg Portobello-OldPhoto.jpeg --verbose --sepia off --mottle on
 .El
