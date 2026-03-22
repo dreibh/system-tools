@@ -113,9 +113,9 @@ while [ $# -gt 0 ] ; do
             # shellcheck disable=SC2001
             subject="$(echo "${BASH_REMATCH[2]}" | sed -e 's/\(CN = \)\([^,]*\)/\x1b[4m\1\2\x1b[24m/')"
          elif [[ "${line}" =~ ^(notBefore=)(.*)$ ]] ; then
-            validityFrom="${BASH_REMATCH[2]}"
+            validityFrom="$(TZ=UTC date -d "${BASH_REMATCH[2]}")"
          elif [[ "${line}" =~ ^(notAfter=)(.*)$ ]] ; then
-            validityTo="${BASH_REMATCH[2]}"
+            validityTo="$(TZ=UTC date -d "${BASH_REMATCH[2]}")"
          elif [[ "${line}" =~ ^([ \t]*)(X509v3 )(.*)(:[[:space:]]*)(.*)$ ]] ; then
             extension="${BASH_REMATCH[3]}"
             critical="${BASH_REMATCH[5]}"
