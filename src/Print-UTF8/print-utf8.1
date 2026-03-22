@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd November 28, 2025
+.Dd March 22, 2026
 .Dt print-utf8 1
 .Os print-utf8
 .\" ###### Name #############################################################
@@ -143,9 +143,6 @@ Prints program version.
 .It print-utf8 -a \[dq]😀 Test 😀\[dq]
 .It print-utf8 --terminal-info
 .It print-utf8 -n -s \[dq]\[rs]e[1;34m╔\[dq] \[dq]═\[dq] \[dq]╗\[rs]e[0m\[dq]\~;
-.It print-utf8 -h
-.It print-utf8 --help
-.It print-utf8 --version
 .br
 date +\[dq]%d. %m. %Y %H:%M:%S\[dq] | figlet -w 128 | \[rs]
 .br
@@ -168,4 +165,7 @@ print-utf8 -n -s \[dq]\[rs]e[1;31;40;5m█\[dq] \[dq]▄\[dq] \[dq]█\[rs]e[0m\
 ls / | print-utf8 -n --multiline-indent -42 \[dq]\[rs]e[1;32m│\[rs]e[34m\[dq] \[dq]\[rs]e[1;32m│\[rs]e[0m\[dq]\~;
 .br
 print-utf8 -n -x 44 -s \[dq]\[rs]e[1;32m╘\[dq] \[dq]═\[dq] \[dq]╛\[rs]e[0m\[dq]
+.It print-utf8 -h
+.It print-utf8 --help
+.It print-utf8 --version
 .El
