@@ -136,11 +136,11 @@ while [ $# -gt 0 ] ; do
                      "$(gettext "Range:")" "$(TZ=UTC date -d "${lastUpdate}")" "$(TZ=UTC date -d "${nextUpdate}")"
 
                   entry=0
-                  for serialNumber in $(echo "${!serialNumbers[@]}" | tr ' ' '\n' | sort) ; do
+                  for serialNumber in $(echo "${!serialNumbers[@]}" | tr ' ' '\n' | LC_ALL=C.UTF8 sort) ; do
                      revokationDate="$(TZ=UTC date -d "${serialNumbers[${serialNumber}]}")"
                      entry=$((entry + 1))
                      echo -en " \x1b[31m$(eval_gettext "#\${entry}.") "
-                     eval_gettext "Ccertificate ${serialNumber} revoked on ${revokationDate}"
+                     eval_gettext "Certificate \${serialNumber} revoked on \${revokationDate}"
                      echo -e "\x1b[0m"
                   done
                done
