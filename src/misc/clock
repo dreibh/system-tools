@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -eu
+
+while true ; do
+
+   (
+   echo -en "\x1b[H\x1b[2J"
+
+   print-utf8 -n -s "\e[1;34m╔" "═" "╗\e[0m" ;
+                  date +"%d. %m. %Y %H:%M:%S" | figlet -w 128 | \
+                  print-utf8 -n -C "\e[1;34m║🕑\e[1;31m" "\e[1;34m🕑║\e[0m" ;
+                  print-utf8 -n -s "\e[1;34m╚" "═" "╝\e[0m"
+   ) | buffer
+
+   sleep 1
+
+done
