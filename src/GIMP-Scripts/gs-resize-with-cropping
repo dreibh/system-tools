@@ -96,7 +96,7 @@ OUTPUT_FILENAME="$2"
 outputAspectRatio=
 if [ "${ASPECT}" != "keep" ] ; then
    if [[ "${ASPECT}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)([:x])([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
-      outputAspectRatio=$(LC_NUMERIC=C awk "BEGIN { print ${BASH_REMATCH[1]}/${BASH_REMATCH[3]} }")
+      outputAspectRatio=$(LC_NUMERIC=C awk "BEGIN { printf \"%1.16f\\n\", ${BASH_REMATCH[1]}/${BASH_REMATCH[3]} }")
    else
       if [[ "${ASPECT}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
          outputAspectRatio="${BASH_REMATCH[1]}"
@@ -143,15 +143,9 @@ if [ ! -f "${INPUT_FILENAME}" ] ; then
    exit 1
 fi
 inputImageSize="$("${GM}" identify -format "%wx%h" "${INPUT_FILENAME}")"
-# shellcheck disable=SC2001
-inputWidth="$(echo "${inputImageSize}" | sed -e "s/x[0-9]*$//")"
-# shellcheck disable=SC2001
-inputHeight="$(echo "${inputImageSize}" | sed -e "s/^[0-9]*x//")"
-inputAspectRatio="$(LC_NUMERIC=C awk "BEGIN { printf \"%.16f\\n\", ${inputWidth}/${inputHeight} }")"
-if [[ "${inputAspectRatio}" =~ ^- ]] ; then
-   # Input image is in portrait format => convert aspect
-   inputAspectRatio="$(LC_NUMERIC=C awk "BEGIN { printf \"%.16f\\n\", 1.0/${inputAspectRatio} }")"
-fi
+inputWidth="${inputImageSize/x[0-9]*/}"
+inputHeight="${inputImageSize/[0-9]*x/}"
+inputAspectRatio="$(LC_NUMERIC=C awk "BEGIN { printf \"%1.16f\\n\", ${inputWidth}/${inputHeight} }")"
 if [ "${outputAspectRatio}" == "" ] ; then
    outputAspectRatio="${inputAspectRatio}"
 fi
@@ -160,11 +154,26 @@ if [ ${VERBOSE} -ne 0 ] ; then
 fi
 
 
+# ====== Crop image =========================================================
+if [[ "$(LC_NUMERIC=C awk "BEGIN { print ${inputAspectRatio}-${outputAspectRatio} }")" =~ ^- ]] ; then   # inputAspect < outputAspectRatio
+   croppedInputWidth=${inputWidth}
+   croppedInputHeight="$(LC_NUMERIC=C awk "BEGIN { print int( (${croppedInputWidth}/${outputAspectRatio}) + 0.5) }")"
+else
+   croppedInputHeight=${inputHeight}
+   croppedInputWidth="$(LC_NUMERIC=C awk "BEGIN { print int( (${inputHeight}*${outputAspectRatio}) + 0.5) }")"
+fi
+cx="$(LC_NUMERIC=C awk "BEGIN { print int(((${inputWidth}-${croppedInputWidth}) / 2) + 0.5) }")"
+cy="$(LC_NUMERIC=C awk "BEGIN { print int(((${inputHeight}-${croppedInputHeight}) / 2) + 0.5) }")"
+if [ ${VERBOSE} -ne 0 ] ; then
+   echo "Crop: ${croppedInputWidth}*${croppedInputHeight} [cx=${cx} cy=${cy}] (${outputAspectRatio}:1)"
+fi
+
+
 # ===== Set new width or height =============================================
 if [ "${NEW_WIDTH}" != "" ] ; then
-   NEW_HEIGHT="$(LC_NUMERIC=C awk "BEGIN { print int(${NEW_WIDTH}/${outputAspectRatio}) }")"
+   NEW_HEIGHT="$(LC_NUMERIC=C awk "BEGIN { print int((${NEW_WIDTH}/${outputAspectRatio}) + 0.5) }")"
 elif [ "${NEW_HEIGHT}" != "" ] ; then
-   NEW_WIDTH="$(LC_NUMERIC=C awk "BEGIN { print int(${NEW_HEIGHT}*${outputAspectRatio}) }")"
+   NEW_WIDTH="$(LC_NUMERIC=C awk "BEGIN { print int((${NEW_HEIGHT}*${outputAspectRatio}) + 0.5) }")"
 else
    NEW_WIDTH="${inputWidth}"
    NEW_HEIGHT="${inputHeight}"
@@ -174,28 +183,13 @@ if [ ${VERBOSE} -ne 0 ] ; then
 fi
 
 
-# ====== Crop image =========================================================
-if [[ "$(LC_NUMERIC=C awk "BEGIN { print ${inputAspectRatio}-${outputAspectRatio} }")" =~ ^- ]] ; then   # inputAspect < outputAspectRatio
-   croppedInputWidth=${inputWidth}
-   croppedInputHeight="$(LC_NUMERIC=C awk "BEGIN { print int(${croppedInputWidth}/${outputAspectRatio}) }")"
-else
-   croppedInputHeight=${inputHeight}
-   croppedInputWidth="$(LC_NUMERIC=C awk "BEGIN { print int(${inputHeight}*${outputAspectRatio}) }")"
-fi
-cx="$(LC_NUMERIC=C awk "BEGIN { print int(${inputWidth}-${croppedInputWidth})/2 }")"
-cy="$(LC_NUMERIC=C awk "BEGIN { print int(${inputHeight}-${croppedInputHeight})/2 }")"
-if [ ${VERBOSE} -ne 0 ] ; then
-   echo "Crop: ${croppedInputWidth}*${croppedInputHeight} [cx=${cx} cy=${cy}] (${outputAspectRatio}:1)"
-fi
-
-
 # ====== Run "convert" ======================================================
 rm -f "${OUTPUT_FILENAME}"
 "${GM}" convert "${INPUT_FILENAME}" \
    -crop "${croppedInputWidth}"x"${croppedInputHeight}"+"${cx}"+"${cy}" \
    -resize "${NEW_WIDTH}"x"${NEW_HEIGHT}" \
-   +repage \
    -auto-orient \
+   +repage \
    "${OUTPUT_FILENAME}"
 
 if [ ${VERBOSE} -ne 0 ] ; then
