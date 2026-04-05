@@ -87,6 +87,9 @@ while [ $# -gt 0 ] ; do
    # ====== Look for CRL ====================================================
    CRL_FILE="$1"
    shift
+   if [ "${CRL_FILE}" == "-" ] ; then
+      CRL_FILE="/dev/stdin"
+   fi
    if [ ! -e "${CRL_FILE}" ] ; then
       eval_gettext >&2 "ERROR: Unable to find CRL file \${CRL_FILE}!"
       echo >&2
@@ -95,8 +98,8 @@ while [ $# -gt 0 ] ; do
 
    # ====== Display CRL details =============================================
    echo -e "\e[34m$(eval_gettext "CRL in \${CRL_FILE}:")\e[0m"
-
-   awk '/BEGIN X509 CRL/,/END X509 CRL/' "${CRL_FILE}" | (
+   openssl crl -in "${CRL_FILE}" | \
+   awk '/BEGIN X509 CRL/,/END X509 CRL/' | (
       # ------ Extract each CRL of a combined CRL file ----------------------
       encodedCRL=""
       while read -r line; do
