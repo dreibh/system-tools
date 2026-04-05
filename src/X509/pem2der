@@ -10,8 +10,8 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# X.509 Certificate Viewer
-# Copyright (C) 2025-2026 by Thomas Dreibholz
+# PEM to DER Conversion
+# Copyright (C) 2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -51,8 +51,8 @@ TYPE="x509"
 # Check whether type is CRL, by extension or "file":
 if [[ "$(basename "${INPUT}")" =~ \.[Cc][Rr][Ll]$ ]] ; then
    TYPE="crl"
-# elif [ "$(file -b "${INPUT}")" == "ASCII text" ] ; then
-#    TYPE="crl"
+elif [ "$(file -b "${INPUT}")" == "ASCII text" ] ; then
+   TYPE="crl"
 fi
 
 # ====== Convert PEM to DER =================================================
