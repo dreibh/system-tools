@@ -9,7 +9,7 @@
 .\"                  https://www.nntb.no/~dreibh/system-tools/
 .\" ==========================================================================
 .\"
-.\" PEM to DER Conversion
+.\" DER to PEM Conversion
 .\" Copyright (C) 2026 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
@@ -29,36 +29,37 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd April 5, 2026
-.Dt pem2der 1
-.Os pem2der
+.Dt der2pem 1
+.Os der2pem
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm pem2der
-.Nd Convert a certificate or CRL from PEM to DER format
+.Nm der2pem
+.Nd Convert a certificate or CRL from DER to PEM format
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm pem2der
-pem_file
+.Nm der2pem
 der_file
+pem_file
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm pem2der
-converts a given certificate or CRL file from PEM to DER format.
+.Nm der2pem
+converts a given certificate or CRL file from DER to PEM format.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It pem_file
-The certificate or CRL file in PEM format to be converted.
 .It der_file
-The certificate or CRL file in DER format to be written.
+The certificate or CRL file in DER format to be converted.
+.It pem_file
+The certificate or CRL file in PEM format to be written.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It pem2der my-server-certificate.crt my-server-certificate.der
-.It pem2der my-crl.crl my-crl.der
+.It der2pem my-server-certificate.der my-server-certificate.crt
+.It der2pem my-crl.der my-crl.crl
+.It curl -o google-crl.der http://c.pki.goog/wr2/GSyT1N4PBrg.crl && der2pem google-crl.der google-crl.crl
 .El
