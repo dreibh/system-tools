@@ -34,7 +34,7 @@
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm view-certificate
-.Nd Displays an X.509 certificate
+.Nd Displays an X.509 certificate in PEM or DER format
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
@@ -72,6 +72,7 @@ Prints command-line parameters.
 .Bl -tag -width indent
 .It view-certificate My-CA-Certificate.crt My-Server-Certificate.crt
 .It view-certificate /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
+.It cat /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt | view-certificate -
 .It view-certificate www-nntb-no-chain.pem
 .It view-certificate --help
 .It view-certificate -h
