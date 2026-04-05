@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd March 20, 2026
+.Dd April 5, 2026
 .Dt view-crl 1
 .Os view-crl
 .\" ###### Name #############################################################
@@ -47,15 +47,14 @@ CRL_file
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm view-crl
-displays important details on an X.509 CRL, including the serial numbers and
-dates of revoked certificates.
+displays important details on an X.509 CRL in PEM or DER format, including the serial numbers and dates of revoked certificates.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
 .It crl_file [...]
-Specifies one ore more CRL files to be displayed.
+Specifies one ore more CRL files to be displayed. "-" is a shortcut for /dev/stdin, i.e. reading the CRL from standard input.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
 .El
@@ -65,8 +64,8 @@ Prints command-line parameters.
 .It view-crl My-CA-CRL.ctl
 .It view-crl /usr/lib/python3.12/test/certdata/revocation.crl
 .It curl -o google-crl.der http://c.pki.goog/wr2/GSyT1N4PBrg.crl && \
-openssl crl -inform DER -in google-crl.der -outform PEM -out google.crl && \
-view-crl google.crl
+view-crl google-crl.der
+.It curl --output - http://c.pki.goog/wr2/GSyT1N4PBrg.crl | view-crl -
 .It view-crl --help
 .It view-crl -h
 .El
