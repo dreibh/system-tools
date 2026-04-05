@@ -56,6 +56,18 @@ INSTALL(FILES       extract-pem.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      extract-pem)
 
+INSTALL(PROGRAMS der2pem DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES der2pem.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       der2pem.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      der2pem)
+
+INSTALL(PROGRAMS pem2der DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES pem2der.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       pem2der.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      pem2der)
+
 INSTALL(PROGRAMS test-tls-connection DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES test-tls-connection.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       test-tls-connection.bash-completion

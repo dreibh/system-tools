@@ -242,12 +242,16 @@ Recommends: nss-tools
 
 %files x509-tools
 %{_bindir}/check-certificate
+%{_bindir}/der2pem
 %{_bindir}/extract-pem
+%{_bindir}/pem2der
 %{_bindir}/test-tls-connection
 %{_bindir}/view-certificate
 %{_bindir}/view-crl
 %{_datadir}/bash-completion/completions/check-certificate
+%{_datadir}/bash-completion/completions/der2pem
 %{_datadir}/bash-completion/completions/extract-pem
+%{_datadir}/bash-completion/completions/pem2der
 %{_datadir}/bash-completion/completions/test-tls-connection
 %{_datadir}/bash-completion/completions/view-certificate
 %{_datadir}/bash-completion/completions/view-crl
@@ -257,7 +261,9 @@ Recommends: nss-tools
 %{_datadir}/locale/*/LC_MESSAGES/view-certificate.mo
 %{_datadir}/locale/*/LC_MESSAGES/view-crl.mo
 %{_mandir}/man1/check-certificate.1.gz
+%{_mandir}/man1/der2pem.1.gz
 %{_mandir}/man1/extract-pem.1.gz
+%{_mandir}/man1/pem2der.1.gz
 %{_mandir}/man1/test-tls-connection.1.gz
 %{_mandir}/man1/view-certificate.1.gz
 %{_mandir}/man1/view-crl.1.gz
