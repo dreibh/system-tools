@@ -10,7 +10,7 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# PEM to DER Conversion
+# DER to PEM Conversion
 # Copyright (C) 2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -36,26 +36,24 @@ set -eu
 
 # ====== Handle arguments ===================================================
 if [ $# -ne 2 ] ; then
-   echo >&2 "Usage: $0 pem_file der_file"
+   echo >&2 "Usage: $0 der_file pem_file"
    exit 1
 fi
 
 INPUT="$1"
 if [ ! -e "${INPUT}" ] ; then
-   echo >&2 "ERROR: PEM file ${INPUT} does not exist!"
+   echo >&2 "ERROR: DER file ${INPUT} does not exist!"
    exit 1
 fi
 OUTPUT="$2"
 
 TYPE="x509"
-# Check whether type is CRL, by extension or using "file":
-if [[ "$(basename "${INPUT}")" =~ \.[Cc][Rr][Ll]$ ]] ; then
-   TYPE="crl"
-elif [ "$(file -b "${INPUT}")" == "ASCII text" ] ; then
+# Check whether type is CRL, by using "file":
+if [ "$(file -b "${INPUT}")" == "data" ] ; then
    TYPE="crl"
 fi
 
 # ====== Convert PEM to DER =================================================
 openssl "${TYPE}" \
-   -inform pem -in "${INPUT}" \
-   -outform der -out "${OUTPUT}"
+   -inform der -in "${INPUT}" \
+   -outform pem -out "${OUTPUT}"
