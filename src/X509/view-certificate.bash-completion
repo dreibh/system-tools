@@ -51,7 +51,7 @@ _view_certificate()
    fi
 
    if [ "${cword}" -le 1 ] ; then
-      _filedir '@(cert|crt|pem)'
+      _filedir '@(cert|crt|der|pem)'
       return
    fi
 
