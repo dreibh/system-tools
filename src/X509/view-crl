@@ -141,10 +141,10 @@ while [ $# -gt 0 ] ; do
                   entry=0
                   for serialNumber in $(echo "${!serialNumbers[@]}" | tr ' ' '\n' | LC_ALL=C.UTF8 sort) ; do
                      # shellcheck disable=SC2034
-                     revokationDate="$(TZ=UTC date -d "${serialNumbers[${serialNumber}]}")"
+                     revocationDate="$(TZ=UTC date -d "${serialNumbers[${serialNumber}]}")"
                      entry=$((entry + 1))
                      echo -en " \x1b[31m$(eval_gettext "#\${entry}.") "
-                     eval_gettext "Certificate \${serialNumber} revoked on \${revokationDate}"
+                     eval_gettext "Certificate \${serialNumber} revoked on \${revocationDate}"
                      echo -e "\x1b[0m"
                   done
                done

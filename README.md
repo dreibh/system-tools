@@ -350,7 +350,7 @@ Also see the manpage of View-CRL for further details and examples:
 
 ## Check-Certificate
 
-Check-Certificate verifies a certificate, by verifying its chain from a given Root CA certificate, and optionally a Certificate Revokation List&nbsp;(CRL) for certificate revokations. The checks are made using [OpenSSL](https://www.openssl.org/). If [GnuTLS](https://gnutls.org/) and/or [Network Security Services&nbsp;(NSS)](https://firefox-source-docs.mozilla.org/security/nss/) are installed as well, the verification is also made by these implementations in addition. This ensures that – in case of success – the certificate and its chain works with all three major X.509 implementations. Examples:
+Check-Certificate verifies a certificate, by verifying its chain from a given Root CA certificate, and optionally a Certificate Revokation List&nbsp;(CRL) for certificate revocations. The checks are made using [OpenSSL](https://www.openssl.org/). If [GnuTLS](https://gnutls.org/) and/or [Network Security Services&nbsp;(NSS)](https://firefox-source-docs.mozilla.org/security/nss/) are installed as well, the verification is also made by these implementations in addition. This ensures that – in case of success – the certificate and its chain works with all three major X.509 implementations. Examples:
 
 * Verify the server certificate in `My-Server-Certificate.crt` using the Root CA certificate in `My-CA-Certificate.crt`:
 
@@ -358,7 +358,7 @@ Check-Certificate verifies a certificate, by verifying its chain from a given Ro
   check-certificate My-CA-Certificate.crt My-Server-Certificate.crt
   ```
 
-* The same as above, but in addtion also checking the CRL in `CRL.crl` for certificate revokations:
+* The same as above, but in addtion also checking the CRL in `CRL.crl` for certificate revocations:
 
   ```bash
   check-certificate --crl CRL.crl \

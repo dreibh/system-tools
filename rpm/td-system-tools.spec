@@ -233,12 +233,14 @@ Recommends: gnutls-utils
 Recommends: nss-tools
 
 %description x509-tools
-This package contains four simple tools:
+This package contains X.509 certificate handling tools:
 view-certificate displays an X.509 certificate and its hierarchy.
 view-crl shows an X.509 certificate revocation list (CRL).
 check-certificate verifies an X.509 certificate using a CA certificate
 and optionally a revocation list.
 extract-pem extracts a PEM file.
+der2pem converts a certificate or CRL in DER format to PEM format.
+pem2der converts a certificate or CRL in PEM format to DER format.
 test-tls-connection tests a TCP TLS connection to a remote endpoint.
 
 %files x509-tools
