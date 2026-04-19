@@ -11,7 +11,7 @@ AutoReqProv: on
 BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
-BuildRequires: gettext
+BuildRequires: gettext >= 0.21
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 Requires: td-system-tools-fingerprint-ssh-keys = %{version}-%{release}
