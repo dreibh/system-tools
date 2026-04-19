@@ -74,6 +74,22 @@ function print-banners ()
 }
 
 
+# ###### Print a row of a two-column table ##################################
+function print-row ()
+{
+   local label="$1"
+   local value="$2"
+
+   # NOTE:
+   # This is probably the place where Right-to-Left (RTL) locale handling
+   # support should to be added! Assuming Left-to-Right (LTR) locale ...
+
+   # ====== Left-to-Right locale ============================================
+   print-utf8 -i "${indent}" "!${label}"
+   echo -e "${value}"
+}
+
+
 # ###### Print system information ###########################################
 function print-system-information ()
 {
@@ -90,9 +106,13 @@ function print-system-information ()
    uptime_hours=
    uptime_mins=
    uptime_secs=
+   # shellcheck disable=SC2034
    system_release=
+   # shellcheck disable=SC2034
    system_users=
+   # shellcheck disable=SC2034
    system_cores=
+   # shellcheck disable=SC2034
    system_machine=
    system_procs=
    system_load_avg1min=
@@ -144,45 +164,54 @@ function print-system-information ()
    if [ "${DISTRIB_CODENAME}" != "" ] ; then
       codeNameText=" (${DISTRIB_CODENAME})"
    fi
-   os_label="${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText}"
+   # shellcheck disable=SC2034
+   local os_label="${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText}"
 
 
    # ====== Print system information ========================================
    echo -en "${colorBasic}"
 
    # ------ Hostname -------------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext --context="The label of the field containing the hostname of the computer" "Host:")"
-   echo "${hostname_long}"
+   print-row \
+      "$(gettext --context="The label of the field containing the hostname of the computer" "Host:")" \
+      "${hostname_long}"
 
    # ------ Uptime ----------------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext --context="The label of the field containing the uptime of the computer" "Uptime:")"
    # shellcheck disable=SC2059
-   printf "$(gettext --context="The printf format string to print the uptime of the computer, split into the components days, hours, minutes, seconds. Each of the components is provided as string." "%s, %s, %s, and %s")\n" \
-      "$(printf "$(ngettext --context="The printf format string to print the number of days for the uptime of the computer, e.g. '1 day', or '42 days'" "%'d day" "%'d days" "${uptime_days}")" "${uptime_days}")" \
-      "$(printf "$(ngettext --context="The printf format string to print the number of hours for the uptime of the computer, e.g. '1 hour', or '12 hours'" "%'d hour" "%'d hours" "${uptime_hours}")" "${uptime_hours}")" \
-      "$(printf "$(ngettext --context="The printf format string to print the number of minutes for the uptime of the computer, e.g. '1 minute', or '10 minutes'" "%'d minute" "%'d minutes" "${uptime_mins}")" "${uptime_mins}")" \
-      "$(printf "$(ngettext --context="The printf format string to print the number of seconds for the uptime of the computer, e.g. '1 second', or '33 seconds'" "%'d second" "%'d seconds" "${uptime_secs}")" "${uptime_secs}")"
+   print-row \
+      "$(gettext --context="The label of the field containing the uptime of the computer" "Uptime:")" \
+      "$(printf "$(gettext --context="The printf format string to print the uptime of the computer, split into the components days, hours, minutes, seconds. Each of the components is provided as string." "%s, %s, %s, and %s")\n" \
+         "$(printf "$(ngettext --context="The printf format string to print the number of days for the uptime of the computer, e.g. '1 day', or '42 days'" "%'d day" "%'d days" "${uptime_days}")" "${uptime_days}")" \
+         "$(printf "$(ngettext --context="The printf format string to print the number of hours for the uptime of the computer, e.g. '1 hour', or '12 hours'" "%'d hour" "%'d hours" "${uptime_hours}")" "${uptime_hours}")" \
+         "$(printf "$(ngettext --context="The printf format string to print the number of minutes for the uptime of the computer, e.g. '1 minute', or '10 minutes'" "%'d minute" "%'d minutes" "${uptime_mins}")" "${uptime_mins}")" \
+         "$(printf "$(ngettext --context="The printf format string to print the number of seconds for the uptime of the computer, e.g. '1 second', or '33 seconds'" "%'d second" "%'d seconds" "${uptime_secs}")" "${uptime_secs}")"
+      )"
 
    # ------ Operating System ------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext --context="The label of the field containing the operating system of the computer" "Operating System:")"
-   eval_pgettext "Combination of operating system information (in variable 'os_label') and kernel release information (in variable 'system_release'), e.g. 'Ubuntu 24.04 with kernel 6.17.0-20-generic'." "\${os_label} with kernel \${system_release}"
-   echo
+   print-row \
+      "$(gettext --context="The label of the field containing the operating system of the computer" "Operating System:")" \
+      "$(eval_pgettext "Combination of operating system information (in variable 'os_label') and kernel release information (in variable 'system_release'), e.g. 'Ubuntu 24.04 with kernel 6.17.0-20-generic'." "\${os_label} with kernel \${system_release}")"
 
    # ------ Processor -------------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext --context="The label of the field containing information about the processor (i.e. CPU) of the computer" "Processor:")"
+   # shellcheck disable=SC2034,SC2059
    processesString="$(printf "$(gettext --context="The printf format string to print the number of processes running on the computer, e.g. '123 processes'" "%'d processes")" "${system_procs}")"
+   # shellcheck disable=SC2034,SC2059
    usersString="$(printf "$(ngettext --context="The printf format string to print the users of the computer, e.g. '1 user', or '3 users'" "%'d user" "%'d users" "${system_users}")" "${system_users}")"
-   eval_pgettext "Combination of number of CPU cores (in variable 'system_cores') and details of the CPU of the computer (in variable 'system_machine') with details about processes (in variable 'processesString') and details about users (in variable 'usersString')" \
-      "\${system_cores} × \${system_machine}; \${processesString}; \${usersString}"
-   echo
+   print-row \
+      "$(gettext --context="The label of the field containing information about the processor (i.e. CPU) of the computer" "Processor:")" \
+      "$(eval_pgettext "Combination of number of CPU cores (in variable 'system_cores') and details of the CPU of the computer (in variable 'system_machine') with details about processes (in variable 'processesString') and details about users (in variable 'usersString')" \
+         "\${system_cores} × \${system_machine}; \${processesString}; \${usersString}"
+       )"
 
    # ------ Load ------------------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext "Load (1/5/15 min):")"
    # shellcheck disable=SC2059
-   printf "$(gettext --context="The printf format string to print the load percentage of the computer over 1 minute (in variable 'system_load_avg1min') / 5 minutes (in variable 'system_load_avg5min') / 15 minutes (in variable 'system_load_avg15min'), e.g. '52.1% / 20.3% / 11.1%'" "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
-      "${system_load_avg1min}" \
-      "${system_load_avg5min}" \
-      "${system_load_avg15min}"
+   print-row \
+      "$(gettext "Load (1/5/15 min):")" \
+      "$(printf "$(gettext --context="The printf format string to print the load percentage of the computer over 1 minute (in variable 'system_load_avg1min') / 5 minutes (in variable 'system_load_avg5min') / 15 minutes (in variable 'system_load_avg15min'), e.g. '52.1% / 20.3% / 11.1%'" "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
+         "${system_load_avg1min}" \
+         "${system_load_avg5min}" \
+         "${system_load_avg15min}"
+       )"
 
    # ------ Battery ---------------------------------------------------------
    # --- TEST ---------------------------
@@ -227,10 +256,12 @@ function print-system-information ()
                batteryStatus="$(gettext --context="Battery status of the computer when the battery is fully charged" "full")"
                colorBattery="${colorBatteryFull}"
             elif [ "${!batteryStatusVariable}" -eq 4 ] ; then
+               # shellcheck disable=SC2034
                batteryStatus="$(gettext --context="Battery status of the computer when the battery is discharging" "discharging")"
                colorBattery="${colorBatteryDischarging}"
             fi
          fi
+         # shellcheck disable=SC2034
          batteryCapacity="${!batteryCapacityVariable}"
 
          echo -en "${colorBattery}"
@@ -242,24 +273,29 @@ function print-system-information ()
    fi
 
    # ------ Memory ---------------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext --context="The label of the field containing information about the used memory (RAM) of the computer" "Used Memory:")"
    # shellcheck disable=SC2059
-   printf "$(gettext --context="The printf format string to print the details about the used memory (RAM) in MiB, e.g. '9969 MiB of  31941 MiB ( 21972 MiB available:  68.8 %)'" "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
-      "$((system_mem_used  / 1048576))" \
-      "$((system_mem_total / 1048576))" \
-      "$((system_mem_free  / 1048576))" \
-      "${system_mem_freepct}"
+   print-row \
+      "$(gettext --context="The label of the field containing information about the used memory (RAM) of the computer" "Used Memory:")" \
+      "$(printf "$(gettext --context="The printf format string to print the details about the used memory (RAM) in MiB, e.g. '9969 MiB of  31941 MiB ( 21972 MiB available:  68.8 %)'" "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
+         "$((system_mem_used  / 1048576))" \
+         "$((system_mem_total / 1048576))" \
+         "$((system_mem_free  / 1048576))" \
+         "${system_mem_freepct}"
+       )"
    if [ "${system_swap_total}" != "" ] && [ "${system_swap_total}" -gt 0 ] ; then
-      print-utf8 -i "${indent}" "$(gettext --context="The label of the field containing information about the used swap space of the computer" "Used Swap:")"
       # shellcheck disable=SC2059
-      printf "$(gettext --context="The printf format string to print the details about the used swap space in MiB, e.g. '1317 MiB of   8191 MiB (  6874 MiB available:  83.9 %)'" "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
-      "$((system_swap_used  / 1048576))" \
-      "$((system_swap_total / 1048576))" \
-      "$((system_swap_free  / 1048576))" \
-      "${system_swap_freepct}"
+      print-row \
+         "$(gettext --context="The label of the field containing information about the used swap space of the computer" "Used Swap:")" \
+         "$(printf "$(gettext --context="The printf format string to print the details about the used swap space in MiB, e.g. '1317 MiB of   8191 MiB (  6874 MiB available:  83.9 %)'" "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
+            "$((system_swap_used  / 1048576))" \
+            "$((system_swap_total / 1048576))" \
+            "$((system_swap_free  / 1048576))" \
+            "${system_swap_freepct}"
+          )"
    else
-      print-utf8 -i "${indent}" "$(gettext --context="The label of the field containing information about the used swap space of the computer" "Used Swap:")"
-      echo -e "${colorInactive}$(gettext --context="Text to print when the computer has no swap space" "no swap available!")${colorBasic}"
+      print-row \
+         "$(gettext --context="The label of the field containing information about the used swap space of the computer" "Used Swap:")" \
+         "${colorInactive}$(gettext --context="Text to print when the computer has no swap space" "no swap available!")${colorBasic}"
    fi
 
    # ------ Storage ---------------------------------------------------------
@@ -299,7 +335,8 @@ function print-system-information ()
 
    # ------ Network ---------------------------------------------------------
    echo -en "${colorBasic}"
-   print-utf8 -n -i "${indent}" "$(gettext --context="The label of the field containing information about the network interfaces of the computer" "Network:")"
+   print-row \
+      "$(gettext --context="The label of the field containing information about the network interfaces of the computer" "Network:")" ""
    local indentString
    indentString="$(print-utf8 -i "${indent}" "")"
    for interface in ${netif_list} ; do
@@ -343,8 +380,9 @@ function print-system-information ()
             ipv6=""
          fi
 
-         print-utf8 -i "${indent}" "   ${colorA}${!nameVariable}:"
-         echo -e "${ipv4}${colorA}${ipv6}${colorA}"
+         print-row \
+            "   ${colorA}${!nameVariable}:" \
+            "${ipv4}${colorA}${ipv6}${colorA}"
 
       fi
 
@@ -371,10 +409,11 @@ function print-ssh-key-fingerprints ()
             else
                label=""
             fi
-            print-utf8 -i "${indent}" "${label}"
-            eval_pgettext "Combination of SSH key number (in variable 'keyNumber') and SSH key information (in variable 'keyInfo'), e.g. '#3 SHA256:mcAJ7V/RbRzk89lkMx1rnA1qgiRWkMttHEiKvWJOBqU (RSA 16384)')" \
-                "#\${keyNumber} \${keyInfo}"
-            echo
+            print-row \
+               "$(print-utf8 -i "${indent}" "${label}")" \
+               "$(eval_pgettext "Combination of SSH key number (in variable 'keyNumber') and SSH key information (in variable 'keyInfo'), e.g. '#3 SHA256:mcAJ7V/RbRzk89lkMx1rnA1qgiRWkMttHEiKvWJOBqU (RSA 16384)')" \
+                  "#\${keyNumber} \${keyInfo}"
+               )"
             keyNumber=$((keyNumber+1))
          fi
       done
