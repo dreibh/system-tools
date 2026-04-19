@@ -9,8 +9,8 @@
 .\"                  https://www.nntb.no/~dreibh/system-tools/
 .\" ==========================================================================
 .\"
-.\" X.509 Certificate Viewer
-.\" Copyright (C) 2025-2026 by Thomas Dreibholz
+.\" PEM to DER Conversion
+.\" Copyright (C) 2026 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -29,51 +29,36 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd April 5, 2026
-.Dt view-certificate 1
-.Os view-certificate
+.Dt pem2der 1
+.Os pem2der
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm view-certificate
-.Nd Displays an X.509 certificate in PEM or DER format
+.Nm pem2der
+.Nd Convert a certificate or CRL from PEM to DER format
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm view-certificate
-certificate_file
-.Op ...
-.Nm view-certificate
-.Op Fl h | Fl Fl help
+.Nm pem2der
+pem_file
+der_file
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm view-certificate
-displays important details on an X.509 certificate, including:
-.Bl -tag -width indent
-.It * Common Name (CN),
-.It * Validity Range,
-.It * Key Usage and Extended Usage,
-.It * Basic Constraints,
-.It * Subject Alternative Name (SAN),
-.It * Subject Key Identifier (SKID) and Authority Key Identifier (AKID), as well as
-.It * the contained certificate chain (from the certificate up to the root CA).
-.El
+.Nm pem2der
+converts a given certificate or CRL file from PEM to DER format.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It certificate_file [...]
-Specifies one ore more certificate files to be displayed. "-" is a shortcut for /dev/stdin, i.e. reading the certificate from standard input.
-.It Fl h | Fl Fl help
-Prints command-line parameters.
+.It pem_file
+The certificate or CRL file in PEM format to be converted.
+.It der_file
+The certificate or CRL file in DER format to be written.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It view-certificate My-CA-Certificate.crt My-Server-Certificate.crt
-.It view-certificate /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
-.It cat /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt | view-certificate -
-.It view-certificate www-nntb-no-chain.pem
-.It view-certificate --help
-.It view-certificate -h
+.It pem2der my-server-certificate.crt my-server-certificate.der
+.It pem2der my-crl.crl my-crl.der
 .El

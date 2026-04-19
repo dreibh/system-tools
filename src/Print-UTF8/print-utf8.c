@@ -31,7 +31,6 @@
 #include <ctype.h>
 #include <getopt.h>
 #include <fcntl.h>
-#include <libintl.h>
 #include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -43,6 +42,16 @@
 #include <sys/ioctl.h>
 #ifndef nullptr
 #define nullptr NULL
+#endif
+
+#ifdef ENABLE_NLS
+#include <libintl.h>
+#else
+#warning NLS is disabled!
+#define bindtextdomain(domain, dirname) { }
+#define textdomain(domain) { }
+#define gettext(string) string
+#define ngettext(singular, plural, n) ((n) == 1 ? (singular) : (plural))
 #endif
 
 #include "package-version.h"
