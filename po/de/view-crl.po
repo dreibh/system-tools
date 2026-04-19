@@ -57,5 +57,5 @@ msgstr "${entry}."
 
 #: src/X509/view-crl:147
 #, sh-format
-msgid "Certificate ${serialNumber} revoked on ${revokationDate}"
-msgstr "Zertifikat ${serialNumber} zurückgezogen am ${revokationDate}"
+msgid "Certificate ${serialNumber} revoked on ${revocationDate}"
+msgstr "Zertifikat ${serialNumber} zurückgezogen am ${revocationDate}"
