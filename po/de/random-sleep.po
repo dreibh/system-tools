@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-10-25 12:13+0200\n"
+"POT-Creation-Date: 2026-04-19 12:52+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -44,24 +44,24 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Random-Sleep/random-sleep.c:81
+#: src/Random-Sleep/random-sleep.c:90
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Random-Sleep/random-sleep.c:125
+#: src/Random-Sleep/random-sleep.c:134
 #, c-format
 msgid "ERROR: Invalid argument %s!"
 msgstr "FEHLER: Ungültiges Argument %s!"
 
-#: src/Random-Sleep/random-sleep.c:137
+#: src/Random-Sleep/random-sleep.c:146
 msgid "ERROR: Invalid min_delay/max_delay"
 msgstr "FEHLER: Ungültiges min_delay/max_delay"
 
-#: src/Random-Sleep/random-sleep.c:155
+#: src/Random-Sleep/random-sleep.c:164
 #, c-format
 msgid "Sleeping for %1.6f s ..."
 msgstr "Schlafe für %1.6f s ..."
 
-#: src/Random-Sleep/random-sleep.c:160
+#: src/Random-Sleep/random-sleep.c:169
 msgid "Woke up!"
 msgstr "Aufgewacht!"
