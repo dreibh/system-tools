@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-11-01 18:08+0100\n"
+"POT-Creation-Date: 2026-04-19 15:31+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -44,153 +44,223 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/System-Info/System-Info:82
+#: src/System-Info/System-Info:83
+#, fuzzy
+msgctxt "The error message to print when the get-system-info executable has not been found"
 msgid "ERROR: get-system-info not found in search path!"
 msgstr "FEIL: get-system-info ikke funnet i søkebanen!"
 
-#: src/System-Info/System-Info:115
+#: src/System-Info/System-Info:116
+#, fuzzy
+msgctxt "The text to print when ID, release, or codename is unknown"
 msgid "Unknown"
 msgstr "Ukjent"
 
-#: src/System-Info/System-Info:153
+#: src/System-Info/System-Info:154
+#, fuzzy
+msgctxt "The label of the field containing the hostname of the computer"
 msgid "Host:"
 msgstr "Datamaskin:"
 
-#: src/System-Info/System-Info:157
+#: src/System-Info/System-Info:158
+#, fuzzy
+msgctxt "The label of the field containing the uptime of the computer"
 msgid "Uptime:"
 msgstr "Oppetid:"
 
-#: src/System-Info/System-Info:159
+#: src/System-Info/System-Info:160
+#, fuzzy
+msgctxt "The printf format string to print the uptime of the computer, split into the components days, hours, minutes, seconds. Each of the components is provided as string."
 msgid "%s, %s, %s, and %s"
 msgstr "%s, %s, %s og %s"
 
-#: src/System-Info/System-Info:160
+#: src/System-Info/System-Info:161
+#, fuzzy
+msgctxt "The printf format string to print the number of days for the uptime of the computer, e.g. '1 day', or '42 days'"
 msgid "%'d day"
 msgid_plural "%'d days"
 msgstr[0] "%'d dag"
 msgstr[1] "%'d dager"
 
-#: src/System-Info/System-Info:161
+#: src/System-Info/System-Info:162
+#, fuzzy
+msgctxt "The printf format string to print the number of hours for the uptime of the computer, e.g. '1 hour', or '12 hours'"
 msgid "%'d hour"
 msgid_plural "%'d hours"
 msgstr[0] "%'d time"
 msgstr[1] "%'d timer"
 
-#: src/System-Info/System-Info:162
+#: src/System-Info/System-Info:163
+#, fuzzy
+msgctxt "The printf format string to print the number of minutes for the uptime of the computer, e.g. '1 minute', or '10 minutes'"
 msgid "%'d minute"
 msgid_plural "%'d minutes"
 msgstr[0] "%'d minutt"
 msgstr[1] "%'d minutter"
 
-#: src/System-Info/System-Info:163
+#: src/System-Info/System-Info:164
+#, fuzzy
+msgctxt "The printf format string to print the number of seconds for the uptime of the computer, e.g. '1 second', or '33 seconds'"
 msgid "%'d second"
 msgid_plural "%'d seconds"
 msgstr[0] "%'d sekund"
 msgstr[1] "%'d sekunder"
 
-#: src/System-Info/System-Info:166
+#: src/System-Info/System-Info:167
+#, fuzzy
+msgctxt "The label of the field containing the operating system of the computer"
 msgid "Operating System:"
 msgstr "Operativsystem:"
 
-#: src/System-Info/System-Info:167
-msgid "with kernel"
-msgstr "med kjerne"
+#: src/System-Info/System-Info:168
+#, sh-format
+msgctxt "Combination of operating system information (in variable 'os_label') and kernel release information (in variable 'system_release'), e.g. 'Ubuntu 24.04 with kernel 6.17.0-20-generic'."
+msgid "${os_label} with kernel ${system_release}"
+msgstr ""
 
 #: src/System-Info/System-Info:172
+#, fuzzy
+msgctxt "The label of the field containing information about the processor (i.e. CPU) of the computer"
 msgid "Processor:"
 msgstr "Prosessor:"
 
 #: src/System-Info/System-Info:173
+#, fuzzy
+msgctxt "The printf format string to print the number of processes running on the computer, e.g. '123 processes'"
 msgid "%'d processes"
 msgstr "%'d prosesser"
 
 #: src/System-Info/System-Info:174
+#, fuzzy
+msgctxt "The printf format string to print the users of the computer, e.g. '1 user', or '3 users'"
 msgid "%'d user"
 msgid_plural "%'d users"
 msgstr[0] "%'d bruker"
 msgstr[1] "%'d brukere"
 
-#: src/System-Info/System-Info:183
+#: src/System-Info/System-Info:176
+#, sh-format
+msgctxt "Combination of number of CPU cores (in variable 'system_cores') and details of the CPU of the computer (in variable 'system_machine') with details about processes (in variable 'processesString') and details about users (in variable 'usersString')"
+msgid "${system_cores} × ${system_machine}; ${processesString}; ${usersString}"
+msgstr ""
+
+#: src/System-Info/System-Info:180
 msgid "Load (1/5/15 min):"
 msgstr "Last (1/5/15 min.):"
 
-#: src/System-Info/System-Info:185
+#: src/System-Info/System-Info:182
+#, fuzzy
+msgctxt "The printf format string to print the load percentage of the computer over 1 minute (in variable 'system_load_avg1min') / 5 minutes (in variable 'system_load_avg5min') / 15 minutes (in variable 'system_load_avg15min'), e.g. '52.1% / 20.3% / 11.1%'"
 msgid "%1.1f %% / %1.1f %% / %1.1f %%"
 msgstr "%1.1f %% / %1.1f %% / %1.1f %%"
 
-#: src/System-Info/System-Info:205
+#: src/System-Info/System-Info:202
+#, fuzzy
+msgctxt "The label of the field containing information about the battery of the computer"
 msgid "Battery:"
 msgstr "Batteri:"
 
-#: src/System-Info/System-Info:220
+#: src/System-Info/System-Info:217
 msgid "unknown"
 msgstr "ukjent"
 
-#: src/System-Info/System-Info:224
+#: src/System-Info/System-Info:221
+#, fuzzy
+msgctxt "Battery status of the computer when the battery is not charging"
 msgid "not charging"
 msgstr "lades ikke"
 
-#: src/System-Info/System-Info:227
-msgid "charging"
-msgstr "lades"
+#: src/System-Info/System-Info:224
+msgid "Battery status of the computer when the battery is charging"
+msgstr ""
 
-#: src/System-Info/System-Info:230
+#: src/System-Info/System-Info:227
+#, fuzzy
+msgctxt "Battery status of the computer when the battery is fully charged"
 msgid "full"
 msgstr "fulladet"
 
-#: src/System-Info/System-Info:233
+#: src/System-Info/System-Info:230
+#, fuzzy
+msgctxt "Battery status of the computer when the battery is discharging"
 msgid "discharging"
 msgstr "lades ut"
 
-#: src/System-Info/System-Info:239
-msgid "#%u %s, %u %%"
-msgstr "№%u %s, %u %%"
+#: src/System-Info/System-Info:238
+#, sh-format
+msgctxt "Combination of battery number (in variable 'batteryNumber'), battery status (in variable 'batteryStatus'), and battery capacity in percent (in variable 'batteryCapacity'), e.g. '#1 charging, 87 %'"
+msgid "#${batteryNumber} ${batteryStatus}, ${batteryCapacity} %"
+msgstr ""
 
-#: src/System-Info/System-Info:248
+#: src/System-Info/System-Info:245
+#, fuzzy
+msgctxt "The label of the field containing information about the used memory (RAM) of the computer"
 msgid "Used Memory:"
 msgstr "Brukt minne:"
 
-#: src/System-Info/System-Info:250 src/System-Info/System-Info:258
+#: src/System-Info/System-Info:247
+#, fuzzy
+msgctxt "The printf format string to print the details about the used memory (RAM) in MiB, e.g. '9969 MiB of  31941 MiB ( 21972 MiB available:  68.8 %)'"
 msgid "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)"
 msgstr "%'6.0f MiB av %'6.0f MiB (%'6.0f MiB tilgjengelig: %'5.1f %%)"
 
-#: src/System-Info/System-Info:256 src/System-Info/System-Info:264
+#: src/System-Info/System-Info:253 src/System-Info/System-Info:261
+#, fuzzy
+msgctxt "The label of the field containing information about the used swap space of the computer"
 msgid "Used Swap:"
 msgstr "Brukt bytteplass:"
 
-#: src/System-Info/System-Info:265
+#: src/System-Info/System-Info:255
+#, fuzzy
+msgctxt "The printf format string to print the details about the used swap space in MiB, e.g. '1317 MiB of   8191 MiB (  6874 MiB available:  83.9 %)'"
+msgid "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)"
+msgstr "%'6.0f MiB av %'6.0f MiB (%'6.0f MiB tilgjengelig: %'5.1f %%)"
+
+#: src/System-Info/System-Info:262
+#, fuzzy
+msgctxt "Text to print when the computer has no swap space"
 msgid "no swap available!"
 msgstr "bytteplass ikke tilgjengelig!"
 
-#: src/System-Info/System-Info:269
+#: src/System-Info/System-Info:266
+#, fuzzy
+msgctxt "The label of the field containing information about the used diskspace of the computer"
 msgid "Used Diskspace:"
 msgstr "Brukt diskplass:"
 
-#: src/System-Info/System-Info:293
+#: src/System-Info/System-Info:290
 msgid "%1.0f %% on %s"
 msgstr "%1.0f %% på %s"
 
-#: src/System-Info/System-Info:305
+#: src/System-Info/System-Info:302
+#, fuzzy
+msgctxt "The label of the field containing information about the network interfaces of the computer"
 msgid "Network:"
 msgstr "Nettverk:"
 
-#: src/System-Info/System-Info:335
+#: src/System-Info/System-Info:332
+#, fuzzy
+msgctxt "Text to print when the network interface of the computer has no IPv4 addresses"
 msgid "(No IPv4)"
 msgstr "(Ingen IPv4)"
 
-#: src/System-Info/System-Info:373
+#: src/System-Info/System-Info:370
+#, fuzzy
+msgctxt "The label of the field containing information about the SSH keys of the computer"
 msgid "SSH Keys:"
 msgstr "SSH-nøkler:"
 
-#: src/System-Info/System-Info:379
-msgid "#%u %s"
-msgstr "№%u %s"
+#: src/System-Info/System-Info:376
+#, sh-format
+msgctxt "Combination of SSH key number (in variable 'keyNumber') and SSH key information (in variable 'keyInfo'), e.g. '#3 SHA256:mcAJ7V/RbRzk89lkMx1rnA1qgiRWkMttHEiKvWJOBqU (RSA 16384)')"
+msgid "#${keyNumber} ${keyInfo}"
+msgstr ""
 
-#: src/System-Info/System-Info:392
+#: src/System-Info/System-Info:388
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/System-Info/System-Info:434
+#: src/System-Info/System-Info:430
 msgid "System information on %s"
 msgstr "Systeminformasjon på %s"
 
@@ -206,3 +276,17 @@ msgstr "Velkommen på systemet"
 #: src/System-Info/system-info.d/10-company-logo-example:53
 msgid "Welcome to"
 msgstr "Velkommen til"
+
+#~ msgid "#%u %s"
+#~ msgstr "№%u %s"
+
+#, fuzzy
+#~ msgctxt "Battery status of the computer when the battery is charging"
+#~ msgid "charging"
+#~ msgstr "lades"
+
+#~ msgid "#%u %s, %u %%"
+#~ msgstr "№%u %s, %u %%"
+
+#~ msgid "with kernel"
+#~ msgstr "med kjerne"
