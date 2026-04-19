@@ -10,8 +10,8 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# X.509 Certificate Viewer
-# Copyright (C) 2025-2026 by Thomas Dreibholz
+# DER to PEM Conversion
+# Copyright (C) 2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for view-certificate ###############################
-_view_certificate()
+# ###### Bash completion for der2pem ########################################
+_der2pem()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -51,18 +51,19 @@ _view_certificate()
    fi
 
    if [ "${cword}" -le 1 ] ; then
-      _filedir '@(cert|crt|der|pem)'
+      _filedir '@(der)'
+      return
+   elif [ "${cword}" -le 2 ] ; then
+      _filedir '@(cert|crt|pem)'
       return
    fi
 
    # ====== All options =====================================================
    local opts="
--h
---help
 "
    # shellcheck disable=SC2207
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
    return 0
 }
 
-complete -F _view_certificate view-certificate
+complete -F _der2pem der2pem
