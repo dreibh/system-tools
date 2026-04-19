@@ -303,7 +303,7 @@ The X.509-Tools are a set of utilities for viewing, verifying and testing [X.509
 
 ## View-Certificate
 
-View-Certificate displays basic details of a certificate, like subject, common name, etc. Examples:
+View-Certificate displays basic details of given certificates in [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) or [Distinguished Encoding Rules&nbsp;(DER)](https://en.wikipedia.org/wiki/X.690#DER_encoding) format, like subject, common name, etc. Examples:
 
 * Display the Root CA certificate used by [Let's Encrypt](https://letsencrypt.org/), which is usually installed under `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt` (Debian/Ubuntu), `/etc/pki/ca-trust/extracted/pem/directory-hash/ISRG_Root_X1.pem` (Fedora), or `/usr/share/certs/trusted/ISRG_Root_X1.pem` (FreeBSD):
 
@@ -324,9 +324,33 @@ Also see the manpage of View-Certificate for further details and examples:
   ```
 
 
+## View-CRL
+
+View-CRL displays details of given [X.509](https://en.wikipedia.org/wiki/X.509) Certificate Revokation Lists&nbsp;(CRL) in [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) or [Distinguished Encoding Rules&nbsp;(DER)](https://en.wikipedia.org/wiki/X.690#DER_encoding) format, particularly the revoked certificates. Examples:
+
+* Display the CRL in file `TestGlobal.crl`:
+
+  ```bash
+  view-crl TestGlobal.crl
+  ```
+
+* Download the Google CRL (from [http://c.pki.goog/wr2/GSyT1N4PBrg.crl](http://c.pki.goog/wr2/GSyT1N4PBrg.crl)) and display it:
+
+  ```bash
+  wget -O google-crl.der http://c.pki.goog/wr2/GSyT1N4PBrg.crl && \
+  view-crl google-crl.der
+  ```
+
+Also see the manpage of View-CRL for further details and examples:
+
+  ```bash
+  man view-crl
+  ```
+
+
 ## Check-Certificate
 
-Check-Certificate verifies a certificate, by verifying its chain from a given Root CA certificate, and optionally a Certificate Revokation List&nbsp;(CRL) for certificate revokations. The checks are made using [OpenSSL](https://www.openssl.org/). If [GnuTLS](https://gnutls.org/) and/or [Network Security Services&nbsp;(NSS)](https://firefox-source-docs.mozilla.org/security/nss/) are installed as well, the verification is also made by these implementations in addition. This ensures that – in case of success – the certificate and its chain works with all three major X.509 implementations. Examples:
+Check-Certificate verifies a certificate, by verifying its chain from a given Root CA certificate, and optionally a Certificate Revokation List&nbsp;(CRL) for certificate revocations. The checks are made using [OpenSSL](https://www.openssl.org/). If [GnuTLS](https://gnutls.org/) and/or [Network Security Services&nbsp;(NSS)](https://firefox-source-docs.mozilla.org/security/nss/) are installed as well, the verification is also made by these implementations in addition. This ensures that – in case of success – the certificate and its chain works with all three major X.509 implementations. Examples:
 
 * Verify the server certificate in `My-Server-Certificate.crt` using the Root CA certificate in `My-CA-Certificate.crt`:
 
@@ -334,7 +358,7 @@ Check-Certificate verifies a certificate, by verifying its chain from a given Ro
   check-certificate My-CA-Certificate.crt My-Server-Certificate.crt
   ```
 
-* The same as above, but in addtion also checking the CRL in `CRL.crl` for certificate revokations:
+* The same as above, but in addtion also checking the CRL in `CRL.crl` for certificate revocations:
 
   ```bash
   check-certificate --crl CRL.crl \
@@ -358,7 +382,7 @@ Also see the manpage of Check-Certificate for further details and examples:
 
 ## Extract-PEM
 
-Extract-PEM extracts an X.509 certificate bundle from a PEM file into separate files for each entry. The output files are named using a given prefix, with extension according to the entry type (i.e.&nbsp;`.crt` for a certificate, `.key` for a key, `.crl` for a CRL). The first entry (usually: the server, client or user certificate) and/or last entry (usually: the Root CA) may be skipped. Examples:
+Extract-PEM extracts an X.509 certificate bundle from a [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) file into separate files for each entry. The output files are named using a given prefix, with extension according to the entry type (i.e.&nbsp;`.crt` for a certificate, `.key` for a key, `.crl` for a CRL). The first entry (usually: the server, client or user certificate) and/or last entry (usually: the Root CA) may be skipped. Examples:
 
 * Extract the PEM file `My-Server-Certificate.crt`, into files `Certificate-<NUMBER>.<EXTENSION>`. The number is starting from&nbsp;1, and provides the position of an entry within the input file:
 
@@ -378,6 +402,24 @@ Also see the manpage of Extract-PEM for further details and examples:
   ```bash
   man extract-pem
   ```
+
+
+## DER2PEM and PEM2DER
+
+DER2PEM and PEM2DER are simple scripts to convert between ASCII-encoded [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) and binary-encoded [Distinguished Encoding Rules&nbsp;(DER)](https://en.wikipedia.org/wiki/X.690#DER_encoding) certificate or CRL. Examples:
+
+* Download the Google CRL (in DER format, from [http://c.pki.goog/wr2/GSyT1N4PBrg.crl](http://c.pki.goog/wr2/GSyT1N4PBrg.crl)) and convert it to PEM:
+
+  ```bash
+  wget -O google-crl.der http://c.pki.goog/wr2/GSyT1N4PBrg.crl && \
+  der2pem google-crl.der google-crl.pem
+  ```
+
+* Convert `My-Server-Certificate.crt` in PEM format to `My-Server-Certificate.der` in DER format:
+
+  ```bash
+   pem2der My-Server-Certificate.crt My-Server-Certificate.der
+   ```
 
 
 ## Test-TLS-Connection

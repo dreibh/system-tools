@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-11-26 12:10+0100\n"
+"POT-Creation-Date: 2026-03-22 19:52+0100\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -48,87 +48,87 @@ msgstr ""
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/System-Maintenance/System-Maintenance:85
+#: src/System-Maintenance/System-Maintenance:88
 msgid "ERROR: /etc/os-release not found!"
 msgstr "FEHLER: /etc/os-release nicht gefunden!"
 
-#: src/System-Maintenance/System-Maintenance:93
+#: src/System-Maintenance/System-Maintenance:96
 msgid "Stopping AutoFS service ..."
 msgstr "Stoppe AutoFS-Dienst ..."
 
-#: src/System-Maintenance/System-Maintenance:99
+#: src/System-Maintenance/System-Maintenance:102
 msgid "Applying package fixes, if necessary ..."
 msgstr "Repariere Pakete, falls notwendig ..."
 
-#: src/System-Maintenance/System-Maintenance:107
 #: src/System-Maintenance/System-Maintenance:110
+#: src/System-Maintenance/System-Maintenance:113
 msgid "Updating package repositories ..."
 msgstr "Aktualisiere Paketquellen ..."
 
-#: src/System-Maintenance/System-Maintenance:120
+#: src/System-Maintenance/System-Maintenance:123
 msgid "Installing missing dependencies, if necessary ..."
 msgstr "Installiere fehlende Abhängigkeiten, falls notwendig ..."
 
-#: src/System-Maintenance/System-Maintenance:128
+#: src/System-Maintenance/System-Maintenance:131
 msgid "Installing updates ..."
 msgstr "Installiere Aktualisierungen ..."
 
-#: src/System-Maintenance/System-Maintenance:182
+#: src/System-Maintenance/System-Maintenance:185
 msgid "Cleaning up ..."
 msgstr "Räume auf ..."
 
-#: src/System-Maintenance/System-Maintenance:215
+#: src/System-Maintenance/System-Maintenance:218
 msgid "Removing obsolete kernels ..."
 msgstr "Entferne obsolete Kernels ..."
 
-#: src/System-Maintenance/System-Maintenance:221
+#: src/System-Maintenance/System-Maintenance:224
 msgid "Kernel Type:        "
 msgstr "Kernel-Typ:          "
 
-#: src/System-Maintenance/System-Maintenance:222
+#: src/System-Maintenance/System-Maintenance:225
 msgid "Kernel Boot Version:"
 msgstr "Kernel Boot-Version: "
 
-#: src/System-Maintenance/System-Maintenance:223
+#: src/System-Maintenance/System-Maintenance:226
 msgid "Kernel Disk Version:"
 msgstr "Kernel Disk-Version: "
 
-#: src/System-Maintenance/System-Maintenance:297
+#: src/System-Maintenance/System-Maintenance:300
 msgid "To be removed:"
 msgstr "Zu entfernen:"
 
-#: src/System-Maintenance/System-Maintenance:300
+#: src/System-Maintenance/System-Maintenance:303
 msgid "To be kept:"
 msgstr "Zu behalten:"
 
-#: src/System-Maintenance/System-Maintenance:325
+#: src/System-Maintenance/System-Maintenance:328
 msgid "Refreshing snaps ..."
 msgstr "Aktualisiere Snaps ..."
 
-#: src/System-Maintenance/System-Maintenance:331
+#: src/System-Maintenance/System-Maintenance:334
 msgid "Checking for firmware updates ..."
 msgstr "Prüfe auf Firmwareaktualisierungen ..."
 
-#: src/System-Maintenance/System-Maintenance:336
+#: src/System-Maintenance/System-Maintenance:339
 msgid "Updating caches ..."
 msgstr "Aktualisiere Caches ..."
 
-#: src/System-Maintenance/System-Maintenance:356
+#: src/System-Maintenance/System-Maintenance:359
 msgid "Starting AutoFS service ..."
 msgstr "Starte AutoFS-Dienst ..."
 
-#: src/System-Maintenance/System-Maintenance:362
+#: src/System-Maintenance/System-Maintenance:365
 msgid "Synchronising system time ..."
 msgstr "Synchronisiere Systemzeit ..."
 
-#: src/System-Maintenance/System-Maintenance:398
+#: src/System-Maintenance/System-Maintenance:401
 msgid "Running fstrim ..."
 msgstr "Führe Trimming durch ..."
 
-#: src/System-Maintenance/System-Maintenance:402
+#: src/System-Maintenance/System-Maintenance:405
 msgid "Running zpool trim ..."
 msgstr "Führe ZFS-Trimming durch ..."
 
-#: src/System-Maintenance/System-Maintenance:411
+#: src/System-Maintenance/System-Maintenance:414
 msgid "Done!"
 msgstr "Erledigt!"

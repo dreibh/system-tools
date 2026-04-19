@@ -9,8 +9,8 @@
 .\"                  https://www.nntb.no/~dreibh/system-tools/
 .\" ==========================================================================
 .\"
-.\" X.509 Certificate Viewer
-.\" Copyright (C) 2025-2026 by Thomas Dreibholz
+.\" X.509 CRL Viewer
+.\" Copyright (C) 2026 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -29,51 +29,43 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd April 5, 2026
-.Dt view-certificate 1
-.Os view-certificate
+.Dt view-crl 1
+.Os view-crl
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm view-certificate
-.Nd Displays an X.509 certificate in PEM or DER format
+.Nm view-crl
+.Nd Displays an X.509 CRL
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm view-certificate
-certificate_file
+.Nm view-crl
+CRL_file
 .Op ...
-.Nm view-certificate
+.Nm view-crl
 .Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm view-certificate
-displays important details on an X.509 certificate, including:
-.Bl -tag -width indent
-.It * Common Name (CN),
-.It * Validity Range,
-.It * Key Usage and Extended Usage,
-.It * Basic Constraints,
-.It * Subject Alternative Name (SAN),
-.It * Subject Key Identifier (SKID) and Authority Key Identifier (AKID), as well as
-.It * the contained certificate chain (from the certificate up to the root CA).
-.El
+.Nm view-crl
+displays important details of an X.509 CRL in PEM or DER format, including the serial numbers and dates of revoked certificates.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It certificate_file [...]
-Specifies one ore more certificate files to be displayed. "-" is a shortcut for /dev/stdin, i.e. reading the certificate from standard input.
+.It crl_file [...]
+Specifies one ore more CRL files to be displayed. "-" is a shortcut for /dev/stdin, i.e. reading the CRL from standard input.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It view-certificate My-CA-Certificate.crt My-Server-Certificate.crt
-.It view-certificate /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
-.It cat /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt | view-certificate -
-.It view-certificate www-nntb-no-chain.pem
-.It view-certificate --help
-.It view-certificate -h
+.It view-crl My-CA-CRL.ctl
+.It view-crl /usr/lib/python3.12/test/certdata/revocation.crl
+.It curl -o google-crl.der http://c.pki.goog/wr2/GSyT1N4PBrg.crl && \
+view-crl google-crl.der
+.It curl --output - http://c.pki.goog/wr2/GSyT1N4PBrg.crl | view-crl -
+.It view-crl --help
+.It view-crl -h
 .El
