@@ -50,7 +50,7 @@ color2="\x1b[38;2;33;27;87m"    # SimulaMet dark blue: #211B57
 echo -en "${color1}"
 separator " *💻" "=" "💻*"
 echo
-center "${color1}-- ${color2}$(gettext "Welcome to") ${color1}--"
+center "${color1}-- ${color2}$(gettext --context="Welcome title to print before the company logo text, e.g. 'Welcome to SimulaMet'" "Welcome to") ${color1}--"
 
 # ------ Print the logo -----------------------------------------------------
 echo
@@ -70,7 +70,7 @@ echo -e "${color2}"
 if [ -e /etc/simulamet/simulamet-version ] ; then
    center "$(cat /etc/simulamet/simulamet-version)"
 else
-   center "$(gettext "You can change this banner in /etc/system-info.d!")"
+   center "$(gettext --context="Information in which directory the banner can be changed" "You can change this banner in /etc/system-info.d!")"
 fi
 
 # ------ Print bottom separator ---------------------------------------------

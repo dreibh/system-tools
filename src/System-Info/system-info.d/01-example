@@ -55,7 +55,7 @@ center "#  #  #  #       #       #    #  #    #  #    #  #        ###"
 center " ## ##   ######  ######   ####    ####   #    #  ######   ###"
 echo -en "\x1b[1;34m"
 center ""
-center "$(gettext "You can change this banner in /etc/system-info.d!")"
+center "$(gettext --context="Information in which directory the banner can be changed" "You can change this banner in /etc/system-info.d!")"
 separator " <😀" "=" "😀> "
 echo -e "\x1b[0m"
 

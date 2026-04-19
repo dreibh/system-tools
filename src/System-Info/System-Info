@@ -193,7 +193,7 @@ function print-system-information ()
    # shellcheck disable=SC2059
    print-row \
       "$(gettext --context="The label of the field containing the uptime of the computer" "Uptime:")" \
-      "$(printf "$(gettext --context="The printf format string to print the uptime of the computer, split into the components days, hours, minutes, seconds. Each of the components is provided as string." "%s, %s, %s, and %s")\n" \
+      "$(printf "$(gettext --context="The printf format string to print the uptime of the computer, split into the components days, hours, minutes, seconds. Each of the components is provided as string. Example: '1 day, 10 hours, 25 minutes, and 44 seconds'." "%s, %s, %s, and %s")\n" \
          "$(printf "$(ngettext --context="The printf format string to print the number of days for the uptime of the computer, e.g. '1 day', or '42 days'" "%'d day" "%'d days" "${uptime_days}")" "${uptime_days}")" \
          "$(printf "$(ngettext --context="The printf format string to print the number of hours for the uptime of the computer, e.g. '1 hour', or '12 hours'" "%'d hour" "%'d hours" "${uptime_hours}")" "${uptime_hours}")" \
          "$(printf "$(ngettext --context="The printf format string to print the number of minutes for the uptime of the computer, e.g. '1 minute', or '10 minutes'" "%'d minute" "%'d minutes" "${uptime_mins}")" "${uptime_mins}")" \
@@ -212,14 +212,14 @@ function print-system-information ()
    usersString="$(printf "$(ngettext --context="The printf format string to print the users of the computer, e.g. '1 user', or '3 users'" "%'d user" "%'d users" "${system_users}")" "${system_users}")"
    print-row \
       "$(gettext --context="The label of the field containing information about the processor (i.e. CPU) of the computer" "Processor:")" \
-      "$(eval_pgettext "Combination of number of CPU cores (in variable 'system_cores') and details of the CPU of the computer (in variable 'system_machine') with details about processes (in variable 'processesString') and details about users (in variable 'usersString')" \
+      "$(eval_pgettext "Combination of number of CPU cores (in variable 'system_cores') and details of the CPU of the computer (in variable 'system_machine') with details about processes (in variable 'processesString') and details about users (in variable 'usersString'), e.g. '8 × x86_64; 435 processes; 1 user'" \
          "\${system_cores} × \${system_machine}; \${processesString}; \${usersString}"
        )"
 
    # ------ Load ------------------------------------------------------------
    # shellcheck disable=SC2059
    print-row \
-      "$(gettext "Load (1/5/15 min):")" \
+      "$(gettext --context="The label of the field containing information about the system load percentages of the computer in the last 1 minute/5 minutes/15 minutes" "Load (1/5/15 min):")" \
       "$(printf "$(gettext --context="The printf format string to print the load percentage of the computer over 1 minute (in variable 'system_load_avg1min') / 5 minutes (in variable 'system_load_avg5min') / 15 minutes (in variable 'system_load_avg15min'), e.g. '52.1% / 20.3% / 11.1%'" "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
          "${system_load_avg1min}" \
          "${system_load_avg5min}" \
@@ -257,14 +257,14 @@ function print-system-information ()
          fi
          batteryStatusVariable="battery_${battery}_status"
          batteryCapacityVariable="battery_${battery}_capacity"
-         batteryStatus="$(gettext "unknown")"
+         batteryStatus="$(gettext --context="Battery status of the computer when the battery is unknown" "unknown")"
          colorBattery="${colorInactive}"
          if [[ "${!batteryStatusVariable}" =~ ^[0-9]+$ ]] ; then
             if [ "${!batteryStatusVariable}" -eq 1 ] ; then
                batteryStatus="$(gettext --context="Battery status of the computer when the battery is not charging" "not charging")"
                colorBattery="${colorBatteryNotCharging}"
             elif [ "${!batteryStatusVariable}" -eq 2 ] ; then
-               batteryStatus="$(gettext "Battery status of the computer when the battery is charging" "charging")"
+               batteryStatus="$(gettext --context="Battery status of the computer when the battery is charging" "charging")"
                colorBattery="${colorBatteryCharging}"
             elif [ "${!batteryStatusVariable}" -eq 3 ] ; then
                batteryStatus="$(gettext --context="Battery status of the computer when the battery is fully charged" "full")"
@@ -442,7 +442,7 @@ function print-ssh-key-fingerprints ()
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "$(gettext "Usage:") $0 [-S|--scripts scripts_directory] [-h|--help]"
+   echo >&2 "$(gettext --context="Text to prepend the usage syntax when calling the program without parameters, e.g. 'Usage: program arg1 arg2 [options ...]'" "Usage:") $0 [-S|--scripts scripts_directory] [-h|--help]"
    exit 1
 }
 
@@ -484,7 +484,10 @@ fi
 
 # ====== Startup ============================================================
 # shellcheck disable=SC2059
-printf "\n$(gettext "System information on %s")\n\n" "${now}"
+echo
+eval_pgettext "Title text for system information with date/time (in variable 'now'), e.g. 'System information on Sun Apr 19 17:04:33 CEST 2026'" "System information on \${now}"
+echo
+echo
 
 # ====== Obtain and print information =======================================
 # Getting the network information may take a few hundreds of ms on a router
