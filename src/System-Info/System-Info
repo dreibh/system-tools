@@ -41,6 +41,12 @@ export TEXTDOMAIN="System-Info"
 
 # ###### Settings ###########################################################
 indent=-20
+# is_ltr=1
+# if [ -v LANG ] ; then
+#    if [[ "$(echo "${LANG}" | cut -d_ -f1)" =~ ^(ar|dv|fa|he|ps|ur|yi)$ ]] ; then
+#       is_ltr=0
+#    fi
+# fi
 
 colorBasic="\e[33m"
 colorNetwork="\e[34m"
@@ -84,9 +90,16 @@ function print-row ()
    # This is probably the place where Right-to-Left (RTL) locale handling
    # support should to be added! Assuming Left-to-Right (LTR) locale ...
 
-   # ====== Left-to-Right locale ============================================
-   print-utf8 -i "${indent}" "!${label}"
+   print-utf8 -i "${indent}" "${label}"
    echo -e "${value}"
+
+#    # ====== Left-to-Right (LTR) locale ======================================
+#    if [ ${is_ltr} -eq 1 ] ; then
+#       ...
+#    # ====== Right-to-Left (RTL) locale ======================================
+#    else
+#       ...
+#    fi
 }
 
 
@@ -228,7 +241,7 @@ function print-system-information ()
    # battery_4_capacity=55
    # --- TEST ---------------------------
    if [ "${battery_list}" != "" ] ; then
-      print-utf8 -i "${indent}" "$(gettext --context="The label of the field containing information about the battery of the computer" "Battery:")"
+      local batterySummary=( )
       local battery
       local batteryNumber=0
       local batteryStatusVariable
@@ -236,10 +249,11 @@ function print-system-information ()
       local batteryStatus
       local batteryCapacity
       local colorBattery
+      local separator=""
       for battery in ${battery_list} ; do
          batteryNumber=$((batteryNumber+1))
          if [ ${batteryNumber} -gt 1 ] ; then
-            echo -n " / "
+            separator=" / "
          fi
          batteryStatusVariable="battery_${battery}_status"
          batteryCapacityVariable="battery_${battery}_capacity"
@@ -264,12 +278,13 @@ function print-system-information ()
          # shellcheck disable=SC2034
          batteryCapacity="${!batteryCapacityVariable}"
 
-         echo -en "${colorBattery}"
-         eval_pgettext "Combination of battery number (in variable 'batteryNumber'), battery status (in variable 'batteryStatus'), and battery capacity in percent (in variable 'batteryCapacity'), e.g. '#1 charging, 87 %'" \
-            "#\${batteryNumber} \${batteryStatus}, \${batteryCapacity} %"
-         echo -en "${colorBasic}"
+         batterySummary+=( "${separator}${colorBattery}$(eval_pgettext "Combination of battery number (in variable 'batteryNumber'), battery status (in variable 'batteryStatus'), and battery capacity in percent (in variable 'batteryCapacity'), e.g. '#1 charging, 87 %'" \
+            "#\${batteryNumber} \${batteryStatus}, \${batteryCapacity} %")${colorBasic}" )
       done
-      echo
+
+      print-row \
+         "$(gettext --context="The label of the field containing information about the battery of the computer" "Battery:")" \
+         "${batterySummary[*]}"
    fi
 
    # ------ Memory ---------------------------------------------------------
@@ -299,18 +314,20 @@ function print-system-information ()
    fi
 
    # ------ Storage ---------------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext --context="The label of the field containing information about the used disk space of the computer" "Used Diskspace:")"
+   local diskSummary=( )
    local mountPointVariable
    local mountPointName
    local mountPoint
    local percentage
    local colorDisk
+   local separator
    for mountPointName in ${disk_list} ; do
       if [ "${mountPointName}" == "root" ] ; then
          mountPoint="/"
+         separator=""
       else
          mountPoint="/${mountPointName}"
-         echo -n ", "
+         separator=", "
       fi
       mountPointVariable="disk_${mountPointName}_pct"
       if [ -v "${mountPointVariable}" ] && [[ "${!mountPointVariable}" =~ ^[0-9]+ ]]; then
@@ -323,12 +340,14 @@ function print-system-information ()
             colorDisk="${colorDiskNormal}"
          fi
          # shellcheck disable=SC2059
-         printf "${colorDisk}$(gettext --context="The printf format string to print the usage percentage of storage at a mount point, e.g.'88 % on /home', or '92 % on /tmp'" "%1.0f %% on %s")${colorBasic}" \
+         diskSummary+=( "${separator}${colorDisk}$(printf "$(gettext --context="The printf format string to print the usage percentage of storage at a mount point, e.g.'88 % on /home', or '92 % on /tmp'" "%1.0f %% on %s")" \
             "${!mountPointVariable}" \
-            "${mountPoint}"
+            "${mountPoint}")${colorBasic}" )
       fi
    done
-   echo
+   print-row \
+      "$(gettext --context="The label of the field containing information about the used disk space of the computer" "Used Diskspace:")" \
+      "${diskSummary[*]}"
 
    # ------ SSH Key Fingerprints --------------------------------------------
    print-ssh-key-fingerprints
@@ -383,7 +402,6 @@ function print-system-information ()
          print-row \
             "   ${colorA}${!nameVariable}:" \
             "${ipv4}${colorA}${ipv6}${colorA}"
-
       fi
 
    done
