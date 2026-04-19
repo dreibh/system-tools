@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd November 28, 2025
+.Dd April 5, 2026
 .Dt extract-pem 1
 .Os extract-pem
 .\" ###### Name #############################################################
@@ -56,10 +56,10 @@ pem_file
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm extract-pem
-xtracts the blocks of PEM files into separate files. The output files will be named with a given output prefix (default: "output-"), and a sequential number according to the occurrence. The output file extension will be chosen based on the content:
+extracts the blocks of PEM files into separate files. The output files will be named with a given output prefix (default: "output-"), and a sequential number according to the occurrence. The output file extension will be chosen based on the content:
 .Bl -tag -width indent
 .It * .crt for a certificate,
-.It * .crl for a certificate revokation list (CRL),
+.It * .crl for a certificate revocation list (CRL),
 .It * .key for a key.
 .El
 .Pp
@@ -85,10 +85,10 @@ Prints command-line parameters.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It extract-pem my-server-certificate.pem --output-prefix extract-
-.It extract-pem my-server-certificate.pem -o extract-
-.It extract-pem my-server-certificate.pem --skip-first-entry --skip-last-entry -o extract-intermediate-
-.It extract-pem my-server-certificate.pem --only-first-entry -o extract-server-
+.It extract-pem my-server-certificate.crt --output-prefix extract-
+.It extract-pem my-server-certificate.crt -o extract-
+.It extract-pem my-server-certificate.crt --skip-first-entry --skip-last-entry -o extract-intermediate-
+.It extract-pem my-server-certificate.crt --only-first-entry -o extract-server-
 .It extract-pem --help
 .It extract-pem -h
 .El

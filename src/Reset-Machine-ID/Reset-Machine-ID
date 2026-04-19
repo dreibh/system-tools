@@ -559,7 +559,7 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && [ -x "$(command -
       read -er applyChanges
    fi
    if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
-      backupDirectory="backup-$(env LANG=C date +%FT%H:%M:%S)"
+      backupDirectory="backup-$(date "+%FT%H:%M:%S")"
 
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Making backup of current keys in \${backupDirectory} ...")\x1b[0m"
       mkdir "${backupDirectory}/"

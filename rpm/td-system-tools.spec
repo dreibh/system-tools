@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.2.5
+Version: 2.3.0
 Release: 1
 Summary: Print basic system information and banners
 Group: Applications/System
@@ -232,30 +232,43 @@ Recommends: gnutls-utils
 Recommends: nss-tools
 
 %description x509-tools
- This package contains four simple tools:
- view-certificate displays an X.509 certificate and its hierarchy.
- check-certificate verifies an X.509 certificate using a CA certificate
- and optionally a revocation list.
- extract-pem extracts a PEM file.
- test-tls-connection tests a TCP TLS connection to a remote endpoint.
+This package contains X.509 certificate handling tools:
+view-certificate displays an X.509 certificate and its hierarchy.
+view-crl shows an X.509 certificate revocation list (CRL).
+check-certificate verifies an X.509 certificate using a CA certificate
+and optionally a revocation list.
+extract-pem extracts a PEM file.
+der2pem converts a certificate or CRL in DER format to PEM format.
+pem2der converts a certificate or CRL in PEM format to DER format.
+test-tls-connection tests a TCP TLS connection to a remote endpoint.
 
 %files x509-tools
 %{_bindir}/check-certificate
+%{_bindir}/der2pem
 %{_bindir}/extract-pem
+%{_bindir}/pem2der
 %{_bindir}/test-tls-connection
 %{_bindir}/view-certificate
+%{_bindir}/view-crl
 %{_datadir}/bash-completion/completions/check-certificate
+%{_datadir}/bash-completion/completions/der2pem
 %{_datadir}/bash-completion/completions/extract-pem
+%{_datadir}/bash-completion/completions/pem2der
 %{_datadir}/bash-completion/completions/test-tls-connection
 %{_datadir}/bash-completion/completions/view-certificate
+%{_datadir}/bash-completion/completions/view-crl
 %{_datadir}/locale/*/LC_MESSAGES/check-certificate.mo
 %{_datadir}/locale/*/LC_MESSAGES/extract-pem.mo
 %{_datadir}/locale/*/LC_MESSAGES/test-tls-connection.mo
 %{_datadir}/locale/*/LC_MESSAGES/view-certificate.mo
+%{_datadir}/locale/*/LC_MESSAGES/view-crl.mo
 %{_mandir}/man1/check-certificate.1.gz
+%{_mandir}/man1/der2pem.1.gz
 %{_mandir}/man1/extract-pem.1.gz
+%{_mandir}/man1/pem2der.1.gz
 %{_mandir}/man1/test-tls-connection.1.gz
 %{_mandir}/man1/view-certificate.1.gz
+%{_mandir}/man1/view-crl.1.gz
 
 
 %package misc
@@ -289,6 +302,8 @@ support for fractional seconds.
 
 
 %changelog
+* Sun Apr 19 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.3.0-1
+- New upstream release.
 * Wed Feb 25 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.2.5-1
 - New upstream release.
 * Mon Feb 09 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.2.4-1

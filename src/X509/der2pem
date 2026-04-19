@@ -1,4 +1,4 @@
-# shellcheck shell=bash
+#!/usr/bin/env bash
 # ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
@@ -10,8 +10,8 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# X.509 Certificate Viewer
-# Copyright (C) 2025-2026 by Thomas Dreibholz
+# DER to PEM Conversion
+# Copyright (C) 2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,43 +26,34 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Contact: thomas.dreibholz@gmail.com
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -eu
 
 
-# ###### Bash completion for view-certificate ###############################
-_view_certificate()
-{
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
-      _init_completion || return
-   else
-      # Manual initialization for older bash completion versions:
-      COMPREPLY=()
-      cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
-      prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
-      cword="${COMP_CWORD}"
-   fi
+# ###### Main program #######################################################
 
-   if [ "${cword}" -le 1 ] ; then
-      _filedir '@(cert|crt|der|pem)'
-      return
-   fi
+# ====== Handle arguments ===================================================
+if [ $# -ne 2 ] ; then
+   echo >&2 "Usage: $0 der_file pem_file"
+   exit 1
+fi
 
-   # ====== All options =====================================================
-   local opts="
--h
---help
-"
-   # shellcheck disable=SC2207
-   COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
-   return 0
-}
+INPUT="$1"
+if [ ! -e "${INPUT}" ] ; then
+   echo >&2 "ERROR: DER file ${INPUT} does not exist!"
+   exit 1
+fi
+OUTPUT="$2"
 
-complete -F _view_certificate view-certificate
+TYPE="x509"
+# Check whether type is CRL, by using "file":
+if [ "$(file -b "${INPUT}")" == "data" ] ; then
+   TYPE="crl"
+fi
+
+# ====== Convert PEM to DER =================================================
+openssl "${TYPE}" \
+   -inform der -in "${INPUT}" \
+   -outform pem -out "${OUTPUT}"
