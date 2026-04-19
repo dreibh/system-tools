@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.2.5\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-03-17 16:57+0100\n"
+"POT-Creation-Date: 2026-04-19 12:56+0200\n"
 "PO-Revision-Date: 2026-03-17 12:30+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -21,20 +21,20 @@ msgstr ""
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Unix-Timestamp/time2unixts.c:145
+#: src/Unix-Timestamp/time2unixts.c:152
 #, c-format
 msgid "ERROR: Invalid argument %s!"
 msgstr "FEHLER: Ungültiges Argument %s!"
 
-#: src/Unix-Timestamp/time2unixts.c:155
+#: src/Unix-Timestamp/time2unixts.c:162
 msgid "clock_gettime() failed"
 msgstr "clock_gettime() fehlgeschlagen"
 
-#: src/Unix-Timestamp/time2unixts.c:179
+#: src/Unix-Timestamp/time2unixts.c:186
 msgid "ERROR: Invalid time string!"
 msgstr "FEHLER: Ungültige Zeitangabe!"
 
-#: src/Unix-Timestamp/time2unixts.c:212
+#: src/Unix-Timestamp/time2unixts.c:227
 #, c-format
 msgid " %s since the Unix Epoch"
 msgstr " %s seit der Unix-Epoche"

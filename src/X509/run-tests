@@ -10,8 +10,8 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# Run ShellCheck
-# Copyright (C) 2024-2026 by Thomas Dreibholz
+# X.509 Tools
+# Copyright (C) 2025-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,22 +26,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Contact: thomas.dreibholz@gmail.com
+# Contact: dreibh@simula.no
 
 # Bash options:
 set -eu
 
-# Automatically find all shell scripts in subdirectories:
-SCRIPTS="$(
-(
-   find . -type f -executable -and -not -name "*~"
-   find . -name "*.bash-completion" -and -not -name "*~"
-) | while read -r name ; do
-   if [[ "$(head -n1 "${name}" | strings)" =~ (bash|/bin/sh) ]] ; then
-      echo "${name}"
-   fi
-done
-)"
+
+CA="TestCA/TestLevel1/certs/TestLevel1.crt"
+CRL="TestCA/TestGlobal.crl"   # combined CRL!
+CERTIFICATES="$(find TestCA -name "*.crt" | sort)"
 
 
 # ###### Helper function to show failure ####################################
@@ -80,17 +73,7 @@ show-script ()
 
 # ###### Main program #######################################################
 
-# ====== Find locations of Python interpreter, MyPy, and tools ==============
-SHELLCHECK="$(which shellcheck 2>/dev/null)"
-if [ ! -x "${SHELLCHECK}" ] ; then
-   echo >&2 "ERROR: ShellCheck is not installed!"
-   echo >&2 "Try this:"
-   echo >&2 "* Ubuntu:  sudo apt install -y shellcheck"
-   echo >&2 "* Fedora:  sudo dnf install -y ShellCheck"
-   echo >&2 "* FreeBSD: sudo pkg install -y hs-ShellCheck"
-   exit 1
-fi
-echo "Python: ${SHELLCHECK}"
+# ====== Find tools =========================================================
 PRINT_UTF8="$(which print-utf8 2>/dev/null || true)"
 if [ ! -x "${PRINT_UTF8}" ] ; then
    echo >&2 "ERROR: Print-UTF8 (from System-Tools) is not installed!"
@@ -111,13 +94,10 @@ if [ ! -x "${FIGLET}" ] ; then
    exit 1
 fi
 
-
-# ====== Run MyPy ===========================================================
-for script in $SCRIPTS ; do
-   echo -e "\e[34mChecking ${script} ...\e[0m"
-   show-script "${script}"
-   "${SHELLCHECK}" \
-      -x --color \
-      "${script}" || exit-failed
+# ====== Run tests ==========================================================
+for certificate in ${CERTIFICATES} ; do
+   show-script "${certificate}"
+   ./check-certificate "${CA}" "${certificate}" --crl "${CRL}" || exit-failed
 done
+
 exit-success

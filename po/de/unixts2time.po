@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.2.5\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-03-17 16:57+0100\n"
+"POT-Creation-Date: 2026-04-19 12:56+0200\n"
 "PO-Revision-Date: 2026-03-17 11:56+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Unix-Timestamp/unixts2time.c:147
+#: src/Unix-Timestamp/unixts2time.c:146
 #, c-format
 msgid "ERROR: Invalid argument %s!"
 msgstr "FEHLER: Ungültiges Argument %s!"
@@ -30,15 +30,15 @@ msgstr "FEHLER: Ungültiges Argument %s!"
 msgid "clock_gettime() failed"
 msgstr "clock_gettime() fehlgeschlagen"
 
-#: src/Unix-Timestamp/unixts2time.c:174
+#: src/Unix-Timestamp/unixts2time.c:196
 msgid "ERROR: Invalid Unix timestamp!"
 msgstr "FEHLER: Ungültiger Unix-Zeitstempel!"
 
-#: src/Unix-Timestamp/unixts2time.c:192 src/Unix-Timestamp/unixts2time.c:199
+#: src/Unix-Timestamp/unixts2time.c:214 src/Unix-Timestamp/unixts2time.c:221
 msgid "ERROR: strftime() failed!"
 msgstr "FEHLER: strftime() fehlgeschlagen!"
 
-#: src/Unix-Timestamp/unixts2time.c:231
-#, c-format
-msgid "%s%s is %lld %s since the Unix Epoch"
+#: src/Unix-Timestamp/unixts2time.c:253
+#, fuzzy, c-format
+msgid "%s%s is %lld (0x%llx) %s since the Unix Epoch"
 msgstr "%s%s ist %lld %s seit der Unix-Epoche"

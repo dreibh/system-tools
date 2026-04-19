@@ -51,7 +51,7 @@ _extract_pem ()
    fi
 
    if [ "${cword}" -le 1 ] ; then
-      _filedir '@(cert|crt|pem)'
+      _filedir '@(cert|crt|crl|pem)'
       return
    fi
 
