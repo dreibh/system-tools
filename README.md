@@ -22,7 +22,7 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 - [Try-Hard](#-try-hard) (run a command, with configurable retries on failure),
 - [Random-Sleep](#-random-sleep) (wait for random time span, with support of fractional seconds).
 - [Unix-Timestamp-Tools](#-unix-timestamp-tools) (tools for converting Unix timestamps to/from date and time),
-- [X.509-Tools](#-x.509-tools) (tools for viewing, verifying and testing X.509 certificates),
+- [X.509-Tools](#-x.509-tools) (tools for viewing, verifying and testing X.509 certificates).
 
 # 📚 System-Info
 
