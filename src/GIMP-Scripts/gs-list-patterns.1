@@ -9,8 +9,8 @@
 .\"                  https://www.nntb.no/~dreibh/system-tools/
 .\" ==========================================================================
 .\"
-.\" GIMP Scripts
-.\" Copyright (C) 2013-2026 by Thomas Dreibholz
+.\" List GIMP Patterns
+.\" Copyright (C) 2026 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -29,41 +29,24 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd April 20, 2026
-.Dt gs-test-gimp 1
-.Os gs-test-gimp
+.Dt gs-list-patterns 1
+.Os gs-list-patterns
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm gs-test-gimp
-.Nd runs a short test to verify that GIMP can run a GIMP script in non-GUI mode.
+.Nm gs-list-patterns
+.Nd lists available GIMP patterns.
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm gs-test-gimp
-.Op Fl q | Fl Fl quiet
-.Op Fl w | Fl Fl verbose
-.Nm gs-test-gimp
-.Op Fl h | Fl Fl help
+.Nm gs-list-patterns
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm gs-test-gimp
-resizes an image, including cropping to fit a changed aspect ratio.
+.Nm gs-list-patterns
+lists the available GIMP patterns.
 .Pp
-.\" ###### Arguments ########################################################
-.Sh ARGUMENTS
-The following options are available:
-.Bl -tag -width indent
-.It Fl q | Fl Fl quiet
-Quiet mode: no output is made.
-.It Fl w | Fl Fl verbose
-Verbose mode: print selected delay and wake-up.
-.It Fl h | Fl Fl help
-Prints command-line parameters.
-.El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It gs-test-gimp
-.It GIMP3_DIRECTORY=/tmp/gimp3.tmp gs-test-gimp
-.It GIMP3_DIRECTORY=/tmp/gimp3.tmp gs-test-gimp --verbose
+.It gs-list-patterns
 .El
