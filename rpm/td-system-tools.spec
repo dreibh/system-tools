@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.3.0
+Version: 2.3.1
 Release: 1
 Summary: Tools for basic system management
 Group: Applications/System
@@ -288,6 +288,8 @@ support for fractional seconds.
 
 
 %changelog
+* Mon Apr 20 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.3.1-1
+- New upstream release.
 * Sun Apr 19 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.3.0-1
 - New upstream release.
 * Wed Feb 25 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.2.5-1

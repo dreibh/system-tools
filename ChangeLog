@@ -1,3 +1,46 @@
+commit 5304a8cd0a29a15aa66dd055068b9b4f292edc8d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Apr 19 18:00:03 2026 +0200
+
+    Improved RPM description.
+
+commit 0d33a9b275f30c78a9fb3d372827955b2e6cdbc2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Apr 19 17:37:06 2026 +0200
+
+    Header updates.
+
+commit db130067739a917aff57a42296394cf823403424
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Apr 19 13:01:59 2026 +0200
+
+    Fixed typo.
+
+commit fc7110a7ab0bf47c792043b182c2f04f64adc406
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Apr 19 13:00:27 2026 +0200
+
+    Updated package description.
+
+commit 1ca8f89495f859ba065bce22a3cc3b1bde0e7512
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Apr 19 12:53:10 2026 +0200
+
+    Updated PO files.
+
+commit edec7612abdbe09b83c84bd67a147869f805d9b4
+Merge: 768da78 e53f432
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Apr 19 12:48:23 2026 +0200
+
+    Merge branch 'master' into dreibh/cmake-options
+
+commit e53f43223484131f1b260fa6c488cb32b486f451
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Apr 19 12:36:32 2026 +0200
+
+    New release td-system-tools-2.3.0.
+
 commit 34ab0c3cfd77377150051c2f98e7c1edc8137d39
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun Apr 19 10:29:11 2026 +0200
@@ -144,6 +187,13 @@ Date:   Sun Mar 22 19:28:28 2026 +0100
 
     Merge branch 'master' into dreibh/x509
 
+commit 768da78b93bdf43aaf0e228402d60454ed15710e
+Merge: f71c35d b167125
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Mar 22 19:25:38 2026 +0100
+
+    Merge branch 'master' into dreibh/cmake-options
+
 commit b1671250d41bca5897cc642ac318a1e7ccf687cb
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun Mar 22 15:58:17 2026 +0100
@@ -257,6 +307,24 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Mar 19 16:03:57 2026 +0100
 
     Improved helper script.
+
+commit f71c35d8491922e65e2cd095620cf4c5c693656e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 13:37:54 2026 +0100
+
+    Improved libintl detection in CMakeLists.txt.
+
+commit b5f76b8e6553bbec2a07660eb7a3f82d38b14a2c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 11:05:45 2026 +0100
+
+    Made NLS support in the C programs optional.
+
+commit 623372c7016a252e62202f7e34f4e993b14e273f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 11:05:03 2026 +0100
+
+    Made building the components configurable.
 
 commit 05eb0f2a1dab1b1cbc5b0b8e5ca93b55008b7a77
 Author: Thomas Dreibholz <dreibh@simula.no>
