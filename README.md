@@ -305,7 +305,7 @@ The Unix-Timestamp-Tools are utilities for converting Unix timestamps (time sinc
 
 ## Time2UnixTS
 
-Time2UnixTS converts a date/time string to the corresponding Unix timestamp, with support for fractional seconds. The fractional seconds part is parsed according to the current locale settings (i.e.&nbsp;with "." for en_US, "," for de_DE, etc.).
+Time2UnixTS converts a date/time string in UTC to the corresponding Unix timestamp, with support for fractional seconds. The fractional seconds part is parsed according to the current locale settings (i.e.&nbsp;with "." for en_US, "," for de_DE, etc.).
 
 Example to convert "1976-09-29 12:12:03.123456789":
 
@@ -363,6 +363,12 @@ Examples:
 
   ```bash
   LC_NUMERIC=en_US.UTF-8 unixts2time 212843523123456789 --nanoseconds
+  ```
+
+* Convert 834829811888 (in ms) in de_DE locale (using "," for the fractional seconds):
+
+  ```bash
+  LC_NUMERIC=de_DE.UTF-8 ./unixts2time 834829811888
   ```
 
 The manpage of UnixTS2Time contains details and further examples:
