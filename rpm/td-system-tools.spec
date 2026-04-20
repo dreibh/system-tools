@@ -277,31 +277,37 @@ Recommends: urw-base35-fonts
 %files gimp-scripts
 %{_bindir}/gs-bumpmap
 %{_bindir}/gs-caption
-%{_bindir}/Make-Cloth
+%{_bindir}/gs-clothify
 %{_bindir}/gs-glossytext
+%{_bindir}/gs-list-fonts
+%{_bindir}/gs-list-gradients
+%{_bindir}/gs-list-patterns
 %{_bindir}/gs-mosaic
-%{_bindir}/Make-OilPainting
+%{_bindir}/gs-oilify
 %{_bindir}/gs-oldphoto
 %{_bindir}/gs-resize-with-cropping
-%{_bindir}/Test-Gimp
+%{_bindir}/gs-test-gimp
 %{_datadir}/bash-completion/completions/gs-bumpmap
 %{_datadir}/bash-completion/completions/gs-caption
-%{_datadir}/bash-completion/completions/Make-Cloth
+%{_datadir}/bash-completion/completions/gs-clothify
 %{_datadir}/bash-completion/completions/gs-glossytext
 %{_datadir}/bash-completion/completions/gs-mosaic
-%{_datadir}/bash-completion/completions/Make-OilPainting
+%{_datadir}/bash-completion/completions/gs-oilify
 %{_datadir}/bash-completion/completions/gs-oldphoto
 %{_datadir}/bash-completion/completions/gs-resize-with-cropping
-%{_datadir}/bash-completion/completions/Test-Gimp
-%{_mandir}/man1/gs-bumpmap.1
-%{_mandir}/man1/gs-caption.1
-%{_mandir}/man1/Make-Cloth.1
-%{_mandir}/man1/gs-glossytext.1
-%{_mandir}/man1/gs-mosaic.1
-%{_mandir}/man1/Make-OilPainting.1
-%{_mandir}/man1/gs-oldphoto.1
-%{_mandir}/man1/gs-resize-with-cropping.1
-%{_mandir}/man1/Test-Gimp.1
+%{_datadir}/bash-completion/completions/gs-test-gimp
+%{_mandir}/man1/gs-bumpmap.1.gz
+%{_mandir}/man1/gs-caption.1.gz
+%{_mandir}/man1/gs-clothify.1.gz
+%{_mandir}/man1/gs-glossytext.1.gz
+%{_mandir}/man1/gs-list-fonts.1.gz
+%{_mandir}/man1/gs-list-gradients.1.gz
+%{_mandir}/man1/gs-list-patterns.1.gz
+%{_mandir}/man1/gs-mosaic.1.gz
+%{_mandir}/man1/gs-oilify.1.gz
+%{_mandir}/man1/gs-oldphoto.1.gz
+%{_mandir}/man1/gs-resize-with-cropping.1.gz
+%{_mandir}/man1/gs-test-gimp.1.gz
 
 
 %package misc
