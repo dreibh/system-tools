@@ -44,10 +44,21 @@ SET(gimpScripts
    gs-test-gimp
 )
 
+SET(gimpSimpleScripts
+   gs-list-fonts
+   gs-list-gradients
+   gs-list-patterns
+)
+
 FOREACH(gimpScript IN LISTS gimpScripts)
    INSTALL(PROGRAMS ${gimpScript}   DESTINATION ${CMAKE_INSTALL_BINDIR})
    INSTALL(FILES    ${gimpScript}.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
    INSTALL(FILES       ${gimpScript}.bash-completion
            DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
            RENAME      ${gimpScript})
+ENDFOREACH()
+
+FOREACH(gimpScript IN LISTS gimpSimpleScripts)
+   INSTALL(PROGRAMS ${gimpScript}   DESTINATION ${CMAKE_INSTALL_BINDIR})
+   INSTALL(FILES    ${gimpScript}.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 ENDFOREACH()
