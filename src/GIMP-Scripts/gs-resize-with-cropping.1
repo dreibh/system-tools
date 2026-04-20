@@ -29,17 +29,17 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd April 20, 2026
-.Dt Resize-with-Cropping 1
-.Os Resize-with-Cropping
+.Dt gs-resize-with-cropping 1
+.Os gs-resize-with-cropping
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm Resize-with-Cropping
+.Nm gs-resize-with-cropping
 .Nd resizes an image, including cropping to fit a changed aspect ratio.
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm Resize-with-Cropping
+.Nm gs-resize-with-cropping
 input_filename
 output_filename
 .br
@@ -57,11 +57,11 @@ output_filename
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
-.Nm Resize-with-Cropping
+.Nm gs-resize-with-cropping
 .Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm Resize-with-Cropping
+.Nm gs-resize-with-cropping
 resizes an image, including cropping to fit a changed aspect ratio.
 .Pp
 .\" ###### Arguments ########################################################
@@ -94,9 +94,9 @@ Prints command-line parameters.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It Resize-with-Cropping Bergen.jpeg Bergen-1920-4:3.webp 4:3 1920 --verbose
-.It Resize-with-Cropping Bergen.jpeg Bergen-1920-16:9.png 16x9 1920
-.It Resize-with-Cropping Bergen.jpeg Bergen-3860-A3.pdf A3 3840
-.It Resize-with-Cropping Bergen.jpeg Bergen-1024-An.jpeg 1.414214 1024
-.It Resize-with-Cropping Portobello.jpeg Portobello-2048-16:9.jpeg -A 16:9 --width 2048 -v
+.It gs-resize-with-cropping Bergen.jpeg Bergen-1920-4:3.webp 4:3 1920 --verbose
+.It gs-resize-with-cropping Bergen.jpeg Bergen-1920-16:9.png 16x9 1920
+.It gs-resize-with-cropping Bergen.jpeg Bergen-3860-A3.pdf A3 3840
+.It gs-resize-with-cropping Bergen.jpeg Bergen-1024-An.jpeg 1.414214 1024
+.It gs-resize-with-cropping Portobello.jpeg Portobello-2048-16:9.jpeg -A 16:9 --width 2048 -v
 .El
