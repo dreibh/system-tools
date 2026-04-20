@@ -29,24 +29,24 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd March 17, 2026
-.Dt Test-GIMP 1
-.Os Test-GIMP
+.Dt gs-test-gimp 1
+.Os gs-test-gimp
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm Test-GIMP
+.Nm gs-test-gimp
 .Nd runs a short test to verify that GIMP can run a GIMP script in non-GUI mode.
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm Test-GIMP
+.Nm gs-test-gimp
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
-.Nm Test-GIMP
+.Nm gs-test-gimp
 .Op Fl h | Fl Fl help
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm Test-GIMP
+.Nm gs-test-gimp
 resizes an image, including cropping to fit a changed aspect ratio.
 .Pp
 .\" ###### Arguments ########################################################
@@ -63,7 +63,7 @@ Prints command-line parameters.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It Test-GIMP
-.It GIMP3_DIRECTORY=/tmp/gimp3.tmp Test-GIMP
-.It GIMP3_DIRECTORY=/tmp/gimp3.tmp Test-GIMP --verbose
+.It gs-test-gimp
+.It GIMP3_DIRECTORY=/tmp/gimp3.tmp gs-test-gimp
+.It GIMP3_DIRECTORY=/tmp/gimp3.tmp gs-test-gimp --verbose
 .El
