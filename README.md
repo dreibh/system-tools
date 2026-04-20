@@ -463,6 +463,11 @@ The GIMP-Scripts are a collection of scripts using GIMP and GraphicsMagick to ap
 ## Resize-with-Cropping
 ## Test-Gimp
 
+## Helper Scripts
+### List-Fonts
+### List-Gradients
+### List-Patterns
+
 
 # 📦 Binary Package Installation
 
