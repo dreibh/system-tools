@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd March 19, 2026
+.Dd April 20, 2026
 .Dt unixts2time 1
 .Os unixts2time
 .\" ###### Name #############################################################
@@ -127,8 +127,8 @@ Prints program version.
 .It unixts2time -H 212847008123456789
 .It unixts2time 0x179cb2ae8af3dd89
 .It unixts2time -H 0x179cb2ae8af3dd89
-.It env LC_ALL=en.UTF-8 unixts2time -Fs 212847123.123
-.It env LC_ALL=de_DE.UTF-8 unixts2time -Fs 212847123,123456789
+.It LC_NUMERIC=en.UTF-8 unixts2time -Fs 212847123.123
+.It LC_NUMERIC=de_DE.UTF-8 unixts2time -Fs 212847123,123456789
 .It unixts2time --version
 .It unixts2time --help
 .El

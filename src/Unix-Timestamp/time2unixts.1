@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd March 19, 2026
+.Dd April 20, 2026
 .Dt time2unixts 1
 .Os time2unixts
 .\" ###### Name #############################################################
@@ -102,14 +102,14 @@ Prints program version.
 .It time2unixts --integer-hexadecimal --seconds
 .It time2unixts \(dq2026-03-17 10:52:35\(dq --seconds
 .It time2unixts \(dq1969-12-20 10:13:20\(dq
-.It env LC_ALL=en_US.UTF-8 time2unixts \(dq1955-12-24 22:22:22.000\(dq --milliseconds
-.It env LC_ALL=nb_NO.UTF-8 ./time2unixts \(dq1955-12-24 22:22:22,000\(dq --milliseconds
+.It LC_NUMERIC=en_US.UTF-8 time2unixts \(dq1955-12-24 22:22:22.000\(dq --milliseconds
+.It LC_NUMERIC=nb_NO.UTF-8 ./time2unixts \(dq1955-12-24 22:22:22,000\(dq --milliseconds
 .It time2unixts \(dq2026-03-17 08:31:19\(dq --human-readable --seconds
 .It time2unixts \(dq2026-03-17 08:31:19\(dq -s
-.It env LC_ALL=de_DE.UTF-8 time2unixts \(dq1976-09-29 12:10:00,000\(dq --milliseconds
-.It env LC_ALL=de_DE.UTF-8 time2unixts \(dq1976-09-29 12:10:08,123456789\(dq -H
-.It env LC_ALL=en_US.UTF-8 time2unixts \(dq1976-09-29 12:12:03.123\(dq -m
-.It env LC_ALL=de_DE.UTF-8 time2unixts \(dq1976-09-29 12:12:03,123456789\(dq -n
+.It LC_NUMERIC=de_DE.UTF-8 time2unixts \(dq1976-09-29 12:10:00,000\(dq --milliseconds
+.It LC_NUMERIC=de_DE.UTF-8 time2unixts \(dq1976-09-29 12:10:08,123456789\(dq -H
+.It LC_NUMERIC=en_US.UTF-8 time2unixts \(dq1976-09-29 12:12:03.123\(dq -m
+.It LC_NUMERIC=de_DE.UTF-8 time2unixts \(dq1976-09-29 12:12:03,123456789\(dq -n
 .It time2unixts --version
 .It time2unixts --help
 .El
