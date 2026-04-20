@@ -33,7 +33,7 @@ set -eu
 
 MODEL="translategemma:27b"   # "deepseek-r1:671b" "translategemma:27b" "ministral-3:14b"
 PROGRAMS="System-Info"
-LANGUAGES="ar be bg cs da de el en es et fa fi fr ga he hi hr hu is it ja ko lt lv mt nb nl nn no pl pt ro ru sk sl sq sr sv tr uk zh"
+LANGUAGES="ar be bg bn cs da de el en es et fa fi fr ga he hi hr hu is it ja ko lt lv mi mt nb nl nn no pl pt ro ru sk sl sq sr sv ta th tr uk zh"
 for program in ${PROGRAMS} ; do
    context="
       $(cat ../README.md)
