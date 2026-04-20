@@ -22,6 +22,7 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 - [Try-Hard](#-try-hard) (run a command, with configurable retries on failure),
 - [Random-Sleep](#-random-sleep) (wait for random time span, with support of fractional seconds).
 - [X.509-Tools](#-x.509-tools) (tools for viewing, verifying and testing X.509 certificates),
+- [GIMP-Scripts](#-gimp-scripts) (collection of scripts using GIMP and GraphicsMagick to apply effects on and resize images).
 
 # 📚 System-Info
 
@@ -446,6 +447,21 @@ Also see the manpage of Test-TLS-Connection for further details and examples:
   ```bash
   man test-tls-connection
   ```
+
+
+# 📚 GIMP-Scripts
+
+The GIMP-Scripts are a collection of scripts using GIMP and GraphicsMagick to apply effects on and resize images.
+
+## BumpMap
+## Caption
+## Clothify
+## GlossyText
+## Mosaic
+## Oilify
+## OldPhoto
+## Resize-with-Cropping
+## Test-Gimp
 
 
 # 📦 Binary Package Installation
