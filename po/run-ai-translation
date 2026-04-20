@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# ==========================================================================
+#         ____            _                     _____           _
+#        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+#               |___/
+#                             --- System-Tools ---
+#                  https://www.nntb.no/~dreibh/system-tools/
+# ==========================================================================
+#
+# System-Tools
+# Copyright (C) 2013-2026 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -eu
+
+MODEL="translategemma:27b"   # "deepseek-r1:671b" "translategemma:27b" "ministral-3:14b"
+PROGRAMS="System-Info"
+LANGUAGES="ar be bg cs da de el en es et fa fi fr ga he hi hr hu is it ja ko lt lv mt nb nl nn no pl pt ro ru sk sl sq sr sv tr uk zh"
+for program in ${PROGRAMS} ; do
+   context="
+      $(cat ../README.md)
+      $(awk '{ print "../" $2 }' <"${program}.sources" | xargs cat)
+   "
+   for language in ${LANGUAGES} ; do
+      mkdir -p "${language}"
+      # rm -f "${language}/${program}.po"
+      msginit --input "${program}.pot" \
+         --locale "${language}.UTF-8" \
+         --output-file "${language}/${program}.po" \
+         --no-translator
+   done
+   gpt-po-translator \
+      --provider ollama \
+      --model "${MODEL}" \
+      --folder . \
+      --bulk --verbose \
+      --default-context "${context}"
+done
