@@ -27,7 +27,6 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-#define _XOPEN_SOURCE 600
 #include <getopt.h>
 #include <libintl.h>
 #include <locale.h>

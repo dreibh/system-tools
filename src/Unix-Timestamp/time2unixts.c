@@ -27,7 +27,7 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-#define _XOPEN_SOURCE 600
+#define _GNU_SOURCE   /* for timegm() */
 #include <getopt.h>
 #include <libintl.h>
 #include <locale.h>
@@ -167,7 +167,7 @@ int main(int argc, char** argv)
       struct tm tm = { };
       const char* remainder = strptime(argv[optind], "%Y-%m-%d %H:%M:%S", &tm);
       if(remainder != nullptr) {
-         ts.tv_sec = mktime(&tm);
+         ts.tv_sec = timegm(&tm);
          if(remainder[0] != 0x00) {
             char*        endptr;
             const double fraction = strtod(remainder, &endptr);
