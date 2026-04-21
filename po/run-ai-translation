@@ -31,9 +31,14 @@
 # Bash options:
 set -eu
 
-MODEL="translategemma:27b"   # "deepseek-r1:671b" "translategemma:27b" "ministral-3:14b"
+
+MODEL="aya-expanse:32b"   # "deepseek-r1:671b" "translategemma:27b" "ministral-3:14b"
+
+LANGUAGES="ar cs de el en es fa fr he hi id it ja ko nl pl pt ro ru tr uk vi zh"   # for "aya-expanse:32b"
+# LANGUAGES="ar be bg bn cs da de el en es et fa fi fr ga he hi hr hu is it ja ko lt lv mi mt nb nl nn no pl pt ro ru sk sl sq sr sv ta th tr uk zh"
+
 PROGRAMS="System-Info"
-LANGUAGES="ar be bg bn cs da de el en es et fa fi fr ga he hi hr hu is it ja ko lt lv mi mt nb nl nn no pl pt ro ru sk sl sq sr sv ta th tr uk zh"
+
 for program in ${PROGRAMS} ; do
    context="
       $(cat ../README.md)
