@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 20, 2026
+.Dd April 22, 2026
 .Dt unixts2time 1
 .Os unixts2time
 .\" ###### Name #############################################################
@@ -40,7 +40,8 @@
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm unixts2time
-.Op unix_timestamp
+unix_timestamp
+.Op ...
 .br
 .Op Fl F | Fl Fl float
 .Op Fl I | Fl Fl integer
@@ -58,10 +59,9 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm unixts2time
-converts an Unix timestamp to a time string in the format %Y-%m-%d %H:%M:%S.SSSSSSSSS. The Unix timestamp is the time (nanoseconds, microseconds, milliseconds, or seconds) since the Unix Epoch, i.e. Jaunary 1, 1970, 00:00:00.000000000 UTC.
+converts an Unix timestamps to time strings in the format %Y-%m-%d %H:%M:%S.SSSSSSSSS. A Unix timestamp is the time (nanoseconds, microseconds, milliseconds, or seconds) since the Unix Epoch, i.e. Jaunary 1, 1970, 00:00:00.000000000 UTC.
 .br
-By default, the timestamp-granularity is
-auto-detected using the following heuristic:
+By default, the timestamp-granularity is auto-detected using the following heuristic:
 .Bl -bullet -offset indent
 .It
 Seconds (s): from
@@ -119,6 +119,7 @@ Prints program version.
 .It unixts2time --human-readable --seconds -- -1000000
 .It unixts2time --human-readable --milliseconds -- -442460258000
 .It unixts2time --human-readable --seconds 1773736279
+.It unixts2time --seconds 1 1000 1000000 1000000000 2000000000
 .It unixts2time -s 1773736279
 .It unixts2time --milliseconds 212847000000
 .It unixts2time -H 212847008123456789
