@@ -305,33 +305,35 @@ The Unix-Timestamp-Tools are utilities for converting Unix timestamps (time sinc
 
 ## Time2UnixTS
 
-Time2UnixTS converts a date/time string in UTC to the corresponding Unix timestamp, with support for fractional seconds. The fractional seconds part is parsed according to the current locale settings (i.e.&nbsp;with "." for en_US, "," for de_DE, etc.).
+Time2UnixTS converts a date/time string in UTC to the corresponding Unix timestamp, with support for fractional seconds.
 
 Example to convert "1976-09-29 12:12:03.123456789":
 
 * To integer seconds (i.e.&nbsp;ignoring the fractional seconds):
 
   ```bash
-  LC_NUMERIC=en_US.UTF-8 time2unixts "1976-09-29 12:12:03.123456789" --seconds
+  time2unixts --seconds "1976-09-29 12:12:03.123456789"
   ```
 
 * To float seconds (i.e.&nbsp;keeping the fractional seconds):
 
   ```bash
-  LC_NUMERIC=en_US.UTF-8 time2unixts "1976-09-29 12:12:03.123456789" --seconds
+  time2unixts --seconds "1976-09-29 12:12:03.123456789"
   ```
 
 * To nanoseconds:
 
   ```bash
-  LC_NUMERIC=en_US.UTF-8 time2unixts "1976-09-29 12:12:03.123456789" --nanoseconds
+  time2unixts --nanoseconds "1976-09-29 12:12:03.123456789"
   ```
 
-* To microseconds in nb_NO locale (using "," instead of ".") as hexadecimal value with leading "0x":
+* To convert multiple dates:
 
   ```bash
-  LC_NUMERIC=nb_NO.UTF-8 time2unixts "1976-09-29 12:12:03,123456789" \
-     --microseconds --integer-0x-hexadecimal
+  time2unixts --milliseconds \
+     "1976-09-29 12:12:03.123456789" \
+     "1814-05-17 12:11:10.987654321" \
+     "1999-12-31 23:59:59"
   ```
 
 The manpage of Time2UnixTS contains details and further examples:
@@ -356,19 +358,25 @@ Examples:
   Or explicitly:
 
   ```bash
-  unixts2time 212843523123456789 --nanoseconds
+  unixts2time --nanoseconds 212843523123456789
   ```
 
-* Convert 212843523 (in s) in en_US locale (using "." for the fractional seconds):
+* Convert 212843523 (in s)
 
   ```bash
-  LC_NUMERIC=en_US.UTF-8 unixts2time 212843523123456789 --nanoseconds
+  unixts2time --seconds 212843523
   ```
 
-* Convert 834829811888 (in ms) in de_DE locale (using "," for the fractional seconds):
+* Convert -4911104929012345679 (in ns); "--" is necessary to stop interpreting "-" as option:
 
   ```bash
-  LC_NUMERIC=de_DE.UTF-8 ./unixts2time 834829811888
+  unixts2time --nanoseconds -- -4911104929012345679
+  ```
+
+* Convert multiple Unix timestamps:
+
+  ```bash
+  unixts2time -- 212847123123 -4911104929012 946684799000
   ```
 
 The manpage of UnixTS2Time contains details and further examples:

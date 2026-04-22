@@ -33,6 +33,65 @@ make
 
 # ###### Main program #######################################################
 
+# ====== Test auto-detection of Unix timestamp unit =========================
+echo "++++++ Manual, positive ++++++"
+
+./unixts2time 0 -s
+./unixts2time 4999999999 -s
+echo "-----"
+./unixts2time 5000000000 -m
+./unixts2time 4999999999999 -m
+echo "-----"
+./unixts2time 5000000000000 -u
+./unixts2time 4999999999999999 -u
+echo "-----"
+./unixts2time 5000000000000000 -n
+./unixts2time 4999999999999999999 -n
+
+echo "++++++ Automatic, positive ++++++"
+
+./unixts2time 0
+./unixts2time 4999999999
+echo "-----"
+./unixts2time 5000000000
+./unixts2time 4999999999999
+echo "-----"
+./unixts2time 5000000000000
+./unixts2time 4999999999999999
+echo "-----"
+./unixts2time 5000000000000000
+./unixts2time 4999999999999999999
+
+
+echo "++++++ Manual, negative ++++++"
+
+./unixts2time -s -- 0
+./unixts2time -s -- -4999999999
+echo "-----"
+./unixts2time -m -- -5000000000
+./unixts2time -m -- -4999999999999
+echo "-----"
+./unixts2time -u -- -5000000000000
+./unixts2time -u -- -4999999999999999
+echo "-----"
+./unixts2time -n -- -5000000000000000
+./unixts2time -n -- -4999999999999999999
+
+echo "++++++ Automatic, negative ++++++"
+
+./unixts2time -- 0
+./unixts2time -- -4999999999
+echo "-----"
+./unixts2time -- -5000000000
+./unixts2time -- -4999999999999
+echo "-----"
+./unixts2time -- -5000000000000
+./unixts2time -- -4999999999999999
+echo "-----"
+./unixts2time -- -5000000000000000
+./unixts2time -- -4999999999999999999
+
+
 # ====== Find locations of tools ============================================
 PRINT_UTF8="$(which print-utf8 2>/dev/null || true)"
 if [ ! -x "${PRINT_UTF8}" ] ; then
@@ -393,7 +452,7 @@ EOF
       if [ "${unixTS}" != "-" ] ; then
          echo "Checking ${unixTS} <-> ${dateTime}"
 
-         computedDateTime="$(LC_NUMERIC=C.UTF-8 ./unixts2time --"${unit,,}" -- "${unixTS}")"
+         computedDateTime="$(./unixts2time --"${unit,,}" -- "${unixTS}")"
          if [ "${computedDateTime}" != "${dateTime}" ] ; then
             echo "Input:      ${unixTS}"
             echo "From table: ${dateTime}"
@@ -401,7 +460,7 @@ EOF
             exit-failed
          fi
 
-         computedUnixTS="$(LC_NUMERIC=C.UTF-8 ./time2unixts --"${unit,,}" "${dateTime}")"
+         computedUnixTS="$(./time2unixts --"${unit,,}" "${dateTime}")"
          if [ "${computedUnixTS}" != "${unixTS}" ] ; then
             echo "Input:      ${dateTime}"
             echo "From table: ${computedUnixTS}"
@@ -412,61 +471,4 @@ EOF
    done
 )
 
-
-# ====== Test auto-detection of Unix timestamp unit =========================
-echo "++++++ Manual, positive ++++++"
-
-./unixts2time 0 -s
-./unixts2time 4999999999 -s
-echo "-----"
-./unixts2time 5000000000 -m
-./unixts2time 4999999999999 -m
-echo "-----"
-./unixts2time 5000000000000 -u
-./unixts2time 4999999999999999 -u
-echo "-----"
-./unixts2time 5000000000000000 -n
-./unixts2time 4999999999999999999 -n
-
-echo "++++++ Automatic, positive ++++++"
-
-./unixts2time 0
-./unixts2time 4999999999
-echo "-----"
-./unixts2time 5000000000
-./unixts2time 4999999999999
-echo "-----"
-./unixts2time 5000000000000
-./unixts2time 4999999999999999
-echo "-----"
-./unixts2time 5000000000000000
-./unixts2time 4999999999999999999
-
-
-echo "++++++ Manual, negative ++++++"
-
-./unixts2time -s -- 0
-./unixts2time -s -- -4999999999
-echo "-----"
-./unixts2time -m -- -5000000000
-./unixts2time -m -- -4999999999999
-echo "-----"
-./unixts2time -u -- -5000000000000
-./unixts2time -u -- -4999999999999999
-echo "-----"
-./unixts2time -n -- -5000000000000000
-./unixts2time -n -- -4999999999999999999
-
-echo "++++++ Automatic, negative ++++++"
-
-./unixts2time -- 0
-./unixts2time -- -4999999999
-echo "-----"
-./unixts2time -- -5000000000
-./unixts2time -- -4999999999999
-echo "-----"
-./unixts2time -- -5000000000000
-./unixts2time -- -4999999999999999
-echo "-----"
-./unixts2time -- -5000000000000000
-./unixts2time -- -4999999999999999999
+exit-success

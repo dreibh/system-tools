@@ -83,6 +83,7 @@ int main(int argc, char** argv)
    if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
+   setlocale(LC_NUMERIC, "C.UTF-8");   // Use "." for fractional numbers!
    bindtextdomain("unixts2time", nullptr);
    textdomain("unixts2time");
 

@@ -84,6 +84,7 @@ int main(int argc, char** argv)
    if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
+   setlocale(LC_NUMERIC, "C.UTF-8");   // Use "." for fractional numbers!
    bindtextdomain("time2unixts", nullptr);
    textdomain("time2unixts");
 
@@ -173,28 +174,30 @@ int main(int argc, char** argv)
       }
 
       // ====== Parse the next date/time string =============================
-      struct tm tm = { };
-      const char* remainder = strptime(argv[i], "%Y-%m-%d %H:%M:%S", &tm);
-      if(remainder != nullptr) {
-         ts.tv_sec = timegm(&tm);
-         if(remainder[0] != 0x00) {
-            char*        endptr;
-            const double fraction = strtod(remainder, &endptr);
-            if( (endptr == nullptr) || (*endptr != 0x00) || (fraction < 0.0) ) {
-               remainder = nullptr;   // parse error
+      else {
+         struct tm tm = { };
+         const char* remainder = strptime(argv[i], "%Y-%m-%d %H:%M:%S", &tm);
+         if(remainder != nullptr) {
+            ts.tv_sec = timegm(&tm);
+            if(remainder[0] != 0x00) {
+               char*        endptr;
+               const double fraction = strtod(remainder, &endptr);
+               if( (endptr == nullptr) || (*endptr != 0x00) || (fraction < 0.0) ) {
+                  remainder = nullptr;   // parse error
+               }
+               else {
+                  ts.tv_nsec = (long long)(fraction * 1e9);
+               }
             }
             else {
-               ts.tv_nsec = (long long)(fraction * 1e9);
+               ts.tv_nsec = 0;
             }
          }
-         else {
-            ts.tv_nsec = 0;
+         if(remainder == nullptr) {
+            fputs(gettext("ERROR: Invalid time string!"), stderr);
+            fputs("\n", stderr);
+            exit(1);
          }
-      }
-      if(remainder == nullptr) {
-         fputs(gettext("ERROR: Invalid time string!"), stderr);
-         fputs("\n", stderr);
-         exit(1);
       }
 
       // ====== Convert timespec to Unix timestamp =============================
