@@ -118,6 +118,7 @@ Replaces: td-x509
 Breaks: td-x509 (<< ${source:Version})
 Recommends: gnutls-bin,
             libnss3-tools
+Suggests: python3
 Description: X.509 certificate handling tools
  This package contains X.509 certificate handling tools:
  view-certificate displays an X.509 certificate and its hierarchy.
