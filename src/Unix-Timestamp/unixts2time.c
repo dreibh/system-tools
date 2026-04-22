@@ -60,7 +60,7 @@ static void version()
 #endif
 static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "%s %s unix_timestamp ..."
+   fprintf(stderr, "%s %s [unix_timestamp ...]"
            " [-F|--float]"
            " [-I|--integer]"
            " [-H|--human-readable]"
@@ -151,55 +151,60 @@ int main(int argc, char** argv)
 
    // ====== Obtain Unix timestamp in ns ====================================
    long long unixTS;
-   if(optind == argc) {
-      struct timespec ts;
-      if(clock_gettime(CLOCK_REALTIME, &ts) == -1) {
-         perror(gettext("clock_gettime() failed"));
-         exit(1);
-      }
-      unixTS = (1000000000ULL * ts.tv_sec) + ts.tv_nsec;   // already in ns
-      if(divideBy != 0) {
-         divideBy = 1;
-         unit     = "ns";
-      }
-   }
-   if(optind >= argc) {
-     usage(argv[0], 1);
-   }
-
-   for(unsigned int i = optind; i < argc; i++) {
-      // ====== Parse the next Unix timestamp ===============================
-      char* endptr;
-      if(useInteger) {
-         unixTS = strtoll(argv[i], &endptr, 0);
-         if(divideBy == 0) {
-            if( (unixTS > -5000000000LL) && (unixTS < 5000000000LL) ) {
-               divideBy = 1000000000;
-               unit     = "s";
+   for(unsigned int i = optind; i <= argc; i++) {
+      // ====== Use current time, if no timestamp is given ==================
+      if(i == argc) {
+         if(optind == argc) {
+            struct timespec ts;
+            if(clock_gettime(CLOCK_REALTIME, &ts) == -1) {
+               perror(gettext("clock_gettime() failed"));
+               exit(1);
             }
-            else if( (unixTS > -5000000000000LL) && (unixTS < 5000000000000LL) ) {
-               divideBy = 1000000;
-               unit     = "ms";
-            }
-            else if( (unixTS > -5000000000000000LL) && (unixTS < 5000000000000000LL) ) {
-               divideBy = 1000;
-               unit     = "µs";
-            }
-            else {
+            unixTS = (1000000000ULL * ts.tv_sec) + ts.tv_nsec;   // already in ns
+            if(divideBy != 0) {
                divideBy = 1;
                unit     = "ns";
             }
          }
-         unixTS *= divideBy;   // convert to ns
+         else {
+            break;
+         }
       }
+
+      // ====== Parse the next Unix timestamp ===============================
       else {
-         const double unixTSasDouble = strtod(argv[i], &endptr);
-         unixTS = unixTSasDouble * divideBy;
-      }
-      if( (endptr == nullptr) || (*endptr != 0x00) ) {
-         fputs(gettext("ERROR: Invalid Unix timestamp!"), stderr);
-         fputs("\n", stderr);
-         exit(1);
+         char* endptr;
+         if(useInteger) {
+            unixTS = strtoll(argv[i], &endptr, 0);
+            if(divideBy == 0) {
+               if( (unixTS > -5000000000LL) && (unixTS < 5000000000LL) ) {
+                  divideBy = 1000000000;
+                  unit     = "s";
+               }
+               else if( (unixTS > -5000000000000LL) && (unixTS < 5000000000000LL) ) {
+                  divideBy = 1000000;
+                  unit     = "ms";
+               }
+               else if( (unixTS > -5000000000000000LL) && (unixTS < 5000000000000000LL) ) {
+                  divideBy = 1000;
+                  unit     = "µs";
+               }
+               else {
+                  divideBy = 1;
+                  unit     = "ns";
+               }
+            }
+            unixTS *= divideBy;   // convert to ns
+         }
+         else {
+            const double unixTSasDouble = strtod(argv[i], &endptr);
+            unixTS = unixTSasDouble * divideBy;
+         }
+         if( (endptr == nullptr) || (*endptr != 0x00) ) {
+            fputs(gettext("ERROR: Invalid Unix timestamp!"), stderr);
+            fputs("\n", stderr);
+            exit(1);
+         }
       }
 
       // ====== Convert Unix timestamp to time ==============================
