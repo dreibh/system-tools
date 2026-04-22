@@ -34,7 +34,7 @@
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm unixts2time
-.Nd converts an Unix timestamp to a time string
+.Nd converts Unix timestamps to date/time strings
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
@@ -58,7 +58,7 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm unixts2time
-converts an Unix timestamps to time strings in the format %Y-%m-%d %H:%M:%S.SSSSSSSSS. A Unix timestamp is the time (nanoseconds, microseconds, milliseconds, or seconds) since the Unix Epoch, i.e. Jaunary 1, 1970, 00:00:00.000000000 UTC.
+converts Unix timestamps to date/time strings in the format %Y-%m-%d %H:%M:%S.SSSSSSSSS. A Unix timestamp is the time (nanoseconds, microseconds, milliseconds, or seconds) since the Unix Epoch, i.e. Jaunary 1, 1970, 00:00:00.000000000 UTC.
 .br
 By default, the timestamp-granularity is auto-detected using the following heuristic:
 .Bl -bullet -offset indent
@@ -85,8 +85,8 @@ That is, unless using dates around 1969/1970, ancient past, or distant future, t
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It unix_timestamp
-The Unix timestamp to be converted. If not provided, the current system time is used.
+.It unix_timestamp ...
+The Unix timestamps to be converted. If no Unix timestamp is provided, the current system time is used.
 .It Fl F | Fl Fl float
 Parse the Unix timestamp as a floating-point number.
 .It Fl I | Fl Fl integer
