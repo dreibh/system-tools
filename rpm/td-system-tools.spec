@@ -1,7 +1,7 @@
 Name: td-system-tools
-Version: 2.3.0
+Version: 2.3.1
 Release: 1
-Summary: Print basic system information and banners
+Summary: Tools for basic system management
 Group: Applications/System
 License: GPL-3.0-or-later
 URL: https://www.nntb.no/~dreibh/system-tools/
@@ -25,21 +25,7 @@ Recommends: td-system-tools-configure-grub = %{version}-%{release}
 
 
 %description
-This package contains programs for printing basic system
-information and for system maintenance.
-System-Info displays basic status information about the
-system: hostname, uptime, CPU, memory statistics, disk
-space statistics, SSH public key hashes, and networking
-information. Furthermore, it can be configured to show
-one or more banners (for example,  a project name).
-System-Info can be configured to be automatically run when
-logging in, providing the user an up-to-date overview of
-the system.
-System-Maintenance runs basic system maintenance tasks:
-trying to repair broken package management, updating the
-package management databases, installing all available
-updates, checking for old kernels and removing them, trim
-SSD or unmap unused storage.
+System-Tools is a collection of helpful tools for basic system management of Linux and FreeBSD systems. Particularly, the tool System-Info displays important system information on log-in, including customised banners e.g. for company or project branding.
 
 %prep
 %setup -q
@@ -302,6 +288,8 @@ support for fractional seconds.
 
 
 %changelog
+* Mon Apr 20 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.3.1-1
+- New upstream release.
 * Sun Apr 19 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.3.0-1
 - New upstream release.
 * Wed Feb 25 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.2.5-1
