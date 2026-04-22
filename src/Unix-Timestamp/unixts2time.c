@@ -60,7 +60,7 @@ static void version()
 #endif
 static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "%s %s [unix_timestamp]"
+   fprintf(stderr, "%s %s unix_timestamp ..."
            " [-F|--float]"
            " [-I|--integer]"
            " [-H|--human-readable]"
@@ -163,10 +163,15 @@ int main(int argc, char** argv)
          unit     = "ns";
       }
    }
-   else if(optind + 1 == argc) {
+   if(optind >= argc) {
+     usage(argv[0], 1);
+   }
+
+   for(unsigned int i = optind; i < argc; i++) {
+      // ====== Parse the next Unix timestamp ===============================
       char* endptr;
       if(useInteger) {
-         unixTS = strtoll(argv[optind], &endptr, 0);
+         unixTS = strtoll(argv[i], &endptr, 0);
          if(divideBy == 0) {
             if( (unixTS > -5000000000LL) && (unixTS < 5000000000LL) ) {
                divideBy = 1000000000;
@@ -188,7 +193,7 @@ int main(int argc, char** argv)
          unixTS *= divideBy;   // convert to ns
       }
       else {
-         const double unixTSasDouble = strtod(argv[optind], &endptr);
+         const double unixTSasDouble = strtod(argv[i], &endptr);
          unixTS = unixTSasDouble * divideBy;
       }
       if( (endptr == nullptr) || (*endptr != 0x00) ) {
@@ -196,67 +201,64 @@ int main(int argc, char** argv)
          fputs("\n", stderr);
          exit(1);
       }
-   }
-   else {
-     usage(argv[0], 1);
-   }
 
-   // ====== Convert Unix timestamp to time =================================
-   struct timespec ts = {
-      unixTS / 1000000000,
-      unixTS % 1000000000
-   };
-   if( (unixTS < 0) && (ts.tv_nsec < 0) ) {
-      ts.tv_sec--;
-      ts.tv_nsec = 1000000000 + ts.tv_nsec;
-   }
+      // ====== Convert Unix timestamp to time ==============================
+      struct timespec ts = {
+         unixTS / 1000000000,
+         unixTS % 1000000000
+      };
+      if( (unixTS < 0) && (ts.tv_nsec < 0) ) {
+         ts.tv_sec--;
+         ts.tv_nsec = 1000000000 + ts.tv_nsec;
+      }
 
-   // ------ Time in seconds-granularity ------------------------------------
-   const struct tm* t = gmtime(&ts.tv_sec);
-   if(t == nullptr) {
-      fputs(gettext("ERROR: strftime() failed!"), stderr);
-      fputs("\n", stderr);
-      exit(1);
-   }
+      // ------ Time in seconds-granularity ---------------------------------
+      const struct tm* t = gmtime(&ts.tv_sec);
+      if(t == nullptr) {
+         fputs(gettext("ERROR: strftime() failed!"), stderr);
+         fputs("\n", stderr);
+         exit(1);
+      }
 
-   char tstring[96];
-   if(strftime(tstring, sizeof(tstring), "%Y-%m-%d %H:%M:%S", t) == 0) {
-      fputs(gettext("ERROR: strftime() failed!"), stderr);
-      fputs("\n", stderr);
-      exit(1);
-   }
+      char tstring[96];
+      if(strftime(tstring, sizeof(tstring), "%Y-%m-%d %H:%M:%S", t) == 0) {
+         fputs(gettext("ERROR: strftime() failed!"), stderr);
+         fputs("\n", stderr);
+         exit(1);
+      }
 
-   // ------ Fractional seconds ---------------------------------------------
-   char fstring[16];
-   const char* format;
-   if(divideBy == 1) {
-      format = "%1.9f";
-   }
-   else if(divideBy == 1000) {
-      format = "%1.6f";
-   }
-   else if(divideBy == 1000000) {
-      format = "%1.3f";
-   }
-   else {
-      format = "%1.0f";
-   }
-   snprintf((char*)&fstring, sizeof(fstring), format,
-            (double)ts.tv_nsec / 1000000000.0);
+      // ------ Fractional seconds ------------------------------------------
+      char fstring[16];
+      const char* format;
+      if(divideBy == 1) {
+         format = "%1.9f";
+      }
+      else if(divideBy == 1000) {
+         format = "%1.6f";
+      }
+      else if(divideBy == 1000000) {
+         format = "%1.3f";
+      }
+      else {
+         format = "%1.0f";
+      }
+      snprintf((char*)&fstring, sizeof(fstring), format,
+               (double)ts.tv_nsec / 1000000000.0);
 
-   // ====== Print result ===================================================
-   if(!humanReadable) {
-      fputs(tstring, stdout);
-      fputs(&fstring[1], stdout);   // Omit "0" before comma
+      // ====== Print result ================================================
+      if(!humanReadable) {
+         fputs(tstring, stdout);
+         fputs(&fstring[1], stdout);   // Omit "0" before comma
+      }
+      else {
+         char ustring[64];
+         snprintf((char*)&ustring, sizeof(ustring), format,
+                  unixTS / (double)divideBy);
+         fprintf(stdout, gettext("%s%s is %lld (0x%llx) %s since the Unix Epoch"),
+               tstring, &fstring[1], unixTS /divideBy, unixTS /divideBy, unit);
+      }
+      fputs("\n", stdout);
    }
-   else {
-      char ustring[64];
-      snprintf((char*)&ustring, sizeof(ustring), format,
-               unixTS / (double)divideBy);
-      fprintf(stdout, gettext("%s%s is %lld (0x%llx) %s since the Unix Epoch"),
-              tstring, &fstring[1], unixTS /divideBy, unixTS /divideBy, unit);
-   }
-   fputs("\n", stdout);
 
    return 0;
 }
