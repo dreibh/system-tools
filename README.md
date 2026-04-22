@@ -20,7 +20,7 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 - [Fingerprint-SSH-Keys](#-fingerprint-ssh-keys) (show the machine's SSH public key fingerprints in different formats),
 - [Configure-Grub](#-configure-grub) (configure options for the GRUB boot loader),
 - [Try-Hard](#-try-hard) (run a command, with configurable retries on failure),
-- [Random-Sleep](#-random-sleep) (wait for random time span, with support of fractional seconds).
+- [Random-Sleep](#-random-sleep) (wait for random time span, with support of fractional seconds),
 - [X.509-Tools](#-x.509-tools) (tools for viewing, verifying and testing X.509 certificates),
 - [GIMP-Scripts](#-gimp-scripts) (collection of scripts using GIMP and GraphicsMagick to apply effects on and resize images).
 
