@@ -21,3 +21,5 @@ Depends: td-misc
 
 Tests: 50-system-info-run, 51-system-info-i18n
 Depends: td-system-info
+
+Tests: 60-unix-timestamp-tools
