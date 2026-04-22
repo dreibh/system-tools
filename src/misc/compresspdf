@@ -28,6 +28,9 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
+# Bash options:
+set -eu
+
 if [ $# -ne 2 ] ; then
    echo >&2 "Usage: $0 input_pdf output_pdf"
    exit 1

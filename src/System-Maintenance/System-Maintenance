@@ -78,7 +78,10 @@ if [ $# -ne 0 ] ; then
    usage
 fi
 
-trap 'echo ; echo "Aborted." ; exit' INT
+fullPackageList=""
+packageVersionsFile=""
+trap 'echo ; echo "Aborted." ; rm -f "${fullPackageList}" "${packageVersionsFile}" ; exit' INT
+trap 'rm -f "${fullPackageList}" "${packageVersionsFile}"' EXIT TERM HUP
 
 # ====== Find distribution variant ==========================================
 if [ ! -e /etc/os-release ] ; then
@@ -226,7 +229,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    kernelBootVersion="${kernelBootVersion/+/\\+}"
    kernelDiskVersion="${kernelDiskVersion/+/\\+}"
 
-   packageVersionsFile="$(mktemp)"
+   packageVersionsFile="$(mktemp -t SystemMaintenance.XXXXXXXXXX.out)"
    apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | sort >"${packageVersionsFile}"
 
    packagesToRemove="
@@ -418,7 +421,7 @@ for directory in /etc/system-maintenance.d /usr/local/etc/system-maintenance.d ;
    fi
 done
 if [ "${filterScripts}" != "" ] ; then
-   fullPackageList=$(mktemp)
+   fullPackageList="$(mktemp -t SystemMaintenance.XXXXXXXXXX.out)"
 
    if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
       if [ -x /usr/bin/apt-show-versions ] ; then
