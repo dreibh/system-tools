@@ -46,6 +46,24 @@ usage () {
 }
 
 
+# ###### Print date in current locale and current time zone #################
+print-date ()
+{
+   local input="$1"
+   local unixTS
+   local datetime
+   if date --version >/dev/null 2>&1; then
+      unixTS="$(date -d "${input}" +"%s")"
+      datetime="$(date -d "@${unixTS}" +"%c %Z")"
+   else
+      unixTS="$(LC_ALL=C.UTF-8 date -j -f "%b %d %T %Y %Z" "${input}" +"%s")"
+      datetime="$(date -r "${unixTS}" +"%c %Z")"
+   fi
+   echo "${datetime}"
+}
+
+
+
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
@@ -136,12 +154,12 @@ while [ $# -gt 0 ] ; do
                   printf "\e[33m${label} \e[35m%s\e[0m\n"          \
                      "$(gettext "Issuer:")"  "$(echo -e "${issuer}")"
                   printf "\e[33m${label} \e[36m%s — %s\e[0m\n"     \
-                     "$(gettext "Range:")" "$(TZ=UTC date -d "${lastUpdate}")" "$(TZ=UTC date -d "${nextUpdate}")"
+                     "$(gettext "Range:")" "$(TZ=UTC print-date "${lastUpdate}")" "$(TZ=UTC print-date "${nextUpdate}")"
 
                   entry=0
                   for serialNumber in $(echo "${!serialNumbers[@]}" | tr ' ' '\n' | LC_ALL=C.UTF8 sort) ; do
                      # shellcheck disable=SC2034
-                     revocationDate="$(TZ=UTC date -d "${serialNumbers[${serialNumber}]}")"
+                     revocationDate="$(TZ=UTC print-date "${serialNumbers[${serialNumber}]}")"
                      entry=$((entry + 1))
                      echo -en " \x1b[31m$(eval_gettext "#\${entry}.") "
                      eval_gettext "Certificate \${serialNumber} revoked on \${revocationDate}"
