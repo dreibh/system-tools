@@ -217,6 +217,7 @@ Requires: openssl
 Recommends: gnutls-utils
 Recommends: nss-tools
 Suggests: python3
+Suggests: python3-netifaces
 
 %description x509-tools
 This package contains X.509 certificate handling tools:
