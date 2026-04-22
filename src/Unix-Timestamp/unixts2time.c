@@ -202,10 +202,14 @@ int main(int argc, char** argv)
    }
 
    // ====== Convert Unix timestamp to time =================================
-   const struct timespec ts = {
+   struct timespec ts = {
       unixTS / 1000000000,
       unixTS % 1000000000
    };
+   if( (unixTS < 0) && (ts.tv_nsec < 0) ) {
+      ts.tv_sec--;
+      ts.tv_nsec = 1000000000 + ts.tv_nsec;
+   }
 
    // ------ Time in seconds-granularity ------------------------------------
    const struct tm* t = gmtime(&ts.tv_sec);
