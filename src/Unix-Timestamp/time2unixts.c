@@ -61,7 +61,7 @@ static void version()
 #endif
 static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "%s %s [time_string]"
+   fprintf(stderr, "%s %s [time_string ...]"
            " [-F|--float]"
            " [-I|--integer]"
            " [-H|--human-readable]"
@@ -156,16 +156,25 @@ int main(int argc, char** argv)
       }
    }
 
+   // ====== Obtain Unix timestamp in ns ====================================
    struct timespec ts;
-   if(optind == argc) {
-      if(clock_gettime(CLOCK_REALTIME, &ts) == -1) {
-         perror(gettext("clock_gettime() failed"));
-         exit(1);
+   for(unsigned int i = optind; i <= argc; i++) {
+      // ====== Use current time, if no date/time string is given ===========
+      if(i == argc) {
+         if(optind == argc) {
+            if(clock_gettime(CLOCK_REALTIME, &ts) == -1) {
+               perror(gettext("clock_gettime() failed"));
+               exit(1);
+            }
+         }
+         else {
+            break;
+         }
       }
-   }
-   else if(optind + 1 == argc) {
+
+      // ====== Parse the next date/time string =============================
       struct tm tm = { };
-      const char* remainder = strptime(argv[optind], "%Y-%m-%d %H:%M:%S", &tm);
+      const char* remainder = strptime(argv[i], "%Y-%m-%d %H:%M:%S", &tm);
       if(remainder != nullptr) {
          ts.tv_sec = timegm(&tm);
          if(remainder[0] != 0x00) {
@@ -187,46 +196,43 @@ int main(int argc, char** argv)
          fputs("\n", stderr);
          exit(1);
       }
-   }
-   else {
-     usage(argv[0], 1);
-   }
 
-   // ====== Convert timespec to Unix timestamp =============================
-   const long long unixTS =
-      (1000000000ULL * ts.tv_sec) + ts.tv_nsec;
+      // ====== Convert timespec to Unix timestamp =============================
+      const long long unixTS =
+         (1000000000ULL * ts.tv_sec) + ts.tv_nsec;
 
-   if(useInteger != 0) {
-      if(useInteger == 16) {
-         printf("%llx", unixTS / divideBy);
-      }
-      else if(useInteger == -16) {
-         printf("0x%llx", unixTS / divideBy);
+      if(useInteger != 0) {
+         if(useInteger == 16) {
+            printf("%llx", unixTS / divideBy);
+         }
+         else if(useInteger == -16) {
+            printf("0x%llx", unixTS / divideBy);
+         }
+         else {
+            printf("%lld", unixTS / divideBy);
+         }
       }
       else {
-         printf("%lld", unixTS / divideBy);
+         const char* format;
+         if(divideBy == 1000000000) {
+            format = "%1.9f";
+         }
+         else if(divideBy == 1000000) {
+            format = "%1.6f";
+         }
+         else if(divideBy == 1000) {
+            format = "%1.3f";
+         }
+         else {
+            format = "%1.0f";
+         }
+         printf(format, (double)unixTS / (double)divideBy);
       }
+      if(humanReadable) {
+         printf(gettext(" %s since the Unix Epoch"), unit);
+      }
+      fputs("\n", stdout);
    }
-   else {
-       const char* format;
-       if(divideBy == 1000000000) {
-           format = "%1.9f";
-       }
-       else if(divideBy == 1000000) {
-           format = "%1.6f";
-       }
-       else if(divideBy == 1000) {
-           format = "%1.3f";
-       }
-       else {
-           format = "%1.0f";
-       }
-       printf(format, (double)unixTS / (double)divideBy);
-   }
-   if(humanReadable) {
-       printf(gettext(" %s since the Unix Epoch"), unit);
-   }
-   fputs("\n", stdout);
 
    return 0;
 }
