@@ -94,6 +94,10 @@ if [ ! -x "${FIGLET}" ] ; then
    exit 1
 fi
 
+# ====== Make Test CA and Certificates ======================================
+show-script "make-test-certificates"
+./make-test-certificates || exit-failed
+
 # ====== Run tests ==========================================================
 for certificate in ${CERTIFICATES} ; do
    show-script "${certificate}"
