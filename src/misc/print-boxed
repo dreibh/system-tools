@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -eu
+
+# ====== Print boxed text ===================================================
+TEXT="$1"
+COLOR_BORDER="\e[1;31;5m"
+COLOR_TEXT="\e[25m"
+
+print-utf8 -n -s "${COLOR_BORDER}█" "▀" "█\e[0m" ;
+echo "${TEXT}" | figlet -w "$((COLUMNS - 4))" | print-utf8 -n -C "${COLOR_BORDER}█${COLOR_TEXT}" "\e[5m█\e[0m" ;
+print-utf8 -n -s "${COLOR_BORDER}█" "▄" "█\e[0m"
