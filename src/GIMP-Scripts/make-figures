@@ -1,0 +1,132 @@
+#!/usr/bin/env bash
+# ==========================================================================
+#         ____            _                     _____           _
+#        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+#               |___/
+#                             --- System-Tools ---
+#                  https://www.nntb.no/~dreibh/system-tools/
+# ==========================================================================
+#
+# GIMP Scripts
+# Copyright (C) 2013-2026 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -eu
+
+
+mkdir -p figures
+
+INPUT1="Bergen"
+INPUT2="Portobello"
+INPUT3="Fractal"
+
+WIDTH=1980
+HEIGHT=1080
+# WIDTH=1024
+# HEIGHT=768
+
+# ====== Generate input images ==============================================
+echo "Generating input images ..."
+./gs-resize-with-cropping "examples/${INPUT1}.jpeg" "figures/${INPUT1}.webp" --aspect 16:9 --width "${WIDTH}"
+./gs-resize-with-cropping "examples/${INPUT2}.jpeg" "figures/${INPUT2}.webp" --aspect keep --width "${WIDTH}"
+clifractgen "examples/Fractal.fsf" "figures/${INPUT3}.png" --width "${WIDTH}" --height "${HEIGHT}" --max-iterations 2048
+
+# ====== gs-caption =======================================================
+echo "Caption:"
+./gs-caption figures/Caption1.png 1024 42 \
+   "Test on $(LC_ALL=C.UTF-8 date)" \
+   --font-name "Open Sans Bold" \
+   --font-size 70 \
+   --foreground "#02266b" --background "#ffd7cc" --transparency 50
+gm identify figures/Caption1.png
+./gs-caption figures/Caption2.png 1024 42 \
+   "Another Test on $(LC_ALL=C.UTF-8 date)" \
+   --font-name "Lobster Two Bold Italic" \
+   --font-size 70 \
+   --foreground "#02266b" --background "#ffd700" --transparency 26
+gm identify figures/Caption2.png
+./gs-caption figures/Caption3.png 1024 42 \
+   "Yet Another Test on $(LC_ALL=C.UTF-8 date)" \
+   --font-name "URW Gothic Book Bold" \
+   --font-size 70 \
+   --foreground "#02266b" --background "#777777" --transparency 40
+gm identify figures/Caption3.png
+
+# ====== gs-glossytext ====================================================
+echo "GlossyText:"
+./gs-glossytext figures/GlossyText1.webp "System-Tools" \
+   --font-name "Open Sans Bold" \
+   --font-size 64 \
+   --outline-size 8 \
+   --blend-gradient-text "Brushed Aluminium" \
+   --blend-gradient-outline "Golden"
+gm identify figures/GlossyText1.webp
+./gs-glossytext figures/GlossyText2.webp "Simula" \
+   --font-name "Open Sans Bold" \
+   --font-size 64 \
+   --outline-size 12 \
+   --blend-gradient-text "Golden" \
+   --blend-gradient-outline "Golden"
+gm identify figures/GlossyText2.webp
+./gs-glossytext figures/GlossyText3.webp "NorNet" -S 64
+gm identify figures/GlossyText3.webp
+
+# ====== gs-mosaic ==========================================================
+echo "Mosaic:"
+./gs-mosaic "figures/${INPUT1}.webp" "figures/${INPUT1}-Mosaic.webp" \
+   --tile-type        hexagons \
+   --tile-size        15.0     \
+   --tile-height      4.0      \
+   --tile-neatness    0.65     \
+   --tile-surface     rough    \
+   --tile-spacing     4.0      \
+   --tile-allow-split on       \
+   --color-variation  0.15     \
+   --color-averaging  on       \
+   --antialiasing     on       \
+   --light-direction  135.0
+gm identify "figures/${INPUT1}-Mosaic.webp"
+./gs-mosaic "figures/${INPUT2}.webp" "figures/${INPUT2}-Mosaic.webp" \
+   --tile-type        octagons \
+   --tile-size        15.0     \
+   --tile-height      4.0      \
+   --tile-neatness    0.25     \
+   --tile-surface     smooth   \
+   --tile-spacing     4.0      \
+   --tile-allow-split on       \
+   --color-variation  0.35     \
+   --color-averaging  on       \
+   --antialiasing     on       \
+   --light-direction  35.0
+ gm identify "figures/${INPUT2}-Mosaic.webp"
+./gs-mosaic "figures/${INPUT3}.png" "figures/${INPUT3}-Mosaic.webp" \
+   --tile-type        squares \
+   --tile-size        15.0     \
+   --tile-height      4.0      \
+   --tile-neatness    0.65     \
+   --tile-surface     rough    \
+   --tile-spacing     4.0      \
+   --tile-allow-split on       \
+   --color-variation  0.15     \
+   --color-averaging  on       \
+   --antialiasing     on       \
+   --light-direction  275.0
+gm identify "figures/${INPUT3}-Mosaic.webp"
