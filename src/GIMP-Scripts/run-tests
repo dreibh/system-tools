@@ -227,7 +227,7 @@ done
 show-script "gs-oilify"
 for maskSize in 4 8 16 ; do
    ./gs-oilify Image1.png "Oilify1-S${maskSize}-Ion.png" \
-      --mask-size "${maskSize}" \
+      --mask-size      "${maskSize}" \
       --intensity-mode on
    ./gs-oilify Image2.png "Oilify2-S${maskSize}-Ioff.png" \
       -S "${maskSize}" \

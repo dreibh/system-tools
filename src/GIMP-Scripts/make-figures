@@ -158,15 +158,15 @@ gm identify "figures/${INPUT3}-Cloth.webp"
 # ====== gs-oilify ==========================================================
 echo "Oilify:"
 ./gs-oilify "figures/${INPUT1}.webp" "figures/${INPUT1}-Oil.webp" \
-   --mask-size 20 \
+   --mask-size      20 \
    --intensity-mode on
 gm identify "figures/${INPUT1}-Oil.webp"
 ./gs-oilify "figures/${INPUT2}.webp" "figures/${INPUT2}-Oil.webp" \
-   --mask-size 16 \
+   --mask-size      16 \
    --intensity-mode off
 gm identify "figures/${INPUT2}-Oil.webp"
 ./gs-oilify "figures/${INPUT3}.png" "figures/${INPUT3}-Oil.webp" \
-   --mask-size 12 \
+   --mask-size      12 \
    --intensity-mode on
 gm identify "figures/${INPUT3}-Oil.webp"
 
