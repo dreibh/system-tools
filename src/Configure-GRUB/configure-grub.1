@@ -48,6 +48,8 @@
 .Op Fl T Ar GRUB_INIT_TUNE | Fl Fl tune Ar GRUB_INIT_TUNE
 .Nm configure-grub
 .Op Fl h | Fl Fl help
+.Nm configure-grub
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm configure-grub
@@ -75,6 +77,8 @@ Replace GRUB_GFXMODE by the provided setting.
 Replace GRUB_INIT_TUNE by the provided setting.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -90,4 +94,6 @@ Prints command-line parameters.
    -V 'auto,1920x1080,1024x768' \
    -T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192' \
    -o /etc/default/grub
+.It configure-grub --version
+.It configure-grub --help
 .El

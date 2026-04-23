@@ -33,8 +33,15 @@ set -eu
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "Usage: $0 grub-defaults-template-file [-i|--input input-grub-defaults-file] [-o|--output output-grub-defaults-file] [-V|--video GRUB_GFXMODE] [-T|--tune GRUB_INIT_TUNE] [-h|--help]"
+   echo >&2 "Usage: $0 grub-defaults-template-file [-i|--input input-grub-defaults-file] [-o|--output output-grub-defaults-file] [-V|--video GRUB_GFXMODE] [-T|--tune GRUB_INIT_TUNE] [-h|--help] [-v|--version]"
    exit 1
+}
+
+
+# ###### Version ############################################################
+version () {
+   echo "configure-grub @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
 }
 
 
@@ -42,7 +49,7 @@ usage () {
 
 # ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o i:o:V:T:h --long input:,output:,video:,tune:,help -a -- "$@")"
+options="$(${GETOPT} -o i:o:V:T:hv --long input:,output:,video:,tune:,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage
@@ -73,6 +80,10 @@ while [ $# -gt 0 ] ; do
          ;;
       -h | --help)
          usage
+         # shift
+         ;;
+      -v | --version)
+         version
          # shift
          ;;
       --)
