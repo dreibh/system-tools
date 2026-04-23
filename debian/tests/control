@@ -25,6 +25,7 @@ Depends: td-system-info
 Tests: 80-x509
 Depends: gnutls-bin,
          libnss3-tools,
+         pwgen,
          python3,
          python3-netifaces,
          td-x509

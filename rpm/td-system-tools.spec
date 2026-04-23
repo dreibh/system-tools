@@ -216,6 +216,7 @@ Requires: td-system-tools-text-block = %{version}-%{release}
 Requires: openssl
 Recommends: gnutls-utils
 Recommends: nss-tools
+Suggests: pwgen
 Suggests: python3
 Suggests: python3-netifaces
 
