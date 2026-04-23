@@ -130,11 +130,14 @@ show-script "gs-caption"
    --font-name "Noto Sans Bold" \
    --font-size 70 \
    --foreground "#02266b" --background "#ffd7cc" --transparency 50 || exit-failed
-./gs-caption Caption2.png 1920 64 \
-   "This is yet another test on $(LC_ALL=C.UTF-8 date)!" \
-   -F "Lobster Two Bold Italic" \
-   -S 70 \
-   -f "#02266b" -b "#ffd700" -t 26 || exit-failed
+
+if ./gs-list-fonts | grep -q "^Lobster Two Bold Italic$" ; then
+   ./gs-caption Caption2.png 1920 64 \
+      "This is yet another test on $(LC_ALL=C.UTF-8 date)!" \
+      -F "Lobster Two Bold Italic" \
+      -S 70 \
+      -f "#02266b" -b "#ffd700" -t 26 || exit-failed
+fi
 
 
 # ====== gs-glossytext ====================================================
