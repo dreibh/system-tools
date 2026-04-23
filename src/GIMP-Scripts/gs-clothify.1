@@ -57,6 +57,8 @@ output_filename
 .Op Fl w | Fl Fl verbose
 .Nm gs-clothify
 .Op Fl h | Fl Fl help
+.Nm gs-clothify
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs-clothify
@@ -85,6 +87,8 @@ Sets the depth parameter for the "Clothify" filter. Range: 1-65. Default: 5.
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -92,4 +96,8 @@ Prints command-line parameters.
 .It gs-clothify Bergen.jpeg Bergen-Clothify.jpeg
 .It gs-clothify Bergen.jpeg Bergen-Clothify-with-Border8.jpeg --depth 8 --verbose
 .It gs-clothify Bergen.jpeg Bergen-Clothify-with-Depth5.jpeg -D 5
+.It gs-clothify --help
+.It gs-clothify -h
+.It gs-clothify --version
+.It gs-clothify -v
 .El

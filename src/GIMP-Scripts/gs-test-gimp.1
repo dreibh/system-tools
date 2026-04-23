@@ -44,6 +44,8 @@
 .Op Fl w | Fl Fl verbose
 .Nm gs-test-gimp
 .Op Fl h | Fl Fl help
+.Nm gs-test-gimp
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs-test-gimp
@@ -59,6 +61,8 @@ Quiet mode: no output is made.
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -66,4 +70,8 @@ Prints command-line parameters.
 .It gs-test-gimp
 .It GIMP3_DIRECTORY=/tmp/gimp3.tmp gs-test-gimp
 .It GIMP3_DIRECTORY=/tmp/gimp3.tmp gs-test-gimp --verbose
+.It gs-test-gimp --help
+.It gs-test-gimp -h
+.It gs-test-gimp --version
+.It gs-test-gimp -v
 .El

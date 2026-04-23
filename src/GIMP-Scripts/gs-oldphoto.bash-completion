@@ -89,6 +89,8 @@ _gs_oldphoto()
 --verbose
 -h
 --help
+-v
+--version
 "
    # shellcheck disable=SC2207
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )

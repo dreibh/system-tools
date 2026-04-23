@@ -69,6 +69,8 @@ output_filename
 .Op Fl w | Fl Fl verbose
 .Nm gs-mosaic
 .Op Fl h | Fl Fl help
+.Nm gs-mosaic
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs-mosaic
@@ -109,6 +111,8 @@ Specifies the light direction in degrees. Range: 0.0-360.0. Default: 135.0.
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -116,4 +120,8 @@ Prints command-line parameters.
 .It gs-mosaic Bergen.jpeg Bergen-Hexagons.png --tile-size 24 --tile-height 4 --tile-spacing 4 --tile-type hexagons --tile-surface rough
 .It gs-mosaic Bergen.jpeg Bergen-Octagons.webp -S 24 -H 4 -X 4 -T octagons -F smooth -T hexagons -N 1.0
 .It gs-mosaic Portobello.jpeg Portobello-Octagons.jpeg -S 32 -H 8 -X 8 -T octagons -F smooth -N 1.0
+.It gs-mosaic --help
+.It gs-mosaic -h
+.It gs-mosaic --version
+.It gs-mosaic -v
 .El

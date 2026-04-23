@@ -101,12 +101,24 @@ _gs_bumpmap()
 --waterlevel
 -B
 --ambient
+-H
+--hue-range
+-O
+--hue-offset
+-L
+--lightness
+-S
+--saturation
+-V
+--overlap
 -q
 --quiet
 -w
 --verbose
 -h
 --help
+-v
+--version
 "
    # shellcheck disable=SC2207
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )

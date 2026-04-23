@@ -51,6 +51,8 @@ output_filename
 .Op Fl w | Fl Fl verbose
 .Nm gs-oilify
 .Op Fl h | Fl Fl help
+.Nm gs-oilify
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs-oilify
@@ -73,6 +75,8 @@ Turns intensity mode on or off. Default: on.
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -80,4 +84,8 @@ Prints command-line parameters.
 .It gs-oilify Bergen.jpeg Bergen-Hexagons.png --tile-size 24 --tile-height 4 --tile-spacing 4 --tile-type hexagons --tile-surface rough
 .It gs-oilify Bergen.jpeg Bergen-Octagons.webp -S 24 -H 4 -X 4 -T octagons -F smooth -T hexagons -N 1.0
 .It gs-oilify Portobello.jpeg Portobello-Octagons.jpeg -S 32 -H 8 -X 8 -T octagons -F smooth -N 1.0
+.It gs-oilify --help
+.It gs-oilify -h
+.It gs-oilify --version
+.It gs-oilify -v
 .El
