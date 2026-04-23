@@ -54,6 +54,8 @@
 .Op Fl Fl yes-to-all-i-am-really-sure
 .Nm Reset-Machine-ID
 .Op Fl h | Fl Fl help
+.Nm Reset-Machine-ID
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Reset-Machine-ID
@@ -95,6 +97,8 @@ Create new keys (delete old ones) as well as replace sshd_config and
 ssh_config without interactively asking for confirmation.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -105,4 +109,6 @@ Prints command-line parameters.
 .It sudo Reset-Machine-ID -H server.domain.example -Z zabbix.domain.example -A
 .It sudo Reset-Machine-ID -H server.domain.example --zabbix zabbix.domain.example --install-zabbix-agent
 .It sudo Reset-Machine-ID --skip-ssh-configuration --skip-ssh-key-replacement
+.It Reset-Machine-ID --version
+.It Reset-Machine-ID --help
 .El

@@ -41,8 +41,15 @@ export TEXTDOMAIN="view-crl"
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "$(gettext "Usage:") $0 [-h|--help] crl [...]"
+   echo >&2 "$(gettext "Usage:") $0 [-h|--help] [-v|--version] crl [...]"
    exit 1
+}
+
+
+# ###### Version ############################################################
+version () {
+   echo "view-crl @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
 }
 
 
@@ -68,7 +75,7 @@ print-date ()
 
 # ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o h --long help -a -- "$@")"
+options="$(${GETOPT} -o hv --long help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage
@@ -79,6 +86,10 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -h | --help)
          usage
+         # shift
+         ;;
+      -v | --version)
+         version
          # shift
          ;;
       --)

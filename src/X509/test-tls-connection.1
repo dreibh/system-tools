@@ -51,6 +51,8 @@ host:port ca_certificate_file
 .Op \-\- openssl_args ...
 .Nm test-tls-connection
 .Op Fl h | Fl Fl help
+.Nm test-tls-connection
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm test-tls-connection
@@ -75,6 +77,8 @@ Do not run view-certificate on the received certificate of the remote endpoint.
 Do not run check-certificate on the received certificate of the remote endpoint.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -88,4 +92,6 @@ Prints command-line parameters.
 .It test-tls-connection www.dnb.no:443 /usr/share/ca-certificates/mozilla/Buypass_Class_3_Root_CA.crt -s www.dnb.no
 .It test-tls-connection --help
 .It test-tls-connection -h
+.It test-tls-connection --version
+.It test-tls-connection -v
 .El

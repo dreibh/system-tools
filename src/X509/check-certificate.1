@@ -49,6 +49,8 @@ ca_certificate_file certificate_file
 .br
 .Nm check-certificate
 .Op Fl h | Fl Fl help
+.Nm check-certificate
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm check-certificate
@@ -68,6 +70,8 @@ Specifies a CRL file.
 Do not display a certificate before verification.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -77,4 +81,6 @@ Prints command-line parameters.
 .It check-certificate /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt www.nntb.no.crt
 .It check-certificate --help
 .It check-certificate -h
+.It check-certificate --version
+.It check-certificate -v
 .El

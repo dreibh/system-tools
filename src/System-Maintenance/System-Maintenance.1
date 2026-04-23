@@ -41,6 +41,8 @@
 .Op Fl k | Fl Fl interactive-kernel-removal
 .Nm System-Maintenance
 .Op Fl h | Fl Fl help
+.Nm System-Maintenance
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm System-Maintenance
@@ -71,10 +73,14 @@ The following options are available:
 Remove obsolete kernels interactively.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It sudo System-Maintenance
 .It sudo System-Maintenance --interactive-kernel-removal
+.It System-Maintenance --version
+.It System-Maintenance --help
 .El
