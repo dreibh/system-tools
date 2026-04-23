@@ -53,6 +53,8 @@ pem_file
 .br
 .Nm extract-pem
 .Op Fl h | Fl Fl help
+.Nm extract-pem
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm extract-pem
@@ -81,6 +83,8 @@ Do not extract the last entry (i.e. do not extract the certificate of the root C
 Quiet mode: only print information in case of errors.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -91,4 +95,6 @@ Prints command-line parameters.
 .It extract-pem my-server-certificate.crt --only-first-entry -o extract-server-
 .It extract-pem --help
 .It extract-pem -h
+.It extract-pem --version
+.It extract-pem -v
 .El
