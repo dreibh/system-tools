@@ -130,3 +130,78 @@ gm identify "figures/${INPUT1}-Mosaic.webp"
    --antialiasing     on       \
    --light-direction  275.0
 gm identify "figures/${INPUT3}-Mosaic.webp"
+
+# ====== gs-clothify ==========================================================
+echo "Clothify"
+./gs-clothify "figures/${INPUT1}.webp" "figures/${INPUT1}-Cloth.webp" \
+   --blur-x    3    \
+   --blur-y    3    \
+   --azimut    90.0 \
+   --elevation 10.0 \
+   --depth 4
+gm identify "figures/${INPUT1}-Cloth.webp"
+./gs-clothify "figures/${INPUT2}.webp" "figures/${INPUT2}-Cloth.webp" \
+   --blur-x    5     \
+   --blur-y    5     \
+   --azimut    135.0 \
+   --elevation 20.0  \
+   --depth 4
+gm identify "figures/${INPUT2}-Cloth.webp"
+./gs-clothify "figures/${INPUT3}.png" "figures/${INPUT3}-Cloth.webp" \
+   --blur-x    4     \
+   --blur-y    4     \
+   --azimut    180.0 \
+   --elevation 80.0  \
+   --depth 4
+gm identify "figures/${INPUT3}-Cloth.webp"
+
+# ====== gs-oilify ==========================================================
+echo "Oilify:"
+./gs-oilify "figures/${INPUT1}.webp" "figures/${INPUT1}-Oil.webp" \
+   --mask-size 20 \
+   --intensity-mode on
+gm identify "figures/${INPUT1}-Oil.webp"
+./gs-oilify "figures/${INPUT2}.webp" "figures/${INPUT2}-Oil.webp" \
+   --mask-size 16 \
+   --intensity-mode off
+gm identify "figures/${INPUT2}-Oil.webp"
+./gs-oilify "figures/${INPUT3}.png" "figures/${INPUT3}-Oil.webp" \
+   --mask-size 12 \
+   --intensity-mode on
+gm identify "figures/${INPUT3}-Oil.webp"
+
+# ====== gs-bumpmap ==========================================================
+echo "BumpMap:"
+./gs-bumpmap "figures/${INPUT1}.webp" "figures/${INPUT1}-BumpMap.webp" \
+   --azimut               90.0  \
+   --elevation            10.0  \
+   --depth                20    \
+   --offset-x             4     \
+   --offset-y             4     \
+   --compensate-darkening on    \
+   --waterlevel           0.1   \
+   --invert               off   \
+   --tiled                on
+gm identify "figures/${INPUT1}-BumpMap.webp"
+./gs-bumpmap "figures/${INPUT2}.webp" "figures/${INPUT2}-BumpMap.webp" \
+   --azimut               135.0  \
+   --elevation            20.0   \
+   --depth                20     \
+   --offset-x             16     \
+   --offset-y             16     \
+   --compensate-darkening on     \
+   --waterlevel           0.1    \
+   --invert               off    \
+   --tiled                on
+gm identify "figures/${INPUT2}-BumpMap.webp"
+./gs-bumpmap "figures/${INPUT3}.png" "figures/${INPUT3}-BumpMap.webp" \
+   --azimut               135.0  \
+   --elevation            20.0   \
+   --depth                20     \
+   --offset-x             0      \
+   --offset-y             0      \
+   --compensate-darkening on     \
+   --waterlevel           0.1    \
+   --invert               off    \
+   --tiled                on
+gm identify "figures/${INPUT3}-BumpMap.webp"

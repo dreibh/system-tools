@@ -208,15 +208,15 @@ for blurX in 3 6 ; do
    for azimut in 90.0 135.0 180.0 ; do
       for elevation in 10.0 45.0 80.0 ; do
          ./gs-clothify Image1.png "Cloth1-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D4.png" \
-            --blur-x ${blurX} \
-            --blur-y ${blurY} \
-            --azimut "${azimut}" \
+            --blur-x ${blurX}          \
+            --blur-y ${blurY}          \
+            --azimut "${azimut}"       \
             --elevation "${elevation}" \
             --depth 4 || exit-failed
          ./gs-clothify Image2.png "Cloth2-X${blurX}-Y${blurY}-A${azimut}$-E${elevation}-D8.png" \
-            -X ${blurX} \
-            -Y ${blurY} \
-            -A "${azimut}" \
+            -X ${blurX}       \
+            -Y ${blurY}       \
+            -A "${azimut}"    \
             -E "${elevation}" \
             -D 8 || exit-failed
       done
@@ -246,31 +246,31 @@ for offsetX in 0 32 ; do
    for azimut in 90.0 135.0 180.0 ; do
       for elevation in 10.0 45.0 ; do
          ./gs-bumpmap Image1.png "BumpMap1-X${offsetX}-Y${offsetY}-A${azimut}$-E${elevation}-D20.png" \
-            --azimut "${azimut}" \
-            --elevation "${elevation}" \
-            --depth 20 \
-            --offset-x ${offsetX} \
-            --offset-y ${offsetY} \
-            --compensate-darkening on \
-            --waterlevel 0.1 \
-            --invert off \
-            --tiled on || exit-failed
+            --azimut               "${azimut}"    \
+            --elevation            "${elevation}" \
+            --depth                20             \
+            --offset-x             ${offsetX}     \
+            --offset-y             ${offsetY}     \
+            --compensate-darkening on             \
+            --waterlevel           0.1            \
+            --invert               off            \
+            --tiled                on || exit-failed
          ./gs-bumpmap Image2.png "BumpMap2-X${offsetX}-Y${offsetY}-A${azimut}$-E${elevation}-D5.png" \
-            -X ${offsetX} \
-            -Y ${offsetY} \
-            -A "${azimut}" \
-            -E "${elevation}" \
-            -D 5 \
-            -C off \
-            -W 0.1 \
-            -I off \
+            -X ${offsetX}              \
+            -Y ${offsetY}              \
+            -A "${azimut}"             \
+            -E "${elevation}"          \
+            -D 5                       \
+            -C off                     \
+            -W 0.1                     \
+            -I off                     \
             -T off || exit-failed
          ./gs-bumpmap Image3.png "BumpMap3-X${offsetX}-Y${offsetY}-A${azimut}$-E${elevation}-D30.png" \
-            --azimut "${azimut}" \
+            --azimut    "${azimut}"    \
             --elevation "${elevation}" \
-            --depth 30 \
-            --offset-x ${offsetX} \
-            --offset-y ${offsetY} || exit-failed
+            --depth     30             \
+            --offset-x  ${offsetX}     \
+            --offset-y  ${offsetY} || exit-failed
       done
    done
 done
