@@ -112,7 +112,7 @@ if [ ! -x "${FIGLET}" ] ; then
 fi
 
 
-# ====== Run MyPy ===========================================================
+# ====== Run ShellCheck =====================================================
 for script in $SCRIPTS ; do
    echo -e "\e[34mChecking ${script} ...\e[0m"
    show-script "${script}"

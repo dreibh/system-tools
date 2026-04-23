@@ -32,23 +32,25 @@
 set -eu
 
 
+DIRNAME="$(dirname "$0")"
+
 # Generate a client certificate for the local machine (hostname as FQDN):
-./generate-test-certificates TestCA --client --san LOCAL "$(hostname -f)"
+"${DIRNAME}/generate-test-certificates" TestCA --client --san LOCAL "$(hostname -f)"
 
 # Generate some test server certificates:
 # NOTE: These lines must contain resolvable (/etc/hosts or DNS) hostnames:
-# ./generate-test-certificates TestCA --server --san LOOKUP besserud.proxmox.crnalab.net
-# ./generate-test-certificates TestCA --server --san LOOKUP lillevann.proxmox.crnalab.net
-# ./generate-test-certificates TestCA --server --san LOOKUP midtstuen.proxmox.crnalab.net
+# "${DIRNAME}/generate-test-certificates" TestCA --server --san LOOKUP besserud.proxmox.crnalab.net
+# "${DIRNAME}/generate-test-certificates" TestCA --server --san LOOKUP lillevann.proxmox.crnalab.net
+# "${DIRNAME}/generate-test-certificates" TestCA --server --san LOOKUP midtstuen.proxmox.crnalab.net
 
 # Generate some test server certificates:
-./generate-test-certificates TestCA --server sognsvann.company.example
-./generate-test-certificates TestCA --server svartkulp.company.example
-./generate-test-certificates TestCA --server svartkulp.company.example
-./generate-test-certificates TestCA --server blanksjoe.company.example
-./generate-test-certificates TestCA --server tryvann.company.example
-./generate-test-certificates TestCA --server aaklungen.company.example
+"${DIRNAME}/generate-test-certificates" TestCA --server sognsvann.company.example
+"${DIRNAME}/generate-test-certificates" TestCA --server svartkulp.company.example
+"${DIRNAME}/generate-test-certificates" TestCA --server svartkulp.company.example
+"${DIRNAME}/generate-test-certificates" TestCA --server blanksjoe.company.example
+"${DIRNAME}/generate-test-certificates" TestCA --server tryvann.company.example
+"${DIRNAME}/generate-test-certificates" TestCA --server aaklungen.company.example
 
 # Generate some test user certificates:
-./generate-test-certificates TestCA --user "Dr. Al Bundy <al.bundy@company.example>"
-./generate-test-certificates TestCA --user "James Bond <james.bond@company.example>"
+"${DIRNAME}/generate-test-certificates" TestCA --user "Dr. Al Bundy <al.bundy@company.example>"
+"${DIRNAME}/generate-test-certificates" TestCA --user "James Bond <james.bond@company.example>"

@@ -216,6 +216,9 @@ Requires: td-system-tools-text-block = %{version}-%{release}
 Requires: openssl
 Recommends: gnutls-utils
 Recommends: nss-tools
+Suggests: pwgen
+Suggests: python3
+Suggests: python3-netifaces
 
 %description x509-tools
 This package contains X.509 certificate handling tools:
@@ -248,6 +251,9 @@ test-tls-connection tests a TCP TLS connection to a remote endpoint.
 %{_datadir}/locale/*/LC_MESSAGES/test-tls-connection.mo
 %{_datadir}/locale/*/LC_MESSAGES/view-certificate.mo
 %{_datadir}/locale/*/LC_MESSAGES/view-crl.mo
+%{_datadir}/system-tools/CertificateHelper.py
+%{_datadir}/system-tools/generate-test-certificates
+%{_datadir}/system-tools/make-test-certificates
 %{_mandir}/man1/check-certificate.1.gz
 %{_mandir}/man1/der2pem.1.gz
 %{_mandir}/man1/extract-pem.1.gz

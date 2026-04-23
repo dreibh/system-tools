@@ -32,11 +32,6 @@
 set -eu
 
 
-CA="TestCA/TestLevel1/certs/TestLevel1.crt"
-CRL="TestCA/TestGlobal.crl"   # combined CRL!
-CERTIFICATES="$(find TestCA -name "*.crt" | sort)"
-
-
 # ###### Helper function to show failure ####################################
 exit-failed ()
 {
@@ -93,6 +88,14 @@ if [ ! -x "${FIGLET}" ] ; then
    echo >&2 "* FreeBSD: sudo pkg install -y figlet"
    exit 1
 fi
+
+# ====== Make Test CA and Certificates ======================================
+show-script "make-test-certificates"
+./make-test-certificates || exit-failed
+
+CA="TestCA/TestLevel1/certs/TestLevel1.crt"
+CRL="TestCA/TestGlobal.crl"   # combined CRL!
+CERTIFICATES="$(find TestCA -name "*.crt" | sort)"
 
 # ====== Run tests ==========================================================
 for certificate in ${CERTIFICATES} ; do

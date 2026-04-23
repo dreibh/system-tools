@@ -73,3 +73,16 @@ INSTALL(FILES test-tls-connection.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       test-tls-connection.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      test-tls-connection)
+
+
+#############################################################################
+#### EXAMPLES                                                            ####
+#############################################################################
+
+INSTALL(FILES
+           CertificateHelper.py
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/system-tools)
+INSTALL(PROGRAMS
+           generate-test-certificates
+           make-test-certificates
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/system-tools)
