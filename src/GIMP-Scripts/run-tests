@@ -34,7 +34,7 @@ set -eu
 
 INPUT1="examples/Bergen.jpeg"
 INPUT2="examples/Portobello.jpeg"
-INPUT3="examples/Background.png"
+INPUT3="examples/Fractal.png"
 
 
 # ###### Helper function to show failure ####################################
@@ -105,14 +105,7 @@ trap 'if [ -d "${GIMP3_DIRECTORY}" ] ; then rm -rf "${GIMP3_DIRECTORY}" ; fi ; e
 # ====== Use FractGen to generate the example image =========================
 # Requires: clifractgen
 if [ ! -e "${INPUT3}"  ] ; then
-   if [ -e "/usr/share/fractgen/examples/alpha07.fsf" ] ; then
-      clifractgen  /usr/share/fractgen/examples/alpha07.fsf "${INPUT3}" -W 1920 -H 1080 -M 2048
-   elif [ -e "/usr/local/share/fractgen/examples/alpha07.fsf" ] ; then
-      clifractgen  /usr/local/share/fractgen/examples/alpha07.fsf "${INPUT3}" -W 1920 -H 1080 -M 2048
-   else
-      echo >&2 "ERROR: Input FSF file not found!"
-      exit 1
-   fi
+   clifractgen examples/Fractal.fsf "${INPUT3}" -W 1920 -H 1080 -M 2048
 fi
 
 
@@ -127,15 +120,15 @@ show-script "gs-resize-with-cropping"
 show-script "gs-caption"
 ./gs-caption Caption1.png 1024 42 \
    "Caption Text $(LC_ALL=C.UTF-8 date)" \
-   --font-name "Noto Sans Bold" \
-   --font-size 70 \
+   --font-name "Noto Sans Bold"          \
+   --font-size 70                        \
    --foreground "#02266b" --background "#ffd7cc" --transparency 50 || exit-failed
 
 if ./gs-list-fonts | grep -q "^Lobster Two Bold Italic$" ; then
    ./gs-caption Caption2.png 1920 64 \
       "This is yet another test on $(LC_ALL=C.UTF-8 date)!" \
-      -F "Lobster Two Bold Italic" \
-      -S 70 \
+      -F "Lobster Two Bold Italic"                          \
+      -S 70                                                 \
       -f "#02266b" -b "#ffd700" -t 26 || exit-failed
 fi
 
@@ -144,16 +137,16 @@ fi
 show-script "gs-glossytext"
 ./gs-glossytext NorNet1.png "NorNet Testbed" -S 128  || exit-failed
 ./gs-glossytext NorNet2.png "NorNet Testbed" \
-   --font-name "Noto Sans Bold" \
-   --font-size 128 \
-   --outline-size 16 \
+   --font-name "Noto Sans Bold"              \
+   --font-size 128                           \
+   --outline-size 16                         \
    --blend-gradient-text "Brushed Aluminium" \
    --blend-gradient-outline "Golden" || exit-failed
 ./gs-glossytext NorNet3.png "NorNet Testbed" \
-   -F "URW Gothic Book Oblique" \
-   -S 128 \
-   -O 5 \
-   -G "Brushed Aluminium" \
+   -F "URW Gothic Book Oblique"              \
+   -S 128                                    \
+   -O 5                                      \
+   -G "Brushed Aluminium"                    \
    -L "Golden" || exit-failed
 
 
@@ -163,26 +156,27 @@ for tileType in triangles squares hexagons octagons ; do
    for tileSurface in smooth rough ; do
       for tileSize in 12 24 ; do
          ./gs-mosaic Image1.png "Mosaic1-T${tileType}-S${tileSize}-F${tileSurface}.png" \
-            --tile-type "${tileType}" \
-            --tile-size "${tileSize}" \
-            --tile-height 4.0 \
-            --tile-neatness 0.25 \
-            --tile-surface "${tileSurface}" \
-            --tile-spacing 4.0 \
-            --tile-allow-split on \
-            --color-variation 0.15 \
-            --color-averaging on \
-            --light-direction 275.5 || exit-failed
+            --tile-type       "${tileType}"     \
+            --tile-size       "${tileSize}"     \
+            --tile-height      4.0              \
+            --tile-neatness    0.25             \
+            --tile-surface     "${tileSurface}" \
+            --tile-spacing     4.0              \
+            --tile-allow-split on               \
+            --color-variation  0.15             \
+            --color-averaging  on               \
+            --light-direction  275.5            \
+            --antialiasing     on || exit-failed
          ./gs-mosaic Image2.png "Mosaic2-T${tileType}-S${tileSize}-F${tileSurface}.png" \
-            -T "${tileType}" \
-            -S "${tileSize}" \
-            -H 5.0 \
-            -N 0.25 \
+            -T "${tileType}"    \
+            -S "${tileSize}"    \
+            -H 5.0              \
+            -N 0.25             \
             -F "${tileSurface}" \
-            -X 5.0 \
-            -I off \
-            -C 0.25 \
-            -G off \
+            -X 5.0              \
+            -I off              \
+            -C 0.25             \
+            -G off              \
             -L 75.5 || exit-failed
       done
    done
@@ -194,14 +188,14 @@ for defocus in on off ; do
    for borderSize in 10 20 ; do
       for sepia in on off ; do
          ./gs-oldphoto Image1.png "OldPhoto1-D${defocus}-B${borderSize}-S${sepia}-Mon.png" \
-            --defocus "${defocus}" \
+            --defocus "${defocus}"        \
             --border-size "${borderSize}" \
-            --sepia "${sepia}" \
+            --sepia "${sepia}"            \
             --mottle on || exit-failed
          ./gs-oldphoto Image2.png "OldPhoto2-D${defocus}-B${borderSize}-S${sepia}-Moff.png" \
-            -D "${defocus}" \
-            -B "${borderSize}" \
-            -S "${sepia}" \
+            -D "${defocus}"               \
+            -B "${borderSize}"            \
+            -S "${sepia}"                 \
             -M off || exit-failed
       done
    done
