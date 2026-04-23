@@ -55,6 +55,8 @@ output_filename
 .Op Fl w | Fl Fl verbose
 .Nm gs-oldphoto
 .Op Fl h | Fl Fl help
+.Nm gs-oldphoto
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs-oldphoto
@@ -81,6 +83,8 @@ Turns defocus on or off. Default: off.
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -89,4 +93,8 @@ Prints command-line parameters.
 .It gs-oldphoto Bergen.jpeg Bergen-OldPhoto-with-Border20.jpeg --border-size 20 --verbose
 .It gs-oldphoto Bergen.jpeg Bergen-OldPhoto-with-Border40.jpeg -B 40
 .It gs-oldphoto Portobello.jpeg Portobello-OldPhoto.jpeg --verbose --sepia off --mottle on
+.It gs-oldphoto --help
+.It gs-oldphoto -h
+.It gs-oldphoto --version
+.It gs-oldphoto -v
 .El

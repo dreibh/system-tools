@@ -59,6 +59,8 @@ output_filename
 .Op Fl w | Fl Fl verbose
 .Nm gs-resize-with-cropping
 .Op Fl h | Fl Fl help
+.Nm gs-resize-with-cropping
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs-resize-with-cropping
@@ -90,6 +92,8 @@ Quiet mode: no output is made.
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -99,4 +103,8 @@ Prints command-line parameters.
 .It gs-resize-with-cropping Bergen.jpeg Bergen-3860-A3.pdf A3 3840
 .It gs-resize-with-cropping Bergen.jpeg Bergen-1024-An.jpeg 1.414214 1024
 .It gs-resize-with-cropping Portobello.jpeg Portobello-2048-16:9.jpeg -A 16:9 --width 2048 -v
+.It gs-resize-with-cropping --help
+.It gs-resize-with-cropping -h
+.It gs-resize-with-cropping --version
+.It gs-resize-with-cropping -v
 .El

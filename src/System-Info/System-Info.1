@@ -43,6 +43,8 @@
 .Op Fl S Ar scripts_directory | Fl Fl scripts Ar scripts_directory
 .Nm System-Info
 .Op Fl h | Fl Fl help
+.Nm System-Info
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 System-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System-Info can be configured to be automatically run when logging in, providing the user an up-to-date overview of the system.
@@ -70,6 +72,8 @@ The following options are available:
 Sets the directory to look for scripts, for example to test own scripts. Default: /etc/system-info.d or /usr/local/etc/system-info.d.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -81,4 +85,6 @@ Prints command-line parameters.
 .It LANGUAGE=nb System-Info
 .It LANGUAGE=de_AT System-Info
 .It LANGUAGE=nb System-Info -S /usr/share/System-Info
+.It System-Info --version
+.It System-Info --help
 .El

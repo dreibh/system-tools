@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.3.1
+Version: 2.3.2
 Release: 1
 Summary: Tools for basic system management
 Group: Applications/System
@@ -216,6 +216,9 @@ Requires: td-system-tools-text-block = %{version}-%{release}
 Requires: openssl
 Recommends: gnutls-utils
 Recommends: nss-tools
+Suggests: pwgen
+Suggests: python3
+Suggests: python3-netifaces
 
 %description x509-tools
 This package contains X.509 certificate handling tools:
@@ -248,6 +251,9 @@ test-tls-connection tests a TCP TLS connection to a remote endpoint.
 %{_datadir}/locale/*/LC_MESSAGES/test-tls-connection.mo
 %{_datadir}/locale/*/LC_MESSAGES/view-certificate.mo
 %{_datadir}/locale/*/LC_MESSAGES/view-crl.mo
+%{_datadir}/system-tools/CertificateHelper.py
+%{_datadir}/system-tools/generate-test-certificates
+%{_datadir}/system-tools/make-test-certificates
 %{_mandir}/man1/check-certificate.1.gz
 %{_mandir}/man1/der2pem.1.gz
 %{_mandir}/man1/extract-pem.1.gz
@@ -341,6 +347,8 @@ support for fractional seconds.
 
 
 %changelog
+* Thu Apr 23 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.3.2-1
+- New upstream release.
 * Mon Apr 20 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.3.1-1
 - New upstream release.
 * Sun Apr 19 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.3.0-1

@@ -62,6 +62,8 @@ caption_text
 .Op Fl w | Fl Fl verbose
 .Nm gs-caption
 .Op Fl h | Fl Fl help
+.Nm gs-caption
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs-caption
@@ -95,6 +97,8 @@ Specifies the transparency of the caption box in percent. Range: 0-100. Default:
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -103,4 +107,8 @@ Prints command-line parameters.
 .It gs-caption Caption2.png 1024 42 \(dqThis is a test!\(dq --font-name \(dqNoto Sans Bold\(dq --font-size 70 --foreground \(dq#02266b\(dq --background \(dq#ffd7cc\(dq --transparency 50
 .It gs-caption Caption3.png 1920 64 \(dqAnother test!\(dq -F \(dqLobster Two Bold Italic\(dq -S 70 -f \(dq#02266b\(dq -b \(dq#ffd700\(dq -t 26
 .It fc-list\~: family style -f \(dq%{family[0]} %{style[0]}\[rs]n\(dq | sort -u
+.It gs-caption --help
+.It gs-caption -h
+.It gs-caption --version
+.It gs-caption -v
 .El

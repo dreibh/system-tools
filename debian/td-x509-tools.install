@@ -17,3 +17,6 @@ usr/share/locale/*/LC_MESSAGES/extract-pem.mo
 usr/share/locale/*/LC_MESSAGES/test-tls-connection.mo
 usr/share/locale/*/LC_MESSAGES/view-certificate.mo
 usr/share/locale/*/LC_MESSAGES/view-crl.mo
+usr/share/system-tools/CertificateHelper.py
+usr/share/system-tools/generate-test-certificates
+usr/share/system-tools/make-test-certificates

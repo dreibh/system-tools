@@ -12,18 +12,18 @@
 # System-Tools
 # Copyright (C) 2013-2026 by Thomas Dreibholz
 #
-# This program is free software: you can redistribute it and/or modify
+# This script is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful,
+# This script is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this script.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Contact: thomas.dreibholz@gmail.com
 
@@ -32,44 +32,36 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
-INSTALL(PROGRAMS check-certificate DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES check-certificate.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       check-certificate.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      check-certificate)
+SET(SCRIPTS
+   check-certificate
+   der2pem
+   extract-pem
+   pem2der
+   test-tls-connection
+   view-certificate
+   view-crl
+)
 
-INSTALL(PROGRAMS view-certificate DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES view-certificate.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       view-certificate.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      view-certificate)
+FOREACH(script IN LISTS SCRIPTS)
+   CONFIGURE_FILE(${script} ${script}.versioned @ONLY)
+   INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/${script}.versioned
+           DESTINATION ${CMAKE_INSTALL_BINDIR}
+           RENAME      ${script})
+   INSTALL(FILES ${script}.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+   INSTALL(FILES       ${script}.bash-completion
+           DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+           RENAME      ${script})
+ENDFOREACH()
 
-INSTALL(PROGRAMS view-crl DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES view-crl.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       view-crl.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      view-crl)
 
-INSTALL(PROGRAMS extract-pem DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES extract-pem.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       extract-pem.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      extract-pem)
+#############################################################################
+#### EXAMPLES                                                            ####
+#############################################################################
 
-INSTALL(PROGRAMS der2pem DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES der2pem.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       der2pem.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      der2pem)
-
-INSTALL(PROGRAMS pem2der DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES pem2der.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       pem2der.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      pem2der)
-
-INSTALL(PROGRAMS test-tls-connection DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES test-tls-connection.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       test-tls-connection.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      test-tls-connection)
+INSTALL(FILES
+           CertificateHelper.py
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/system-tools)
+INSTALL(PROGRAMS
+           generate-test-certificates
+           make-test-certificates
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/system-tools)

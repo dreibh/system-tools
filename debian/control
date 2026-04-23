@@ -7,7 +7,7 @@ Vcs-Git: https://github.com/dreibh/system-tools.git
 Vcs-Browser: https://github.com/dreibh/system-tools
 Build-Depends: cmake,
                debhelper-compat (= 13)
-Standards-Version: 4.7.3
+Standards-Version: 4.7.4
 Rules-Requires-Root: no
 
 Package: td-system-info
@@ -118,6 +118,9 @@ Replaces: td-x509
 Breaks: td-x509 (<< ${source:Version})
 Recommends: gnutls-bin,
             libnss3-tools
+Suggests: pwgen,
+          python3,
+          python3-netifaces
 Description: X.509 certificate handling tools
  This package contains X.509 certificate handling tools:
  view-certificate displays an X.509 certificate and its hierarchy.

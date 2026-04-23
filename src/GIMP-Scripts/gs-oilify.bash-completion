@@ -75,12 +75,15 @@ _gs_oilify()
    local opts="
 -S
 --mask-size
+-I
+--intensity-mode
 -q
 --quiet
 -w
 --verbose
 -h
 --help
+-v
 "
    # shellcheck disable=SC2207
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )

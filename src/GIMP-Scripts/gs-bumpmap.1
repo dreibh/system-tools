@@ -77,6 +77,8 @@ output_filename
 .Op Fl w | Fl Fl verbose
 .Nm gs-bumpmap
 .Op Fl h | Fl Fl help
+.Nm gs-bumpmap
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs-bumpmap
@@ -127,10 +129,16 @@ Sets the overlap. Range: 0.0-100.0. Default: 0.0.
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It gs-bumpmap Image1.png BumpMap1.png
 .It gs-bumpmap Image3.png BumpMap3.png --hue-range all -hue-offset 120.0 --lightness -15.0
+.It gs-bumpmap --help
+.It gs-bumpmap -h
+.It gs-bumpmap --version
+.It gs-bumpmap -v
 .El

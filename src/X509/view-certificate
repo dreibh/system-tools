@@ -41,16 +41,41 @@ export TEXTDOMAIN="view-certificate"
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "$(gettext "Usage:") $0 [-h|--help] certificate [...]"
+   echo >&2 "$(gettext "Usage:") $0 [-h|--help] [-v|--version] certificate [...]"
    exit 1
 }
+
+
+# ###### Version ############################################################
+version () {
+   echo "view-certificate @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
+}
+
+
+# ###### Print date in current locale and current time zone #################
+print-date ()
+{
+   local input="$1"
+   local unixTS
+   local datetime
+   if date --version >/dev/null 2>&1; then
+      unixTS="$(date -d "${input}" +"%s")"
+      datetime="$(date -d "@${unixTS}" +"%c %Z")"
+   else
+      unixTS="$(LC_ALL=C.UTF-8 date -j -f "%b %d %T %Y %Z" "${input}" +"%s")"
+      datetime="$(date -r "${unixTS}" +"%c %Z")"
+   fi
+   echo "${datetime}"
+}
+
 
 
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o h --long help -a -- "$@")"
+options="$(${GETOPT} -o hv --long help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage
@@ -61,6 +86,10 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -h | --help)
          usage
+         # shift
+         ;;
+      -v | --version)
+         version
          # shift
          ;;
       --)
@@ -116,9 +145,9 @@ while [ $# -gt 0 ] ; do
             # shellcheck disable=SC2001
             subject="$(echo "${BASH_REMATCH[2]}" | sed -e 's/\(CN = \)\([^,]*\)/\x1b[4m\1\2\x1b[24m/')"
          elif [[ "${line}" =~ ^(notBefore=)(.*)$ ]] ; then
-            validityFrom="$(TZ=UTC date -d "${BASH_REMATCH[2]}")"
+            validityFrom="$(print-date "${BASH_REMATCH[2]}")"
          elif [[ "${line}" =~ ^(notAfter=)(.*)$ ]] ; then
-            validityTo="$(TZ=UTC date -d "${BASH_REMATCH[2]}")"
+            validityTo="$(print-date "${BASH_REMATCH[2]}")"
          elif [[ "${line}" =~ ^([ \t]*)(X509v3 )(.*)(:[[:space:]]*)(.*)$ ]] ; then
             extension="${BASH_REMATCH[3]}"
             critical="${BASH_REMATCH[5]}"

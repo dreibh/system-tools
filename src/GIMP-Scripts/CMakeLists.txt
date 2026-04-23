@@ -50,15 +50,21 @@ SET(gimpSimpleScripts
    gs-list-patterns
 )
 
-FOREACH(gimpScript IN LISTS gimpScripts)
-   INSTALL(PROGRAMS ${gimpScript}   DESTINATION ${CMAKE_INSTALL_BINDIR})
-   INSTALL(FILES    ${gimpScript}.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-   INSTALL(FILES       ${gimpScript}.bash-completion
+FOREACH(script IN LISTS gimpScripts)
+   CONFIGURE_FILE(${script} ${script}.versioned @ONLY)
+   INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/${script}.versioned
+           DESTINATION ${CMAKE_INSTALL_BINDIR}
+           RENAME      ${script})
+   INSTALL(FILES ${script}.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+   INSTALL(FILES       ${script}.bash-completion
            DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-           RENAME      ${gimpScript})
+           RENAME      ${script})
 ENDFOREACH()
 
-FOREACH(gimpScript IN LISTS gimpSimpleScripts)
-   INSTALL(PROGRAMS ${gimpScript}   DESTINATION ${CMAKE_INSTALL_BINDIR})
-   INSTALL(FILES    ${gimpScript}.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+FOREACH(script IN LISTS gimpSimpleScripts)
+   CONFIGURE_FILE(${script} ${script}.versioned @ONLY)
+   INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/${script}.versioned
+           DESTINATION ${CMAKE_INSTALL_BINDIR}
+           RENAME      ${script})
+   INSTALL(FILES ${script}.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 ENDFOREACH()

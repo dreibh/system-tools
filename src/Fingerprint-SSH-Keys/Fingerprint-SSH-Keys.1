@@ -45,6 +45,8 @@
 .Op Fl p | Fl Fl include-raw-python
 .Nm Fingerprint-SSH-Keys
 .Op Fl h | Fl Fl help
+.Nm Fingerprint-SSH-Keys
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Fingerprint-SSH-Keys
@@ -68,6 +70,8 @@ Also include the keys in raw format.
 Also include the keys in raw format as Python dictionary.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -75,4 +79,6 @@ Prints command-line parameters.
 .It Fingerprint-SSH-Keys
 .It Fingerprint-SSH-Keys --include-deprecated
 .It Fingerprint-SSH-Keys -d
+.It Fingerprint-SSH-Keys --version
+.It Fingerprint-SSH-Keys --help
 .El

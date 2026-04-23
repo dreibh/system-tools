@@ -73,6 +73,8 @@ text
 .Op Fl w | Fl Fl verbose
 .Nm gs-glossytext
 .Op Fl h | Fl Fl help
+.Nm gs-glossytext
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs-glossytext
@@ -132,6 +134,8 @@ Sets the y-offset for the shadow. Range: 0-100. Default: 8.
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -145,4 +149,8 @@ Prints command-line parameters.
 .It gs-glossytext Test4.png \(dqGenerated on $(date -R)\(dq -F \(dqOpen Sans Bold\(dq -S 64 --use-shadow off
 .It gs-glossytext M2EC.webp \(dqM²EC 2026\(dq --font-name \(dqLobster Two Bold Italic\(dq --font-size 128 --outline-size 12
 .It gs-glossytext Chinese.png \(dq托马斯博士\(dq -F \(dqNoto Sans Bold\(dq -S 256 -O 24
+.It gs-glossytext --help
+.It gs-glossytext -h
+.It gs-glossytext --version
+.It gs-glossytext -v
 .El

@@ -48,6 +48,8 @@ delay
 command ...
 .Nm try-hard
 .Op Fl h | Fl Fl help
+.Nm try-hard
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm try-hard
@@ -64,6 +66,8 @@ Quiet mode: no output is made.
 Verbose mode: print selected delay and wake-up.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -72,4 +76,6 @@ Prints command-line parameters.
 .It try-hard 3 300 -q -- git clone https://git.freebsd.org/ports.git
 .It try-hard 3 60 -- wget -O example.tar.gz https://www.example.net/example.tar.gz
 .It try-hard 100 1 -w -- false
+.It try-hard --version
+.It try-hard --help
 .El

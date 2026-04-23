@@ -51,12 +51,18 @@ _configure_grub()
    fi
 
    if [ "${cword}" -lt 2 ] ; then
+      _filedir
       return
    else
       case "${prev}" in
-         #  ====== Generic value ============================================
+         # ====== Special case: file ========================================
          -i | --input  | \
-         -o | --output | \
+         -o | --output)
+            # Arbitrary file names:
+            _filedir
+            return
+            ;;
+         #  ====== Generic value ============================================
          -V | --video  | \
          -T | --tune)
             return
@@ -74,6 +80,10 @@ _configure_grub()
 --video
 -T
 --tune
+-h
+--help
+-v
+--version
 "
    # shellcheck disable=SC2207
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
