@@ -1,3 +1,155 @@
+commit 89233e23188120aec3c9316230f81abc0203b712
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 11:39:32 2026 +0200
+
+    Minor packaging update.
+
+commit e923d6918816c698e470a2eedc1c196f8d4c5c5f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 11:30:18 2026 +0200
+
+    Packaging and documentation improvements.
+
+commit 13af2a2988579c42a93b9bcccd3ba814d8299d94
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 11:12:57 2026 +0200
+
+    RPM packaging improvements.
+
+commit d8a96592896f253be8ef9478e896c15c28ab2f9b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 10:49:49 2026 +0200
+
+    Updated manpages.
+
+commit eb05bac3ea5b4b4043d4a070fab6fd38fe4611bd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 10:37:22 2026 +0200
+
+    Try-Hard is "noarch" in RPM spec.
+
+commit 1af7585609c27bc1163bf1ff87e6979242b28169
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 10:36:17 2026 +0200
+
+    Splitted td-misc into td-try-hard and td-random-sleep.
+
+commit 0fa82a8449d81ad0f543b54d78e2547f81a48510
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 10:05:13 2026 +0200
+
+    Updated CI scripts
+
+commit 40daea812a4067d3af9f4433ef00e6c1d56d103d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 10:04:08 2026 +0200
+
+    Minor CMakeLists.txt fix for Ubuntu ESM.
+
+commit 15d9f792cd4cca7f79cf63b59b47534cc19ee388
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 10:03:56 2026 +0200
+
+    Updated PO files.
+
+commit 62d6f2383b13e52dbe6a10a5d307bd30948be8dd
+Merge: cf41c95 a4f2231
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 09:44:09 2026 +0200
+
+    Merge branch 'dreibh/version'
+
+commit cf41c956376ec863acef6b541be77e7f1d53a6e5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 09:36:55 2026 +0200
+
+    Packaging improvements.
+
+commit a4f223128f44e08e120fb823d4c0ae1cdff1bc92
+Merge: 5c7fa71 6fa371f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 16:19:51 2026 +0200
+
+    Merge branch 'master' into dreibh/version
+
+commit 6fa371f7275f3a1781cdba346ed1b0e2f1d0c5e7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 15:39:19 2026 +0200
+
+    New release td-system-tools-2.3.2.
+
+commit 5c7fa71832286983bf70024efbb7717b7ffa96a3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 13:45:42 2026 +0200
+
+    Minor fix.
+
+commit 307fb24fdacdafc72629e9fd0309c7045bac7b6e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 13:42:24 2026 +0200
+
+    Added version option to Configure-GRUB.
+
+commit 5006448890ca1016cfa3903670ce7a7c8a459e5c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 13:36:15 2026 +0200
+
+    Added version option to Reset-Machine-ID.
+
+commit e840be52881cddb1453981f0bd7dc90194be0a47
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 13:32:19 2026 +0200
+
+    Minor manpage updates.
+
+commit f8c3f6912a2d14fd1c3fa82a893e3532e7392f23
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 13:32:06 2026 +0200
+
+    Added version option to Fingerprint-SSH-Keys.
+
+commit a7988bc23dec497b0e18a7ddeed60389fbef0e02
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 13:25:24 2026 +0200
+
+    Added version option for the remaining X509-Tools.
+
+commit d3b5be27ddf343c556ce46a00b0610982882aefc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 13:16:43 2026 +0200
+
+    Added version option to X509-Tools.
+
+commit 8e4e50d9bae439c82d20849352a8bab703d04855
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 12:59:59 2026 +0200
+
+    Updated manpages.
+
+commit 032992a8da741793f123a4c472a2bf42ce98b66c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 12:59:43 2026 +0200
+
+    Minor CMakeLists.txt clean-up.
+
+commit 498855b6ba6c7f29a91d108bf0ad4c702a221488
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 12:58:30 2026 +0200
+
+    Added version option to Try-Hard.
+
+commit 3634852747cb2374f79c814d6093d917d0ed1a29
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 12:51:17 2026 +0200
+
+    Added version option to System-Maintenance.
+
+commit 4958cead97e08b0e2582d4ae4304c5f2c26b80fc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 12:45:21 2026 +0200
+
+    Added version option to System-Info.
+
 commit 32e1294c018f21d6381979ab1a4bbd743d3ee11a
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Apr 23 11:47:07 2026 +0200
