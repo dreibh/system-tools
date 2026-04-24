@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.3.2
+Version: 2.4.0~rc1.0
 Release: 1
 Summary: Tools for basic system management
 Group: Applications/System
@@ -14,15 +14,7 @@ BuildRequires: gcc-c++
 BuildRequires: gettext
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
-Requires: td-system-tools-fingerprint-ssh-keys = %{version}-%{release}
-Requires: td-system-tools-misc = %{version}-%{release}
-Requires: td-system-tools-reset-machine-id = %{version}-%{release}
-Requires: td-system-tools-system-info = %{version}-%{release}
-Requires: td-system-tools-system-maintenance = %{version}-%{release}
-Requires: td-system-tools-text-block = %{version}-%{release}
-Requires: td-system-tools-unix-timestamp-tools = %{version}-%{release}
-Requires: td-system-tools-x509-tools = %{version}-%{release}
-Recommends: td-system-tools-configure-grub = %{version}-%{release}
+Requires: %{name}-basic = %{version}-%{release}
 
 
 %description
@@ -45,8 +37,8 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 Summary: Perform basic system maintenance
 Group: Applications/System
 BuildArch: noarch
-Requires: td-system-tools-get-system-info = %{version}-%{release}
-Requires: td-system-tools-print-utf8 = %{version}-%{release}
+Requires: %{name}-get-system-info = %{version}-%{release}
+Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: (figlet or toilet)
 Requires: gettext-runtime
 Requires: (mbuffer or buffer)
@@ -82,7 +74,7 @@ Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
 Requires: sudo
-Recommends: td-system-tools-system-info
+Recommends: %{name}-system-info
 
 %description system-maintenance
 This program runs basic system maintenance tasks:
@@ -104,8 +96,8 @@ Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
 Requires: sudo
-Recommends: td-system-tools-system-info
-Recommends: td-system-tools-system-maintenance
+Recommends: %{name}-system-info
+Recommends: %{name}-system-maintenance
 
 %description reset-machine-id
 This program helps to reset the machine identity state:
@@ -124,7 +116,7 @@ Summary: Reset machine identity state
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
-Recommends: td-system-tools-system-info
+Recommends: %{name}-system-info
 
 %description fingerprint-ssh-keys
 This program prints the SSH key fingerprints of the local machine
@@ -142,7 +134,7 @@ Summary: Helper tool to adjust GRUB configuration
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
-Recommends: td-system-tools-system-maintenance
+Recommends: %{name}-system-maintenance
 
 %description configure-grub
 This program adjusts a GRUB configuration file by applying a configuration
@@ -207,13 +199,17 @@ text-block reads text from standard input or given file, and writes it to standa
 %{_mandir}/man1/text-block.1.gz
 %{_datadir}/bash-completion/completions/text-block
 %{_datadir}/locale/*/LC_MESSAGES/text-block.mo
+%{_datadir}/text-block/example1.txt
+%{_datadir}/text-block/example2.txt
+%{_datadir}/text-block/insert.txt
+%{_datadir}/text-block/numbers.txt
 
 
 %package x509-tools
 Summary: X.509 certificate handling tools
 Group: Applications/System
 BuildArch: noarch
-Requires: td-system-tools-text-block = %{version}-%{release}
+Requires: %{name}-text-block = %{version}-%{release}
 Requires: openssl
 Recommends: gnutls-utils
 Recommends: nss-tools
@@ -287,34 +283,71 @@ milliseconds, microseconds, and nanoseconds.
 %{_mandir}/man1/unixts2time.1.gz
 
 
-%package misc
-Summary: Miscellaneous tools
+%package try-hard
+Summary: Make multiple trials to successfully run a command
 Group: Applications/System
-Recommends: td-system-tools-print-utf8
+BuildArch: noarch
 
-%description misc
-This package contains two simple tools:
-try-hard runs a command and retries for a given number of times in case
+%description try-hard
+Try-hard runs a command and retries for a given number of times in case
 of error, with a delay between the trials.
-random-sleep waits for a random time, selected from a given interval, with
-support for fractional seconds.
 
-%files misc
-%{_bindir}/random-sleep
-%{_bindir}/text-block
+%files try-hard
 %{_bindir}/try-hard
-%{_datadir}/bash-completion/completions/random-sleep
-%{_datadir}/bash-completion/completions/text-block
 %{_datadir}/bash-completion/completions/try-hard
-%{_datadir}/locale/*/LC_MESSAGES/random-sleep.mo
 %{_datadir}/locale/*/LC_MESSAGES/try-hard.mo
-%{_datadir}/text-block/example1.txt
-%{_datadir}/text-block/example2.txt
-%{_datadir}/text-block/insert.txt
-%{_datadir}/text-block/numbers.txt
-%{_mandir}/man1/random-sleep.1.gz
-%{_mandir}/man1/text-block.1.gz
 %{_mandir}/man1/try-hard.1.gz
+
+
+%package random-sleep
+Summary: Wait for a random time span
+Group: Applications/System
+
+%description random-sleep
+Random-sleep waits for a random time span, selected from a given
+interval, with support for fractional seconds.
+
+%files random-sleep
+%{_bindir}/random-sleep
+%{_datadir}/bash-completion/completions/random-sleep
+%{_datadir}/locale/*/LC_MESSAGES/random-sleep.mo
+%{_mandir}/man1/random-sleep.1.gz
+
+
+%package basic
+Summary: Metapackage for basic system tools sub-packages
+Group: Applications/System
+Requires: %{name}-fingerprint-ssh-keys = %{version}-%{release}
+Requires: %{name}-random-sleep = %{version}-%{release}
+Requires: %{name}-reset-machine-id = %{version}-%{release}
+Requires: %{name}-system-info = %{version}-%{release}
+Requires: %{name}-system-maintenance = %{version}-%{release}
+Requires: %{name}-text-block = %{version}-%{release}
+Requires: %{name}-try-hard = %{version}-%{release}
+Requires: %{name}-unix-timestamp-tools = %{version}-%{release}
+Requires: %{name}-x509-tools = %{version}-%{release}
+Recommends: %{name}-configure-grub = %{version}-%{release}
+Obsoletes: %{name}-misc < %{version}-%{release}
+
+%description basic
+This package is a metapackage for the system information and maintenance
+tools. It installs the basic sub-packages.
+Note that td-system-configure-grub is only added as weak dependency
+("recommends"),  since it is only available on selected architectures.
+
+%files basic
+
+
+%package complete
+Summary: Metapackage for complete system tools sub-packages
+Group: Applications/System
+Requires: %{name}-basic = %{version}-%{release}
+
+%description complete
+This package is a metapackage for the system information and maintenance
+tools. It installs all sub-packages.
+
+%files complete
 
 
 %changelog

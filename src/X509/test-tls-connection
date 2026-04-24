@@ -41,8 +41,15 @@ export TEXTDOMAIN="test-tls-connection"
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "$(gettext "Usage:") $0 host:port cafile [-s|--save-certificate certificate_file] [-n|--no-view-certificate] [-c|--no-check-certificate] [-- openssl_args ...]"
+   echo >&2 "$(gettext "Usage:") $0 host:port cafile [-s|--save-certificate certificate_file] [-n|--no-view-certificate] [-c|--no-check-certificate] [-- openssl_args ...] [-h|--help] [-v|--version]"
    exit 1
+}
+
+
+# ###### Version ############################################################
+version () {
+   echo "test-tls-connection @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
 }
 
 
@@ -51,7 +58,7 @@ usage () {
 # ====== Handle arguments ===================================================
 DIRNAME="$(dirname "$0")"
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o s:nch --long save-certificate:,no-view-certificate,no-check-certificate,help -a -- "$@")"
+options="$(${GETOPT} -o s:nchv --long save-certificate:,no-view-certificate,no-check-certificate,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage
@@ -77,6 +84,10 @@ while [ $# -gt 0 ] ; do
          ;;
       -h | --help)
          usage
+         # shift
+         ;;
+      -v | --version)
+         version
          # shift
          ;;
       --)
