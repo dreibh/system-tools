@@ -113,6 +113,7 @@ Architecture: all
 Depends: gettext-base,
          ${misc:Depends},
          ${shlibs:Depends}
+Replaces: td-misc (<< 2.4.0)
 Breaks: td-misc (<< 2.4.0)
 Description: Make multiple trials to successfully run a command
  Try-hard runs a command and retries for a given number of times in case
@@ -123,6 +124,7 @@ Architecture: any
 Depends: gettext-base,
          ${misc:Depends},
          ${shlibs:Depends}
+Replaces: td-misc (<< 2.4.0)
 Breaks: td-misc (<< 2.4.0)
 Description: Wait for a random time span
  Random-sleep waits for a random time span, selected from a given
@@ -135,7 +137,7 @@ Depends: gettext-base,
          td-text-block,
          ${misc:Depends}
 Provides: td-x509
-Replaces: td-x509
+Replaces: td-x509 (<< 2.2.0)
 Breaks: td-x509 (<< 2.2.0)
 Recommends: gnutls-bin,
             libnss3-tools
@@ -154,7 +156,6 @@ Description: X.509 certificate handling tools
  test-tls-connection tests a TCP TLS connection to a remote endpoint.
 
 Package: td-system-tools-basic
-Provides: td-system-tools
 Replaces: td-system-tools (<< 2.4.0)
 Breaks: td-system-tools (<< 2.4.0)
 Architecture: all
@@ -181,3 +182,20 @@ Depends: td-system-tools-basic (>= ${source:Version}),
 Description: Metapackage for complete system tools sub-packages
  This package is a metapackage for the system information and maintenance
  tools. It installs all sub-packages.
+
+Package: td-system-tools
+Section: oldlibs
+Architecture: all
+Depends: td-system-tools-basic (>= ${source:Version}),
+         ${misc:Depends}
+Description: Transitional package td-system-tools -> td-system-tools-basic
+ This is a transitional dummy package. It can safely be removed.
+
+Package: td-misc
+Section: oldlibs
+Architecture: all
+Depends: td-random-sleep (>= ${source:Version}),
+         td-try-hard (>= ${source:Version}),
+         ${misc:Depends}
+Description: Transitional package td-misc -> td-random-sleep, td-try-hard
+ This is a transitional dummy package. It can safely be removed.
