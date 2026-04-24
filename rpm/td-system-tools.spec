@@ -263,6 +263,7 @@ test-tls-connection tests a TCP TLS connection to a remote endpoint.
 %package try-hard
 Summary: Make multiple trials to successfully run a command
 Group: Applications/System
+BuildArch: noarch
 Conflicts: %{name}-misc
 
 %description try-hard
