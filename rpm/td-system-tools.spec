@@ -205,6 +205,29 @@ text-block reads text from standard input or given file, and writes it to standa
 %{_datadir}/text-block/numbers.txt
 
 
+%package unixtimestamp-tools
+Summary: Unix timestamp handling tools
+Group: Applications/System
+
+%description unixtimestamp-tools
+This package contains two simple tools:
+time2unixts converts a time string to an Unix timestamp.
+unixts2time converts an Unix timestamp to a time string.
+These tools support Unix timestamps (i.e. the time since
+Jaunary 1, 1970, 00:00:00.000000000 UTC) in seconds,
+milliseconds, microseconds, and nanoseconds.
+
+%files unixtimestamp-tools
+%{_bindir}/time2unixts
+%{_bindir}/unixts2time
+%{_datadir}/bash-completion/completions/time2unixts
+%{_datadir}/bash-completion/completions/unixts2time
+%{_datadir}/locale/*/LC_MESSAGES/time2unixts.mo
+%{_datadir}/locale/*/LC_MESSAGES/unixts2time.mo
+%{_mandir}/man1/time2unixts.1.gz
+%{_mandir}/man1/unixts2time.1.gz
+
+
 %package try-hard
 Summary: Make multiple trials to successfully run a command
 Group: Applications/System
@@ -291,63 +314,6 @@ test-tls-connection tests a TCP TLS connection to a remote endpoint.
 %{_mandir}/man1/view-crl.1.gz
 
 
-<<<<<<< HEAD
-%package unixtimestamp-tools
-Summary: Unix timestamp handling tools
-Group: Applications/System
-
-%description unixtimestamp-tools
-This package contains two simple tools:
-time2unixts converts a time string to an Unix timestamp.
-unixts2time converts an Unix timestamp to a time string.
-These tools support Unix timestamps (i.e. the time since
-Jaunary 1, 1970, 00:00:00.000000000 UTC) in seconds,
-milliseconds, microseconds, and nanoseconds.
-
-%files unixtimestamp-tools
-%{_bindir}/time2unixts
-%{_bindir}/unixts2time
-%{_datadir}/bash-completion/completions/time2unixts
-%{_datadir}/bash-completion/completions/unixts2time
-%{_datadir}/locale/*/LC_MESSAGES/time2unixts.mo
-%{_datadir}/locale/*/LC_MESSAGES/unixts2time.mo
-%{_mandir}/man1/time2unixts.1.gz
-%{_mandir}/man1/unixts2time.1.gz
-
-
-%package try-hard
-Summary: Make multiple trials to successfully run a command
-Group: Applications/System
-BuildArch: noarch
-
-%description try-hard
-Try-hard runs a command and retries for a given number of times in case
-of error, with a delay between the trials.
-
-%files try-hard
-%{_bindir}/try-hard
-%{_datadir}/bash-completion/completions/try-hard
-%{_datadir}/locale/*/LC_MESSAGES/try-hard.mo
-%{_mandir}/man1/try-hard.1.gz
-
-
-%package random-sleep
-Summary: Wait for a random time span
-Group: Applications/System
-
-%description random-sleep
-Random-sleep waits for a random time span, selected from a given
-interval, with support for fractional seconds.
-
-%files random-sleep
-%{_bindir}/random-sleep
-%{_datadir}/bash-completion/completions/random-sleep
-%{_datadir}/locale/*/LC_MESSAGES/random-sleep.mo
-%{_mandir}/man1/random-sleep.1.gz
-
-
-=======
->>>>>>> master
 %package basic
 Summary: Metapackage for basic system tools sub-packages
 Group: Applications/System
