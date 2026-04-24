@@ -56,6 +56,7 @@ Package: td-reset-machine-id
 Architecture: all
 Depends: gettext-base,
          sudo,
+         uuid,
          ${misc:Depends}
 Recommends: td-system-info,
             td-system-maintenance

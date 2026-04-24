@@ -113,6 +113,7 @@ Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
 Requires: sudo
+Requires: uuid
 Recommends: %{name}-system-info
 Recommends: %{name}-system-maintenance
 

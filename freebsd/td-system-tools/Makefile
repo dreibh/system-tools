@@ -13,7 +13,8 @@ LICENSE_FILE=	${WRKSRC}/COPYING
 RUN_DEPENDS=	bash:shells/bash \
 		figlet:misc/figlet \
 		getopt>=0:misc/getopt \
-		mbuffer:misc/mbuffer
+		mbuffer:misc/mbuffer \
+		uuid:misc/ossp-uuid
 
 USES=		cmake gettext python shebangfix ssl:run tar:xz
 
