@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.3.2
+Version: 2.4.0~rc0
 Release: 1
 Summary: Tools for basic system management
 Group: Applications/System
@@ -199,6 +199,10 @@ text-block reads text from standard input or given file, and writes it to standa
 %{_mandir}/man1/text-block.1.gz
 %{_datadir}/bash-completion/completions/text-block
 %{_datadir}/locale/*/LC_MESSAGES/text-block.mo
+%{_datadir}/text-block/example1.txt
+%{_datadir}/text-block/example2.txt
+%{_datadir}/text-block/insert.txt
+%{_datadir}/text-block/numbers.txt
 
 
 %package x509-tools
@@ -256,34 +260,36 @@ test-tls-connection tests a TCP TLS connection to a remote endpoint.
 %{_mandir}/man1/view-crl.1.gz
 
 
-%package misc
-Summary: Miscellaneous tools
+%package try-hard
+Summary: Make multiple trials to successfully run a command
 Group: Applications/System
-Recommends: %{name}-print-utf8
+Conflicts: %{name}-misc
 
-%description misc
-This package contains two simple tools:
-try-hard runs a command and retries for a given number of times in case
+%description try-hard
+Try-hard runs a command and retries for a given number of times in case
 of error, with a delay between the trials.
-random-sleep waits for a random time, selected from a given interval, with
-support for fractional seconds.
 
-%files misc
-%{_bindir}/random-sleep
-%{_bindir}/text-block
+%files try-hard
 %{_bindir}/try-hard
-%{_datadir}/bash-completion/completions/random-sleep
-%{_datadir}/bash-completion/completions/text-block
 %{_datadir}/bash-completion/completions/try-hard
-%{_datadir}/locale/*/LC_MESSAGES/random-sleep.mo
 %{_datadir}/locale/*/LC_MESSAGES/try-hard.mo
-%{_datadir}/text-block/example1.txt
-%{_datadir}/text-block/example2.txt
-%{_datadir}/text-block/insert.txt
-%{_datadir}/text-block/numbers.txt
-%{_mandir}/man1/random-sleep.1.gz
-%{_mandir}/man1/text-block.1.gz
 %{_mandir}/man1/try-hard.1.gz
+
+
+%package random-sleep
+Summary: Wait for a random time span
+Group: Applications/System
+Conflicts: %{name}-misc
+
+%description random-sleep
+Random-sleep waits for a random time span, selected from a given
+interval, with support for fractional seconds.
+
+%files random-sleep
+%{_bindir}/random-sleep
+%{_datadir}/bash-completion/completions/random-sleep
+%{_datadir}/locale/*/LC_MESSAGES/random-sleep.mo
+%{_mandir}/man1/random-sleep.1.gz
 
 
 %package basic
@@ -291,7 +297,8 @@ Summary: Metapackage for basic system tools sub-packages
 Group: Applications/System
 Recommends: %{name}-print-utf8
 Requires: %{name}-fingerprint-ssh-keys = %{version}-%{release}
-Requires: %{name}-misc = %{version}-%{release}
+Requires: %{name}-try-hard = %{version}-%{release}
+Requires: %{name}-random-sleep = %{version}-%{release}
 Requires: %{name}-reset-machine-id = %{version}-%{release}
 Requires: %{name}-system-info = %{version}-%{release}
 Requires: %{name}-system-maintenance = %{version}-%{release}

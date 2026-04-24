@@ -1,7 +1,13 @@
-td-system-tools (2.3.2-1ubuntu1) unstable; urgency=medium
+td-system-tools (2.4.0~rc0-1ubuntu1) unstable; urgency=medium
 
   * New upstream release.
   * Closes: #1073548 (ITP).
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Fri, 24 Apr 2026 10:36:06 +0200
+
+td-system-tools (2.3.2-1ubuntu1) unstable; urgency=medium
+
+  * New upstream release.
   * debian/control: Updated standards version to 4.7.4.
 
  -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Thu, 23 Apr 2026 15:39:17 +0200
