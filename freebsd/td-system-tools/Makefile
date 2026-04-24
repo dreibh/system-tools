@@ -15,7 +15,10 @@ RUN_DEPENDS=	bash:shells/bash \
 		getopt>=0:misc/getopt \
 		mbuffer:misc/mbuffer
 
-USES=		cmake gettext ssl:run tar:xz
+USES=		cmake gettext python shebangfix ssl:run tar:xz
+
+SHEBANG_FILES=	src/X509/generate-test-certificates
+
 CMAKE_ARGS=	-DCMAKE_INSTALL_MANDIR=${PREFIX}/share/man
 
 .include <bsd.port.mk>
