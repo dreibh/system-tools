@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.4.0~rc0
+Version: 2.4.0~rc1.0
 Release: 1
 Summary: Tools for basic system management
 Group: Applications/System
@@ -264,7 +264,6 @@ test-tls-connection tests a TCP TLS connection to a remote endpoint.
 Summary: Make multiple trials to successfully run a command
 Group: Applications/System
 BuildArch: noarch
-Conflicts: %{name}-misc
 
 %description try-hard
 Try-hard runs a command and retries for a given number of times in case
@@ -280,7 +279,6 @@ of error, with a delay between the trials.
 %package random-sleep
 Summary: Wait for a random time span
 Group: Applications/System
-Conflicts: %{name}-misc
 
 %description random-sleep
 Random-sleep waits for a random time span, selected from a given
@@ -296,16 +294,16 @@ interval, with support for fractional seconds.
 %package basic
 Summary: Metapackage for basic system tools sub-packages
 Group: Applications/System
-Recommends: %{name}-print-utf8
 Requires: %{name}-fingerprint-ssh-keys = %{version}-%{release}
-Requires: %{name}-try-hard = %{version}-%{release}
 Requires: %{name}-random-sleep = %{version}-%{release}
 Requires: %{name}-reset-machine-id = %{version}-%{release}
 Requires: %{name}-system-info = %{version}-%{release}
 Requires: %{name}-system-maintenance = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
+Requires: %{name}-try-hard = %{version}-%{release}
 Requires: %{name}-x509-tools = %{version}-%{release}
 Recommends: %{name}-configure-grub = %{version}-%{release}
+Obsoletes: %{name}-misc < %{version}-%{release}
 
 %description basic
 This package is a metapackage for the system information and maintenance
