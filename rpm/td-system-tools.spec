@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.4.0~rc1.0
+Version: 2.4.0~rc1.1
 Release: 1
 Summary: Tools for basic system management
 Group: Applications/System
@@ -66,6 +66,23 @@ in, providing the user an up-to-date overview of the system.
 %{_sysconfdir}/profile.d/system-info.csh
 %{_sysconfdir}/system-info.d/banner-helper
 %{_sysconfdir}/system-info.d/01-example
+
+
+%package get-system-info
+Summary: Obtain basic system information
+Group: Applications/System
+Requires: procps
+
+%description get-system-info
+This small program obtains basic status information about the system:
+hostname, uptime, CPU, memory statistics, and networking information.
+The output is printed in machine-readable form, which can be used
+with evaluation in shell scripts for further processing.
+
+%files get-system-info
+%{_bindir}/get-system-info
+%{_datadir}/bash-completion/completions/get-system-info
+%{_mandir}/man1/get-system-info.1.gz
 
 
 %package system-maintenance
@@ -154,23 +171,6 @@ a rescue media to fix a broken configuration!
 %{_mandir}/man1/configure-grub.1.gz
 
 
-%package get-system-info
-Summary: Obtain basic system information
-Group: Applications/System
-Requires: procps
-
-%description get-system-info
-This small program obtains basic status information about the system:
-hostname, uptime, CPU, memory statistics, and networking information.
-The output is printed in machine-readable form, which can be used
-with evaluation in shell scripts for further processing.
-
-%files get-system-info
-%{_bindir}/get-system-info
-%{_datadir}/bash-completion/completions/get-system-info
-%{_mandir}/man1/get-system-info.1.gz
-
-
 %package print-utf8
 Summary: Print UTF-8 strings and obtain size/length/width information
 Group: Applications/System
@@ -203,6 +203,37 @@ text-block reads text from standard input or given file, and writes it to standa
 %{_datadir}/text-block/example2.txt
 %{_datadir}/text-block/insert.txt
 %{_datadir}/text-block/numbers.txt
+
+
+%package try-hard
+Summary: Make multiple trials to successfully run a command
+Group: Applications/System
+BuildArch: noarch
+
+%description try-hard
+Try-hard runs a command and retries for a given number of times in case
+of error, with a delay between the trials.
+
+%files try-hard
+%{_bindir}/try-hard
+%{_datadir}/bash-completion/completions/try-hard
+%{_datadir}/locale/*/LC_MESSAGES/try-hard.mo
+%{_mandir}/man1/try-hard.1.gz
+
+
+%package random-sleep
+Summary: Wait for a random time span
+Group: Applications/System
+
+%description random-sleep
+Random-sleep waits for a random time span, selected from a given
+interval, with support for fractional seconds.
+
+%files random-sleep
+%{_bindir}/random-sleep
+%{_datadir}/bash-completion/completions/random-sleep
+%{_datadir}/locale/*/LC_MESSAGES/random-sleep.mo
+%{_mandir}/man1/random-sleep.1.gz
 
 
 %package x509-tools
@@ -260,6 +291,7 @@ test-tls-connection tests a TCP TLS connection to a remote endpoint.
 %{_mandir}/man1/view-crl.1.gz
 
 
+<<<<<<< HEAD
 %package unixtimestamp-tools
 Summary: Unix timestamp handling tools
 Group: Applications/System
@@ -314,6 +346,8 @@ interval, with support for fractional seconds.
 %{_mandir}/man1/random-sleep.1.gz
 
 
+=======
+>>>>>>> master
 %package basic
 Summary: Metapackage for basic system tools sub-packages
 Group: Applications/System
