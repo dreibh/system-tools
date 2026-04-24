@@ -146,31 +146,52 @@ Description: GIMP Scripts
  The main purpose of this script is to generate background images for
  desktops, boot splashes, etc. with some branding.
 
-Package: td-misc
+Package: td-try-hard
+Architecture: all
+Depends: gettext-base,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: Make multiple trials to successfully run a command
+ Try-hard runs a command and retries for a given number of times in case
+ of error, with a delay between the trials.
+
+Package: td-random-sleep
 Architecture: any
 Depends: gettext-base,
          ${misc:Depends},
          ${shlibs:Depends}
-Recommends: td-print-utf8
-Description: Miscellaneous tools
- This package contains two simple tools:
- try-hard runs a command and retries for a given number of times in case
- of error, with a delay between the trials.
- random-sleep waits for a random time, selected from a given interval, with
- support for fractional seconds.
+Breaks: td-misc (<< ${source:Version})
+Description: Wait for a random time span
+ Random-sleep waits for a random time span, selected from a given
+ interval, with support for fractional seconds.
 
-Package: td-system-tools
+Package: td-system-tools-basic
+Provides: td-system-tools
+Replaces: td-system-tools
+Breaks: td-misc (<< ${source:Version}),
+        td-system-tools (<< ${source:Version})
 Architecture: all
 Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
-         td-misc (>= ${source:Version}),
+         td-random-sleep (>= ${source:Version}),
          td-reset-machine-id  (>= ${source:Version}),
          td-system-info (>= ${source:Version}),
          td-system-maintenance (>= ${source:Version}),
          td-text-block (>= ${source:Version}),
+         td-try-hard (>= ${source:Version}),
          td-x509-tools (>= ${source:Version}),
          ${misc:Depends}
-Recommends: td-gimp-scripts (>= ${source:Version}),
-            td-system-configure-grub  (>= ${source:Version})
-Description: Metapackage for system information and maintenance tools
+Recommends: td-system-configure-grub
+Description: Metapackage for basic system tools sub-packages
  This package is a metapackage for the system information and maintenance
- tools.
+ tools. It installs the basic sub-packages.
+ Note that td-system-configure-grub is only added as weak dependency
+ ("recommends"),  since it is only available on selected architectures.
+
+Package: td-system-tools-complete
+Architecture: all
+Depends: td-gimp-scripts (>= ${source:Version}),
+         td-system-tools-basic,
+         ${misc:Depends}
+Description: Metapackage for complete system tools sub-packages
+ This package is a metapackage for the system information and maintenance
+ tools. It installs all sub-packages.
