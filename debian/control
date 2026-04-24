@@ -112,6 +112,7 @@ Architecture: all
 Depends: gettext-base,
          ${misc:Depends},
          ${shlibs:Depends}
+Breaks: td-misc (<< 2.4.0)
 Description: Make multiple trials to successfully run a command
  Try-hard runs a command and retries for a given number of times in case
  of error, with a delay between the trials.
@@ -121,7 +122,7 @@ Architecture: any
 Depends: gettext-base,
          ${misc:Depends},
          ${shlibs:Depends}
-Breaks: td-misc (<< ${source:Version})
+Breaks: td-misc (<< 2.4.0)
 Description: Wait for a random time span
  Random-sleep waits for a random time span, selected from a given
  interval, with support for fractional seconds.
@@ -134,7 +135,7 @@ Depends: gettext-base,
          ${misc:Depends}
 Provides: td-x509
 Replaces: td-x509
-Breaks: td-x509 (<< ${source:Version})
+Breaks: td-x509 (<< 2.2.0)
 Recommends: gnutls-bin,
             libnss3-tools
 Suggests: pwgen,
@@ -153,9 +154,8 @@ Description: X.509 certificate handling tools
 
 Package: td-system-tools-basic
 Provides: td-system-tools
-Replaces: td-system-tools
-Breaks: td-misc (<< ${source:Version}),
-        td-system-tools (<< ${source:Version})
+Replaces: td-system-tools (<< 2.4.0)
+Breaks: td-system-tools (<< 2.4.0)
 Architecture: all
 Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
          td-random-sleep (>= ${source:Version}),
