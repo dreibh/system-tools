@@ -133,6 +133,7 @@ Summary: Reset machine identity state
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
+Requires: openssh
 Recommends: %{name}-system-info
 
 %description fingerprint-ssh-keys

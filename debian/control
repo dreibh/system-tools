@@ -67,6 +67,7 @@ Description: Reset machine identity state
 Package: td-fingerprint-ssh-keys
 Architecture: all
 Depends: gettext-base,
+         openssh-client,
          ${misc:Depends}
 Recommends: td-system-info
 Description: Print SSH key fingerprints
