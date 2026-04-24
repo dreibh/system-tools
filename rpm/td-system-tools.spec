@@ -14,14 +14,7 @@ BuildRequires: gcc-c++
 BuildRequires: gettext
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
-Requires: td-system-tools-fingerprint-ssh-keys = %{version}-%{release}
-Requires: td-system-tools-misc = %{version}-%{release}
-Requires: td-system-tools-reset-machine-id = %{version}-%{release}
-Requires: td-system-tools-system-info = %{version}-%{release}
-Requires: td-system-tools-system-maintenance = %{version}-%{release}
-Requires: td-system-tools-text-block = %{version}-%{release}
-Requires: td-system-tools-x509-tools = %{version}-%{release}
-Recommends: td-system-tools-configure-grub = %{version}-%{release}
+Requires: %{name}-basic = %{version}-%{release}
 
 
 %description
@@ -44,8 +37,8 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 Summary: Perform basic system maintenance
 Group: Applications/System
 BuildArch: noarch
-Requires: td-system-tools-get-system-info = %{version}-%{release}
-Requires: td-system-tools-print-utf8 = %{version}-%{release}
+Requires: %{name}-get-system-info = %{version}-%{release}
+Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: (figlet or toilet)
 Requires: gettext-runtime
 Requires: (mbuffer or buffer)
@@ -81,7 +74,7 @@ Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
 Requires: sudo
-Recommends: td-system-tools-system-info
+Recommends: %{name}-system-info
 
 %description system-maintenance
 This program runs basic system maintenance tasks:
@@ -103,8 +96,8 @@ Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
 Requires: sudo
-Recommends: td-system-tools-system-info
-Recommends: td-system-tools-system-maintenance
+Recommends: %{name}-system-info
+Recommends: %{name}-system-maintenance
 
 %description reset-machine-id
 This program helps to reset the machine identity state:
@@ -123,7 +116,7 @@ Summary: Reset machine identity state
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
-Recommends: td-system-tools-system-info
+Recommends: %{name}-system-info
 
 %description fingerprint-ssh-keys
 This program prints the SSH key fingerprints of the local machine
@@ -141,7 +134,7 @@ Summary: Helper tool to adjust GRUB configuration
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
-Recommends: td-system-tools-system-maintenance
+Recommends: %{name}-system-maintenance
 
 %description configure-grub
 This program adjusts a GRUB configuration file by applying a configuration
@@ -212,7 +205,7 @@ text-block reads text from standard input or given file, and writes it to standa
 Summary: X.509 certificate handling tools
 Group: Applications/System
 BuildArch: noarch
-Requires: td-system-tools-text-block = %{version}-%{release}
+Requires: %{name}-text-block = %{version}-%{release}
 Requires: openssl
 Recommends: gnutls-utils
 Recommends: nss-tools
@@ -266,7 +259,7 @@ test-tls-connection tests a TCP TLS connection to a remote endpoint.
 %package misc
 Summary: Miscellaneous tools
 Group: Applications/System
-Recommends: td-system-tools-print-utf8
+Recommends: %{name}-print-utf8
 
 %description misc
 This package contains two simple tools:
@@ -291,6 +284,40 @@ support for fractional seconds.
 %{_mandir}/man1/random-sleep.1.gz
 %{_mandir}/man1/text-block.1.gz
 %{_mandir}/man1/try-hard.1.gz
+
+
+%package basic
+Summary: Metapackage for basic system tools sub-packages
+Group: Applications/System
+Recommends: %{name}-print-utf8
+Requires: %{name}-fingerprint-ssh-keys = %{version}-%{release}
+Requires: %{name}-misc = %{version}-%{release}
+Requires: %{name}-reset-machine-id = %{version}-%{release}
+Requires: %{name}-system-info = %{version}-%{release}
+Requires: %{name}-system-maintenance = %{version}-%{release}
+Requires: %{name}-text-block = %{version}-%{release}
+Requires: %{name}-x509-tools = %{version}-%{release}
+Recommends: %{name}-configure-grub = %{version}-%{release}
+
+%description basic
+This package is a metapackage for the system information and maintenance
+tools. It installs the basic sub-packages.
+Note that td-system-configure-grub is only added as weak dependency
+("recommends"),  since it is only available on selected architectures.
+
+%files basic
+
+
+%package complete
+Summary: Metapackage for complete system tools sub-packages
+Group: Applications/System
+Requires: %{name}-basic = %{version}-%{release}
+
+%description complete
+This package is a metapackage for the system information and maintenance
+tools. It installs all sub-packages.
+
+%files complete
 
 
 %changelog
