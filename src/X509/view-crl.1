@@ -44,6 +44,8 @@ CRL_file
 .Op ...
 .Nm view-crl
 .Op Fl h | Fl Fl help
+.Nm view-crl
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm view-crl
@@ -57,6 +59,8 @@ The following options are available:
 Specifies one ore more CRL files to be displayed. "-" is a shortcut for /dev/stdin, i.e. reading the CRL from standard input.
 .It Fl h | Fl Fl help
 Prints command-line parameters.
+.It Fl v | Fl Fl version
+Prints program version.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -68,4 +72,6 @@ view-crl google-crl.der
 .It curl --output - http://c.pki.goog/wr2/GSyT1N4PBrg.crl | view-crl -
 .It view-crl --help
 .It view-crl -h
+.It view-crl --version
+.It view-crl -v
 .El

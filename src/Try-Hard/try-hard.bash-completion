@@ -69,6 +69,10 @@ _try_hard()
 --quiet
 -w
 --verbose
+-h
+--help
+-v
+--version
 --
 "
    # shellcheck disable=SC2207

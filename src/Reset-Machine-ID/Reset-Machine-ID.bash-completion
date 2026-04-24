@@ -62,17 +62,21 @@ _Reset_Machine_ID()
    local opts="
 -H
 --hostname
--Z
---zabbix
--A
---install-zabbix-agent
 -M
 --skip-machine-id
 -S
 --skip-ssh-configuration
 -K
 --skip-ssh-key-replacement
+-Z
+--zabbix
+-A
+--install-zabbix-agent
 --yes-to-all-i-am-really-sure
+-h
+--help
+-v
+--version
 "
    # shellcheck disable=SC2207
    COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )

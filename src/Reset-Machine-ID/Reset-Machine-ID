@@ -136,8 +136,15 @@ EOF
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--zabbix|-Z zabbix_server [--install-zabbix-agent|-A] [--yes-to-all-i-am-really-sure]"
+   echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--zabbix|-Z zabbix_server [--install-zabbix-agent|-A] [--yes-to-all-i-am-really-sure] [-h|--help] [-v|--version]"
    exit 1
+}
+
+
+# ###### Version ############################################################
+version () {
+   echo "Reset-Machine-ID @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
 }
 
 
@@ -146,7 +153,7 @@ usage () {
 
 # ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o H:MSKZ:Ah --long hostname,skip-machine-id,skip-ssh-configuration,skip-ssh-key-replacement,zabbix,install-zabbix-agent,yes-to-all-i-am-really-sure,help -a -- "$@")"
+options="$(${GETOPT} -o H:MSKZ:Ahv --long hostname,skip-machine-id,skip-ssh-configuration,skip-ssh-key-replacement,zabbix,install-zabbix-agent,yes-to-all-i-am-really-sure,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage
@@ -203,6 +210,10 @@ while [ $# -gt 0 ] ; do
          ;;
       -h | --help)
          usage
+         # shift
+         ;;
+      -v | --version)
+         version
          # shift
          ;;
       --)
