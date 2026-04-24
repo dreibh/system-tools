@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-11-01 18:08+0100\n"
+"POT-Creation-Date: 2026-04-24 09:53+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -48,22 +48,22 @@ msgstr ""
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Try-Hard/try-hard:89
+#: src/Try-Hard/try-hard:101
 #, sh-format
 msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
 msgstr "FEHLER: Ungültige maximale Anzahl an Versuchen ${MAX_TRIALS}!"
 
-#: src/Try-Hard/try-hard:94
+#: src/Try-Hard/try-hard:106
 #, sh-format
 msgid "ERROR: Invalid delay ${DELAY}!"
 msgstr "FEHLER: Ungültige Verzögerung ${DELAY}!"
 
-#: src/Try-Hard/try-hard:113
+#: src/Try-Hard/try-hard:125
 #, sh-format
 msgid "Tried ${MAX_TRIALS} times -> giving up now!"
 msgstr "${MAX_TRIALS} Mal versucht -> gebe jetzt auf!"
 
-#: src/Try-Hard/try-hard:118
+#: src/Try-Hard/try-hard:130
 #, sh-format
 msgid "Waiting for ${DELAY} s before trying again ..."
 msgstr "Warte ${DELAY} s vor einem erneuten Versuch ..."
