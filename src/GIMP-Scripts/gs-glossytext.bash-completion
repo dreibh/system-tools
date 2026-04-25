@@ -63,8 +63,7 @@ _gs_caption()
             fonts="$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | sort -u)"
             local oldifs="${IFS}"
             IFS=$'\n'
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "${fonts}" -- "${cur}") )
+            mapfile -t COMPREPLY < <(compgen -W "${fonts}" -- "${cur}")
             IFS="${oldifs}"
             return
             ;;
@@ -84,8 +83,7 @@ _gs_caption()
 )"
             local oldifs="${IFS}"
             IFS=$'\n'
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "${gradients}" -- "${cur}") )
+            mapfile -t COMPREPLY < <(compgen -W "${gradients}" -- "${cur}")
             IFS="${oldifs}"
             return
             ;;
@@ -106,8 +104,7 @@ _gs_caption()
 )"
             local oldifs="${IFS}"
             IFS=$'\n'
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "${patterns}" -- "${cur}") )
+            mapfile -t COMPREPLY < <(compgen -W "${patterns}" -- "${cur}")
             IFS="${oldifs}"
             return
             ;;
@@ -118,8 +115,7 @@ _gs_caption()
          -j | --use-pattern-outline            | \
          -r | --use-pattern-overlay            | \
          -s | --use-shadow)
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "on off" --  "${cur}") )
+            mapfile -t COMPREPLY < <(compgen -W "on off" --  "${cur}")
             return
             ;;
          # ====== Generic value =============================================
@@ -178,8 +174,7 @@ _gs_caption()
 -v
 --version
 "
-   # shellcheck disable=SC2207
-   COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
    return 0
 }
 

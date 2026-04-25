@@ -60,22 +60,19 @@ _gs_mosaic()
       case "${prev}" in
          #  ====== Special value: tile-type =================================
          -T | --tile-type)
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "triangles squares hexagons octagons" --  "${cur}") )
+            mapfile -t COMPREPLY < <(compgen -W "triangles squares hexagons octagons" --  "${cur}")
             return
             ;;
          #  ====== Special value: tile-surface ==============================
          -F | --tile-surface)
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "smooth rough" --  "${cur}") )
+            mapfile -t COMPREPLY < <(compgen -W "smooth rough" --  "${cur}")
             return
             ;;
          #  ====== On or off ================================================
          -G | --color-averaging | \
          -A | --antialiasing    | \
          -I | --tile-allow-split)
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "on off" --  "${cur}") )
+            mapfile -t COMPREPLY < <(compgen -W "on off" --  "${cur}")
             return
             ;;
          #  ====== Generic value ============================================
@@ -123,8 +120,7 @@ _gs_mosaic()
 -v
 --version
 "
-   # shellcheck disable=SC2207
-   COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
    return 0
 }
 

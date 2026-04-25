@@ -62,8 +62,7 @@ _gs_oldphoto()
          -D | --defocus    | \
          -S | --sepia      | \
          -M | --mottle)
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "on off" --  "${cur}") )
+            mapfile -t COMPREPLY < <(compgen -W "on off" --  "${cur}")
             return
             ;;
          #  ====== Generic value ============================================
@@ -92,8 +91,7 @@ _gs_oldphoto()
 -v
 --version
 "
-   # shellcheck disable=SC2207
-   COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
    return 0
 }
 

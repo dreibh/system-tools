@@ -63,8 +63,7 @@ _gs_caption()
             fonts="$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | sort -u)"
             local oldifs="${IFS}"
             IFS=$'\n'
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "${fonts}" -- "${cur}") )
+            mapfile -t COMPREPLY < <(compgen -W "${fonts}" -- "${cur}")
             IFS="${oldifs}"
             return
             ;;
@@ -99,8 +98,7 @@ _gs_caption()
 -v
 --version
 "
-   # shellcheck disable=SC2207
-   COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
    return 0
 }
 

@@ -60,8 +60,7 @@ _gs_oilify()
       case "${prev}" in
          #  ====== On or off ================================================
          -I | --intensity-mode)
-            # shellcheck disable=SC2207
-            COMPREPLY=( $(compgen -W "on off" --  "${cur}") )
+            mapfile -t COMPREPLY < <(compgen -W "on off" --  "${cur}")
             return
             ;;
          #  ====== Generic value ============================================
@@ -85,8 +84,7 @@ _gs_oilify()
 --help
 -v
 "
-   # shellcheck disable=SC2207
-   COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
    return 0
 }
 
