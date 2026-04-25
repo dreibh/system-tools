@@ -54,7 +54,10 @@ version () {
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
 options="$(${GETOPT} -o T:S:H:N:F:X:I:C:G:A:L:wqhv --long tile-type:,tile-size:,tile-height:,tile-neatness:,tile-surface:,tile-spacing:,tile-allow-split:,color-variation:,color-averaging:,antialiasing:,light-direction:,verbose,quiet,help,version -a -- "$@")"
-
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+   usage 1
+fi
 eval set -- "${options}"
 
 TILE_TYPE=6
