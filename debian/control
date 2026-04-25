@@ -68,7 +68,6 @@ Description: Reset machine identity state
 Package: td-fingerprint-ssh-keys
 Architecture: all
 Depends: gettext-base,
-         openssh-client,
          ${misc:Depends}
 Recommends: td-system-info
 Description: Print SSH key fingerprints
@@ -112,10 +111,12 @@ Description: Apply modifications to text
 Package: td-try-hard
 Architecture: all
 Depends: gettext-base,
+         td-random-sleep (>= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
-Replaces: td-misc (<< 2.4.0)
-Breaks: td-misc (<< 2.4.0)
+Provides: td-misc
+Replaces: td-misc (<< 2.4.1)
+Breaks: td-misc (<< 2.4.1)
 Description: Make multiple trials to successfully run a command
  Try-hard runs a command and retries for a given number of times in case
  of error, with a delay between the trials.
@@ -125,8 +126,8 @@ Architecture: any
 Depends: gettext-base,
          ${misc:Depends},
          ${shlibs:Depends}
-Replaces: td-misc (<< 2.4.0)
-Breaks: td-misc (<< 2.4.0)
+Replaces: td-misc (<< 2.4.1)
+Breaks: td-misc (<< 2.4.1)
 Description: Wait for a random time span
  Random-sleep waits for a random time span, selected from a given
  interval, with support for fractional seconds.
@@ -205,13 +206,4 @@ Architecture: all
 Depends: td-system-tools-basic (>= ${source:Version}),
          ${misc:Depends}
 Description: Transitional package td-system-tools -> td-system-tools-basic
- This is a transitional dummy package. It can safely be removed.
-
-Package: td-misc
-Section: oldlibs
-Architecture: all
-Depends: td-random-sleep (>= ${source:Version}),
-         td-try-hard (>= ${source:Version}),
-         ${misc:Depends}
-Description: Transitional package td-misc -> td-random-sleep, td-try-hard
  This is a transitional dummy package. It can safely be removed.
