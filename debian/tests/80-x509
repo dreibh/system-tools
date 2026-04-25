@@ -20,10 +20,26 @@
 #
 
 # Bash options:
-set -eu
+set -euo pipefail
 
-random-sleep 1 3 --verbose
+# ====== Prepare temporary directory ========================================
+tempDir=""
+trap 'rm -rf "${tempDir}"' EXIT INT TERM HUP
+tempDir="$(mktemp -d -t 80-x509.XXXXXXXXXX)"
+cd "${tempDir}"
 
-try-hard 3 1 --verbose -- false || try-hard 3 1 --verbose -- true
+# ====== Make Test CA and Certificates ======================================
+echo "Running make-test-certificates ..."
+/usr/share/system-tools/make-test-certificates
+
+CA="TestCA/TestLevel1/certs/TestLevel1.crt"
+CRL="TestCA/TestGlobal.crl"   # combined CRL!
+CERTIFICATES="$(find TestCA -name "*.crt" | sort)"
+
+# ====== Run tests ==========================================================
+for certificate in ${CERTIFICATES} ; do
+   echo "Running check-certificate for ${certificate}:"
+   check-certificate "${CA}" "${certificate}" --crl "${CRL}" || true
+done
 
 echo "Test passed!"

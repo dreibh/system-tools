@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 # Automatically find all shell scripts in subdirectories:
 SCRIPTS="$(
@@ -112,7 +112,7 @@ if [ ! -x "${FIGLET}" ] ; then
 fi
 
 
-# ====== Run MyPy ===========================================================
+# ====== Run ShellCheck =====================================================
 for script in $SCRIPTS ; do
    echo -e "\e[34mChecking ${script} ...\e[0m"
    show-script "${script}"

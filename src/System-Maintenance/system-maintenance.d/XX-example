@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 # To let System-Maintenance display a list of important installed project
 # packages, add a script [0-9][0-9]-name to /etc/system-maintenance.d. The

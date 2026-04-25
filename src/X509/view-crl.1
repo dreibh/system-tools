@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 5, 2026
+.Dd April 24, 2026
 .Dt view-crl 1
 .Os view-crl
 .\" ###### Name #############################################################
@@ -44,6 +44,8 @@ CRL_file
 .Op ...
 .Nm view-crl
 .Op Fl h | Fl Fl help
+.Nm view-crl
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm view-crl
@@ -56,7 +58,9 @@ The following options are available:
 .It crl_file [...]
 Specifies one ore more CRL files to be displayed. "-" is a shortcut for /dev/stdin, i.e. reading the CRL from standard input.
 .It Fl h | Fl Fl help
-Prints command-line parameters.
+Prints the program's command-line parameters and exits.
+.It Fl v | Fl Fl version
+Prints the program version and exits.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -68,4 +72,6 @@ view-crl google-crl.der
 .It curl --output - http://c.pki.goog/wr2/GSyT1N4PBrg.crl | view-crl -
 .It view-crl --help
 .It view-crl -h
+.It view-crl --version
+.It view-crl -v
 .El

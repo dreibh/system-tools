@@ -9,7 +9,7 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# System-Tools
+# Extract-PEM
 # Copyright (C) 2024-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-11-26 12:10+0100\n"
+"POT-Creation-Date: 2026-04-25 13:54+0200\n"
 "PO-Revision-Date: 2025-10-28 12:45+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -44,39 +44,39 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/X509/extract-pem:44
+#: src/X509/extract-pem:45
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/X509/extract-pem:102
+#: src/X509/extract-pem:114
 msgid "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
 msgstr "FEIL: --only-first-entry og --skip-first-entry/--skip-last-entry utelukker hverandre!"
 
-#: src/X509/extract-pem:118
+#: src/X509/extract-pem:130
 #, sh-format
 msgid "ERROR: Unable to find PEM file ${PEM_FILE}!"
 msgstr "FEIL: Finner ikke PEM-filen ${PEM_FILE}!"
 
-#: src/X509/extract-pem:124
+#: src/X509/extract-pem:136
 #, sh-format
 msgid "Extracting ${PEM_FILE} ..."
 msgstr "Ekstraherer ${PEM_FILE} ..."
 
-#: src/X509/extract-pem:153
+#: src/X509/extract-pem:165
 #, sh-format
 msgid "ERROR: Unexpected type ${type} in ${PEM_FILE}!"
 msgstr "FEIL: Uventet type ${type} i ${PEM_FILE}!"
 
-#: src/X509/extract-pem:160
+#: src/X509/extract-pem:172
 #, sh-format
 msgid "ERROR: Unexpected data in ${PEM_FILE}!"
 msgstr "FEIL: Uventede data i ${PEM_FILE}!"
 
-#: src/X509/extract-pem:175 src/X509/extract-pem:191
+#: src/X509/extract-pem:187 src/X509/extract-pem:203
 msgid "SKIPPING"
 msgstr "HOPPES OVER"
 
-#: src/X509/extract-pem:200
+#: src/X509/extract-pem:212
 #, sh-format
 msgid "Done: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys"
 msgstr "Ferdig: ${certificate} sertifikater, ${csr} CSR-er, ${crl} CRL-er, ${key} nøkler"

@@ -22,6 +22,6 @@
 # Bash options:
 set -euo pipefail
 
-Reset-Machine-ID --yes-to-all-i-am-really-sure
+random-sleep 1 3 --verbose
 
 echo "Test passed!"

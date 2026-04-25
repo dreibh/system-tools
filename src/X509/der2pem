@@ -29,15 +29,54 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -eu
+set -euo pipefail
+
+
+# ###### Usage ##############################################################
+usage () {
+   local exitCode="$1"
+   echo >&2 "Usage: $0 der_file pem_file [-h|--help] [-v|--version]"
+   exit "${exitCode}"
+}
+
+
+# ###### Version ############################################################
+version () {
+   echo "der2pem @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
+}
+
 
 
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
+GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+options="$(${GETOPT} -o hv --long help,version -a -- "$@")"
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+   usage 1
+fi
+eval set -- "${options}"
+
+while [ $# -gt 0 ] ; do
+   case "$1" in
+      -h | --help)
+         usage 0
+         # shift
+         ;;
+      -v | --version)
+         version
+         # shift
+         ;;
+      --)
+         shift
+         break
+         ;;
+  esac
+done
 if [ $# -ne 2 ] ; then
-   echo >&2 "Usage: $0 der_file pem_file"
-   exit 1
+   usage 1
 fi
 
 INPUT="$1"
