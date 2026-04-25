@@ -1,5 +1,5 @@
 PORTNAME=	td-system-tools
-DISTVERSION=	2.4.0
+DISTVERSION=	2.4.1~rc1.2
 CATEGORIES=	net
 MASTER_SITES=	https://www.nntb.no/~dreibh/system-tools/download/
 
@@ -13,8 +13,7 @@ LICENSE_FILE=	${WRKSRC}/COPYING
 RUN_DEPENDS=	bash:shells/bash \
 		figlet:misc/figlet \
 		getopt>=0:misc/getopt \
-		mbuffer:misc/mbuffer \
-		uuid:misc/ossp-uuid
+		mbuffer:misc/mbuffer
 
 USES=		cmake gettext python shebangfix ssl:run tar:xz
 
