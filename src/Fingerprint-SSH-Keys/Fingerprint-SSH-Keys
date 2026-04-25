@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="Fingerprint-SSH-Keys"
@@ -41,8 +41,9 @@ export TEXTDOMAIN="Fingerprint-SSH-Keys"
 
 # ###### Usage ##############################################################
 usage () {
+   local exitCode="$1"
    echo 2>&1 "$(gettext "Usage:") $0 [-d|--include-deprecated] [-r|--include-raw] [-p|--include-python] [-h|--help] [-v|--version]"
-   exit 1
+   exit "${exitCode}"
 }
 
 
@@ -60,14 +61,13 @@ GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
 options="$(${GETOPT} -o drphv --long include-deprecated,include-raw,include-python,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage
+   usage 1
 fi
-
+eval set -- "${options}"
 
 FORMATS="raw ssh dns"
 INCLUDE_DEPRECATED=0
 INCLUDE_RAW=0
-eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -d | --include-deprecated)
@@ -83,7 +83,7 @@ while [ $# -gt 0 ] ; do
          shift
          ;;
       -h | --help)
-         usage
+         usage 0
          # shift
          ;;
       -v | --version)
@@ -97,7 +97,7 @@ while [ $# -gt 0 ] ; do
   esac
 done
 if [ $# -ne 0 ] ; then
-   usage
+   usage 1
 fi
 
 

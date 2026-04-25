@@ -19,7 +19,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -e
+set -euo pipefail
 
 theme="NorNet Management"
 image="/usr/share/nornet-desktop/Desktop-with-Logo/TimeSrv1"   #  "/boot/NorNet/Management1"

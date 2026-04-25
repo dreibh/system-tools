@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="System-Info"
@@ -389,8 +389,9 @@ function print-ssh-key-fingerprints ()
 
 # ###### Usage ##############################################################
 usage () {
+   local exitCode="$1"
    echo >&2 "$(gettext --context="Text to prepend the usage syntax when calling the program without parameters, e.g. 'Usage: program arg1 arg2 [options ...]'" "Usage:") $0 [-S|--scripts scripts_directory] [-h|--help] [-v|--version]"
-   exit 1
+   exit "${exitCode}"
 }
 
 
@@ -409,12 +410,12 @@ GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
 options="$(${GETOPT} -o S:hv --long scripts:,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage
+   usage 1
 fi
+eval set -- "${options}"
 
 now="$(date)"
 scriptDirectories="/etc/system-info.d /usr/local/etc/system-info.d"
-eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -S | --scripts)
@@ -422,7 +423,7 @@ while [ $# -gt 0 ] ; do
          shift 2
          ;;
       -h | --help)
-         usage
+         usage 0
          # shift
          ;;
       -v | --version)
@@ -436,7 +437,7 @@ while [ $# -gt 0 ] ; do
   esac
 done
 if [ $# -ne 0 ] ; then
-   usage
+   usage 1
 fi
 
 

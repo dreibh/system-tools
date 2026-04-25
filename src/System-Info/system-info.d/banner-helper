@@ -28,7 +28,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -eu
+set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="System-Info"
