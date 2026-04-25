@@ -64,10 +64,10 @@ options="$(${GETOPT} -o C:nhv --long crl:,no-view-certificate,help,version -a --
 if [[ $? -ne 0 ]]; then
    usage 1
 fi
+eval set -- "${options}"
 
 CRL=""
 VIEW_CERTIFICATE=1
-eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -C | --crl)

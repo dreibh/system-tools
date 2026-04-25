@@ -63,13 +63,13 @@ options="$(${GETOPT} -o o:1flqhv --long output-prefix:,only-first-entry,skip-fir
 if [[ $? -ne 0 ]]; then
    usage 1
 fi
+eval set -- "${options}"
 
 OUTPUT_PREFIX="output-"
 ONLY_FIRST_ENTRY=0
 SKIP_FIRST_ENTRY=0
 SKIP_LAST_ENTRY=0
 QUIET=0
-eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -o | --output-prefix)

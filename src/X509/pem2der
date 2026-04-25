@@ -57,8 +57,8 @@ options="$(${GETOPT} -o hv --long help,version -a -- "$@")"
 if [[ $? -ne 0 ]]; then
    usage 1
 fi
-
 eval set -- "${options}"
+
 while [ $# -gt 0 ] ; do
    case "$1" in
       -h | --help)

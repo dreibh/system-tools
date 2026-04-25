@@ -55,12 +55,12 @@ options="$(${GETOPT} -o i:o:V:T:hv --long input:,output:,video:,tune:,help,versi
 if [[ $? -ne 0 ]]; then
    usage 1
 fi
+eval set -- "${options}"
 
 INPUT_CONFIGURATION=""
 OUTPUT_CONFIGURATION=""
 REPLACE_GRUB_GFXMODE=""
 REPLACE_GRUB_INIT_TUNE=""
-eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -i | --input)

@@ -64,9 +64,9 @@ options="$(${GETOPT} -o khv --long interactive-kernel-removal,help,version -a --
 if [[ $? -ne 0 ]]; then
    usage 1
 fi
+eval set -- "${options}"
 
 INTERACTIVE_KERNEL_REMOVAL=0
-eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -k | --interactive-kernel-removal)
