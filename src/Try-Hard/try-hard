@@ -41,8 +41,9 @@ export TEXTDOMAIN="try-hard"
 
 # ###### Usage ##############################################################
 usage () {
+   local exitCode="$1"
    echo >&2 "$(gettext "Usage:") $0 max_trials max_delay [-m|--min-delay min_delay] [-A|--additive-increase delay_increment] [-M|multiplicative-increase delay_factor] [-T|--truncate-delay truncated_max_delay] [-D|--deterministic] [-q|--quiet] [-w|--verbose] [-h|--help] [-v|--version] -- command ..."
-   exit 1
+   exit "${exitCode}"
 }
 
 
@@ -61,8 +62,9 @@ GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
 options="$(${GETOPT} -o m:A:M:T:Dqwhv --long min-delay:,additive-increase:,multiplicative-increase:,truncate-delay:,deterministic,quiet,verbose,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage
+   usage 1
 fi
+eval set -- "${options}"
 
 VERBOSE=0
 MIN_DELAY="0.0"
@@ -70,7 +72,6 @@ ADDITIVE_INCREASE="0.0"
 MULTIPLICATIVE_INCREASE="1.0"
 TRUNCATE_DELAY="31536000.0"   # 1 year
 DETERMINISTIC=0
-eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -m | --min-delay)
@@ -122,7 +123,7 @@ while [ $# -gt 0 ] ; do
          shift
          ;;
       -h | --help)
-         usage
+         usage 0
          # shift
          ;;
       -v | --version)
@@ -136,7 +137,7 @@ while [ $# -gt 0 ] ; do
   esac
 done
 if [ $# -lt 3 ] ; then
-   usage
+   usage 1
 fi
 
 MAX_TRIALS="$1"

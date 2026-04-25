@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-04-24 09:53+0200\n"
+"POT-Creation-Date: 2026-04-25 13:54+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -44,7 +44,7 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:44
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:45
 msgid "Usage:"
 msgstr "Bruk:"
 
