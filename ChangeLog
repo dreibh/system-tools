@@ -1,3 +1,154 @@
+commit 339300fe809011ecd64f3365cec22737245ce81f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 15:52:14 2026 +0200
+
+    Updated PO files after recent change.
+
+commit 70933c1b672c2aafa52d9285dadd051240e416bd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 15:50:08 2026 +0200
+
+    Improved shell completions, making ShellCheck-override unnecessary.
+
+commit 371973083f4fa8b1b111e67ba3e374ef0611c4a3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 15:49:28 2026 +0200
+
+    ShellCheck clean-up.
+
+commit 9c2dd625c7254d52887eaa4e98c516fe971911e0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 14:02:09 2026 +0200
+
+    Updated build script.
+
+commit 538317c53023682f9478181a6c73d8d1f12fcb26
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 14:01:43 2026 +0200
+
+    Updated PO files.
+
+commit 9c036b71ecaec60748e19b9e36c5d37d4be6b51d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 13:33:15 2026 +0200
+
+    Updated CI scripts
+
+commit 8a7709d1e42f6988a414aff95db2f3dd7ad51be5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 13:27:45 2026 +0200
+
+    Updated Debian tests.
+
+commit c76ddde2a8cf7b3685e8c617b2560203b1f79e92
+Merge: 8dd3b24 6c9573d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 13:10:51 2026 +0200
+
+    Merge branch 'dreibh/usage'
+
+commit 8dd3b2418e0b051452a404f9c3b6eaf0891cf1a3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 13:10:06 2026 +0200
+
+    Debian packaging improvements.
+
+commit 6c9573d401b9981887eaf3b4afc20f055b1f9c71
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 12:47:40 2026 +0200
+
+    Using pipefail option in all scripts.
+
+commit 25be4cfdfd1d9797a604c8b992af4d088e5d7673
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 12:44:55 2026 +0200
+
+    Improved test script.
+
+commit cfba775695ffc3fd3f6aadbf642ac2006029d0e3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 12:38:57 2026 +0200
+
+    Improved consistency of getopt usage.
+
+commit fb5e09e613da660bca0e49f68073c4d212c49c57
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 12:19:02 2026 +0200
+
+    Bugfix: Consistent exit code on return from usage().
+
+commit be05b3c1a17a05a1862d5cf811881aeeea686dc3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 10:55:58 2026 +0200
+
+    Bugfix: Minor gettext fixes.
+
+commit c4e3ac151acceeb77d6e2d426858baa2d170829a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 09:07:37 2026 +0200
+
+    Bugfix: Parameter handling fix.
+
+commit ab2d506355584a0a180523e77dcc7136166eac3d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 09:07:19 2026 +0200
+
+    Dependency improvement and clean-ups.
+
+commit c164f2011af4b4c3d03d3d4c4b145141fa81965d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 09:04:20 2026 +0200
+
+    Container handling improvements.
+
+commit bedc3679ab52aae74ed9b9cbbd8e723cbae4b50b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 23:44:09 2026 +0200
+
+    Reset-Machine-ID: Container handling improvement, and dependency fix.
+
+commit b45be281a2850095d6a812e5e5d8de3c6ec50708
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 23:09:51 2026 +0200
+
+    Debian packaging improvements.
+
+commit ab72051213c788558bac116fbfaf19807d28be66
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 21:21:49 2026 +0200
+
+    Shebang fixes in old test scripts.
+
+commit 999d6fb300b3e3b9d3afb161c57c4c901b1b361a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 21:16:06 2026 +0200
+
+    Another dependency fix: Fingerprint-SSH-Keys requires ssh-keygen.
+
+commit 2cdbe7a2451dae8b4ebe14e05c6907e04afa0de8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 20:58:59 2026 +0200
+
+    RPM packaging fix.
+
+commit 6d9c48eb595537624a940a120d3d0b46379ba887
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 20:46:58 2026 +0200
+
+    Debian packaging fix.
+
+commit e640ec6ae9ca1eb6c35697b576c66f5452ce237a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 14:06:02 2026 +0200
+
+    Updated FreeBSD Port.
+
+commit 4c40340dd8243759865871d6255eb348344b2e57
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 13:31:33 2026 +0200
+
+    New release td-system-tools-2.4.0.
+
 commit 89233e23188120aec3c9316230f81abc0203b712
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Apr 24 11:39:32 2026 +0200
