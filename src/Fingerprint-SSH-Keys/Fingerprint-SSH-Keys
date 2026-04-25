@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="Fingerprint-SSH-Keys"
@@ -63,12 +63,11 @@ options="$(${GETOPT} -o drphv --long include-deprecated,include-raw,include-pyth
 if [[ $? -ne 0 ]]; then
    usage 1
 fi
-
+eval set -- "${options}"
 
 FORMATS="raw ssh dns"
 INCLUDE_DEPRECATED=0
 INCLUDE_RAW=0
-eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -d | --include-deprecated)

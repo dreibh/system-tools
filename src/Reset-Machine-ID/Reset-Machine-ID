@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="Reset-Machine-ID"
@@ -159,6 +159,7 @@ options="$(${GETOPT} -o H:MSKZ:Ahv --long hostname,skip-machine-id,skip-ssh-conf
 if [[ $? -ne 0 ]]; then
    usage 1
 fi
+eval set -- "${options}"
 
 YES_TO_ALL=0
 SKIP_MACHINE_ID=0
@@ -170,7 +171,6 @@ NEW_HOSTNAME_FQDN="${OLD_HOSTNAME_FQDN}"
 ZABBIX_SERVER=""
 INSTALL_ZABBIX_AGENT=0
 applyChanges=""
-eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -H | --hostname)
