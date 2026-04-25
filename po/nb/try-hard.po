@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-04-24 09:53+0200\n"
+"POT-Creation-Date: 2026-04-25 13:54+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -44,26 +44,26 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Try-Hard/try-hard:44
+#: src/Try-Hard/try-hard:45
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Try-Hard/try-hard:101
+#: src/Try-Hard/try-hard:102
 #, sh-format
 msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
 msgstr "FEIL: Ugyldige maksimale prøveperioder ${MAX_TRIALS}!"
 
-#: src/Try-Hard/try-hard:106
+#: src/Try-Hard/try-hard:107
 #, sh-format
 msgid "ERROR: Invalid delay ${DELAY}!"
 msgstr "FEIL: Ugyldig forsinkelse ${DELAY}!"
 
-#: src/Try-Hard/try-hard:125
+#: src/Try-Hard/try-hard:126
 #, sh-format
 msgid "Tried ${MAX_TRIALS} times -> giving up now!"
 msgstr "Prøvde ${MAX_TRIALS} ganger -> gir opp nå!"
 
-#: src/Try-Hard/try-hard:130
+#: src/Try-Hard/try-hard:131
 #, sh-format
 msgid "Waiting for ${DELAY} s before trying again ..."
 msgstr "Venter på ${DELAY} s før å prøve igjen ..."
