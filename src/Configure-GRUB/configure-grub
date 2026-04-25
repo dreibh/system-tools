@@ -33,8 +33,9 @@ set -eu
 
 # ###### Usage ##############################################################
 usage () {
+   local exitCode="$1"
    echo >&2 "Usage: $0 grub-defaults-template-file [-i|--input input-grub-defaults-file] [-o|--output output-grub-defaults-file] [-V|--video GRUB_GFXMODE] [-T|--tune GRUB_INIT_TUNE] [-h|--help] [-v|--version]"
-   exit 1
+   exit "${exitCode}"
 }
 
 
@@ -52,7 +53,7 @@ GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
 options="$(${GETOPT} -o i:o:V:T:hv --long input:,output:,video:,tune:,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage
+   usage 1
 fi
 
 INPUT_CONFIGURATION=""
@@ -79,7 +80,7 @@ while [ $# -gt 0 ] ; do
          shift 2
          ;;
       -h | --help)
-         usage
+         usage 0
          # shift
          ;;
       -v | --version)
@@ -93,7 +94,7 @@ while [ $# -gt 0 ] ; do
   esac
 done
 if [ $# -ne 1 ] ; then
-   usage
+   usage 1
 fi
 
 TEMPLATE_CONFIGURATION="$1"

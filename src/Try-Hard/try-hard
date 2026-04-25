@@ -41,8 +41,9 @@ export TEXTDOMAIN="try-hard"
 
 # ###### Usage ##############################################################
 usage () {
+   local exitCode="$1"
    echo >&2 "$(gettext "Usage:") $0 max_trials delay [-q|--quiet] [-w|--verbose] [-h|--help] [-v|--version] -- command ..."
-   exit 1
+   exit "${exitCode}"
 }
 
 
@@ -61,7 +62,7 @@ GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
 options="$(${GETOPT} -o qwhv --long quiet,verbose,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage
+   usage 1
 fi
 
 VERBOSE=0
@@ -77,7 +78,7 @@ while [ $# -gt 0 ] ; do
          shift
          ;;
       -h | --help)
-         usage
+         usage 0
          # shift
          ;;
       -v | --version)
@@ -91,7 +92,7 @@ while [ $# -gt 0 ] ; do
   esac
 done
 if [ $# -lt 3 ] ; then
-   usage
+   usage 1
 fi
 
 MAX_TRIALS="$1"
