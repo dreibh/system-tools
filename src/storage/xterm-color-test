@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
+set -euo pipefail
 
 # 24-bit XTerm color test:
 # See: https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit
