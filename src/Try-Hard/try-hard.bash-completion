@@ -50,11 +50,17 @@ _try_hard()
       cword="${COMP_CWORD}"
    fi
 
-   if [ "${cword}" -lt 3 ] ; then
+   if [ "${cword}" -eq 1 ] ; then
+      compopt -o nosort 2>/dev/null || true   # Numerical sorting (Bash >= 4.4)
+      mapfile -t COMPREPLY < <(compgen -W "{1..20}" -- "$cur")
+      return
+   elif [ "${cword}" -eq 2 ] ; then
+      compopt -o nosort 2>/dev/null || true   # Numerical sorting (Bash >= 4.4)
+      mapfile -t COMPREPLY < <(compgen -W "1 2 5 10 30 60 120 300 900 1800 3600 86400" -- "$cur")
       return
    else
       local i
-      for (( i=2; i<cword; i++ )) ; do
+      for (( i=3; i<cword; i++ )) ; do
          if [ "${COMP_WORDS[${i}]}" == "--" ] ; then
             # Completion for next command:
             _command_offset $((i+1))
