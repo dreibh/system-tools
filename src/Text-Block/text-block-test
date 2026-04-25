@@ -28,11 +28,38 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -eu
+# Bash options:
+set -euo pipefail
 
 RUN=""
 # RUN="valgrind "
 
+
+
+# ###### Main program #######################################################
+
+# ====== Find tools =========================================================
+PRINT_UTF8="$(which print-utf8 2>/dev/null || true)"
+if [ ! -x "${PRINT_UTF8}" ] ; then
+   echo >&2 "ERROR: Print-UTF8 (from System-Tools) is not installed!"
+   echo >&2 "Try this:"
+   echo >&2 "* Ubuntu:  sudo apt-add-repository -sy ppa:dreibh/ppa"
+   echo >&2 "           sudo apt install -y td-system-tools"
+   echo >&2 "* Fedora:  sudo dnf copr enable -y dreibh/ppa"
+   echo >&2 "           sudo dnf install -y td-system-tools"
+   echo >&2 "* FreeBSD: sudo pkg install -y td-system-tools"
+   exit 1
+fi
+FIGLET="$(which figlet 2>/dev/null || true)"
+if [ ! -x "${FIGLET}" ] ; then
+   echo >&2 "ERROR: Figlet is not installed!"
+   echo >&2 "* Ubuntu:  sudo apt install -y figlet"
+   echo >&2 "* Fedora:  sudo dnf install -y figlet"
+   echo >&2 "* FreeBSD: sudo pkg install -y figlet"
+   exit 1
+fi
+
+# ====== Run tests ==========================================================
 make text-block
 insertFile="text-block-tests/insert.txt"
 failures=0
@@ -44,7 +71,7 @@ for test in simple markers advanced1 advanced2 example1 example2 ; do
          for o2 in tags-only full-tag-lines ; do
 
             # ====== Prepare test run =======================================
-            ./print-utf8 -x 86 -s "\x1b[34m###### Testing: ${test} --${mode} --${o1} --${o2} " "#" "#\x1b[0m   " >&2
+            "${PRINT_UTF8}" -x 86 -s "\x1b[34m###### Testing: ${test} --${mode} --${o1} --${o2} " "#" "#\x1b[0m   " >&2
 
             # ------ Default parameters -------------------------------------
             inputFile="text-block-tests/${test}.txt"
@@ -89,19 +116,19 @@ for test in simple markers advanced1 advanced2 example1 example2 ; do
                   failures=$((failures+1))
                   (
                      echo
-                     ./print-utf8 -n -s "\e[1;31;5m█" "▀" "█\e[0m" ;
-                     echo "TEST FAILED!" | figlet -w 64 | ./print-utf8 -n -C "\e[1;31;5m█\e[25m" "\e[5m█\e[0m" ;
-                     ./print-utf8 -n -s "\e[1;31;5m█" "▄" "█\e[0m"
+                     "${PRINT_UTF8}" -n -s "\e[1;31;5m█" "▀" "█\e[0m" ;
+                     echo "TEST FAILED!" | figlet -w 64 | "${PRINT_UTF8}" -n -C "\e[1;31;5m█\e[25m" "\e[5m█\e[0m" ;
+                     "${PRINT_UTF8}" -n -s "\e[1;31;5m█" "▄" "█\e[0m"
                      echo "Failure #${failures}:"
                      echo "Command:${command}"
                      echo
-                     ./print-utf8 -x 78 -n -s  "\x1b[33m------ Good ($(basename "${goodFile}")) " "-" "-\x1b[0m"
+                     "${PRINT_UTF8}" -x 78 -n -s  "\x1b[33m------ Good ($(basename "${goodFile}")) " "-" "-\x1b[0m"
                      cat "${goodFile}"
                      echo
-                     ./print-utf8 -x 78 -n -s  "\x1b[35m------ Output ($(basename "${outputFile}")) " "-" "-\x1b[0m"
+                     "${PRINT_UTF8}" -x 78 -n -s  "\x1b[35m------ Output ($(basename "${outputFile}")) " "-" "-\x1b[0m"
                      cat "${outputFile}"
                      echo
-                     ./print-utf8 -x 78 -n -s  "\x1b[31m------ Differences: " "-" "-\x1b[0m"
+                     "${PRINT_UTF8}" -x 78 -n -s  "\x1b[31m------ Differences: " "-" "-\x1b[0m"
                      diff --color "${goodFile}" "${outputFile}" || true
                      echo
                      cp "${outputFile}" "${badFile}"

@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.4.0~rc1.1
+Version: 2.4.0
 Release: 1
 Summary: Tools for basic system management
 Group: Applications/System
@@ -113,6 +113,7 @@ Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
 Requires: sudo
+Requires: uuid
 Recommends: %{name}-system-info
 Recommends: %{name}-system-maintenance
 
@@ -133,6 +134,7 @@ Summary: Reset machine identity state
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
+Requires: openssh
 Recommends: %{name}-system-info
 
 %description fingerprint-ssh-keys
@@ -232,6 +234,7 @@ milliseconds, microseconds, and nanoseconds.
 Summary: Make multiple trials to successfully run a command
 Group: Applications/System
 BuildArch: noarch
+Conflicts: %{name}-misc
 
 %description try-hard
 Try-hard runs a command and retries for a given number of times in case
@@ -247,6 +250,7 @@ of error, with a delay between the trials.
 %package random-sleep
 Summary: Wait for a random time span
 Group: Applications/System
+Conflicts: %{name}-misc
 
 %description random-sleep
 Random-sleep waits for a random time span, selected from a given
@@ -327,7 +331,6 @@ Requires: %{name}-try-hard = %{version}-%{release}
 Requires: %{name}-unix-timestamp-tools = %{version}-%{release}
 Requires: %{name}-x509-tools = %{version}-%{release}
 Recommends: %{name}-configure-grub = %{version}-%{release}
-Obsoletes: %{name}-misc < %{version}-%{release}
 
 %description basic
 This package is a metapackage for the system information and maintenance
@@ -351,6 +354,8 @@ tools. It installs all sub-packages.
 
 
 %changelog
+* Fri Apr 24 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.4.0-1
+- New upstream release.
 * Thu Apr 23 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.3.2-1
 - New upstream release.
 * Mon Apr 20 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.3.1-1
