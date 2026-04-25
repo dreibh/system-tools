@@ -20,7 +20,7 @@
 #
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 try-hard 3 1 --verbose -- false || try-hard 3 1 --verbose -- true
 

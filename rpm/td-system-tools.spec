@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.4.0
+Version: 2.4.1~rc1.2
 Release: 1
 Summary: Tools for basic system management
 Group: Applications/System
@@ -134,7 +134,6 @@ Summary: Reset machine identity state
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
-Requires: openssh
 Recommends: %{name}-system-info
 
 %description fingerprint-ssh-keys
