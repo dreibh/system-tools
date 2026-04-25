@@ -309,13 +309,14 @@ if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
    fi
    if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
       # ------ Set new machine ID -------------------------------------------
-      if [ -x /usr/bin/dbus-uuidgen ] || [ -x /usr/local/bin/dbus-uuidgen ] ; then
+      DBUS_UUIDGEN="$(which dbus-uuidgen 2>/dev/null || true)"
+      if [ "${DBUS_UUIDGEN}" != "" ] ; then
          # Generate new ID already now.
          rm -f /etc/machine-id
          dbus-uuidgen --ensure=/etc/machine-id
       else
          # The ID should be reset during the next boot.
-         echo -n | tee /etc/machine-id
+         truncate -s 0 /etc/machine-id
       fi
       if [ -e /var/lib/dbus/machine-id ] ; then
          rm /var/lib/dbus/machine-id
@@ -327,7 +328,7 @@ if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
 
       # ------ Set new ID in Debian Popularity Contest configuration --------
       if [ -e /etc/popularity-contest.conf ] ; then
-         hostID="$(dbus-uuidgen)"
+         hostID="$(uuid | tr -d '-')"
          sed -e "s/^MY_HOSTID=.*$/MY_HOSTID=\"${hostID}\"/" -i /etc/popularity-contest.conf
          rm -f /var/lib/popularity-contest/lastsub /var/log/popularity-contest
       fi
