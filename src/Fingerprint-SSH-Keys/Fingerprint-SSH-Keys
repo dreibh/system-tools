@@ -102,7 +102,7 @@ fi
 
 
 # ====== Print SSH key fingerprints =========================================
-if [ -d /etc/ssh ] && command -v  ssh-keygen ; then
+if [ -d /etc/ssh ] && [ -x "$(command -v ssh-keygen)" ] ; then
    hostname="$(hostname -f)"
    keys=$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)
 

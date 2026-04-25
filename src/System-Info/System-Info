@@ -360,7 +360,7 @@ function print-system-information ()
 # ###### Print SSH public key fingerprints ##################################
 function print-ssh-key-fingerprints ()
 {
-   if [ -d /etc/ssh ] && command -v  ssh-keygen ; then
+   if [ -d /etc/ssh ] && [ -x "$(command -v ssh-keygen)" ] ; then
       echo -en "${colorBasic}"
       local number=1
       local label=""
