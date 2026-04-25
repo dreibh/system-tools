@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd April 25, 2026
 .Dt try-hard 1
 .Os try-hard
 .\" ###### Name #############################################################
@@ -41,9 +41,21 @@
 .Sh SYNOPSIS
 .Nm try-hard
 max_trials
-delay
+max_delay
+.br
+.Op Fl m Ar min_delay | Fl Fl min-delay Ar min_delay
+.br
+.Op Fl A Ar delay_increment | Fl Fl additive-increase Ar delay_increment
+.br
+.Op Fl M Ar delay_factor | multiplicative-increase Ar delay_factor
+.br
+.Op Fl T Ar max_delay | Fl Fl truncate-delay Ar truncated_max_delay
+.br
+.Op Fl D | Fl Fl deterministic
+.br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
+.br
 --
 command ...
 .Nm try-hard
@@ -53,13 +65,26 @@ command ...
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm try-hard
-tries to run a command up to a given number of trials. In case of failure,
-a given delay time is waited before the next trial.
+tries to run a command up to a given number of trials. In case of failure, a certain delay time span is waited before the next trial.
+.br
+The delay to wait is by default randomly chosen (using random-sleep) from the interval [min_delay, max_delay]. Alternatively, in deterministic mode, the delay is always max_delay.
+.br
+For each new trial, it is possible to increase max_delay by a multiplicative-increase factor as well as an additive-increase increment. The new max_delay can be truncated by truncated_max_delay, to prevent further increases.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
+.It Fl m Ar min_delay | Fl Fl min-delay Ar min_delay
+Sets the minimum delay min_delay (default: 0.0).
+.It Fl A Ar delay_increment | Fl Fl additive-increase Ar delay_increment
+Sets the additive-increase delay increment (default: 0.0).
+.It Fl M Ar delay_factor | multiplicative-increase Ar delay_factor
+Sets the multiplicative-increase delay factor (default: 1.0).
+.It Fl T Ar max_delay | Fl Fl truncate-delay Ar truncated_max_delay
+Sets the truncated_max_delay for limiting the increase of max_delay (default: 31536000.0, i.e. 1 year).
+.It Fl D | Fl Fl deterministic
+Sets deterministic mode, i.e. turns off randomisation of the delay.
 .It Fl q | Fl Fl quiet
 Quiet mode: no output is made.
 .It Fl w | Fl Fl verbose
@@ -74,8 +99,14 @@ Prints the program version and exits.
 .Bl -tag -width indent
 .It try-hard 10 60 --verbose -- git clone https://dreibh@github.com/dreibh/rserpooldemo.git
 .It try-hard 3 300 -q -- git clone https://git.freebsd.org/ports.git
-.It try-hard 3 60 -- wget -O example.tar.gz https://www.example.net/example.tar.gz
-.It try-hard 100 1 -w -- false
+.It try-hard 3 65.5 -- wget -O example.tar.gz https://www.example.net/example.tar.gz
+.It try-hard 10 1.0 -w -- false
+.It try-hard 10 2.0 --min-delay 1.0 --multiplicative-increase 2.0 --truncate-delay 3600.0 -w -- false
+.It try-hard 10 1.0 -m 1 -M 2 -T 3600 -w -- false
+.It try-hard 10 1 --min-delay 0.5 --additive-increase 5 --truncate-delay 300 -w -- false
+.It try-hard 10 1 -m 1 -A 5 -T 300 -w -- false
+.It try-hard 10 1.0 --deterministic -w -- false
+.It try-hard 10 1.0 -D -w -- false
 .It try-hard --version
 .It try-hard --help
 .El

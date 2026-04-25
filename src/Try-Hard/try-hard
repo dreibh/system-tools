@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="try-hard"
@@ -41,7 +41,7 @@ export TEXTDOMAIN="try-hard"
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "$(gettext "Usage:") $0 max_trials delay [-q|--quiet] [-w|--verbose] [-h|--help] [-v|--version] -- command ..."
+   echo >&2 "$(gettext "Usage:") $0 max_trials max_delay [-m|--min-delay min_delay] [-A|--additive-increase delay_increment] [-M|multiplicative-increase delay_factor] [-T|--truncate-delay truncated_max_delay] [-D|--deterministic] [-q|--quiet] [-w|--verbose] [-h|--help] [-v|--version] -- command ..."
    exit 1
 }
 
@@ -58,16 +58,61 @@ version () {
 
 # ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o qwhv --long quiet,verbose,help,version -a -- "$@")"
+options="$(${GETOPT} -o m:A:M:T:Dqwhv --long min-delay:,additive-increase:,multiplicative-increase:,truncate-delay:,deterministic,quiet,verbose,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage
 fi
 
 VERBOSE=0
+MIN_DELAY="0.0"
+ADDITIVE_INCREASE="0.0"
+MULTIPLICATIVE_INCREASE="1.0"
+TRUNCATE_DELAY="31536000.0"   # 1 year
+DETERMINISTIC=0
 eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
+      -m | --min-delay)
+         MIN_DELAY="$2"
+         if [[ ! "${MIN_DELAY}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+            eval_gettext >&2 "ERROR: Invalid delay value \$2!"
+            echo >&2
+            exit 1
+         fi
+         shift 2
+         ;;
+      -A | --additive-increase)
+         ADDITIVE_INCREASE="$2"
+         if [[ ! "${ADDITIVE_INCREASE}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+            eval_gettext >&2 "ERROR: Invalid delay value \$2!"
+            echo >&2
+            exit 1
+         fi
+         shift 2
+         ;;
+      -M | --multiplicative-increase)
+         MULTIPLICATIVE_INCREASE="$2"
+         if [[ ! "${MULTIPLICATIVE_INCREASE}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+            eval_gettext >&2 "ERROR: Invalid delay value \$2!"
+            echo >&2
+            exit 1
+         fi
+         shift 2
+         ;;
+      -T | --truncate-delay)
+         TRUNCATE_DELAY="$2"
+         if [[ ! "${TRUNCATE_DELAY}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+            eval_gettext >&2 "ERROR: Invalid delay value \$2!"
+            echo >&2
+            exit 1
+         fi
+         shift 2
+         ;;
+      -D | --deterministic)
+         DETERMINISTIC=1
+         shift
+         ;;
       -q | --quiet)
          VERBOSE=0
          shift
@@ -95,39 +140,73 @@ if [ $# -lt 3 ] ; then
 fi
 
 MAX_TRIALS="$1"
-DELAY="$2"
-shift 2
 if [[ ! "${MAX_TRIALS}" =~ ^[0-9]*$ ]] || [ "${MAX_TRIALS}" -lt 1 ] ; then
    eval_gettext >&2 "ERROR: Invalid maximum trials \${MAX_TRIALS}!"
    echo >&2
    exit 1
 fi
-if [[ ! "${DELAY}" =~ ^[0-9]+$ ]] ; then
-   eval_gettext >&2 "ERROR: Invalid delay \${DELAY}!"
+MAX_DELAY="$2"
+if [[ ! "${MAX_DELAY}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+   eval_gettext >&2 "ERROR: Invalid delay value \$2!"
    echo >&2
    exit 1
 fi
+shift 2
 
 
 # ====== Run loop ===========================================================
 trial=0
 while true ; do
+   # ====== Start next trial ================================================
    trial=$(( trial+1 ))
    if [ "${VERBOSE}" -eq 1 ] ; then
       echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS}: \x1b[37m$*")\x1b[0m"
    fi
 
+   # ====== Run the command =================================================
    # shellcheck disable=SC2068
    $@ && exit
 
+   # ====== Check whether trial limit has been reached ======================
    if [ ${trial} -ge "${MAX_TRIALS}" ] ; then
       if [ "${VERBOSE}" -eq 1 ] ; then
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Tried \${MAX_TRIALS} times -> giving up now!")\x1b[0m"
       fi
       exit 1
    fi
-   if [ "${VERBOSE}" -eq 1 ] ; then
-      echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Waiting for \${DELAY} s before trying again ...")\x1b[0m"
+
+   # ====== Increase delay for next trial ===================================
+   if [ ${trial} -gt 1 ] ; then
+      MAX_DELAY="$(awk "
+function min(a, b) {
+    return (a < b ? a : b);
+}
+function max(a, b) {
+    return (a > b ? a : b);
+}
+BEGIN { print max(min(${MAX_DELAY}*${MULTIPLICATIVE_INCREASE} + ${ADDITIVE_INCREASE}, ${TRUNCATE_DELAY}), ${MIN_DELAY}); }
+")"
+   else
+      MAX_DELAY="$(awk "
+function max(a, b) {
+    return (a > b ? a : b);
+}
+BEGIN { print max(${MAX_DELAY}, ${MIN_DELAY}); }
+")"
    fi
-   sleep "${DELAY}"
+
+   # ====== Wait a random time span =========================================
+   if [ "${DETERMINISTIC}" -eq 0 ] ; then
+      if [ "${VERBOSE}" -eq 1 ] ; then
+         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS} failed -> waiting random time from [\${MIN_DELAY}, \${MAX_DELAY}] before trying again ...")\x1b[0m"
+         random-sleep -w "${MIN_DELAY}" "${MAX_DELAY}"
+      else
+         random-sleep "${MIN_DELAY}" "${MAX_DELAY}"
+      fi
+   else
+      if [ "${VERBOSE}" -eq 1 ] ; then
+         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Waiting for \${MAX_DELAY} s before trying again ...")\x1b[0m"
+      fi
+      sleep "${MAX_DELAY}"
+   fi
 done
