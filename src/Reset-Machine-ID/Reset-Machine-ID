@@ -323,7 +323,7 @@ if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
          ln -s /etc/machine-id /var/lib/dbus/machine-id
       fi
       machineID="$(cat /etc/machine-id)"
-      gettext "The new machine ID is ${machineID}."
+      gettext "The new machine ID is \${machineID}."
       echo
 
       # ------ Set new ID in Debian Popularity Contest configuration --------
