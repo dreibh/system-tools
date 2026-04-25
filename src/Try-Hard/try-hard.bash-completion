@@ -65,6 +65,16 @@ _try_hard()
 
    # ====== All options =====================================================
    local opts="
+-m
+--min-delay
+-A
+--additive-increase
+-M
+multiplicative-increase
+-T
+--truncate-delay
+-D
+--deterministic
 -q
 --quiet
 -w
