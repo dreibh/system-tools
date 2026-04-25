@@ -389,8 +389,9 @@ function print-ssh-key-fingerprints ()
 
 # ###### Usage ##############################################################
 usage () {
+   local exitCode="$1"
    echo >&2 "$(gettext --context="Text to prepend the usage syntax when calling the program without parameters, e.g. 'Usage: program arg1 arg2 [options ...]'" "Usage:") $0 [-S|--scripts scripts_directory] [-h|--help] [-v|--version]"
-   exit 1
+   exit "${exitCode}"
 }
 
 
@@ -409,7 +410,7 @@ GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
 options="$(${GETOPT} -o S:hv --long scripts:,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage
+   usage 1
 fi
 
 now="$(date)"
@@ -422,7 +423,7 @@ while [ $# -gt 0 ] ; do
          shift 2
          ;;
       -h | --help)
-         usage
+         usage 0
          # shift
          ;;
       -v | --version)
@@ -436,7 +437,7 @@ while [ $# -gt 0 ] ; do
   esac
 done
 if [ $# -ne 0 ] ; then
-   usage
+   usage 1
 fi
 
 

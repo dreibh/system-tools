@@ -41,8 +41,9 @@ export TEXTDOMAIN="view-crl"
 
 # ###### Usage ##############################################################
 usage () {
+   local exitCode="$1"
    echo >&2 "$(gettext "Usage:") $0 [-h|--help] [-v|--version] crl [...]"
-   exit 1
+   exit "${exitCode}"
 }
 
 
@@ -78,14 +79,14 @@ GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
 options="$(${GETOPT} -o hv --long help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage
+   usage 1
 fi
 
 eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -h | --help)
-         usage
+         usage 0
          # shift
          ;;
       -v | --version)
@@ -99,7 +100,7 @@ while [ $# -gt 0 ] ; do
   esac
 done
 if [ $# -lt 1 ] ; then
-   usage
+   usage 1
 fi
 
 # ====== Check availability of tools ========================================

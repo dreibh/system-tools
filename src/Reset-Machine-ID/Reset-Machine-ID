@@ -136,8 +136,9 @@ EOF
 
 # ###### Usage ##############################################################
 usage () {
+   local exitCode="$1"
    echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--zabbix|-Z zabbix_server [--install-zabbix-agent|-A] [--yes-to-all-i-am-really-sure] [-h|--help] [-v|--version]"
-   exit 1
+   exit "${exitCode}"
 }
 
 
@@ -156,7 +157,7 @@ GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
 options="$(${GETOPT} -o H:MSKZ:Ahv --long hostname,skip-machine-id,skip-ssh-configuration,skip-ssh-key-replacement,zabbix,install-zabbix-agent,yes-to-all-i-am-really-sure,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage
+   usage 1
 fi
 
 YES_TO_ALL=0
@@ -209,7 +210,7 @@ while [ $# -gt 0 ] ; do
          shift
          ;;
       -h | --help)
-         usage
+         usage 0
          # shift
          ;;
       -v | --version)
@@ -223,7 +224,7 @@ while [ $# -gt 0 ] ; do
   esac
 done
 if [ $# -ne 0 ] ; then
-   usage
+   usage 1
 fi
 
 
