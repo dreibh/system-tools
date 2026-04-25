@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="Fingerprint-SSH-Keys"
@@ -41,8 +41,16 @@ export TEXTDOMAIN="Fingerprint-SSH-Keys"
 
 # ###### Usage ##############################################################
 usage () {
-   echo 2>&1 "$(gettext "Usage:") $0 [-d|--include-deprecated] [-r|--include-raw] [-p|--include-python] [-h|--help]"
-   exit 1
+   local exitCode="$1"
+   echo 2>&1 "$(gettext "Usage:") $0 [-d|--include-deprecated] [-r|--include-raw] [-p|--include-python] [-h|--help] [-v|--version]"
+   exit "${exitCode}"
+}
+
+
+# ###### Version ############################################################
+version () {
+   echo "Fingerprint-SSH-Keys @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
 }
 
 
@@ -50,17 +58,16 @@ usage () {
 
 # ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o drph --long include-deprecated,include-raw,include-python -a -- "$@")"
+options="$(${GETOPT} -o drphv --long include-deprecated,include-raw,include-python,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage
+   usage 1
 fi
-
+eval set -- "${options}"
 
 FORMATS="raw ssh dns"
 INCLUDE_DEPRECATED=0
 INCLUDE_RAW=0
-eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -d | --include-deprecated)
@@ -76,7 +83,11 @@ while [ $# -gt 0 ] ; do
          shift
          ;;
       -h | --help)
-         usage
+         usage 0
+         # shift
+         ;;
+      -v | --version)
+         version
          # shift
          ;;
       --)
@@ -86,12 +97,12 @@ while [ $# -gt 0 ] ; do
   esac
 done
 if [ $# -ne 0 ] ; then
-   usage
+   usage 1
 fi
 
 
 # ====== Print SSH key fingerprints =========================================
-if [ -d /etc/ssh ] ; then
+if [ -d /etc/ssh ] && command -v  ssh-keygen ; then
    hostname="$(hostname -f)"
    keys=$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)
 

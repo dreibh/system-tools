@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 5, 2026
+.Dd April 24, 2026
 .Dt der2pem 1
 .Os der2pem
 .\" ###### Name #############################################################
@@ -42,6 +42,10 @@
 .Nm der2pem
 der_file
 pem_file
+.Nm der2pem
+.Op Fl h | Fl Fl help
+.Nm der2pem
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm der2pem
@@ -55,6 +59,10 @@ The following options are available:
 The certificate or CRL file in DER format to be converted.
 .It pem_file
 The certificate or CRL file in PEM format to be written.
+.It Fl h | Fl Fl help
+Prints the program's command-line parameters and exits.
+.It Fl v | Fl Fl version
+Prints the program version and exits.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -62,4 +70,8 @@ The certificate or CRL file in PEM format to be written.
 .It der2pem my-server-certificate.der my-server-certificate.crt
 .It der2pem my-crl.der my-crl.crl
 .It curl -o google-crl.der http://c.pki.goog/wr2/GSyT1N4PBrg.crl && der2pem google-crl.der google-crl.crl
+.It der2pem --help
+.It der2pem -h
+.It der2pem --version
+.It der2pem -v
 .El

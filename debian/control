@@ -7,7 +7,7 @@ Vcs-Git: https://github.com/dreibh/system-tools.git
 Vcs-Browser: https://github.com/dreibh/system-tools
 Build-Depends: cmake,
                debhelper-compat (= 13)
-Standards-Version: 4.7.3
+Standards-Version: 4.7.4
 Rules-Requires-Root: no
 
 Package: td-system-info
@@ -28,6 +28,17 @@ Description: Print basic system information and banners
  System-Info can be configured to be automatically run when logging
  in, providing the user an up-to-date overview of the system.
 
+Package: td-get-system-info
+Architecture: any
+Depends: procps,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: Obtain basic system information
+ This small program obtains basic status information about the system:
+ hostname, uptime, CPU, memory statistics, and networking information.
+ The output is printed in machine-readable form, which can be used
+ with evaluation in shell scripts for further processing.
+
 Package: td-system-maintenance
 Architecture: all
 Depends: apt-show-versions,
@@ -45,6 +56,7 @@ Package: td-reset-machine-id
 Architecture: all
 Depends: gettext-base,
          sudo,
+         uuid,
          ${misc:Depends}
 Recommends: td-system-info,
             td-system-maintenance
@@ -78,17 +90,6 @@ Description: Helper tool to adjust GRUB configuration
  a working GRUB configuration without knowing how to boot the system from
  a rescue media to fix a broken configuration!
 
-Package: td-get-system-info
-Architecture: any
-Depends: procps,
-         ${misc:Depends},
-         ${shlibs:Depends}
-Description: Obtain basic system information
- This small program obtains basic status information about the system:
- hostname, uptime, CPU, memory statistics, and networking information.
- The output is printed in machine-readable form, which can be used
- with evaluation in shell scripts for further processing.
-
 Package: td-print-utf8
 Architecture: any
 Depends: ${misc:Depends},
@@ -107,6 +108,30 @@ Description: Apply modifications to text
  standard output or a given file. On the text, various modifications can be
  applied, according to the operation mode.
 
+Package: td-try-hard
+Architecture: all
+Depends: gettext-base,
+         td-random-sleep (>= ${source:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
+Provides: td-misc
+Replaces: td-misc (<< 2.4.1)
+Breaks: td-misc (<< 2.4.1)
+Description: Make multiple trials to successfully run a command
+ Try-hard runs a command and retries for a given number of times in case
+ of error, with a delay between the trials.
+
+Package: td-random-sleep
+Architecture: any
+Depends: gettext-base,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Replaces: td-misc (<< 2.4.1)
+Breaks: td-misc (<< 2.4.1)
+Description: Wait for a random time span
+ Random-sleep waits for a random time span, selected from a given
+ interval, with support for fractional seconds.
+
 Package: td-x509-tools
 Architecture: all
 Depends: gettext-base,
@@ -114,8 +139,8 @@ Depends: gettext-base,
          td-text-block,
          ${misc:Depends}
 Provides: td-x509
-Replaces: td-x509
-Breaks: td-x509 (<< ${source:Version})
+Replaces: td-x509 (<< 2.2.0)
+Breaks: td-x509 (<< 2.2.0)
 Recommends: gnutls-bin,
             libnss3-tools
 Suggests: pwgen,
@@ -132,30 +157,38 @@ Description: X.509 certificate handling tools
  pem2der converts a certificate or CRL in PEM format to DER format.
  test-tls-connection tests a TCP TLS connection to a remote endpoint.
 
-Package: td-misc
-Architecture: any
-Depends: gettext-base,
-         ${misc:Depends},
-         ${shlibs:Depends}
-Recommends: td-print-utf8
-Description: Miscellaneous tools
- This package contains two simple tools:
- try-hard runs a command and retries for a given number of times in case
- of error, with a delay between the trials.
- random-sleep waits for a random time, selected from a given interval, with
- support for fractional seconds.
-
-Package: td-system-tools
+Package: td-system-tools-basic
+Replaces: td-system-tools (<< 2.4.0)
+Breaks: td-system-tools (<< 2.4.0)
 Architecture: all
 Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
-         td-misc (>= ${source:Version}),
+         td-random-sleep (>= ${source:Version}),
          td-reset-machine-id  (>= ${source:Version}),
          td-system-info (>= ${source:Version}),
          td-system-maintenance (>= ${source:Version}),
          td-text-block (>= ${source:Version}),
+         td-try-hard (>= ${source:Version}),
          td-x509-tools (>= ${source:Version}),
          ${misc:Depends}
 Recommends: td-system-configure-grub
-Description: Metapackage for system information and maintenance tools
+Description: Metapackage for basic system tools sub-packages
  This package is a metapackage for the system information and maintenance
- tools.
+ tools. It installs the basic sub-packages.
+ Note that td-system-configure-grub is only added as weak dependency
+ ("recommends"),  since it is only available on selected architectures.
+
+Package: td-system-tools-complete
+Architecture: all
+Depends: td-system-tools-basic (>= ${source:Version}),
+         ${misc:Depends}
+Description: Metapackage for complete system tools sub-packages
+ This package is a metapackage for the system information and maintenance
+ tools. It installs all sub-packages.
+
+Package: td-system-tools
+Section: oldlibs
+Architecture: all
+Depends: td-system-tools-basic (>= ${source:Version}),
+         ${misc:Depends}
+Description: Transitional package td-system-tools -> td-system-tools-basic
+ This is a transitional dummy package. It can safely be removed.

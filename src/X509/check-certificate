@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="check-certificate"
@@ -41,8 +41,16 @@ export TEXTDOMAIN="check-certificate"
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "$(gettext "Usage:") $0 ca_certificate_file certificate_file [...] [-C|--crl crl] [-n|--no-view-certificate] [-h|--help]"
-   exit 1
+   local exitCode="$1"
+   echo >&2 "$(gettext "Usage:") $0 ca_certificate_file certificate_file [...] [-C|--crl crl] [-n|--no-view-certificate] [-h|--help] [-v|--version]"
+   exit "${exitCode}"
+}
+
+
+# ###### Version ############################################################
+version () {
+   echo "check-certificate @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
 }
 
 
@@ -51,15 +59,15 @@ usage () {
 # ====== Handle arguments ===================================================
 DIRNAME="$(dirname "$0")"
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o C:nh --long crl:,no-view-certificate,help -a -- "$@")"
+options="$(${GETOPT} -o C:nhv --long crl:,no-view-certificate,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage
+   usage 1
 fi
+eval set -- "${options}"
 
 CRL=""
 VIEW_CERTIFICATE=1
-eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -C | --crl)
@@ -71,7 +79,11 @@ while [ $# -gt 0 ] ; do
          shift
          ;;
       -h | --help)
-         usage
+         usage 0
+         # shift
+         ;;
+      -v | --version)
+         version
          # shift
          ;;
       --)
@@ -81,7 +93,7 @@ while [ $# -gt 0 ] ; do
   esac
 done
 if [ $# -lt 1 ] ; then
-   usage
+   usage 1
 fi
 CA_FILE="$1"
 shift

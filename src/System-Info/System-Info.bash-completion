@@ -60,13 +60,14 @@ _System_Info()
 
    # ====== All options =====================================================
    local opts="
--h
---help
 -S
 --scripts
+-h
+--help
+-v
+--version
 "
-   # shellcheck disable=SC2207
-   COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
    return 0
 }
 
