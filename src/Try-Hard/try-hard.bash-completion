@@ -54,9 +54,10 @@ _try_hard()
       return
    else
       local i
-      i=2
-      while [ $i -lt "${cword}" ] ; do
+      for (( i=2; i<cword; i++ )) ; do
          if [ "${COMP_WORDS[${i}]}" == "--" ] ; then
+            # Completion for next command:
+            _command_offset $((i+1))
             return
          fi
          i=$((i+1))
