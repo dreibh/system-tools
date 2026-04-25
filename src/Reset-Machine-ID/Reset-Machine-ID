@@ -323,7 +323,7 @@ if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
          ln -s /etc/machine-id /var/lib/dbus/machine-id
       fi
       machineID="$(cat /etc/machine-id)"
-      gettext "The new machine ID is \${machineID}."
+      eval_gettext "The new machine ID is \${machineID}."
       echo
 
       # ------ Set new ID in Debian Popularity Contest configuration --------
@@ -349,7 +349,7 @@ if [ "${ZABBIX_SERVER}" != "" ] ; then
          if [ ${stage} -eq 1 ] ; then
             if [ ${INSTALL_ZABBIX_AGENT} -eq 1 ] ; then
                if [ ${YES_TO_ALL} -ne 1 ] ; then
-                  echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Install Zabbix agent?") [yes/no]?\x1b[0m "
+                  echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Install Zabbix agent?") [yes/no]?\x1b[0m "
                   read -er applyChanges
                fi
                install-zabbix-agent
