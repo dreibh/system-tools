@@ -1,3 +1,21 @@
+commit c87b2e601d321c9c462c7e4b111b3494c00726e0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Apr 26 21:37:27 2026 +0200
+
+    Updated workflows.
+
+commit eb6c803326080806a555aed4b1d0e71af5fb68ec
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 21:35:32 2026 +0200
+
+    Bugfix: Removed debug output.
+
+commit 66329dbebdb9799d11e3391362e005e3c16a487c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 19:56:26 2026 +0200
+
+    New release td-system-tools-2.4.1.
+
 commit 339300fe809011ecd64f3365cec22737245ce81f
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Apr 25 15:52:14 2026 +0200
