@@ -43,6 +43,6 @@ fi
 fullPackageList="$1"
 
 echo "====== Installed System-Tools Software ======================================="
-grep "^td-system-" "${fullPackageList}"
+grep "^td-system-" "${fullPackageList}" || true
 
 exit 0
