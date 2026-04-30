@@ -1,3 +1,22 @@
+commit 486d51640b16b885f9627cf6f4fbd5da0ff27e75
+Merge: 8d97ff8 0580eec
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 30 16:23:06 2026 +0200
+
+    Merge branch 'master' of https://github.com/dreibh/system-tools
+
+commit 8d97ff8f707c5d7b73e17da04748222bc75215af
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 30 16:21:44 2026 +0200
+
+    Bugfix: removed debug output introduced for the previous bug fix.
+
+commit 0580eeccec2c2efeba2480ca5742f1d66abe6c92
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 30 13:49:32 2026 +0200
+
+    New release td-system-tools-2.4.3.
+
 commit 462109d133c465880ce291aa79c56e4d1f0a868b
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Apr 30 13:46:12 2026 +0200
