@@ -1,3 +1,15 @@
+commit 462109d133c465880ce291aa79c56e4d1f0a868b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 30 13:46:12 2026 +0200
+
+    Bugfix: pipefail + grep caused unwanted errors.
+
+commit 382e377c938ace1247888fb7a613af423c50b884
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Apr 26 22:03:06 2026 +0200
+
+    New release td-system-tools-2.4.2.
+
 commit c87b2e601d321c9c462c7e4b111b3494c00726e0
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun Apr 26 21:37:27 2026 +0200
