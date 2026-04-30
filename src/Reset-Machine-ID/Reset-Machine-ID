@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -euxo pipefail
+set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="Reset-Machine-ID"
