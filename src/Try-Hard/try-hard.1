@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 25, 2026
+.Dd May 1, 2026
 .Dt try-hard 1
 .Os try-hard
 .\" ###### Name #############################################################
@@ -69,7 +69,7 @@ tries to run a command up to a given number of trials. In case of failure, a cer
 .br
 The delay to wait is by default randomly chosen (using random-sleep) from the interval [min_delay, max_delay]. Alternatively, in deterministic mode, the delay is always max_delay.
 .br
-For each new trial, it is possible to increase max_delay by a multiplicative-increase factor as well as an additive-increase increment. The new max_delay can be truncated by truncated_max_delay, to prevent further increases.
+For each new trial, it is possible to increase the interval [min_delay, max_delay] by a multiplicative-increase factor as well as an additive-increase increment. The new max_delay can be truncated by truncated_max_delay as upper bound, to prevent further increases. The initial min_delay is always the lower bound.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS

@@ -155,6 +155,19 @@ fi
 shift 2
 
 
+# ====== Ensure that min delay < max delay ==================================
+read -r minDelay maxDelay <<<"$(awk "\
+function min(a, b) { return (a < b ? a : b); }
+function max(a, b) { return (a > b ? a : b); }
+BEGIN {
+   minDelay=min(${MIN_DELAY}, ${MAX_DELAY});
+   maxDelay=max(${MIN_DELAY}, ${MAX_DELAY});
+   printf(\"%1.9f %1.9f\n\", minDelay, maxDelay);
+}
+"
+)"
+
+
 # ====== Run loop ===========================================================
 trial=0
 while true ; do
@@ -178,21 +191,21 @@ while true ; do
 
    # ====== Increase delay for next trial ===================================
    if [ ${trial} -gt 1 ] ; then
-      MAX_DELAY="$(awk "
-function min(a, b) {
-    return (a < b ? a : b);
+      read -r minDelay maxDelay <<<"$(awk "\
+function min(a, b) { return (a < b ? a : b); }
+function max(a, b) { return (a > b ? a : b); }
+BEGIN {
+   minDelay=min(${minDelay}, ${maxDelay});
+   maxDelay=max(${minDelay}, ${maxDelay});
+   additiveIncrease=${ADDITIVE_INCREASE};
+   multiplicativeIncrease=${MULTIPLICATIVE_INCREASE};
+   minDelayBoundary=${MIN_DELAY};
+   maxDelayBoundary=${TRUNCATE_DELAY};
+
+   newMinDelay=max(min(minDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
+   newMaxDelay=max(min(maxDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
+   printf(\"%1.9f %1.9f\n\", min(newMinDelay, newMaxDelay),max(newMinDelay, newMaxDelay));
 }
-function max(a, b) {
-    return (a > b ? a : b);
-}
-BEGIN { print max(min(${MAX_DELAY}*${MULTIPLICATIVE_INCREASE} + ${ADDITIVE_INCREASE}, ${TRUNCATE_DELAY}), ${MIN_DELAY}); }
-")"
-   else
-      MAX_DELAY="$(awk "
-function max(a, b) {
-    return (a > b ? a : b);
-}
-BEGIN { print max(${MAX_DELAY}, ${MIN_DELAY}); }
 ")"
    fi
 
