@@ -40,12 +40,14 @@ export TEXTDOMAIN="System-Info"
 
 
 # ###### Settings ###########################################################
-# is_ltr=1
-# if [ -v LANG ] ; then
-#    if [[ "$(echo "${LANG}" | cut -d_ -f1)" =~ ^(ar|dv|fa|he|ps|ur|yi)$ ]] ; then
-#       is_ltr=0
-#    fi
-# fi
+is_ltr=1
+rlm=""
+lrm=""
+if [ "$(gettext --context="Text direction indicator. Translate to 'RTL' only for right-to-left languages." "LTR")" == "RTL" ] ; then
+   is_ltr=0
+   rlm=$'\u200F'   # Right-to-Left Marker (RLM)
+   lrm=$'\u200E'   # Left-to-Right Marker (LRM)
+fi
 
 colorBasic="\e[33m"
 colorNetwork="\e[34m"
@@ -112,20 +114,19 @@ function finish-table()
       label="${tableColumnLabels[$i]}"
       value="${tableColumnValues[$i]}"
 
-      # NOTE:
-      # This is probably the place where Right-to-Left (RTL) locale handling
-      # support should to be added! Assuming Left-to-Right (LTR) locale ...
+      # ====== Left-to-Right (LTR) locale =================================
+      if [ ${is_ltr} -eq 1 ] ; then
+         print-utf8 -i "${indent}" "${label}"
+         echo -e "${value}"
+      # ====== Right-to-Left (RTL) locale =================================
+      else
+         # Insert Right-to-Left Mark (RLM) to force treating the line as RTL
+         echo -ne "${rlm}"
+         print-utf8 -i "${indent}" "${label}"
+         echo -ne "${rlm}"
+         echo -e "${value}"
+      fi
 
-#       # ====== Left-to-Right (LTR) locale =================================
-#       if [ ${is_ltr} -eq 1 ] ; then
-#          ...
-#       # ====== Right-to-Left (RTL) locale =================================
-#       else
-#          ...
-#       fi
-
-      print-utf8 -i "${indent}" "${label}"
-      echo -e "${value}"
    done
 }
 
@@ -380,7 +381,7 @@ function print-system-information ()
          # shellcheck disable=SC2059
          diskSummary+=( "${separator}${colorDisk}$(printf "$(gettext --context="The printf format string to print the usage percentage of storage at a mount point, e.g.'88 % on /home', or '92 % on /tmp'" "%1.0f %% on %s")" \
             "${!mountPointVariable}" \
-            "${mountPoint}")${colorBasic}" )
+            "${lrm}${mountPoint}${rlm}")${colorBasic}" )
       fi
    done
    add-table-row \
@@ -412,7 +413,6 @@ function print-system-information ()
             colorA="${colorInactive}"
             colorP="${colorInactive}"
          fi
-
          local ipv4
          if [ -v "${ipv4Variable}" ] ; then
             ipv4="${!ipv4Variable}"
@@ -423,7 +423,7 @@ function print-system-information ()
          else
             ipv4="$(gettext --context="Text to print when the network interface of the computer has no IPv4 addresses" "(No IPv4)")"
          fi
-         add-table-row "   ${colorA}${!nameVariable}:" "${ipv4}${colorA}"
+         add-table-row "   ${rlm}${colorA}${!nameVariable}:" "${lrm}${ipv4}${colorA}"
 
          if [ -v "${ipv6Variable}" ] ; then
             local v6addrList=( "${!ipv6Variable}" )
