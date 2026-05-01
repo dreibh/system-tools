@@ -29,7 +29,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="System-Info"
@@ -475,7 +475,7 @@ function print-system-information ()
 # ###### Print SSH public key fingerprints ##################################
 function print-ssh-key-fingerprints ()
 {
-   if [ -d /etc/ssh ] ; then
+   if [ -d /etc/ssh ] && [ -x "$(command -v ssh-keygen)" ] ; then
       echo -en "${colorBasic}"
       local keyNumber=1
       local label=""
@@ -504,8 +504,16 @@ function print-ssh-key-fingerprints ()
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "$(gettext --context="Text to prepend the usage syntax when calling the program without parameters, e.g. \"Usage: program arg1 arg2 [options ...]\"" "Usage:") $0 [-S|--scripts scripts_directory] [-h|--help]"
-   exit 1
+   local exitCode="$1"
+   echo >&2 "$(gettext --context="Text to prepend the usage syntax when calling the program without parameters, e.g. 'Usage: program arg1 arg2 [options ...]'" "Usage:") $0 [-S|--scripts scripts_directory] [-h|--help] [-v|--version]"
+   exit "${exitCode}"
+}
+
+
+# ###### Version ############################################################
+version () {
+   echo "System-Info @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
 }
 
 
@@ -514,16 +522,16 @@ usage () {
 
 # ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o S:h --long scripts:,help -a -- "$@")"
+options="$(${GETOPT} -o S:hv --long scripts:,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage
+   usage 1
 fi
+eval set -- "${options}"
 
 # shellcheck disable=SC2034
 now="$(date)"
 scriptDirectories="/etc/system-info.d /usr/local/etc/system-info.d"
-eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -S | --scripts)
@@ -531,7 +539,11 @@ while [ $# -gt 0 ] ; do
          shift 2
          ;;
       -h | --help)
-         usage
+         usage 0
+         # shift
+         ;;
+      -v | --version)
+         version
          # shift
          ;;
       --)
@@ -541,7 +553,7 @@ while [ $# -gt 0 ] ; do
   esac
 done
 if [ $# -ne 0 ] ; then
-   usage
+   usage 1
 fi
 
 

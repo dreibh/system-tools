@@ -32,8 +32,11 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
-INSTALL(PROGRAMS System-Maintenance DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES System-Maintenance.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+CONFIGURE_FILE(System-Maintenance System-Maintenance.versioned @ONLY)
+INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/System-Maintenance.versioned
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+        RENAME      System-Maintenance)
+INSTALL(FILES System-Maintenance.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       System-Maintenance.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      System-Maintenance)

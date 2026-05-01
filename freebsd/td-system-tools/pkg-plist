@@ -86,6 +86,9 @@ share/man/man1/text-block.1.gz
 share/man/man1/try-hard.1.gz
 share/man/man1/view-certificate.1.gz
 share/man/man1/view-crl.1.gz
+share/system-tools/CertificateHelper.py
+share/system-tools/generate-test-certificates
+share/system-tools/make-test-certificates
 share/text-block/example1.txt
 share/text-block/example2.txt
 share/text-block/insert.txt

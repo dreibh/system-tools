@@ -58,9 +58,12 @@ _Fingerprint_SSH_Keys()
 --include-raw
 -p
 --include-raw-python
+-h
+--help
+-v
+--version
 "
-   # shellcheck disable=SC2207
-   COMPREPLY=( $( compgen -W "${opts}" -- "${cur}" ) )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
    return 0
 }
 

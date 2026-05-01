@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-01 21:19+0200\n"
+"POT-Creation-Date: 2026-05-01 21:43+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -249,12 +249,12 @@ msgctxt "Combination of SSH key number (in variable \"keyNumber\") and SSH key i
 msgid "#${keyNumber} ${keyInfo}"
 msgstr "№${keyNumber} ${keyInfo}"
 
-#: src/System-Info/System-Info:507
-msgctxt "Text to prepend the usage syntax when calling the program without parameters, e.g. \"Usage: program arg1 arg2 [options ...]\""
+#: src/System-Info/System-Info:508
+msgctxt "Text to prepend the usage syntax when calling the program without parameters, e.g. 'Usage: program arg1 arg2 [options ...]'"
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/System-Info/System-Info:551
+#: src/System-Info/System-Info:563
 #, sh-format
 msgctxt "Title text for system information with date/time (in variable \"now\"), e.g. \"System information on Sun Apr 19 17:04:33 CEST 2026\""
 msgid "System information on ${now}"

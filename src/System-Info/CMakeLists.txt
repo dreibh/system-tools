@@ -32,8 +32,11 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
-INSTALL(PROGRAMS System-Info DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES System-Info.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+CONFIGURE_FILE(System-Info System-Info.versioned @ONLY)
+INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/System-Info.versioned
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+        RENAME      System-Info)
+INSTALL(FILES System-Info.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       System-Info.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      System-Info)

@@ -15,13 +15,14 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 - [System-Info](#-system-info) (display banners and system information),
 - [System-Maintenance](#-system-maintenance) (run basic system maintenance tasks),
 - [Reset-Machine-ID](#-reset-machine-id) (reset the machine identity state, particularly for a cloned VM),
-- [Print-UTF8](#-print-utf8) (print UTF-8 text with options for centering, adjusting, etc.),
-- [Text-Block](#-text-block) (flexible tool for inserting, replacing or removing text blocks in files or streams),
 - [Fingerprint-SSH-Keys](#-fingerprint-ssh-keys) (show the machine's SSH public key fingerprints in different formats),
 - [Configure-Grub](#-configure-grub) (configure options for the GRUB boot loader),
+- [Print-UTF8](#-print-utf8) (print UTF-8 text with options for centering, adjusting, etc.),
+- [Text-Block](#-text-block) (flexible tool for inserting, replacing or removing text blocks in files or streams),
 - [Try-Hard](#-try-hard) (run a command, with configurable retries on failure),
 - [Random-Sleep](#-random-sleep) (wait for random time span, with support of fractional seconds),
 - [X.509-Tools](#-x.509-tools) (tools for viewing, verifying and testing X.509 certificates).
+
 
 # 📚 System-Info
 
@@ -162,6 +163,32 @@ The changes are made interactively on request only, unless the option `--yes-to-
   ```
 
 
+# 📚 Fingerprint-SSH-Keys
+
+Fingerprint-SSH-Keys prints the SSH key fingerprints of the local machine in different formats: SSH hash, DNS SSHFP RR, or Python dictionary. Its typical usage is straightforward:
+
+```bash
+Fingerprint-SSH-Keys
+```
+
+The manpage of Fingerprint-SSH-Keys contains details and further examples:
+
+```bash
+man Fingerprint-SSH-Keys
+```
+
+
+# 📚 Configure-Grub
+
+Configure-Grub adjusts a GRUB configuration file by applying a configuration from a template, and merging the existing configurations settings with additional customisations. It can for example be used to set a custom screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE option). The [Virtual Machine Image Builder and System Installation Scripts](https://www.nntb.no/~dreibh/vmimage-builder-scripts/) use Configure-Grub to configure the screen resolution and a boot splash image.
+
+The manpage of Configure-Grub contains details and further examples:
+
+```bash
+man configure-grub
+```
+
+
 # 📚 Print-UTF8
 
 Print-UTF8 is a simple program to print UTF-8 strings in the console with options for indentation, centering, separator as well as size/length/width information. It can e.g.&nbsp;be utilised for printing System-Info banners, or for displaying error messages like this classic Amiga [Guru Meditation](https://en.wikipedia.org/wiki/Guru_Meditation) example:
@@ -236,32 +263,6 @@ For example, the publications list in [`index.html`](https://www.nntb.no/~dreibh
   ```
 
 
-# 📚 Fingerprint-SSH-Keys
-
-Fingerprint-SSH-Keys prints the SSH key fingerprints of the local machine in different formats: SSH hash, DNS SSHFP RR, or Python dictionary. Its typical usage is straightforward:
-
-```bash
-Fingerprint-SSH-Keys
-```
-
-The manpage of Fingerprint-SSH-Keys contains details and further examples:
-
-```bash
-man Fingerprint-SSH-Keys
-```
-
-
-# 📚 Configure-Grub
-
-Configure-Grub adjusts a GRUB configuration file by applying a configuration from a template, and merging the existing configurations settings with additional customisations. It can for example be used to set a custom screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE option). The [Virtual Machine Image Builder and System Installation Scripts](https://www.nntb.no/~dreibh/vmimage-builder-scripts/) use Configure-Grub to configure the screen resolution and a boot splash image.
-
-The manpage of Configure-Grub contains details and further examples:
-
-```bash
-man Configure-Grub
-```
-
-
 # 📚 Try-Hard
 
 Try-Hard runs a command and retries for a given number of times in case of error, with a delay between the trials.
@@ -276,7 +277,7 @@ try-hard 3 60 -- wget -O example.tar.gz \
 The manpage of Try-Hard contains details and further examples:
 
 ```bash
-man Try-Hard
+man try-hard
 ```
 
 
@@ -293,7 +294,7 @@ random-sleep 0.5 299.5 && echo "Finished waiting!"
 The manpage of Random-Sleep contains details and further examples:
 
 ```bash
-man Random-Sleep
+man random-sleep
 ```
 
 
