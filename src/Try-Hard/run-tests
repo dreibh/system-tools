@@ -54,17 +54,6 @@ exit-success ()
 }
 
 
-# ###### Helper function to show script information #########################
-show-script ()
-{
-   local script="$1"
-
-   "${PRINT_UTF8}" -n -s "\e[1;36m█" "▀" "█\e[0m" ;
-   "${FIGLET}" -w "${COLUMNS}" "$(basename "${script}")" | "${PRINT_UTF8}" -n -C "\e[1;36m█\e[25m" "█\e[0m" ;
-   "${PRINT_UTF8}" -n -s "\e[1;36m█" "▄" "█\e[0m"
-}
-
-
 
 # ###### Main program #######################################################
 

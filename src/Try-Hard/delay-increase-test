@@ -3,8 +3,8 @@
 MIN_DELAY=2.0
 MAX_DELAY=16.0
 MAX_TRIALS=16
-ADDITIVE_INCREASE=2
-MULTIPLICATIVE_INCREASE=1.0
+ADDITIVE_INCREASE=0.0
+MULTIPLICATIVE_INCREASE=1.25
 TRUNCATE_DELAY=4096
 
 
@@ -14,7 +14,7 @@ function max(a, b) { return (a > b ? a : b); }
 BEGIN {
    minDelay=min(${MIN_DELAY}, ${MAX_DELAY});
    maxDelay=max(${MIN_DELAY}, ${MAX_DELAY});
-   printf(\"%1.9f %1.9f\n\", minDelay, maxDelay);
+   printf(\"%g %g\n\", minDelay, maxDelay);
 }
 "
 )"
@@ -41,7 +41,7 @@ BEGIN {
 
    newMinDelay=max(min(minDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
    newMaxDelay=max(min(maxDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
-   printf(\"%1.9f %1.9f\n\", min(newMinDelay, newMaxDelay),max(newMinDelay, newMaxDelay));
+   printf(\"%g %g\n\", min(newMinDelay, newMaxDelay),max(newMinDelay, newMaxDelay));
 }
 "
    )"
