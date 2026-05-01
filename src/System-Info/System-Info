@@ -229,14 +229,25 @@ function print-system-information ()
       "${hostname_long}"
 
    # ------ Uptime ----------------------------------------------------------
+   # xgettext: c-format
+   uptimeFormat="$(gettext --context="The printf format string to print the uptime of the computer, split into the components days, hours, minutes, seconds. Each of the components is provided as string. Example: \"1 day, 10 hours, 25 minutes, and 44 seconds\"." "%s, %s, %s, and %s")"
+   # xgettext: c-format
+   formatUptimeDays="$(ngettext --context="The printf format string to print the number of days for the uptime of the computer, e.g. \"1 day\", or \"42 days\"" "%'d day" "%'d days" "${uptime_days}")"
+   # xgettext: c-format
+   formatUptimeHours="$(ngettext --context="The printf format string to print the number of hours for the uptime of the computer, e.g. \"1 hour\", or \"12 hours\"" "%'d hour" "%'d hours" "${uptime_hours}")"
+   # xgettext: c-format
+   formatUptimeMinutes="$(ngettext --context="The printf format string to print the number of minutes for the uptime of the computer, e.g. \"1 minute\", or \"10 minutes\"" "%'d minute" "%'d minutes" "${uptime_mins}")"
+   # xgettext: c-format
+   formatUptimeSeconds="$(ngettext --context="The printf format string to print the number of seconds for the uptime of the computer, e.g. \"1 second\", or \"33 seconds\"" "%'d second" "%'d seconds" "${uptime_secs}")"
+
    # shellcheck disable=SC2059
    add-table-row \
       "$(gettext --context="The label of the field containing the uptime of the computer" "Uptime:")" \
-      "$(printf "$(gettext --context="The printf format string to print the uptime of the computer, split into the components days, hours, minutes, seconds. Each of the components is provided as string. Example: \"1 day, 10 hours, 25 minutes, and 44 seconds\"." "%s, %s, %s, and %s")\n" \
-         "$(printf "$(ngettext --context="The printf format string to print the number of days for the uptime of the computer, e.g. \"1 day\", or \"42 days\"" "%'d day" "%'d days" "${uptime_days}")" "${uptime_days}")" \
-         "$(printf "$(ngettext --context="The printf format string to print the number of hours for the uptime of the computer, e.g. \"1 hour\", or \"12 hours\"" "%'d hour" "%'d hours" "${uptime_hours}")" "${uptime_hours}")" \
-         "$(printf "$(ngettext --context="The printf format string to print the number of minutes for the uptime of the computer, e.g. \"1 minute\", or \"10 minutes\"" "%'d minute" "%'d minutes" "${uptime_mins}")" "${uptime_mins}")" \
-         "$(printf "$(ngettext --context="The printf format string to print the number of seconds for the uptime of the computer, e.g. \"1 second\", or \"33 seconds\"" "%'d second" "%'d seconds" "${uptime_secs}")" "${uptime_secs}")"
+      "$(printf "${uptimeFormat}\n" \
+         "$(printf "${formatUptimeDays}" "${uptime_days}")" \
+         "$(printf "${formatUptimeHours}" "${uptime_hours}")" \
+         "$(printf "${formatUptimeMinutes}" "${uptime_mins}")" \
+         "$(printf "${formatUptimeSeconds}" "${uptime_secs}")"
       )"
 
    # ------ Operating System ------------------------------------------------
@@ -245,10 +256,14 @@ function print-system-information ()
       "$(eval_pgettext "Combination of operating system information (in variable \"os_label\") and kernel release information (in variable \"system_release\"), e.g. \"Ubuntu 24.04 with kernel 6.17.0-20-generic\"." "\${os_label} with kernel \${system_release}")"
 
    # ------ Processor -------------------------------------------------------
+   # xgettext: c-format
    # shellcheck disable=SC2034,SC2059
    processesString="$(printf "$(gettext --context="The printf format string to print the number of processes running on the computer, e.g. \"123 processes\"" "%'d processes")" "${system_procs}")"
+   # xgettext: c-format
    # shellcheck disable=SC2034,SC2059
    usersString="$(printf "$(ngettext --context="The printf format string to print the users of the computer, e.g. \"1 user\", or \"3 users\"" "%'d user" "%'d users" "${system_users}")" "${system_users}")"
+
+   # shellcheck disable=SC2034,SC2059
    add-table-row \
       "$(gettext --context="The label of the field containing information about the processor (i.e. CPU) of the computer" "Processor:")" \
       "$(eval_pgettext "Combination of number of CPU cores (in variable \"system_cores\") and details of the CPU of the computer (in variable \"system_machine\") with details about processes (in variable \"processesString\") and details about users (in variable \"usersString\"), e.g. \"8 × x86_64; 435 processes; 1 user\"" \
@@ -256,10 +271,13 @@ function print-system-information ()
        )"
 
    # ------ Load ------------------------------------------------------------
+   # xgettext: c-format
+   loadFormat="$(gettext --context="The printf format string to print the load percentage of the computer over 1 minute (in variable \"system_load_avg1min\") / 5 minutes (in variable \"system_load_avg5min\") / 15 minutes (in variable \"system_load_avg15min\"), e.g. \"52.1% / 20.3% / 11.1%\"" "%1.1f %% / %1.1f %% / %1.1f %%")"
+
    # shellcheck disable=SC2059
    add-table-row \
       "$(gettext --context="The label of the field containing information about the system load percentages of the computer in the last 1 minute/5 minutes/15 minutes" "Load (1/5/15 min):")" \
-      "$(printf "$(gettext --context="The printf format string to print the load percentage of the computer over 1 minute (in variable \"system_load_avg1min\") / 5 minutes (in variable \"system_load_avg5min\") / 15 minutes (in variable \"system_load_avg15min\"), e.g. \"52.1% / 20.3% / 11.1%\"" "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
+      "$(printf "${loadFormat}\n" \
          "${system_load_avg1min}" \
          "${system_load_avg5min}" \
          "${system_load_avg15min}"
@@ -327,7 +345,9 @@ function print-system-information ()
    fi
 
    # ------ Memory ---------------------------------------------------------
+   # xgettext: c-format
    memoryFormat=$(gettext --context="The printf format string to print the details about the system's memory (RAM) in MiB: used size, total size, available size and available size in percent. Example: \"9969 MiB of  31941 MiB ( 21972 MiB available:  68.8 %)\"" "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")
+
    # shellcheck disable=SC2059
    add-table-row \
       "$(gettext --context="The label of the field containing information about the used memory (RAM) of the computer" "Used Memory:")" \
@@ -338,7 +358,9 @@ function print-system-information ()
          "${system_mem_freepct}"
        )"
    if [ "${system_swap_total}" != "" ] && [ "${system_swap_total}" -gt 0 ] ; then
+      # xgettext: c-format
       swapFormat="$(gettext --context="The printf format string to print the details about the system's swap space in MiB: used size, total size, available size and available size in percent. Example: \"1317 MiB of   8191 MiB (  6874 MiB available:  83.9 %)\"" "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")"
+
       # shellcheck disable=SC2059
       add-table-row \
          "$(gettext --context="The label of the field containing information about the used swap space of the computer" "Used Swap:")" \
@@ -380,6 +402,8 @@ function print-system-information ()
          else
             colorDisk="${colorDiskNormal}"
          fi
+
+         # xgettext: c-format
          # shellcheck disable=SC2059
          diskSummary+=( "${separator}${colorDisk}$(printf "$(gettext --context="The printf format string to print the usage percentage of storage at a mount point, e.g. \"88 % on /home\", or \"92 % on /tmp\"" "%1.0f %% on %s")" \
             "${!mountPointVariable}" \
