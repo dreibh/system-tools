@@ -162,7 +162,7 @@ function max(a, b) { return (a > b ? a : b); }
 BEGIN {
    minDelay=min(${MIN_DELAY}, ${MAX_DELAY});
    maxDelay=max(${MIN_DELAY}, ${MAX_DELAY});
-   printf(\"%1.9f %1.9f\n\", minDelay, maxDelay);
+   printf(\"%g %g\n\", minDelay, maxDelay);
 }
 "
 )"
@@ -204,7 +204,7 @@ BEGIN {
 
    newMinDelay=max(min(minDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
    newMaxDelay=max(min(maxDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
-   printf(\"%1.9f %1.9f\n\", min(newMinDelay, newMaxDelay),max(newMinDelay, newMaxDelay));
+   printf(\"%g %g\n\", min(newMinDelay, newMaxDelay),max(newMinDelay, newMaxDelay));
 }
 ")"
    fi
@@ -212,15 +212,15 @@ BEGIN {
    # ====== Wait a random time span =========================================
    if [ "${DETERMINISTIC}" -eq 0 ] ; then
       if [ "${VERBOSE}" -eq 1 ] ; then
-         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS} failed -> waiting random time from [\${MIN_DELAY}, \${MAX_DELAY}] before trying again ...")\x1b[0m"
-         random-sleep -w "${MIN_DELAY}" "${MAX_DELAY}"
+         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS} failed -> waiting random time from [\${minDelay}, \${maxDelay}] s ...")\x1b[0m"
+         random-sleep -w "${minDelay}" "${maxDelay}"
       else
-         random-sleep "${MIN_DELAY}" "${MAX_DELAY}"
+         random-sleep "${minDelay}" "${maxDelay}"
       fi
    else
       if [ "${VERBOSE}" -eq 1 ] ; then
-         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Waiting for \${MAX_DELAY} s before trying again ...")\x1b[0m"
+         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS} failed -> waiting for \${maxDelay} s ...")\x1b[0m"
       fi
-      sleep "${MAX_DELAY}"
+      sleep "${maxDelay}"
    fi
 done
