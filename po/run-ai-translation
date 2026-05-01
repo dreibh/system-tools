@@ -2,7 +2,7 @@
 # ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
-#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#        \___ \| | | / __| __/ _ \ "_ ` _ \ _____| |/ _ \ / _ \| / __|
 #         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
 #        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 #               |___/
@@ -29,33 +29,37 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 
-MODEL="aya-expanse:32b"   # "deepseek-r1:671b" "translategemma:27b" "ministral-3:14b"
+MODEL="llama3.3:70b"   # "aya-expanse:32b" "deepseek-r1:671b" "translategemma:27b" "ministral-3:14b" "qwen3.5:122b" "qwen3.6:35b"
 
 LANGUAGES="ar cs de el en es fa fr he hi id it ja ko nl pl pt ro ru tr uk vi zh"   # for "aya-expanse:32b"
 # LANGUAGES="ar be bg bn cs da de el en es et fa fi fr ga he hi hr hu is it ja ko lt lv mi mt nb nl nn no pl pt ro ru sk sl sq sr sv ta th tr uk zh"
+LANGUAGES="ar_SA da sv he ru" # "da sv he ru"
 
 PROGRAMS="System-Info"
+CONTEXT="You are an expert technical translator localizing a Unix (Linux, FreeBSD) system administration scripts. The target audience consists of technical users and sysadmins. Maintain standard Unix terminology in the target language for concepts like \"operating system\", \"network\", \"processes\", \"processor\", \"kernel\", \"swap\", \"uptime\", \"kernel\", \"load\", and \"mount points\". Strictly preserve all C-style formatting variables (such as \"%s\", \"%d\", \"%1.1f\", \"%'6.0f\", \"%'5.1f\"), C-style escaping in the format strings (such as \"%%\" for the percent character), and Bash shell-style variables (such as \${now}, \${os_label}, \${system_release}, \${system_cores}, \${system_machine}, \${processesString}, \${usersString}), exactly."
 
 for program in ${PROGRAMS} ; do
-   context="
-      $(cat ../README.md)
-      $(awk '{ print "../" $2 }' <"${program}.sources" | xargs cat)
-   "
    for language in ${LANGUAGES} ; do
       mkdir -p "${language}"
       # rm -f "${language}/${program}.po"
-      msginit --input "${program}.pot" \
-         --locale "${language}.UTF-8" \
-         --output-file "${language}/${program}.po" \
-         --no-translator
+      if [ ! -e "${language}/${program}.po" ] ; then
+         msginit --input "${program}.pot" \
+            --locale "${language}.UTF-8" \
+            --output-file "${language}/${program}.po" \
+            --no-translator
+      fi
+
+      gpt-po-translator \
+         --provider ollama \
+         --model "${MODEL}" \
+         --folder . \
+         --lang   "${language}" \
+         --bulk --bulksize 15 \
+         --ollama-timeout 300 \
+         --verbose \
+         --default-context "${CONTEXT}"
    done
-   gpt-po-translator \
-      --provider ollama \
-      --model "${MODEL}" \
-      --folder . \
-      --bulk --verbose \
-      --default-context "${context}"
 done
