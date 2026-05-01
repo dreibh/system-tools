@@ -308,7 +308,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
 
    rm -f "${packageVersionsFile}"
 
-   if [ "$(echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$")" != "" ] ; then
+   if [ "$(echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$" || true)" != "" ] ; then
 
       echo -e "$(gettext "To be removed:")\x1b[31m"
       echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$" || true
