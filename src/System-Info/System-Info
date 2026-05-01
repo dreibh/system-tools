@@ -43,7 +43,7 @@ export TEXTDOMAIN="System-Info"
 is_ltr=1
 rlm=""
 lrm=""
-if [ "$(gettext --context="Text direction indicator. Translate to \"RTL\" only for right-to-left languages." "LTR")" == "RTL" ] ; then
+if [ "$(gettext --context="Text direction indicator. Translate to 'RTL' only for right-to-left languages." "LTR")" == "RTL" ] ; then
    is_ltr=0
    rlm=$'\u200F'   # Right-to-Left Marker (RLM)
    lrm=$'\u200E'   # Left-to-Right Marker (LRM)
@@ -230,15 +230,15 @@ function print-system-information ()
 
    # ------ Uptime ----------------------------------------------------------
    # xgettext: c-format
-   uptimeFormat="$(gettext --context="The printf format string to print the uptime of the computer, split into the components days, hours, minutes, seconds. Each of the components is provided as string. Example: \"1 day, 10 hours, 25 minutes, and 44 seconds\"." "%s, %s, %s, and %s")"
+   uptimeFormat="$(gettext --context="The printf format string to print the uptime of the computer, split into the components days, hours, minutes, seconds. Each of the components is provided as string. Example: '1 day, 10 hours, 25 minutes, and 44 seconds'." "%s, %s, %s, and %s")"
    # xgettext: c-format
-   formatUptimeDays="$(ngettext --context="The printf format string to print the number of days for the uptime of the computer, e.g. \"1 day\", or \"42 days\"" "%'d day" "%'d days" "${uptime_days}")"
+   formatUptimeDays="$(ngettext --context="The printf format string to print the number of days for the uptime of the computer, e.g. '1 day', or '42 days'" "%'d day" "%'d days" "${uptime_days}")"
    # xgettext: c-format
-   formatUptimeHours="$(ngettext --context="The printf format string to print the number of hours for the uptime of the computer, e.g. \"1 hour\", or \"12 hours\"" "%'d hour" "%'d hours" "${uptime_hours}")"
+   formatUptimeHours="$(ngettext --context="The printf format string to print the number of hours for the uptime of the computer, e.g. '1 hour', or '12 hours'" "%d hour" "%d hours" "${uptime_hours}")"
    # xgettext: c-format
-   formatUptimeMinutes="$(ngettext --context="The printf format string to print the number of minutes for the uptime of the computer, e.g. \"1 minute\", or \"10 minutes\"" "%'d minute" "%'d minutes" "${uptime_mins}")"
+   formatUptimeMinutes="$(ngettext --context="The printf format string to print the number of minutes for the uptime of the computer, e.g. '1 minute', or '10 minutes'" "%d minute" "%d minutes" "${uptime_mins}")"
    # xgettext: c-format
-   formatUptimeSeconds="$(ngettext --context="The printf format string to print the number of seconds for the uptime of the computer, e.g. \"1 second\", or \"33 seconds\"" "%'d second" "%'d seconds" "${uptime_secs}")"
+   formatUptimeSeconds="$(ngettext --context="The printf format string to print the number of seconds for the uptime of the computer, e.g. '1 second', or '33 seconds'" "%d second" "%d seconds" "${uptime_secs}")"
 
    # shellcheck disable=SC2059
    add-table-row \
@@ -253,26 +253,26 @@ function print-system-information ()
    # ------ Operating System ------------------------------------------------
    add-table-row \
       "$(gettext --context="The label of the field containing the operating system of the computer" "Operating System:")" \
-      "$(eval_pgettext "Combination of operating system information (in variable \"os_label\") and kernel release information (in variable \"system_release\"), e.g. \"Ubuntu 24.04 with kernel 6.17.0-20-generic\"." "\${os_label} with kernel \${system_release}")"
+      "$(eval_pgettext "Combination of operating system information (in variable 'os_label') and kernel release information (in variable 'system_release'), e.g. 'Ubuntu 24.04 with kernel 6.17.0-20-generic'." "\${os_label} with kernel \${system_release}")"
 
    # ------ Processor -------------------------------------------------------
    # xgettext: c-format
    # shellcheck disable=SC2034,SC2059
-   processesString="$(printf "$(gettext --context="The printf format string to print the number of processes running on the computer, e.g. \"123 processes\"" "%'d processes")" "${system_procs}")"
+   processesString="$(printf "$(gettext --context="The printf format string to print the number of processes running on the computer, e.g. '123 processes'" "%'d processes")" "${system_procs}")"
    # xgettext: c-format
    # shellcheck disable=SC2034,SC2059
-   usersString="$(printf "$(ngettext --context="The printf format string to print the users of the computer, e.g. \"1 user\", or \"3 users\"" "%'d user" "%'d users" "${system_users}")" "${system_users}")"
+   usersString="$(printf "$(ngettext --context="The printf format string to print the users of the computer, e.g. '1 user', or '3 users'" "%'d user" "%'d users" "${system_users}")" "${system_users}")"
 
    # shellcheck disable=SC2034,SC2059
    add-table-row \
       "$(gettext --context="The label of the field containing information about the processor (i.e. CPU) of the computer" "Processor:")" \
-      "$(eval_pgettext "Combination of number of CPU cores (in variable \"system_cores\") and details of the CPU of the computer (in variable \"system_machine\") with details about processes (in variable \"processesString\") and details about users (in variable \"usersString\"), e.g. \"8 × x86_64; 435 processes; 1 user\"" \
+      "$(eval_pgettext "Combination of number of CPU cores (in variable 'system_cores') and details of the CPU of the computer (in variable 'system_machine') with details about processes (in variable 'processesString') and details about users (in variable 'usersString'), e.g. '8 × x86_64; 435 processes; 1 user'" \
          "\${system_cores} × \${system_machine}; \${processesString}; \${usersString}"
        )"
 
    # ------ Load ------------------------------------------------------------
    # xgettext: c-format
-   loadFormat="$(gettext --context="The printf format string to print the load percentage of the computer over 1 minute (in variable \"system_load_avg1min\") / 5 minutes (in variable \"system_load_avg5min\") / 15 minutes (in variable \"system_load_avg15min\"), e.g. \"52.1% / 20.3% / 11.1%\"" "%1.1f %% / %1.1f %% / %1.1f %%")"
+   loadFormat="$(gettext --context="The printf format string to print the load percentage of the computer over 1 minute (in variable 'system_load_avg1min') / 5 minutes (in variable 'system_load_avg5min') / 15 minutes (in variable 'system_load_avg15min'), e.g. '52.1% / 20.3% / 11.1%'" "%1.1f %% / %1.1f %% / %1.1f %%")"
 
    # shellcheck disable=SC2059
    add-table-row \
@@ -335,7 +335,7 @@ function print-system-information ()
          # shellcheck disable=SC2034
          batteryCapacity="${!batteryCapacityVariable}"
 
-         batterySummary+=( "${separator}${colorBattery}$(eval_pgettext "Combination of battery number (in variable \"batteryNumber\"), battery status (in variable \"batteryStatus\"), and battery capacity in percent (in variable \"batteryCapacity\"), e.g. \"#1 charging, 87 %\"" \
+         batterySummary+=( "${separator}${colorBattery}$(eval_pgettext "Combination of battery number (in variable 'batteryNumber'), battery status (in variable 'batteryStatus'), and battery capacity in percent (in variable 'batteryCapacity'), e.g. '#1 charging, 87 %'" \
             "#\${batteryNumber} \${batteryStatus}, \${batteryCapacity} %")${colorBasic}" )
       done
 
@@ -346,7 +346,7 @@ function print-system-information ()
 
    # ------ Memory ---------------------------------------------------------
    # xgettext: c-format
-   memoryFormat=$(gettext --context="The printf format string to print the details about the system's memory (RAM) in MiB: used size, total size, available size and available size in percent. Example: \"9969 MiB of  31941 MiB ( 21972 MiB available:  68.8 %)\"" "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")
+   memoryFormat=$(gettext --context="The printf format string to print the details about the system's memory (RAM) in MiB: used size, total size, available size and available size in percent. Example: '9969 MiB of  31941 MiB ( 21972 MiB available:  68.8 %)'" "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")
 
    # shellcheck disable=SC2059
    add-table-row \
@@ -359,7 +359,7 @@ function print-system-information ()
        )"
    if [ "${system_swap_total}" != "" ] && [ "${system_swap_total}" -gt 0 ] ; then
       # xgettext: c-format
-      swapFormat="$(gettext --context="The printf format string to print the details about the system's swap space in MiB: used size, total size, available size and available size in percent. Example: \"1317 MiB of   8191 MiB (  6874 MiB available:  83.9 %)\"" "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")"
+      swapFormat="$(gettext --context="The printf format string to print the details about the system's swap space in MiB: used size, total size, available size and available size in percent. Example: '1317 MiB of   8191 MiB (  6874 MiB available:  83.9 %)'" "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")"
 
       # shellcheck disable=SC2059
       add-table-row \
@@ -405,7 +405,7 @@ function print-system-information ()
 
          # xgettext: c-format
          # shellcheck disable=SC2059
-         diskSummary+=( "${separator}${colorDisk}$(printf "$(gettext --context="The printf format string to print the usage percentage of storage at a mount point, e.g. \"88 % on /home\", or \"92 % on /tmp\"" "%1.0f %% on %s")" \
+         diskSummary+=( "${separator}${colorDisk}$(printf "$(gettext --context="The printf format string to print the usage percentage of storage at a mount point, e.g. '88 % on /home', or '92 % on /tmp'" "%1.0f %% on %s")" \
             "${!mountPointVariable}" \
             "${lrm}${mountPoint}${rlm}")${colorBasic}" )
       fi
@@ -491,7 +491,7 @@ function print-ssh-key-fingerprints ()
             fi
             add-table-row \
                "${label}" \
-               "$(eval_pgettext "Combination of SSH key number (in variable \"keyNumber\") and SSH key information (in variable \"keyInfo\"), e.g. \"#3 SHA256:mcAJ7V/RbRzk89lkMx1rnA1qgiRWkMttHEiKvWJOBqU (RSA 16384)\")" \
+               "$(eval_pgettext "Combination of SSH key number (in variable 'keyNumber') and SSH key information (in variable 'keyInfo'), e.g. '#3 SHA256:mcAJ7V/RbRzk89lkMx1rnA1qgiRWkMttHEiKvWJOBqU (RSA 16384)')" \
                   "#\${keyNumber} \${keyInfo}"
                )"
             keyNumber=$((keyNumber+1))
@@ -560,7 +560,7 @@ fi
 # ====== Startup ============================================================
 # shellcheck disable=SC2059
 echo
-eval_pgettext "Title text for system information with date/time (in variable \"now\"), e.g. \"System information on Sun Apr 19 17:04:33 CEST 2026\"" "System information on \${now}"
+eval_pgettext "Title text for system information with date/time (in variable 'now'), e.g. 'System information on Sun Apr 19 17:04:33 CEST 2026'" "System information on \${now}"
 echo
 echo
 
