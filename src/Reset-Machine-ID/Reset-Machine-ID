@@ -370,7 +370,7 @@ if [ "${ZABBIX_SERVER}" != "" ] ; then
    if [ ! -e "${zabbixConfig}.orig" ] ; then
       cp "${zabbixConfig}" "${zabbixConfig}.orig"
    fi
-   zabbixOptions="$(grep -E "^(LogFile|PidFile=)" "${zabbixConfig}")"
+   zabbixOptions="$(grep -E "^(LogFile|PidFile=)" "${zabbixConfig}" || true)"
    cat >"${zabbixConfig}.new" <<EOF
 # Hostname=$(hostname -f)
 HostnameItem=system.hostname
@@ -476,9 +476,9 @@ EOF
 
    # ====== Suggest sshd_config updates =====================================
    if [ -e sshd_config ] ; then
-      port=$(grep "^Port[[:blank:]]" sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
-      p1=$(grep "^PasswordAuthentication[[:blank:]]" sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
-      p2=$(grep "^KbdInteractiveAuthentication[[:blank:]]" sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)
+      port="$(grep "^Port[[:blank:]]" sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2 || true)"
+      p1="$(grep "^PasswordAuthentication[[:blank:]]" sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2 || true)"
+      p2="$(grep "^KbdInteractiveAuthentication[[:blank:]]" sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2 || true)"
       if [[ ! "${port}" =~ ^[0-9]+$ ]] ; then
          port="22"
       fi

@@ -102,7 +102,7 @@ fi
 
 
 # ====== Print SSH key fingerprints =========================================
-if [ -d /etc/ssh ] && command -v  ssh-keygen ; then
+if [ -d /etc/ssh ] && [ -x "$(command -v ssh-keygen)" ] ; then
    hostname="$(hostname -f)"
    keys=$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)
 
@@ -152,10 +152,10 @@ if [ -d /etc/ssh ] && command -v  ssh-keygen ; then
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in DNS RR format:")\x1b[0m"
          for key in ${keys} ; do
             if [ ${INCLUDE_DEPRECATED} -eq 1 ] ; then
-               ssh-keygen -r "${hostname}" -f "${key}" | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [1-9] [1-9]'
+               ssh-keygen -r "${hostname}" -f "${key}" | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [1-9] [1-9]' || true
             else
                # Filter out deprecated DSA key type or SSH-1 hash:
-               ssh-keygen -r "${hostname}" -f "${key}" | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [13-9] [2-9]'
+               ssh-keygen -r "${hostname}" -f "${key}" | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [13-9] [2-9]' || true
             fi | while read -r in rrType algorithmID hashID fingerprint ; do
                echo -e "${hostname}\t${in}\t${rrType}\t${algorithmID}\t${hashID}\t${fingerprint}"
             done
