@@ -277,7 +277,7 @@ Examples:
         https://www.example.net/example.tar.gz
   ```
 
-* Try a file download up to 32&nbsp;times, with an initial random delay interval [1, 2]&nbsp;seconds, but increasing it multiplicatively by factor 2.0 for each new trial, with an upper delay bound of 512;seconds (i.e.&nbsp;realising a truncated binary exponential backoff):
+* Try a file download up to 32&nbsp;times, with an initial random delay interval [1, 2]&nbsp;seconds, but increasing it multiplicatively by factor 2.0 for each new trial, with an upper delay bound of 512&nbsp;seconds (i.e.&nbsp;realising a truncated binary exponential backoff):
 
   ```bash
   try-hard 32 2 \
