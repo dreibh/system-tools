@@ -186,7 +186,7 @@ Configure-Grub adjusts a GRUB configuration file by applying a configuration fro
 The manpage of Configure-Grub contains details and further examples:
 
 ```bash
-man Configure-Grub
+man configure-grub
 ```
 
 
@@ -366,7 +366,7 @@ try-hard 3 60 -- wget -O example.tar.gz \
 The manpage of Try-Hard contains details and further examples:
 
 ```bash
-man Try-Hard
+man try-hard
 ```
 
 
@@ -383,7 +383,7 @@ random-sleep 0.5 299.5 && echo "Finished waiting!"
 The manpage of Random-Sleep contains details and further examples:
 
 ```bash
-man Random-Sleep
+man random-sleep
 ```
 
 
