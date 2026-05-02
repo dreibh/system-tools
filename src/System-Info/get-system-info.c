@@ -389,11 +389,18 @@ static void showBatteryInformation()
       snprintf((char*)&batteryInfoQuery, sizeof(batteryInfoQuery),
                "acpiconf -i%u 2>/dev/null", i);
       if( queryPipe(batteryInfoQuery, (char*)&batteryInfo, sizeof(batteryInfo)) ) {
-         const char* r = (const char*)&batteryInfo;
+         const char*  resultPtr = (const char*)&batteryInfo;
+         int          capacity  = 0;
+         int          status    = 0;
+         unsigned int value;
          do {
-            printf("x");
-            r = index(r, '\n');
-         } while(r++ != nullptr);
+            if(sscanf(resultPtr, "Remaining capacity: %u%%", &value) == 1) {
+               capacity = value;
+            }
+            resultPtr = index(resultPtr, '\n');
+         } while(resultPtr++ != nullptr);
+         printf("battery_%u_status=%u\n",   i, status);
+         printf("battery_%u_capacity=%u\n", i, capacity);
          batteryIDs[batteries++] = i;
       }
    }
