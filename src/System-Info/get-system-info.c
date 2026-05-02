@@ -41,6 +41,7 @@
 #include <net/if.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <sys/statvfs.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
 #if defined(__linux)
@@ -550,27 +551,44 @@ static void showMemoryInformation()
 }
 
 
+// ###### Obtain disk usage statistics ######################################
+static bool obtainDiskUsage(const char* mountPoint, const char* label)
+{
+   // ====== Obtain file system status of mount point =======================
+   struct statvfs status;
+   if(statvfs(mountPoint, &status) != 0) {
+      return false;
+   }
+
+   // ====== Compute the size statistics ====================================
+   // Computations according to "df" command's output:
+   const unsigned long long totalSpace =
+      (unsigned long long)status.f_blocks * (unsigned long long)status.f_bsize;
+   const unsigned long long availableSpace =   /* available for user */
+      (unsigned long long)status.f_bavail * (unsigned long long)status.f_bsize;
+   const unsigned long long freeSpace =   /* actual free space */
+      (unsigned long long)status.f_bfree * (unsigned long long)status.f_bsize;
+   const unsigned long long usedSpace = totalSpace - freeSpace;
+   const double usagePercentage = 100.0 *
+      (double)(totalSpace - availableSpace) / (double)totalSpace;
+
+   // ====== Print the results ==============================================
+   printf("disk_%s_total=%llu\n",     label, totalSpace);
+   printf("disk_%s_available=%llu\n", label, availableSpace);
+   printf("disk_%s_used=%llu\n",      label, usedSpace);
+   printf("disk_%s_pct=%1.3f\n",      label, usagePercentage);
+
+   return true;
+}
+
+
 // ###### Print disk information ############################################
 static void showDiskInformation()
 {
-   char         buffer[64];
-   unsigned int value;
-
-   if( (queryPipe("env LANGUAGE=en df -hT / | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
-                  (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("disk_root_pct=%1.1f\n", (double)value);
-   }
-   if( (queryPipe("env LANGUAGE=en df -hT /home | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
-                  (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("disk_home_pct=%1.1f\n", (double)value);
-   }
-   if( (queryPipe("env LANGUAGE=en df -hT /tmp | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
-                  (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("disk_tmp_pct=%1.1f\n", (double)value);
-   }
+   obtainDiskUsage("/",     "root");
+   obtainDiskUsage("/home", "home");
+   obtainDiskUsage("/tmp",  "tmp");
+   // obtainDiskUsage("/boot/efi", "efi");
    fputs("disk_list=\"root home tmp\"\n", stdout);
 }
 
