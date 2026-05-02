@@ -346,9 +346,9 @@ static void showLoadInformation()
       printf("system_load_avg1min=%1.6f\n",  loadavg[0]);
       printf("system_load_avg5min=%1.6f\n",  loadavg[1]);
       printf("system_load_avg15min=%1.6f\n", loadavg[2]);
-      printf("system_load_avg1minpct=%1.6f\n",  100.0 * loadavg[0]);
-      printf("system_load_avg5minpct=%1.6f\n",  100.0 * loadavg[1]);
-      printf("system_load_avg15minpct=%1.6f\n", 100.0 * loadavg[2]);
+      printf("system_load_avg1minpct=%1.4f\n",  100.0 * loadavg[0]);
+      printf("system_load_avg5minpct=%1.4f\n",  100.0 * loadavg[1]);
+      printf("system_load_avg15minpct=%1.4f\n", 100.0 * loadavg[2]);
    }
 #endif
 }
