@@ -284,6 +284,32 @@ static bool queryFile(const char* file, char* result, size_t resultMaxSize)
 }
 
 
+// ###### Obtain the number of processes on the system ######################
+static unsigned int obtainProcessCount()
+{
+   char         buffer[64];
+   unsigned int count;
+   if( (queryPipe("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
+       (sscanf(buffer, "%u", &count) == 1) ) {
+      return count;
+   }
+   return 0;
+}
+
+
+// ###### Obtain the number of users on the system ##########################
+static unsigned int obtainUserCount()
+{
+   char         buffer[64];
+   unsigned int count;
+   if( (queryPipe("who | cut -d' ' -f1 | sort -ud | wc -l", (char*)&buffer, sizeof(buffer))) &&
+       (sscanf(buffer, "%u", &count) == 1) ) {
+      return count;
+   }
+   return 0;
+}
+
+
 // ###### Print load information ############################################
 static void showLoadInformation()
 {
@@ -293,25 +319,12 @@ static void showLoadInformation()
    const unsigned int pageSize = sysconf(_SC_PAGESIZE);
    printf("system_pagesize=%u\n", pageSize);
 
-   // ====== Number of running processes ====================================
-   char         buffer[64];
-   unsigned int value;
-   if( (queryPipe("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("system_procs=%u\n", value);
-   }
-   else {
-      printf("system_procs=0");
-   }
+   // ====== Number of running processes and number of users ================
+   const unsigned int processCount = obtainProcessCount();
+   printf("system_procs=%u\n", processCount);
 
-   // ====== Number of users ================================================
-   if( (queryPipe("who | cut -d' ' -f1 | sort -ud | wc -l", (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("system_users=%u\n", value);
-   }
-   else {
-      printf("system_users=0");
-   }
+   const unsigned int userCount = obtainUserCount();
+   printf("system_users=%u\n", userCount);
 
    // ====== Load averages ==================================================
 #if defined(__linux)
