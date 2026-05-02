@@ -232,7 +232,7 @@ function print-system-information ()
    # xgettext: c-format
    uptimeFormat="$(gettext --context="The printf format string to print the uptime of the computer, split into the components days, hours, minutes, seconds. Each of the components is provided as string. Example: '1 day, 10 hours, 25 minutes, and 44 seconds'." "%s, %s, %s, and %s")"
    # xgettext: c-format
-   formatUptimeDays="$(ngettext --context="The printf format string to print the number of days for the uptime of the computer, e.g. '1 day', or '42 days'" "%'d day" "%'d days" "${uptime_days}")"
+   formatUptimeDays="$(ngettext --context="The printf format string to print the number of days for the uptime of the computer, e.g. '1 day', or '42 days'" "%s day" "%s days" "${uptime_days}")"
    # xgettext: c-format
    formatUptimeHours="$(ngettext --context="The printf format string to print the number of hours for the uptime of the computer, e.g. '1 hour', or '12 hours'" "%d hour" "%d hours" "${uptime_hours}")"
    # xgettext: c-format
@@ -244,9 +244,9 @@ function print-system-information ()
    add-table-row \
       "$(gettext --context="The label of the field containing the uptime of the computer" "Uptime:")" \
       "$(printf "${uptimeFormat}\n" \
-         "$(printf "${formatUptimeDays}" "${uptime_days}")" \
-         "$(printf "${formatUptimeHours}" "${uptime_hours}")" \
-         "$(printf "${formatUptimeMinutes}" "${uptime_mins}")" \
+         "$(printf "${formatUptimeDays}"    "$(printf "%'d" "${uptime_days}")")" \
+         "$(printf "${formatUptimeHours}"   "${uptime_hours}")"                  \
+         "$(printf "${formatUptimeMinutes}" "${uptime_mins}")"                   \
          "$(printf "${formatUptimeSeconds}" "${uptime_secs}")"
       )"
 
@@ -257,11 +257,13 @@ function print-system-information ()
 
    # ------ Processor -------------------------------------------------------
    # xgettext: c-format
+   processesFormat="$(gettext --context="The printf format string to print the number of processes running on the computer, e.g. '123 processes'" "%s processes")"
    # shellcheck disable=SC2034,SC2059
-   processesString="$(printf "$(gettext --context="The printf format string to print the number of processes running on the computer, e.g. '123 processes'" "%'d processes")" "${system_procs}")"
+   processesString="$(printf "${processesFormat}" "${system_procs}")"
    # xgettext: c-format
+   usersFormat="$(ngettext --context="The printf format string to print the users of the computer, e.g. '1 user', or '3 users'" "%s user" "%s users" "${system_users}")"
    # shellcheck disable=SC2034,SC2059
-   usersString="$(printf "$(ngettext --context="The printf format string to print the users of the computer, e.g. '1 user', or '3 users'" "%'d user" "%'d users" "${system_users}")" "${system_users}")"
+   usersString="$(printf "${usersFormat}" "${system_users}")"
 
    # shellcheck disable=SC2034,SC2059
    add-table-row \
@@ -345,30 +347,33 @@ function print-system-information ()
    fi
 
    # ------ Memory ---------------------------------------------------------
+   # NOTE: Using strings (%s) for formatting, since this is easier to handle
+   #       by translation AI. Patterns like %'5.1f often fail to translate.
+
    # xgettext: c-format
-   memoryFormat=$(gettext --context="The printf format string to print the details about the system's memory (RAM) in MiB: used size, total size, available size and available size in percent. Example: '9969 MiB of  31941 MiB ( 21972 MiB available:  68.8 %)'" "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")
+   memoryFormat=$(gettext --context="The printf format string to print the details about the system's memory (RAM) in MiB: used size, total size, available size and available size in percent. Example: '9969 MiB of  31941 MiB ( 21972 MiB available:  68.8 %)'" "%s MiB of %s MiB (%s MiB available: %s %%)")
 
    # shellcheck disable=SC2059
    add-table-row \
       "$(gettext --context="The label of the field containing information about the used memory (RAM) of the computer" "Used Memory:")" \
       "$(printf "${memoryFormat}\n" \
-         "$((system_mem_used  / 1048576))" \
-         "$((system_mem_total / 1048576))" \
-         "$((system_mem_free  / 1048576))" \
-         "${system_mem_freepct}"
+         "$(printf "%'6.0f" "$((system_mem_used  / 1048576))")" \
+         "$(printf "%'6.0f" "$((system_mem_total / 1048576))")" \
+         "$(printf "%'6.0f" "$((system_mem_free  / 1048576))")" \
+         "$(printf "%'5.1f" "${system_mem_freepct}")"
        )"
    if [ "${system_swap_total}" != "" ] && [ "${system_swap_total}" -gt 0 ] ; then
       # xgettext: c-format
-      swapFormat="$(gettext --context="The printf format string to print the details about the system's swap space in MiB: used size, total size, available size and available size in percent. Example: '1317 MiB of   8191 MiB (  6874 MiB available:  83.9 %)'" "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")"
+      swapFormat="$(gettext --context="The printf format string to print the details about the system's swap space in MiB: used size, total size, available size and available size in percent. Example: '1317 MiB of   8191 MiB (  6874 MiB available:  83.9 %)'" "%s MiB of %s MiB (%s MiB available: %s %%)")"
 
       # shellcheck disable=SC2059
       add-table-row \
          "$(gettext --context="The label of the field containing information about the used swap space of the computer" "Used Swap:")" \
          "$(printf "${swapFormat}\n" \
-            "$((system_swap_used  / 1048576))" \
-            "$((system_swap_total / 1048576))" \
-            "$((system_swap_free  / 1048576))" \
-            "${system_swap_freepct}"
+            "$(printf "%'6.0f" "$((system_swap_used  / 1048576))")" \
+            "$(printf "%'6.0f" "$((system_swap_total / 1048576))")" \
+            "$(printf "%'6.0f" "$((system_swap_free  / 1048576))")" \
+            "$(printf "%'5.1f" "${system_swap_freepct}")"
           )"
    else
       add-table-row \
