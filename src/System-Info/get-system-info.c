@@ -245,15 +245,15 @@ static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
    FILE* fh = popen(command, "r");
    if(fh != nullptr) {
       size_t resultSize = 0;
-      char*  r;
+      char*  resultPtr;
       do {
-         r = fgets((char*)&result[resultSize], resultMaxSize - 1 - resultSize, fh);
-         if(r == nullptr) {
+         resultPtr = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
+         if(resultPtr == nullptr) {
             break;
          }
-         resultSize += strlen(r);
+         resultSize += strlen(resultPtr);
       }
-      while(resultSize < resultMaxSize- 1);
+      while(resultSize < resultMaxSize);
       result[resultSize] = 0x00;
       pclose(fh);
       return true;
@@ -268,13 +268,13 @@ static bool queryFile(const char* file, char* result, size_t resultMaxSize)
    FILE* fh = fopen(file, "r");
    if(fh != nullptr) {
       size_t resultSize = 0;
-      char*  r;
+      char*  resultPtr;
       do {
-         r = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
-         if(r == nullptr) {
+         resultPtr = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
+         if(resultPtr == nullptr) {
             break;
          }
-         resultSize += strlen(r);
+         resultSize += strlen(resultPtr);
       }
       while(resultSize < resultMaxSize);
       fclose(fh);
