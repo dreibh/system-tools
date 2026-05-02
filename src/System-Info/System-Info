@@ -312,7 +312,7 @@ function print-system-information ()
       for battery in ${battery_list} ; do
          batteryNumber=$((batteryNumber+1))
          if [ ${batteryNumber} -gt 1 ] ; then
-            separator=" / "
+            separator=" |  "
          fi
          batteryStatusVariable="battery_${battery}_status"
          batteryCapacityVariable="battery_${battery}_capacity"
@@ -395,7 +395,7 @@ function print-system-information ()
          separator=""
       else
          mountPoint="/${mountPointName}"
-         separator=", "
+         separator=" |  "
       fi
       mountPointVariable="disk_${mountPointName}_pct"
       if [ -v "${mountPointVariable}" ] && [[ "${!mountPointVariable}" =~ ^[0-9]+ ]]; then
