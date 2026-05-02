@@ -27,6 +27,7 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#include <ctype.h>
 #include <getopt.h>
 #include <ifaddrs.h>
 #include <locale.h>
@@ -45,6 +46,7 @@
 #include <sys/types.h>
 #include <sys/utsname.h>
 #if defined(__linux)
+#include <dirent.h>
 #include <sys/sysinfo.h>
 #include <netpacket/packet.h>
 #elif defined(__FreeBSD__)
@@ -287,13 +289,34 @@ static bool queryFile(const char* file, char* result, size_t resultMaxSize)
 // ###### Obtain the number of processes on the system ######################
 static unsigned int obtainProcessCount()
 {
-   char         buffer[64];
-   unsigned int count;
-   if( (queryPipe("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &count) == 1) ) {
-      return count;
+   unsigned int count = 0;
+
+   // ====== Linux: count processes in /proc ================================
+#ifdef __linux__
+   struct dirent* dirEntry;
+   DIR*           dir = opendir("/proc");
+   if(dir != nullptr) {
+      while((dirEntry = readdir(dir)) != nullptr) {
+         // The name of a process directory starts with a digit:
+         if(isdigit(dirEntry->d_name[0])) {
+            count++;
+         }
+      }
    }
-   return 0;
+   closedir(dir);
+
+    // ====== Fallback ======================================================
+#else
+#warning Using fallback solution for obtaining the process count!
+   char         buffer[64];
+   unsigned int value;
+   if( (queryPipe("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
+       (sscanf(buffer, "%u", &value) == 1) ) {
+      count = value;
+   }
+#endif
+
+    return count;
 }
 
 
