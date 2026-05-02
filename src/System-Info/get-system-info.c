@@ -50,6 +50,8 @@
 #include <sys/sysinfo.h>
 #include <netpacket/packet.h>
 #elif defined(__FreeBSD__)
+#include <sys/sysctl.h>
+#include <sys/user.h>
 #include <net/if_dl.h>
 #include <sys/sysctl.h>
 #include <vm/vm_param.h>
@@ -305,7 +307,27 @@ static unsigned int obtainProcessCount()
    }
    closedir(dir);
 
-    // ====== Fallback ======================================================
+   // ====== FreeBSD: use sysctl to query the number of processes ===========
+#elif defined(__FreeBSD__)
+   // ------  Get memory size necessary to obtain the process list ----------
+   const int mib[3] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC};
+   size_t length = 0;
+   if(sysctl((const int*)&mib, 3, nullptr, &length, nullptr, 0) == 0) {
+      // The memory size is more than necessary for the process list, since
+      // the list may change. To obtain the process count, it is necessary
+      // to actually fetch the process list:
+      void* processList = malloc(length);
+      if(processList != nullptr) {
+         // ------ Obtain the process list ----------------------------------
+         if(sysctl(mib, 3, processList, &length, nullptr, 0) == 0) {
+            // The current process count is the number of entries fetched:
+            count = length / sizeof(struct kinfo_proc);
+         }
+         free(processList);
+      }
+   }
+
+   // ====== Fallback =======================================================
 #else
 #warning Using fallback solution for obtaining the process count!
    char         buffer[64];
