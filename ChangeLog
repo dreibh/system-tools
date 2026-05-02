@@ -1,3 +1,58 @@
+commit 36654bb504cbab4639bf10f3c0db74377827d809
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 2 12:49:52 2026 +0200
+
+    Updated PO files.
+
+commit 145ce262e83082abde2d18f7d93a5f6efd358d66
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 1 10:50:36 2026 +0200
+
+    Minor documentation update.
+
+commit da9726cada97a362d79646bd571ebb073d002178
+Merge: 207968b 0e95100
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 1 10:48:54 2026 +0200
+
+    Merge branch 'master' into dreibh/try-hard
+
+commit 0e951002782eb31ef52f095b13b339f8adc317be
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 1 10:42:37 2026 +0200
+
+    Small documentation fixes.
+
+commit 207968b9719c2180d4ab5fdd6b09e6628fef7aff
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 1 10:41:27 2026 +0200
+
+    Updated documentation.
+
+commit c88e839ba1ed98ea393c94aed0540085f39fc3ba
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 1 10:07:27 2026 +0200
+
+    Updated test scripts.
+
+commit df9305b4c914b4ea853a4554d77e4e5f25fb9c17
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 1 10:06:59 2026 +0200
+
+    Further improvements, including extension of shell completion support.
+
+commit a30c354f3bbe5ae1854610ee2b659860d41da8cc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 1 09:42:47 2026 +0200
+
+    Improved interval handling.
+
+commit c070bac327d9ac60f600433f78e1540686d1b93b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 30 16:26:25 2026 +0200
+
+    New release td-system-tools-2.4.4.
+
 commit 486d51640b16b885f9627cf6f4fbd5da0ff27e75
 Merge: 8d97ff8 0580eec
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -35,17 +90,37 @@ Date:   Sun Apr 26 21:37:27 2026 +0200
 
     Updated workflows.
 
+commit 7a1d502aa5050c6f65660fa0f1ecd4ba254b0c6a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 21:59:16 2026 +0200
+
+    Improved shell completion for random-sleep.
+
 commit eb6c803326080806a555aed4b1d0e71af5fb68ec
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Apr 25 21:35:32 2026 +0200
 
     Bugfix: Removed debug output.
 
+commit 42abde5426e68f8809b6cc2744b7839b2d515a43
+Merge: 97924e1 66329db
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 20:12:53 2026 +0200
+
+    Merge branch 'master' into dreibh/try-hard
+
 commit 66329dbebdb9799d11e3391362e005e3c16a487c
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Apr 25 19:56:26 2026 +0200
 
     New release td-system-tools-2.4.1.
+
+commit 97924e1c87fc4bf447e4845d2e37e59d58d5ffd9
+Merge: 9245309 339300f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 16:05:57 2026 +0200
+
+    Merge branch 'master' into dreibh/try-hard
 
 commit 339300fe809011ecd64f3365cec22737245ce81f
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -64,6 +139,18 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Apr 25 15:49:28 2026 +0200
 
     ShellCheck clean-up.
+
+commit 92453099f23605d1f77a366fdec5be8856201f2b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 15:38:59 2026 +0200
+
+    Further shell completion improvements.
+
+commit 50520a1050fcd0c015bbb5800bd1b496bd21a4fe
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 14:50:57 2026 +0200
+
+    Improved shell completion for try-hard.
 
 commit 9c2dd625c7254d52887eaa4e98c516fe971911e0
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -125,6 +212,18 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Apr 25 12:19:02 2026 +0200
 
     Bugfix: Consistent exit code on return from usage().
+
+commit 5282dc4812e621b16de0b45faa20fd5d507f04b2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 12:07:21 2026 +0200
+
+    Updated shell completion.
+
+commit 9a7b72e4bcef78cd9d773de6bb105ad6ff0ee8f3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 12:01:03 2026 +0200
+
+    Enhanced Try-Hard by delay randomisation and automatic delay increment.
 
 commit be05b3c1a17a05a1862d5cf811881aeeea686dc3
 Author: Thomas Dreibholz <dreibh@simula.no>
