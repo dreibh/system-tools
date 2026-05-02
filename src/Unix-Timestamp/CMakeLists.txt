@@ -29,61 +29,23 @@
 
 
 #############################################################################
-#### VERSION FILE                                                        ####
+#### PROGRAMS                                                            ####
 #############################################################################
 
-CONFIGURE_FILE (
-   "${CMAKE_CURRENT_SOURCE_DIR}/package-version.h.in"
-   "${CMAKE_CURRENT_BINARY_DIR}/package-version.h"
-   @ONLY
-)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+ADD_EXECUTABLE(time2unixts time2unixts.c)
+# SET_PROPERTY(TARGET time2unixts PROPERTY C_STANDARD 23)
+TARGET_LINK_LIBRARIES(time2unixts ${Intl_LIBRARIES})
+INSTALL(TARGETS     time2unixts   DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES       time2unixts.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       time2unixts.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      time2unixts)
 
-
-#############################################################################
-#### SUBDIRECTORIES                                                      ####
-#############################################################################
-
-IF (WITH_SYSTEM_INFO)
-   ADD_SUBDIRECTORY(System-Info)
-ENDIF()
-
-IF (WITH_SYSTEM_MAINTENANCE)
-   ADD_SUBDIRECTORY(System-Maintenance)
-ENDIF()
-
-IF (WITH_PRINT_UTF8)
-   ADD_SUBDIRECTORY(Print-UTF8)
-ENDIF()
-
-IF (WITH_TEXT_BLOCK)
-   ADD_SUBDIRECTORY(Text-Block)
-ENDIF()
-
-IF (WITH_FINGERPRINT_SSH_KEYS)
-   ADD_SUBDIRECTORY(Fingerprint-SSH-Keys)
-ENDIF()
-
-IF (WITH_CONFIGURE_GRUB)
-   ADD_SUBDIRECTORY(Configure-GRUB)
-ENDIF()
-
-IF (WITH_RESET_MACHINE_ID)
-   ADD_SUBDIRECTORY(Reset-Machine-ID)
-ENDIF()
-
-IF (WITH_TRY_HARD)
-   ADD_SUBDIRECTORY(Try-Hard)
-ENDIF()
-
-IF (WITH_RANDOM_SLEEP)
-   ADD_SUBDIRECTORY(Random-Sleep)
-ENDIF()
-
-IF (WITH_UNIX_TIMESTAMP_TOOLS)
-   ADD_SUBDIRECTORY(Unix-Timestamp)
-ENDIF()
-
-IF (WITH_X509_TOOLS)
-   ADD_SUBDIRECTORY(X509)
-ENDIF()
+ADD_EXECUTABLE(unixts2time unixts2time.c)
+# SET_PROPERTY(TARGET unixts2time PROPERTY C_STANDARD 23)
+TARGET_LINK_LIBRARIES(unixts2time ${Intl_LIBRARIES})
+INSTALL(TARGETS     unixts2time   DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES       unixts2time.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       unixts2time.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      unixts2time)

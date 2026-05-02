@@ -121,6 +121,7 @@ OPTION(WITH_CONFIGURE_GRUB        "Include Configure-GRUB"       1)
 OPTION(WITH_RESET_MACHINE_ID      "Include Reset-Machine-ID"     1)
 OPTION(WITH_TRY_HARD              "Include Try-Hard"             1)
 OPTION(WITH_RANDOM_SLEEP          "Include Random-Sleep"         1)
+OPTION(WITH_UNIX_TIMESTAMP_TOOLS  "Include Unix-Timestamp Tools" 1)
 OPTION(WITH_X509_TOOLS            "Include X509 Tools"           1)
 
 IF (WITH_SYSTEM_INFO AND NOT WITH_PRINT_UTF8)

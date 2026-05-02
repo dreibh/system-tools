@@ -108,6 +108,19 @@ Description: Apply modifications to text
  standard output or a given file. On the text, various modifications can be
  applied, according to the operation mode.
 
+Package: td-unixtimestamp-tools
+Architecture: any
+Depends: gettext-base,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: Unix timestamp conversion tools
+ This package contains two simple tools:
+ time2unixts converts a time string to an Unix timestamp.
+ unixts2time converts an Unix timestamp to a time string.
+ These tools support Unix timestamps (i.e. the time since
+ Jaunary 1, 1970, 00:00:00.000000000 UTC) in seconds,
+ milliseconds, microseconds, and nanoseconds.
+
 Package: td-try-hard
 Architecture: all
 Depends: gettext-base,
@@ -168,6 +181,7 @@ Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
          td-system-maintenance (>= ${source:Version}),
          td-text-block (>= ${source:Version}),
          td-try-hard (>= ${source:Version}),
+         td-unixtimestamp-tools (>= ${source:Version}),
          td-x509-tools (>= ${source:Version}),
          ${misc:Depends}
 Recommends: td-system-configure-grub

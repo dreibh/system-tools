@@ -1,0 +1,130 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" Unix Timestamp to Time Conversion
+.\" Copyright (C) 2026 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd April 24, 2026
+.Dt unixts2time 1
+.Os unixts2time
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm unixts2time
+.Nd converts Unix timestamps to date/time strings
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm unixts2time
+.Op unix_timestamp ...
+.br
+.Op Fl F | Fl Fl float
+.Op Fl I | Fl Fl integer
+.br
+.Op Fl H | Fl Fl human-readable
+.br
+.Op Fl s | Fl Fl seconds
+.Op Fl m | Fl Fl milliseconds
+.Op Fl u | Fl Fl microseconds
+.Op Fl n | Fl Fl nanoseconds
+.Nm unixts2time
+.Op Fl h | Fl Fl help
+.Nm unixts2time
+.Op Fl v | Fl Fl version
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm unixts2time
+converts Unix timestamps to date/time strings in the format %Y-%m-%d %H:%M:%S.SSSSSSSSS. A Unix timestamp is the time (nanoseconds, microseconds, milliseconds, or seconds) since the Unix Epoch, i.e. Jaunary 1, 1970, 00:00:00.000000000 UTC.
+.br
+By default, the timestamp-granularity is auto-detected using the following heuristic:
+.Bl -bullet -offset indent
+.It
+Seconds (s): from
+0 (1970-01-01 00:00:00) to 4999999999 = 5e9-1 (2128-06-11 08:53:19), and
+-1 (1969-12-31 23:59:59) to -4999999999 = -5e9 (1811-07-23 15:06:41);
+.It
+Milliseconds (ms): from
+5000000000 = 5e9 (1970-02-27 20:53:20,000) to 4999999999999 = 5e12-1 (2128-06-11 08:53:19,999), and
+-5000000000 = -5e9 (1969-11-04 03:06:40,000) to -4999999999999 = -5e12-1 (1811-07-23 15:06:410,999);
+.It
+Microseconds (µs) from
+5000000000000 = 5e12 (1970-02-27 20:53:20,000000) to 4999999999999999 = 5e15-1 (2128-06-11 08:53:19,999999), and
+-5000000000000 = 5e12 (1969-11-04 03:06:40,000000) to -4999999999999999 = 5e15-1 (1811-07-23 15:06:410,999999);
+.It
+Nanoseconds (ns) from
+5000000000000000 = 5e15 (1970-02-27 20:53:20,000000000), and
+-5000000000000000 = 5e15 (1969-11-04 03:06:40,000000000).
+.El
+That is, unless using dates around 1969/1970, ancient past, or distant future, the auto-detection should work reasonably well. Optionally, the timestamp granularity can be specified explicitly.
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It unix_timestamp ...
+The Unix timestamps to be converted. If no Unix timestamp is provided, the current system time is used.
+.It Fl F | Fl Fl float
+Parse the Unix timestamp as a floating-point number.
+.It Fl I | Fl Fl integer
+Parse the Unix timestamp as an integer number.
+A prefex of 0x is interpreted as hexadecimal (base 16),
+a prefex of 0 is interpreted as octal (base 8).
+Otherwise, the number is interpreted as decimal (base 10).
+.It Fl H | Fl Fl human-readable
+Provide the output in human-readable form. Default: off.
+.It Fl s | Fl Fl seconds
+The Unix timestamp is given in seconds. Default is auto-detection (see above).
+.It Fl m | Fl Fl milliseconds
+The Unix timestamp is given in milliseconds. Default is auto-detection (see above).
+.It Fl u | Fl Fl microseconds
+The Unix timestamp is given in microseconds. Default is auto-detection (see above).
+.It Fl n | Fl Fl nanoseconds
+The Unix timestamp is given in nanoseconds. Default is auto-detection (see above).
+.It Fl h | Fl Fl help
+Prints the program's command-line parameters and exits.
+.It Fl v | Fl Fl version
+Prints the program version and exits.
+.El
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It unixts2time
+.It unixts2time --human-readable
+.It unixts2time --human-readable --seconds 1773744755
+.It unixts2time --human-readable --seconds -- -1000000
+.It unixts2time --human-readable --milliseconds -- -442460258000
+.It unixts2time --human-readable --seconds 1773736279
+.It unixts2time --seconds 1 1000 1000000 1000000000 2000000000
+.It unixts2time -s 1773736279
+.It unixts2time --milliseconds 212847000000
+.It unixts2time -H 212847008123456789
+.It unixts2time 0x179cb2ae8af3dd89
+.It unixts2time -H 0x179cb2ae8af3dd89
+.It unixts2time -Fs 212847123.123
+.It unixts2time --version
+.It unixts2time --help
+.El
