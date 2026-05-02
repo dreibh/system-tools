@@ -50,6 +50,28 @@ _time2unixts()
       cword="${COMP_CWORD}"
    fi
 
+   # ====== Suggest dates as first parameter ================================
+   if [ "${cword}" -eq 1 ] ; then
+      local dateFormat="%Y-%m-%d %H:00:00.000000000"
+      local dateToday
+      local dateTomorrow
+      dateToday="$(date +"${dateFormat}")"
+      if date -d "tomorrow" +"${dateFormat}" >/dev/null 2>&1; then
+         dateTomorrow="$(date -d "tomorrow" +"${dateFormat}")"   # Linux
+      else
+         dateTomorrow="$(date -v+1d +"${dateFormat}")"           # FreeBSD
+      fi
+      local dateOptions=( "${dateToday}" "${dateTomorrow}" )
+
+      COMPREPLY=()
+      for item in "${dateOptions[@]}"; do
+         if [[ "${item}" == "${cur}"* ]]; then
+            COMPREPLY+=( "$(printf "%q" "${item}")" )
+         fi
+      done
+      return
+   fi
+
    # ====== All options =====================================================
    local opts="
 -F
