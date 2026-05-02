@@ -32,13 +32,18 @@
 set -euo pipefail
 
 
-MODEL="qwen3.6:35b"   # "aya-expanse:32b" "deepseek-r1:671b" "translategemma:27b" "ministral-3:14b" "qwen3.5:122b" "qwen3.6:35b"
-CONTEXT="You are an expert technical translator localizing a Unix (Linux, FreeBSD) system administration scripts. The target audience consists of technical users and sysadmins. Maintain standard Unix terminology in the target language for concepts like \"operating system\", \"network\", \"processes\", \"processor\", \"kernel\", \"swap\", \"uptime\", \"kernel\", \"load\", and \"mount points\", and topics like X.509 certificates, Unix epoch, as well as GIMP, GraphicsMagick, image processing. Strictly preserve all C-style formatting variables (such as \"%s\", \"%d\", \"%'d\", \"%1.1f\", \"%'6.0f\", \"%'5.1f\"), C-style escaping in the format strings (such as \"%%\" for the percent character), and Bash shell-style variables (such as \${now}, \${os_label}, \${system_release}, \${system_cores}, \${system_machine}, \${processesString}, \${usersString}), exactly.
-Particularly, exactly preserve the formatting pattern \"%'d\". Return ONLY the valid translation structure. Do not include any conversational text, greetings, explanations, or markdown notes. Output exactly what the parser expects."
+MODEL="qwen3.6:35b"   # "aya-expanse:32b" "deepseek-r1:671b" "translategemma:27b" "ministral-3:14b" "qwen3.5:122b" "qwen3.6:35b" "mistral-medium-3.5:128b"
+
+CONTEXT="You are an expert technical translator localizing a Unix (Linux, FreeBSD) system administration scripts. The target audience consists of technical users and sysadmins. Maintain standard Unix terminology in the target language for concepts like 'operating system', 'network', 'processes', 'processor', 'kernel', 'swap', 'uptime', 'kernel', 'load', and 'mount points', and topics like X.509 certificates, Unix epoch and timestamps.
+Strictly preserve all C-style formatting variables (such as '%s', '%d', '%1.1f') exactly.
+Strictly preserve all C-style escaping (such as '%%' for the percent character) exactly.
+Strictly preserve all shell variables (such as \${now}, \${os_label}, \${system_release}, \${system_cores}, \${system_machine}, \${processesString}, \${usersString}), exactly.
+Some error and warning messages begin with upper-case prefix 'ERROR:' or 'WARNING:'. Translate these prefixes as appropriate in the target language.
+Return ONLY the valid translation structure. Do not include any conversational text, greetings, explanations, or markdown notes. Output exactly what the parser expects."
 
 LANGUAGES="ar cs de el en es fa fr he hi id it ja ko nl pl pt ro ru tr uk vi zh"   # for "aya-expanse:32b"
 # LANGUAGES="ar be bg bn cs da de el en es et fa fi fr ga he hi hr hu is it ja ko lt lv mi mt nb nl nn no pl pt ro ru sk sl sq sr sv ta th tr uk zh"
-LANGUAGES="ar da sv he ru"
+LANGUAGES="ar he ru zh"
 
 PROGRAMS="System-Info"
 
@@ -112,9 +117,10 @@ for program in ${PROGRAMS} ; do
          --folder . \
          --lang   "${language}" \
          --ollama-timeout 300 \
-         --bulk --bulksize 16 \
          --verbose \
          --default-context "${CONTEXT}"
+
+         # --bulk --bulksize 6 \
 
    done
 done
