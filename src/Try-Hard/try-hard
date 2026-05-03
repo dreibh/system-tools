@@ -75,39 +75,43 @@ DETERMINISTIC=0
 while [ $# -gt 0 ] ; do
    case "$1" in
       -m | --min-delay)
-         MIN_DELAY="$2"
-         if [[ ! "${MIN_DELAY}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
-            eval_gettext >&2 "ERROR: Invalid delay value \$2!"
+         delayValue="$2"
+         if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+            eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
             echo >&2
             exit 1
          fi
+         MIN_DELAY="${delayValue}"
          shift 2
          ;;
       -A | --additive-increase)
-         ADDITIVE_INCREASE="$2"
-         if [[ ! "${ADDITIVE_INCREASE}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
-            eval_gettext >&2 "ERROR: Invalid delay value \$2!"
+         delayValue="$2"
+         if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+            eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
             echo >&2
             exit 1
          fi
+         ADDITIVE_INCREASE="${delayValue}"
          shift 2
          ;;
       -M | --multiplicative-increase)
-         MULTIPLICATIVE_INCREASE="$2"
-         if [[ ! "${MULTIPLICATIVE_INCREASE}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
-            eval_gettext >&2 "ERROR: Invalid delay value \$2!"
+         delayValue="$2"
+         if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+            eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
             echo >&2
             exit 1
          fi
+         MULTIPLICATIVE_INCREASE="${delayValue}"
          shift 2
          ;;
       -T | --truncate-delay)
-         TRUNCATE_DELAY="$2"
-         if [[ ! "${TRUNCATE_DELAY}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
-            eval_gettext >&2 "ERROR: Invalid delay value \$2!"
+         delayValue="$2"
+         if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+            eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
             echo >&2
             exit 1
          fi
+         TRUNCATE_DELAY="${delayValue}"
          shift 2
          ;;
       -D | --deterministic)
@@ -134,6 +138,12 @@ while [ $# -gt 0 ] ; do
          shift
          break
          ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
+         # shift
+         ;;
   esac
 done
 if [ $# -lt 3 ] ; then
@@ -146,12 +156,13 @@ if [[ ! "${MAX_TRIALS}" =~ ^[0-9]*$ ]] || [ "${MAX_TRIALS}" -lt 1 ] ; then
    echo >&2
    exit 1
 fi
-MAX_DELAY="$2"
-if [[ ! "${MAX_DELAY}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
-   eval_gettext >&2 "ERROR: Invalid delay value \$2!"
+delayValue="$2"
+if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+   eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
    echo >&2
    exit 1
 fi
+MAX_DELAY="${delayValue}"
 shift 2
 
 
