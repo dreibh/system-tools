@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-02 00:08+0200\n"
+"POT-Creation-Date: 2026-05-03 12:59+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -131,129 +131,129 @@ msgid_plural "%s users"
 msgstr[0] "%s Benutzer"
 msgstr[1] "%s Benutzer"
 
-#: src/System-Info/System-Info:270
+#: src/System-Info/System-Info:274
 msgctxt "The label of the field containing information about the processor (i.e. CPU) of the computer"
 msgid "Processor:"
 msgstr "Prozessor:"
 
-#: src/System-Info/System-Info:272
+#: src/System-Info/System-Info:276
 #, sh-format
-msgctxt "Combination of number of CPU cores (in variable 'system_cores') and details of the CPU of the computer (in variable 'system_machine') with details about processes (in variable 'processesString') and details about users (in variable 'usersString'), e.g. '8 × x86_64; 435 processes; 1 user'"
-msgid "${system_cores} × ${system_machine}; ${processesString}; ${usersString}"
-msgstr "${system_cores} × ${system_machine}; ${processesString}; ${usersString}"
+msgctxt "Combination of number of CPU cores (in variable 'systemCoresString') and details of the CPU of the computer (in variable 'systemMachineString') with details about processes (in variable 'processesString') and details about users (in variable 'usersString'), e.g. '8 × x86_64; 435 processes; 1 user'"
+msgid "${systemCoresString} × ${systemMachineString}; ${processesString}; ${usersString}"
+msgstr "${systemCoresString} × ${systemMachineString}; ${processesString}; ${usersString}"
 
-#: src/System-Info/System-Info:277
+#: src/System-Info/System-Info:281
 #, c-format
-msgctxt "The printf format string to print the load percentage of the computer over 1 minute (in variable 'system_load_avg1min') / 5 minutes (in variable 'system_load_avg5min') / 15 minutes (in variable 'system_load_avg15min'), e.g. '52.1% / 20.3% / 11.1%'"
+msgctxt "The printf format string to print the load percentage of the computer over 1 minute (in variable 'system_load_avg1min') / 5 minutes (in variable 'system_load_avg5min') / 15 minutes (in variable 'system_load_avg15min'), e.g. '52.1 % / 20.3 % / 11.1 %'. Note that the percent sign '%' needs to be escaped as '%% in the format string!"
 msgid "%1.1f %% / %1.1f %% / %1.1f %%"
 msgstr "%1.1f %% / %1.1f %% / %1.1f %%"
 
-#: src/System-Info/System-Info:281
+#: src/System-Info/System-Info:285
 msgctxt "The label of the field containing information about the system load percentages of the computer in the last 1 minute/5 minutes/15 minutes"
 msgid "Load (1/5/15 min):"
 msgstr "Last (1/5/15 Min.):"
 
-#: src/System-Info/System-Info:319
+#: src/System-Info/System-Info:323
 msgctxt "Battery status of the computer when the battery is unknown"
 msgid "unknown"
 msgstr "unbekannt"
 
-#: src/System-Info/System-Info:323
+#: src/System-Info/System-Info:327
 msgctxt "Battery status of the computer when the battery is not charging"
 msgid "not charging"
 msgstr "lädt nicht"
 
-#: src/System-Info/System-Info:326
+#: src/System-Info/System-Info:330
 msgctxt "Battery status of the computer when the battery is charging"
 msgid "charging"
 msgstr "lädt"
 
-#: src/System-Info/System-Info:329
+#: src/System-Info/System-Info:333
 msgctxt "Battery status of the computer when the battery is fully charged"
 msgid "full"
 msgstr "vollständig aufgeladen"
 
-#: src/System-Info/System-Info:333
+#: src/System-Info/System-Info:337
 msgctxt "Battery status of the computer when the battery is discharging"
 msgid "discharging"
 msgstr "entlädt"
 
-#: src/System-Info/System-Info:341
+#: src/System-Info/System-Info:345
 #, sh-format
 msgctxt "Combination of battery number (in variable 'batteryNumber'), battery status (in variable 'batteryStatus'), and battery capacity in percent (in variable 'batteryCapacity'), e.g. '#1 charging, 87 %'"
 msgid "#${batteryNumber} ${batteryStatus}, ${batteryCapacity} %"
 msgstr "${batteryNumber}. ${batteryStatus}, ${batteryCapacity} %"
 
-#: src/System-Info/System-Info:345
+#: src/System-Info/System-Info:349
 msgctxt "The label of the field containing information about the battery of the computer"
 msgid "Battery:"
 msgstr "Batterie:"
 
-#: src/System-Info/System-Info:354
+#: src/System-Info/System-Info:358
 #, c-format
 msgctxt "The printf format string to print the details about the system's memory (RAM) in MiB: used size, total size, available size and available size in percent. Example: '9969 MiB of  31941 MiB ( 21972 MiB available:  68.8 %)'"
 msgid "%s MiB of %s MiB (%s MiB available: %s %%)"
 msgstr "%s MiB von %s MiB (%s MiB verfügbar: %s %%)"
 
-#: src/System-Info/System-Info:358
+#: src/System-Info/System-Info:362
 msgctxt "The label of the field containing information about the used memory (RAM) of the computer"
 msgid "Used Memory:"
 msgstr "Belegtes RAM:"
 
-#: src/System-Info/System-Info:367
+#: src/System-Info/System-Info:371
 #, c-format
 msgctxt "The printf format string to print the details about the system's swap space in MiB: used size, total size, available size and available size in percent. Example: '1317 MiB of   8191 MiB (  6874 MiB available:  83.9 %)'"
 msgid "%s MiB of %s MiB (%s MiB available: %s %%)"
 msgstr "%s MiB von %s MiB (%s MiB verfügbar: %s %%)"
 
-#: src/System-Info/System-Info:371 src/System-Info/System-Info:380
+#: src/System-Info/System-Info:375 src/System-Info/System-Info:384
 msgctxt "The label of the field containing information about the used swap space of the computer"
 msgid "Used Swap:"
 msgstr "Belegter Swap:"
 
-#: src/System-Info/System-Info:381
+#: src/System-Info/System-Info:385
 msgctxt "Text to print when the computer has no swap space"
 msgid "no swap available!"
 msgstr "Swap nicht vorhanden!"
 
-#: src/System-Info/System-Info:413
+#: src/System-Info/System-Info:417
 #, c-format
 msgctxt "The printf format string to print the usage percentage of storage at a mount point, e.g. '88 % on /home', or '92 % on /tmp'"
 msgid "%1.0f %% on %s"
 msgstr "%1.0f %% auf %s"
 
-#: src/System-Info/System-Info:419
+#: src/System-Info/System-Info:423
 msgctxt "The label of the field containing information about the used disk space of the computer"
 msgid "Used Diskspace:"
 msgstr "Speicherplatz:"
 
-#: src/System-Info/System-Info:428
+#: src/System-Info/System-Info:432
 msgctxt "The label of the field containing information about the network interfaces of the computer"
 msgid "Network:"
 msgstr "Netzwerk:"
 
-#: src/System-Info/System-Info:455
+#: src/System-Info/System-Info:459
 msgctxt "Text to print when the network interface of the computer has no IPv4 addresses"
 msgid "(No IPv4)"
 msgstr "(Kein IPv4)"
 
-#: src/System-Info/System-Info:493
+#: src/System-Info/System-Info:497
 msgctxt "The label of the field containing information about the SSH keys of the computer"
 msgid "SSH Keys:"
 msgstr "SSH-Schlüssel:"
 
-#: src/System-Info/System-Info:500
+#: src/System-Info/System-Info:504
 #, sh-format
 msgctxt "Combination of SSH key number (in variable 'keyNumber') and SSH key information (in variable 'keyInfo'), e.g. '#3 SHA256:mcAJ7V/RbRzk89lkMx1rnA1qgiRWkMttHEiKvWJOBqU (RSA 16384)')"
 msgid "#${keyNumber} ${keyInfo}"
 msgstr "${keyNumber}. ${keyInfo}"
 
-#: src/System-Info/System-Info:513
+#: src/System-Info/System-Info:517
 msgctxt "Text to prepend the usage syntax when calling the program without parameters, e.g. 'Usage: program arg1 arg2 [options ...]'"
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/System-Info/System-Info:568
+#: src/System-Info/System-Info:572
 #, sh-format
 msgctxt "Title text for system information with date/time (in variable 'now'), e.g. 'System information on Sun Apr 19 17:04:33 CEST 2026'"
 msgid "System information on ${now}"

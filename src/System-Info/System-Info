@@ -263,18 +263,22 @@ function print-system-information ()
    # xgettext: c-format
    usersFormat="$(ngettext --context="The printf format string to print the users of the computer, e.g. '1 user', or '3 users'" "%s user" "%s users" "${system_users}")"
    # shellcheck disable=SC2034,SC2059
-   usersString="$(printf "${usersFormat}" "${system_users}")"
+   usersString="$(printf "${usersFormat}" "$(printf "%'d" "${system_users}")")"
+   # shellcheck disable=SC2034
+   systemCoresString="$(printf "%'d" "${system_cores}")"
+   # shellcheck disable=SC2034
+   systemMachineString="${system_machine}"
 
    # shellcheck disable=SC2034,SC2059
    add-table-row \
       "$(gettext --context="The label of the field containing information about the processor (i.e. CPU) of the computer" "Processor:")" \
-      "$(eval_pgettext "Combination of number of CPU cores (in variable 'system_cores') and details of the CPU of the computer (in variable 'system_machine') with details about processes (in variable 'processesString') and details about users (in variable 'usersString'), e.g. '8 × x86_64; 435 processes; 1 user'" \
-         "\${system_cores} × \${system_machine}; \${processesString}; \${usersString}"
+      "$(eval_pgettext "Combination of number of CPU cores (in variable 'systemCoresString') and details of the CPU of the computer (in variable 'systemMachineString') with details about processes (in variable 'processesString') and details about users (in variable 'usersString'), e.g. '8 × x86_64; 435 processes; 1 user'" \
+         "\${systemCoresString} × \${systemMachineString}; \${processesString}; \${usersString}"
        )"
 
    # ------ Load ------------------------------------------------------------
    # xgettext: c-format
-   loadFormat="$(gettext --context="The printf format string to print the load percentage of the computer over 1 minute (in variable 'system_load_avg1min') / 5 minutes (in variable 'system_load_avg5min') / 15 minutes (in variable 'system_load_avg15min'), e.g. '52.1% / 20.3% / 11.1%'" "%1.1f %% / %1.1f %% / %1.1f %%")"
+   loadFormat="$(gettext --context="The printf format string to print the load percentage of the computer over 1 minute (in variable 'system_load_avg1min') / 5 minutes (in variable 'system_load_avg5min') / 15 minutes (in variable 'system_load_avg15min'), e.g. '52.1 % / 20.3 % / 11.1 %'. Note that the percent sign '%' needs to be escaped as '%% in the format string!" "%1.1f %% / %1.1f %% / %1.1f %%")"
 
    # shellcheck disable=SC2059
    add-table-row \
