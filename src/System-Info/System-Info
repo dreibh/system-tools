@@ -578,7 +578,6 @@ echo
 # => prepare it in background, while printing other information.
 # shellcheck disable=SC2086
 (
-   echo
    print-system-information
 ) 2>&1 | (
    print-banners ${scriptDirectories}
