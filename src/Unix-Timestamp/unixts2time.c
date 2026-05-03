@@ -89,8 +89,6 @@ int main(int argc, char** argv)
 
    // ====== Handle arguments ===============================================
    const static struct option long_options[] = {
-      { "float",          no_argument, 0, 'F' },
-      { "integer",        no_argument, 0, 'I' },
       { "human-readable", no_argument, 0, 'H' },
       { "seconds",        no_argument, 0, 's' },
       { "milliseconds",   no_argument, 0, 'm' },
@@ -103,18 +101,11 @@ int main(int argc, char** argv)
 
    int          option;
    int          longIndex;
-   bool         useInteger    = true;
    bool         humanReadable = false;
    unsigned int divideBy      = 0;         // auto-detect later
    const char*  unit          = nullptr;   // auto-detect later
-   while( (option = getopt_long(argc, argv, "FIHsmunvh", long_options, &longIndex)) != -1 ) {
+   while( (option = getopt_long(argc, argv, "Hsmunvh", long_options, &longIndex)) != -1 ) {
       switch(option) {
-         case 'F':
-            useInteger = false;
-          break;
-         case 'I':
-            useInteger = true;
-          break;
          case 'H':
             humanReadable = true;
           break;
@@ -174,9 +165,10 @@ int main(int argc, char** argv)
 
       // ====== Parse the next Unix timestamp ===============================
       else {
+         // ------ Try to parse integer -------------------------------------
          char* endptr;
-         if(useInteger) {
-            unixTS = strtoll(argv[i], &endptr, 0);
+         unixTS = strtoll(argv[i], &endptr, 0);
+         if( (endptr != nullptr) && (*endptr == 0x00) ) {
             if(divideBy == 0) {
                if( (unixTS > -5000000000LL) && (unixTS < 5000000000LL) ) {
                   divideBy = 1000000000;
@@ -197,14 +189,16 @@ int main(int argc, char** argv)
             }
             unixTS *= divideBy;   // convert to ns
          }
+
+         // ------ Try to parse double --------------------------------------
          else {
             const double unixTSasDouble = strtod(argv[i], &endptr);
             unixTS = unixTSasDouble * divideBy;
-         }
-         if( (endptr == nullptr) || (*endptr != 0x00) ) {
-            fputs(gettext("ERROR: Invalid Unix timestamp!"), stderr);
-            fputs("\n", stderr);
-            exit(1);
+            if( (endptr == nullptr) || (*endptr != 0x00) ) {
+               fputs(gettext("ERROR: Invalid Unix timestamp!"), stderr);
+               fputs("\n", stderr);
+               exit(1);
+            }
          }
       }
 
