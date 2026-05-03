@@ -194,7 +194,7 @@ Description: Metapackage for basic system tools sub-packages
 Package: td-system-tools-complete
 Architecture: all
 Depends: td-gimp-scripts (>= ${source:Version}),
-Depends: td-system-tools-basic (>= ${source:Version}),
+         td-system-tools-basic (>= ${source:Version}),
          ${misc:Depends}
 Description: Metapackage for complete system tools sub-packages
  This package is a metapackage for the system information and maintenance
