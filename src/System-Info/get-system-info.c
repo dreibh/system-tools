@@ -49,11 +49,13 @@
 #include <sys/utsname.h>
 #if defined(__linux)
 #include <dirent.h>
+#include <linux/if.h>
 #include <netpacket/packet.h>
 #include <sys/sysinfo.h>
 #elif defined(__FreeBSD__)
 #include <dev/acpica/acpiio.h>
 #include <net/if_dl.h>
+#include <netlink/route/interface.h>
 #include <sys/ioctl.h>
 #include <sys/sysctl.h>
 #include <sys/user.h>
@@ -75,14 +77,8 @@
 #define ngettext(singular, plural, n) ((n) == 1 ? (singular) : (plural))
 #endif
 
-// FIXME: For some reasons, IFF_LOWER_UP seems to be undefined here.
-#if defined(__linux)
-#define IFF_LOWER_UP (1 << 16)
-#elif defined(__FreeBSD__)
-#include <netlink/route/interface.h>
-#endif
-
 #include "package-version.h"
+
 
 // Compatibility version of get-system-info, to allow for future changes:
 // Currently, there is just version 0.
