@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-02 12:41+0200\n"
+"POT-Creation-Date: 2026-05-03 10:48+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -50,7 +50,6 @@ msgstr "Aufruf:"
 
 #: src/Try-Hard/try-hard:80 src/Try-Hard/try-hard:89 src/Try-Hard/try-hard:98
 #: src/Try-Hard/try-hard:107 src/Try-Hard/try-hard:151
-#, sh-format
 msgid "ERROR: Invalid delay value $2!"
 msgstr "FEHLER: Ungültige Verzögerung $2!"
 
