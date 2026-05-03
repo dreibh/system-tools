@@ -218,18 +218,18 @@ int main(int argc, char** argv)
       else {
          const char* format;
          if(divideBy == 1000000000) {
-            format = "%1.9f";
+            format = "%1.9Lf";
          }
          else if(divideBy == 1000000) {
-            format = "%1.6f";
+            format = "%1.6Lf";
          }
          else if(divideBy == 1000) {
-            format = "%1.3f";
+            format = "%1.3Lf";
          }
          else {
-            format = "%1.0f";
+            format = "%1.0Lf";
          }
-         printf(format, (double)unixTS / (double)divideBy);
+         printf(format, (long double)unixTS / (long double)divideBy);
       }
       if(humanReadable) {
          printf(gettext(" %s since the Unix Epoch"), unit);
