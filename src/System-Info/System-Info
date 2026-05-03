@@ -253,7 +253,7 @@ function print-system-information ()
    # ------ Operating System ------------------------------------------------
    add-table-row \
       "$(gettext --context="The label of the field containing the operating system of the computer" "Operating System:")" \
-      "$(eval_pgettext "Combination of operating system information (in variable 'os_label') and kernel release information (in variable 'system_release'), e.g. 'Ubuntu 24.04 with kernel 6.17.0-20-generic'." "\${os_label} with kernel \${system_release}")"
+      "$(eval_pgettext "Combination of operating system information (in variable \${os_label} and kernel release information (in variable \${system_release}), e.g. 'Ubuntu 24.04 with kernel 6.17.0-20-generic'." "\${os_label} with kernel \${system_release}")"
 
    # ------ Processor -------------------------------------------------------
    # xgettext: c-format
@@ -272,13 +272,13 @@ function print-system-information ()
    # shellcheck disable=SC2034,SC2059
    add-table-row \
       "$(gettext --context="The label of the field containing information about the processor (i.e. CPU) of the computer" "Processor:")" \
-      "$(eval_pgettext "Combination of number of CPU cores (in variable 'systemCoresString') and details of the CPU of the computer (in variable 'systemMachineString') with details about processes (in variable 'processesString') and details about users (in variable 'usersString'), e.g. '8 × x86_64; 435 processes; 1 user'" \
+      "$(eval_pgettext "Combination of number of CPU cores (in variable \${systemCoresString}) and details of the CPU of the computer (in variable \${systemMachineString}) with details about processes (in variable \${processesString}) and details about users (in variable \${usersString}), e.g. '8 × x86_64; 435 processes; 1 user'" \
          "\${systemCoresString} × \${systemMachineString}; \${processesString}; \${usersString}"
        )"
 
    # ------ Load ------------------------------------------------------------
    # xgettext: c-format
-   loadFormat="$(gettext --context="The printf format string to print the load percentage of the computer over 1 minute (in variable 'system_load_avg1min') / 5 minutes (in variable 'system_load_avg5min') / 15 minutes (in variable 'system_load_avg15min'), e.g. '52.1 % / 20.3 % / 11.1 %'. Note that the percent sign '%' needs to be escaped as '%% in the format string!" "%1.1f %% / %1.1f %% / %1.1f %%")"
+   loadFormat="$(gettext --context="The printf format string to print the load percentage of the computer over 1 minute (in variable \${system_load_avg1min}) / 5 minutes (in variable \${system_load_avg5min}) / 15 minutes (in variable \${system_load_avg15min}), e.g. '52.1 % / 20.3 % / 11.1 %'. Note that the percent sign '%' needs to be escaped as '%% in the format string!" "%1.1f %% / %1.1f %% / %1.1f %%")"
 
    # shellcheck disable=SC2059
    add-table-row \
@@ -341,7 +341,7 @@ function print-system-information ()
          # shellcheck disable=SC2034
          batteryCapacity="${!batteryCapacityVariable}"
 
-         batterySummary+=( "${separator}${colorBattery}$(eval_pgettext "Combination of battery number (in variable 'batteryNumber'), battery status (in variable 'batteryStatus'), and battery capacity in percent (in variable 'batteryCapacity'), e.g. '#1 charging, 87 %'" \
+         batterySummary+=( "${separator}${colorBattery}$(eval_pgettext "Combination of battery number (in variable \${batteryNumber}), battery status (in variable \${batteryStatus}), and battery capacity in percent (in variable \${batteryCapacity}), e.g. '#1 charging, 87 %'" \
             "#\${batteryNumber} \${batteryStatus}, \${batteryCapacity} %")${colorBasic}" )
       done
 
@@ -500,7 +500,7 @@ function print-ssh-key-fingerprints ()
             fi
             add-table-row \
                "${label}" \
-               "$(eval_pgettext "Combination of SSH key number (in variable 'keyNumber') and SSH key information (in variable 'keyInfo'), e.g. '#3 SHA256:mcAJ7V/RbRzk89lkMx1rnA1qgiRWkMttHEiKvWJOBqU (RSA 16384)')" \
+               "$(eval_pgettext "Combination of SSH key number (in variable \${keyNumber}) and SSH key information (in variable \${keyInfo}), e.g. '#3 SHA256:mcAJ7V/RbRzk89lkMx1rnA1qgiRWkMttHEiKvWJOBqU (RSA 16384)')" \
                   "#\${keyNumber} \${keyInfo}"
                )"
             keyNumber=$((keyNumber+1))
@@ -569,7 +569,7 @@ fi
 # ====== Startup ============================================================
 # shellcheck disable=SC2059
 echo
-eval_pgettext "Title text for system information with date/time (in variable 'now'), e.g. 'System information on Sun Apr 19 17:04:33 CEST 2026'" "System information on \${now}"
+eval_pgettext "Title text for system information with date/time (in variable \${now}), e.g. 'System information on Sun Apr 19 17:04:33 CEST 2026'" "System information on \${now}"
 echo
 echo
 
