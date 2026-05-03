@@ -33,32 +33,31 @@
 #include <ifaddrs.h>
 #include <locale.h>
 #include <netdb.h>
+#include <netinet/in.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <utmpx.h>
 #include <arpa/inet.h>
 #include <net/if.h>
-#include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/statvfs.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
-#include <utmpx.h>
 #if defined(__linux)
 #include <dirent.h>
-#include <sys/sysinfo.h>
 #include <netpacket/packet.h>
+#include <sys/sysinfo.h>
 #elif defined(__FreeBSD__)
+#include <dev/acpica/acpiio.h>
+#include <net/if_dl.h>
 #include <sys/ioctl.h>
 #include <sys/sysctl.h>
 #include <sys/user.h>
-#include <net/if_dl.h>
-#include <sys/sysctl.h>
 #include <vm/vm_param.h>
-#include <dev/acpica/acpiio.h>
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
