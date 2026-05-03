@@ -112,6 +112,14 @@ if [ ! -x "${FIGLET}" ] ; then
    echo >&2 "* FreeBSD: sudo pkg install -y figlet"
    exit 1
 fi
+GAWK="$(which gawk 2>/dev/null || true)"
+if [ ! -x "${GAWK}" ] ; then
+   echo >&2 "ERROR: Figlet is not installed!"
+   echo >&2 "* Ubuntu:  sudo apt install -y gawk"
+   echo >&2 "* Fedora:  sudo dnf install -y gawk"
+   echo >&2 "* FreeBSD: sudo pkg install -y gawk"
+   exit 1
+fi
 
 
 # ====== Test timestamp tool ================================================
@@ -478,20 +486,20 @@ EOF
 
          # ====== Check float handling ======================================
          if [ "${unit}" == "Nanoseconds" ] ; then
-            unixTSasFloat="$(awk "BEGIN { printf(\"%1.9f\", ${unixTS}); }")"
+            unixTSasFloat="$("${GAWK}" --bignum "BEGIN { printf(\"%1.9f\", ${unixTS}); }")"
          elif [ "${unit}" == "Microseconds" ] ; then
-            unixTSasFloat="$(awk "BEGIN { printf(\"%1.6f\", ${unixTS}); }")"
+            unixTSasFloat="$("${GAWK}" --bignum "BEGIN { printf(\"%1.6f\", ${unixTS}); }")"
          elif [ "${unit}" == "Milliseconds" ] ; then
-            unixTSasFloat="$(awk "BEGIN { printf(\"%1.3f\", ${unixTS}); }")"
+            unixTSasFloat="$("${GAWK}" --bignum "BEGIN { printf(\"%1.3f\", ${unixTS}); }")"
          elif [ "${unit}" == "Seconds" ] ; then
-            unixTSasFloat="$(awk "BEGIN { printf(\"%1.0f.0\", ${unixTS}); }")"
+            unixTSasFloat="$("${GAWK}" --bignum "BEGIN { printf(\"%1.0f.0\", ${unixTS}); }")"
          else
             echo >&2 "ERROR: Unexpected unit ${unit}!"
             exit 1
          fi
 
          echo "Checking ${unixTSasFloat} <-> ${dateTime}"
-         if awk "BEGIN { exit ( ${computedUnixTS} == ${unixTSasFloat} ? 1 : 0) }" ; then
+         if "${GAWK}" "BEGIN { exit ( ${computedUnixTS} == ${unixTSasFloat} ? 1 : 0) }" ; then
             echo "Test 2.A"
             echo "Input:      ${dateTime}"
             echo "From table: ${computedUnixTS}"
@@ -510,7 +518,7 @@ EOF
          fi
 
          computedUnixTSfromFloat="$(./time2unixts --float --"${unit,,}" "${dateTime}")"
-         if awk "BEGIN { exit ( ${computedUnixTSfromFloat} == ${unixTSasFloat} ? 1 : 0) }" ; then
+         if "${GAWK}" "BEGIN { exit ( ${computedUnixTSfromFloat} == ${unixTSasFloat} ? 1 : 0) }" ; then
             echo "Test 2.C"
             echo "Input:      ${dateTime}"
             echo "Unit:       ${unit}"
