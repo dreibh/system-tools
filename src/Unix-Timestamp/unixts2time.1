@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 3, 2026
 .Dt unixts2time 1
 .Os unixts2time
 .\" ###### Name #############################################################
@@ -40,17 +40,15 @@
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm unixts2time
-.Op unix_timestamp ...
-.br
-.Op Fl F | Fl Fl float
-.Op Fl I | Fl Fl integer
-.br
 .Op Fl H | Fl Fl human-readable
 .br
 .Op Fl s | Fl Fl seconds
 .Op Fl m | Fl Fl milliseconds
 .Op Fl u | Fl Fl microseconds
 .Op Fl n | Fl Fl nanoseconds
+.br
+unix_timestamp
+.Op ...
 .Nm unixts2time
 .Op Fl h | Fl Fl help
 .Nm unixts2time

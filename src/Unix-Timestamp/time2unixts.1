@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 3, 2026
 .Dt time2unixts 1
 .Os time2unixts
 .\" ###### Name #############################################################
@@ -40,8 +40,6 @@
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm time2unixts
-.Op time_string ...
-.br
 .Op Fl F | Fl Fl float
 .Op Fl I | Fl Fl integer-decimal
 .Op Fl X | Fl Fl integer-hexadecimal
@@ -53,6 +51,9 @@
 .Op Fl m | Fl Fl milliseconds
 .Op Fl u | Fl Fl microseconds
 .Op Fl n | Fl Fl nanoseconds
+.br
+time_string
+.Op ...
 .Nm time2unixts
 .Op Fl h | Fl Fl help
 .Nm time2unixts
