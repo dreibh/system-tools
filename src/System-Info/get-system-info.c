@@ -27,6 +27,7 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#include <fcntl.h>
 #include <getopt.h>
 #include <ifaddrs.h>
 #include <locale.h>
@@ -47,9 +48,11 @@
 #include <sys/sysinfo.h>
 #include <netpacket/packet.h>
 #elif defined(__FreeBSD__)
+#include <sys/ioctl.h>
 #include <net/if_dl.h>
 #include <sys/sysctl.h>
 #include <vm/vm_param.h>
+#include <dev/acpica/acpiio.h>
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
@@ -347,8 +350,10 @@ static void showBatteryInformation()
    unsigned int       batteries    = 0;
    unsigned int       batteryIDs[maxBatteries];
 
+   // ====== Linux: Obtain battery status via /sys file system ==============
 #if defined(__linux)
    for(unsigned int i = 0; i < maxBatteries; i++) {
+      // ------ Obtain status of battery unit -------------------------------
       char capacityFileName[64];
       char capacityBuffer[64];
       unsigned int capacity;
@@ -362,6 +367,8 @@ static void showBatteryInformation()
          if( (queryFile(statusFileName, (char*)&statusBuffer, sizeof(statusBuffer))) &&
              (statusEnd = index(statusBuffer, '\n')) ) {
             *statusEnd = 0x00;
+
+            // ------ Extract status as status code -------------------------
             int status = 0;   // Unknown
             if(strcmp(statusBuffer, "Not charging") == 0) {
                status = 1;    // Not charging
@@ -375,6 +382,8 @@ static void showBatteryInformation()
             else if(strcmp(statusBuffer, "Discharging") == 0) {
                status = 4;    // Discharging
             }
+
+            // ------ Print battery status and capacity ---------------------
             printf("battery_%u_status=%u\n",   i, status);
             printf("battery_%u_capacity=%u\n", i, capacity);
             batteryIDs[batteries++] = i;
@@ -382,20 +391,51 @@ static void showBatteryInformation()
       }
    }
 
+   // ====== FreeBSD: Obtain battery status via ACPI device ioctls ==========
 #elif defined(__FreeBSD__)
-   char batteryInfoQuery[64];
-   char batteryInfo[4096];
-   for(unsigned int i = 0; i < maxBatteries; i++) {
-      snprintf((char*)&batteryInfoQuery, sizeof(batteryInfoQuery),
-               "acpiconf -i%u 2>/dev/null", i);
-      if( queryPipe(batteryInfoQuery, (char*)&batteryInfo, sizeof(batteryInfo)) ) {
-         const char* r = (const char*)&batteryInfo;
-         do {
-            printf("x");
-            r = index(r, '\n');
-         } while(r++ != nullptr);
-         batteryIDs[batteries++] = i;
+   int acpiFD = open("/dev/acpi", O_RDONLY);
+   if(acpiFD >= 0) {
+      unsigned int batteryUnits = 0;
+      if(ioctl(acpiFD, ACPIIO_BATT_GET_UNITS, &batteryUnits) == 0) {
+         for(unsigned int i = 0; i < batteryUnits; i++) {
+
+            // ------ Obtain status of battery unit -------------------------
+            union acpi_battery_ioctl_arg batteryInfo;
+            memset(&batteryInfo, 0, sizeof(batteryInfo));
+            batteryInfo.unit = i;
+            if(ioctl(acpiFD, ACPIIO_BATT_GET_BATTINFO, &batteryInfo) == 0) {
+
+               // ------ Extract status as status code ----------------------
+               unsigned int status = 0;   // Unknown
+               if(batteryInfo.battinfo.state != ACPI_BATT_STAT_NOT_PRESENT) {
+                  if(batteryInfo.battinfo.state == 0) {
+                     status = 3;   // Full
+                  }
+                  else {
+                     if(batteryInfo.battinfo.state & ACPI_BATT_STAT_CHARGING) {
+                        status = 2;   // Charging
+                     }
+                     else if(batteryInfo.battinfo.state & ACPI_BATT_STAT_DISCHARG) {
+                        status = 4;   // Discharging
+                     }
+                     else {
+                        status = 1;   // Not charging
+                     }
+                  }
+               }
+               const unsigned int capacity = batteryInfo.battinfo.cap;
+
+               // ------ Print battery status and capacity ------------------
+               printf("battery_%u_status=%u\n",   i, status);
+               printf("battery_%u_capacity=%u\n", i, capacity);
+               batteryIDs[batteries++] = i;
+               if(batteries == maxBatteries) {
+                  break;
+               }
+            }
+         }
       }
+      close(acpiFD);
    }
 #endif
 
