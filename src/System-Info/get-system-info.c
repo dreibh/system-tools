@@ -46,6 +46,7 @@
 #include <sys/statvfs.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
+#include <utmpx.h>
 #if defined(__linux)
 #include <dirent.h>
 #include <sys/sysinfo.h>
@@ -352,13 +353,19 @@ static unsigned int obtainProcessCount()
 // ###### Obtain the number of users on the system ##########################
 static unsigned int obtainUserCount()
 {
-   char         buffer[64];
-   unsigned int count;
-   if( (queryPipe("who | cut -d' ' -f1 | sort -ud | wc -l", (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &count) == 1) ) {
-      return count;
+   unsigned int count = 0;
+
+   // Count the number of user sessions, the same as "who | wc -l":
+   setutxent();
+   struct utmpx* utx;
+   while( (utx = getutxent()) != nullptr ) {
+      if(utx->ut_type == USER_PROCESS) {
+         count++;
+      }
    }
-   return 0;
+   endutxent();
+
+   return count;
 }
 
 
