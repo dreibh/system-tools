@@ -1,3 +1,144 @@
+commit ba809d9c966bbdba649ddb477969f0877219ea72
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 13:38:06 2026 +0200
+
+    Removed superflous newline.
+
+commit bbc77c80753ab469d109b665cc5ace1a36b4d4c5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 13:16:25 2026 +0200
+
+    Got rid of a work-around for missing declaration of IFF_LOWER_UP.
+
+commit 641158be64a17e33dd89a7c35c886b9dd736421a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 13:14:59 2026 +0200
+
+    Cleaned up the includes list.
+
+commit bab735616476bcf607d8101d4ad26e064e454791
+Merge: 2d2e15a de351d4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 13:09:13 2026 +0200
+
+    Merge branch 'dreibh/users'
+
+commit 2d2e15af16fadd0005048cd6b1a11969da4f2edf
+Merge: 0262eb2 17a2ccc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 13:08:46 2026 +0200
+
+    Merge branch 'dreibh/storage'
+
+commit 0262eb287e8acb7adc948133b34ac3602bacf094
+Merge: 8063158 5f3c581
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 13:07:50 2026 +0200
+
+    Merge branch 'dreibh/battery'
+
+commit 806315898f7d36cb01cbf0e6d03e4f2c449e69a8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 11:25:22 2026 +0200
+
+    Options handling improvements.
+
+commit 82650d1d9a28a6c8d2fbd1aea31f3728f0ddef65
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 11:09:45 2026 +0200
+
+    Improved Print-UTF8 tests.
+
+commit ca111844438da6cf08643ac39fb7541e7a287bdf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 10:35:39 2026 +0200
+
+    Bugfix: eval_gettext does not handle positional parameters.
+
+commit de351d4a85b5dc64b815437fbfda6e7c9dbba43c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 10:01:48 2026 +0200
+
+    Code clean-up.
+
+commit ddb45b1da13f3022d0b3a7244945381934419e64
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 09:59:17 2026 +0200
+
+    Improved function to obtain the number of users, with output like "who | wc -l".
+
+commit 17a2ccc249a2b180008b8f6470a81a384b4d1073
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 09:44:33 2026 +0200
+
+    Added option to set compatibility version for get-system-info, to allow for future changes.
+
+commit 5f3c5816f833b91de9ddf7f6aa44ff3a15823a59
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 2 18:16:31 2026 +0200
+
+    Properly obtaining battery status under FreeBSD.
+
+commit b2287bc66faf130c5d0e0f0f37b89b33840b5018
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 2 17:38:30 2026 +0200
+
+    Improved FreeBSD battery status detection.
+
+commit c707f65888c464e6b886583dfd00fd6218f3040d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 2 16:54:13 2026 +0200
+
+    Added FreeBSD code to obtain the number of processes.
+
+commit a126eedb17d826b9d03f60572d36367ea71d6094
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 2 16:30:12 2026 +0200
+
+    Improved code to obtain the number of processes.
+
+commit d3bad7faf450b80b02a6d86837d9199ab7249b72
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 2 16:19:58 2026 +0200
+
+    Minor FreeBSD clean-up.
+
+commit 9f63e3a6638eb621b94091bb41746c30f2a9ebc1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 2 16:18:32 2026 +0200
+
+    Further code clean-ups.
+
+commit 5853f842dc3a3c4374b6fffa0552863979d0639b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 2 16:11:55 2026 +0200
+
+    Some code clean-ups.
+
+commit 68474db98a2035a10ee8c1679aa6fdbe1aa61596
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 2 15:46:46 2026 +0200
+
+    FreeBSD fix.
+
+commit 45aed580fcd6785eff9e0378ea9b751734c0d8e8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 2 15:16:22 2026 +0200
+
+    Obtain disk usage information by statvfs() call.
+
+commit 96ab0bc9fa507caef780edcd95d157e69b7a8962
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 2 14:13:30 2026 +0200
+
+    Minor README.md update.
+
+commit 5500036f5080778261dbe2bd8834c8f8eb1338ad
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 2 13:56:48 2026 +0200
+
+    New release td-system-tools-2.5.0.
+
 commit 36654bb504cbab4639bf10f3c0db74377827d809
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat May 2 12:49:52 2026 +0200
