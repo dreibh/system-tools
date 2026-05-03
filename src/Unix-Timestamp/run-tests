@@ -444,17 +444,22 @@ Timestamp Value,Human-Readable Date (ISO),Time Unit
 -315575999999999999,1960-01-01 12:00:00.000000001,Nanoseconds
 1000000000,1970-01-01 00:00:01.000000000,Nanoseconds
 -1000000000,1969-12-31 23:59:59.000000000,Nanoseconds
+1623839208725063000,2021-06-16 10:26:48.725063000,Nanoseconds
 EOF
 ) | (
    IFS=","
    read -r unixTS dateTime unit
    while read -r unixTS dateTime unit ; do
       if [ "${unixTS}" != "-" ] ; then
+
+         # ====== Check integer handling ====================================
          echo "Checking ${unixTS} <-> ${dateTime}"
 
          computedDateTime="$(./unixts2time --"${unit,,}" -- "${unixTS}")"
          if [ "${computedDateTime}" != "${dateTime}" ] ; then
+            echo "Test 1.A"
             echo "Input:      ${unixTS}"
+            echo "Unit:       ${unit}"
             echo "From table: ${dateTime}"
             echo "Computed:   ${computedDateTime}"
             exit-failed
@@ -462,11 +467,58 @@ EOF
 
          computedUnixTS="$(./time2unixts --"${unit,,}" "${dateTime}")"
          if [ "${computedUnixTS}" != "${unixTS}" ] ; then
+            echo "Test 1.B"
             echo "Input:      ${dateTime}"
+            echo "Unit:       ${unit}"
             echo "From table: ${computedUnixTS}"
             echo "Expected:   ${unixTS}"
             exit-failed
          fi
+
+
+         # ====== Check float handling ======================================
+         if [ "${unit}" == "Nanoseconds" ] ; then
+            unixTSasFloat="$(awk "BEGIN { printf(\"%1.9f\", ${unixTS}); }")"
+         elif [ "${unit}" == "Microseconds" ] ; then
+            unixTSasFloat="$(awk "BEGIN { printf(\"%1.6f\", ${unixTS}); }")"
+         elif [ "${unit}" == "Milliseconds" ] ; then
+            unixTSasFloat="$(awk "BEGIN { printf(\"%1.3f\", ${unixTS}); }")"
+         elif [ "${unit}" == "Seconds" ] ; then
+            unixTSasFloat="$(awk "BEGIN { printf(\"%1.0f.0\", ${unixTS}); }")"
+         else
+            echo >&2 "ERROR: Unexpected unit ${unit}!"
+            exit 1
+         fi
+
+         echo "Checking ${unixTSasFloat} <-> ${dateTime}"
+         if awk "BEGIN { exit ( ${computedUnixTS} == ${unixTSasFloat} ? 1 : 0) }" ; then
+            echo "Test 2.A"
+            echo "Input:      ${dateTime}"
+            echo "From table: ${computedUnixTS}"
+            echo "Expected:   ${unixTSasFloat}"
+            exit-failed
+         fi
+
+         computedDateTimeFromFloat="$(./unixts2time --"${unit,,}" -- "${unixTSasFloat}")"
+         if [ "${computedDateTimeFromFloat}" != "${dateTime}" ] ; then
+            echo "Test 2.B"
+            echo "Input:      ${unixTSasFloat}"
+            echo "Unit:       ${unit}"
+            echo "From table: ${dateTime}"
+            echo "Computed:   ${computedDateTimeFromFloat}"
+            exit-failed
+         fi
+
+         computedUnixTSfromFloat="$(./time2unixts --float --"${unit,,}" "${dateTime}")"
+         if awk "BEGIN { exit ( ${computedUnixTSfromFloat} == ${unixTSasFloat} ? 1 : 0) }" ; then
+            echo "Test 2.C"
+            echo "Input:      ${dateTime}"
+            echo "Unit:       ${unit}"
+            echo "From table: ${computedUnixTSfromFloat}"
+            echo "Expected:   ${unixTSasFloat}"
+            exit-failed
+         fi
+
       fi
    done
 )
