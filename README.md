@@ -311,7 +311,7 @@ man time2unixts
 
 ## UnixTS2Time
 
-UnixTS2Time converts a Unix timestamp to a date/time string. The Unix timestamp unit (seconds, milliseconds, microseconds, or nanoseconds) can in most cases be detected automatically by heuristic (see the manpage), if not specified explicitly. The fractional part is printed according to the current locale settings (i.e.&nbsp;with "." for en_US, "," for de_DE, etc.).
+UnixTS2Time converts a Unix timestamp to a date/time string. The Unix timestamp unit (seconds, milliseconds, microseconds, or nanoseconds) can in most cases be detected automatically by heuristic (see the manpage), if not specified explicitly.
 
 Examples:
 
