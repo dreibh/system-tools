@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 3, 2026
 .Dt get-system-info 1
 .Os get-system-info
 .\" ###### Name #############################################################
@@ -39,6 +39,8 @@
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
+.Nm get-system-info
+.Op Fl c Ar version | Fl Fl compatibility Ar version
 .Nm get-system-info
 .Op Fl h | Fl Fl help
 .Nm get-system-info
@@ -51,6 +53,9 @@ mainly intended for being used by System-Info.
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
+.It Fl c Ar version | Fl Fl compatibility Ar version
+Request a certain version for the output. This option is to allow for future
+changes of get-system-info. Currently, the only available version is 0.
 .It Fl h | Fl Fl help
 Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
