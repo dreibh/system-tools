@@ -61,7 +61,7 @@ static void version()
 #endif
 static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "%s %s [time_string ...]"
+   fprintf(stderr, "%s %s time_string [...]"
            " [-F|--float]"
            " [-I|--integer]"
            " [-H|--human-readable]"

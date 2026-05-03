@@ -96,6 +96,7 @@ _time2unixts()
 --help
 -v
 --version
+--
 "
    mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
    return 0

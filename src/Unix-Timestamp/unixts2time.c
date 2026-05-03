@@ -60,9 +60,7 @@ static void version()
 #endif
 static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "%s %s [unix_timestamp ...]"
-           " [-F|--float]"
-           " [-I|--integer]"
+   fprintf(stderr, "%s %s unix_timestamp [...]"
            " [-H|--human-readable]"
            " [-s|--seconds]"
            " [-m|--milliseconds]"
