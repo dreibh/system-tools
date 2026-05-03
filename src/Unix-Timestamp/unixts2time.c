@@ -101,28 +101,28 @@ int main(int argc, char** argv)
 
    int          option;
    int          longIndex;
-   bool         humanReadable = false;
-   unsigned int divideBy      = 0;         // auto-detect later
-   const char*  unit          = nullptr;   // auto-detect later
+   bool         humanReadable   = false;
+   unsigned int initialDivideBy = 0;         // auto-detect later
+   const char*  unit            = nullptr;   // auto-detect later
    while( (option = getopt_long(argc, argv, "Hsmunvh", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'H':
             humanReadable = true;
           break;
          case 'n':
-            divideBy = 1;
+            initialDivideBy = 1;
             unit     = "ns";
           break;
          case 'u':
-            divideBy = 1000;
+            initialDivideBy = 1000;
             unit     = "µs";
           break;
          case 'm':
-            divideBy = 1000000;
+            initialDivideBy = 1000000;
             unit     = "ms";
           break;
          case 's':
-            divideBy = 1000000000;
+            initialDivideBy = 1000000000;
             unit     = "s";
           break;
          case 'v':
@@ -144,6 +144,8 @@ int main(int argc, char** argv)
    // ====== Obtain Unix timestamp in ns ====================================
    long long unixTS;
    for(unsigned int i = optind; i <= argc; i++) {
+      unsigned int divideBy = initialDivideBy;
+
       // ====== Use current time, if no timestamp is given ==================
       if(i == argc) {
          if(optind == argc) {
@@ -192,9 +194,29 @@ int main(int argc, char** argv)
 
          // ------ Try to parse double --------------------------------------
          else {
-            const double unixTSasDouble = strtod(argv[i], &endptr);
-            unixTS = unixTSasDouble * divideBy;
-            if( (endptr == nullptr) || (*endptr != 0x00) ) {
+            const long double unixTSasDouble = strtold(argv[i], &endptr);
+            if( (endptr != nullptr) && (*endptr == 0x00) ) {
+               if(divideBy == 0) {
+                  if( (unixTSasDouble > -5000000000.0) && (unixTSasDouble < 5000000000.0) ) {
+                     divideBy = 1000000000;
+                     unit     = "s";
+                  }
+                  else if( (unixTSasDouble > -5000000000000.0) && (unixTSasDouble < 5000000000000.0) ) {
+                     divideBy = 1000000;
+                     unit     = "ms";
+                  }
+                  else if( (unixTSasDouble > -5000000000000000.0) && (unixTSasDouble < 5000000000000000.0) ) {
+                     divideBy = 1000;
+                     unit     = "µs";
+                  }
+                  else {
+                     divideBy = 1;
+                     unit     = "ns";
+                  }
+               }
+               unixTS = unixTSasDouble * divideBy;   // convert to ns
+            }
+            else {
                fputs(gettext("ERROR: Invalid Unix timestamp!"), stderr);
                fputs("\n", stderr);
                exit(1);

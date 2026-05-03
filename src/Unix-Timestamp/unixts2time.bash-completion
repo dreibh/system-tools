@@ -70,10 +70,6 @@ _unixts2time()
 
    # ====== All options =====================================================
    local opts="
--F
---float
--I
---integer
 -H
 --human-readable
 -s

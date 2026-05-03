@@ -84,14 +84,7 @@ That is, unless using dates around 1969/1970, ancient past, or distant future, t
 The following options are available:
 .Bl -tag -width indent
 .It unix_timestamp ...
-The Unix timestamps to be converted. If no Unix timestamp is provided, the current system time is used.
-.It Fl F | Fl Fl float
-Parse the Unix timestamp as a floating-point number.
-.It Fl I | Fl Fl integer
-Parse the Unix timestamp as an integer number.
-A prefex of 0x is interpreted as hexadecimal (base 16),
-a prefex of 0 is interpreted as octal (base 8).
-Otherwise, the number is interpreted as decimal (base 10).
+The Unix timestamps to be converted. If no Unix timestamp is provided, the current system time is used. The timestamp may be provided as float or integer. For integers, the numbers can have a prefix 0x for hexadecimal (base 16), or 0 for octal (base 8). Otherwise, the number is interpreted as decimal (base 10).
 .It Fl H | Fl Fl human-readable
 Provide the output in human-readable form. Default: off.
 .It Fl s | Fl Fl seconds
@@ -122,7 +115,7 @@ Prints the program version and exits.
 .It unixts2time -H 212847008123456789
 .It unixts2time 0x179cb2ae8af3dd89
 .It unixts2time -H 0x179cb2ae8af3dd89
-.It unixts2time -Fs 212847123.123
+.It unixts2time -s 212847123.123
 .It unixts2time --version
 .It unixts2time --help
 .El
