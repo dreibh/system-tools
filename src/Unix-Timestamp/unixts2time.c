@@ -143,6 +143,7 @@ int main(int argc, char** argv)
          case '-':
           break;
          default:
+            // This should not happen: wrong getopt parameters, or missing case?
             fprintf(stderr, "INTERNAL ERROR: Unhandled argument %s!\n", argv[optind - 1]);
             return 1;
           break;
