@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-04-25 13:54+0200\n"
+"POT-Creation-Date: 2026-05-03 13:08+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -48,26 +48,28 @@ msgstr ""
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Try-Hard/try-hard:102
+#: src/Try-Hard/try-hard:80 src/Try-Hard/try-hard:90 src/Try-Hard/try-hard:100
+#: src/Try-Hard/try-hard:110 src/Try-Hard/try-hard:161
+#, sh-format
+msgid "ERROR: Invalid delay value ${delayValue}!"
+msgstr "FEHLER: Ungültige Verzögerung ${delayValue}!"
+
+#: src/Try-Hard/try-hard:155
 #, sh-format
 msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
 msgstr "FEHLER: Ungültige maximale Anzahl an Versuchen ${MAX_TRIALS}!"
 
-#: src/Try-Hard/try-hard:107
-#, sh-format
-msgid "ERROR: Invalid delay ${DELAY}!"
-msgstr "FEHLER: Ungültige Verzögerung ${DELAY}!"
-
-#: src/Try-Hard/try-hard:126
+#: src/Try-Hard/try-hard:198
 #, sh-format
 msgid "Tried ${MAX_TRIALS} times -> giving up now!"
 msgstr "${MAX_TRIALS} Mal versucht -> gebe jetzt auf!"
 
-#: src/Try-Hard/try-hard:131
+#: src/Try-Hard/try-hard:226
 #, sh-format
-msgid "Waiting for ${DELAY} s before trying again ..."
-msgstr "Warte ${DELAY} s vor einem erneuten Versuch ..."
+msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting random time from [${minDelay}, ${maxDelay}] s ..."
+msgstr "Versuch ${trial}/${MAX_TRIALS} fehlgeschlagen -> warte zufällige Zeitspanne aus [${minDelay}, ${maxDelay}] s vor einem erneuten Versuch ..."
 
+#: src/Try-Hard/try-hard:233
 #, sh-format
-#~ msgid "ERROR: Invalid argument ${arg}!"
-#~ msgstr "FEHLER: Ungültiges Argument ${arg}!"
+msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting for ${maxDelay} s ..."
+msgstr "Versuch ${trial}/${MAX_TRIALS} fehlgeschlagen -> warte ${maxDelay} s vor einem erneuten Versuch ..."

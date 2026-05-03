@@ -28,7 +28,7 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 
 System-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System-Info can be configured to be automatically run when logging in, providing the user an up-to-date overview of the system.
 
-One main purpose of System-Info is to run on login, to particularly show a nice login banner (for example, a project or company logo) and then present the basic system information. For this purpose, System-Info can be configured with banner scripts (by default looked up in /etc/system-info.d or /usr/local/etc/system-info.d), which are processed in alphabetically descending order by file name, like:
+One main purpose of System-Info is to run on login, to particularly show a nice login banner (for example, a project or company logo) and then present the basic system information. For this purpose, System-Info can be configured with banner scripts (by default looked up in `/etc/system-info.d` or `/usr/local/etc/system-info.d`), which are processed in alphabetically descending order by file name, like:
 
 * `95-application-logo`,
 * `90-project-logo`,
@@ -265,14 +265,38 @@ For example, the publications list in [`index.html`](https://www.nntb.no/~dreibh
 
 # 📚 Try-Hard
 
-Try-Hard runs a command and retries for a given number of times in case of error, with a delay between the trials.
+Try-Hard runs a command and retries for a given number of times in case of error, with a random or deterministic delay between the trials and possibility to automatically increase the delay.
 
-Example to try a file download up to 3&nbsp;times, with a delay of 60&nbsp;seconds between trials:
+Examples:
 
-```bash
-try-hard 3 60 -- wget -O example.tar.gz \
-   https://www.example.net/example.tar.gz
-```
+* Try a file download up to 3&nbsp;times, with a random delay from [0, 60]&nbsp;seconds between trials:
+
+  ```bash
+  try-hard 3 60 --verbose -- \
+     wget -O example.tar.gz \
+        https://www.example.net/example.tar.gz
+  ```
+
+* Try a file download up to 32&nbsp;times, with an initial random delay interval [1, 2]&nbsp;seconds, but increasing it multiplicatively by factor 2.0 for each new trial, with an upper delay bound of 512&nbsp;seconds (i.e.&nbsp;realising a truncated binary exponential backoff):
+
+  ```bash
+  try-hard 32 2 \
+    --verbose \
+    --min-delay 1.0 \
+    --multiplicative-increase 2.0 \
+    --truncate-delay 512.0 \
+    -- \
+    wget -O example.tar.gz \
+       https://www.example.net/example.tar.gz
+  ```
+
+* Try a file download up to 6&nbsp;times, with a fixed (i.e.&nbsp;deterministic) 10&nbsp;seconds delay between trials, without verbose status printing:
+
+  ```bash
+  try-hard 3 10 --deterministic -- \
+     wget -O example.tar.gz \
+        https://www.example.net/example.tar.gz
+  ```
 
 The manpage of Try-Hard contains details and further examples:
 
