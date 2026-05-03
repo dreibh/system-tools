@@ -81,6 +81,10 @@
 
 #include "package-version.h"
 
+// Compatibility version of get-system-info, to allow for future changes:
+// Currently, there is just version 0.
+#define COMPATIBILITY_VERSION 0
+
 
 struct interfaceaddress {
    const char*            ifname;
@@ -796,7 +800,7 @@ static void version()
 #endif
 static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "Usage: %s [-h|--help] [-v|--version]\n", program);
+   fprintf(stderr, "Usage: %s [-h|--help] [-v|--version] [-c|--compatibility version]\n", program);
    exit(exitCode);
 }
 
@@ -805,6 +809,8 @@ static void usage(const char* program, const int exitCode)
 // ###### Main program ######################################################
 int main(int argc, char** argv)
 {
+   unsigned int compatibilityVersion = COMPATIBILITY_VERSION;
+
    // ====== Initialise locale support ======================================
    if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
@@ -812,20 +818,29 @@ int main(int argc, char** argv)
 
    // ====== Handle arguments ===============================================
    const static struct option long_options[] = {
-      { "help",    no_argument, 0, 'h' },
-      { "version", no_argument, 0, 'v' },
-      {  nullptr,  0,           0, 0   }
+      { "help",          no_argument,       0, 'h' },
+      { "version",       no_argument,       0, 'v' },
+      { "compatibility", required_argument, 0, 'c' },
+      {  nullptr,        0,                 0, 0   }
    };
 
-   int option;
-   int longIndex;
-   while( (option = getopt_long(argc, argv, "hv", long_options, &longIndex)) != -1 ) {
+   int          option;
+   int          longIndex;
+   while( (option = getopt_long(argc, argv, "hvc:", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'v':
             version();
           break;
          case 'h':
             usage(argv[0], 0);
+          break;
+         case 'c':
+            compatibilityVersion = atoll(optarg);
+            if(compatibilityVersion > COMPATIBILITY_VERSION) {
+               fprintf(stderr, "ERROR: Requested compatibility version %u > available version %u!\n",
+                       compatibilityVersion, COMPATIBILITY_VERSION);
+               return 1;
+            }
           break;
          default:
             fprintf(stderr, "ERROR: Invalid argument %s!", argv[optind - 1]);
@@ -838,6 +853,7 @@ int main(int argc, char** argv)
    }
 
    // ====== Show system information in machine-readable form ===============
+   printf("compatibility=%u\n", compatibilityVersion);
    showHostnameInformation();
    showUptimeInformation();
    showKernelInformation();
