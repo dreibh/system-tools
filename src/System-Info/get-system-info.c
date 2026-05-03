@@ -27,6 +27,7 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#include <ctype.h>
 #include <fcntl.h>
 #include <getopt.h>
 #include <ifaddrs.h>
@@ -42,13 +43,17 @@
 #include <net/if.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <sys/statvfs.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
 #if defined(__linux)
+#include <dirent.h>
 #include <sys/sysinfo.h>
 #include <netpacket/packet.h>
 #elif defined(__FreeBSD__)
 #include <sys/ioctl.h>
+#include <sys/sysctl.h>
+#include <sys/user.h>
 #include <net/if_dl.h>
 #include <sys/sysctl.h>
 #include <vm/vm_param.h>
@@ -78,6 +83,10 @@
 #endif
 
 #include "package-version.h"
+
+// Compatibility version of get-system-info, to allow for future changes:
+// Currently, there is just version 0.
+#define COMPATIBILITY_VERSION 0
 
 
 struct interfaceaddress {
@@ -247,15 +256,15 @@ static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
    FILE* fh = popen(command, "r");
    if(fh != nullptr) {
       size_t resultSize = 0;
-      char*  r;
+      char*  resultPtr;
       do {
-         r = fgets((char*)&result[resultSize], resultMaxSize - 1 - resultSize, fh);
-         if(r == nullptr) {
+         resultPtr = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
+         if(resultPtr == nullptr) {
             break;
          }
-         resultSize += strlen(r);
+         resultSize += strlen(resultPtr);
       }
-      while(resultSize < resultMaxSize- 1);
+      while(resultSize < resultMaxSize);
       result[resultSize] = 0x00;
       pclose(fh);
       return true;
@@ -270,19 +279,86 @@ static bool queryFile(const char* file, char* result, size_t resultMaxSize)
    FILE* fh = fopen(file, "r");
    if(fh != nullptr) {
       size_t resultSize = 0;
-      char*  r;
+      char*  resultPtr;
       do {
-         r = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
-         if(r == nullptr) {
+         resultPtr = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
+         if(resultPtr == nullptr) {
             break;
          }
-         resultSize += strlen(r);
+         resultSize += strlen(resultPtr);
       }
       while(resultSize < resultMaxSize);
       fclose(fh);
       return true;
    }
    return false;
+}
+
+
+// ###### Obtain the number of processes on the system ######################
+static unsigned int obtainProcessCount()
+{
+   unsigned int count = 0;
+
+   // ====== Linux: count processes in /proc ================================
+#ifdef __linux__
+   struct dirent* dirEntry;
+   DIR*           dir = opendir("/proc");
+   if(dir != nullptr) {
+      while((dirEntry = readdir(dir)) != nullptr) {
+         // The name of a process directory starts with a digit:
+         if(isdigit(dirEntry->d_name[0])) {
+            count++;
+         }
+      }
+   }
+   closedir(dir);
+
+   // ====== FreeBSD: use sysctl to query the number of processes ===========
+#elif defined(__FreeBSD__)
+   // ------  Get memory size necessary to obtain the process list ----------
+   const int mib[3] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC};
+   size_t length = 0;
+   if(sysctl((const int*)&mib, 3, nullptr, &length, nullptr, 0) == 0) {
+      // The memory size is more than necessary for the process list, since
+      // the list may change. To obtain the process count, it is necessary
+      // to actually fetch the process list:
+      void* processList = malloc(length);
+      if(processList != nullptr) {
+         // ------ Obtain the process list ----------------------------------
+         if(sysctl(mib, 3, processList, &length, nullptr, 0) == 0) {
+            // The current process count is the number of entries fetched:
+            count = length / sizeof(struct kinfo_proc);
+         }
+         free(processList);
+      }
+   }
+
+   // ====== Fallback =======================================================
+#else
+#warning Using fallback solution for obtaining the process count!
+   char         buffer[64];
+   unsigned int value;
+   if( (queryPipe("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
+       (sscanf(buffer, "%u", &value) == 1) ) {
+      count = value;
+   }
+#endif
+
+    return count;
+}
+
+
+// ###### Obtain the number of users on the system ##########################
+static unsigned int obtainUserCount()
+{
+   char         buffer[64];
+   unsigned int count;
+   if( (queryPipe("who | cut -d' ' -f1 | sort -ud | wc -l", (char*)&buffer, sizeof(buffer))) &&
+       (sscanf(buffer, "%u", &count) == 1) ) {
+      return count;
+   }
+   return 0;
 }
 
 
@@ -295,25 +371,12 @@ static void showLoadInformation()
    const unsigned int pageSize = sysconf(_SC_PAGESIZE);
    printf("system_pagesize=%u\n", pageSize);
 
-   // ====== Number of running processes ====================================
-   char         buffer[64];
-   unsigned int value;
-   if( (queryPipe("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("system_procs=%u\n", value);
-   }
-   else {
-      printf("system_procs=0");
-   }
+   // ====== Number of running processes and number of users ================
+   const unsigned int processCount = obtainProcessCount();
+   printf("system_procs=%u\n", processCount);
 
-   // ====== Number of users ================================================
-   if( (queryPipe("who | cut -d' ' -f1 | sort -ud | wc -l", (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("system_users=%u\n", value);
-   }
-   else {
-      printf("system_users=0");
-   }
+   const unsigned int userCount = obtainUserCount();
+   printf("system_users=%u\n", userCount);
 
    // ====== Load averages ==================================================
 #if defined(__linux)
@@ -335,9 +398,9 @@ static void showLoadInformation()
       printf("system_load_avg1min=%1.6f\n",  loadavg[0]);
       printf("system_load_avg5min=%1.6f\n",  loadavg[1]);
       printf("system_load_avg15min=%1.6f\n", loadavg[2]);
-      printf("system_load_avg1minpct=%1.6f\n",  100.0 * loadavg[0]);
-      printf("system_load_avg5minpct=%1.6f\n",  100.0 * loadavg[1]);
-      printf("system_load_avg15minpct=%1.6f\n", 100.0 * loadavg[2]);
+      printf("system_load_avg1minpct=%1.4f\n",  100.0 * loadavg[0]);
+      printf("system_load_avg5minpct=%1.4f\n",  100.0 * loadavg[1]);
+      printf("system_load_avg15minpct=%1.4f\n", 100.0 * loadavg[2]);
    }
 #endif
 }
@@ -590,27 +653,43 @@ static void showMemoryInformation()
 }
 
 
+// ###### Obtain disk usage statistics ######################################
+static bool obtainDiskUsage(const char* mountPoint, const char* label)
+{
+   // ====== Obtain file system status of mount point =======================
+   struct statvfs status;
+   if(statvfs(mountPoint, &status) != 0) {
+      return false;
+   }
+
+   // ====== Compute the size statistics ====================================
+   // Computations according to "df" command's output:
+   const unsigned long long totalSpace =
+      (unsigned long long)status.f_blocks * (unsigned long long)status.f_frsize;
+   const unsigned long long availableSpace =   /* available for user */
+      (unsigned long long)status.f_bavail * (unsigned long long)status.f_frsize;
+   const unsigned long long freeSpace =   /* actual free space */
+      (unsigned long long)status.f_bfree * (unsigned long long)status.f_frsize;
+   const unsigned long long usedSpace = totalSpace - freeSpace;
+   const double usagePercentage = 100.0 *
+      (double)(totalSpace - availableSpace) / (double)totalSpace;
+
+   // ====== Print the results ==============================================
+   printf("disk_%s_total=%llu\n",     label, totalSpace);
+   printf("disk_%s_used=%llu\n",      label, usedSpace);
+   printf("disk_%s_available=%llu\n", label, availableSpace);
+   printf("disk_%s_pct=%1.3f\n",      label, usagePercentage);
+   return true;
+}
+
+
 // ###### Print disk information ############################################
 static void showDiskInformation()
 {
-   char         buffer[64];
-   unsigned int value;
-
-   if( (queryPipe("env LANGUAGE=en df -hT / | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
-                  (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("disk_root_pct=%1.1f\n", (double)value);
-   }
-   if( (queryPipe("env LANGUAGE=en df -hT /home | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
-                  (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("disk_home_pct=%1.1f\n", (double)value);
-   }
-   if( (queryPipe("env LANGUAGE=en df -hT /tmp | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
-                  (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("disk_tmp_pct=%1.1f\n", (double)value);
-   }
+   obtainDiskUsage("/",     "root");
+   obtainDiskUsage("/home", "home");
+   obtainDiskUsage("/tmp",  "tmp");
+   // obtainDiskUsage("/boot/efi", "efi");
    fputs("disk_list=\"root home tmp\"\n", stdout);
 }
 
@@ -761,7 +840,7 @@ static void version()
 #endif
 static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "Usage: %s [-h|--help] [-v|--version]\n", program);
+   fprintf(stderr, "Usage: %s [-h|--help] [-v|--version] [-c|--compatibility version]\n", program);
    exit(exitCode);
 }
 
@@ -770,6 +849,8 @@ static void usage(const char* program, const int exitCode)
 // ###### Main program ######################################################
 int main(int argc, char** argv)
 {
+   unsigned int compatibilityVersion = COMPATIBILITY_VERSION;
+
    // ====== Initialise locale support ======================================
    if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
@@ -777,20 +858,29 @@ int main(int argc, char** argv)
 
    // ====== Handle arguments ===============================================
    const static struct option long_options[] = {
-      { "help",    no_argument, 0, 'h' },
-      { "version", no_argument, 0, 'v' },
-      {  nullptr,  0,           0, 0   }
+      { "help",          no_argument,       0, 'h' },
+      { "version",       no_argument,       0, 'v' },
+      { "compatibility", required_argument, 0, 'c' },
+      {  nullptr,        0,                 0, 0   }
    };
 
-   int option;
-   int longIndex;
-   while( (option = getopt_long(argc, argv, "hv", long_options, &longIndex)) != -1 ) {
+   int          option;
+   int          longIndex;
+   while( (option = getopt_long(argc, argv, "hvc:", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'v':
             version();
           break;
          case 'h':
             usage(argv[0], 0);
+          break;
+         case 'c':
+            compatibilityVersion = atoll(optarg);
+            if(compatibilityVersion > COMPATIBILITY_VERSION) {
+               fprintf(stderr, "ERROR: Requested compatibility version %u > available version %u!\n",
+                       compatibilityVersion, COMPATIBILITY_VERSION);
+               return 1;
+            }
           break;
          default:
             fprintf(stderr, "INTERNAL ERROR: Unhandled argument %s!\n", argv[optind - 1]);
@@ -803,6 +893,7 @@ int main(int argc, char** argv)
    }
 
    // ====== Show system information in machine-readable form ===============
+   printf("compatibility=%u\n", compatibilityVersion);
    showHostnameInformation();
    showUptimeInformation();
    showKernelInformation();
