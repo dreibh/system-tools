@@ -68,69 +68,72 @@ VERBOSE=0
 while [ $# -gt 0 ] ; do
    case "$1" in
       -D | --defocus)
-         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+         DEFOCUS="$2"
+         shift
+         if [[ "${DEFOCUS}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
             DEFOCUS="TRUE"
-         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+         elif [[ "${DEFOCUS}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             DEFOCUS="FALSE"
          else
-            echo >&2 "ERROR: Invalid value $2 for -D|--defocus!"
+            echo >&2 "ERROR: Invalid value ${DEFOCUS} for -D|--defocus!"
             exit 1
          fi
-         shift 2
          ;;
       -B | --border-size)
          BORDER_SIZE="$2"
+         shift
          if [[ ! "${BORDER_SIZE}" =~ ^[0-9]+$ ]] ; then
             echo >&2 "ERROR: Invalid value ${BORDER_SIZE} for -B|--border-size!"
             exit 1
          fi
-         shift 2
          ;;
       -S | --sepia)
-         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+         SEPIA="$2"
+         shift
+         if [[ "${SEPIA}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
             SEPIA="TRUE"
-         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+         elif [[ "${SEPIA}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             SEPIA="FALSE"
          else
-            echo >&2 "ERROR: Invalid value $2 for -S|--sepia!"
+            echo >&2 "ERROR: Invalid value ${SEPIA} for -S|--sepia!"
             exit 1
          fi
-         shift 2
          ;;
       -M | --mottle)
-         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+         MOTTLE="$2"
+         shift
+         if [[ "${MOTTLE}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
             MOTTLE="TRUE"
-         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+         elif [[ "${MOTTLE}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             MOTTLE="FALSE"
          else
-            echo >&2 "ERROR: Invalid value $2 for -M|--mottle!"
+            echo >&2 "ERROR: Invalid value ${MOTTLE} for -M|--mottle!"
             exit 1
          fi
-         shift 2
          ;;
       -w | --verbose)
          VERBOSE=1
-         shift
          ;;
       -q | --quiet)
          VERBOSE=0
-         shift
          ;;
       -h | --help)
          usage 0
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
       *)
-         usage 1
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
          ;;
   esac
+  shift
 done
 
 if [ $# -ne 2 ] ; then

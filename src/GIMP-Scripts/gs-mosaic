@@ -77,6 +77,7 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -T | --tile-type)
          TILE_TYPESTRING="$2"
+         shift
          if [ "${TILE_TYPESTRING}" = "squares" ] ; then
             TILE_TYPE=0
          elif [ "${TILE_TYPESTRING}" = "hexagons" ] ; then
@@ -89,129 +90,132 @@ while [ $# -gt 0 ] ; do
             echo >&2 "ERROR: Invalid value ${TILE_TYPESTRING} for -T|--tile-type!"
             exit 1
          fi
-         shift 2
          ;;
       -S | --tile-size)
          TILE_SIZE="$2"
+         shift
          if [[ ! "${TILE_SIZE}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($TILE_SIZE < 1.0) || ($TILE_SIZE > 1000.0) ? 0 : 1) }" ; then
             echo >&2 "ERROR: Invalid value ${TILE_SIZE} for -S|--tile-size!"
             exit 1
          fi
-         shift 2
          ;;
       -H | --tile-height)
          TILE_HEIGHT="$2"
+         shift
          if [[ ! "${TILE_HEIGHT}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($TILE_HEIGHT < 1.0) || ($TILE_HEIGHT > 1000.0) ? 0 : 1) }" ; then
             echo >&2 "ERROR: Invalid value ${TILE_HEIGHT} for -H|--tile-height!"
             exit 1
          fi
-         shift 2
          ;;
       -N | --tile-neatness)
          TILE_NEATNESS="$2"
+         shift
          if [[ ! "${TILE_NEATNESS}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($TILE_NEATNESS < 0.0) || ($TILE_NEATNESS > 1.0) ? 0 : 1) }" ; then
             echo >&2 "ERROR: Invalid value ${TILE_NEATNESS} for -N|--tile-neatness!"
             exit 1
          fi
-         shift 2
          ;;
       -F | --tile-surface)
-         if [ "$2" == "smooth" ] ; then
+         TILE_SURFACE="$2"
+         shift
+         if [ "${TILE_SURFACE}" == "smooth" ] ; then
             TILE_SURFACE="FALSE"
-         elif [ "$2" == "rough" ] ; then
+         elif [ "${TILE_SURFACE}" == "rough" ] ; then
             TILE_SURFACE="TRUE"
          else
             echo >&2 "ERROR: Invalid value ${TILE_SURFACE} for -F|--tile-surface!"
             exit 1
          fi
-         shift 2
          ;;
       -I | --tile-allow-split)
-         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+         TILE_ALLOW_SPLIT="$2"
+         shift
+         if [[ "${TILE_ALLOW_SPLIT}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
             TILE_ALLOW_SPLIT="TRUE"
-         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+         elif [[ "${TILE_ALLOW_SPLIT}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             TILE_ALLOW_SPLIT="FALSE"
          else
-            echo >&2 "ERROR: Invalid value $2 for -I|--tile-allow-split!"
+            echo >&2 "ERROR: Invalid value ${TILE_ALLOW_SPLIT} for -I|--tile-allow-split!"
             exit 1
          fi
-         shift 2
          ;;
       -X | --tile-spacing)
          TILE_SPACING="$2"
+         shift
          if [[ ! "${TILE_SPACING}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($TILE_SPACING < 0.0) || ($TILE_SPACING > 1000.0) ? 0 : 1) }" ; then
             echo >&2 "ERROR: Invalid value ${TILE_SPACING} for -X|--tile-spacing!"
             exit 1
          fi
-         shift 2
          ;;
       -C | --color-variation)
          COLOR_VARIATION="$2"
+         shift
          if [[ ! "${COLOR_VARIATION}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($COLOR_VARIATION < 0.0) || ($COLOR_VARIATION > 1.0) ? 0 : 1) }" ; then
             echo >&2 "ERROR: Invalid value ${COLOR_VARIATION} for -C|--color-variation!"
             exit 1
          fi
-         shift 2
          ;;
       -G | --color-averaging)
-         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+         COLOR_AVERAGING="$2"
+         shift
+         if [[ "${COLOR_AVERAGING}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
             COLOR_AVERAGING="TRUE"
-         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+         elif [[ "${COLOR_AVERAGING}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             COLOR_AVERAGING="FALSE"
          else
-            echo >&2 "ERROR: Invalid value $2 for -g|--color-averaging!"
+            echo >&2 "ERROR: Invalid value ${COLOR_AVERAGING} for -g|--color-averaging!"
             exit 1
          fi
-         shift 2
          ;;
       -A | --antialiasing)
-         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+         ANTIALIASING="$2"
+         shift
+         if [[ "${ANTIALIASING}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
             ANTIALIASING="TRUE"
-         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+         elif [[ "${ANTIALIASING}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             ANTIALIASING="FALSE"
          else
-            echo >&2 "ERROR: Invalid value $2 for -A|--antialiasing!"
+            echo >&2 "ERROR: Invalid value ${ANTIALIASING} for -A|--antialiasing!"
             exit 1
          fi
-         shift 2
          ;;
       -L | --light-direction)
          LIGHT_DIRECTION="$2"
+         shift
          if [[ ! "${LIGHT_DIRECTION}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($LIGHT_DIRECTION < 0.0) || ($LIGHT_DIRECTION > 360.0) ? 0 : 1) }" ; then
             echo >&2 "ERROR: Invalid value ${LIGHT_DIRECTION} for -C|--light-direction!"
             exit 1
          fi
-         shift 2
          ;;
       -w | --verbose)
          VERBOSE=1
-         shift
          ;;
       -q | --quiet)
          VERBOSE=0
-         shift
          ;;
       -h | --help)
          usage 0
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
       *)
-         usage 1
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
          ;;
   esac
+  shift
 done
 
 if [ $# -ne 2 ] ; then

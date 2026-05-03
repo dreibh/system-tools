@@ -82,157 +82,163 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -F | --font-name)
          FONT_NAME="$2"
-         shift 2
+         shift
          ;;
       -S | --font-size)
          FONT_SIZE="$2"
+         shift
          if [[ ! "${FONT_SIZE}" =~ ^[0-9]+$ ]] || [ "${FONT_SIZE}" -lt 1 ] ; then
             echo >&2 "ERROR: Invalid value ${FONT_SIZE} for -S|--font-size!"
             exit 1
          fi
-         shift 2
          ;;
 
       -G | --blend-gradient-text)
          BLEND_GRADIENT_TEXT="$2"
-         shift 2
+         shift
          ;;
       -g | --blend-gradient-text-reverse)
-         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+         BLEND_GRADIENT_TEXT_REVERSE="$2"
+         shift
+         if [[ "${BLEND_GRADIENT_TEXT_REVERSE}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
             BLEND_GRADIENT_TEXT_REVERSE="TRUE"
-         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+         elif [[ "${BLEND_GRADIENT_TEXT_REVERSE}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             BLEND_GRADIENT_TEXT_REVERSE="FALSE"
          else
-            echo >&2 "ERROR: Invalid value $2 for -g|--blend-gradient-text-reverse!"
+            echo >&2 "ERROR: Invalid value ${BLEND_GRADIENT_TEXT_REVERSE} for -g|--blend-gradient-text-reverse!"
             exit 1
          fi
-         shift 2
          ;;
       -L | --blend-gradient-outline)
          BLEND_GRADIENT_OUTLINE="$2"
-         shift 2
+         shift
          ;;
       -l | --blend-gradient-outline-reverse)
-         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+         BLEND_GRADIENT_OUTLINE_REVERSE="$2"
+         shift
+         if [[ "${BLEND_GRADIENT_OUTLINE_REVERSE}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
             BLEND_GRADIENT_OUTLINE_REVERSE="TRUE"
-         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+         elif [[ "${BLEND_GRADIENT_OUTLINE_REVERSE}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             BLEND_GRADIENT_OUTLINE_REVERSE="FALSE"
          else
-            echo >&2 "ERROR: Invalid value $2 for -l|--blend-gradient-outline-reverse!"
+            echo >&2 "ERROR: Invalid value ${BLEND_GRADIENT_OUTLINE_REVERSE} for -l|--blend-gradient-outline-reverse!"
             exit 1
          fi
-         shift 2
          ;;
       -O | --outline-size)
          OUTLINE_SIZE="$2"
+         shift
          if [[ ! "${OUTLINE_SIZE}" =~ ^[0-9]+$ ]] || [ "${OUTLINE_SIZE}" -lt 2 ] || [ "${OUTLINE_SIZE}" -gt 250 ] ; then
             echo >&2 "ERROR: Invalid value ${OUTLINE_SIZE} for -O|--outline-size!"
             exit 1
          fi
-         shift 2
          ;;
       -B | --background-color)
          BACKGROUND_COLOR="$2"
-         shift 2
+         shift
          ;;
 
       -I | --pattern-text)
          PATTERN_TEXT="$2"
-         shift 2
+         shift
          ;;
       -i | --use-pattern-text)
-         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+         USE_PATTERN_TEXT="$2"
+         shift
+         if [[ "${USE_PATTERN_TEXT}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
             USE_PATTERN_TEXT="TRUE"
-         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+         elif [[ "${USE_PATTERN_TEXT}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             USE_PATTERN_TEXT="FALSE"
          else
-            echo >&2 "ERROR: Invalid value $2 for -i|--use-pattern-text!"
+            echo >&2 "ERROR: Invalid value ${USE_PATTERN_TEXT} for -i|--use-pattern-text!"
             exit 1
          fi
-         shift 2
          ;;
       -J | --pattern-outline)
          PATTERN_OUTLINE="$2"
-         shift 2
+         shift
          ;;
       -j | --use-pattern-outline)
-         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+         USE_PATTERN_OUTLINE="$2"
+         shift
+         if [[ "${USE_PATTERN_OUTLINE}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
             USE_PATTERN_OUTLINE="TRUE"
-         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+         elif [[ "${USE_PATTERN_OUTLINE}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             USE_PATTERN_OUTLINE="FALSE"
          else
-            echo >&2 "ERROR: Invalid value $2 for -j|--use-pattern-outline!"
+            echo >&2 "ERROR: Invalid value ${USE_PATTERN_OUTLINE} for -j|--use-pattern-outline!"
             exit 1
          fi
-         shift 2
          ;;
       -R | --pattern-overlay)
          PATTERN_OVERLAY="$2"
-         shift 2
+         shift
          ;;
       -r | --use-pattern-overlay)
-         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+         USE_PATTERN_OVERLAY="$2"
+         shift
+         if [[ "${USE_PATTERN_OVERLAY}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
             USE_PATTERN_OVERLAY="TRUE"
-         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+         elif [[ "${USE_PATTERN_OVERLAY}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             USE_PATTERN_OVERLAY="FALSE"
          else
-            echo >&2 "ERROR: Invalid value $2 for -r|--use-pattern-overlay!"
+            echo >&2 "ERROR: Invalid value ${USE_PATTERN_OVERLAY} for -r|--use-pattern-overlay!"
             exit 1
          fi
-         shift 2
          ;;
 
       -s | --use-shadow)
-         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+         USE_SHADOW="$2"
+         shift
+         if [[ "${USE_SHADOW}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
             USE_SHADOW="TRUE"
-         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+         elif [[ "${USE_SHADOW}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             USE_SHADOW="FALSE"
          else
-            echo >&2 "ERROR: Invalid value $2 for -s|--use-shadow!"
+            echo >&2 "ERROR: Invalid value ${USE_SHADOW} for -s|--use-shadow!"
             exit 1
          fi
-         shift 2
          ;;
       -X | --shadow-offset-x)
          SHADOW_OFFSET_X="$2"
+         shift
          if [[ ! "${SHADOW_OFFSET_X}" =~ ^[0-9]+$ ]] || [ "${SHADOW_OFFSET_X}" -lt 1 ] || [ "${SHADOW_OFFSET_X}" -gt 100 ] ; then
             echo >&2 "ERROR: Invalid value ${SHADOW_OFFSET_X} for -X|--shadow-offset-x!"
             exit 1
          fi
-         shift 2
          ;;
       -Y | --shadow-offet-y)
          SHADOW_OFFSET_Y="$2"
+         shift
          if [[ ! "${SHADOW_OFFSET_Y}" =~ ^[0-9]+$ ]] || [ "${SHADOW_OFFSET_Y}" -lt 1 ] || [ "${SHADOW_OFFSET_Y}" -gt 100 ] ; then
             echo >&2 "ERROR: Invalid value ${SHADOW_OFFSET_Y} for -Y|--shadow-offet-y!"
             exit 1
          fi
-         shift 2
          ;;
 
       -w | --verbose)
          VERBOSE=1
-         shift
          ;;
       -q | --quiet)
          VERBOSE=0
-         shift
          ;;
       -h | --help)
          usage 0
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
       *)
-         usage 1
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
          ;;
   esac
+  shift
 done
 
 if [ $# -ne 2 ] ; then

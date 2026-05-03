@@ -66,27 +66,27 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -w | --verbose)
          VERBOSE=1
-         shift
          ;;
       -q | --quiet)
          VERBOSE=0
-         shift
          ;;
       -h | --help)
          usage 0
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
       *)
-         usage 1
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
          ;;
   esac
+  shift
 done
 
 if [ $# -ne 0 ] ; then

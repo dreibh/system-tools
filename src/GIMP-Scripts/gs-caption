@@ -70,64 +70,63 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -F | --font-name)
          FONT_NAME="$2"
-         shift 2
+         shift
          ;;
       -S | --font-size)
          FONT_SIZE="$2"
+         shift
          if [[ ! "${FONT_SIZE}" =~ ^[0-9]+$ ]] || [ "${FONT_SIZE}" -lt 1 ] || [ "${FONT_SIZE}" -gt 100 ] ; then
             echo >&2 "ERROR: Invalid value ${FONT_SIZE} for -s|--font-size!"
             exit 1
          fi
-         shift 2
          ;;
       -f | --foreground)
          COLOR_FOREGROUND="$2"
+         shift
          if [[ ! "${COLOR_FOREGROUND}" =~ ^#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]$ ]] ; then
             echo >&2 "ERROR: Invalid value ${COLOR_FOREGROUND} for -f|--foreground!"
             exit 1
          fi
-         shift 2
          ;;
       -b | --background)
          COLOR_BACKGROUND="$2"
+         shift
          if [[ ! "${COLOR_BACKGROUND}" =~ ^#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]$ ]] ; then
             echo >&2 "ERROR: Invalid value ${COLOR_BACKGROUND} for -b|--background!"
             exit 1
          fi
-         shift 2
          ;;
       -t | --transparency)
          TRANSPARENCY="$2"
+         shift
          if [[ ! "${TRANSPARENCY}" =~ ^[0-9]+$ ]] || [ "${TRANSPARENCY}" -lt 0 ] || [ "${TRANSPARENCY}" -gt 100 ]; then
             echo >&2 "ERROR: Invalid value ${TRANSPARENCY} for -t|--transparency!"
             exit 1
          fi
-         TRANSPARENCY="$2"
-         shift 2
          ;;
       -w | --verbose)
          VERBOSE=1
-         shift
          ;;
       -q | --quiet)
          VERBOSE=0
-         shift
          ;;
       -h | --help)
          usage 0
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
       *)
-         usage 1
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
          ;;
   esac
+  shift
 done
 
 if [ $# -ne 4 ] ; then
