@@ -153,7 +153,3 @@ msgstr "FEHLER: Lesefehler: %s"
 #: src/Text-Block/text-block.c:959
 msgid "ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!"
 msgstr "FEHLER: Anzahl der Aktionen liegt außerhalb der festgelegten Grenzen (--min-actions/-m/--max-actions/-M)!"
-
-#, c-format
-#~ msgid "ERROR: Invalid argument %s!"
-#~ msgstr "FEHLER: Ungültiges Argument %s!"

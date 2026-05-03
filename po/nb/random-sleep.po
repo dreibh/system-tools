@@ -60,7 +60,3 @@ msgstr "Sover i %1.6f s ..."
 #: src/Random-Sleep/random-sleep.c:168
 msgid "Woke up!"
 msgstr "Våknet!"
-
-#, c-format
-#~ msgid "ERROR: Invalid argument %s!"
-#~ msgstr "FEIL: Ugyldig argument %s!"
