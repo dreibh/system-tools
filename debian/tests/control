@@ -18,6 +18,7 @@ Depends: td-fingerprint-ssh-keys
 
 Tests: 41-try-hard
 Depends: td-try-hard
+Restrictions: allow-stderr
 
 Tests: 42-random-sleep
 Depends: td-random-sleep
