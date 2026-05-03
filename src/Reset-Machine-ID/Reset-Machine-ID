@@ -175,7 +175,7 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -H | --hostname)
          hostname="$2"
-         shift 2
+         shift
          if [[ ! "${hostname}" =~ ^([a-zA-Z][a-zA-Z0-9-]+\.)*[a-zA-Z][a-zA-Z0-9-]*$ ]] ; then
             # shellcheck disable=SC2005
             echo >&2 "$(eval_gettext "ERROR: Invalid hostname \${hostname}!")"
@@ -186,42 +186,40 @@ while [ $# -gt 0 ] ; do
          ;;
       -M | --skip-machine-id)
          SKIP_MACHINE_ID=1
-         shift
          ;;
       -S | --skip-ssh-configuration)
          SKIP_SSH_CONFIGURATION=1
-         shift
          ;;
       -K | --skip-key-replacement)
          SKIP_SSH_KEY_REPLACEMENT=1
-         shift
          ;;
       -Z | --zabbix)
          ZABBIX_SERVER="$2"
-         shift 2
          ;;
       -A | --install-zabbix-agent)
          INSTALL_ZABBIX_AGENT=1
-         shift
          ;;
       --yes-to-all-i-am-really-sure)
          YES_TO_ALL=1
          applyChanges="yes"
-         shift
          ;;
       -h | --help)
          usage 0
-         # shift
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
+         ;;
   esac
+  shift
 done
 if [ $# -ne 0 ] ; then
    usage 1

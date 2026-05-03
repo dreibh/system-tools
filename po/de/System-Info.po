@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-04-25 13:54+0200\n"
+"POT-Creation-Date: 2026-05-03 11:44+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -192,7 +192,7 @@ msgctxt "Text to prepend the usage syntax when calling the program without param
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/System-Info/System-Info:446
+#: src/System-Info/System-Info:450
 msgid "System information on %s"
 msgstr "Systeminformation am %s"
 

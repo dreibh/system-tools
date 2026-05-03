@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-04-25 13:54+0200\n"
+"POT-Creation-Date: 2026-05-03 11:44+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -48,17 +48,17 @@ msgstr ""
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:114
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:115
 #, sh-format
 msgid "Fingerprints of ${hostname} in raw format:"
 msgstr "Fingerabdrücke von ${hostname} im Rohformat:"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:141
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:142
 #, sh-format
 msgid "Fingerprints of ${hostname} in SSH format:"
 msgstr "Fingerabdrücke von ${hostname} im SSH-Format:"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:152
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:153
 #, sh-format
 msgid "Fingerprints of ${hostname} in DNS RR format:"
 msgstr "Fingerabdrücke von ${hostname} im DNS-RR-Format:"

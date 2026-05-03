@@ -74,37 +74,37 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -o | --output-prefix)
          OUTPUT_PREFIX="$2"
-         shift 2
+         shift
          ;;
       -1 | --only-first-entry)
          ONLY_FIRST_ENTRY=1
-         shift
          ;;
       -f | --skip-first-entry)
          SKIP_FIRST_ENTRY=1
-         shift
          ;;
       -l | --skip-last-entry)
          SKIP_LAST_ENTRY=1
-         shift
          ;;
       -q | --quiet)
          QUIET=1
-         shift
          ;;
       -h | --help)
          usage 0
-         # shift
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
+         ;;
   esac
+  shift
 done
 if [ $# -lt 1 ] ; then
    usage 1
