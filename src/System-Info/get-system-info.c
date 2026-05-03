@@ -350,14 +350,6 @@ static unsigned int obtainProcessCount()
 // ###### Obtain the number of users on the system ##########################
 static unsigned int obtainUserCount()
 {
-   // char         buffer[64];
-   // unsigned int count;
-   // if( (queryPipe("who | cut -d' ' -f1 | sort -ud | wc -l", (char*)&buffer, sizeof(buffer))) &&
-   //     (sscanf(buffer, "%u", &count) == 1) ) {
-   //    return count;
-   // }
-   // return 0;
-
    unsigned int count = 0;
 
    // Count the number of user sessions, the same as "who | wc -l":
