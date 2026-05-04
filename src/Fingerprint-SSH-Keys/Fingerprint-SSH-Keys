@@ -72,29 +72,30 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -d | --include-deprecated)
          INCLUDE_DEPRECATED=1
-         shift
          ;;
       -r | --include-raw)
          INCLUDE_RAW=1
-         shift
          ;;
       -p | --include-raw-python)
          INCLUDE_RAW=2
-         shift
          ;;
       -h | --help)
          usage 0
-         # shift
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
+         ;;
   esac
+  shift
 done
 if [ $# -ne 0 ] ; then
    usage 1

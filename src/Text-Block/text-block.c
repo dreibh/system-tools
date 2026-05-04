@@ -165,8 +165,9 @@ static void cleanUp(int exitCode)
             chown(OutputTempFileName, fileInfo.st_uid, fileInfo.st_gid);
             // Restore file permissions:
             if(chmod(OutputTempFileName, fileInfo.st_mode & 07777) != 0) {
-               fprintf(stderr, gettext("WARNING: Unable to restore file permissions for %s: %s\n"),
+               fprintf(stderr, gettext("WARNING: Unable to restore file permissions for %s: %s"),
                        InputFileName, strerror(errno));
+               fputs("\n", stderr);
             }
          }
 
@@ -635,6 +636,7 @@ int main (int argc, char** argv)
             usage(argv[0], 0);
           break;
          default:
+            // This should not happen: wrong getopt parameters, or missing case?
             fprintf(stderr, "INTERNAL ERROR: Unhandled argument %s!\n", argv[optind - 1]);
             return 1;
           break;
@@ -795,7 +797,7 @@ int main (int argc, char** argv)
       }
       InsertFile = tmpfile();
       if(InsertFile == nullptr) {
-         fprintf(stderr, gettext("ERROR: Unable to create temporary file for stdin: %s"), strerror(errno));
+         fprintf(stderr, gettext("ERROR: Unable to create temporary file for insertion: %s"), strerror(errno));
          fputs("\n", stderr);
          cleanUp(1);
       }

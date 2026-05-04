@@ -135,7 +135,7 @@ static unsigned int hexDigitToNumber(const char digit)
    else if( (digit >= 'A') && (digit <= 'F') ) {
       return (unsigned int)(10 + ((int)digit - (int)'A'));
    }
-   fprintf(stderr, gettext("ERROR: Invalid hexadecimal digit %c!\n"), digit);
+   fprintf(stderr, gettext("ERROR: Invalid hexadecimal digit %c!"), digit);
    fputs("\n", stderr);
    exit(1);
 }
@@ -147,7 +147,7 @@ static unsigned int octDigitToNumber(const char digit)
    if( (digit >= '0') && (digit <= '7') ) {
       return (unsigned int)((int)digit - (int)'0');
    }
-   fprintf(stderr, gettext("ERROR: Invalid octal digit %c!\n"), digit);
+   fprintf(stderr, gettext("ERROR: Invalid octal digit %c!"), digit);
    fputs("\n", stderr);
    exit(1);
 }
@@ -733,6 +733,7 @@ int main (int argc, char** argv)
          case '-':
           break;
          default:
+            // This should not happen: wrong getopt parameters, or missing case?
             fprintf(stderr, "INTERNAL ERROR: Unhandled argument %s!\n", argv[optind - 1]);
             return 1;
           break;

@@ -71,21 +71,24 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -k | --interactive-kernel-removal)
          INTERACTIVE_KERNEL_REMOVAL=1
-         shift
          ;;
       -h | --help)
          usage 0
-         # shift
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
+         ;;
   esac
+  shift
 done
 if [ $# -ne 0 ] ; then
    usage 1

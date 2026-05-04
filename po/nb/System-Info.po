@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-04-25 13:54+0200\n"
+"POT-Creation-Date: 2026-05-04 17:02+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -178,21 +178,19 @@ msgstr "Nettverk:"
 msgid "(No IPv4)"
 msgstr "(Ingen IPv4)"
 
-#: src/System-Info/System-Info:373
+#: src/System-Info/System-Info:372
 msgid "SSH Keys:"
 msgstr "SSH-nøkler:"
 
-#: src/System-Info/System-Info:379
+#: src/System-Info/System-Info:378
 msgid "#%u %s"
 msgstr "№%u %s"
 
-#: src/System-Info/System-Info:393
-#, fuzzy
-msgctxt "Text to prepend the usage syntax when calling the program without parameters, e.g. 'Usage: program arg1 arg2 [options ...]'"
+#: src/System-Info/System-Info:392
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/System-Info/System-Info:446
+#: src/System-Info/System-Info:449
 msgid "System information on %s"
 msgstr "Systeminformasjon på %s"
 

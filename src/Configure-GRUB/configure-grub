@@ -65,33 +65,37 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -i | --input)
          INPUT_CONFIGURATION="$2"
-         shift 2
+         shift
          ;;
       -o | --output)
          OUTPUT_CONFIGURATION="$2"
-         shift 2
+         shift
          ;;
       -V | --video)
          REPLACE_GRUB_GFXMODE="$2"
-         shift 2
+         shift
          ;;
       -T | --tune)
          REPLACE_GRUB_INIT_TUNE="$2"
-         shift 2
+         shift
          ;;
       -h | --help)
          usage 0
-         # shift
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
+         ;;
   esac
+  shift
 done
 if [ $# -ne 1 ] ; then
    usage 1
