@@ -41,15 +41,17 @@
 .Sh SYNOPSIS
 .Nm print-utf8
 .Op Fl n | Fl Fl newline
-.Op Fl i Ar indentation Ar string | Fl Fl indent Ar indentation Ar string
+.Op Fl i Ar indentation | Fl Fl indent Ar indentation
+.Op string
 .Nm print-utf8
 .Op Fl n | Fl Fl newline
 .Op Fl x Ar console_width | Fl Fl columns Ar console_width
-.Op Fl c Ar string | Fl Fl center Ar string
+.Op Fl c | Fl Fl center
+.Op string
 .Nm print-utf8
 .Op Fl n | Fl Fl newline
 .Op Fl x Ar console_width | Fl Fl columns Ar console_width
-.Op Fl I Ar Ar indent\%ation Ar left Ar right | Fl Fl multiline-\%indent Ar indent\%ation Ar left Ar right
+.Op Fl I Ar indent\%ation Ar left Ar right | Fl Fl multiline-\%indent Ar indent\%ation Ar left Ar right
 .Nm print-utf8
 .Op Fl n | Fl Fl newline
 .Op Fl x Ar console_width | Fl Fl columns Ar console_width
@@ -59,13 +61,17 @@
 .Op Fl x Ar console_width | Fl Fl columns Ar console_width
 .Op Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
 .Nm print-utf8
-.Op Fl b Ar string | Fl Fl size Ar string
+.Op Fl b | Fl Fl size
+.Op string
 .Nm print-utf8
-.Op Fl l Ar string | Fl Fl length Ar string
+.Op Fl l | Fl Fl length
+.Op string
 .Nm print-utf8
-.Op Fl w Ar string | Fl Fl width Ar string
+.Op Fl w | Fl Fl width
+.Op string
 .Nm print-utf8
-.Op Fl a Ar string | Fl Fl size-length-width Ar string
+.Op Fl a | Fl Fl size-length-width
+.Op string
 .Nm print-utf8
 .Op Fl t | Fl Fl terminal-info
 .Nm print-utf8
@@ -85,11 +91,13 @@ The following options are available:
 .Bl -tag -width indent
 .It Fl n | Fl Fl newline
 Add a newline to the output. Default: off.
-.It Fl i Ar indentation Ar string | Fl Fl indent Ar indentation Ar string
+.It Fl i Ar indentation | Fl Fl indent Ar indentation
 Indent the string by the given number of characters (columns in the console). A negative number leads to left-justified text, a positive number leads to right-justified text.
-.It Fl c Ar string | Fl Fl center Ar string
+.It Fl c | Fl Fl center
 Center the string, using indentation based on the current console width.
-.It Fl m Ar left Ar right | Fl Fl multiline-center Ar left Ar right
+.It Fl I Ar indentation Ar left Ar right | Fl Fl multiline-indent Ar indentation Ar left Ar right
+Reads multiple lines from stdin, indent each line by given indentation, add a prefix left and a suffix right.
+.It Fl C Ar left Ar right | Fl Fl multiline-center Ar left Ar right
 Reads multiple lines from stdin, pads them to the same length, and prints them centered with given borders on left and right side.
 .It Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
 Make a separator, consisting of a left part, a variable number of separator string occurrences, as well as a right part.
@@ -101,13 +109,13 @@ For console_width=0, the current console width (or from 80, if unknown) is used.
 For console_width<0, the current console width (or from 80, if unknown) plus
 console_width (subtraction, since it is negative!) is used.
 Default: 0, i.e. current console width.
-.It Fl b Ar string | Fl Fl size Ar string
+.It Fl b | Fl Fl size
 Print the size (bytes) of the string without ANSI control sequences.
-.It Fl l Ar string | Fl Fl length Ar string
+.It Fl l | Fl Fl length
 Print the length (in UTF-8 characters) of the string without ANSI control sequences.
-.It Fl w Ar string | Fl Fl width Ar string
+.It Fl w | Fl Fl width
 Print the width (columns in the console) of the string without ANSI control sequences.
-.It Fl a Ar string | Fl Fl size-length-width Ar string
+.It Fl a | Fl Fl size-length-width
 Printf the size, length and width of the string without ANSI control sequences.
 .It Fl t | Fl Fl terminal-info
 Print current width and height of the console.
@@ -123,10 +131,12 @@ Prints the program version and exits.
 .It print-utf8 --newline --center \[dq]This line is centered in console width!\[dq]
 .It print-utf8 --newline --columns 80 --center \[dq]This line is centered in 80 columns!\[dq]
 .It print-utf8 --newline --center \[aq]\ex1b[38;2;241;71;29mThis line is centered!\ex1b[0m\[aq]
+.It figlet \[dq]$(date +\[dq]%y-%m-%d\[dq])\[dq] | ./print-utf8 --newline --multiline-indent 64 \[dq]< \[dq] \[dq] >\[dq]
+.It figlet \[dq]$(date +\[dq]%y-%m-%d\[dq])\[dq] | ./print-utf8 --newline --multiline-indent -64 \[dq]< \[dq] \[dq] >\[dq]
 .It figlet \[dq]This is a test!\[dq] | print-utf8 --newline --multiline-center \[dq]<🏁\[dq] \[dq]🏁>\[dq]
 .It figlet \[dq]This is another test!\[dq] | print-utf8 -x -8 -n -C \[dq]<🏁\[dq] \[dq]🏁>\[dq]
-.It figlet "Right" | print-utf8 -n -I +72 \[dq]😀\[dq] \[dq]😀\[dq]
-.It figlet "Left"  | print-utf8 -n -I -72 \[dq]😀\[dq] \[dq]😀\[dq]
+.It figlet \[dq]Right\[dq] | print-utf8 -n -I +72 \[dq]😀\[dq] \[dq]😀\[dq]
+.It figlet \[dq]Left\[dq]  | print-utf8 -n -I -72 \[dq]😀\[dq] \[dq]😀\[dq]
 .It date +\[dq]%d. %m.  %Y %H:%M:%S\[dq] | figlet -w 128 | ./print-utf8 -n -C \[dq][🕑\[dq] \[dq]🕑]\[dq]
 .It print-utf8 -n -c \[dq]😀😀😀 This line is centered in console width! 😀😀😀\[dq]
 .It print-utf8 -n -x 80 -c \[dq]😀😀😀 This line is centered in 80 columns! 😀😀😀\[dq]

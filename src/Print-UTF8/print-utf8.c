@@ -558,19 +558,20 @@ static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "%s %s"
            " [-n|--newline]"
-           " [-i indentation string|--indent indentation string]"
-           " [-c string|--center string]"
+           " [-i indentation|--indent indentation]"
+           " [-c|--center]"
            " [-I left right|--multiline-indent indentation left right]"
            " [-C left right|--multiline-center left right]"
            " [-s border_left separator border_right|--separator border_left separator border_right]"
            " [-x columns|--columns columns]"
-           " [-b string|--size string]"
-           " [-l string|--length string]"
-           " [-w string|--width string]"
-           " [-a string|--size-length-width string]"
+           " [-b|--size]"
+           " [-l|--length]"
+           " [-w|--width]"
+           " [-a|--size-length-width]"
            " [-t|--terminal-info]"
            " [-h|--help]"
-           " [-v|--version]\n",
+           " [-v|--version]"
+           " [string]\n",
            gettext("Usage:"),
            program);
    exit(exitCode);
