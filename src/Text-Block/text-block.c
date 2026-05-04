@@ -553,7 +553,7 @@ int main (int argc, char** argv)
          case 0x1000:
             for(unsigned int i = 0; i < strlen(optarg); i++) {
                if( (optarg[i] == '%') ||
-                   !( (isalnum(optarg[i]) || (optarg[i] != '-') || (optarg[i] != '\'') ) ) ) {
+                   ( !isalnum(optarg[i]) && (optarg[i] != '-') && (optarg[i] != '\'') ) ) {
                   fputs(gettext("ERROR: Invalid value for enumeration format (--enumerate-format)!"), stderr);
                   fputs("\n", stderr);
                   return 1;
