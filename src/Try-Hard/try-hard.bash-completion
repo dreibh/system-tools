@@ -70,7 +70,7 @@ _try_hard()
             mapfile -t COMPREPLY < <(compgen -W "0 1 2 10 60" -- "$cur")
             return
             ;;
-         -M | multiplicative-increase)
+         -M | --multiplicative-increase)
             compopt -o nosort 2>/dev/null || true   # Numerical sorting (Bash >= 4.4)
             mapfile -t COMPREPLY < <(compgen -W "1.0 1.1 1.25 1.5 2" -- "$cur")
             return
@@ -100,7 +100,7 @@ _try_hard()
 -A
 --additive-increase
 -M
-multiplicative-increase
+--multiplicative-increase
 -T
 --truncate-delay
 -D
