@@ -802,6 +802,9 @@ int main (int argc, char** argv)
    ssize_t lineLength;
    errno = 0;
    while( (lineLength = (getline((char**)&line, &BufferSize, InputFile))) > 0 ) {
+      // getline() may have reallocated the buffer, if it was necessary!
+      Buffer = line;
+      Line   = line;
 
       // ====== Process line ================================================
       LineNo++;
@@ -934,7 +937,6 @@ int main (int argc, char** argv)
 
 
       // ====== Prepare next iteration ======================================
-      line  = Buffer;
       errno = 0;
    }
    if( (lineLength < 0) && (errno != 0) ) {
