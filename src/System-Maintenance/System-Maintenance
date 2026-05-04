@@ -42,7 +42,7 @@ export TEXTDOMAIN="System-Maintenance"
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   echo 2>&1 "$(gettext "Usage:") $0 [-k|--interactive-kernel-removal] [-h|--help] [-v|--version]"
+   echo >&2 "$(gettext "Usage:") $0 [-k|--interactive-kernel-removal] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
 
