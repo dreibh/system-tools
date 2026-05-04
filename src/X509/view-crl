@@ -132,7 +132,11 @@ while [ $# -gt 0 ] ; do
 
    # ====== Display CRL details =============================================
    echo -e "\e[34m$(eval_gettext "CRL in \${CRL_FILE}:")\e[0m"
-   openssl crl -in "${CRL_FILE}" | \
+   if [ "$(file -b "${CRL_FILE}")" == "data" ] ; then
+      openssl crl -in "${CRL_FILE}"
+   else
+      cat "${CRL_FILE}"
+   fi | \
    awk '/BEGIN X509 CRL/,/END X509 CRL/' | (
       # ------ Extract each CRL of a combined CRL file ----------------------
       encodedCRL=""

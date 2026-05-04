@@ -51,7 +51,7 @@ _view_crl()
    fi
 
    if [ "${cword}" -le 1 ] ; then
-      _filedir '@(crl|der)'
+      _filedir '@(crl|der|pem)'
       return
    fi
 
