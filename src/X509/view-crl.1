@@ -67,8 +67,8 @@ Prints the program version and exits.
 .Bl -tag -width indent
 .It view-crl My-CA-CRL.ctl
 .It view-crl /usr/lib/python3.12/test/certdata/revocation.crl
-.It curl -o google-crl.der http://c.pki.goog/wr2/GSyT1N4PBrg.crl && \
-view-crl google-crl.der
+.It curl -o google-crl.der.crl http://c.pki.goog/wr2/GSyT1N4PBrg.crl && \
+view-crl google-crl.der.crl
 .It curl --output - http://c.pki.goog/wr2/GSyT1N4PBrg.crl | view-crl -
 .It view-crl --help
 .It view-crl -h
