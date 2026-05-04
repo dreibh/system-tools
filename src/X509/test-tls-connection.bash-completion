@@ -57,7 +57,7 @@ _test_tls_connection()
 
    case "${prev}" in
       #  ====== Special case: CRL file ======================================
-      -s | ----save-certificate)
+      -s | --save-certificate)
          _filedir '@(crt|cert|pem)'
          return
          ;;
