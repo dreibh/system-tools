@@ -167,15 +167,17 @@ shift 2
 
 
 # ====== Ensure that min delay < max delay ==================================
-read -r minDelay maxDelay <<<"$(awk "\
+read -r minDelay maxDelay <<<"$(awk \
+   -v minDelayArgument="${MIN_DELAY}" \
+   -v maxDelayArgument="${MAX_DELAY}" '\
 function min(a, b) { return (a < b ? a : b); }
 function max(a, b) { return (a > b ? a : b); }
 BEGIN {
-   minDelay=min(${MIN_DELAY}, ${MAX_DELAY});
-   maxDelay=max(${MIN_DELAY}, ${MAX_DELAY});
-   printf(\"%g %g\n\", minDelay, maxDelay);
+   minDelay    = min(minDelayArgument, maxDelayArgument);
+   maxDelay    = max(minDelayArgument, maxDelayArgument);
+   printf("%g %g\n", minDelay, maxDelay);
 }
-"
+'
 )"
 
 
@@ -189,8 +191,9 @@ while true ; do
    fi
 
    # ====== Run the command =================================================
-   # shellcheck disable=SC2068
-   $@ && exit
+   if "$@" ; then
+      exit 0
+   fi
 
    # ====== Check whether trial limit has been reached ======================
    if [ ${trial} -ge "${MAX_TRIALS}" ] ; then
@@ -202,22 +205,25 @@ while true ; do
 
    # ====== Increase delay for next trial ===================================
    if [ ${trial} -gt 1 ] ; then
-      read -r minDelay maxDelay <<<"$(awk "\
+      read -r minDelay maxDelay <<<"$(awk \
+         -v minDelayArgument="${minDelay}" \
+         -v maxDelayArgument="${maxDelay}" \
+         -v additiveIncrease="${ADDITIVE_INCREASE}" \
+         -v multiplicativeIncrease="${MULTIPLICATIVE_INCREASE}" \
+         -v minDelayBoundary="${MIN_DELAY}" \
+         -v maxDelayBoundary="${TRUNCATE_DELAY}" '\
 function min(a, b) { return (a < b ? a : b); }
 function max(a, b) { return (a > b ? a : b); }
 BEGIN {
-   minDelay=min(${minDelay}, ${maxDelay});
-   maxDelay=max(${minDelay}, ${maxDelay});
-   additiveIncrease=${ADDITIVE_INCREASE};
-   multiplicativeIncrease=${MULTIPLICATIVE_INCREASE};
-   minDelayBoundary=${MIN_DELAY};
-   maxDelayBoundary=${TRUNCATE_DELAY};
+   minDelay    = min(minDelayArgument, maxDelayArgument);
+   maxDelay    = max(minDelayArgument, maxDelayArgument);
 
-   newMinDelay=max(min(minDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
-   newMaxDelay=max(min(maxDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
-   printf(\"%g %g\n\", min(newMinDelay, newMaxDelay),max(newMinDelay, newMaxDelay));
+   newMinDelay = max(min(minDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
+   newMaxDelay = max(min(maxDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
+   printf("%g %g\n", min(newMinDelay, newMaxDelay),max(newMinDelay, newMaxDelay));
 }
-")"
+'
+)"
    fi
 
    # ====== Wait a random time span =========================================
