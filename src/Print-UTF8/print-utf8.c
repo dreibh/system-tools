@@ -29,8 +29,8 @@
 
 #define _XOPEN_SOURCE 700
 #include <ctype.h>
-#include <getopt.h>
 #include <fcntl.h>
+#include <getopt.h>
 #include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -38,7 +38,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <wchar.h>
-#include <locale.h>
 #include <sys/ioctl.h>
 #ifndef nullptr
 #define nullptr NULL
@@ -124,19 +123,32 @@ static int getConsoleWidth()
 }
 
 
-// ###### Digit to number ###################################################
+// ###### Hexadecimal digit to number #######################################
 static unsigned int hexDigitToNumber(const char digit)
 {
    if( (digit >= '0') && (digit <= '9') ) {
-      return (int)digit - (int)'0';
+      return (unsigned int)((int)digit - (int)'0');
    }
    else if( (digit >= 'a') && (digit <= 'f') ) {
-      return 10 + ((int)digit - (int)'a');
+      return (unsigned int)(10 + ((int)digit - (int)'a'));
    }
    else if( (digit >= 'A') && (digit <= 'F') ) {
-      return 10 + ((int)digit - (int)'A');
+      return (unsigned int)(10 + ((int)digit - (int)'A'));
    }
-   fprintf(stderr, "hexDigitToNumber: Bad digit %c!\n", digit);
+   fprintf(stderr, gettext("ERROR: Invalid hexadecimal digit %c!\n"), digit);
+   fputs("\n", stderr);
+   exit(1);
+}
+
+
+// ###### Hexadecimal digit to number #######################################
+static unsigned int octDigitToNumber(const char digit)
+{
+   if( (digit >= '0') && (digit <= '7') ) {
+      return (unsigned int)((int)digit - (int)'0');
+   }
+   fprintf(stderr, gettext("ERROR: Invalid octal digit %c!\n"), digit);
+   fputs("\n", stderr);
    exit(1);
 }
 
@@ -183,9 +195,9 @@ static char* unescape(const char* originalString)
                case '0':
                   if(i + 3 < original_string_length) {
                      const unsigned int c =
-                        (hexDigitToNumber(originalString[i + 1]) * 100) +
-                        (hexDigitToNumber(originalString[i + 2]) * 10) +
-                        hexDigitToNumber(originalString[i + 3]);
+                        (octDigitToNumber(originalString[i + 1]) * 64) +
+                        (octDigitToNumber(originalString[i + 2]) * 8) +
+                        octDigitToNumber(originalString[i + 3]);
                      unescapedString[j++] = (char)c;
                      i += 3;
                   }
@@ -232,7 +244,7 @@ static char* unescape(const char* originalString)
                 break;
                case 'e':
                case 'E':
-                  unescapedString[j++] = '\e';
+                  unescapedString[j++] = '\x1b';
                 break;
                case 'f':
                   unescapedString[j++] = '\f';
@@ -281,7 +293,7 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
    size_t j = 0;
    for(size_t i = 0; i < original_string_length; i++) {
       if(!inANSISequence) {
-         if((originalString[i] == '\e') || (!removeANSISequences)) {
+         if((originalString[i] == '\x1b') || (!removeANSISequences)) {
             inANSISequence = true;
          }
          else {
@@ -547,8 +559,8 @@ static void usage(const char* program, const int exitCode)
            " [-I left right|--multiline-indent indentation left right]"
            " [-C left right|--multiline-center left right]"
            " [-s border_left separator border_right|--separator border_left separator border_right]"
-           " [-c columns|--columns columns]"
-           " [-s string|--size string]"
+           " [-x columns|--columns columns]"
+           " [-b string|--size string]"
            " [-l string|--length string]"
            " [-w string|--width string]"
            " [-a string|--size-length-width string]"
