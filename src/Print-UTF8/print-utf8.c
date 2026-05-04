@@ -221,22 +221,22 @@ static char* unescape(const char* originalString)
                 break;
                case 'U':
                   if(i + 8 < original_string_length) {
-                    const unsigned int c1 =
-                        (hexDigitToNumber(originalString[i + 1]) << 4) +
-                        hexDigitToNumber(originalString[i + 2]);
-                    const unsigned int c2 =
-                        (hexDigitToNumber(originalString[i + 3]) << 4) +
-                        hexDigitToNumber(originalString[i + 4]);
-                    const unsigned int c3 =
-                        (hexDigitToNumber(originalString[i + 5]) << 4) +
-                        hexDigitToNumber(originalString[i + 6]);
-                    const unsigned int c4 =
+                     const unsigned int codepoint =
+                        (hexDigitToNumber(originalString[i + 1]) << 28) +
+                        (hexDigitToNumber(originalString[i + 2]) << 24) +
+                        (hexDigitToNumber(originalString[i + 3]) << 20) +
+                        (hexDigitToNumber(originalString[i + 4]) << 16) +
+                        (hexDigitToNumber(originalString[i + 5]) << 12) +
+                        (hexDigitToNumber(originalString[i + 6]) << 8) +
                         (hexDigitToNumber(originalString[i + 7]) << 4) +
                         hexDigitToNumber(originalString[i + 8]);
-                     unescapedString[j++] = (char)c1;
-                     unescapedString[j++] = (char)c2;
-                     unescapedString[j++] = (char)c3;
-                     unescapedString[j++] = (char)c4;
+                     char      multibyte[MB_CUR_MAX];
+                     const int bytes = wctomb(multibyte, (wchar_t)codepoint);
+                     if(bytes > 0) {
+                        for(int k = 0; k < bytes; k++) {
+                           unescapedString[j++] = multibyte[k];
+                        }
+                     }
                      i += 8;
                   }
                 break;
