@@ -146,19 +146,19 @@ fi
 # ====== system update ======================================================
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing updates ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
-   # ------ Download --------------------------------------
+   # ------ Download --------------------------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -yd -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
    wait
 
-   # ------ Update special packages -----------------------
+   # ------ Update special packages -----------------------------------------
    for package in nornet-server nornet-tunnelbox ; do
-      if dpkg -l $package >/dev/null 2>&1 ; then
-         if [ "$(find /var/cache/apt/archives/ -name "$package*.deb")" != "" ] ; then
-            echo "Updating $package package ..."
+      if dpkg -l ${package} >/dev/null 2>&1 ; then
+         if [ "$(find /var/cache/apt/archives/ -name "${package}*.deb")" != "" ] ; then
+            echo "Updating ${package} package ..."
             # Do not restart the service on update, in order to avoid
-            # unnecessary downtime. Needs a manual restart, if necessary!
+            # unnecessary downtime. Then, a manual restart can be made.
             (
                echo "#!/bin/sh"
                echo "exit 101"
@@ -167,9 +167,9 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
             sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
                -o APT::Get::Always-Include-Phased-Updates=true \
                -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-              $package -y -q 2>&1 | sudo tee /tmp/install.log &
+              ${package} -y -q 2>&1 | sudo tee /tmp/install.log &
             wait
-            echo "Updated $package package."
+            echo "Updated ${package} package."
          fi
       fi
    done
@@ -177,7 +177,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # Ensure to remove modified policy-rc.d!
    sudo rm -f /usr/sbin/policy-rc.d
 
-   # ------ Update the rest -------------------------------
+   # ------ Update the rest -------------------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -y -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
@@ -282,7 +282,9 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
       linux-image-extra-virtual
 "
 
-   toBeRemoved=$(
+   # Create a list of packages to be removed. Packets to keep get a "+"
+   # suffix, so apt-get ensures to keep them:
+   toBeRemoved="$(
       while read -r line ; do
          mayBeRemoved=0
          for packageToRemove in ${packagesToRemove} ; do
@@ -307,7 +309,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
             fi
         fi
       done <"${packageVersionsFile}"
-   )
+   )"
 
    rm -f "${packageVersionsFile}"
 
@@ -430,13 +432,16 @@ fi
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Done!")\x1b[0m"
 
 # ====== Finally, show project package versions =============================
-filterScripts=""
+filterScripts=()
 for directory in /etc/system-maintenance.d /usr/local/etc/system-maintenance.d ; do
-   if [ -d ${directory} ] ; then
-      filterScripts=$(find ${directory} -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort)
+   if [ -d "${directory}" ] ; then
+      while IFS= read -r -d "" scriptPath ; do
+         filterScripts+=( "${scriptPath}" )
+      done < <(find "${directory}" -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" -print0 | sort -z)
    fi
 done
-if [ "${filterScripts}" != "" ] ; then
+
+if [ ${#filterScripts[@]} -gt 0 ] ; then
    fullPackageList="$(mktemp -t SystemMaintenance.XXXXXXXXXX.out)"
 
    if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
@@ -450,8 +455,8 @@ if [ "${filterScripts}" != "" ] ; then
    fi
 
    if [ -e "${fullPackageList}" ] ; then
-      for filterScript in ${filterScripts} ; do
-         ${filterScript} "${fullPackageList}"
+      for filterScript in "${filterScripts[@]}" ; do
+         "${filterScript}" "${fullPackageList}"
       done
       rm -f "${fullPackageList}"
       echo "=============================================================================="
