@@ -62,11 +62,11 @@ colorDisk95="\e[31m"
 # ###### Print banners ######################################################
 function print-banners ()
 {
-   # shellcheck disable=SC2068
-   for directory in $@ ; do
+   local directory
+   for directory in "$@" ; do
       if [ -d "${directory}" ] ; then
-         bannerScripts=$(find "${directory}" -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort -r)
-         for bannerScript in ${bannerScripts} ; do
+         local bannerScript
+         find "${directory}"  -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort -rz | while IFS= read -r -d "" bannerScript ; do
             ${bannerScript} || break
          done
       fi
@@ -84,30 +84,30 @@ function print-system-information ()
       exit 1
    fi
    # For ShellCheck:
-   hostname_long=
-   uptime_days=
-   uptime_hours=
-   uptime_mins=
-   uptime_secs=
-   system_release=
-   system_users=
-   system_cores=
-   system_machine=
-   system_procs=
-   system_load_avg1min=
-   system_load_avg5min=
-   system_load_avg15min=
-   battery_list=
-   system_mem_used=
-   system_mem_total=
-   system_mem_free=
-   system_mem_freepct=
-   system_swap_total=
-   system_swap_used=
-   system_swap_free=
-   system_swap_freepct=
-   disk_list=
-   netif_list=
+   hostname_long=""
+   uptime_days=0
+   uptime_hours=0
+   uptime_mins=0
+   uptime_secs=0
+   system_release=""
+   system_users=0
+   system_cores=0
+   system_machine=""
+   system_procs=0
+   system_load_avg1min=0
+   system_load_avg5min=0
+   system_load_avg15min=0
+   battery_list=""
+   system_mem_used=0
+   system_mem_total=0
+   system_mem_free=0
+   system_mem_freepct=0
+   system_swap_total=0
+   system_swap_used=0
+   system_swap_free=0
+   system_swap_freepct=0
+   disk_list=""
+   netif_list=""
    # Set the variables:
    eval "$(get-system-info)"
 
@@ -280,8 +280,8 @@ function print-system-information ()
          echo -n ", "
       fi
       mountPointVariable="disk_${mountPointName}_pct"
-      if [ -v "${mountPointVariable}" ] && [[ "${!mountPointVariable}" =~ ^[0-9]+ ]]; then
-         percentage="${!mountPointVariable//[^0-9]*/}"
+      if [ -v "${mountPointVariable}" ] && [[ "${!mountPointVariable}" =~ ^([0-9]+) ]]; then
+         percentage="${BASH_REMATCH[1]}"   # The numerical value before the decimal point
          if [ "${percentage}" -ge 95 ] ; then
             colorDisk="${colorDisk95}"
          elif [ "${percentage}" -ge 80 ] ; then
@@ -363,13 +363,12 @@ function print-ssh-key-fingerprints ()
    if [ -d /etc/ssh ] && [ -x "$(command -v ssh-keygen)" ] ; then
       echo -en "${colorBasic}"
       local number=1
-      local label=""
-      local keys
-      keys="$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)"
-      for key in $keys ; do
+      local label
+      local keyInfo
+      find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print0 | sort -z | while IFS= read -r -d "" key ; do
          keyInfo="$(ssh-keygen -lf "$key" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g")"
          if [[ "${keyInfo}" =~ ^[A-Z]+ ]] ; then
-             if [ ${number} -eq 1 ] ; then
+            if [ ${number} -eq 1 ] ; then
                label="$(gettext "SSH Keys:")"
             else
                label=""
@@ -415,11 +414,11 @@ fi
 eval set -- "${options}"
 
 now="$(date)"
-scriptDirectories="/etc/system-info.d /usr/local/etc/system-info.d"
+scriptDirectories=( "/etc/system-info.d" "/usr/local/etc/system-info.d" )
 while [ $# -gt 0 ] ; do
    case "$1" in
       -S | --scripts)
-         scriptDirectories="$2"
+         scriptDirectories=( "$2" )
          shift 2
          ;;
       -h | --help)
@@ -452,7 +451,7 @@ printf "\n$(gettext "System information on %s")\n\n" "${now}"
 (
    print-system-information
 ) 2>&1 | (
-   print-banners ${scriptDirectories}
+   print-banners "${scriptDirectories[@]}"
    wait
    cat
 ) | \
