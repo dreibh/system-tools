@@ -237,16 +237,10 @@ static long long countLines(FILE* inputFile)
 // ###### Write contents of insert file #####################################
 static void copyInsertFileIntoOutputFile()
 {
-   char    buffer[65536];
-   ssize_t bytesRead;
+   char   buffer[65536];
+   size_t bytesRead;
    while( (bytesRead = fread((char*)&buffer, 1, sizeof(buffer), InsertFile)) > 0 ) {
       writeToOutputFile(buffer, bytesRead);
-   }
-   if(bytesRead < 0) {
-      fprintf(stderr, gettext("ERROR: Unable to read from insert file %s: %s"),
-              InsertFileName, strerror(errno));
-      fputs("\n", stderr);
-      cleanUp(1);
    }
    if(InsertFile != stdin) {
       rewind(InsertFile);
@@ -262,31 +256,32 @@ static void processUnmarked(const char*   text,
    assert(InMarkedBlock == false);
    assert(textLength >= 0);
 
+   const size_t outputLength = (size_t)textLength;
    switch(Mode) {
       case Cat:
       case Remove:
       case Replace:
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
        break;
       case InsertFront:
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
          if(beginOfMarking) {
             copyInsertFileIntoOutputFile();
          }
        break;
       case InsertBack:
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
        break;
       case Enumerate:
          fputs(Enumerate1, OutputFile);
          fprintf(OutputFile, EnumerateFormat, LineNo);
          fputs(Enumerate2, OutputFile);
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
        break;
       case Highlight:
-         if(textLength > 0) {
+         if(outputLength > 0) {
             fputs(HighlightUnmarked1, OutputFile);
-            writeToOutputFile(text, textLength);
+            writeToOutputFile(text, outputLength);
             fputs(HighlightUnmarked2, OutputFile);
          }
          if(beginOfMarking) {
@@ -312,9 +307,10 @@ static void processMarked(const char*   text,
    assert(InMarkedBlock == true);
    assert(textLength >= 0);
 
+   const size_t outputLength = (size_t)textLength;
    switch(Mode) {
       case Extract:
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
        break;
       case Replace:
          if(endOfMarking) {
@@ -322,18 +318,18 @@ static void processMarked(const char*   text,
          }
        break;
       case InsertFront:
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
        break;
       case InsertBack:
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
          if(endOfMarking) {
             copyInsertFileIntoOutputFile();
          }
        break;
       case Highlight:
-         if(textLength > 0) {
+         if(outputLength > 0) {
             fputs(HighlightMarked1, OutputFile);
-            writeToOutputFile(text, textLength);
+            writeToOutputFile(text, outputLength);
             fputs(HighlightMarked2, OutputFile);
          }
          if(endOfMarking) {
@@ -847,7 +843,7 @@ int main (int argc, char** argv)
                   // ------ Special case: BeginTag == EndTag ----------------
                   if(BeginTag == EndTag) {
                      if(IncludeTags) {
-                        processMarked(next, MarkerTagLength, true);
+                        processMarked(next, (ssize_t)MarkerTagLength, true);
                         next += MarkerTagLength;
                      }
                      else {
