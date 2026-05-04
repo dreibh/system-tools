@@ -150,7 +150,7 @@ int main(int argc, char** argv)
    // ====== Initialise random number generator =============================
    struct timeval tv;
    if(gettimeofday(&tv, nullptr) == 0) {
-      srand(tv.tv_usec);
+      srand(tv.tv_sec ^ tv.tv_usec ^ getpid());
    }
 
    // ====== Random sleep ===================================================
