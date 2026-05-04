@@ -2,7 +2,7 @@
 //         ____            _                     _____           _
 //        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 //        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \.
 //        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 //               |___/
 //                             --- System-Tools ---
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
    textdomain("unixts2time");
 
    // ====== Handle arguments ===============================================
-   const static struct option long_options[] = {
+   static const struct option long_options[] = {
       { "human-readable", no_argument, 0, 'H' },
       { "seconds",        no_argument, 0, 's' },
       { "milliseconds",   no_argument, 0, 'm' },
@@ -141,7 +141,7 @@ int main(int argc, char** argv)
 
    // ====== Obtain Unix timestamp in ns ====================================
    long long unixTS;
-   for(unsigned int i = optind; i <= argc; i++) {
+   for(int i = optind; i <= argc; i++) {
       unsigned int divideBy = initialDivideBy;
 
       // ====== Use current time, if no timestamp is given ==================
@@ -152,8 +152,8 @@ int main(int argc, char** argv)
                perror(gettext("clock_gettime() failed"));
                exit(1);
             }
-            unixTS = (1000000000ULL * ts.tv_sec) + ts.tv_nsec;   // already in ns
-            if(divideBy != 0) {
+            unixTS = (1000000000LL * ts.tv_sec) + ts.tv_nsec;   // already in ns
+            if(divideBy == 0) {
                divideBy = 1;
                unit     = "ns";
             }
@@ -235,7 +235,7 @@ int main(int argc, char** argv)
       // ------ Time in seconds-granularity ---------------------------------
       const struct tm* t = gmtime(&ts.tv_sec);
       if(t == nullptr) {
-         fputs(gettext("ERROR: strftime() failed!"), stderr);
+         fputs(gettext("ERROR: gmtime() failed!"), stderr);
          fputs("\n", stderr);
          exit(1);
       }
@@ -262,7 +262,7 @@ int main(int argc, char** argv)
       else {
          format = "%1.0f";
       }
-      snprintf((char*)&fstring, sizeof(fstring), format,
+      snprintf(fstring, sizeof(fstring), format,
                (double)ts.tv_nsec / 1000000000.0);
 
       // ====== Print result ================================================
@@ -272,7 +272,7 @@ int main(int argc, char** argv)
       }
       else {
          char ustring[64];
-         snprintf((char*)&ustring, sizeof(ustring), format,
+         snprintf(ustring, sizeof(ustring), format,
                   unixTS / (double)divideBy);
          fprintf(stdout, gettext("%s%s is %lld (0x%llx) %s since the Unix Epoch"),
                tstring, &fstring[1], unixTS /divideBy, unixTS /divideBy, unit);

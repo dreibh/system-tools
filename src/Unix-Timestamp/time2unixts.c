@@ -2,7 +2,7 @@
 //         ____            _                     _____           _
 //        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 //        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \.
 //        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 //               |___/
 //                             --- System-Tools ---
@@ -89,7 +89,7 @@ int main(int argc, char** argv)
    textdomain("time2unixts");
 
    // ====== Handle arguments ===============================================
-   const static struct option long_options[] = {
+   static const struct option long_options[] = {
       { "float",                  no_argument, 0, 'F' },
       { "integer-decimal",        no_argument, 0, 'I' },
       { "integer-hexadecimal",    no_argument, 0, 'X' },
@@ -159,7 +159,7 @@ int main(int argc, char** argv)
 
    // ====== Obtain Unix timestamp in ns ====================================
    struct timespec ts;
-   for(unsigned int i = optind; i <= argc; i++) {
+   for(int i = optind; i <= argc; i++) {
       // ====== Use current time, if no date/time string is given ===========
       if(i == argc) {
          if(optind == argc) {
@@ -175,7 +175,7 @@ int main(int argc, char** argv)
 
       // ====== Parse the next date/time string =============================
       else {
-         struct tm tm = { };
+         struct tm tm = { 0 };
          const char* remainder = strptime(argv[i], "%Y-%m-%d %H:%M:%S", &tm);
          if(remainder != nullptr) {
             ts.tv_sec = timegm(&tm);
@@ -202,7 +202,7 @@ int main(int argc, char** argv)
 
       // ====== Convert timespec to Unix timestamp =============================
       const long long unixTS =
-         (1000000000ULL * ts.tv_sec) + ts.tv_nsec;
+         (1000000000LL * ts.tv_sec) + ts.tv_nsec;
 
       if(useInteger != 0) {
          if(useInteger == 16) {
