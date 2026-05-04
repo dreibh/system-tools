@@ -195,8 +195,8 @@ static char* unescape(const char* originalString)
                case '0':
                   if(i + 3 < original_string_length) {
                      const unsigned int c =
-                        (octDigitToNumber(originalString[i + 1]) * 64) +
-                        (octDigitToNumber(originalString[i + 2]) * 8) +
+                        (octDigitToNumber(originalString[i + 1]) << 6) +
+                        (octDigitToNumber(originalString[i + 2]) << 3) +
                         octDigitToNumber(originalString[i + 3]);
                      unescapedString[j++] = (char)c;
                      i += 3;
@@ -204,14 +204,18 @@ static char* unescape(const char* originalString)
                 break;
                case 'u':
                   if(i + 4 < original_string_length) {
-                    const unsigned int c1 =
-                        (hexDigitToNumber(originalString[i + 1]) << 4) +
-                        hexDigitToNumber(originalString[i + 2]);
-                    const unsigned int c2 =
+                     const unsigned int codepoint =
+                        (hexDigitToNumber(originalString[i + 1]) << 12) +
+                        (hexDigitToNumber(originalString[i + 2]) << 8) +
                         (hexDigitToNumber(originalString[i + 3]) << 4) +
                         hexDigitToNumber(originalString[i + 4]);
-                     unescapedString[j++] = (char)c1;
-                     unescapedString[j++] = (char)c2;
+                     char      multibyte[MB_CUR_MAX];
+                     const int bytes = wctomb(multibyte, (wchar_t)codepoint);
+                     if(bytes > 0) {
+                        for(int k = 0; k < bytes; k++) {
+                           unescapedString[j++] = multibyte[k];
+                        }
+                     }
                      i += 4;
                   }
                 break;
@@ -316,7 +320,7 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
       exit(1);
    }
    const size_t wide_string_length = mbstowcs(wide_string, utf8String, j);
-   if(wide_string_length < 0) {
+   if(wide_string_length == (size_t)-1) {
       fputs(gettext("ERROR: mbstowcs() failed!"), stderr);
       fputs("\n", stderr);
       exit(1);
