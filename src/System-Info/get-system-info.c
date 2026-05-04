@@ -47,7 +47,7 @@
 #include <sys/statvfs.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
-#if defined(__linux)
+#if defined(__linux__)
 #include <dirent.h>
 #include <linux/if.h>
 #include <netpacket/packet.h>
@@ -157,7 +157,7 @@ static void printaddress(const struct sockaddr* address,
       }
       printf("%s/%u", resolvedHost, prefixlen);
    }
-#if defined(__linux)
+#if defined(__linux__)
    else if(address->sa_family == AF_PACKET) {
       const struct sockaddr_ll* macAddress = (const struct sockaddr_ll*)address;
       for(unsigned int i = 0; i < 6; i++) {
@@ -260,7 +260,7 @@ static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
          }
          resultSize += strlen(resultPtr);
       }
-      while(resultSize < resultMaxSize);
+      while(resultSize < resultMaxSize - 1);
       result[resultSize] = 0x00;
       pclose(fh);
       return true;
@@ -283,7 +283,7 @@ static bool queryFile(const char* file, char* result, size_t resultMaxSize)
          }
          resultSize += strlen(resultPtr);
       }
-      while(resultSize < resultMaxSize);
+      while(resultSize < resultMaxSize - 1);
       fclose(fh);
       return true;
    }
@@ -297,7 +297,7 @@ static unsigned int obtainProcessCount()
    unsigned int count = 0;
 
    // ====== Linux: count processes in /proc ================================
-#ifdef __linux__
+#if defined(__linux__)
    struct dirent* dirEntry;
    DIR*           dir = opendir("/proc");
    if(dir != nullptr) {
@@ -381,7 +381,7 @@ static void showLoadInformation()
    printf("system_users=%u\n", userCount);
 
    // ====== Load averages ==================================================
-#if defined(__linux)
+#if defined(__linux__)
    struct sysinfo systemInfo;
    if(sysinfo(&systemInfo) == 0) {
       const double fFraction = 1.0 / (1 << SI_LOAD_SHIFT);
@@ -416,7 +416,7 @@ static void showBatteryInformation()
    unsigned int       batteryIDs[maxBatteries];
 
    // ====== Linux: Obtain battery status via /sys file system ==============
-#if defined(__linux)
+#if defined(__linux__)
    for(unsigned int i = 0; i < maxBatteries; i++) {
       // ------ Obtain status of battery unit -------------------------------
       char capacityFileName[64];
@@ -430,7 +430,7 @@ static void showBatteryInformation()
          char* statusEnd;
          snprintf((char*)&statusFileName, sizeof(statusFileName), "/sys/class/power_supply/BAT%u/status", i);
          if( (queryFile(statusFileName, (char*)&statusBuffer, sizeof(statusBuffer))) &&
-             (statusEnd = index(statusBuffer, '\n')) ) {
+             (statusEnd = strchr(statusBuffer, '\n')) ) {
             *statusEnd = 0x00;
 
             // ------ Extract status as status code -------------------------
@@ -522,7 +522,7 @@ static void showMemoryInformation()
    unsigned long long swapAvailable   = 0;
    unsigned long long swapUsed        = 0;
 
-#if defined(__linux)
+#if defined(__linux__)
    // ====== Query memory information via /proc =============================
    FILE* fh = fopen("/proc/meminfo", "r");
    if(fh != nullptr) {
@@ -611,7 +611,7 @@ static void showMemoryInformation()
    // Based on: https://cgit.freebsd.org/src/tree/sbin/swapon/swapon.c
    int mib[16];
    size_t mibsize = 16;
-   if(sysctlnametomib("vm.swap_info", mib, &mibsize) != -0) {
+   if(sysctlnametomib("vm.swap_info", mib, &mibsize) != 0) {
       perror("sysctlnametomib(vm.swap_info)");
       return;
    }
@@ -673,8 +673,8 @@ static bool obtainDiskUsage(const char* mountPoint, const char* label)
    const unsigned long long freeSpace =   /* actual free space */
       (unsigned long long)status.f_bfree * (unsigned long long)status.f_frsize;
    const unsigned long long usedSpace = totalSpace - freeSpace;
-   const double usagePercentage = 100.0 *
-      (double)(totalSpace - availableSpace) / (double)totalSpace;
+   const double usagePercentage = (totalSpace > 0) ?
+      (100.0 * (double)(totalSpace - availableSpace) / (double)totalSpace) : 0.0;
 
    // ====== Print the results ==============================================
    printf("disk_%s_total=%llu\n",     label, totalSpace);
@@ -742,7 +742,7 @@ static void showNetworkInformation(const bool filterLocalScope)
             ifaArray[n].flags     = ifa->ifa_flags;
             n++;
          }
-#if defined(__linux)
+#if defined(__linux__)
          else if(ifa->ifa_addr->sa_family == AF_PACKET) {
 #elif defined(__FreeBSD__)
          else if(ifa->ifa_addr->sa_family == AF_LINK) {
@@ -784,7 +784,7 @@ static void showNetworkInformation(const bool filterLocalScope)
             case AF_INET:
                printf("netif_%u_ipv4=\"", ifIndex);
              break;
-#if defined(__linux)
+#if defined(__linux__)
             case AF_PACKET:
 #elif defined(__FreeBSD__)
             case AF_LINK:
