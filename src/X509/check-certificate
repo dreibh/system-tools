@@ -270,7 +270,7 @@ while [ $# -gt 0 ] ; do
       echo
       if [ ${good} -eq 0 ] ; then
          errors=$((errors + 1))
-         echo -e "\e[31;1m$(gettext "$(gettext "❌FAILED!")")\e[0m"
+         echo -e "\e[31;1m$(gettext "❌FAILED!")\e[0m"
          sh -c "${command}" || true
          "${CERTUTIL}" -L -d "${db}"
          "${CRLUTIL}" -L -d "${db}"
