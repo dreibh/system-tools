@@ -30,6 +30,7 @@
 #define _XOPEN_SOURCE 700
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <getopt.h>
 #include <locale.h>
@@ -37,8 +38,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <unistd.h>
-#include <errno.h>
 #ifndef nullptr
 #define nullptr NULL
 #endif
@@ -94,6 +95,7 @@ static const char*     HighlightUnmarked2   = "\x1b[0m";
 static const char*     HighlightMarked1     = "\x1b[31m";
 static const char*     HighlightMarked2     = "\x1b[0m";
 static const char*     InputFileName        = nullptr;
+static char*           RealInputFileName    = nullptr;
 static FILE*           InputFile            = nullptr;
 static bool            OpenInputFile        = false;
 static const char*     OutputFileName       = nullptr;
@@ -156,6 +158,19 @@ static void cleanUp(int exitCode)
          }
       }
       else if( (exitCode == 0) && (OutputTempFileName != nullptr) ) {
+         // ------ Restore original file permissions and ownership ----------
+         struct stat fileInfo;
+         if(stat(InputFileName, &fileInfo) == 0) {
+            // Try to change ownership, but ignore errors:
+            chown(OutputTempFileName, fileInfo.st_uid, fileInfo.st_gid);
+            // Restore file permissions:
+            if(chmod(OutputTempFileName, fileInfo.st_mode & 07777) != 0) {
+               fprintf(stderr, gettext("WARNING: Unable to restore file permissions for %s: %s\n"),
+                       InputFileName, strerror(errno));
+            }
+         }
+
+         // ------ Overwrite original file ----------------------------------
          if(rename(OutputTempFileName, InputFileName) != 0) {
             fprintf(stderr, gettext("ERROR: Unable to change name of temporary output file from %s to %s: %s"),
                     OutputTempFileName, InputFileName, strerror(errno));
@@ -179,6 +194,10 @@ static void cleanUp(int exitCode)
       OpenInputFile = false;
    }
    InputFile = nullptr;
+   if(RealInputFileName) {
+      free(RealInputFileName);
+      RealInputFileName = nullptr;
+   }
 
    // ====== Free buffer ====================================================
    if(Buffer) {
@@ -679,6 +698,16 @@ int main (int argc, char** argv)
    if( (InputFileName != nullptr) && (strcmp(InputFileName, "-") == 0) ) {
       InputFileName = nullptr;   // Special case: - => stdin
    }
+   if( (InputFileName != nullptr) && InPlaceUpdate ) {
+      RealInputFileName = realpath(InputFileName, nullptr);
+      if(RealInputFileName == nullptr) {
+         fprintf(stderr, gettext("ERROR: Unable to resolve absolute path for input file %s: %s"),
+                 InputFileName, strerror(errno));
+         fputs("\n", stderr);
+         cleanUp(1);
+      }
+      InputFileName = RealInputFileName;
+   }
    if(InputFileName != nullptr) {
       InputFile = fopen(InputFileName, "r");
       if(InputFile == nullptr) {
@@ -756,15 +785,33 @@ int main (int argc, char** argv)
 
    // ====== Open insert file ===============================================
    if( (InsertFileName != nullptr) && (strcmp(InsertFileName, "-") == 0) ) {
+      // ------ Insert file is stdin => copy to temporary file --------------
       InsertFileName = nullptr;   // Special case: - => stdin
       if(InputFile == stdin) {
          fputs(gettext("ERROR: Insert from standard input requires an input file!"), stderr);
          fputs("\n", stderr);
          cleanUp(1);
       }
-      InsertFile = stdin;
+      InsertFile = tmpfile();
+      if(InsertFile == nullptr) {
+         fprintf(stderr, gettext("ERROR: Unable to create temporary file for stdin: %s"), strerror(errno));
+         fputs("\n", stderr);
+         cleanUp(1);
+      }
+      char   buffer[65536];
+      size_t bytesRead;
+      while( (bytesRead = fread(buffer, 1, sizeof(buffer), stdin)) > 0 ) {
+         if(fwrite(buffer, 1, bytesRead, InsertFile) < bytesRead) {
+            fprintf(stderr, gettext("ERROR: Failed to write to temporary file: %s"), strerror(errno));
+            fputs("\n", stderr);
+            cleanUp(1);
+         }
+      }
+      rewind(InsertFile);
+      OpenInsertFile = true;
    }
    if(InsertFileName != nullptr) {
+      // ------ Insert file is a file => just open it -----------------------
       InsertFile = fopen(InsertFileName, "r");
       if(InsertFile == nullptr) {
          fprintf(stderr, gettext("ERROR: Unable to open insert file %s: %s"),
@@ -773,11 +820,13 @@ int main (int argc, char** argv)
          cleanUp(1);
       }
       OpenInsertFile = true;
+   }
+   if(InsertFile != nullptr) {
 #ifdef POSIX_FADV_SEQUENTIAL
-      posix_fadvise(fileno(InputFile), 0, 0, POSIX_FADV_SEQUENTIAL|POSIX_FADV_WILLNEED);
+      posix_fadvise(fileno(InsertFile), 0, 0, POSIX_FADV_SEQUENTIAL|POSIX_FADV_WILLNEED);
 #endif
    }
-   if(InsertFile == nullptr) {
+   else {
       if( (Mode == InsertFront) || (Mode == InsertBack) || (Mode == Replace) ) {
          fputs(gettext("ERROR: No insert file provided!"), stderr);
          fputs("\n", stderr);
