@@ -195,6 +195,9 @@ static char* makeTempOutputFileName(const char* outputFileName)
 {
    const size_t ouputFileNameLength = strlen(outputFileName);
    OutputTempFileName = malloc(ouputFileNameLength + 2);
+   if(OutputTempFileName == nullptr) {
+      cleanUp(1);
+   }
    strncpy(OutputTempFileName, outputFileName, ouputFileNameLength);
    OutputTempFileName[ouputFileNameLength + 0] = '~';
    OutputTempFileName[ouputFileNameLength + 1] = 0x00;
