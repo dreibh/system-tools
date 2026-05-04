@@ -91,12 +91,11 @@ fi
 OUTPUT="$2"
 
 TYPE="x509"
-# Check whether type is CRL, by using "file":
-if [ "$(file -b "${INPUT}")" == "data" ] ; then
+if [[ "$(basename "${INPUT}")" =~ \.[Cc][Rr][Ll]$ ]] ; then
    TYPE="crl"
 fi
 
-# ====== Convert PEM to DER =================================================
+# ====== Convert DER to PEM =================================================
 openssl "${TYPE}" \
    -inform der -in "${INPUT}" \
    -outform pem -out "${OUTPUT}"

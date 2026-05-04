@@ -83,11 +83,18 @@ if [ $# -ne 2 ] ; then
    usage 1
 fi
 
+INPUT="$1"
+if [ ! -e "${INPUT}" ] ; then
+   echo >&2 "ERROR: PEM file ${INPUT} does not exist!"
+   exit 1
+fi
+OUTPUT="$2"
+
 TYPE="x509"
 # Check whether type is CRL, by extension or using "file":
 if [[ "$(basename "${INPUT}")" =~ \.[Cc][Rr][Ll]$ ]] ; then
    TYPE="crl"
-elif [ "$(file -b "${INPUT}")" == "ASCII text" ] ; then
+elif grep -q "BEGIN X509 CRL" "${INPUT}" ; then
    TYPE="crl"
 fi
 
