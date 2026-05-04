@@ -114,7 +114,7 @@ if [ ! -x "${FIGLET}" ] ; then
 fi
 GAWK="$(which gawk 2>/dev/null || true)"
 if [ ! -x "${GAWK}" ] ; then
-   echo >&2 "ERROR: Figlet is not installed!"
+   echo >&2 "ERROR: GAWK is not installed!"
    echo >&2 "* Ubuntu:  sudo apt install -y gawk"
    echo >&2 "* Fedora:  sudo dnf install -y gawk"
    echo >&2 "* FreeBSD: sudo pkg install -y gawk"
