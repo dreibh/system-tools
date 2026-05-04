@@ -2,7 +2,7 @@
 //         ____            _                     _____           _
 //        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 //        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \.
 //        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 //               |___/
 //                             --- System-Tools ---
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
    textdomain("random-sleep");
 
    // ====== Handle arguments ===============================================
-   const static struct option long_options[] = {
+   static const struct option long_options[] = {
       { "verbose", no_argument, 0, 'w' },
       { "quiet",   no_argument, 0, 'q' },
       { "help",    no_argument, 0, 'h' },

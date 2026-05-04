@@ -132,6 +132,14 @@ ENDIF()
 #### INTERNATIONALISATION (I18N)                                         ####
 #############################################################################
 
+ADD_COMPILE_OPTIONS(-Wall -Wextra -Wpedantic -Wsign-conversion)
+ADD_COMPILE_DEFINITIONS(_FILE_OFFSET_BITS=64 _TIME_BITS=64)
+
+
+#############################################################################
+#### INTERNATIONALISATION (I18N)                                         ####
+#############################################################################
+
 IF (WITH_I18N)
    FIND_PACKAGE (Intl)
    IF (Intl_FOUND)
