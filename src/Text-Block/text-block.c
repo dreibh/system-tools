@@ -2,7 +2,7 @@
 //         ____            _                     _____           _
 //        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 //        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \.
 //        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 //               |___/
 //                             --- System-Tools ---
@@ -85,14 +85,14 @@ static long long       TotalInputLines      = -1;
 static bool            IncludeTags          = false;
 static bool            FullTagLines         = false;
 static char            EnumerateFormat[128] = "%06llu";
-static const char*     Enumerate1           = "\e[36m";
-static const char*     Enumerate2           = "\e[0m ";
+static const char*     Enumerate1           = "\x1b[36m";
+static const char*     Enumerate2           = "\x1b[0m ";
 static const char*     HighlightBegin       = "⭐";
 static const char*     HighlightEnd         = "🛑";
-static const char*     HighlightUnmarked1   = "\e[34m";
-static const char*     HighlightUnmarked2   = "\e[0m";
-static const char*     HighlightMarked1     = "\e[31m";
-static const char*     HighlightMarked2     = "\e[0m";
+static const char*     HighlightUnmarked1   = "\x1b[34m";
+static const char*     HighlightUnmarked2   = "\x1b[0m";
+static const char*     HighlightMarked1     = "\x1b[31m";
+static const char*     HighlightMarked2     = "\x1b[0m";
 static const char*     InputFileName        = nullptr;
 static FILE*           InputFile            = nullptr;
 static bool            OpenInputFile        = false;
@@ -416,7 +416,7 @@ int main (int argc, char** argv)
 
    // ====== Handle arguments ===============================================
    bool showWarnings = true;
-   const static struct option long_options[] = {
+   static const struct option long_options[] = {
       { "cat",                 no_argument,       0, 'C' },
       { "discard",             no_argument,       0, '0' },
       { "highlight",           no_argument,       0, 'H' },
