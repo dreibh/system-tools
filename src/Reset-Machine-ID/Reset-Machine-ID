@@ -137,7 +137,7 @@ EOF
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--zabbix|-Z zabbix_server [--install-zabbix-agent|-A] [--yes-to-all-i-am-really-sure] [-h|--help] [-v|--version]"
+   echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--zabbix|-Z zabbix_server] [--install-zabbix-agent|-A] [--yes-to-all-i-am-really-sure] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
 
@@ -154,7 +154,7 @@ version () {
 
 # ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o H:MSKZ:Ahv --long hostname,skip-machine-id,skip-ssh-configuration,skip-ssh-key-replacement,zabbix,install-zabbix-agent,yes-to-all-i-am-really-sure,help,version -a -- "$@")"
+options="$(${GETOPT} -o H:MSKZ:Ahv --long hostname:,skip-machine-id,skip-ssh-configuration,skip-ssh-key-replacement,zabbix:,install-zabbix-agent,yes-to-all-i-am-really-sure,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage 1
@@ -190,11 +190,12 @@ while [ $# -gt 0 ] ; do
       -S | --skip-ssh-configuration)
          SKIP_SSH_CONFIGURATION=1
          ;;
-      -K | --skip-key-replacement)
+      -K | --skip-ssh-key-replacement)
          SKIP_SSH_KEY_REPLACEMENT=1
          ;;
       -Z | --zabbix)
          ZABBIX_SERVER="$2"
+         shift
          ;;
       -A | --install-zabbix-agent)
          INSTALL_ZABBIX_AGENT=1
@@ -230,6 +231,7 @@ fi
 if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
 
    # ====== Update /etc/hosts ============================================
+   differences=0
    while read -r line ; do
 
       if [[ "${line}" =~ ^(127\.0.\0.1|127\.0\.1\.1|::1)[[:blank:]] ]] ; then
@@ -257,23 +259,21 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
 
       echo "${line}"
 
-   differences=0
-
    done </etc/hosts >/etc/hosts.updated
    echo "/etc/hosts:"
-   diff --color=always /etc/hosts /etc/hosts.updated || differences=$(( differences+1))
+   diff --color=always /etc/hosts /etc/hosts.updated || differences=$((differences + 1))
 
 
    # ====== Update /etc/hostname or /etc/rc.conf =========================
    if [ -e /etc/hostname ] ; then
       echo "${NEW_HOSTNAME_FQDN}" >/etc/hostname.updated
       echo "/etc/hostname:"
-      diff --color=always /etc/hostname /etc/hostname.updated || differences=$(( differences+1))
+      diff --color=always /etc/hostname /etc/hostname.updated || differences=$((differences + 1))
    elif [ -e /etc/rc.conf ] ; then
       echo "/etc/rc.conf:"
       sed -e "s/^hostname=.*$/hostname=\"${NEW_HOSTNAME_FQDN}\"/g" \
          </etc/rc.conf >/etc/rc.conf.updated
-      diff --color=always /etc/rc.conf /etc/rc.conf.updated || differences=$(( differences+1))
+      diff --color=always /etc/rc.conf /etc/rc.conf.updated || differences=$((differences + 1))
    fi
 
    # ====== Apply changes ================================================
@@ -388,8 +388,8 @@ EOF
          cp "${zabbixConfig}" "${zabbixConfig}.old"
          mv "${zabbixConfig}.new" "${zabbixConfig}"
          for mode in enable restart start ; do
-            sudo service service zabbix-agent  ${mode} 2>/dev/null || true
-            sudo service service zabbix_agentd ${mode} 2>/dev/null || true
+            sudo service zabbix-agent  ${mode} 2>/dev/null || true
+            sudo service zabbix_agentd ${mode} 2>/dev/null || true
          done
       else
          gettext "Skipped!"
@@ -537,7 +537,7 @@ EOF
       # ====== Apply sshd_config updates ====================================
       gettext "Suggested sshd_config changes:"
       echo
-      diff --color=always sshd_config sshd_config.suggested || differences=$(( differences+1))
+      diff --color=always sshd_config sshd_config.suggested || differences=$((differences + 1))
       if [ ${differences} -gt 0 ] ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
             echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested sshd_config changes?") [yes/no]?\x1b[0m "
