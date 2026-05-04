@@ -88,8 +88,6 @@
 .Op Fl m | Fl Fl min-actions
 .Op Fl M | Fl Fl max-actions
 .Op Fl s | Fl Fl select Ar from_line Ar to_line
-.Op Fl b | Fl Fl begin-tag Ar begin_tag
-.Op Fl e | Fl Fl end-tag Ar end_tag
 .Op Fl t | Fl Fl tag Ar tag
 .Op Fl y | Fl Fl include-tags
 .Op Fl x | Fl Fl exclude-tags
@@ -122,9 +120,9 @@ Highlight: visually highlight text block between markers. The format of the mark
 .It
 Delete: remove text between markers.
 .It
-Insert Front: insert text from a file at front of marked blocks.
+Insert Front: insert text from a file at the front of marked blocks.
 .It
-Insert Back: insert text from a file at back of marked blocks.
+Insert Back: insert text from a file at the back of marked blocks.
 .It
 Replace: replace text of marked blocks by text from a file.
 .El
@@ -134,7 +132,7 @@ The marking used for the operation modes is based on configurable begin and end 
 .It
 tags-only: Only the text between the marker tags belongs to a block. That is, multiple blocks can appear on the same line. This is the default.
 .It
-full-tag-lines: A marker includes the full line of is begin and end tags. That is, a line containing a begin/end tag is handled like being the begin/end tag. This also means that only the \f[B]first\f[R] tag in a line is handled. All further tags in the same line are ignored!
+full-tag-lines: A marker includes the full line of its begin and end tags. That is, a line containing a begin/end tag is handled like being the begin/end tag. This also means that only the \f[B]first\f[R] tag in a line is handled. All further tags in the same line are ignored!
 Hint: Use Highlight mode to visualise the behaviour.
 .El
 .Pp
@@ -214,9 +212,9 @@ Opens the output file in append mode, appending new output instead of overwritin
 In-place update into the input file. The output is written to a temporary file with extension "~" first, which replaces the input file on success.
 .It Fl k | Fl Fl keep-broken
 Keep broken output in case of error (default: off).
-.Op Fl m | Fl Fl min-actions
+.It Fl m | Fl Fl min-actions
 Set lower limit for number of marking actions. If the number of applied markings falls below this limit, an error is returned.
-.Op Fl M | Fl Fl max-actions
+.It Fl M | Fl Fl max-actions
 Set lower limit for number of marking actions. If the number of applied markings exceeds this limit, an error is returned.
 .It Fl y | Fl Fl include-tags
 Include the marker tags in the marking.

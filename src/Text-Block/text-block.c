@@ -405,15 +405,16 @@ static void usage(const char* program, const int exitCode)
            " [-s|--select from_line to_line]"
            " [-b|--begin-tag begin_tag]"
            " [-e|--end-tag end_tag]"
+           " [-t|--tag tag]"
            " [-y|--include-tags]"
            " [-x|--exclude-tags]"
            " [-f|--full-tag-lines]"
            " [-g|--tags-only]"
            " [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label]"
-           " [--highlight-param begin_label end_label unmarked1_label unmarked2_label marked1_label marked2_label]"
+           " [--highlight-params begin_label end_label unmarked1_label unmarked2_label marked1_label marked2_label]"
            " [--enumerate-format format]"
            " [--enumerate-label[1|2] string]"
-           " [-w|--suppress-warnings]"
+           " [-q|--suppress-warnings]"
            " [-h|--help]"
            " [-v|--version]\n",
            gettext("Usage:"), program);
