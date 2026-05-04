@@ -42,7 +42,7 @@ export TEXTDOMAIN="Fingerprint-SSH-Keys"
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   echo 2>&1 "$(gettext "Usage:") $0 [-d|--include-deprecated] [-r|--include-raw] [-p|--include-python] [-h|--help] [-v|--version]"
+   echo >&2 "$(gettext "Usage:") $0 [-d|--include-deprecated] [-r|--include-raw] [-p|--include-raw-python] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
 
@@ -58,7 +58,7 @@ version () {
 
 # ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o drphv --long include-deprecated,include-raw,include-python,help,version -a -- "$@")"
+options="$(${GETOPT} -o drphv --long include-deprecated,include-raw,include-raw-python,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage 1
@@ -78,7 +78,7 @@ while [ $# -gt 0 ] ; do
          INCLUDE_RAW=1
          shift
          ;;
-      -p | --include-python)
+      -p | --include-raw-python)
          INCLUDE_RAW=2
          shift
          ;;
@@ -104,7 +104,7 @@ fi
 # ====== Print SSH key fingerprints =========================================
 if [ -d /etc/ssh ] && [ -x "$(command -v ssh-keygen)" ] ; then
    hostname="$(hostname -f)"
-   keys=$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)
+   keys="$(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" | sort)"
 
    for format in ${FORMATS} ; do
 
