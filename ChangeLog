@@ -1,3 +1,87 @@
+commit 6709335a7967c4f1546a732253fa6a77983d8b70
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 5 07:30:43 2026 +0200
+
+    Updated PO files.
+
+commit 37b7feb2c600be68dd59b2175806b1629d71a1e7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 5 07:15:37 2026 +0200
+
+    Improved tests.
+
+commit 8d12eb9dfa72efa2a200620b654ae18aa0dad3f8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 5 07:08:03 2026 +0200
+
+    Added updated test results.
+
+commit 97431e519a029190e0a8ad70e59e671beae6ced8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 5 07:07:08 2026 +0200
+
+    Made the tests independent of the console width.
+
+commit b859b55dff85ef64e0cd6d69916a871bcbb95329
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 23:07:54 2026 +0200
+
+    Minor code clean-up.
+
+commit 475aef4949b5c24a444886a7a82481975d01fc40
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 22:35:11 2026 +0200
+
+    RegExp fix in the test script.
+
+commit ef30791d88147aa30b2e2548dd2a77ad8e28d1bd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 22:30:28 2026 +0200
+
+    Further improvements.
+
+commit 626881a4a44f1543e93c4d8dad6978dd36512cc8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 22:16:22 2026 +0200
+
+    Minor improvements.
+
+commit cf9705296eeb8fa21cfe887d31cc68ced3b25034
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 22:16:02 2026 +0200
+
+    Parameter name fix in shell completion.
+
+commit 92c3c941610296335cdab04c2504a34da49a6a59
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 22:15:34 2026 +0200
+
+    Further clean-ups and improvements.
+
+commit d8ae3a880ba53595a195f6f7d061ee46ea8f4fa4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 21:52:40 2026 +0200
+
+    Improvements and clean-ups.
+
+commit d8be8e2185d874924c4d33cdced697a5d260c024
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 21:30:56 2026 +0200
+
+    Fixed typos in manpages.
+
+commit 7078f7c302657204b5fee53ef9545cabe09da1c1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 20:49:29 2026 +0200
+
+    Some more code clean-ups.
+
+commit 1d8e30d43de7f822dc0cfdcb1449f9396a2b5287
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 18:02:11 2026 +0200
+
+    New release td-system-tools-2.5.2.
+
 commit da11afdc64dce244ca8d629e0fd96af29aba9cb8
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon May 4 18:01:14 2026 +0200
