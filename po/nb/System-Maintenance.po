@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-03 11:44+0200\n"
+"POT-Creation-Date: 2026-05-05 07:30+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -93,42 +93,42 @@ msgstr "Oppstartsversjon av kjernen:"
 msgid "Kernel Disk Version:"
 msgstr "Kjerneversjon på disken:    "
 
-#: src/System-Maintenance/System-Maintenance:316
+#: src/System-Maintenance/System-Maintenance:318
 msgid "To be removed:"
 msgstr "Å bli fjernet:"
 
-#: src/System-Maintenance/System-Maintenance:319
+#: src/System-Maintenance/System-Maintenance:321
 msgid "To be kept:"
 msgstr "Skal oppbevares:"
 
-#: src/System-Maintenance/System-Maintenance:344
+#: src/System-Maintenance/System-Maintenance:346
 msgid "Refreshing snaps ..."
 msgstr "Oppdaterer snap-pakker ..."
 
-#: src/System-Maintenance/System-Maintenance:350
+#: src/System-Maintenance/System-Maintenance:352
 msgid "Checking for firmware updates ..."
 msgstr "Ser etter fastvareoppdateringer ..."
 
-#: src/System-Maintenance/System-Maintenance:355
+#: src/System-Maintenance/System-Maintenance:357
 msgid "Updating caches ..."
 msgstr "Oppdaterer cacher ..."
 
-#: src/System-Maintenance/System-Maintenance:375
+#: src/System-Maintenance/System-Maintenance:377
 msgid "Starting AutoFS service ..."
 msgstr "Starter AutoFS-tjenesten ..."
 
-#: src/System-Maintenance/System-Maintenance:381
+#: src/System-Maintenance/System-Maintenance:383
 msgid "Synchronising system time ..."
 msgstr "Synkroniserer systemtid ..."
 
-#: src/System-Maintenance/System-Maintenance:417
+#: src/System-Maintenance/System-Maintenance:419
 msgid "Running fstrim ..."
 msgstr "Kjører fstrim ..."
 
-#: src/System-Maintenance/System-Maintenance:421
+#: src/System-Maintenance/System-Maintenance:423
 msgid "Running zpool trim ..."
 msgstr "Kjører zpool trim ..."
 
-#: src/System-Maintenance/System-Maintenance:430
+#: src/System-Maintenance/System-Maintenance:432
 msgid "Done!"
 msgstr "Ferdig!"
