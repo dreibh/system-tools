@@ -48,10 +48,9 @@ colorPrefix="\e[36m"
 colorInactive="\e[37m"
 colorNone="\e[0m"
 
-colorBatteryFull="\e[33m"
-colorBatteryCharging="\e[31m"
-colorBatteryNotCharging="\e[38m"
 colorBatteryFull="\e[32m"
+colorBatteryCharging="\e[33m"
+colorBatteryNotCharging="\e[38m"
 colorBatteryDischarging="\e[35m"
 
 colorDiskNormal="\e[32m"
@@ -463,7 +462,6 @@ printf "\n$(gettext "System information on %s")\n\n" "${now}"
    print-system-information
 ) 2>&1 | (
    print-banners "${scriptDirectories[@]}"
-   wait
    cat
 ) | \
 (
