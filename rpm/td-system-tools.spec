@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.5.3
+Version: 2.5.4
 Release: 1
 Summary: Tools for basic system management
 Group: Applications/System
@@ -329,6 +329,8 @@ tools. It installs all sub-packages.
 
 
 %changelog
+* Wed May 06 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.5.4-1
+- New upstream release.
 * Tue May 05 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.5.3-1
 - New upstream release.
 * Mon May 04 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.5.2-1

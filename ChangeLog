@@ -1,3 +1,69 @@
+commit d81ce25c47c255d0c666938628c83051702d5911
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 14:50:19 2026 +0200
+
+    Improved indentation handling in View-CRL as well.
+
+commit 02d3aabb69d34cb10f0ac49cdd74263243edb883
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 14:31:19 2026 +0200
+
+    Minor clean-up and translations file updates.
+
+commit c79049c1c56d1777a407a0aa902fcca0a08e9390
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 14:25:55 2026 +0200
+
+    Improved label handling, to avoid hardcoding indentation.
+
+commit 31a3b33448e3ad9f1dee19ced07e71545a544775
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 13:37:12 2026 +0200
+
+    Another set of minor translation improvements.
+
+commit e11f43da283b213d9baa0ad61ad9855e03d0a0f6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 13:17:31 2026 +0200
+
+    Minor translation improvements.
+
+commit 8cc4633d1695102214544f6219f2ba33eca03c4e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 13:17:13 2026 +0200
+
+    Minor formatting fix.
+
+commit 3918f7506b8b7cfac817ff06a483dc0472dc353e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 12:32:29 2026 +0200
+
+    Further documentation improvements.
+
+commit ce84a65a2a7f96be281b20a34c409a2714c12ea4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 12:12:19 2026 +0200
+
+    Minor output clean-ups.
+
+commit ee5f384662b7346ead6572c3670ead14e8993a6c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 11:56:51 2026 +0200
+
+    Fixed typos.
+
+commit 1abdebbb18cb19a986645fe2a76994fab553b04c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 11:51:05 2026 +0200
+
+    Improved documentation.
+
+commit 264b3443456e1a455a2730cc06cd549a074ca17a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 5 07:31:07 2026 +0200
+
+    New release td-system-tools-2.5.3.
+
 commit 6709335a7967c4f1546a732253fa6a77983d8b70
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue May 5 07:30:43 2026 +0200
