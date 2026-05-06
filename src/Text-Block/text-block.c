@@ -258,7 +258,7 @@ static long long countLines(FILE* inputFile)
 
 
 // ###### Write contents of insert file #####################################
-static void copyInsertFileIntoOutputFile()
+static void copyInsertFileIntoOutputFile(void)
 {
    char   buffer[65536];
    size_t bytesRead;
@@ -373,7 +373,7 @@ static void processMarked(const char*   text,
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
 #endif
-static void version()
+static void version(void)
 {
    printf("text-block %s\n", SYSTEMTOOLS_VERSION);
    exit(0);

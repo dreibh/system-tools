@@ -70,7 +70,7 @@ static double runiform(const double min, const  double max)
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
 #endif
-static void version()
+static void version(void)
 {
    printf("random-sleep %s\n", SYSTEMTOOLS_VERSION);
    exit(0);

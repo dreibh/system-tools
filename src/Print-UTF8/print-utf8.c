@@ -113,7 +113,7 @@ static bool ioctlTIOCGWINSZ(struct winsize* w)
 
 
 // ###### Obtain console width ##############################################
-static int getConsoleWidth()
+static int getConsoleWidth(void)
 {
    struct winsize w;
    if(ioctlTIOCGWINSZ(&w)) {
@@ -384,7 +384,7 @@ static void stringSizeLengthWidth(const char* originalString,
 
 
 // ###### Get terminal information ##########################################
-static void terminalInfo()
+static void terminalInfo(void)
 {
    struct winsize w;
    if(!ioctlTIOCGWINSZ(&w)) {
@@ -543,7 +543,7 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
 #endif
-static void version()
+static void version(void)
 {
    printf("print-utf8 %s\n", SYSTEMTOOLS_VERSION);
    exit(0);

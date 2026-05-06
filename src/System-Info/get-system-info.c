@@ -191,7 +191,7 @@ static void printflags(const u_int flags)
 #endif
 #if defined(IFF_RUNNING)
    if(flags & IFF_RUNNING) {
-      fputs(" <LOWER_UP>", stdout);
+      fputs(" <RUNNING>", stdout);
    }
 #endif
    if(flags & IFF_LOOPBACK) {
@@ -204,7 +204,7 @@ static void printflags(const u_int flags)
 
 
 // ###### Print hostname information ########################################
-static void showHostnameInformation()
+static void showHostnameInformation(void)
 {
    char hostname[256];
    if(gethostname((char*)&hostname, sizeof(hostname)) != 0) {
@@ -225,7 +225,7 @@ static void showHostnameInformation()
 
 
 // ###### Print kernel information ##########################################
-static void showKernelInformation()
+static void showKernelInformation(void)
 {
    struct utsname kernelInfo;
    if(uname(&kernelInfo) == 0) {
@@ -253,7 +253,7 @@ static bool obtainUptime(struct timespec* ts)
 
 
 // ###### Print uptime information ##########################################
-static void showUptimeInformation()
+static void showUptimeInformation(void)
 {
    struct timespec ts;
    if(obtainUptime(&ts)) {
@@ -318,7 +318,7 @@ static bool queryFile(const char* file, char* result, size_t resultMaxSize)
 
 
 // ###### Obtain the number of processes on the system ######################
-static unsigned int obtainProcessCount()
+static unsigned int obtainProcessCount(void)
 {
    unsigned int count = 0;
 
@@ -372,7 +372,7 @@ static unsigned int obtainProcessCount()
 
 
 // ###### Obtain the number of users on the system ##########################
-static unsigned int obtainUserCount()
+static unsigned int obtainUserCount(void)
 {
    unsigned int count = 0;
 
@@ -391,7 +391,7 @@ static unsigned int obtainUserCount()
 
 
 // ###### Print load information ############################################
-static void showLoadInformation()
+static void showLoadInformation(void)
 {
    // ====== Cores and page size ============================================
    const unsigned int cores = sysconf(_SC_NPROCESSORS_ONLN);
@@ -438,7 +438,7 @@ static void showLoadInformation()
 
 
 // ###### Print battery information #########################################
-static void showBatteryInformation()
+static void showBatteryInformation(void)
 {
    const unsigned int maxBatteries = 2;
    unsigned int       batteries    = 0;
@@ -496,7 +496,7 @@ static void showBatteryInformation()
             // ------ Obtain status of battery unit -------------------------
             union acpi_battery_ioctl_arg batteryInfo;
             memset(&batteryInfo, 0, sizeof(batteryInfo));
-            batteryInfo.unit = i;
+            batteryInfo.unit = (int)i;
             if(ioctl(acpiFD, ACPIIO_BATT_GET_BATTINFO, &batteryInfo) == 0) {
 
                // ------ Extract status as status code ----------------------
@@ -517,7 +517,7 @@ static void showBatteryInformation()
                      }
                   }
                }
-               const unsigned int capacity = batteryInfo.battinfo.cap;
+               const unsigned int capacity = (unsigned int)batteryInfo.battinfo.cap;
 
                // ------ Print battery status and capacity ------------------
                printf("battery_%u_status=%u\n",   i, status);
@@ -545,7 +545,7 @@ static void showBatteryInformation()
 
 
 // ###### Print memory information ##########################################
-static void showMemoryInformation()
+static void showMemoryInformation(void)
 {
    unsigned long long memoryTotal     = 0;
    unsigned long long memoryAvailable = 0;
@@ -755,7 +755,7 @@ static bool obtainDiskUsage(const char* mountPoint, const char* label)
 
 
 // ###### Print disk information ############################################
-static void showDiskInformation()
+static void showDiskInformation(void)
 {
    obtainDiskUsage("/",     "root");
    obtainDiskUsage("/home", "home");
@@ -902,7 +902,7 @@ static void showNetworkInformation(const bool filterLocalScope)
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
 #endif
-static void version()
+static void version(void)
 {
    printf("get-system-info %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
