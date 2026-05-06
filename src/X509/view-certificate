@@ -194,7 +194,7 @@ while [ $# -gt 0 ] ; do
       print-utf8 -i "${indent}" "\e[33m${labels["Subject Alternative Name"]}"
       echo -e "\e[35m${extensionValues["Subject Alternative Name"]}\e[0m"
       print-utf8 -i "${indent}" "\e[33m${labels["Validity"]}"
-      echo -e "\e[36m${validityFrom}" "${validityTo}\e[0m"
+      echo -e "\e[36m${validityFrom}\e[33m — \e[36m${validityTo}\e[0m"
       for extension in "Basic Constraints"      \
                        "Key Usage"              \
                        "Extended Key Usage"     \
