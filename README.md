@@ -28,7 +28,7 @@ System-Tools provides internationalisation&nbsp;(i18n) support using [GNU gettex
 
 # 📚 System-Info
 
-System-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System-Info can be configured to be automatically run when logging in, providing the user an up-to-date overview of the system.
+System-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System-Info can be configured to be automatically run when logging in, providing the user with an up-to-date overview of the system.
 
 One main purpose of System-Info is to run on login, to particularly show a nice login banner (for example, a project or company logo) and then present the basic system information. For this purpose, System-Info can be configured with banner scripts (by default looked up in `/etc/system-info.d` or `/usr/local/etc/system-info.d`), which are processed in alphabetically descending order by file name, like:
 
@@ -40,7 +40,7 @@ One main purpose of System-Info is to run on login, to particularly show a nice 
 
 The names of all scripts MUST begin with two decimal numbers. That is, scripts must be named `[0-9][0-9]...` to be processed by System-Info!
 
-If one of the scripts exits with non-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script `95-application-logo`).
+If one of the scripts exits with a non-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script `95-application-logo`).
 
 Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-helper) library provided by System-Info:
 
@@ -361,7 +361,7 @@ Also see the manpage of View-Certificate for further details and examples:
 
 ## View-CRL
 
-View-CRL displays details of given [X.509](https://en.wikipedia.org/wiki/X.509) Certificate Revokation Lists&nbsp;(CRL) in [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) or [Distinguished Encoding Rules&nbsp;(DER)](https://en.wikipedia.org/wiki/X.690#DER_encoding) format, particularly the revoked certificates. Examples:
+View-CRL displays details of given [X.509](https://en.wikipedia.org/wiki/X.509) Certificate Revocation Lists&nbsp;(CRL) in [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) or [Distinguished Encoding Rules&nbsp;(DER)](https://en.wikipedia.org/wiki/X.690#DER_encoding) format, particularly the revoked certificates. Examples:
 
 * Display the CRL in file `TestGlobal.crl`:
 
@@ -385,7 +385,7 @@ Also see the manpage of View-CRL for further details and examples:
 
 ## Check-Certificate
 
-Check-Certificate verifies a certificate, by verifying its chain from a given Root CA certificate, and optionally a Certificate Revokation List&nbsp;(CRL) for certificate revocations. The checks are made using [OpenSSL](https://www.openssl.org/). If [GnuTLS](https://gnutls.org/) and/or [Network Security Services&nbsp;(NSS)](https://firefox-source-docs.mozilla.org/security/nss/) are installed as well, the verification is also made by these implementations in addition. This ensures that – in case of success – the certificate and its chain works with all three major X.509 implementations. Examples:
+Check-Certificate verifies a certificate, by verifying its chain from a given Root CA certificate, and optionally a Certificate Revocation List&nbsp;(CRL) for certificate revocations. The checks are made using [OpenSSL](https://www.openssl.org/). If [GnuTLS](https://gnutls.org/) and/or [Network Security Services&nbsp;(NSS)](https://firefox-source-docs.mozilla.org/security/nss/) are installed as well, the verification is also made by these implementations in addition. This ensures that – in case of success – the certificate and its chain works with all three major X.509 implementations. Examples:
 
 * Verify the server certificate in `My-Server-Certificate.crt` using the Root CA certificate in `My-CA-Certificate.crt`:
 
@@ -393,7 +393,7 @@ Check-Certificate verifies a certificate, by verifying its chain from a given Ro
   check-certificate My-CA-Certificate.crt My-Server-Certificate.crt
   ```
 
-* The same as above, but in addtion also checking the CRL in `CRL.crl` for certificate revocations:
+* The same as above, but in addition also checking the CRL in `CRL.crl` for certificate revocations:
 
   ```bash
   check-certificate --crl CRL.crl \
@@ -508,7 +508,7 @@ sudo dnf install td-system-tools
 
 ## FreeBSD
 
-For ready-to-install FreeBSD packages of System-Tools, it is included in the ports collection, see [FreeBSD ports tree index of net/td-system-tools/](https://cgit.freebsd.org/ports/tree/net/td-system-tools/)!
+For ready-to-install FreeBSD packages of System-Tools, it is included in the ports collection; see [FreeBSD ports tree index of net/td-system-tools/](https://cgit.freebsd.org/ports/tree/net/td-system-tools/)!
 
 ```bash
 sudo pkg install system-tools
@@ -566,7 +566,7 @@ See [https://www.nntb.no/~dreibh/system-tools/#current-stable-release](https://w
 
 # 🌏 Internationalisation
 
-To provide a translation of one ore more components of System-Tools into your language, apply the following steps:
+To provide a translation of one or more components of System-Tools into your language, apply the following steps:
 
 1. Build System-Tools from the Git sources (see [Development Version](#development-version), i.e.&nbsp;use the "master" branch with the latest development version. The build will create `.pot` (translation template files) under [`po`](po).
 
