@@ -89,6 +89,7 @@ function print-system-information ()
    uptime_hours=0
    uptime_mins=0
    uptime_secs=0
+   system_sysname=""
    system_release=""
    system_users=0
    system_cores=0
@@ -133,10 +134,16 @@ function print-system-information ()
       fi
 
    # ------ Legacy system: try lsb_release ----------------------------------
-   elif [ -x /usr/bin/lsb_release ] ; then
-      DISTRIB_ID="$(/usr/bin/lsb_release -is)"
-      DISTRIB_RELEASE="$(/usr/bin/lsb_release -rs)"
-      DISTRIB_CODENAME="$(/usr/bin/lsb_release -cs)"
+   elif [ -x "$(command -v lsb_release)" ] ; then
+      DISTRIB_ID="$(lsb_release -is)"
+      DISTRIB_RELEASE="$(lsb_release -rs)"
+      DISTRIB_CODENAME="$(lsb_release -cs)"
+
+   # ------ Otherwise, use what is provided from the kernel -----------------
+   else
+      DISTRIB_ID="${system_sysname}"
+      DISTRIB_RELEASE="${system_release}"
+      DISTRIB_CODENAME=""
    fi
 
    local codeNameText=""
