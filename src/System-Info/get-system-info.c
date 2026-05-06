@@ -60,6 +60,8 @@
 #include <sys/sysctl.h>
 #include <sys/user.h>
 #include <vm/vm_param.h>
+#elif defined(__APPLE__)
+#include <mach/mach_time.h>
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
@@ -226,11 +228,25 @@ static void showKernelInformation()
 }
 
 
+// ###### Obtain the system uptime ##########################################
+static bool obtainUptime(struct timespec* ts)
+{
+#if !defined(__APPLE__)
+   return clock_gettime(CLOCK_BOOTTIME, ts) == 0;
+#else
+   const uint64_t uptime = mach_absolute_time();
+   ts->tv_sec  = uptime / 1000000;
+   ts->tv_nsec = (uptime % 1000000) * 1000;
+   return true;
+#endif
+}
+
+
 // ###### Print uptime information ##########################################
 static void showUptimeInformation()
 {
    struct timespec ts;
-   if(clock_gettime(CLOCK_BOOTTIME, &ts) == 0) {
+   if(obtainUptime(&ts)) {
       const unsigned int days  = ts.tv_sec / 86400;
       const unsigned int hours = (ts.tv_sec / 3600) - (days * 24);
       const unsigned int mins  = (ts.tv_sec / 60) - (days * 1440) - (hours * 60);
