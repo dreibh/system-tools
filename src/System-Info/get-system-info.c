@@ -767,8 +767,10 @@ static void showNetworkInformation(const bool filterLocalScope)
          }
 #if defined(__linux__)
          else if(ifa->ifa_addr->sa_family == AF_PACKET) {
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__APPLE___)
          else if(ifa->ifa_addr->sa_family == AF_LINK) {
+#else
+#error Missing case!
 #endif
             ifaArray[n].ifname  = ifa->ifa_name;
             ifaArray[n].address = ifa->ifa_addr;
@@ -809,8 +811,10 @@ static void showNetworkInformation(const bool filterLocalScope)
              break;
 #if defined(__linux__)
             case AF_PACKET:
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__APPLE___)
             case AF_LINK:
+#else
+#error Missing case!
 #endif
                printf("netif_%u_mac=\"", ifIndex);
              break;
