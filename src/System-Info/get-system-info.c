@@ -61,7 +61,10 @@
 #include <sys/user.h>
 #include <vm/vm_param.h>
 #elif defined(__APPLE__)
+#include <mach/mach.h>
+#include <mach/mach_host.h>
 #include <mach/mach_time.h>
+#include <sys/sysctl.h>
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
@@ -417,7 +420,7 @@ static void showLoadInformation()
       printf("system_load_avg15minpct=%1.4f\n", (double)systemInfo.loads[2] * fPercent);
    }
 
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__APPLE__)
    double loadavg[3];
    if(getloadavg(loadavg, 3) == 3) {
       printf("system_load_avg1min=%1.6f\n",  loadavg[0]);
@@ -427,6 +430,9 @@ static void showLoadInformation()
       printf("system_load_avg5minpct=%1.4f\n",  100.0 * loadavg[1]);
       printf("system_load_avg15minpct=%1.4f\n", 100.0 * loadavg[2]);
    }
+
+#else
+#error Missing case!
 #endif
 }
 
@@ -525,6 +531,9 @@ static void showBatteryInformation()
       }
       close(acpiFD);
    }
+
+#else
+// #error Missing case!
 #endif
 
    fputs("battery_list=\"", stdout);
@@ -655,6 +664,43 @@ static void showMemoryInformation()
       swapAvailable  += available;
       swapUsed       += used;
    }
+
+#elif defined(__APPLE__)
+   // ====== Query system information via sysctl ============================
+
+   // ------ Query hw.memsize -----------------------------------------------
+   int64_t memSize;
+   size_t len = sizeof(memSize);
+   if(sysctlbyname("hw.memsize", &memSize, &len, NULL, 0) == 0) {
+      memoryTotal = (unsigned long long)memSize;
+   }
+
+   // ------ Query memory statistics ----------------------------------------
+   mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+   vm_statistics64_data_t memoryStatistics;
+   vm_size_t              pageSize;
+   host_page_size(mach_host_self(), &pageSize);
+   if(host_statistics64(mach_host_self(), HOST_VM_INFO64,
+                        (host_info64_t)&memoryStatistics, &count) == KERN_SUCCESS) {
+      const unsigned long long free        = (unsigned long long)memoryStatistics.free_count * pageSize;
+      const unsigned long long inactive    = (unsigned long long)memoryStatistics.inactive_count * pageSize;
+      const unsigned long long speculative = (unsigned long long)memoryStatistics.speculative_count * pageSize;
+
+      memoryAvailable = free + inactive + speculative;
+      memoryUsed      = memoryTotal - memoryAvailable;
+   }
+
+   // ------ Query swap usage -----------------------------------------------
+   struct xsw_usage swapUsageStatistics;
+   size_t swapUsageStatisticsSize = sizeof(swapUsageStatistics);
+   if(sysctlbyname("vm.swapusage", &swapUsageStatistics, &swapUsageStatisticsSize, nullptr, 0) == 0) {
+      swapTotal     = swapUsageStatistics.xsu_total;
+      swapUsed      = swapUsageStatistics.xsu_used;
+      swapAvailable = swapUsageStatistics.xsu_avail;
+   }
+
+#else
+#error Missing case!
 #endif
 
    printf("system_mem_total=%llu\n", memoryTotal);
@@ -767,7 +813,7 @@ static void showNetworkInformation(const bool filterLocalScope)
          }
 #if defined(__linux__)
          else if(ifa->ifa_addr->sa_family == AF_PACKET) {
-#elif defined(__FreeBSD__) || defined(__APPLE___)
+#elif defined(__FreeBSD__) || defined(__APPLE__)
          else if(ifa->ifa_addr->sa_family == AF_LINK) {
 #else
 #error Missing case!
@@ -811,7 +857,7 @@ static void showNetworkInformation(const bool filterLocalScope)
              break;
 #if defined(__linux__)
             case AF_PACKET:
-#elif defined(__FreeBSD__) || defined(__APPLE___)
+#elif defined(__FreeBSD__) || defined(__APPLE__)
             case AF_LINK:
 #else
 #error Missing case!
