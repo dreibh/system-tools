@@ -181,9 +181,16 @@ static void printaddress(const struct sockaddr* address,
 static void printflags(const u_int flags)
 {
    printf("0x%x: <%s>", flags, (flags & IFF_UP) ? "UP" : "DOWN");
+#if defined(IFF_LOWER_UP)
    if(flags & IFF_LOWER_UP) {
       fputs(" <LOWER_UP>", stdout);
    }
+#endif
+#if defined(IFF_RUNNING)
+   if(flags & IFF_RUNNING) {
+      fputs(" <LOWER_UP>", stdout);
+   }
+#endif
    if(flags & IFF_LOOPBACK) {
       fputs(" <LOOPBACK>", stdout);
    }
