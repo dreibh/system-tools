@@ -120,7 +120,7 @@ msgstr "%1.1f %% / %1.1f %% / %1.1f %%"
 
 #: src/System-Info/System-Info:205
 msgid "Battery:"
-msgstr "Batterie:"
+msgstr "Akku:"
 
 #: src/System-Info/System-Info:220
 msgid "unknown"

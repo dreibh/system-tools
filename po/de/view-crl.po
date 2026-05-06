@@ -68,7 +68,7 @@ msgstr "%-13s"
 
 #: src/X509/view-crl:175
 msgid "Issuer:"
-msgstr "Herausgeber:"
+msgstr "Aussteller:"
 
 #: src/X509/view-crl:177
 msgid "Range:"

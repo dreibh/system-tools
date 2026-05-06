@@ -52,7 +52,7 @@ msgstr "Aufruf:"
 #: src/Try-Hard/try-hard:111 src/Try-Hard/try-hard:156
 #, sh-format
 msgid "ERROR: Invalid delay value ${delayValue}!"
-msgstr "FEHLER: Ungültige Verzögerung ${delayValue}!"
+msgstr "FEHLER: Ungültiger Verzögerungswert ${delayValue}!"
 
 #: src/Try-Hard/try-hard:150
 #, sh-format

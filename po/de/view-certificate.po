@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-03 11:44+0200\n"
+"POT-Creation-Date: 2026-05-06 13:08+0200\n"
 "PO-Revision-Date: 2025-10-28 12:45+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -68,11 +68,11 @@ msgstr "%-25s"
 
 #: src/X509/view-certificate:171
 msgid "Subject:"
-msgstr "Subjekt:"
+msgstr "Inhaber:"
 
 #: src/X509/view-certificate:173
 msgid "Subject Alt Name:"
-msgstr "Alternatives Subjekt:"
+msgstr "Alternativer Inhabername:"
 
 #: src/X509/view-certificate:175
 msgid "Validity:"
@@ -80,8 +80,8 @@ msgstr "Gültigkeit:"
 
 #: src/X509/view-certificate:186
 #, sh-format
-msgid "Hierarchy in ${CERTIFICATE_FILE}"
-msgstr "Hierarchie in ${CERTIFICATE_FILE}:"
+msgid "Hierarchy in ${CERTIFICATE_FILE}:"
+msgstr "Hierarchie in ${CERTIFICATE_FILE}"
 
 #: src/X509/view-certificate:197
 #, sh-format

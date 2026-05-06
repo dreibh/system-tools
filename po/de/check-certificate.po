@@ -70,7 +70,7 @@ msgstr "Verifiziere ${CERTIFICATE_FILE} mit CA ${CA_FILE} ..."
 
 #: src/X509/check-certificate:147
 msgid "WARNING: Only checking self-signature!"
-msgstr "WARNING: Es wird nur die Eigensignatur überprüft!"
+msgstr "WARNUNG: Es wird nur die Eigensignatur überprüft!"
 
 #: src/X509/check-certificate:160 src/X509/check-certificate:184
 #: src/X509/check-certificate:267
@@ -88,7 +88,7 @@ msgstr "(OpenSSL ist nicht installiert)"
 
 #: src/X509/check-certificate:194
 msgid "(GnuTLS CertTool is not installed)"
-msgstr "(GnuTLS CerTool ist nicht installiert)"
+msgstr "(GnuTLS CertTool ist nicht installiert)"
 
 #: src/X509/check-certificate:279
 msgid "(NSS CertUtil is not installed)"
@@ -96,4 +96,4 @@ msgstr "(NSS CertUtil ist nicht installiert)"
 
 #: src/X509/check-certificate:287
 msgid "CERTIFICATE VERIFICATIONS FAILED!"
-msgstr "ZERTIFIKATVERIFIZIERUNG IST FEHLGESCHLAGEN!"
+msgstr "ZERTIFIKATSVERIFIZIERUNG FEHLGESCHLAGEN!"

@@ -79,7 +79,7 @@ msgstr "Räume auf ..."
 
 #: src/System-Maintenance/System-Maintenance:234
 msgid "Removing obsolete kernels ..."
-msgstr "Entferne obsolete Kernels ..."
+msgstr "Entferne obsolete Kernel ..."
 
 #: src/System-Maintenance/System-Maintenance:240
 msgid "Kernel Type:        "

@@ -126,7 +126,7 @@ msgstr "FEHLER: Für die direkte Aktualisierung (--in-place|-p) ist eine Eingabe
 
 #: src/Text-Block/text-block.c:763
 msgid "ERROR: In-place update (--in-place|-p) and output file (--output/-o) are mutually exclusive!"
-msgstr "FEHLER: In-Place-Update (--in-place|-p) und Ausgabedatei (--output/-o) schließen sich gegenseitig aus!"
+msgstr "FEHLER: Direkte Aktualisierung (--in-place|-p) und Ausgabedatei (--output/-o) schließen sich gegenseitig aus!"
 
 #: src/Text-Block/text-block.c:768
 msgid "ERROR: Cannot generate temporary output file name!"

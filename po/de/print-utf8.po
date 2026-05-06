@@ -77,7 +77,7 @@ msgstr "FEHLER: Ungültige Argumente für Multiline-Center!"
 
 #: src/Print-UTF8/print-utf8.c:691
 msgid "ERROR: Invalid separator setting!"
-msgstr "FEHLER: Ungültiger Separator!"
+msgstr "FEHLER: Ungültiges Trennzeichen!"
 
 #: src/Print-UTF8/print-utf8.c:703
 #, c-format

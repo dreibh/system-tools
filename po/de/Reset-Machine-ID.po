@@ -51,7 +51,7 @@ msgstr "Aufruf:"
 #: src/Reset-Machine-ID/Reset-Machine-ID:181
 #, sh-format
 msgid "ERROR: Invalid hostname ${hostname}!"
-msgstr "FEHLER: Ungültiger hostname ${hostname}!"
+msgstr "FEHLER: Ungültiger Hostname ${hostname}!"
 
 #: src/Reset-Machine-ID/Reset-Machine-ID:282
 msgid "Update hostname?"
@@ -110,7 +110,7 @@ msgstr "Vorgeschlagene Änderungen in sshd_config durchführen?"
 #: src/Reset-Machine-ID/Reset-Machine-ID:551
 #: src/Reset-Machine-ID/Reset-Machine-ID:603
 msgid "Trying to restart SSH daemon ..."
-msgstr "Versuche Restart des SSH-Daemons ..."
+msgstr "Versuche Neustart des SSH-Daemons ..."
 
 #: src/Reset-Machine-ID/Reset-Machine-ID:570
 msgid "Remove existing SSH host keys and generate new ones?"
@@ -131,7 +131,7 @@ msgstr "Erstelle neuen ECDSA-Schlüssel ..."
 
 #: src/Reset-Machine-ID/Reset-Machine-ID:598
 msgid "Generating new RSA key; this may take some time ..."
-msgstr "Erstelle neuen RSA-Schlüssel; dieses kann einen Moment dauern ..."
+msgstr "Erstelle neuen RSA-Schlüssel; dies kann einen Moment dauern ..."
 
 #: src/Reset-Machine-ID/Reset-Machine-ID:601
 msgid "Done!"
