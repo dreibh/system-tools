@@ -115,6 +115,27 @@ if [ "${OPENSSL}" == "" ] ; then
    exit 1
 fi
 
+# ====== Prepare labels and compute indentation =============================
+declare -A labels=(
+   ["Subject"]="$(gettext "Subject:")"
+   ["Subject Alternative Name"]="$(gettext "Subject Alternative Name:")"
+   ["Validity"]="$(gettext "Validity:")"
+   ["Basic Constraints"]="$(gettext "Basic Constraints:")"
+   ["Key Usage"]="$(gettext "Key Usage:")"
+   ["Extended Key Usage"]="$(gettext "Extended Key Usage:")"
+   ["Subject Key Identifier"]="$(gettext "Subject Key Identifier:")"
+   ["Authority Key Identifier"]="$(gettext "Authority Key Identifier:")"
+)
+
+indent=0
+for label in "${!labels[@]}" ; do
+   width="$(print-utf8 --width "${label}")"
+   if [ "${width}" -gt "${indent}" ] ; then
+      indent="${width}"
+   fi
+done
+indent=-$((indent + 2))
+
 # ====== Check each certificate =============================================
 while [ $# -gt 0 ] ; do
 
@@ -130,13 +151,13 @@ while [ $# -gt 0 ] ; do
       exit 1
    fi
 
-   # ====== Display certificate details =====================================
    echo -e "\e[34m$(eval_gettext "Certificate in \${CERTIFICATE_FILE}:")\e[0m"
    "${OPENSSL}" x509 -in "${CERTIFICATE_FILE}" -noout -subject -dates -ext subjectAltName,basicConstraints,keyUsage,extendedKeyUsage,subjectKeyIdentifier,authorityKeyIdentifier | (
+      # ====== Extract certificate details ==================================
       validityFrom="?"
       validityTo="?"
       subject="?"
-      declare -A extensions=(
+      declare -A extensionValues=(
          ["Subject Alternative Name"]="(none)"
          ["Key Usage"]="(none)"
          ["Basic Constraints"]="(none)"
@@ -157,27 +178,30 @@ while [ $# -gt 0 ] ; do
             extension="${BASH_REMATCH[3]}"
             critical="${BASH_REMATCH[5]}"
             if [ "${critical}" != "" ] ; then
-               extensions["${extension}"]="\\e[4m${critical}:\\e[24m "
+               extensionValues["${extension}"]="\\e[4m${critical}:\\e[24m "
             else
-               extensions["${extension}"]=""
+               extensionValues["${extension}"]=""
             fi
          elif [ "${extension}" != "" ] && [[ "${line}" =~ ^([[:space:]]*)(.*)$ ]] ; then
-            extensions["${extension}"]+="${BASH_REMATCH[2]}"
+            extensionValues["${extension}"]+="${BASH_REMATCH[2]}"
             extension=""
          fi
       done
-      label="$(gettext "%-25s")"
-      printf "\e[33m${label} \e[35m%s\e[0m\n"          \
-         "$(gettext "Subject:")"  "$(echo -e "${subject}")"
-      printf "\e[33m${label} \e[35m%s\e[0m\n"          \
-         "$(gettext "Subject Alt Name:")"  "${extensions["Subject Alternative Name"]}"
-      printf "\e[33m${label} \e[36m%s — %s\e[0m\n"     \
-         "$(gettext "Validity:")" "${validityFrom}" "${validityTo}"
-      for extension in "Basic Constraints" \
-                       "Key Usage" "Extended Key Usage" \
-                       "Subject Key Identifier" "Authority Key Identifier" ; do
-         printf "\e[33m${label} \e[33m%s\e[0m\n"      \
-            "${extension}:" "$(echo -e "${extensions["${extension}"]}")"
+
+      # ====== Display certificate details ==================================
+      print-utf8 -i "${indent}" "\e[33m${labels["Subject"]}"
+      echo -e "\e[35m${subject}\e[0m"
+      print-utf8 -i "${indent}" "\e[33m${labels["Subject Alternative Name"]}"
+      echo -e "\e[35m${extensionValues["Subject Alternative Name"]}\e[0m"
+      print-utf8 -i "${indent}" "\e[33m${labels["Validity"]}"
+      echo -e "\e[36m${validityFrom}" "${validityTo}\e[0m"
+      for extension in "Basic Constraints"      \
+                       "Key Usage"              \
+                       "Extended Key Usage"     \
+                       "Subject Key Identifier" \
+                       "Authority Key Identifier" ; do
+         print-utf8 -i "${indent}" "\e[33m${labels["${extension}"]}"
+         echo -e "${extensionValues["${extension}"]}\e[0m"
       done
    )
    echo -en "\e[0m"
