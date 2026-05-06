@@ -52,7 +52,7 @@ msgstr "FEIL: Ugyldig heksadesimalt siffer %c!"
 #: src/Print-UTF8/print-utf8.c:150
 #, c-format
 msgid "ERROR: Invalid octal digit %c!"
-msgstr "FEIL: Ugyldig oktalsifret siffer %c!"
+msgstr "FEIL: Ugyldig oktalt siffer %c!"
 
 #: src/Print-UTF8/print-utf8.c:162 src/Print-UTF8/print-utf8.c:291
 #: src/Print-UTF8/print-utf8.c:318

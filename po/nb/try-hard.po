@@ -57,7 +57,7 @@ msgstr "FEIL: Ugyldig forsinkelse ${delayValue}!"
 #: src/Try-Hard/try-hard:150
 #, sh-format
 msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
-msgstr "FEIL: Ugyldige maksimale prøveperioder ${MAX_TRIALS}!"
+msgstr "FEIL: Ugyldig maksimalt antall forsøk ${MAX_TRIALS}!"
 
 #: src/Try-Hard/try-hard:196
 #, sh-format

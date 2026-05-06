@@ -68,11 +68,11 @@ msgstr "%-25s"
 
 #: src/X509/view-certificate:171
 msgid "Subject:"
-msgstr "Emne:"
+msgstr "Innehaver:"
 
 #: src/X509/view-certificate:173
 msgid "Subject Alt Name:"
-msgstr "Alternativt emne:"
+msgstr "Alternativt innehavernavn:"
 
 #: src/X509/view-certificate:175
 msgid "Validity:"

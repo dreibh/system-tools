@@ -54,7 +54,7 @@ msgstr "Ukjent"
 
 #: src/System-Info/System-Info:153
 msgid "Host:"
-msgstr "Datamaskin:"
+msgstr "Vert:"
 
 #: src/System-Info/System-Info:157
 msgid "Uptime:"

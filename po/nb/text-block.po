@@ -47,12 +47,12 @@ msgstr ""
 #: src/Text-Block/text-block.c:143
 #, c-format
 msgid "ERROR: Unable to open output file %s: %s"
-msgstr "FEIL: Kan ikke åpne utgangsfil %s: %s"
+msgstr "FEIL: Kan ikke åpne utdatafilen %s: %s"
 
 #: src/Text-Block/text-block.c:154
 #, c-format
 msgid "ERROR: Unable to delete broken output file %s: %s"
-msgstr "FEIL: Kan ikke slette den ødelagte utgangsfilen %s: %s"
+msgstr "FEIL: Kan ikke slette den ødelagte utdatafilen %s: %s"
 
 #: src/Text-Block/text-block.c:168
 #, c-format
@@ -114,7 +114,7 @@ msgstr "FEIL: Inndatafilen %s kan ikke åpnes: %s"
 #: src/Text-Block/text-block.c:738
 #, c-format
 msgid "WARNING: Line selection range (%lld — %lld) is not useful. Input file too short?"
-msgstr "ADVARSEL: Linjeutvalg (%lld — %lld) er ikke nyttig. Input File for kort?"
+msgstr "ADVARSEL: Linjeutvalg (%lld — %lld) er ikke nyttig. Inndatafilen er for kort?"
 
 #: src/Text-Block/text-block.c:745
 msgid "ERROR: Select from end of file (negative line number) is only possible with input file!"
@@ -122,7 +122,7 @@ msgstr "FEIL: Velg fra slutten av filen (negativ linjenummer) er bare mulig med 
 
 #: src/Text-Block/text-block.c:750
 msgid "ERROR: In-place update (--in-place|-p) requires an input file (--input/-i)!"
-msgstr "FEHLER: Für die direkte Aktualisierung (--in-place|-p) ist eine Eingabedatei (--input/-i) erforderlich!"
+msgstr "FEIL: Oppdatering på stedet (--in-place|-p) krever en inndatafil (--input/-i)!"
 
 #: src/Text-Block/text-block.c:763
 msgid "ERROR: In-place update (--in-place|-p) and output file (--output/-o) are mutually exclusive!"

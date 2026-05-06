@@ -74,7 +74,7 @@ msgstr "Installere Zabbix-agenten?"
 #: src/Reset-Machine-ID/Reset-Machine-ID:384
 #, sh-format
 msgid "Apply suggested Zabbix Agent changes in ${zabbixConfig}?"
-msgstr "Bruk foreslåtte Zabbix Agent endringer i ${zabbixConfig}?"
+msgstr "Bruk foreslåtte Zabbix Agent-endringer i ${zabbixConfig}?"
 
 #: src/Reset-Machine-ID/Reset-Machine-ID:395
 #: src/Reset-Machine-ID/Reset-Machine-ID:468

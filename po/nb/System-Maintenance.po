@@ -58,7 +58,7 @@ msgstr "Stopper AutoFS-tjenesten ..."
 
 #: src/System-Maintenance/System-Maintenance:118
 msgid "Applying package fixes, if necessary ..."
-msgstr "Reparer pakker, om nødvendig ..."
+msgstr "Reparerer pakker, om nødvendig ..."
 
 #: src/System-Maintenance/System-Maintenance:126
 #: src/System-Maintenance/System-Maintenance:129
@@ -99,7 +99,7 @@ msgstr "Å bli fjernet:"
 
 #: src/System-Maintenance/System-Maintenance:321
 msgid "To be kept:"
-msgstr "Skal oppbevares:"
+msgstr "Skal beholdes:"
 
 #: src/System-Maintenance/System-Maintenance:346
 msgid "Refreshing snaps ..."
