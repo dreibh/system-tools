@@ -183,7 +183,7 @@ while [ $# -gt 0 ] ; do
    echo -en "\e[0m"
 
    # ====== Display certificate hierarchy ===================================
-   echo -e "\e[34m$(eval_gettext "Hierarchy in \${CERTIFICATE_FILE}"):\e[0m"
+   echo -e "\e[34m$(eval_gettext "Hierarchy in \${CERTIFICATE_FILE}:")\e[0m"
    "${OPENSSL}" crl2pkcs7 -nocrl -certfile "${CERTIFICATE_FILE}" | \
       "${OPENSSL}" pkcs7 -print_certs -noout | (
          entry=0
