@@ -23,6 +23,8 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 - [Random-Sleep](#-random-sleep) (wait for random time span, with support of fractional seconds),
 - [X.509-Tools](#-x.509-tools) (tools for viewing, verifying and testing X.509 certificates).
 
+System-Tools provides internationalisation&nbsp;(i18n) support using [GNU gettext](https://www.gnu.org/software/gettext/). That is, translation files for the output of the programs are supported. You can support the project by contributing translations for your language. See [Internationalisation&nbsp;(I18N)](#internationalisation) for details!
+
 
 # 📚 System-Info
 
@@ -309,11 +311,19 @@ man try-hard
 
 Random-Sleep waits for a random time, selected from a given interval, with support for fractional seconds.
 
-Example to wait between 0.5&nbsp;and 299.5&nbsp;seconds:
+Examples:
 
-```bash
-random-sleep 0.5 299.5 && echo "Finished waiting!"
-```
+* Wait between 0.5&nbsp;and 299.5&nbsp;seconds:
+
+  ```bash
+  random-sleep 0.5 299.5 && echo "Finished waiting!"
+  ```
+
+* Wait between 10&nbsp;and 60&nbsp;seconds, and print status information:
+
+  ```bash
+  random-sleep 10 60 --verbose && echo "Finished waiting!"
+  ```
 
 The manpage of Random-Sleep contains details and further examples:
 
@@ -552,6 +562,36 @@ Contributions:
 ## Release Versions
 
 See [https://www.nntb.no/~dreibh/system-tools/#current-stable-release](https://www.nntb.no/~dreibh/system-tools/#current-stable-release) for the release packages!
+
+
+# 🌏 Internationalisation
+
+To provide a translation of one ore more components of System-Tools into your language, apply the following steps:
+
+1. Build System-Tools from the Git sources (see [Development Version](#development-version), i.e.&nbsp;use the "master" branch with the latest development version. The build will create `.pot` (translation template files) under [`po`](po).
+
+2. Create a new Git branch for your translations, e.g.&nbsp;`my_username/translations_language_XX` (with `XX` the language code for your language, e.g. `da` for Danish):
+
+   ```bash
+   git branch my_username/translations_language_XX
+   git checkout my_username/translations_language_XX
+   ```
+
+3. Take a look at the existing `.po` files (translations files) in [`po/de`](po/de) (German) and [`po/nb`](po/nb) (Bokmål) as examples, e.g.&nbsp;[`po/de/System-Info.po`](po/de/System-Info.po) or [`po/de/System-Info.po`](po/de/System-Info.po) for System-Info. Then, prepare a translation for program `PROGRAM` (e.g.&nbsp;System-Info; see the name of the  `.pot` translation template file) for your language `XX` under [`po`](po):
+
+   ```bash
+   mkdir -p xx
+   msginit --input PROGRAM.pot \
+           --locale XX.UTF-8 \
+           --output-file XX/PROGRAM.po
+   git add XX/PROGRAM.po
+   ```
+
+4. Add your translations into `XX/PROGRAM.po`, with a text editor or PO file editor like [Poedit](https://poedit.com/).
+
+5. Test, commit and push your changes.
+
+6. Finally, make a pull request: [https://github.com/dreibh/system-tools/pulls](https://github.com/dreibh/system-tools/pulls).
 
 
 # 🔗 Useful Links
