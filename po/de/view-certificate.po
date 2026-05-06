@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-06 13:08+0200\n"
+"POT-Creation-Date: 2026-05-06 14:23+0200\n"
 "PO-Revision-Date: 2025-10-28 12:45+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -52,38 +52,54 @@ msgstr "Aufruf:"
 msgid "ERROR: OpenSSL is not installed!"
 msgstr "FEHLER: OpenSSL ist nicht installiert!"
 
-#: src/X509/view-certificate:128
+#: src/X509/view-certificate:120
+msgid "Subject:"
+msgstr "Inhaber:"
+
+#: src/X509/view-certificate:121
+msgid "Subject Alternative Name:"
+msgstr "Alternativer Inhabername:"
+
+#: src/X509/view-certificate:122
+msgid "Validity:"
+msgstr "Gültigkeit:"
+
+#: src/X509/view-certificate:123
+msgid "Basic Constraints:"
+msgstr "Basiseinschränkungen:"
+
+#: src/X509/view-certificate:124
+msgid "Key Usage:"
+msgstr "Schlüsselverwendung:"
+
+#: src/X509/view-certificate:125
+msgid "Extended Key Usage:"
+msgstr "Erweiterte Schlüsselverwendung:"
+
+#: src/X509/view-certificate:126
+msgid "Subject Key Identifier:"
+msgstr "Inhaber-Schlüsselidentifikator:"
+
+#: src/X509/view-certificate:127
+msgid "Authority Key Identifier:"
+msgstr "Herausgeber-Schlüsselidentifikator:"
+
+#: src/X509/view-certificate:149
 #, sh-format
 msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
 msgstr "FEHLER: Zertifikatsdatei ${CERTIFICATE_FILE} wurde nicht gefunden!"
 
-#: src/X509/view-certificate:134
+#: src/X509/view-certificate:154
 #, sh-format
 msgid "Certificate in ${CERTIFICATE_FILE}:"
 msgstr "Zertifikat in ${CERTIFICATE_FILE}:"
 
-#: src/X509/view-certificate:169
-msgid "%-25s"
-msgstr "%-25s"
-
-#: src/X509/view-certificate:171
-msgid "Subject:"
-msgstr "Inhaber:"
-
-#: src/X509/view-certificate:173
-msgid "Subject Alt Name:"
-msgstr "Alternativer Inhabername:"
-
-#: src/X509/view-certificate:175
-msgid "Validity:"
-msgstr "Gültigkeit:"
-
-#: src/X509/view-certificate:186
+#: src/X509/view-certificate:210
 #, sh-format
 msgid "Hierarchy in ${CERTIFICATE_FILE}:"
-msgstr "Hierarchie in ${CERTIFICATE_FILE}"
+msgstr "Hierarchie in ${CERTIFICATE_FILE}:"
 
-#: src/X509/view-certificate:197
+#: src/X509/view-certificate:221
 #, sh-format
 msgid "#${entry}."
 msgstr "${entry}."

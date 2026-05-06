@@ -215,7 +215,7 @@ while [ $# -gt 0 ] ; do
             if [[ "${line}" =~ ^(subject=)(.*)$ ]] ; then
                # Subject with underlined CN:
                # shellcheck disable=SC2001
-               subject="$(echo "${BASH_REMATCH[2]}" | sed -e 's/\(CN = \)\([^,]*\)/\x1b[4m\1\2\x1b[24m/')"
+               subject="$(echo "${BASH_REMATCH[2]}" | sed -e 's|\(CN = \)\([^,]*\)|\x1b[4m\1\2\x1b[24m|')"
 
                entry=$((entry + 1))
                echo -en " \x1b[33m$(eval_gettext "#\${entry}.") "
