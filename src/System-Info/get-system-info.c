@@ -272,6 +272,7 @@ static void showUptimeInformation(void)
 }
 
 
+#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__))
 // ###### Query information via shell #######################################
 static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 {
@@ -293,8 +294,10 @@ static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
    }
    return false;
 }
+#endif
 
 
+#if defined(__linux__)
 // ###### Query information from file #######################################
 static bool queryFile(const char* file, char* result, size_t resultMaxSize)
 {
@@ -315,6 +318,7 @@ static bool queryFile(const char* file, char* result, size_t resultMaxSize)
    }
    return false;
 }
+#endif
 
 
 // ###### Obtain the number of processes on the system ######################
