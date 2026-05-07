@@ -54,22 +54,15 @@ _print_utf8()
       #  ====== Generic value ===============================================
       -i | --indent            | \
       -x | --columns           | \
-      -c | --center            | \
-      -s | --separator         | \
-      -b | --size              | \
-      -l | --length            | \
-      -w | --width             | \
-      -a | --size-length-width)
+      -I | --multiline-indent  | \
+      -C | --multiline-center  | \
+      -s | --separator)
          return
          ;;
    esac
 
    # ====== All options =====================================================
    local opts="
--h
---help
--v
---version
 -n
 --newline
 -i
@@ -78,6 +71,10 @@ _print_utf8()
 --columns
 -c
 --center
+-I
+--multiline-indent
+-C
+--multiline-center
 -s
 --separator
 -b
@@ -90,7 +87,10 @@ _print_utf8()
 --size-length-width
 -t
 --terminal-info
-"
+-h
+--help
+-v
+--version"
    mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
    return 0
 }
