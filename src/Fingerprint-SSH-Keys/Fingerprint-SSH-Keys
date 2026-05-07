@@ -103,8 +103,8 @@ fi
 
 
 # ====== Print SSH key fingerprints =========================================
-if [ -d /etc/ssh ] && [ -x "$(command -v ssh-keygen)" ] ; then
-   hostname="$(hostname -f)"
+if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
+   hostname="$(hostname -f 2>/dev/null || echo "localhost")"
 
    for format in ${FORMATS} ; do
 
