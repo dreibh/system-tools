@@ -51,7 +51,7 @@ _unixts2time()
    fi
 
    # ====== Suggest time stamps as first parameter ==========================
-   if [ "${cword}" -eq 1 ] ; then
+   if [[ "$cur" != -* ]] ; then
       local today
       # Suggested time stamp: today, 12:34:56.* in s, ms, µs, and ns.
       today="$(time2unixts --seconds)"
