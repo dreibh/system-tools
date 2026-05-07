@@ -15,7 +15,24 @@ Requires: %{name}-basic = %{version}-%{release}
 
 
 %description
-System-Tools is a collection of helpful tools for basic system management of Linux and FreeBSD systems. Particularly, the tool System-Info displays important system information on log-in, including customised banners e.g. for company or project branding.
+System-Tools is a collection of utilities for system management and
+maintenance.
+
+The package includes:
+- System-Info: Displays system status (CPU, memory, disk, network)
+  and configurable login banners.
+- System-Maintenance: Automates package updates, old kernel removal,
+  and storage cleanup (e.g., SSD trimming).
+- Reset-Machine-ID: Resets machine IDs, hostnames, and SSH keys for
+  cloned virtual machines.
+- X.509-Tools: Utilities for viewing, verifying, and converting X.509
+  certificates, and testing TLS connections.
+- Automation tools: Try-Hard (command retry with backoff), Random-Sleep,
+  Text-Block (stream editing), and Print-UTF8.
+- Security tools: Fingerprint-SSH-Keys.
+
+The utilities are suitable for non-interactive use in shell scripts and
+feature native internationalization support via GNU gettext.
 
 %prep
 %setup -q

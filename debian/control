@@ -173,8 +173,26 @@ Depends: td-fingerprint-ssh-keys (>= ${source:Version}),
          ${misc:Depends}
 Recommends: td-system-configure-grub
 Description: Metapackage for basic system tools sub-packages
- This package is a metapackage for the system information and maintenance
- tools. It installs the basic sub-packages.
+ System-Tools is a collection of utilities for system management and
+ maintenance.
+ .
+ The package includes:
+  - System-Info: Displays system status (CPU, memory, disk, network)
+    and configurable login banners.
+  - System-Maintenance: Automates package updates, old kernel removal,
+    and storage cleanup (e.g., SSD trimming).
+  - Reset-Machine-ID: Resets machine IDs, hostnames, and SSH keys for
+    cloned virtual machines.
+  - X.509-Tools: Utilities for viewing, verifying, and converting X.509
+    certificates, and testing TLS connections.
+  - Automation tools: Try-Hard (command retry with backoff), Random-Sleep,
+    Text-Block (stream editing), and Print-UTF8.
+  - Security tools: Fingerprint-SSH-Keys.
+ .
+ The utilities are suitable for non-interactive use in shell scripts and
+ feature native internationalization support via GNU gettext.
+ .
+ This package is a metapackage for the basic sub-packages of System-Tools.
  Note that td-system-configure-grub is only added as weak dependency
  ("recommends"),  since it is only available on selected architectures.
 
@@ -183,8 +201,26 @@ Architecture: all
 Depends: td-system-tools-basic (>= ${source:Version}),
          ${misc:Depends}
 Description: Metapackage for complete system tools sub-packages
- This package is a metapackage for the system information and maintenance
- tools. It installs all sub-packages.
+ System-Tools is a collection of utilities for system management and
+ maintenance.
+ .
+ The package includes:
+  - System-Info: Displays system status (CPU, memory, disk, network)
+    and configurable login banners.
+  - System-Maintenance: Automates package updates, old kernel removal,
+    and storage cleanup (e.g., SSD trimming).
+  - Reset-Machine-ID: Resets machine IDs, hostnames, and SSH keys for
+    cloned virtual machines.
+  - X.509-Tools: Utilities for viewing, verifying, and converting X.509
+    certificates, and testing TLS connections.
+  - Automation tools: Try-Hard (command retry with backoff), Random-Sleep,
+    Text-Block (stream editing), and Print-UTF8.
+  - Security tools: Fingerprint-SSH-Keys.
+ .
+ The utilities are suitable for non-interactive use in shell scripts and
+ feature native internationalization support via GNU gettext.
+ .
+ This package is a metapackage for all sub-packages of System-Tools.
 
 Package: td-system-tools
 Section: oldlibs
