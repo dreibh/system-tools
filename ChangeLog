@@ -1,3 +1,203 @@
+commit 0d9abb7fd4f074ded8322002a2779cc06adbc3a9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 17:07:09 2026 +0200
+
+    Fixed a too long line in the package description.
+
+commit 9de1eb70ca89a6d9bb66dfeb0b28a548c7338935
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 16:56:45 2026 +0200
+
+    Small documentation improvements.
+
+commit 8276866676d6c5033cc0ee7fd721f0cbbe89205e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 16:41:45 2026 +0200
+
+    Updated PO files.
+
+commit f951d12b013cb63a5dfc68edd558d9e2046931cf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 16:15:05 2026 +0200
+
+    Further small shell completion improvements.
+
+commit 5b61c7bfb467646de4efbaef6b7e81c463d34dfe
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 15:56:48 2026 +0200
+
+    Minor shell completion fixes and improvements.
+
+commit f2da6fbd806a1b60d2ddbadcec8097666cb38701
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 15:30:26 2026 +0200
+
+    Small manpage improvements and fixes.
+
+commit 72ec978fdb7800552433d5f815d7b74652759101
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 13:51:37 2026 +0200
+
+    Improved manpages.
+
+commit bf98693f476ef7bd9e76d45908d38250cbccaa59
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 13:51:16 2026 +0200
+
+    Minor optimisation.
+
+commit 472175ed3e7ed70b2fc0fb318f507b115c8e5ac1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 13:22:15 2026 +0200
+
+    Minor optimisations.
+
+commit 4adcb7a49122edd885257e02a5afa2280d1bd23d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 13:08:23 2026 +0200
+
+    Try-Hard now returns the exit code of the last failed run.
+
+commit d0570afc345a4652d7a88bded782c178ac9b3caa
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 12:55:14 2026 +0200
+
+    Added fallback to "localhost" if 'hostname -f' cannot determine the FQDN hostname.
+
+commit 91d14e09b76c50dbe97f816b7f181bcad0aed6e2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 12:50:30 2026 +0200
+
+    Minor code polishing.
+
+commit d34751347d435238f91d0904cd91d29930cce7fd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 12:44:47 2026 +0200
+
+    Modernised the NTP time synchronisation block.
+
+commit f15418922242f7c84564fd09568c7a227538a9be
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 12:28:19 2026 +0200
+
+    Removed obsolete legacy code, and some small clean-ups.
+
+commit c786bae9889c7f9a7572c0713d7891a1692a0fea
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 12:19:21 2026 +0200
+
+    FreeBSD ports are updated via Git now.
+
+commit 09ec6643a84013f3e836ff36ffdd992cd03c2257
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 12:14:39 2026 +0200
+
+    Improved temporary file handling.
+
+commit 03aff95a3837f7e64790e50ad776d6b564538e98
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 11:58:07 2026 +0200
+
+    Minor clean-ups.
+
+commit 2c9700922c9fde161e8e668cb2ae6cbb3b43550f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 11:44:30 2026 +0200
+
+    Replaced "which" by "command -v" for better portability.
+
+commit bc4c1a00b58e8b05d338c88c64e46b4dacb2c60a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 11:23:46 2026 +0200
+
+    get-system-info improvements:
+    * Reduced static interfaces array to 1024 elements, to allow working on systems with small stack.
+    * Added Apple-specific code for obtaining number of processes.
+
+commit 41f9b465d590e2d8fb0db480b2a17dd027b95a18
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 10:33:14 2026 +0200
+
+    Only declare functions if the build's operating system needs them.
+
+commit 57f0c9f80e92c51d7689616517ecd5f802de0359
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 10:17:48 2026 +0200
+
+    Polished packaging files.
+
+commit 0a5326765d3cac0a3e89a16addc2fd9ae43d37b4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 09:42:06 2026 +0200
+
+    Fixed small inconsistencies between packaging descriptions for Debian/Ubuntu and Fedora.
+
+commit 9e9edc92a523be55fd145e632e4e1f1f1c553463
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 09:13:44 2026 +0200
+
+    Fixed package description in RPM.
+
+commit f36722d3c615165ea676e39f7a3956b3ffd2244d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 18:18:41 2026 +0200
+
+    Another small clean-up.
+
+commit b22872002fcbc21bea4b7e2b8fad894abc6a59c7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 18:06:44 2026 +0200
+
+    Minor clean-ups.
+
+commit cc57bb31e2b2404aacb848e4bbf5837114e59d0e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 18:02:04 2026 +0200
+
+    Further clean-ups.
+
+commit 2a05c92eb105618be6a0d54606f85bbcf69e30d9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 17:33:39 2026 +0200
+
+    Improved compatibility.
+
+commit 4720c95c199bf3334e0eb6699f950bae4f1dc546
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 17:32:26 2026 +0200
+
+    Added missing library.
+
+commit 0ee36b07c15277da3542f6c324cd8f806b8a8847
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 17:31:50 2026 +0200
+
+    Added basic support for MacOS.
+
+commit 746a74fc479733a757045a72317f58e519f45d13
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 16:41:39 2026 +0200
+
+    Another try.
+
+commit b0bfd02aa01e27decd4ec845efbed11af3de2f97
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 16:37:18 2026 +0200
+
+    Added interface status.
+
+commit 1d68e8c1e2443f87feb779fafa7938ffbf7fae7f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 16:32:35 2026 +0200
+
+    Some MacOS testing.
+
+commit 2c8a36c3a6f58f5653eb0f6c8e8b9940d83936e5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 14:51:10 2026 +0200
+
+    New release td-system-tools-2.5.4.
+
 commit d81ce25c47c255d0c666938628c83051702d5911
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed May 6 14:50:19 2026 +0200

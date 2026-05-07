@@ -1,7 +1,13 @@
-td-system-tools (2.5.4-1ubuntu1) unstable; urgency=medium
+td-system-tools (2.5.5-1ubuntu1) unstable; urgency=medium
 
   * New upstream release.
   * Closes: #1073548 (ITP).
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Thu, 07 May 2026 17:07:42 +0200
+
+td-system-tools (2.5.4-1ubuntu1) unstable; urgency=medium
+
+  * New upstream release.
 
  -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Wed, 06 May 2026 14:51:07 +0200
 

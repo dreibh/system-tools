@@ -169,7 +169,8 @@ Description: X.509 certificate handling tools
   * The extract-pem tool extracts a PEM file.
   * The der2pem tool converts a certificate or CRL in DER format to PEM format.
   * The pem2der tool converts a certificate or CRL in PEM format to DER format.
-  * The test-tls-connection tool tests a TCP TLS connection to a remote endpoint.
+  * The test-tls-connection tool tests a TCP TLS connection to a remote
+    endpoint.
 
 Package: td-system-tools-basic
 Replaces: td-system-tools (<< 2.4.0)

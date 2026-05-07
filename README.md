@@ -39,7 +39,7 @@ One main purpose of System-Info is to run on login, to particularly show a nice 
 * `50-company-logo`,
 * `01-example`.
 
-The names of all scripts MUST begin with two decimal numbers. That is, scripts must be named `[0-9][0-9]...` to be processed by System-Info!
+The names of all scripts MUST begin with two decimal digits. That is, scripts must be named `[0-9][0-9]...` to be processed by System-Info!
 
 If one of the scripts exits with a non-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script `95-application-logo`).
 
@@ -116,10 +116,10 @@ System-Maintenance runs some system maintenance tasks to keep the system clean a
 - Removing obsolete kernels,
 - Installing all available package updates,
 - Auto-removing unused packages,
-- Ensuring that GRUB (the bootloader) is installed and up-to-date,
-- Deleting network interface mapping (only on request by option, see below),
 - Updating package and file search caches,
+- Refreshing snap packages (Ubuntu),
 - Updating firmware,
+- Synchronizing the system time,
 - Trimming SSDs and virtual storage.
 
 The typical usage is quite simple, e.g.:
@@ -511,14 +511,14 @@ Extract-PEM extracts an X.509 certificate bundle from a [Privacy-Enhanced Mail&n
 * Extract the PEM file `My-Server-Certificate.crt`, into files `Certificate-<NUMBER>.<EXTENSION>`. The number is starting from&nbsp;1, and provides the position of an entry within the input file:
 
   ```bash
-   extract-pem My-Server-Certificate.crt --output Certificate-
+   extract-pem My-Server-Certificate.crt --output-prefix Certificate-
   ```
 
 * Extract the PEM file `My-Server-Certificate.crt`, into files `Intermediate-<NUMBER>.<EXTENSION>`, skipping the first and last entry. That is, only the intermediate certificates are extracted:
 
   ```bash
    extract-pem My-Server-Certificate.crt \
-      --skip-first-entry --skip-last-entry --output Intermediate-
+      --skip-first-entry --skip-last-entry --output-prefix Intermediate-
   ```
 
 Also see the manpage of Extract-PEM for further details and examples:
@@ -600,7 +600,7 @@ sudo dnf install td-system-tools
 For ready-to-install FreeBSD packages of System-Tools, it is included in the ports collection; see [FreeBSD ports tree index of net/td-system-tools/](https://cgit.freebsd.org/ports/tree/net/td-system-tools/)!
 
 ```bash
-sudo pkg install system-tools
+sudo pkg install td-system-tools
 ```
 
 Alternatively, to compile it from the ports sources:
@@ -666,10 +666,10 @@ To provide a translation of one or more components of System-Tools into your lan
    git checkout my_username/translations_language_XX
    ```
 
-3. Take a look at the existing `.po` files (translations files) in [`po/de`](po/de) (German) and [`po/nb`](po/nb) (Bokmål) as examples, e.g.&nbsp;[`po/de/System-Info.po`](po/de/System-Info.po) or [`po/de/System-Info.po`](po/de/System-Info.po) for System-Info. Then, prepare a translation for program `PROGRAM` (e.g.&nbsp;System-Info; see the name of the  `.pot` translation template file) for your language `XX` under [`po`](po):
+3. Take a look at the existing `.po` files (translations files) in [`po/de`](po/de) (German) and [`po/nb`](po/nb) (Bokmål) as examples, e.g.&nbsp;[`po/de/System-Info.po`](po/de/System-Info.po) or [`po/nb/System-Info.po`](po/nb/System-Info.po) for System-Info. Then, prepare a translation for program `PROGRAM` (e.g.&nbsp;System-Info; see the name of the  `.pot` translation template file) for your language `XX` under [`po`](po):
 
    ```bash
-   mkdir -p xx
+   mkdir -p XX
    msginit --input PROGRAM.pot \
            --locale XX.UTF-8 \
            --output-file XX/PROGRAM.po
