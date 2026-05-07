@@ -34,7 +34,7 @@
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm view-crl
-.Nd Displays an X.509 CRL
+.Nd displays important details of an X.509 CRL in PEM or DER format
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
@@ -65,7 +65,7 @@ Prints the program version and exits.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It view-crl My-CA-CRL.ctl
+.It view-crl My-CA-CRL.crl
 .It view-crl /usr/lib/python3.12/test/certdata/revocation.crl
 .It curl -o google-crl.der.crl http://c.pki.goog/wr2/GSyT1N4PBrg.crl && \
 view-crl google-crl.der.crl
