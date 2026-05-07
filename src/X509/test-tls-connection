@@ -58,7 +58,7 @@ version () {
 
 # ====== Handle arguments ===================================================
 DIRNAME="$(dirname "$0")"
-GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
 options="$(${GETOPT} -o s:nchv --long save-certificate:,no-view-certificate,no-check-certificate,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then

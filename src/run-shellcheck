@@ -81,7 +81,7 @@ show-script ()
 # ###### Main program #######################################################
 
 # ====== Find locations of Python interpreter, MyPy, and tools ==============
-SHELLCHECK="$(which shellcheck 2>/dev/null)"
+SHELLCHECK="$(command -v shellcheck)"
 if [ ! -x "${SHELLCHECK}" ] ; then
    echo >&2 "ERROR: ShellCheck is not installed!"
    echo >&2 "Try this:"
@@ -91,7 +91,7 @@ if [ ! -x "${SHELLCHECK}" ] ; then
    exit 1
 fi
 echo "Python: ${SHELLCHECK}"
-PRINT_UTF8="$(which print-utf8 2>/dev/null || true)"
+PRINT_UTF8="$(command -v print-utf8 || true)"
 if [ ! -x "${PRINT_UTF8}" ] ; then
    echo >&2 "ERROR: Print-UTF8 (from System-Tools) is not installed!"
    echo >&2 "Try this:"
@@ -102,7 +102,7 @@ if [ ! -x "${PRINT_UTF8}" ] ; then
    echo >&2 "* FreeBSD: sudo pkg install -y td-system-tools"
    exit 1
 fi
-FIGLET="$(which figlet 2>/dev/null || true)"
+FIGLET="$(command -v figlet || true)"
 if [ ! -x "${FIGLET}" ] ; then
    echo >&2 "ERROR: Figlet is not installed!"
    echo >&2 "* Ubuntu:  sudo apt install -y figlet"

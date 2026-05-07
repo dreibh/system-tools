@@ -57,7 +57,7 @@ version () {
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
-GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
 options="$(${GETOPT} -o drphv --long include-deprecated,include-raw,include-raw-python,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
