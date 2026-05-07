@@ -89,7 +89,6 @@ _try_hard()
             _command_offset $((i+1))
             return
          fi
-         i=$((i+1))
       done
    fi
 

@@ -68,7 +68,7 @@ _text_block()
       --highlight-param     | \
       -m | --min-actions    | \
       -M | --max-actions    | \
-      --select)
+      -s | --select)
          return
          ;;
       # ====== Special case: file ===========================================
