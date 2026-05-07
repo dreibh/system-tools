@@ -12,7 +12,6 @@ class TdSystemTools < Formula
   depends_on "bash"
   depends_on "figlet"
   depends_on "gettext"
-  depends_on "mbuffer"
   depends_on "openssl@3"
 
   def install
@@ -32,8 +31,8 @@ class TdSystemTools < Formula
     <<~EOS
       System-Tools configuration files have been installed to:
         #{etc}/system-info.d/
-      
-      Note: System-Maintenance, Configure-GRUB, and Reset-Machine-ID 
+
+      Note: System-Maintenance, Configure-GRUB, and Reset-Machine-ID
       are disabled on macOS as they are Linux/FreeBSD specific.
     EOS
   end
