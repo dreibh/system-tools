@@ -94,11 +94,6 @@ if [ $# -ne 0 ] ; then
    usage 1
 fi
 
-fullPackageList=""
-packageVersionsFile=""
-trap 'echo ; echo "Aborted." ; rm -f "${fullPackageList}" "${packageVersionsFile}" ; exit' INT
-trap 'rm -f "${fullPackageList}" "${packageVersionsFile}"' EXIT TERM HUP
-
 # ====== Find distribution variant ==========================================
 if [ ! -e /etc/os-release ] ; then
    gettext >&2 "ERROR: /etc/os-release not found!"
@@ -113,12 +108,20 @@ if [ -e /etc/init.d/autofs ] ; then
    sudo service autofs stop >/dev/null 2>&1 || true
 fi
 
+# ====== Temporary file handling ============================================
+fullPackageList=""
+packageVersionsFile=""
+installOutputFile=""
+trap 'echo ; echo "Aborted." ; rm -f "${installOutputFile}" "${fullPackageList}" "${packageVersionsFile}" ; exit' INT
+trap 'rm -f "${installOutputFile}" "${fullPackageList}" "${packageVersionsFile}"' EXIT TERM HUP
+
+installOutputFile="$(mktemp -t SystemMaintenance.install.XXXXXXXXXX.log)"
+
 # ====== dpkg package fixes =================================================
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Applying package fixes, if necessary ...")\x1b[0m"
-   sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+   sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 fi
 
 # ====== Update package repositories ========================================
@@ -138,19 +141,17 @@ fi
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing missing dependencies, if necessary ...")\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 fi
 
-# ====== system update ======================================================
+# ====== Install updates ====================================================
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing updates ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ------ Download --------------------------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -yd -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
-   wait
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee "${installOutputFile}"
 
    # ------ Update special packages -----------------------------------------
    for package in nornet-server nornet-tunnelbox ; do
@@ -167,8 +168,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
             sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
                -o APT::Get::Always-Include-Phased-Updates=true \
                -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-              ${package} -y -q 2>&1 | sudo tee /tmp/install.log &
-            wait
+              ${package} -y -q 2>&1 | sudo tee "${installOutputFile}"
             echo "Updated ${package} package."
          fi
       fi
@@ -180,21 +180,18 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ------ Update the rest -------------------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -y -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 elif [ "${ID}" == "fedora" ] ; then
-   ( sudo dnf clean all && sudo dnf upgrade -y ) | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+   ( sudo dnf clean all && sudo dnf upgrade -y ) | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 elif [ "${ID}" == "freebsd" ] ; then
    ( sudo freebsd-update install ; sudo env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y
      if [ -x /usr/sbin/portsnap ] ; then
         sudo /usr/sbin/portsnap -I update
      fi
-   ) | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+   ) | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 fi
 
 # ====== Auto-remove ========================================================
@@ -202,15 +199,13 @@ echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Cleaning up ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ------ Remove unnecessary dependencies ---------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -q \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 
    # ------ Purge all previously-removed packages ---------
    dpkg --get-selections | awk '$2=="deinstall" { print $1 }' | xargs --no-run-if-empty sudo DEBIAN_FRONTEND=noninteractive apt-get purge -y \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 
    # ------ Clean up the package cache --------------------
    sudo DEBIAN_FRONTEND=noninteractive apt-get clean
@@ -220,9 +215,8 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
       find /var/crash/ -name "*.crash" -exec sudo rm -f {} \;
    fi
 elif [ "${ID}" == "fedora" ] ; then
-   sudo DEBIAN_FRONTEND=noninteractive nohup dnf autoremove -y 2>&1 | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+   sudo DEBIAN_FRONTEND=noninteractive nohup dnf autoremove -y 2>&1 | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
    sudo dnf clean all
 elif [ "${ID}" == "freebsd" ] ; then
    sudo env ASSUME_ALWAYS_YES=yes pkg-static autoremove -y
@@ -326,9 +320,8 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
          # shellcheck disable=SC2086
          sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -qq --purge \
             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-            ${toBeRemoved} 2>&1 | sudo tee /tmp/install.log &
-         wait
-         cat /tmp/install.log
+            ${toBeRemoved} 2>&1 | sudo tee "${installOutputFile}"
+         cat "${installOutputFile}"
       else
          # shellcheck disable=SC2086
          sudo apt-get autoremove --purge \
@@ -340,6 +333,8 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
       echo "Nothing to do!"
    fi
 fi
+
+rm -f "${installOutputFile}"
 
 # ====== Refresh snaps ======================================================
 if [ -x /usr/bin/snap ] ; then
