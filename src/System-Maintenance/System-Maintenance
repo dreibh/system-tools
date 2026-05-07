@@ -132,8 +132,11 @@ elif [ "${ID}" == "freebsd" ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating package repositories ...")\x1b[0m"
    sudo env PAGER=cat freebsd-update fetch || true
    sudo env ASSUME_ALWAYS_YES=yes pkg-static update
-   if [ -x /usr/sbin/portsnap ] ; then
-      sudo /usr/sbin/portsnap -I fetch
+   if [ -x /usr/ports/.git ] ; then
+      pushd /usr/ports >/dev/null
+      git fetch --all
+      git pull
+      popd >/dev/null
    fi
 fi
 
