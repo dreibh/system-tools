@@ -308,8 +308,7 @@ if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
    fi
    if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
       # ------ Set new machine ID -------------------------------------------
-      DBUS_UUIDGEN="$(command -v dbus-uuidgen || true)"
-      if [ "${DBUS_UUIDGEN}" != "" ] ; then
+      if command -v dbus-uuidgen >/dev/null ; then
          # Generate new ID already now:
          rm -f /etc/machine-id
          dbus-uuidgen --ensure=/etc/machine-id
@@ -562,7 +561,7 @@ fi
 
 
 # ====== Generate new SSH key pair ==========================================
-if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && [ -x "$(command -v ssh-keygen)" ] ; then
+if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
 
    cd /etc/ssh || exit
 
