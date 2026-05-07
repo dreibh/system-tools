@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 4, 2026
+.Dd May 7, 2026
 .Dt print-utf8 1
 .Os print-utf8
 .\" ###### Name #############################################################
@@ -100,7 +100,7 @@ Reads multiple lines from stdin, indent each line by given indentation, add a pr
 .It Fl C Ar left Ar right | Fl Fl multiline-center Ar left Ar right
 Reads multiple lines from stdin, pads them to the same length, and prints them centered with given borders on left and right side.
 .It Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
-Make a separator, consisting of a left part, a variable number of separator string occurrences, as well as a right part.
+Generates a separator, consisting of a left part, a variable number of separator string occurrences, as well as a right part.
 The separator string must have a width >= 1 to fill the line. Otherwise, a space (" ") is used instead.
 .It Fl x Ar console_width | Fl Fl columns Ar console_width
 Set number of columns (console width) for "center", "multiline-center", and
@@ -116,7 +116,7 @@ Print the length (in UTF-8 characters) of the string without ANSI control sequen
 .It Fl w | Fl Fl width
 Print the width (columns in the console) of the string without ANSI control sequences.
 .It Fl a | Fl Fl size-length-width
-Printf the size, length and width of the string without ANSI control sequences.
+Print the size, length and width of the string without ANSI control sequences.
 .It Fl t | Fl Fl terminal-info
 Print current width and height of the console.
 Note that if /dev/tty is not available, the default of 80x24 is returned!

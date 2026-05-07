@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 4, 2026
+.Dd May 7, 2026
 .Dt try-hard 1
 .Os try-hard
 .\" ###### Name #############################################################
@@ -65,11 +65,11 @@ command ...
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm try-hard
-tries to run a command up to a given number of trials. In case of failure, a certain delay time span is waited before the next trial.
+tries to run a command up to a given number of trials. In case of failure, the program waits for a specific delay before the next trial.
 .br
 The delay to wait is by default randomly chosen (using random-sleep) from the interval [min_delay, max_delay]. Alternatively, in deterministic mode, the delay is always max_delay.
 .br
-For each new trial, it is possible to increase the interval [min_delay, max_delay] by a multiplicative-increase factor as well as an additive-increase increment. The new max_delay can be truncated by truncated_max_delay as upper bound, to prevent further increases. The initial min_delay is always the lower bound.
+For each new trial, it is possible to increase the interval [min_delay, max_delay] by a multiplicative-increase factor as well as an additive-increase increment. The upper bound for max_delay can be limited by truncated_max_delay to prevent further increases. The initial min_delay is always the lower bound.
 .br
 On failure, the exit code of the last failed trial is returned.
 .Pp

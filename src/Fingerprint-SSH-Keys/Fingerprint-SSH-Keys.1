@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 4, 2026
+.Dd May 7, 2026
 .Dt Fingerprint-SSH-Keys 1
 .Os Fingerprint-SSH-Keys
 .\" ###### Name #############################################################
@@ -51,12 +51,14 @@
 .Sh DESCRIPTION
 .Nm Fingerprint-SSH-Keys
 prints the SSH key fingerprints of the local machine in different formats:
-.br
-* SSH hash format,
-.br
-* DNS SSHFP FF format,
-.br
-* Python dictionary.
+.Bl -bullet -compact
+.It
+SSH hash format
+.It
+DNS SSHFP RR format
+.It
+Python dictionary
+.El
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
