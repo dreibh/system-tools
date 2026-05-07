@@ -157,28 +157,29 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee "${installOutputFile}"
 
    # ------ Update special packages -----------------------------------------
-   for package in nornet-server nornet-tunnelbox ; do
-      if dpkg -l ${package} >/dev/null 2>&1 ; then
-         if [ "$(find /var/cache/apt/archives/ -name "${package}*.deb")" != "" ] ; then
-            echo "Updating ${package} package ..."
-            # Do not restart the service on update, in order to avoid
-            # unnecessary downtime. Then, a manual restart can be made.
-            (
-               echo "#!/bin/sh"
-               echo "exit 101"
-            ) | sudo tee /usr/sbin/policy-rc.d >/dev/null
-            sudo chmod +x /usr/sbin/policy-rc.d
-            sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
-               -o APT::Get::Always-Include-Phased-Updates=true \
-               -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-              ${package} -y -q 2>&1 | sudo tee "${installOutputFile}"
-            echo "Updated ${package} package."
-         fi
-      fi
-   done
-
-   # Ensure to remove modified policy-rc.d!
-   sudo rm -f /usr/sbin/policy-rc.d
+   # NOTE: This block is likely obsolete, and therefore commented out!
+   # for package in nornet-server nornet-tunnelbox ; do
+   #    if dpkg -l ${package} >/dev/null 2>&1 ; then
+   #       if [ "$(find /var/cache/apt/archives/ -name "${package}*.deb")" != "" ] ; then
+   #          echo "Updating ${package} package ..."
+   #          # Do not restart the service on update, in order to avoid
+   #          # unnecessary downtime. Then, a manual restart can be made.
+   #          (
+   #             echo "#!/bin/sh"
+   #             echo "exit 101"
+   #          ) | sudo tee /usr/sbin/policy-rc.d >/dev/null
+   #          sudo chmod +x /usr/sbin/policy-rc.d
+   #          sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
+   #             -o APT::Get::Always-Include-Phased-Updates=true \
+   #             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
+   #            ${package} -y -q 2>&1 | sudo tee "${installOutputFile}"
+   #          echo "Updated ${package} package."
+   #       fi
+   #    fi
+   # done
+   #
+   # # Ensure to remove modified policy-rc.d!
+   # sudo rm -f /usr/sbin/policy-rc.d
 
    # ------ Update the rest -------------------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -y -q \
@@ -340,27 +341,28 @@ fi
 rm -f "${installOutputFile}"
 
 # ====== Refresh snaps ======================================================
-if [ -x /usr/bin/snap ] ; then
+if command -v snap >/dev/null ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Refreshing snaps ...")\x1b[0m"
-   sudo /usr/bin/snap refresh || true
+   sudo snap refresh || true
 fi
 
 # ====== Firmware updates ===================================================
-if [ -x /usr/bin/fwupdmgr ] ; then
+if command -v fwupdmgr >/dev/null ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Checking for firmware updates ...")\x1b[0m"
-   sudo /usr/bin/fwupdmgr update || true
+   sudo fwupdmgr refresh || true
+   sudo fwupdmgr update  || true
 fi
 
 # ====== apt-file cache update ==============================================
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating caches ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
-   if [ -x /usr/bin/apt-file ] ; then
-      sudo /usr/bin/apt-file update >/dev/null
+   if command -v apt-file >/dev/null ; then
+      sudo apt-file update >/dev/null
       sudo apt-show-versions -i
    fi
 fi
 if [ "${ID}" != "freebsd" ] ; then
-   if [ -x /usr/bin/updatedb ] ; then
+   if command -v updatedb >/dev/null ; then
       sudo updatedb
    fi
 else
@@ -413,11 +415,11 @@ if [ -x /usr/sbin/ntpdate ] ; then
 fi
 
 # ====== SSD trimming =======================================================
-if [ -x /sbin/fstrim ] || [ -x /usr/sbin/fstrim ] ; then
+if command -v fstrim >/dev/null ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Running fstrim ...")\x1b[0m"
    sudo fstrim -a -v 2>/dev/null || ( sudo fstrim -v / && sudo fstrim -v /home ) || true
 fi
-if [ -x /sbin/zpool ] || [ -x /usr/sbin/zpool ] ; then
+if command -v zpool >/dev/null ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Running zpool trim ...")\x1b[0m"
    zpools=$(zpool list -H | cut -f1)
    for zpool in ${zpools} ; do
@@ -443,8 +445,8 @@ if [ ${#filterScripts[@]} -gt 0 ] ; then
    fullPackageList="$(mktemp -t SystemMaintenance.XXXXXXXXXX.out)"
 
    if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
-      if [ -x /usr/bin/apt-show-versions ] ; then
-         /usr/bin/apt-show-versions | grep -v "not installed$" >"${fullPackageList}" || true
+      if command -v apt-show-versions >/dev/null ; then
+         apt-show-versions | grep -v "not installed$" >"${fullPackageList}" || true
       fi
    elif [ "${ID}" == "fedora" ] ; then
       rpm -qa | sort >"${fullPackageList}" || true
