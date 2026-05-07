@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-04 16:56+0200\n"
+"POT-Creation-Date: 2026-05-07 13:05+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -59,17 +59,21 @@ msgstr "FEHLER: Ungültiger Verzögerungswert ${delayValue}!"
 msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
 msgstr "FEHLER: Ungültige maximale Anzahl an Versuchen ${MAX_TRIALS}!"
 
-#: src/Try-Hard/try-hard:196
+#: src/Try-Hard/try-hard:161
+msgid "ERROR: Cannot find random-sleep in the search path!"
+msgstr "FEHLER: random-sleep konnte im Suchpfad nicht gefunden werden!"
+
+#: src/Try-Hard/try-hard:202
 #, sh-format
 msgid "Tried ${MAX_TRIALS} times -> giving up now!"
 msgstr "${MAX_TRIALS} Mal versucht -> gebe jetzt auf!"
 
-#: src/Try-Hard/try-hard:227
+#: src/Try-Hard/try-hard:233
 #, sh-format
 msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting random time from [${minDelay}, ${maxDelay}] s ..."
 msgstr "Versuch ${trial}/${MAX_TRIALS} fehlgeschlagen -> warte zufällige Zeitspanne aus [${minDelay}, ${maxDelay}] s vor einem erneuten Versuch ..."
 
-#: src/Try-Hard/try-hard:234
+#: src/Try-Hard/try-hard:240
 #, sh-format
 msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting for ${maxDelay} s ..."
 msgstr "Versuch ${trial}/${MAX_TRIALS} fehlgeschlagen -> warte ${maxDelay} s vor einem erneuten Versuch ..."

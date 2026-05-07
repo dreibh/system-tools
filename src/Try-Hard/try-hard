@@ -157,6 +157,11 @@ if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
    echo >&2
    exit 1
 fi
+if [ "${DETERMINISTIC}" -eq 0 ] && ! command -v random-sleep >/dev/null ; then
+   gettext >&2 "ERROR: Cannot find random-sleep in the search path!"
+   echo >&2
+   exit 1
+fi
 MAX_DELAY="${delayValue}"
 shift 2
 
@@ -189,13 +194,14 @@ while true ; do
    if "$@" ; then
       exit 0
    fi
+   exitStatus=$?
 
    # ====== Check whether trial limit has been reached ======================
    if [ ${trial} -ge "${MAX_TRIALS}" ] ; then
       if [ "${VERBOSE}" -eq 1 ] ; then
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Tried \${MAX_TRIALS} times -> giving up now!")\x1b[0m"
       fi
-      exit 1
+      exit "${exitStatus}"
    fi
 
    # ====== Increase delay for next trial ===================================
