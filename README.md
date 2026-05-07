@@ -286,7 +286,7 @@ Example to convert "1976-09-29 12:12:03.123456789":
 * To float seconds (i.e.&nbsp;keeping the fractional seconds):
 
   ```bash
-  time2unixts --seconds "1976-09-29 12:12:03.123456789"
+  time2unixts --float --seconds "1976-09-29 12:12:03.123456789"
   ```
 
 * To nanoseconds:
