@@ -27,13 +27,12 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
 "POT-Creation-Date: 2026-05-07 13:05+0200\n"
-"PO-Revision-Date: 2025-04-26 11:43+0100\n"
+"PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
 "Language: de\n"
@@ -70,10 +69,16 @@ msgstr "${MAX_TRIALS} Mal versucht -> gebe jetzt auf!"
 
 #: src/Try-Hard/try-hard:233
 #, sh-format
-msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting random time from [${minDelay}, ${maxDelay}] s ..."
-msgstr "Versuch ${trial}/${MAX_TRIALS} fehlgeschlagen -> warte zufällige Zeitspanne aus [${minDelay}, ${maxDelay}] s vor einem erneuten Versuch ..."
+msgid ""
+"Trial ${trial}/${MAX_TRIALS} failed -> waiting random time from "
+"[${minDelay}, ${maxDelay}] s ..."
+msgstr ""
+"Versuch ${trial}/${MAX_TRIALS} fehlgeschlagen -> warte zufällige Zeitspanne "
+"aus [${minDelay}, ${maxDelay}] s vor einem erneuten Versuch ..."
 
 #: src/Try-Hard/try-hard:240
 #, sh-format
 msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting for ${maxDelay} s ..."
-msgstr "Versuch ${trial}/${MAX_TRIALS} fehlgeschlagen -> warte ${maxDelay} s vor einem erneuten Versuch ..."
+msgstr ""
+"Versuch ${trial}/${MAX_TRIALS} fehlgeschlagen -> warte ${maxDelay} s vor "
+"einem erneuten Versuch ..."

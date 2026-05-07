@@ -27,13 +27,12 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
 "POT-Creation-Date: 2026-05-05 07:30+0200\n"
-"PO-Revision-Date: 2025-10-28 12:45+0100\n"
+"PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
 "Language: de\n"
@@ -49,8 +48,12 @@ msgid "Usage:"
 msgstr "Aufruf:"
 
 #: src/X509/extract-pem:114
-msgid "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
-msgstr "FEHLER: --only-first-entry und --skip-first-entry/--skip-last-entry schließen sich gegenseitig aus!"
+msgid ""
+"ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are "
+"mutually exclusive!"
+msgstr ""
+"FEHLER: --only-first-entry und --skip-first-entry/--skip-last-entry "
+"schließen sich gegenseitig aus!"
 
 #: src/X509/extract-pem:129
 #, sh-format
@@ -78,5 +81,8 @@ msgstr "ÜBERSPRINGE"
 
 #: src/X509/extract-pem:214
 #, sh-format
-msgid "Done: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys"
-msgstr "Erledigt: ${certificate} Zertifikate, ${csr} CSRs, ${crl} CRLs, ${key} Schlüssel"
+msgid ""
+"Done: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys"
+msgstr ""
+"Erledigt: ${certificate} Zertifikate, ${csr} CSRs, ${crl} CRLs, ${key} "
+"Schlüssel"

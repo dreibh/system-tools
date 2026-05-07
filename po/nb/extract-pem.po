@@ -27,13 +27,12 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
 "POT-Creation-Date: 2026-05-05 07:30+0200\n"
-"PO-Revision-Date: 2025-10-28 12:45+0100\n"
+"PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
 "Language: nb\n"
@@ -49,8 +48,12 @@ msgid "Usage:"
 msgstr "Bruk:"
 
 #: src/X509/extract-pem:114
-msgid "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
-msgstr "FEIL: --only-first-entry og --skip-first-entry/--skip-last-entry utelukker hverandre!"
+msgid ""
+"ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are "
+"mutually exclusive!"
+msgstr ""
+"FEIL: --only-first-entry og --skip-first-entry/--skip-last-entry utelukker "
+"hverandre!"
 
 #: src/X509/extract-pem:129
 #, sh-format
@@ -78,5 +81,8 @@ msgstr "HOPPES OVER"
 
 #: src/X509/extract-pem:214
 #, sh-format
-msgid "Done: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys"
-msgstr "Ferdig: ${certificate} sertifikater, ${csr} CSR-er, ${crl} CRL-er, ${key} nøkler"
+msgid ""
+"Done: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys"
+msgstr ""
+"Ferdig: ${certificate} sertifikater, ${csr} CSR-er, ${crl} CRL-er, ${key} "
+"nøkler"
