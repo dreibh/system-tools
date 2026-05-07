@@ -58,7 +58,7 @@ version () {
 
 # ====== Handle arguments ===================================================
 DIRNAME="$(dirname "$0")"
-GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
 options="$(${GETOPT} -o C:nhv --long crl:,no-view-certificate,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
@@ -72,25 +72,28 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -C | --crl)
          CRL="$2"
-         shift 2
+         shift
          ;;
       -n | --no-view-certificate)
          VIEW_CERTIFICATE=0
-         shift
          ;;
       -h | --help)
          usage 0
-         # shift
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
+         ;;
   esac
+  shift
 done
 if [ $# -lt 1 ] ; then
    usage 1
@@ -99,10 +102,10 @@ CA_FILE="$1"
 shift
 
 # ====== Check availability of tools ========================================
-OPENSSL="$(which openssl || true)"
-CCERTTOOL="$(which certtool || true)"
-CERTUTIL="$(which certutil || true)"
-CRLUTIL="$(which crlutil || true)"
+OPENSSL="$(command -v openssl || true)"
+CCERTTOOL="$(command -v certtool || true)"
+CERTUTIL="$(command -v certutil || true)"
+CRLUTIL="$(command -v crlutil || true)"
 
 # ====== Look for CA certificate ============================================
 if [ ! -e "${CA_FILE}" ] ; then
@@ -267,7 +270,7 @@ while [ $# -gt 0 ] ; do
       echo
       if [ ${good} -eq 0 ] ; then
          errors=$((errors + 1))
-         echo -e "\e[31;1m$(gettext "$(gettext "❌FAILED!")")\e[0m"
+         echo -e "\e[31;1m$(gettext "❌FAILED!")\e[0m"
          sh -c "${command}" || true
          "${CERTUTIL}" -L -d "${db}"
          "${CRLUTIL}" -L -d "${db}"

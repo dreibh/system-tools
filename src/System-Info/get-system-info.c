@@ -2,7 +2,7 @@
 //         ____            _                     _____           _
 //        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 //        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \.
 //        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 //               |___/
 //                             --- System-Tools ---
@@ -47,7 +47,7 @@
 #include <sys/statvfs.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
-#if defined(__linux)
+#if defined(__linux__)
 #include <dirent.h>
 #include <linux/if.h>
 #include <netpacket/packet.h>
@@ -60,6 +60,12 @@
 #include <sys/sysctl.h>
 #include <sys/user.h>
 #include <vm/vm_param.h>
+#elif defined(__APPLE__)
+#include <libproc.h>
+#include <mach/mach.h>
+#include <mach/mach_host.h>
+#include <mach/mach_time.h>
+#include <sys/sysctl.h>
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
@@ -157,7 +163,7 @@ static void printaddress(const struct sockaddr* address,
       }
       printf("%s/%u", resolvedHost, prefixlen);
    }
-#if defined(__linux)
+#if defined(__linux__)
    else if(address->sa_family == AF_PACKET) {
       const struct sockaddr_ll* macAddress = (const struct sockaddr_ll*)address;
       for(unsigned int i = 0; i < 6; i++) {
@@ -179,9 +185,16 @@ static void printaddress(const struct sockaddr* address,
 static void printflags(const u_int flags)
 {
    printf("0x%x: <%s>", flags, (flags & IFF_UP) ? "UP" : "DOWN");
+#if defined(IFF_LOWER_UP)
    if(flags & IFF_LOWER_UP) {
       fputs(" <LOWER_UP>", stdout);
    }
+#endif
+#if defined(IFF_RUNNING)
+   if(flags & IFF_RUNNING) {
+      fputs(" <RUNNING>", stdout);
+   }
+#endif
    if(flags & IFF_LOOPBACK) {
       fputs(" <LOOPBACK>", stdout);
    }
@@ -192,7 +205,7 @@ static void printflags(const u_int flags)
 
 
 // ###### Print hostname information ########################################
-static void showHostnameInformation()
+static void showHostnameInformation(void)
 {
    char hostname[256];
    if(gethostname((char*)&hostname, sizeof(hostname)) != 0) {
@@ -213,7 +226,7 @@ static void showHostnameInformation()
 
 
 // ###### Print kernel information ##########################################
-static void showKernelInformation()
+static void showKernelInformation(void)
 {
    struct utsname kernelInfo;
    if(uname(&kernelInfo) == 0) {
@@ -226,11 +239,25 @@ static void showKernelInformation()
 }
 
 
+// ###### Obtain the system uptime ##########################################
+static bool obtainUptime(struct timespec* ts)
+{
+#if !defined(__APPLE__)
+   return clock_gettime(CLOCK_BOOTTIME, ts) == 0;
+#else
+   const uint64_t uptime = mach_absolute_time();
+   ts->tv_sec  = uptime / 1000000;
+   ts->tv_nsec = (uptime % 1000000) * 1000;
+   return true;
+#endif
+}
+
+
 // ###### Print uptime information ##########################################
-static void showUptimeInformation()
+static void showUptimeInformation(void)
 {
    struct timespec ts;
-   if(clock_gettime(CLOCK_BOOTTIME, &ts) == 0) {
+   if(obtainUptime(&ts)) {
       const unsigned int days  = ts.tv_sec / 86400;
       const unsigned int hours = (ts.tv_sec / 3600) - (days * 24);
       const unsigned int mins  = (ts.tv_sec / 60) - (days * 1440) - (hours * 60);
@@ -246,6 +273,7 @@ static void showUptimeInformation()
 }
 
 
+#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__))
 // ###### Query information via shell #######################################
 static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 {
@@ -260,15 +288,17 @@ static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
          }
          resultSize += strlen(resultPtr);
       }
-      while(resultSize < resultMaxSize);
+      while(resultSize < resultMaxSize - 1);
       result[resultSize] = 0x00;
       pclose(fh);
       return true;
    }
    return false;
 }
+#endif
 
 
+#if defined(__linux__)
 // ###### Query information from file #######################################
 static bool queryFile(const char* file, char* result, size_t resultMaxSize)
 {
@@ -283,21 +313,22 @@ static bool queryFile(const char* file, char* result, size_t resultMaxSize)
          }
          resultSize += strlen(resultPtr);
       }
-      while(resultSize < resultMaxSize);
+      while(resultSize < resultMaxSize - 1);
       fclose(fh);
       return true;
    }
    return false;
 }
+#endif
 
 
 // ###### Obtain the number of processes on the system ######################
-static unsigned int obtainProcessCount()
+static unsigned int obtainProcessCount(void)
 {
    unsigned int count = 0;
 
+#if defined(__linux__)
    // ====== Linux: count processes in /proc ================================
-#ifdef __linux__
    struct dirent* dirEntry;
    DIR*           dir = opendir("/proc");
    if(dir != nullptr) {
@@ -310,8 +341,8 @@ static unsigned int obtainProcessCount()
    }
    closedir(dir);
 
-   // ====== FreeBSD: use sysctl to query the number of processes ===========
 #elif defined(__FreeBSD__)
+   // ====== FreeBSD: use sysctl to query the number of processes ===========
    // ------  Get memory size necessary to obtain the process list ----------
    const int mib[3] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC};
    size_t length = 0;
@@ -330,9 +361,17 @@ static unsigned int obtainProcessCount()
       }
    }
 
-   // ====== Fallback =======================================================
+#elif defined(__APPLE__)
+   // ====== Apple: use libproc to query the number of processes ============
+   // proc_listpids() with nullptr buffer returns the required buffer size:
+   const int bufferSize = proc_listpids(PROC_ALL_PIDS, 0, nullptr, 0);
+   if(bufferSize > 0) {
+      count = (unsigned int)bufferSize / sizeof(pid_t);
+   }
+
 #else
 #warning Using fallback solution for obtaining the process count!
+   // ====== Fallback =======================================================
    char         buffer[64];
    unsigned int value;
    if( (queryPipe("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
@@ -346,7 +385,7 @@ static unsigned int obtainProcessCount()
 
 
 // ###### Obtain the number of users on the system ##########################
-static unsigned int obtainUserCount()
+static unsigned int obtainUserCount(void)
 {
    unsigned int count = 0;
 
@@ -365,7 +404,7 @@ static unsigned int obtainUserCount()
 
 
 // ###### Print load information ############################################
-static void showLoadInformation()
+static void showLoadInformation(void)
 {
    // ====== Cores and page size ============================================
    const unsigned int cores = sysconf(_SC_NPROCESSORS_ONLN);
@@ -381,7 +420,7 @@ static void showLoadInformation()
    printf("system_users=%u\n", userCount);
 
    // ====== Load averages ==================================================
-#if defined(__linux)
+#if defined(__linux__)
    struct sysinfo systemInfo;
    if(sysinfo(&systemInfo) == 0) {
       const double fFraction = 1.0 / (1 << SI_LOAD_SHIFT);
@@ -394,7 +433,7 @@ static void showLoadInformation()
       printf("system_load_avg15minpct=%1.4f\n", (double)systemInfo.loads[2] * fPercent);
    }
 
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__APPLE__)
    double loadavg[3];
    if(getloadavg(loadavg, 3) == 3) {
       printf("system_load_avg1min=%1.6f\n",  loadavg[0]);
@@ -404,19 +443,22 @@ static void showLoadInformation()
       printf("system_load_avg5minpct=%1.4f\n",  100.0 * loadavg[1]);
       printf("system_load_avg15minpct=%1.4f\n", 100.0 * loadavg[2]);
    }
+
+#else
+#error Missing case!
 #endif
 }
 
 
 // ###### Print battery information #########################################
-static void showBatteryInformation()
+static void showBatteryInformation(void)
 {
    const unsigned int maxBatteries = 2;
    unsigned int       batteries    = 0;
    unsigned int       batteryIDs[maxBatteries];
 
    // ====== Linux: Obtain battery status via /sys file system ==============
-#if defined(__linux)
+#if defined(__linux__)
    for(unsigned int i = 0; i < maxBatteries; i++) {
       // ------ Obtain status of battery unit -------------------------------
       char capacityFileName[64];
@@ -430,7 +472,7 @@ static void showBatteryInformation()
          char* statusEnd;
          snprintf((char*)&statusFileName, sizeof(statusFileName), "/sys/class/power_supply/BAT%u/status", i);
          if( (queryFile(statusFileName, (char*)&statusBuffer, sizeof(statusBuffer))) &&
-             (statusEnd = index(statusBuffer, '\n')) ) {
+             (statusEnd = strchr(statusBuffer, '\n')) ) {
             *statusEnd = 0x00;
 
             // ------ Extract status as status code -------------------------
@@ -467,7 +509,7 @@ static void showBatteryInformation()
             // ------ Obtain status of battery unit -------------------------
             union acpi_battery_ioctl_arg batteryInfo;
             memset(&batteryInfo, 0, sizeof(batteryInfo));
-            batteryInfo.unit = i;
+            batteryInfo.unit = (int)i;
             if(ioctl(acpiFD, ACPIIO_BATT_GET_BATTINFO, &batteryInfo) == 0) {
 
                // ------ Extract status as status code ----------------------
@@ -488,7 +530,7 @@ static void showBatteryInformation()
                      }
                   }
                }
-               const unsigned int capacity = batteryInfo.battinfo.cap;
+               const unsigned int capacity = (unsigned int)batteryInfo.battinfo.cap;
 
                // ------ Print battery status and capacity ------------------
                printf("battery_%u_status=%u\n",   i, status);
@@ -502,6 +544,9 @@ static void showBatteryInformation()
       }
       close(acpiFD);
    }
+
+#else
+// #error Missing case!
 #endif
 
    fputs("battery_list=\"", stdout);
@@ -513,7 +558,7 @@ static void showBatteryInformation()
 
 
 // ###### Print memory information ##########################################
-static void showMemoryInformation()
+static void showMemoryInformation(void)
 {
    unsigned long long memoryTotal     = 0;
    unsigned long long memoryAvailable = 0;
@@ -522,7 +567,7 @@ static void showMemoryInformation()
    unsigned long long swapAvailable   = 0;
    unsigned long long swapUsed        = 0;
 
-#if defined(__linux)
+#if defined(__linux__)
    // ====== Query memory information via /proc =============================
    FILE* fh = fopen("/proc/meminfo", "r");
    if(fh != nullptr) {
@@ -611,7 +656,7 @@ static void showMemoryInformation()
    // Based on: https://cgit.freebsd.org/src/tree/sbin/swapon/swapon.c
    int mib[16];
    size_t mibsize = 16;
-   if(sysctlnametomib("vm.swap_info", mib, &mibsize) != -0) {
+   if(sysctlnametomib("vm.swap_info", mib, &mibsize) != 0) {
       perror("sysctlnametomib(vm.swap_info)");
       return;
    }
@@ -632,6 +677,43 @@ static void showMemoryInformation()
       swapAvailable  += available;
       swapUsed       += used;
    }
+
+#elif defined(__APPLE__)
+   // ====== Query system information via sysctl ============================
+
+   // ------ Query hw.memsize -----------------------------------------------
+   int64_t memSize;
+   size_t len = sizeof(memSize);
+   if(sysctlbyname("hw.memsize", &memSize, &len, NULL, 0) == 0) {
+      memoryTotal = (unsigned long long)memSize;
+   }
+
+   // ------ Query memory statistics ----------------------------------------
+   mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+   vm_statistics64_data_t memoryStatistics;
+   vm_size_t              pageSize;
+   host_page_size(mach_host_self(), &pageSize);
+   if(host_statistics64(mach_host_self(), HOST_VM_INFO64,
+                        (host_info64_t)&memoryStatistics, &count) == KERN_SUCCESS) {
+      const unsigned long long free        = (unsigned long long)memoryStatistics.free_count * pageSize;
+      const unsigned long long inactive    = (unsigned long long)memoryStatistics.inactive_count * pageSize;
+      const unsigned long long speculative = (unsigned long long)memoryStatistics.speculative_count * pageSize;
+
+      memoryAvailable = free + inactive + speculative;
+      memoryUsed      = memoryTotal - memoryAvailable;
+   }
+
+   // ------ Query swap usage -----------------------------------------------
+   struct xsw_usage swapUsageStatistics;
+   size_t swapUsageStatisticsSize = sizeof(swapUsageStatistics);
+   if(sysctlbyname("vm.swapusage", &swapUsageStatistics, &swapUsageStatisticsSize, nullptr, 0) == 0) {
+      swapTotal     = swapUsageStatistics.xsu_total;
+      swapUsed      = swapUsageStatistics.xsu_used;
+      swapAvailable = swapUsageStatistics.xsu_avail;
+   }
+
+#else
+#error Missing case!
 #endif
 
    printf("system_mem_total=%llu\n", memoryTotal);
@@ -673,8 +755,8 @@ static bool obtainDiskUsage(const char* mountPoint, const char* label)
    const unsigned long long freeSpace =   /* actual free space */
       (unsigned long long)status.f_bfree * (unsigned long long)status.f_frsize;
    const unsigned long long usedSpace = totalSpace - freeSpace;
-   const double usagePercentage = 100.0 *
-      (double)(totalSpace - availableSpace) / (double)totalSpace;
+   const double usagePercentage = (totalSpace > 0) ?
+      (100.0 * (double)(totalSpace - availableSpace) / (double)totalSpace) : 0.0;
 
    // ====== Print the results ==============================================
    printf("disk_%s_total=%llu\n",     label, totalSpace);
@@ -686,7 +768,7 @@ static bool obtainDiskUsage(const char* mountPoint, const char* label)
 
 
 // ###### Print disk information ############################################
-static void showDiskInformation()
+static void showDiskInformation(void)
 {
    obtainDiskUsage("/",     "root");
    obtainDiskUsage("/home", "home");
@@ -707,7 +789,7 @@ static void showNetworkInformation(const bool filterLocalScope)
    }
 
    // ====== Build list of interfaces and their addresses ==================
-   struct interfaceaddress ifaArray[4096];
+   struct interfaceaddress ifaArray[1024];
    unsigned int n = 0;
    for(struct ifaddrs* ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
       if(ifa->ifa_addr != nullptr) {
@@ -742,10 +824,12 @@ static void showNetworkInformation(const bool filterLocalScope)
             ifaArray[n].flags     = ifa->ifa_flags;
             n++;
          }
-#if defined(__linux)
+#if defined(__linux__)
          else if(ifa->ifa_addr->sa_family == AF_PACKET) {
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__APPLE__)
          else if(ifa->ifa_addr->sa_family == AF_LINK) {
+#else
+#error Missing case!
 #endif
             ifaArray[n].ifname  = ifa->ifa_name;
             ifaArray[n].address = ifa->ifa_addr;
@@ -784,10 +868,12 @@ static void showNetworkInformation(const bool filterLocalScope)
             case AF_INET:
                printf("netif_%u_ipv4=\"", ifIndex);
              break;
-#if defined(__linux)
+#if defined(__linux__)
             case AF_PACKET:
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__APPLE__)
             case AF_LINK:
+#else
+#error Missing case!
 #endif
                printf("netif_%u_mac=\"", ifIndex);
              break;
@@ -829,7 +915,7 @@ static void showNetworkInformation(const bool filterLocalScope)
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
 #endif
-static void version()
+static void version(void)
 {
    printf("get-system-info %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -859,7 +945,7 @@ int main(int argc, char** argv)
    }
 
    // ====== Handle arguments ===============================================
-   const static struct option long_options[] = {
+   static const struct option long_options[] = {
       { "help",          no_argument,       0, 'h' },
       { "version",       no_argument,       0, 'v' },
       { "compatibility", required_argument, 0, 'c' },
@@ -885,6 +971,7 @@ int main(int argc, char** argv)
             }
           break;
          default:
+            // This should not happen: wrong getopt parameters, or missing case?
             fprintf(stderr, "INTERNAL ERROR: Unhandled argument %s!\n", argv[optind - 1]);
             return 1;
           break;

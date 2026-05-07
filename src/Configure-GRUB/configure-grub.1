@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 7, 2026
 .Dt configure-grub 1
 .Os configure-grub
 .\" ###### Name #############################################################
@@ -54,7 +54,7 @@
 .Sh DESCRIPTION
 .Nm configure-grub
 adjusts a GRUB configuration file by applying a configuration
-from a template, and merging the existing configurations settings with
+from a template, and merging the existing configuration settings with
 additional customisations. It can for example be used to set a custom
 screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE
 option).
@@ -70,7 +70,7 @@ The following options are available:
 .It Fl i Ar input-grub-defaults-file | Fl Fl input Ar input-grub-defaults-file
 Set name of input GRUB file (default: /etc/default/grub).
 .It Fl o Ar output-grub-defaults-file | Fl Fl output Ar output-grub-defaults-file
-Set name of output GRUB file to write.
+Set name of output GRUB file to write (default: grub-defaults.new).
 .It Fl V Ar GRUB_GFXMODE | Fl Fl video Ar GRUB_GFXMODE
 Replace GRUB_GFXMODE by the provided setting.
 .It Fl T Ar GRUB_INIT_TUNE | Fl Fl tune Ar GRUB_INIT_TUNE

@@ -1,1 +1,22 @@
-Bruk: ./print-utf8 [-n|--newline] [-i indentation string|--indent indentation string] [-c string|--center string] [-I left right|--multiline-indent indentation left right] [-C left right|--multiline-center left right] [-s border_left separator border_right|--separator border_left separator border_right] [-c columns|--columns columns] [-s string|--size string] [-l string|--length string] [-w string|--width string] [-a string|--size-length-width string] [-t|--terminal-info] [-h|--help] [-v|--version]
+<*============================================================================*>
+Indented -20:
+Test:               *
+Test äöüß ÆØÅ:      *
+托马斯博士:         *
+😀💻:               *
+Indented +20:
+              Test: *
+     Test äöüß ÆØÅ: *
+        托马斯博士: *
+              😀💻: *
+<😀==========================================================================😀>
+Centered:
+                                      Test
+                                      [38;2;241;71;29mTest[0m
+                                      äöüß
+                                   托马斯博士
+<💻😀======================================================================😀💻>
+10
+22
+14
+22 10 14

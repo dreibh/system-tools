@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 7, 2026
 .Dt Reset-Machine-ID 1
 .Os Reset-Machine-ID
 .\" ###### Name #############################################################
@@ -61,19 +61,20 @@
 .Nm Reset-Machine-ID
 resets the machine identity state, particularly for a cloned VM, to make it appear as a new machine.
 It performs the following tasks:
-.br
-* Reset /etc/machine-id,
-.br
-* Reset /var/lib/dbus/machine-id (symlink to /etc/machine-id),
-.br
-* Reset host ID in Debian Popularity Contest configuration file (if installed),
-.br
-* Change hostname, if a new one is provided (\-\-hostname parameter).
-.br
-* Provide hardened settings for SSH client and server.
-.br
-* Create new SSH key pair.
-.br
+.Bl -bullet -compact
+.It
+Reset /etc/machine-id
+.It
+Reset /var/lib/dbus/machine-id (symlink to /etc/machine-id)
+.It
+Reset host ID in Debian Popularity Contest configuration file (if installed)
+.It
+Change hostname, if a new one is provided (\-\-hostname parameter)
+.It
+Provide hardened settings for SSH client and server
+.It
+Create new SSH key pair
+.El
 The changes are made interactively on request, unless the option --yes-to-all-i-am-really-sure is used.
 .Pp
 .\" ###### Arguments ########################################################

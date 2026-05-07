@@ -1,3 +1,333 @@
+commit d81ce25c47c255d0c666938628c83051702d5911
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 14:50:19 2026 +0200
+
+    Improved indentation handling in View-CRL as well.
+
+commit 02d3aabb69d34cb10f0ac49cdd74263243edb883
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 14:31:19 2026 +0200
+
+    Minor clean-up and translations file updates.
+
+commit c79049c1c56d1777a407a0aa902fcca0a08e9390
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 14:25:55 2026 +0200
+
+    Improved label handling, to avoid hardcoding indentation.
+
+commit 31a3b33448e3ad9f1dee19ced07e71545a544775
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 13:37:12 2026 +0200
+
+    Another set of minor translation improvements.
+
+commit e11f43da283b213d9baa0ad61ad9855e03d0a0f6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 13:17:31 2026 +0200
+
+    Minor translation improvements.
+
+commit 8cc4633d1695102214544f6219f2ba33eca03c4e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 13:17:13 2026 +0200
+
+    Minor formatting fix.
+
+commit 3918f7506b8b7cfac817ff06a483dc0472dc353e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 12:32:29 2026 +0200
+
+    Further documentation improvements.
+
+commit ce84a65a2a7f96be281b20a34c409a2714c12ea4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 12:12:19 2026 +0200
+
+    Minor output clean-ups.
+
+commit ee5f384662b7346ead6572c3670ead14e8993a6c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 11:56:51 2026 +0200
+
+    Fixed typos.
+
+commit 1abdebbb18cb19a986645fe2a76994fab553b04c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 6 11:51:05 2026 +0200
+
+    Improved documentation.
+
+commit 264b3443456e1a455a2730cc06cd549a074ca17a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 5 07:31:07 2026 +0200
+
+    New release td-system-tools-2.5.3.
+
+commit 6709335a7967c4f1546a732253fa6a77983d8b70
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 5 07:30:43 2026 +0200
+
+    Updated PO files.
+
+commit 37b7feb2c600be68dd59b2175806b1629d71a1e7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 5 07:15:37 2026 +0200
+
+    Improved tests.
+
+commit 8d12eb9dfa72efa2a200620b654ae18aa0dad3f8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 5 07:08:03 2026 +0200
+
+    Added updated test results.
+
+commit 97431e519a029190e0a8ad70e59e671beae6ced8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 5 07:07:08 2026 +0200
+
+    Made the tests independent of the console width.
+
+commit b859b55dff85ef64e0cd6d69916a871bcbb95329
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 23:07:54 2026 +0200
+
+    Minor code clean-up.
+
+commit 475aef4949b5c24a444886a7a82481975d01fc40
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 22:35:11 2026 +0200
+
+    RegExp fix in the test script.
+
+commit ef30791d88147aa30b2e2548dd2a77ad8e28d1bd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 22:30:28 2026 +0200
+
+    Further improvements.
+
+commit 626881a4a44f1543e93c4d8dad6978dd36512cc8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 22:16:22 2026 +0200
+
+    Minor improvements.
+
+commit cf9705296eeb8fa21cfe887d31cc68ced3b25034
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 22:16:02 2026 +0200
+
+    Parameter name fix in shell completion.
+
+commit 92c3c941610296335cdab04c2504a34da49a6a59
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 22:15:34 2026 +0200
+
+    Further clean-ups and improvements.
+
+commit d8ae3a880ba53595a195f6f7d061ee46ea8f4fa4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 21:52:40 2026 +0200
+
+    Improvements and clean-ups.
+
+commit d8be8e2185d874924c4d33cdced697a5d260c024
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 21:30:56 2026 +0200
+
+    Fixed typos in manpages.
+
+commit 7078f7c302657204b5fee53ef9545cabe09da1c1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 20:49:29 2026 +0200
+
+    Some more code clean-ups.
+
+commit 1d8e30d43de7f822dc0cfdcb1449f9396a2b5287
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 18:02:11 2026 +0200
+
+    New release td-system-tools-2.5.2.
+
+commit da11afdc64dce244ca8d629e0fd96af29aba9cb8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 18:01:14 2026 +0200
+
+    Improvement to also handle file names with spaces.
+
+commit f74fb515f51eb11650916913438b01f25a95e268
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 17:54:02 2026 +0200
+
+    Minor clean-up.
+
+commit 289aabcbbb5ccd1d5bf7b8179df807f9828c61ff
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 17:47:14 2026 +0200
+
+    Small improvements and clean-ups.
+
+commit b7c53421c44fa5e14e041af2dc319771d516d778
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 17:37:47 2026 +0200
+
+    Bugfix: parameter naming fix, and some clean-ups.
+
+commit 916785614353bddabd8d9c445aa4fc9026959475
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 17:23:26 2026 +0200
+
+    Also handling spaces in directory names now.
+
+commit f0aa61b6860e40ee47bc8f67386954e5b7d5f535
+Merge: a4fdccf e1e2bfe
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 17:20:19 2026 +0200
+
+    Merge branch 'dreibh/options-handling'
+
+commit a4fdccf7e54b294600ec5235e6dc3baea6450d6f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 16:52:04 2026 +0200
+
+    Minor manpage updates.
+
+commit 319deaf0803c3aa1d4460afeb4b871bc6e6b1a18
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 16:51:22 2026 +0200
+
+    Minor fixes and clean-ups.
+
+commit 529570f041e0d8e011840e936a28ac39aea473f7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 16:22:38 2026 +0200
+
+    Bugfixes:
+    * Fixed functions reading from pipe/file, possibly leading to infinite loop (in very unlikely error cases only).
+    * Fixed possible division by 0 error (in very unlikely error cases only).
+    
+    Some clean-ups.
+
+commit d0f2bf5c5bcd491c0747f20434cb705cd81d8b64
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 16:04:22 2026 +0200
+
+    Bugfix: fixed long parameter name for Python output.
+
+commit 11b6e9ca1374936338a2d24d2086ba86b1fa0490
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 15:53:36 2026 +0200
+
+    Manpage and usage string improvements.
+
+commit c2fb5ec07ddaef273b686d6fb8afdb514e2ffe79
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 15:16:30 2026 +0200
+
+    Bugfix: also properly handling 32-bit unicode characters now.
+
+commit 3053dbfaf945975becc954f50a71de841a030b45
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 15:14:35 2026 +0200
+
+    Bugfix: now properly parsing 16-bit unicode character from \u.
+
+commit b8d9255d8d1663ab067b1484082f9329f13c1671
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 15:07:58 2026 +0200
+
+    Bugfixes for Print-UTF8.:
+    * Fixed typo in string.
+    * Fixed octal number handling.
+
+commit 54476d0e71ecd55d916272d8e8833ae1ab192945
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 14:40:01 2026 +0200
+
+    Some code clean-ups.
+
+commit dcf44a65d1bee8f7e140001edf39970120d16987
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 14:03:42 2026 +0200
+
+    Bugfix: parameter naming fix.
+
+commit 45eaa96645b38152ea63d66c181db01477e2d922
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 13:56:23 2026 +0200
+
+    Bugfix: manpage, shell completion, and usage fixes and clean-ups.
+
+commit aaba96db9371059faaa2921d0b0109d1d516deb8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 13:42:04 2026 +0200
+
+    Text-Block improvements:
+    * Improved handling of insert file from stdin: copy stdin into temporary file, to allow for multiple insertions.
+    * Restore original file ownership and permissions in in-place mode.
+    * Properly handle symlinks in in-place mode.
+
+commit fca877477d3d8f59223d596145f32e3a3a9c177c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 13:05:35 2026 +0200
+
+    Bugfix: added check for malloc() result.
+
+commit 8ef22be2407f999c06a7ea9d251b9fca334bd8cd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 13:00:26 2026 +0200
+
+    Bugfix: fixed parameter check for --enumerate-format.
+
+commit b644cb2890b1fc270cbb52fec3fd75ce6123aebd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 12:40:56 2026 +0200
+
+    Bugfix: getline() may reallocate the buffer. Updating the pointers is necessary in each iteration.
+
+commit 77d418f49b34cd9d0468a28663e522cd0ecaa650
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 12:32:22 2026 +0200
+
+    Further code clean-ups.
+
+commit 91b7a6c52dc8b14ae87ac5c821bbef73ee327138
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 12:22:32 2026 +0200
+
+    Minor code clean-ups.
+
+commit 6319fb141bfa43a5a314fb520f27b1263f4fe47c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 12:22:19 2026 +0200
+
+    Renamed test script.
+
+commit 3d748bb665fa4328d00c8cbcb5b9e188accddae6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 12:14:28 2026 +0200
+
+    Random-Sleep improvements:
+    * Using nanosleep() instead of usleep().
+    * Improved parsing of the delay bounds.
+
+commit e5980122a1176214f0655c9822c7fde24c798a72
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 12:02:59 2026 +0200
+
+    Improved seed for Random-Sleep.
+
+commit ed428f139a67400ee476a3e517ac15cab2576050
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 4 12:02:30 2026 +0200
+
+    Minor code clean-ups according to code review.
+
+commit 584dc98f0d0528235c9da7dda646bf8b0e396bee
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 14:05:11 2026 +0200
+
+    New release td-system-tools-2.5.1.
+
 commit ba809d9c966bbdba649ddb477969f0877219ea72
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun May 3 13:38:06 2026 +0200
@@ -36,6 +366,24 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun May 3 13:07:50 2026 +0200
 
     Merge branch 'dreibh/battery'
+
+commit e1e2bfead0dca367e84cdce4fa29c5e42b0e4ebc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 12:39:07 2026 +0200
+
+    Added comment.
+
+commit 0f1132e8bc60e8ae2216b15b85f9b7a87a243a70
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 12:24:08 2026 +0200
+
+    Minor clean-ups.
+
+commit 467823ee20a6d8abec9d7547e1cecefd32a9fbc3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 11:45:12 2026 +0200
+
+    Improved options handling.
 
 commit 806315898f7d36cb01cbf0e6d03e4f2c449e69a8
 Author: Thomas Dreibholz <dreibh@simula.no>

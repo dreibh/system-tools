@@ -28,13 +28,13 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 7, 2026
 .Dt check-certificate 1
 .Os check-certificate
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm check-certificate
-.Nd Checks and verifies X.509 certificates in PEM format
+.Nd checks and verifies X.509 certificates in PEM format
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
@@ -54,7 +54,7 @@ ca_certificate_file certificate_file
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm check-certificate
-verifies X.509 certificates against a Certification Authority (CA) certificate and optionally a Certificate Revocation List (CRL). The verification is made using OpenSSL, and if available GnuTSL and NSS, to ensure the certificates are working properly with all three TLS implementations.
+verifies X.509 certificates against a Certification Authority (CA) certificate and optionally a Certificate Revocation List (CRL). The verification is made using OpenSSL, and if available GnuTLS and NSS, to ensure the certificates are working properly with all three TLS implementations.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -63,7 +63,7 @@ The following options are available:
 .It ca_certificate_file
 Specifies the CA certificate file to verify certificates.
 .It certificate_file [...]
-Specifies one ore more certificate files to be verified.
+Specifies one or more certificate files to be verified.
 .It Fl C Ar crl_file | Fl Fl crl Ar crl_file
 Specifies a CRL file.
 .It Fl n | Fl Fl no-view-certificate

@@ -9,7 +9,7 @@
 .\"                  https://www.nntb.no/~dreibh/system-tools/
 .\" ==========================================================================
 .\"
-.\" X.509 Certificate Checker
+.\" PEM File Extractor
 .\" Copyright (C) 2025-2026 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
@@ -28,13 +28,13 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 7, 2026
 .Dt extract-pem 1
 .Os extract-pem
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm extract-pem
-.Nd Extract blocks of PEM files into separate files
+.Nd extracts blocks of PEM files into separate files
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
@@ -62,7 +62,7 @@ extracts the blocks of PEM files into separate files. The output files will be n
 .Bl -tag -width indent
 .It * .crt for a certificate,
 .It * .crl for a certificate revocation list (CRL),
-.It * .key for a key.
+.It * .key for a private key.
 .El
 .Pp
 .\" ###### Arguments ########################################################
@@ -70,7 +70,7 @@ extracts the blocks of PEM files into separate files. The output files will be n
 The following options are available:
 .Bl -tag -width indent
 .It pem_file [...]
-Specifies one ore more PEM files to be extracted.
+Specifies one or more PEM files to be extracted.
 .It Fl o Ar file_name_prefix | Fl Fl output-prefix Ar file_name_prefix
 Sets the output file prefix (default: "output-").
 .It Fl 1 | Fl Fl only-first-entry

@@ -1,10 +1,10 @@
 PORTNAME=	td-system-tools
-DISTVERSION=	2.5.1
+DISTVERSION=	2.5.4
 CATEGORIES=	net
 MASTER_SITES=	https://www.nntb.no/~dreibh/system-tools/download/
 
 MAINTAINER=	thomas.dreibholz@gmail.com
-COMMENT=	Printing basic system information and system maintenance
+COMMENT=	Tools for basic system management and maintenance
 WWW=		https://www.nntb.no/~dreibh/system-tools/
 
 LICENSE=	GPLv3+
