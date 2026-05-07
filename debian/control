@@ -36,8 +36,8 @@ Depends: procps,
 Description: Obtain basic system information
  This small program obtains basic status information about the system:
  hostname, uptime, CPU, memory statistics, and networking information.
- The output is printed in machine-readable form, which can be used
- with evaluation in shell scripts for further processing.
+ The output is printed in machine-readable form, which can be evaluated
+ in shell scripts for further processing.
 
 Package: td-system-maintenance
 Architecture: all
@@ -50,7 +50,8 @@ Description: Perform basic system maintenance
  This program runs basic system maintenance tasks:
  trying to repair broken package management, updating the package
  management databases, installing all available updates, checking
- for old kernels and removing them, trim SSD or unmap unused storage.
+ for old kernels and removing them, trimming SSDs, or unmapping
+ unused storage.
 
 Package: td-reset-machine-id
 Architecture: all
@@ -61,9 +62,9 @@ Depends: gettext-base,
 Recommends: td-system-info,
             td-system-maintenance
 Description: Reset machine identity state
- This program helps to reset the machine identity state:
- reset machine ID, change hostname, replace SSH keys, suggest hardened
- SSH client and server settings.
+ This program helps to reset the machine identity state: resetting the
+ machine ID, changing the hostname, replacing SSH keys, and suggesting
+ hardened SSH client and server settings.
 
 Package: td-fingerprint-ssh-keys
 Architecture: all
@@ -82,31 +83,31 @@ Recommends: grub2-common,
             td-system-maintenance
 Description: Helper tool to adjust GRUB configuration
  This program adjusts a GRUB configuration file by applying a configuration
- from a template, and merging the existing configurations settings with
+ from a template, and merging the existing configuration settings with
  additional customisations. It can for example be used to set a custom
  screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE
  option).
  Warning: This program is meant to be used by expert users! Do not modify
  a working GRUB configuration without knowing how to boot the system from
- a rescue media to fix a broken configuration!
+ a rescue medium to fix a broken configuration!
 
 Package: td-print-utf8
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Description: Print UTF-8 strings and obtain size/length/width information
- print-utf8 is a simple program to print UTF-8 strings in the console with
- options for indentation, centering, separator as well as size/length/width
- information.
+ The print-utf8 tool is a simple program to print UTF-8 strings in the
+ console with options for indentation, centering, and separators, as well
+ as size/length/width information.
 
 Package: td-text-block
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Description: Apply modifications to text
- text-block reads text from standard input or given file, and writes it to
- standard output or a given file. On the text, various modifications can be
- applied, according to the operation mode.
+ The text-block tool reads text from standard input or given file, and
+ writes it to standard output or a given file. Various modifications can
+ be applied to the text depending on the operation mode.
 
 Package: td-try-hard
 Architecture: all
@@ -148,14 +149,14 @@ Suggests: pwgen,
           python3-netifaces
 Description: X.509 certificate handling tools
  This package contains X.509 certificate handling tools:
- view-certificate displays an X.509 certificate and its hierarchy.
- view-crl shows an X.509 certificate revocation list (CRL).
- check-certificate verifies an X.509 certificate using a CA certificate
- and optionally a revocation list.
- extract-pem extracts a PEM file.
- der2pem converts a certificate or CRL in DER format to PEM format.
- pem2der converts a certificate or CRL in PEM format to DER format.
- test-tls-connection tests a TCP TLS connection to a remote endpoint.
+  * The view-certificate tool displays an X.509 certificate and its hierarchy.
+  * The view-crl tool shows an X.509 certificate revocation list (CRL).
+  * The check-certificate tool verifies an X.509 certificate using a CA
+    certificate and optionally a revocation list.
+  * The extract-pem tool extracts a PEM file.
+  * The der2pem tool converts a certificate or CRL in DER format to PEM format.
+  * The pem2der tool converts a certificate or CRL in PEM format to DER format.
+  * The test-tls-connection tool tests a TCP TLS connection to a remote endpoint.
 
 Package: td-system-tools-basic
 Replaces: td-system-tools (<< 2.4.0)
