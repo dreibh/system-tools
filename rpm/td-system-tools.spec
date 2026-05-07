@@ -130,7 +130,7 @@ SSH client and server settings.
 
 
 %package fingerprint-ssh-keys
-Summary: Reset machine identity state
+Summary: Print SSH key fingerprints
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
