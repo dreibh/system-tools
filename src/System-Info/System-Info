@@ -77,7 +77,7 @@ function print-banners ()
 function print-system-information ()
 {
    # ====== Obtain system information =======================================
-   if ! which get-system-info >/dev/null ; then
+   if ! command -v get-system-info >/dev/null ; then
       gettext >&2 "ERROR: get-system-info not found in search path!"
       echo >&2
       exit 1
