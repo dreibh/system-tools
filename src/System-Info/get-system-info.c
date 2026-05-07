@@ -61,6 +61,7 @@
 #include <sys/user.h>
 #include <vm/vm_param.h>
 #elif defined(__APPLE__)
+#include <libproc.h>
 #include <mach/mach.h>
 #include <mach/mach_host.h>
 #include <mach/mach_time.h>
@@ -326,8 +327,8 @@ static unsigned int obtainProcessCount(void)
 {
    unsigned int count = 0;
 
-   // ====== Linux: count processes in /proc ================================
 #if defined(__linux__)
+   // ====== Linux: count processes in /proc ================================
    struct dirent* dirEntry;
    DIR*           dir = opendir("/proc");
    if(dir != nullptr) {
@@ -340,8 +341,8 @@ static unsigned int obtainProcessCount(void)
    }
    closedir(dir);
 
-   // ====== FreeBSD: use sysctl to query the number of processes ===========
 #elif defined(__FreeBSD__)
+   // ====== FreeBSD: use sysctl to query the number of processes ===========
    // ------  Get memory size necessary to obtain the process list ----------
    const int mib[3] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC};
    size_t length = 0;
@@ -360,9 +361,17 @@ static unsigned int obtainProcessCount(void)
       }
    }
 
-   // ====== Fallback =======================================================
+#elif defined(__APPLE__)
+   // ====== Apple: use libproc to query the number of processes ============
+   // proc_listpids() with nullptr buffer returns the required buffer size:
+   const int bufferSize = proc_listpids(PROC_ALL_PIDS, 0, nullptr, 0);
+   if(bufferSize > 0) {
+      count = (unsigned int)bufferSize / sizeof(pid_t);
+   }
+
 #else
 #warning Using fallback solution for obtaining the process count!
+   // ====== Fallback =======================================================
    char         buffer[64];
    unsigned int value;
    if( (queryPipe("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
@@ -780,7 +789,7 @@ static void showNetworkInformation(const bool filterLocalScope)
    }
 
    // ====== Build list of interfaces and their addresses ==================
-   struct interfaceaddress ifaArray[4096];
+   struct interfaceaddress ifaArray[1024];
    unsigned int n = 0;
    for(struct ifaddrs* ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
       if(ifa->ifa_addr != nullptr) {
