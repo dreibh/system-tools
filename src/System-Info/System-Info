@@ -133,7 +133,7 @@ function print-system-information ()
       fi
 
    # ------ Legacy system: try lsb_release ----------------------------------
-   elif [ -x "$(command -v lsb_release)" ] ; then
+   elif command -v lsb_release >/dev/null ; then
       DISTRIB_ID="$(lsb_release -is)"
       DISTRIB_RELEASE="$(lsb_release -rs)"
       DISTRIB_CODENAME="$(lsb_release -cs)"
@@ -194,19 +194,6 @@ function print-system-information ()
       "${system_load_avg15min}"
 
    # ------ Battery ---------------------------------------------------------
-   # --- TEST ---------------------------
-   # battery_list="0 1 2 3 4"
-   # battery_0_status=0
-   # battery_0_capacity=55
-   # battery_1_status=1
-   # battery_1_capacity=55
-   # battery_2_status=2
-   # battery_2_capacity=55
-   # battery_3_status=3
-   # battery_3_capacity=55
-   # battery_4_status=4
-   # battery_4_capacity=55
-   # --- TEST ---------------------------
    if [ "${battery_list}" != "" ] ; then
       print-utf8 -i "${indent}" "$(gettext "Battery:")"
       local battery
@@ -366,7 +353,7 @@ function print-system-information ()
 # ###### Print SSH public key fingerprints ##################################
 function print-ssh-key-fingerprints ()
 {
-   if [ -d /etc/ssh ] && [ -x "$(command -v ssh-keygen)" ] ; then
+   if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
       echo -en "${colorBasic}"
       local number=1
       local label
