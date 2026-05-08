@@ -50,12 +50,54 @@ _print_utf8()
       cword="${COMP_CWORD}"
    fi
 
+   # To handle multi-argument parameters:
+   local prev2="" prev3=""
+   [[ ${cword} -ge 2 ]] && prev2="${words[cword-2]}"
+   [[ ${cword} -ge 3 ]] && prev3="${words[cword-3]}"
+
+   # ====== Handle 1st argument =============================================
    case "${prev}" in
-      #  ====== Generic value ===============================================
-      -i | --indent            | \
-      -x | --columns           | \
-      -I | --multiline-indent  | \
-      -C | --multiline-center  | \
+      # ====== Special case: terminal columns ===============================
+      -x | --columns)
+         local terminalColumns sortedColumnsList
+         terminalColumns="$(print-utf8 -t | awk '{ print $1 }')"
+         sortedColumnsList="$(printf "%s\n" "${terminalColumns}" 60 78 80 100 120 128 140 160 180 200 | sort -nu)"
+         compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
+         mapfile -t COMPREPLY < <(compgen -W "${sortedColumnsList}" -- "$cur")
+         return
+         ;;
+
+      # ====== Special case: indentation ====================================
+      -i | --indent | \
+      -I | --multiline-indent)
+         compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
+         mapfile -t COMPREPLY < <(compgen -W "-64 -48 -32 -24 -20 -16 -12 -10 0 10 12 16 20 24 32 48 64" -- "$cur")
+         return
+         ;;
+
+      # ====== Generic value ================================================
+      -C | --multiline-center | \
+      -s | --separator)
+         return
+         ;;
+   esac
+
+   # ====== Special case: multiline-indent, multiline-center, separator =====
+   # Handle 2nd argument
+   case "${prev2}" in
+      # ====== Generic value ================================================
+      -I | --multiline-indent | \
+      -C | --multiline-center | \
+      -s | --separator)
+         return
+         ;;
+   esac
+
+   # ====== Special case: multiline-indent, separator =======================
+   # Handle 3rd argument
+   case "${prev3}" in
+      # ====== Generic value ================================================
+      -I | --multiline-indent | \
       -s | --separator)
          return
          ;;
