@@ -1,3 +1,95 @@
+commit 02a930ee67a588559fd5a8e2381922b0bcff8790
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 23:05:25 2026 +0200
+
+    Updated PO files.
+
+commit 139ec17187401dbcc16c55f6ff4d488b60245ce1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 23:00:44 2026 +0200
+
+    Ubuntu 26.04 build fix.
+
+commit cf4562ee0219ad2d9bb6908820c68e9c3ecfcdca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 22:21:10 2026 +0200
+
+    Improved shell completion.
+
+commit efd6103305b919ec73a0dc64ff6f7f788f54e6a9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 21:33:12 2026 +0200
+
+    Clarified comment.
+
+commit 5d6d863d0b31682099551a135ce079fcf525ae83
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 21:29:35 2026 +0200
+
+    Bugfix: now handling buffer reallocation of getline() properly.
+
+commit f59d10eefd4158bb3a079ba98e2396bb4f3e337e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 21:17:16 2026 +0200
+
+    Bugfix: Ensuring proper result handling for fgets() return value.
+
+commit 390d36bb61f3e9f6d64a7a0697fa5d2027ec5206
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 21:02:39 2026 +0200
+
+    Bugfixes:
+    * Improved compareInterfaceAddresses() to handle MAC addresses as well.
+    * Do not print closing '"' when there are no interfaces and no opening '"' has been printed.
+
+commit deac8190e02883d41fae7a269a0e2c26a8d58638
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 20:34:11 2026 +0200
+
+    Improved robustness of IP address obtaining code by checking whether the netmask is not a null pointer, which could happen according to getifaddrs() documentation.
+
+commit 09c2c3263ccfa9674746f517b29ce4995cef32f1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 18:36:14 2026 +0200
+
+    Improved shell completion.
+
+commit f7db591ac2fc4ebadfc49d86d8c298c613240060
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 18:06:48 2026 +0200
+
+    Bugfix: added missing argument in usage string.
+
+commit 60cc48d88a337d745513524fd97b447907694dad
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 17:58:04 2026 +0200
+
+    Bugfix: Print error on superflous strings for --separator parameter, instead of silently continuing.
+
+commit 061bfa0a1a2922d7483542bbb70d3b065453877c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 17:52:09 2026 +0200
+
+    Bugfix: Options handling fixes.
+
+commit d345df6b6acab560740b51a9262f95e10fcdb55f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 17:14:31 2026 +0200
+
+    Fixed logical error (never triggered in current version).
+
+commit 547bb59d85ea9006dbcb58f1cb8455b4f9bf8d11
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 17:52:56 2026 +0200
+
+    Minor shell completion improvement.
+
+commit 5a927bf70f532ac8145027f598af7de1feb6a5a6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 7 17:07:44 2026 +0200
+
+    New release td-system-tools-2.5.5.
+
 commit 0d9abb7fd4f074ded8322002a2779cc06adbc3a9
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu May 7 17:07:09 2026 +0200

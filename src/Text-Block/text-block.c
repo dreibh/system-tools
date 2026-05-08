@@ -115,7 +115,6 @@ static size_t          BufferSize           = 65536;
 static int             Actions;
 static long long       LineNo;
 static const char*     EndOfLine;
-static const char*     Line;
 static const char*     MarkerTag;
 static size_t          MarkerTagLength;
 static const char*     Pointer;
@@ -161,8 +160,9 @@ static void cleanUp(int exitCode)
          // ------ Restore original file permissions and ownership ----------
          struct stat fileInfo;
          if(stat(InputFileName, &fileInfo) == 0) {
-            // Try to change ownership, but ignore errors:
-            chown(OutputTempFileName, fileInfo.st_uid, fileInfo.st_gid);
+            // Try to change ownership:
+            int result = chown(OutputTempFileName, fileInfo.st_uid, fileInfo.st_gid);
+            (void)result;   // just ignore errors
             // Restore file permissions:
             if(chmod(OutputTempFileName, fileInfo.st_mode & 07777) != 0) {
                fprintf(stderr, gettext("WARNING: Unable to restore file permissions for %s: %s"),
@@ -244,10 +244,9 @@ static long long countLines(FILE* inputFile)
 {
    long long lines = 0;
 
-   char* line = Buffer;
-   while( (getline((char**)&line, &BufferSize, inputFile)) > 0 ) {
+   while( (getline((char**)&Buffer, &BufferSize, inputFile)) > 0 ) {
+      // getline() may have reallocated the buffer, if it was necessary!
       lines++;
-      line = Buffer;
    }
    if(inputFile != stdin) {
       rewind(inputFile);
@@ -539,7 +538,7 @@ int main (int argc, char** argv)
           break;
          case 's':
             if(optind < argc) {
-               SelectBegin = atoll(argv[optind - 1]);
+               SelectBegin = atoll(optarg);
                SelectEnd   = atoll(argv[optind]);
                optind++;
             }
@@ -615,7 +614,7 @@ int main (int argc, char** argv)
             //       will be the *second* parameter!
             if(optind + 4 < argc) {
                // NOTE: optind points to the *second* parameter here!
-               HighlightBegin     = argv[optind - 1];
+               HighlightBegin     = optarg;
                HighlightEnd       = argv[optind];
                HighlightUnmarked1 = argv[optind + 1];
                HighlightUnmarked2 = argv[optind + 2];
@@ -633,11 +632,16 @@ int main (int argc, char** argv)
             version();
           break;
          case 'h':
-            usage(argv[0], 0);
+         case '?':
+            // Exit with 0 on h/help, exit with 1 on '?' (unknown option):
+            usage(argv[0], (option == 'h') ? 0 : 1);
+          break;
+         case '-':
           break;
          default:
             // This should not happen: wrong getopt parameters, or missing case?
-            fprintf(stderr, "INTERNAL ERROR: Unhandled argument %s!\n", argv[optind - 1]);
+            fprintf(stderr, "INTERNAL ERROR: Unhandled option c=%c code=%x!\n",
+                    (isprint(option) ? (char)option : ' '), option);
             return 1;
           break;
       }
@@ -847,32 +851,28 @@ int main (int argc, char** argv)
    printf("FullTagLines=%u\n", FullTagLines);
 #endif
 
-   Line            = Buffer;
    LineNo          = 0;
    Actions         = 0;
    MarkerTag       = BeginTag;
    MarkerTagLength = BeginTagLength;
 
-   char*   line       = Buffer;
    ssize_t lineLength;
    errno = 0;
-   while( (lineLength = (getline((char**)&line, &BufferSize, InputFile))) > 0 ) {
+   while( (lineLength = (getline((char**)&Buffer, &BufferSize, InputFile))) > 0 ) {
       // getline() may have reallocated the buffer, if it was necessary!
-      Buffer = line;
-      Line   = line;
 
       // ====== Process line ================================================
       LineNo++;
-      EndOfLine = Line + lineLength;
+      EndOfLine = Buffer + lineLength;
 #ifdef DEBUG_MODE
       printf("%llu (l=%u m=%s):\t%s",
              (unsigned long long)LineNo, (unsigned int)lineLength, MarkerTag,
-             Line);
+             Buffer);
 #endif
 
       // ====== Tag handling ================================================
       if(MarkerTag != nullptr) {
-         Pointer = Line;
+         Pointer = Buffer;
          const char* next;
          bool        foundMarker = false;
          while( (next = (MarkerTag != nullptr) ? strstr(Pointer, MarkerTag) : nullptr) != nullptr ) {
@@ -884,7 +884,7 @@ int main (int argc, char** argv)
                if(FullTagLines) {
                   next += MarkerTagLength;
                   if(IncludeTags) {
-                     processUnmarked(Line, 0, true);
+                     processUnmarked(Buffer, 0, true);
                      processMarked(Pointer, (ssize_t)(next - Pointer), false);
                   }
                   else {
@@ -922,7 +922,7 @@ int main (int argc, char** argv)
                      // Postponed end of block until end of the line!
                   }
                   else {
-                     processMarked(Line, 0, true);
+                     processMarked(Buffer, 0, true);
                      processUnmarked(Pointer, (ssize_t)(next - Pointer), false);
                   }
                }
@@ -977,9 +977,9 @@ int main (int argc, char** argv)
       else if( (SelectBegin > 0) && (LineNo >= SelectBegin) &&
                ( (SelectEnd == 0) || (LineNo <= SelectEnd) ) ) {
          if(LineNo == SelectBegin) {
-            processUnmarked(Line, 0, true);
+            processUnmarked(Buffer, 0, true);
          }
-         processMarked(Line, (ssize_t)(EndOfLine - Line), false);
+         processMarked(Buffer, (ssize_t)(EndOfLine - Buffer), false);
          if(LineNo == SelectEnd) {
             processMarked(EndOfLine, 0, true);
          }
@@ -987,7 +987,7 @@ int main (int argc, char** argv)
 
       // ====== Just process a regular, unmarked line =======================
       else {
-         processUnmarked(Line, (ssize_t)(EndOfLine - line), false);
+         processUnmarked(Buffer, (ssize_t)(EndOfLine - Buffer), false);
       }
 
 
@@ -1003,7 +1003,7 @@ int main (int argc, char** argv)
    // ====== Clean up =======================================================
    if(InMarkedBlock) {
       // Finish the marked block, if it is still active:
-      processMarked(Line, 0, true);
+      processMarked(Buffer, 0, true);
    }
    const bool success =
       ( (MinActions < 0) || (Actions >= MinActions) ) &&
