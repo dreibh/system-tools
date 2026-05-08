@@ -314,7 +314,7 @@ static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
       while(resultSize < resultMaxSize - 1);
       result[resultSize] = 0x00;
       pclose(fh);
-      return true;
+      return (resultSize > 0);
    }
    return false;
 }
@@ -337,8 +337,9 @@ static bool queryFile(const char* file, char* result, size_t resultMaxSize)
          resultSize += strlen(resultPtr);
       }
       while(resultSize < resultMaxSize - 1);
+      result[resultSize] = 0x00;
       fclose(fh);
-      return true;
+      return (resultSize > 0);
    }
    return false;
 }
@@ -867,9 +868,10 @@ static void showNetworkInformation(const bool filterLocalScope)
 #else
 #error Missing case!
 #endif
-            ifaArray[n].ifname  = ifa->ifa_name;
-            ifaArray[n].address = ifa->ifa_addr;
-            ifaArray[n].flags   = ifa->ifa_flags;
+            ifaArray[n].prefixlen = 0;   // Just to be sure ...
+            ifaArray[n].ifname    = ifa->ifa_name;
+            ifaArray[n].address   = ifa->ifa_addr;
+            ifaArray[n].flags     = ifa->ifa_flags;
             n++;
          }
       }
