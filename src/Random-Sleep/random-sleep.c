@@ -27,6 +27,7 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#include <ctype.h>
 #include <getopt.h>
 #include <locale.h>
 #include <stdbool.h>

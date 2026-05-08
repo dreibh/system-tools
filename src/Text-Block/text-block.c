@@ -160,8 +160,9 @@ static void cleanUp(int exitCode)
          // ------ Restore original file permissions and ownership ----------
          struct stat fileInfo;
          if(stat(InputFileName, &fileInfo) == 0) {
-            // Try to change ownership, but ignore errors:
-            chown(OutputTempFileName, fileInfo.st_uid, fileInfo.st_gid);
+            // Try to change ownership:
+            int result = chown(OutputTempFileName, fileInfo.st_uid, fileInfo.st_gid);
+            (void)result;   // just ignore errors
             // Restore file permissions:
             if(chmod(OutputTempFileName, fileInfo.st_mode & 07777) != 0) {
                fprintf(stderr, gettext("WARNING: Unable to restore file permissions for %s: %s"),
