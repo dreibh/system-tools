@@ -560,7 +560,7 @@ static void usage(const char* program, const int exitCode)
            " [-n|--newline]"
            " [-i indentation|--indent indentation]"
            " [-c|--center]"
-           " [-I left right|--multiline-indent indentation left right]"
+           " [-I indentation left right|--multiline-indent indentation left right]"
            " [-C left right|--multiline-center left right]"
            " [-s border_left separator border_right|--separator border_left separator border_right]"
            " [-x columns|--columns columns]"
@@ -661,7 +661,7 @@ int main (int argc, char** argv)
                if(BorderRight) {
                   free(BorderRight);
                }
-               BorderRight = unescape(argv[optind - 0]);
+               BorderRight = unescape(argv[optind]);
                optind++;
             }
             else {
@@ -736,7 +736,7 @@ int main (int argc, char** argv)
             // This should not happen: wrong getopt parameters, or missing case?
             fprintf(stderr, "INTERNAL ERROR: Unhandled option c=%c code=%x!\n",
                     (isprint(option) ? (char)option : ' '), option);
-            return 1;
+            cleanUp(1);
           break;
       }
    }
