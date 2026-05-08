@@ -115,7 +115,6 @@ static size_t          BufferSize           = 65536;
 static int             Actions;
 static long long       LineNo;
 static const char*     EndOfLine;
-static const char*     Line;
 static const char*     MarkerTag;
 static size_t          MarkerTagLength;
 static const char*     Pointer;
@@ -244,10 +243,9 @@ static long long countLines(FILE* inputFile)
 {
    long long lines = 0;
 
-   char* line = Buffer;
-   while( (getline((char**)&line, &BufferSize, inputFile)) > 0 ) {
+   while( (getline((char**)&Buffer, &BufferSize, inputFile)) > 0 ) {
+      // getline() may have reallocated the buffer, if it was necessary!
       lines++;
-      line = Buffer;
    }
    if(inputFile != stdin) {
       rewind(inputFile);
@@ -852,32 +850,28 @@ int main (int argc, char** argv)
    printf("FullTagLines=%u\n", FullTagLines);
 #endif
 
-   Line            = Buffer;
    LineNo          = 0;
    Actions         = 0;
    MarkerTag       = BeginTag;
    MarkerTagLength = BeginTagLength;
 
-   char*   line       = Buffer;
    ssize_t lineLength;
    errno = 0;
-   while( (lineLength = (getline((char**)&line, &BufferSize, InputFile))) > 0 ) {
+   while( (lineLength = (getline((char**)&Buffer, &BufferSize, InputFile))) > 0 ) {
       // getline() may have reallocated the buffer, if it was necessary!
-      Buffer = line;
-      Line   = line;
 
       // ====== Process line ================================================
       LineNo++;
-      EndOfLine = Line + lineLength;
+      EndOfLine = Buffer + lineLength;
 #ifdef DEBUG_MODE
       printf("%llu (l=%u m=%s):\t%s",
              (unsigned long long)LineNo, (unsigned int)lineLength, MarkerTag,
-             Line);
+             Buffer);
 #endif
 
       // ====== Tag handling ================================================
       if(MarkerTag != nullptr) {
-         Pointer = Line;
+         Pointer = Buffer;
          const char* next;
          bool        foundMarker = false;
          while( (next = (MarkerTag != nullptr) ? strstr(Pointer, MarkerTag) : nullptr) != nullptr ) {
@@ -889,7 +883,7 @@ int main (int argc, char** argv)
                if(FullTagLines) {
                   next += MarkerTagLength;
                   if(IncludeTags) {
-                     processUnmarked(Line, 0, true);
+                     processUnmarked(Buffer, 0, true);
                      processMarked(Pointer, (ssize_t)(next - Pointer), false);
                   }
                   else {
@@ -927,7 +921,7 @@ int main (int argc, char** argv)
                      // Postponed end of block until end of the line!
                   }
                   else {
-                     processMarked(Line, 0, true);
+                     processMarked(Buffer, 0, true);
                      processUnmarked(Pointer, (ssize_t)(next - Pointer), false);
                   }
                }
@@ -982,9 +976,9 @@ int main (int argc, char** argv)
       else if( (SelectBegin > 0) && (LineNo >= SelectBegin) &&
                ( (SelectEnd == 0) || (LineNo <= SelectEnd) ) ) {
          if(LineNo == SelectBegin) {
-            processUnmarked(Line, 0, true);
+            processUnmarked(Buffer, 0, true);
          }
-         processMarked(Line, (ssize_t)(EndOfLine - Line), false);
+         processMarked(Buffer, (ssize_t)(EndOfLine - Buffer), false);
          if(LineNo == SelectEnd) {
             processMarked(EndOfLine, 0, true);
          }
@@ -992,7 +986,7 @@ int main (int argc, char** argv)
 
       // ====== Just process a regular, unmarked line =======================
       else {
-         processUnmarked(Line, (ssize_t)(EndOfLine - line), false);
+         processUnmarked(Buffer, (ssize_t)(EndOfLine - Buffer), false);
       }
 
 
@@ -1008,7 +1002,7 @@ int main (int argc, char** argv)
    // ====== Clean up =======================================================
    if(InMarkedBlock) {
       // Finish the marked block, if it is still active:
-      processMarked(Line, 0, true);
+      processMarked(Buffer, 0, true);
    }
    const bool success =
       ( (MinActions < 0) || (Actions >= MinActions) ) &&
