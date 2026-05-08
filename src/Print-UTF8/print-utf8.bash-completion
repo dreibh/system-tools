@@ -75,9 +75,14 @@ _print_utf8()
          return
          ;;
 
-      # ====== Generic value ================================================
-      -C | --multiline-center | \
-      -s | --separator)
+      # ====== Special case: border decoration ==============================
+      -s | --separator |\
+      -C | --multiline-center)
+         # Left border decorations:
+         local suggestions=("#" "=" "|" "║"   "▌" "▐"   "│" "┃" "┆" "┇" "┊" "┋" "😀")
+         local matches
+         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "$cur")
+         COMPREPLY=( "${matches[@]@Q}" )
          return
          ;;
    esac
@@ -85,10 +90,24 @@ _print_utf8()
    # ====== Special case: multiline-indent, multiline-center, separator =====
    # Handle 2nd argument
    case "${prev2}" in
-      # ====== Generic value ================================================
+      # ====== Special case: border decoration ==============================
       -I | --multiline-indent | \
-      -C | --multiline-center | \
+      -C | --multiline-center)
+         # Left (multiline-indent) or right (multiline-center) border decorations:
+         local suggestions=("#" "=" "|" "║"   "▌" "▐"   "│" "┃" "┆" "┇" "┊" "┋" "😀")
+         local matches
+         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "$cur")
+         COMPREPLY=( "${matches[@]@Q}" )
+         return
+         ;;
+
+      # ====== Generic value ================================================
       -s | --separator)
+         # Horizontal border decorations:
+         local suggestions=("#" "=" "-" "─" "═"   "▀" "▄"   "━")
+         local matches
+         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "$cur")
+         COMPREPLY=( "${matches[@]@Q}" )
          return
          ;;
    esac
@@ -99,6 +118,11 @@ _print_utf8()
       # ====== Generic value ================================================
       -I | --multiline-indent | \
       -s | --separator)
+         # Right border decorations:
+         local suggestions=("#" "=" "|" "║"   "▌" "▐"   "│" "┃" "┆" "┇" "┊" "┋" "😀")
+         local matches
+         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "$cur")
+         COMPREPLY=( "${matches[@]@Q}" )
          return
          ;;
    esac
