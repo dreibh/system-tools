@@ -788,11 +788,12 @@ static void showNetworkInformation(const bool filterLocalScope)
       return;
    }
 
-   // ====== Build list of interfaces and their addresses ==================
+   // ====== Build list of interfaces and their addresses ===================
    struct interfaceaddress ifaArray[1024];
    unsigned int n = 0;
    for(struct ifaddrs* ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
       if(ifa->ifa_addr != nullptr) {
+         // ====== IP address ===============================================
          if( (ifa->ifa_addr->sa_family == AF_INET6) ||
              (ifa->ifa_addr->sa_family == AF_INET) ) {
             if(n >= (sizeof(ifaArray) / sizeof(ifaArray[0]))) {
@@ -806,24 +807,36 @@ static void showNetworkInformation(const bool filterLocalScope)
                      (IN6_IS_ADDR_LINKLOCAL(&((const struct sockaddr_in6*)ifa->ifa_addr)->sin6_addr)) ) ) {
                   continue;
                }
-               const uint8_t* netmask =
-                  (const uint8_t*)&((const struct sockaddr_in6*)ifa->ifa_netmask)->sin6_addr.s6_addr;
-               ifaArray[n].prefixlen = countSetBits(netmask, 16);
+               if(__builtin_expect(ifa->ifa_netmask != nullptr, 1)) {
+                  const uint8_t* netmask =
+                     (const uint8_t*)&((const struct sockaddr_in6*)ifa->ifa_netmask)->sin6_addr.s6_addr;
+                  ifaArray[n].prefixlen = countSetBits(netmask, 16);
+               }
+               else {
+                  ifaArray[n].prefixlen = 128;
+               }
             }
             else {
                if( filterLocalScope &&
                    (ntohl( ((const struct sockaddr_in*)ifa->ifa_addr)->sin_addr.s_addr) == INADDR_LOOPBACK) ) {
                   continue;
                }
-               const uint8_t* netmask =
-                  (const uint8_t*)&((const struct sockaddr_in*)ifa->ifa_netmask)->sin_addr;
-               ifaArray[n].prefixlen = countSetBits(netmask, 4);
+               if(__builtin_expect(ifa->ifa_netmask != nullptr, 1)) {
+                  const uint8_t* netmask =
+                     (const uint8_t*)&((const struct sockaddr_in*)ifa->ifa_netmask)->sin_addr;
+                  ifaArray[n].prefixlen = countSetBits(netmask, 4);
+               }
+               else {
+                  ifaArray[n].prefixlen = 32;
+               }
             }
             ifaArray[n].ifname    = ifa->ifa_name;
             ifaArray[n].address   = ifa->ifa_addr;
             ifaArray[n].flags     = ifa->ifa_flags;
             n++;
          }
+
+         // ====== MAC address ==============================================
 #if defined(__linux__)
          else if(ifa->ifa_addr->sa_family == AF_PACKET) {
 #elif defined(__FreeBSD__) || defined(__APPLE__)
