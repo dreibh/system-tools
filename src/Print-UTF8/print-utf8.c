@@ -742,7 +742,8 @@ int main (int argc, char** argv)
    }
    if(optind < argc) {
       if(Utf8String) {
-         free(Utf8String);
+         // Already set (separator) -> wrong syntax!
+         usage(argv[0], 1);
       }
       Utf8String = unescape(argv[optind++]);
       while(optind < argc) {
