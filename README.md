@@ -12,18 +12,18 @@
 
 System-Tools is a collection of helpful tools for basic system management of Linux and FreeBSD systems:
 
-- [System-Info](#-system-info) (display banners and system information),
-- [System-Maintenance](#-system-maintenance) (run basic system maintenance tasks),
-- [Reset-Machine-ID](#-reset-machine-id) (reset the machine identity state, particularly for a cloned VM),
-- [Fingerprint-SSH-Keys](#-fingerprint-ssh-keys) (show the machine's SSH public key fingerprints in different formats),
-- [Configure-GRUB](#-configure-grub) (configure options for the GRUB boot loader),
-- [Print-UTF8](#-print-utf8) (print UTF-8 text with options for centering, adjusting, etc.),
-- [Text-Block](#-text-block) (flexible tool for inserting, replacing or removing text blocks in files or streams),
-- [Try-Hard](#-try-hard) (run a command, with configurable retries on failure),
-- [Random-Sleep](#-random-sleep) (wait for random time span, with support of fractional seconds),
-- [X.509-Tools](#-x.509-tools) (tools for viewing, verifying and testing X.509 certificates),
-- [GIMP-Scripts](#-gimp-scripts) (collection of scripts using GIMP and GraphicsMagick to apply effects on and resize images).
-
+- [System-Info](#-system-info): Displays system status (CPU, memory, storage, network) and configurable login banners.
+- [System-Maintenance](#-system-maintenance): Automates package updates, old kernel removal, and storage cleanup (e.g.,&nbsp;SSD trimming).
+- [Reset-Machine-ID](#-reset-machine-id): Resets machine IDs, hostnames, and SSH keys for cloned machines.
+- [Fingerprint-SSH-Keys](#-fingerprint-ssh-keys): Shows the machine’s SSH public key fingerprints in different formats.
+- [Configure-GRUB](#-configure-grub): Configures options for the GRUB boot loader.
+- [Print-UTF8](#-print-utf8): Prints UTF-8 text with options for centering, adjusting, etc.
+- [Text-Block](#-text-block): Edits files or streams by inserting, replacing, or removing text blocks.
+- [Unix-Timestamp-Tools](#-unix-timestamp-tools): Convert Unix timestamps (s, ms, us, ns) to and from date/time strings.
+- [Try-Hard](#-try-hard): Retries commands with a configurable backoff.
+- [Random-Sleep](#-random-sleep): Waits for a random time span, with support for fractional seconds.
+- [X.509-Tools](#-x.509-tools): Provide utilities for viewing, verifying, and converting X.509 certificates, and testing TLS connections.
+- [GIMP-Scripts](#-gimp-scripts): Contains a collection of scripts for graphics processing using GIMP and GraphicsMagick.
 
 System-Tools provides internationalisation&nbsp;(i18n) support using [GNU gettext](https://www.gnu.org/software/gettext/). That is, translation files for the output of the programs are supported. You can support the project by contributing translations for your language. See [Internationalisation&nbsp;(I18N)](#internationalisation) for details!
 
@@ -265,6 +265,94 @@ For example, the publications list in [`index.html`](https://www.nntb.no/~dreibh
   ```bash
   man text-block
   ```
+
+
+# 📚 Unix-Timestamp-Tools
+
+The Unix-Timestamp-Tools are utilities for converting Unix timestamps (time since the [Unix Epoch](https://en.wikipedia.org/wiki/Unix_time), i.e.&nbsp;1970-01-01 00:00:00.000000000 UTC) to/from human-readable date and time strings. The tools support Unix timestamps in seconds, milliseconds, microseconds, as well as nanoseconds.
+
+
+## Time2UnixTS
+
+Time2UnixTS converts a date/time string in UTC to the corresponding Unix timestamp, with support for fractional seconds.
+
+Example to convert "1976-09-29 12:12:03.123456789":
+
+* To integer seconds (i.e.&nbsp;ignoring the fractional seconds):
+
+  ```bash
+  time2unixts --seconds "1976-09-29 12:12:03.123456789"
+  ```
+
+* To float seconds (i.e.&nbsp;keeping the fractional seconds):
+
+  ```bash
+  time2unixts --float --seconds "1976-09-29 12:12:03.123456789"
+  ```
+
+* To nanoseconds:
+
+  ```bash
+  time2unixts --nanoseconds "1976-09-29 12:12:03.123456789"
+  ```
+
+* To convert multiple dates:
+
+  ```bash
+  time2unixts --milliseconds \
+     "1976-09-29 12:12:03.123456789" \
+     "1814-05-17 12:11:10.987654321" \
+     "1999-12-31 23:59:59"
+  ```
+
+The manpage of Time2UnixTS contains details and further examples:
+
+```bash
+man time2unixts
+```
+
+
+## UnixTS2Time
+
+UnixTS2Time converts a Unix timestamp to a date/time string. The Unix timestamp unit (seconds, milliseconds, microseconds, or nanoseconds) can in most cases be detected automatically by heuristic (see the manpage), if not specified explicitly.
+
+Examples:
+
+* Convert 212843523123456789 (in ns):
+
+  ```bash
+  unixts2time 212843523123456789
+  ```
+
+  Or explicitly:
+
+  ```bash
+  unixts2time --nanoseconds 212843523123456789
+  ```
+
+* Convert 212843523 (in s)
+
+  ```bash
+  unixts2time --seconds 212843523
+  ```
+
+* Convert -4911104929012345679 (in ns); "--" is necessary to stop interpreting "-" as option:
+
+  ```bash
+  unixts2time --nanoseconds -- -4911104929012345679
+  ```
+
+* Convert multiple Unix timestamps:
+
+  ```bash
+  unixts2time -- 212847123123 -4911104929012 946684799000
+  ```
+
+The manpage of UnixTS2Time contains details and further examples:
+
+```bash
+man unixts2time
+```
 
 
 # 📚 Try-Hard

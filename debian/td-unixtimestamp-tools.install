@@ -1,0 +1,6 @@
+usr/bin/time2unixts
+usr/bin/unixts2time
+usr/share/bash-completion/completions/time2unixts
+usr/share/bash-completion/completions/unixts2time
+usr/share/locale/*/LC_MESSAGES/time2unixts.mo
+usr/share/locale/*/LC_MESSAGES/unixts2time.mo

@@ -33,8 +33,8 @@ PROJECT(td-system-tools)
 ENABLE_LANGUAGE(C)
 
 SET(BUILD_MAJOR "2")
-SET(BUILD_MINOR "5")
-SET(BUILD_PATCH "6")
+SET(BUILD_MINOR "6")
+SET(BUILD_PATCH "0")
 SET(BUILD_VERSION ${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH})
 
 
@@ -121,6 +121,7 @@ OPTION(WITH_CONFIGURE_GRUB        "Include Configure-GRUB"       1)
 OPTION(WITH_RESET_MACHINE_ID      "Include Reset-Machine-ID"     1)
 OPTION(WITH_TRY_HARD              "Include Try-Hard"             1)
 OPTION(WITH_RANDOM_SLEEP          "Include Random-Sleep"         1)
+OPTION(WITH_UNIX_TIMESTAMP_TOOLS  "Include Unix-Timestamp Tools" 1)
 OPTION(WITH_X509_TOOLS            "Include X509 Tools"           1)
 OPTION(WITH_GIMP_SCRIPTS          "Include GIMP-Scripts"         1)
 

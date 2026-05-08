@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.5.6
+Version: 2.6.0
 Release: 1
 Summary: Tools for basic system management
 License: GPL-3.0-or-later
@@ -19,17 +19,26 @@ System-Tools is a collection of utilities for system management and
 maintenance.
 
 The package includes:
-- System-Info: Displays system status (CPU, memory, disk, network)
+- System-Info: Displays system status (CPU, memory, storage, network)
   and configurable login banners.
 - System-Maintenance: Automates package updates, old kernel removal,
   and storage cleanup (e.g., SSD trimming).
 - Reset-Machine-ID: Resets machine IDs, hostnames, and SSH keys for
-  cloned virtual machines.
-- X.509-Tools: Utilities for viewing, verifying, and converting X.509
-  certificates, and testing TLS connections.
-- Automation tools: Try-Hard (command retry with backoff), Random-Sleep,
-  Text-Block (stream editing), and Print-UTF8.
-- Security tools: Fingerprint-SSH-Keys.
+  cloned machines.
+- Fingerprint-SSH-Keys: Shows the machine's SSH public key fingerprints
+  in different formats.
+- Configure-GRUB: Configures options for the GRUB boot loader.
+- Print-UTF8: Prints UTF-8 text with options for centering,
+  adjusting, etc.
+- Text-Block: Edits files or streams by inserting, replacing, or
+  removing text blocks.
+- Unix-Timestamp-Tools: Convert Unix timestamps (s, ms, us, ns) to
+  and from date/time strings.
+- Try-Hard: Retries commands with a configurable backoff.
+- Random-Sleep: Waits for a random time span, with support for
+  fractional seconds.
+- X.509-Tools: Provide utilities for viewing, verifying, and
+  converting X.509 certificates, and testing TLS connections.
 
 The utilities are suitable for non-interactive use in shell scripts and
 feature native internationalization support via GNU gettext.
@@ -215,6 +224,29 @@ be applied to the text depending on the operation mode.
 %{_datadir}/text-block/numbers.txt
 
 
+%package unixtimestamp-tools
+Summary: Unix timestamp handling tools
+Group: Applications/System
+
+%description unixtimestamp-tools
+This package contains two simple tools:
+time2unixts converts a time string to a Unix timestamp.
+unixts2time converts a Unix timestamp to a time string.
+These tools support Unix timestamps (i.e. the time since
+January 1, 1970, 00:00:00.000000000 UTC) in seconds,
+milliseconds, microseconds, and nanoseconds.
+
+%files unixtimestamp-tools
+%{_bindir}/time2unixts
+%{_bindir}/unixts2time
+%{_datadir}/bash-completion/completions/time2unixts
+%{_datadir}/bash-completion/completions/unixts2time
+%{_datadir}/locale/*/LC_MESSAGES/time2unixts.mo
+%{_datadir}/locale/*/LC_MESSAGES/unixts2time.mo
+%{_mandir}/man1/time2unixts.1.gz
+%{_mandir}/man1/unixts2time.1.gz
+
+
 %package try-hard
 Summary: Make multiple trials to successfully run a command
 BuildArch: noarch
@@ -362,6 +394,7 @@ Requires: %{name}-system-info = %{version}-%{release}
 Requires: %{name}-system-maintenance = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
 Requires: %{name}-try-hard = %{version}-%{release}
+Requires: %{name}-unixtimestamp-tools = %{version}-%{release}
 Requires: %{name}-x509-tools = %{version}-%{release}
 Recommends: %{name}-configure-grub = %{version}-%{release}
 
@@ -386,6 +419,8 @@ tools. It installs all sub-packages.
 
 
 %changelog
+* Fri May 08 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.0-1
+- New upstream release.
 * Fri May 08 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.5.6-1
 - New upstream release.
 * Thu May 07 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.5.5-1
