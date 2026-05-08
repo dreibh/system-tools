@@ -28,6 +28,7 @@
 // Contact: thomas.dreibholz@gmail.com
 
 #define _GNU_SOURCE   /* for timegm() */
+#include <ctype.h>
 #include <getopt.h>
 #include <libintl.h>
 #include <locale.h>
@@ -147,11 +148,16 @@ int main(int argc, char** argv)
             version();
           break;
          case 'h':
-            usage(argv[0], 0);
+         case '?':
+            // Exit with 0 on h/help, exit with 1 on '?' (unknown option):
+            usage(argv[0], (option == 'h') ? 0 : 1);
+          break;
+         case '-':
           break;
          default:
             // This should not happen: wrong getopt parameters, or missing case?
-            fprintf(stderr, "INTERNAL ERROR: Unhandled argument %s!\n", argv[optind - 1]);
+            fprintf(stderr, "INTERNAL ERROR: Unhandled option c=%c code=%x!\n",
+                    (isprint(option) ? (char)option : ' '), option);
             return 1;
           break;
       }
