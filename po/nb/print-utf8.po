@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-04 17:10+0200\n"
+"POT-Creation-Date: 2026-05-08 23:05+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -78,12 +78,12 @@ msgstr "FEIL: Ugyldige argumenter for multiline-center!"
 msgid "ERROR: Invalid separator setting!"
 msgstr "FEIL: Ugyldig separator-innstilling!"
 
-#: src/Print-UTF8/print-utf8.c:703
+#: src/Print-UTF8/print-utf8.c:702
 #, c-format
 msgid "ERROR: Invalid console width %u!"
 msgstr "FEIL: Ugyldig konsollbredde %u!"
 
-#: src/Print-UTF8/print-utf8.c:748
+#: src/Print-UTF8/print-utf8.c:750
 #, c-format
 msgid "WARNING: Unhandled parameter %s!"
 msgstr "ADVARSEL: Ubehandlet parameter %s!"
