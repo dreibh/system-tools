@@ -113,15 +113,38 @@ static int compareInterfaceAddresses(const void* a, const void* b)
          return -1;
       }
       else if(ifa1->address->sa_family == ifa2->address->sa_family) {
-         const int cmpAddress =
-            (ifa1->address->sa_family == AF_INET6) ?
-               memcmp( (const void*)&((const struct sockaddr_in6*)ifa1->address)->sin6_addr,
-                       (const void*)&((const struct sockaddr_in6*)ifa2->address)->sin6_addr,
-                       16 ) :
-               memcmp( (const void*)&((const struct sockaddr_in*)ifa1->address)->sin_addr,
-                       (const void*)&((const struct sockaddr_in*)ifa2->address)->sin_addr,
-                       4 );
-         return cmpAddress;
+         if(ifa1->address->sa_family == AF_INET6) {
+            const struct sockaddr_in6* ip1 = (const struct sockaddr_in6*)ifa1->address;
+            const struct sockaddr_in6* ip2 = (const struct sockaddr_in6*)ifa2->address;
+            return memcmp( &ip1->sin6_addr, &ip2->sin6_addr, 16 );
+         }
+         else if(ifa1->address->sa_family == AF_INET) {
+            const struct sockaddr_in* ip1 = (const struct sockaddr_in*)ifa1->address;
+            const struct sockaddr_in* ip2 = (const struct sockaddr_in*)ifa2->address;
+            return memcmp( &ip1->sin_addr, &ip2->sin_addr, 4 );
+         }
+#if defined(__linux__)
+         else if(ifa1->address->sa_family == AF_PACKET) {
+            const struct sockaddr_ll* mac1 = (const struct sockaddr_ll*)ifa1->address;
+            const struct sockaddr_ll* mac2 = (const struct sockaddr_ll*)ifa2->address;
+            const int lengthComparison = (int)mac1->sll_halen - (int)mac2->sll_halen;
+            if(lengthComparison != 0) {
+               return lengthComparison;
+            }
+            return memcmp(mac1->sll_addr, mac2->sll_addr, mac1->sll_halen);
+         }
+#elif defined(__FreeBSD__) || defined(__APPLE__)
+         else if(ifa1->address->sa_family == AF_LINK) {
+            const struct sockaddr_dl* mac1 = (const struct sockaddr_dl*)ifa1->address;
+            const struct sockaddr_dl* mac2 = (const struct sockaddr_dl*)ifa2->address;
+            const int lengthComparison = (int)mac1->sdl_alen - (int)mac2->sdl_alen;
+            if(lengthComparison != 0) {
+               return lengthComparison;
+            }
+            return memcmp(LLADDR(mac1), LLADDR(mac2), mac1->sdl_alen);
+         }
+#endif
+         return 0;   // Fallback for unknown family
       }
    }
    return 1;
@@ -903,7 +926,9 @@ static void showNetworkInformation(const bool filterLocalScope)
       lastIfIndex = ifIndex;
       lastFamily  = ifaArray[i].address->sa_family;
    }
-   puts("\"");
+   if(n > 0) {
+      puts("\"");
+   }
 
    // ====== Print interfaces list ==========================================
    lastIfIndex = 0;
