@@ -15,24 +15,22 @@ Requires: %{name}-basic = %{version}-%{release}
 
 
 %description
-System-Tools is a collection of utilities for system management and
-maintenance.
+System-Tools is a collection of utilities for system management and maintenance.
 
 The package includes:
-- System-Info: Displays system status (CPU, memory, disk, network)
-  and configurable login banners.
-- System-Maintenance: Automates package updates, old kernel removal,
-  and storage cleanup (e.g., SSD trimming).
-- Reset-Machine-ID: Resets machine IDs, hostnames, and SSH keys for
-  cloned virtual machines.
-- X.509-Tools: Utilities for viewing, verifying, and converting X.509
-  certificates, and testing TLS connections.
-- Automation tools: Try-Hard (command retry with backoff), Random-Sleep,
-  Text-Block (stream editing), and Print-UTF8.
-- Security tools: Fingerprint-SSH-Keys.
+- System-Info: Displays system status (CPU, memory, storage, network) and configurable login banners.
+- System-Maintenance: Automates package updates, old kernel removal, and storage cleanup (e.g., SSD trimming).
+- Reset-Machine-ID: Resets machine IDs, hostnames, and SSH keys for cloned machines.
+- Fingerprint-SSH-Keys: Shows the machine’s SSH public key fingerprints in different formats.
+- Configure-GRUB: Configures options for the GRUB boot loader.
+- Print-UTF8: Prints UTF-8 text with options for centering, adjusting, etc.
+- Text-Block: Edits files or streams by inserting, replacing, or removing text blocks.
+- Unix-Timestamp-Tools: Convert Unix timestamps (s, ms, us, ns) to and from date/time strings.
+- Try-Hard: Retries commands with a configurable backoff.
+- Random-Sleep: Waits for a random time span, with support for fractional seconds.
+- X.509-Tools: Provide utilities for viewing, verifying, and converting X.509 certificates, and testing TLS connections.
 
-The utilities are suitable for non-interactive use in shell scripts and
-feature native internationalization support via GNU gettext.
+The utilities are suitable for non-interactive use in shell scripts and feature native internationalization support via GNU gettext.
 
 %prep
 %setup -q
@@ -221,10 +219,10 @@ Group: Applications/System
 
 %description unixtimestamp-tools
 This package contains two simple tools:
-time2unixts converts a time string to an Unix timestamp.
-unixts2time converts an Unix timestamp to a time string.
+time2unixts converts a time string to a Unix timestamp.
+unixts2time converts a Unix timestamp to a time string.
 These tools support Unix timestamps (i.e. the time since
-Jaunary 1, 1970, 00:00:00.000000000 UTC) in seconds,
+January 1, 1970, 00:00:00.000000000 UTC) in seconds,
 milliseconds, microseconds, and nanoseconds.
 
 %files unixtimestamp-tools
@@ -332,7 +330,7 @@ Requires: %{name}-system-info = %{version}-%{release}
 Requires: %{name}-system-maintenance = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
 Requires: %{name}-try-hard = %{version}-%{release}
-Requires: %{name}-unix-timestamp-tools = %{version}-%{release}
+Requires: %{name}-unixtimestamp-tools = %{version}-%{release}
 Requires: %{name}-x509-tools = %{version}-%{release}
 Recommends: %{name}-configure-grub = %{version}-%{release}
 

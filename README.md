@@ -12,17 +12,17 @@
 
 System-Tools is a collection of helpful tools for basic system management of Linux and FreeBSD systems:
 
-- [System-Info](#-system-info) (display banners and system information),
-- [System-Maintenance](#-system-maintenance) (run basic system maintenance tasks),
-- [Reset-Machine-ID](#-reset-machine-id) (reset the machine identity state, particularly for a cloned VM),
-- [Fingerprint-SSH-Keys](#-fingerprint-ssh-keys) (show the machine's SSH public key fingerprints in different formats),
-- [Configure-GRUB](#-configure-grub) (configure options for the GRUB boot loader),
-- [Print-UTF8](#-print-utf8) (print UTF-8 text with options for centering, adjusting, etc.),
-- [Text-Block](#-text-block) (flexible tool for inserting, replacing or removing text blocks in files or streams),
-- [Unix-Timestamp-Tools](#-unix-timestamp-tools) (tools for converting Unix timestamps to/from date and time),
-- [Try-Hard](#-try-hard) (run a command, with configurable retries on failure),
-- [Random-Sleep](#-random-sleep) (wait for random time span, with support of fractional seconds).
-- [X.509-Tools](#-x.509-tools) (tools for viewing, verifying and testing X.509 certificates).
+- [System-Info](#-system-info): Displays system status (CPU, memory, storage, network) and configurable login banners.
+- [System-Maintenance](#-system-maintenance): Automates package updates, old kernel removal, and storage cleanup (e.g.,&nbsp;SSD trimming).
+- [Reset-Machine-ID](#-reset-machine-id): Resets machine IDs, hostnames, and SSH keys for cloned machines.
+- [Fingerprint-SSH-Keys](#-fingerprint-ssh-keys): Shows the machine’s SSH public key fingerprints in different formats.
+- [Configure-GRUB](#-configure-grub): Configures options for the GRUB boot loader.
+- [Print-UTF8](#-print-utf8): Prints UTF-8 text with options for centering, adjusting, etc.
+- [Text-Block](#-text-block): Edits files or streams by inserting, replacing, or removing text blocks.
+- [Unix-Timestamp-Tools](#-unix-timestamp-tools): Convert Unix timestamps (s, ms, us, ns) to and from date/time strings.
+- [Try-Hard](#-try-hard): Retries commands with a configurable backoff.
+- [Random-Sleep](#-random-sleep): Waits for a random time span, with support for fractional seconds.
+- [X.509-Tools](#-x.509-tools): Provide utilities for viewing, verifying, and converting X.509 certificates, and testing TLS connections.
 
 System-Tools provides internationalisation&nbsp;(i18n) support using [GNU gettext](https://www.gnu.org/software/gettext/). That is, translation files for the output of the programs are supported. You can support the project by contributing translations for your language. See [Internationalisation&nbsp;(I18N)](#internationalisation) for details!
 
