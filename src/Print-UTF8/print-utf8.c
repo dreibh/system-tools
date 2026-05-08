@@ -297,7 +297,7 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
    size_t j = 0;
    for(size_t i = 0; i < original_string_length; i++) {
       if(!inANSISequence) {
-         if((originalString[i] == '\x1b') || (!removeANSISequences)) {
+         if((originalString[i] == '\x1b') && (removeANSISequences)) {
             inANSISequence = true;
          }
          else {
