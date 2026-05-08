@@ -956,12 +956,6 @@ int main(int argc, char** argv)
    int          longIndex;
    while( (option = getopt_long(argc, argv, "hvc:", long_options, &longIndex)) != -1 ) {
       switch(option) {
-         case 'v':
-            version();
-          break;
-         case 'h':
-            usage(argv[0], 0);
-          break;
          case 'c':
             compatibilityVersion = atoll(optarg);
             if(compatibilityVersion > COMPATIBILITY_VERSION) {
@@ -970,9 +964,20 @@ int main(int argc, char** argv)
                return 1;
             }
           break;
+         case 'v':
+            version();
+          break;
+         case 'h':
+         case '?':
+            // Exit with 0 on h/help, exit with 1 on '?' (unknown option):
+            usage(argv[0], (option == 'h') ? 0 : 1);
+          break;
+         case '-':
+          break;
          default:
             // This should not happen: wrong getopt parameters, or missing case?
-            fprintf(stderr, "INTERNAL ERROR: Unhandled argument %s!\n", argv[optind - 1]);
+            fprintf(stderr, "INTERNAL ERROR: Unhandled option c=%c code=%x!\n",
+                    (isprint(option) ? (char)option : ' '), option);
             return 1;
           break;
       }

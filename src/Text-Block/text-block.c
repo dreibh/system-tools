@@ -539,7 +539,7 @@ int main (int argc, char** argv)
           break;
          case 's':
             if(optind < argc) {
-               SelectBegin = atoll(argv[optind - 1]);
+               SelectBegin = atoll(optarg);
                SelectEnd   = atoll(argv[optind]);
                optind++;
             }
@@ -615,7 +615,7 @@ int main (int argc, char** argv)
             //       will be the *second* parameter!
             if(optind + 4 < argc) {
                // NOTE: optind points to the *second* parameter here!
-               HighlightBegin     = argv[optind - 1];
+               HighlightBegin     = optarg;
                HighlightEnd       = argv[optind];
                HighlightUnmarked1 = argv[optind + 1];
                HighlightUnmarked2 = argv[optind + 2];
@@ -633,11 +633,16 @@ int main (int argc, char** argv)
             version();
           break;
          case 'h':
-            usage(argv[0], 0);
+         case '?':
+            // Exit with 0 on h/help, exit with 1 on '?' (unknown option):
+            usage(argv[0], (option == 'h') ? 0 : 1);
+          break;
+         case '-':
           break;
          default:
             // This should not happen: wrong getopt parameters, or missing case?
-            fprintf(stderr, "INTERNAL ERROR: Unhandled argument %s!\n", argv[optind - 1]);
+            fprintf(stderr, "INTERNAL ERROR: Unhandled option c=%c code=%x!\n",
+                    (isprint(option) ? (char)option : ' '), option);
             return 1;
           break;
       }

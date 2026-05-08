@@ -634,7 +634,7 @@ int main (int argc, char** argv)
          case 'I':
             mode = MultiLineIndent;
             if(optind + 1 < argc) {
-               indentWidth = atoi(argv[optind - 1]);
+               indentWidth = atoi(optarg);
                if(BorderLeft) {
                   free(BorderLeft);
                }
@@ -657,7 +657,7 @@ int main (int argc, char** argv)
                if(BorderLeft) {
                   free(BorderLeft);
                }
-               BorderLeft  = unescape(argv[optind - 1]);
+               BorderLeft  = unescape(optarg);
                if(BorderRight) {
                   free(BorderRight);
                }
@@ -676,7 +676,7 @@ int main (int argc, char** argv)
                if(BorderLeft) {
                   free(BorderLeft);
                }
-               BorderLeft  = unescape(argv[optind - 1]);
+               BorderLeft  = unescape(optarg);
                if(BorderRight) {
                   free(BorderRight);
                }
@@ -694,16 +694,14 @@ int main (int argc, char** argv)
             }
           break;
          case 'x':
-            if(optind < argc) {
-               consoleWidth = atol(optarg);
-               if(consoleWidth <= 0) {
-                  consoleWidth = defaultConsoleWidth + consoleWidth;   // subtract!
-               }
-               if(consoleWidth > 4096) {
-                  fprintf(stderr, gettext("ERROR: Invalid console width %u!"), consoleWidth);
-                  fputs("\n", stderr);
-                  cleanUp(1);
-               }
+            consoleWidth = atol(optarg);
+            if(consoleWidth <= 0) {
+               consoleWidth = defaultConsoleWidth + consoleWidth;   // subtract!
+            }
+            if(consoleWidth > 4096) {
+               fprintf(stderr, gettext("ERROR: Invalid console width %u!"), consoleWidth);
+               fputs("\n", stderr);
+               cleanUp(1);
             }
           break;
          case 'n':
@@ -728,13 +726,16 @@ int main (int argc, char** argv)
             version();
           break;
          case 'h':
-            usage(argv[0], 0);
+         case '?':
+            // Exit with 0 on h/help, exit with 1 on '?' (unknown option):
+            usage(argv[0], (option == 'h') ? 0 : 1);
           break;
          case '-':
           break;
          default:
             // This should not happen: wrong getopt parameters, or missing case?
-            fprintf(stderr, "INTERNAL ERROR: Unhandled argument %s!\n", argv[optind - 1]);
+            fprintf(stderr, "INTERNAL ERROR: Unhandled option c=%c code=%x!\n",
+                    (isprint(option) ? (char)option : ' '), option);
             return 1;
           break;
       }
