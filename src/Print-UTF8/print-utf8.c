@@ -2,7 +2,7 @@
 //         ____            _                     _____           _
 //        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 //        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \.
 //        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 //               |___/
 //                             --- System-Tools ---
@@ -29,8 +29,8 @@
 
 #define _XOPEN_SOURCE 700
 #include <ctype.h>
-#include <getopt.h>
 #include <fcntl.h>
+#include <getopt.h>
 #include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -38,7 +38,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <wchar.h>
-#include <locale.h>
 #include <sys/ioctl.h>
 #ifndef nullptr
 #define nullptr NULL
@@ -114,7 +113,7 @@ static bool ioctlTIOCGWINSZ(struct winsize* w)
 
 
 // ###### Obtain console width ##############################################
-static int getConsoleWidth()
+static int getConsoleWidth(void)
 {
    struct winsize w;
    if(ioctlTIOCGWINSZ(&w)) {
@@ -124,19 +123,32 @@ static int getConsoleWidth()
 }
 
 
-// ###### Digit to number ###################################################
+// ###### Hexadecimal digit to number #######################################
 static unsigned int hexDigitToNumber(const char digit)
 {
    if( (digit >= '0') && (digit <= '9') ) {
-      return (int)digit - (int)'0';
+      return (unsigned int)((int)digit - (int)'0');
    }
    else if( (digit >= 'a') && (digit <= 'f') ) {
-      return 10 + ((int)digit - (int)'a');
+      return (unsigned int)(10 + ((int)digit - (int)'a'));
    }
    else if( (digit >= 'A') && (digit <= 'F') ) {
-      return 10 + ((int)digit - (int)'A');
+      return (unsigned int)(10 + ((int)digit - (int)'A'));
    }
-   fprintf(stderr, "hexDigitToNumber: Bad digit %c!\n", digit);
+   fprintf(stderr, gettext("ERROR: Invalid hexadecimal digit %c!"), digit);
+   fputs("\n", stderr);
+   exit(1);
+}
+
+
+// ###### Hexadecimal digit to number #######################################
+static unsigned int octDigitToNumber(const char digit)
+{
+   if( (digit >= '0') && (digit <= '7') ) {
+      return (unsigned int)((int)digit - (int)'0');
+   }
+   fprintf(stderr, gettext("ERROR: Invalid octal digit %c!"), digit);
+   fputs("\n", stderr);
    exit(1);
 }
 
@@ -183,44 +195,48 @@ static char* unescape(const char* originalString)
                case '0':
                   if(i + 3 < original_string_length) {
                      const unsigned int c =
-                        (hexDigitToNumber(originalString[i + 1]) * 100) +
-                        (hexDigitToNumber(originalString[i + 2]) * 10) +
-                        hexDigitToNumber(originalString[i + 3]);
+                        (octDigitToNumber(originalString[i + 1]) << 6) +
+                        (octDigitToNumber(originalString[i + 2]) << 3) +
+                        octDigitToNumber(originalString[i + 3]);
                      unescapedString[j++] = (char)c;
                      i += 3;
                   }
                 break;
                case 'u':
                   if(i + 4 < original_string_length) {
-                    const unsigned int c1 =
-                        (hexDigitToNumber(originalString[i + 1]) << 4) +
-                        hexDigitToNumber(originalString[i + 2]);
-                    const unsigned int c2 =
+                     const unsigned int codepoint =
+                        (hexDigitToNumber(originalString[i + 1]) << 12) +
+                        (hexDigitToNumber(originalString[i + 2]) << 8) +
                         (hexDigitToNumber(originalString[i + 3]) << 4) +
                         hexDigitToNumber(originalString[i + 4]);
-                     unescapedString[j++] = (char)c1;
-                     unescapedString[j++] = (char)c2;
+                     char      multibyte[MB_CUR_MAX];
+                     const int bytes = wctomb(multibyte, (wchar_t)codepoint);
+                     if(bytes > 0) {
+                        for(int k = 0; k < bytes; k++) {
+                           unescapedString[j++] = multibyte[k];
+                        }
+                     }
                      i += 4;
                   }
                 break;
                case 'U':
                   if(i + 8 < original_string_length) {
-                    const unsigned int c1 =
-                        (hexDigitToNumber(originalString[i + 1]) << 4) +
-                        hexDigitToNumber(originalString[i + 2]);
-                    const unsigned int c2 =
-                        (hexDigitToNumber(originalString[i + 3]) << 4) +
-                        hexDigitToNumber(originalString[i + 4]);
-                    const unsigned int c3 =
-                        (hexDigitToNumber(originalString[i + 5]) << 4) +
-                        hexDigitToNumber(originalString[i + 6]);
-                    const unsigned int c4 =
+                     const unsigned int codepoint =
+                        (hexDigitToNumber(originalString[i + 1]) << 28) +
+                        (hexDigitToNumber(originalString[i + 2]) << 24) +
+                        (hexDigitToNumber(originalString[i + 3]) << 20) +
+                        (hexDigitToNumber(originalString[i + 4]) << 16) +
+                        (hexDigitToNumber(originalString[i + 5]) << 12) +
+                        (hexDigitToNumber(originalString[i + 6]) << 8) +
                         (hexDigitToNumber(originalString[i + 7]) << 4) +
                         hexDigitToNumber(originalString[i + 8]);
-                     unescapedString[j++] = (char)c1;
-                     unescapedString[j++] = (char)c2;
-                     unescapedString[j++] = (char)c3;
-                     unescapedString[j++] = (char)c4;
+                     char      multibyte[MB_CUR_MAX];
+                     const int bytes = wctomb(multibyte, (wchar_t)codepoint);
+                     if(bytes > 0) {
+                        for(int k = 0; k < bytes; k++) {
+                           unescapedString[j++] = multibyte[k];
+                        }
+                     }
                      i += 8;
                   }
                 break;
@@ -232,7 +248,7 @@ static char* unescape(const char* originalString)
                 break;
                case 'e':
                case 'E':
-                  unescapedString[j++] = '\e';
+                  unescapedString[j++] = '\x1b';
                 break;
                case 'f':
                   unescapedString[j++] = '\f';
@@ -281,7 +297,7 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
    size_t j = 0;
    for(size_t i = 0; i < original_string_length; i++) {
       if(!inANSISequence) {
-         if((originalString[i] == '\e') || (!removeANSISequences)) {
+         if((originalString[i] == '\x1b') && (removeANSISequences)) {
             inANSISequence = true;
          }
          else {
@@ -304,7 +320,7 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
       exit(1);
    }
    const size_t wide_string_length = mbstowcs(wide_string, utf8String, j);
-   if(wide_string_length < 0) {
+   if(wide_string_length == (size_t)-1) {
       fputs(gettext("ERROR: mbstowcs() failed!"), stderr);
       fputs("\n", stderr);
       exit(1);
@@ -368,7 +384,7 @@ static void stringSizeLengthWidth(const char* originalString,
 
 
 // ###### Get terminal information ##########################################
-static void terminalInfo()
+static void terminalInfo(void)
 {
    struct winsize w;
    if(!ioctlTIOCGWINSZ(&w)) {
@@ -527,7 +543,7 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
 #endif
-static void version()
+static void version(void)
 {
    printf("print-utf8 %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -542,19 +558,20 @@ static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "%s %s"
            " [-n|--newline]"
-           " [-i indentation string|--indent indentation string]"
-           " [-c string|--center string]"
-           " [-I left right|--multiline-indent indentation left right]"
+           " [-i indentation|--indent indentation]"
+           " [-c|--center]"
+           " [-I indentation left right|--multiline-indent indentation left right]"
            " [-C left right|--multiline-center left right]"
            " [-s border_left separator border_right|--separator border_left separator border_right]"
-           " [-c columns|--columns columns]"
-           " [-s string|--size string]"
-           " [-l string|--length string]"
-           " [-w string|--width string]"
-           " [-a string|--size-length-width string]"
+           " [-x columns|--columns columns]"
+           " [-b|--size]"
+           " [-l|--length]"
+           " [-w|--width]"
+           " [-a|--size-length-width]"
            " [-t|--terminal-info]"
            " [-h|--help]"
-           " [-v|--version]\n",
+           " [-v|--version]"
+           " [string]\n",
            gettext("Usage:"),
            program);
    exit(exitCode);
@@ -579,7 +596,7 @@ int main (int argc, char** argv)
    const int   defaultConsoleWidth = getConsoleWidth();
    int         consoleWidth        = defaultConsoleWidth;
 
-   const static struct option long_options[] = {
+   static const struct option long_options[] = {
       { "indent",              required_argument, 0, 'i' },
       { "multiline-indent",    required_argument, 0, 'I' },
       { "center",              no_argument,       0, 'c' },
@@ -617,7 +634,7 @@ int main (int argc, char** argv)
          case 'I':
             mode = MultiLineIndent;
             if(optind + 1 < argc) {
-               indentWidth = atoi(argv[optind - 1]);
+               indentWidth = atoi(optarg);
                if(BorderLeft) {
                   free(BorderLeft);
                }
@@ -640,11 +657,11 @@ int main (int argc, char** argv)
                if(BorderLeft) {
                   free(BorderLeft);
                }
-               BorderLeft  = unescape(argv[optind - 1]);
+               BorderLeft  = unescape(optarg);
                if(BorderRight) {
                   free(BorderRight);
                }
-               BorderRight = unescape(argv[optind - 0]);
+               BorderRight = unescape(argv[optind]);
                optind++;
             }
             else {
@@ -659,7 +676,7 @@ int main (int argc, char** argv)
                if(BorderLeft) {
                   free(BorderLeft);
                }
-               BorderLeft  = unescape(argv[optind - 1]);
+               BorderLeft  = unescape(optarg);
                if(BorderRight) {
                   free(BorderRight);
                }
@@ -677,16 +694,14 @@ int main (int argc, char** argv)
             }
           break;
          case 'x':
-            if(optind < argc) {
-               consoleWidth = atol(optarg);
-               if(consoleWidth <= 0) {
-                  consoleWidth = defaultConsoleWidth + consoleWidth;   // subtract!
-               }
-               if(consoleWidth > 4096) {
-                  fprintf(stderr, gettext("ERROR: Invalid console width %u!"), consoleWidth);
-                  fputs("\n", stderr);
-                  cleanUp(1);
-               }
+            consoleWidth = atol(optarg);
+            if(consoleWidth <= 0) {
+               consoleWidth = defaultConsoleWidth + consoleWidth;   // subtract!
+            }
+            if(consoleWidth > 4096) {
+               fprintf(stderr, gettext("ERROR: Invalid console width %u!"), consoleWidth);
+               fputs("\n", stderr);
+               cleanUp(1);
             }
           break;
          case 'n':
@@ -711,19 +726,24 @@ int main (int argc, char** argv)
             version();
           break;
          case 'h':
-            usage(argv[0], 0);
+         case '?':
+            // Exit with 0 on h/help, exit with 1 on '?' (unknown option):
+            usage(argv[0], (option == 'h') ? 0 : 1);
           break;
          case '-':
           break;
          default:
-            fprintf(stderr, "INTERNAL ERROR: Unhandled argument %s!\n", argv[optind - 1]);
-            return 1;
+            // This should not happen: wrong getopt parameters, or missing case?
+            fprintf(stderr, "INTERNAL ERROR: Unhandled option c=%c code=%x!\n",
+                    (isprint(option) ? (char)option : ' '), option);
+            cleanUp(1);
           break;
       }
    }
    if(optind < argc) {
       if(Utf8String) {
-         free(Utf8String);
+         // Already set (separator) -> wrong syntax!
+         usage(argv[0], 1);
       }
       Utf8String = unescape(argv[optind++]);
       while(optind < argc) {

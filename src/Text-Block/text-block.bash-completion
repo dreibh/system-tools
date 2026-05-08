@@ -68,7 +68,7 @@ _text_block()
       --highlight-param     | \
       -m | --min-actions    | \
       -M | --max-actions    | \
-      --select)
+      -s | --select)
          return
          ;;
       # ====== Special case: file ===========================================
@@ -128,10 +128,6 @@ _text_block()
 --max-actions
 -s
 --select
--b
---begin-tag
--e
---end-tag
 -t
 --tag
 -y
@@ -154,10 +150,6 @@ _text_block()
 --highlight-marked1
 --highlight-marked2
 --highlight-param
--m
---min-actions
--M
---max-actions
 "
    mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
    return 0

@@ -28,13 +28,13 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 7, 2026
 .Dt der2pem 1
 .Os der2pem
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm der2pem
-.Nd Convert a certificate or CRL from DER to PEM format
+.Nd converts a certificate or CRL from DER to PEM format
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
@@ -69,7 +69,7 @@ Prints the program version and exits.
 .Bl -tag -width indent
 .It der2pem my-server-certificate.der my-server-certificate.crt
 .It der2pem my-crl.der my-crl.crl
-.It curl -o google-crl.der http://c.pki.goog/wr2/GSyT1N4PBrg.crl && der2pem google-crl.der google-crl.crl
+.It curl -o google-crl.der.crl http://c.pki.goog/wr2/GSyT1N4PBrg.crl && der2pem google-crl.der.crl google-crl.pem
 .It der2pem --help
 .It der2pem -h
 .It der2pem --version

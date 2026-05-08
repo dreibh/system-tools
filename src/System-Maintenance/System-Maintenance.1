@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 7, 2026
 .Dt System-Maintenance 1
 .Os System-Maintenance
 .\" ###### Name #############################################################
@@ -48,22 +48,24 @@
 .Nm System-Maintenance
 runs some system maintenance tasks to keep the system clean and up to date.
 These tasks are:
-.br
-* Ensuring that all packages are configured,
-.br
-* Updating the package repositories,
-.br
-* Removing obsolete kernels,
-.br
-* Installing all available package updates,
-.br
-* Auto-removing unused packages,
-.br
-* Updating package and file search caches,
-.br
-* Updating firmware,
-.br
-* Trimming SSDs and virual storage.
+.Bl -bullet -compact
+.It
+Ensuring that all packages are configured
+.It
+Updating the package repositories
+.It
+Removing obsolete kernels
+.It
+Installing all available package updates
+.It
+Auto-removing unused packages
+.It
+Updating package and file search caches
+.It
+Updating firmware
+.It
+Trimming SSDs and virtual storage
+.El
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS

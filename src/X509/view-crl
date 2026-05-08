@@ -75,7 +75,7 @@ print-date ()
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
-GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
 options="$(${GETOPT} -o hv --long help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
@@ -87,29 +87,48 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -h | --help)
          usage 0
-         # shift
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
+         ;;
   esac
+  shift
 done
 if [ $# -lt 1 ] ; then
    usage 1
 fi
 
 # ====== Check availability of tools ========================================
-OPENSSL="$(which openssl || true)"
+OPENSSL="$(command -v openssl || true)"
 if [ "${OPENSSL}" == "" ] ; then
    gettext >&2 "ERROR: OpenSSL is not installed!"
    echo >&2
    exit 1
 fi
+
+# ====== Prepare labels and compute indentation =============================
+declare -A labels=(
+   ["Issuer"]="$(gettext "Issuer:")"
+   ["Validity"]="$(gettext "Validity:")"
+)
+
+indent=0
+for label in "${!labels[@]}" ; do
+   width="$(print-utf8 --width "${label}")"
+   if [ "${width}" -gt "${indent}" ] ; then
+      indent="${width}"
+   fi
+done
+indent=-$((indent + 2))
 
 # ====== Check each CRL =====================================================
 while [ $# -gt 0 ] ; do
@@ -128,7 +147,11 @@ while [ $# -gt 0 ] ; do
 
    # ====== Display CRL details =============================================
    echo -e "\e[34m$(eval_gettext "CRL in \${CRL_FILE}:")\e[0m"
-   openssl crl -in "${CRL_FILE}" | \
+   if [ "${CRL_FILE}" == "/dev/stdin" ] || [ "$(file -b "${CRL_FILE}")" == "data" ] ; then
+      openssl crl -in "${CRL_FILE}"
+   else
+      cat "${CRL_FILE}"
+   fi | \
    awk '/BEGIN X509 CRL/,/END X509 CRL/' | (
       # ------ Extract each CRL of a combined CRL file ----------------------
       encodedCRL=""
@@ -139,7 +162,7 @@ while [ $# -gt 0 ] ; do
          encodedCRL+="${line}\n"
          if [[ "${line}" == *"END X509 CRL"* ]]; then
             echo -e "${encodedCRL}" | "${OPENSSL}" crl -noout -text | (
-               # ------ Print the contents ----------------------------------
+               # ====== Extract CRL details =================================
                while read -r line ; do
                   issuer="?"
                   lastUpdate="?"
@@ -150,7 +173,7 @@ while [ $# -gt 0 ] ; do
                      if [[ "${line}" =~ ^(Issuer: )(.*)$ ]] ; then
                         # Subject with underlined CN:
                         # shellcheck disable=SC2001
-                        issuer="$(echo "${BASH_REMATCH[2]}" | sed -e 's/\(CN = \)\([^,]*\)/\x1b[4m\1\2\x1b[24m/')"
+                        issuer="$(sed -e 's|\(CN = [^,]*\)|\x1b[4m\1\x1b[24m|' <<< "${BASH_REMATCH[2]}")"
                      elif [[ "${line}" =~ ^(Last Update: )(.*)$ ]] ; then
                         lastUpdate="${BASH_REMATCH[2]}"
                      elif [[ "${line}" =~ ^(Next Update: )(.*)$ ]] ; then
@@ -162,11 +185,14 @@ while [ $# -gt 0 ] ; do
                      fi
                   done
 
-                  label="$(gettext "%-7s")"
-                  printf "\e[33m${label} \e[35m%s\e[0m\n"          \
-                     "$(gettext "Issuer:")"  "$(echo -e "${issuer}")"
-                  printf "\e[33m${label} \e[36m%s — %s\e[0m\n"     \
-                     "$(gettext "Range:")" "$(print-date "${lastUpdate}")" "$(print-date "${nextUpdate}")"
+                  # ====== Display CRL details ==============================
+                  print-utf8 -i "${indent}" "\e[33m${labels["Issuer"]}"
+                  echo -e "\e[35m${issuer}\e[0m"
+
+                  print-utf8 -i "${indent}" "\e[33m${labels["Validity"]}"
+                  validityFrom="$(print-date "${lastUpdate}")"
+                  validityTo="$(print-date "${nextUpdate}")"
+                  echo -e "\e[36m${validityFrom}\e[33m — \e[36m${validityTo}\e[0m"
 
                   entry=0
                   for serialNumber in $(echo "${!serialNumbers[@]}" | tr ' ' '\n' | LC_ALL=C.UTF8 sort) ; do

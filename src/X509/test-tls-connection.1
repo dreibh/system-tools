@@ -28,13 +28,13 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 7, 2026
 .Dt test-tls-connection 1
 .Os test-tls-connection
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm test-tls-connection
-.Nd Tests TLS connection to a remote endpoint
+.Nd tests the TLS connection to a remote endpoint
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
@@ -56,8 +56,8 @@ host:port ca_certificate_file
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm test-tls-connection
-tests TLS connection to a remote endpoint. The certificate provided by the remote endpoint
-can be verified (by calling check-certificate) or only displayed (by using view-certificate). Optionally, it can also be saved as PEM file.
+tests the TLS connection to a remote endpoint. The certificate provided by the remote endpoint
+can be verified (by calling check-certificate) or only displayed (by using view-certificate). Optionally, it can also be saved as a PEM file.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -68,7 +68,7 @@ Specifies hostname or IP address, and TCP port number of the remote endpoint to 
 .It ca_certificate_file
 Specifies the CA certificate to verify the certificate of the remote endpoint.
 .It Fl s Ar certificate_file | Fl Fl save-certificate Ar certificate_file
-Specifies a file name to store the certificate of the remote endpoint (as PEM file).
+Specifies a file name to store the certificate of the remote endpoint (as a PEM file).
 .It \-\- openssl_args ...
 Specifies optional OpenSSL arguments. All arguments after \-\- are passed to OpenSSL.
 .It Fl n | Fl Fl no-view-certificate
@@ -86,7 +86,7 @@ Prints the program version and exits.
 .It test-tls-connection www.heise.de:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
 .It test-tls-connection www.nntb.no:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt --no-view-certificate
 .It test-tls-connection www.nntb.no:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt --no-check-certificate
-.It test-tls-connection www.nntb.no:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt -save-certificate www.nntb.no.crt
+.It test-tls-connection www.nntb.no:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt --save-certificate www.nntb.no.crt
 .It test-tls-connection www.heise.de:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt -n -c -s www.heise.de.crt
 .It test-tls-connection www.ietf.org:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt -s www.ietf.org.crt
 .It test-tls-connection www.dnb.no:443 /usr/share/ca-certificates/mozilla/Buypass_Class_3_Root_CA.crt -s www.dnb.no

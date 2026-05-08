@@ -36,7 +36,7 @@
 .\" -------------------------------------------------------------------------
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 7, 2026
 .Dt text-block 1
 .Os text-block
 .\" ###### Name #############################################################
@@ -88,8 +88,6 @@
 .Op Fl m | Fl Fl min-actions
 .Op Fl M | Fl Fl max-actions
 .Op Fl s | Fl Fl select Ar from_line Ar to_line
-.Op Fl b | Fl Fl begin-tag Ar begin_tag
-.Op Fl e | Fl Fl end-tag Ar end_tag
 .Op Fl t | Fl Fl tag Ar tag
 .Op Fl y | Fl Fl include-tags
 .Op Fl x | Fl Fl exclude-tags
@@ -109,7 +107,7 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm text-block
-.Nd reads text from standard input or given file, and writes it to standard output or a given file. On the text, various modifications can be applied, according to the operation mode:
+.Nd reads text from standard input or given file, and writes it to standard output or a given file. To the text, various modifications can be applied, according to the operation mode:
 .Bl -bullet
 .It
 Cat: copy the input text as-is.
@@ -118,13 +116,15 @@ Discard: do nothing (i.e. just discard the input).
 .It
 Enumerate: add line numbers. The format of the enumeration is configurable.
 .It
+Extract: only output the text between markers, discarding everything else.
+.It
 Highlight: visually highlight text block between markers. The format of the marking is configurable, e.g. to apply ANSI colouring, etc.
 .It
 Delete: remove text between markers.
 .It
-Insert Front: insert text from a file at front of marked blocks.
+Insert Front: insert text from a file at the front of marked blocks.
 .It
-Insert Back: insert text from a file at back of marked blocks.
+Insert Back: insert text from a file at the back of marked blocks.
 .It
 Replace: replace text of marked blocks by text from a file.
 .El
@@ -132,18 +132,18 @@ Replace: replace text of marked blocks by text from a file.
 The marking used for the operation modes is based on configurable begin and end tags, e.g. <BEGIN-OF-BLOCK> and <END-OF-BLOCK>, or BEGIN and END. The handling of tags is configurable:
 .Bl -bullet
 .It
-tags-only: Only the text between the marker tags belongs to a block. That is, multiple blocks can appear on the same line. This is the default.
+tags-only: only the text between the marker tags belongs to a block. That is, multiple blocks can appear on the same line. This is the default.
 .It
-full-tag-lines: A marker includes the full line of is begin and end tags. That is, a line containing a begin/end tag is handled like being the begin/end tag. This also means that only the \f[B]first\f[R] tag in a line is handled. All further tags in the same line are ignored!
+full-tag-lines: a marker includes the full line of its begin and end tags. That is, a line containing a begin/end tag is handled like being the begin/end tag. This also means that only the \f[B]first\f[R] tag in a line is handled. All further tags in the same line are ignored!
 Hint: Use Highlight mode to visualise the behaviour.
 .El
 .Pp
 Furthermore, the handling of begin/end tags is configurable as well:
 .Bl -bullet
 .It
-exclude-tags: Marked text does not include the begin/end tags. This is the default.
+exclude-tags: marked text does not include the begin/end tags. This is the default.
 .It
-include-tags: Marked text includes the begin/end tags.
+include-tags: marked text includes the begin/end tags.
 .El
 .Pp
 A special case is to have identical begin/end tags, e.g. <MARKER>. The text block "inside" this tag is therefore always empty. A use case for such a marker is e.g. to mark where to insert the contents of a file.
@@ -166,7 +166,7 @@ Run in Highlight mode.
 .It Fl E | Fl Fl enumerate
 Run in Enumerate mode.
 .It Fl X | Fl Fl extract
-Run in Highlight mode.
+Run in Extract mode.
 .It Fl D | Fl Fl delete | Fl Fl remove
 Run in Delete mode.
 .It Fl F Ar insert_file | Fl Fl insert-front Ar insert_file
@@ -214,10 +214,10 @@ Opens the output file in append mode, appending new output instead of overwritin
 In-place update into the input file. The output is written to a temporary file with extension "~" first, which replaces the input file on success.
 .It Fl k | Fl Fl keep-broken
 Keep broken output in case of error (default: off).
-.Op Fl m | Fl Fl min-actions
+.It Fl m | Fl Fl min-actions
 Set lower limit for number of marking actions. If the number of applied markings falls below this limit, an error is returned.
-.Op Fl M | Fl Fl max-actions
-Set lower limit for number of marking actions. If the number of applied markings exceeds this limit, an error is returned.
+.It Fl M | Fl Fl max-actions
+Set upper limit for number of marking actions. If the number of applied markings exceeds this limit, an error is returned.
 .It Fl y | Fl Fl include-tags
 Include the marker tags in the marking.
 Hint: Use Highlight mode to visualise the behaviour.

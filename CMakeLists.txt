@@ -34,7 +34,7 @@ ENABLE_LANGUAGE(C)
 
 SET(BUILD_MAJOR "2")
 SET(BUILD_MINOR "5")
-SET(BUILD_PATCH "1")
+SET(BUILD_PATCH "6")
 SET(BUILD_VERSION ${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH})
 
 
@@ -127,6 +127,14 @@ OPTION(WITH_GIMP_SCRIPTS          "Include GIMP-Scripts"         1)
 IF (WITH_SYSTEM_INFO AND NOT WITH_PRINT_UTF8)
    MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO requires WITH_PRINT_UTF8!")
 ENDIF()
+
+
+#############################################################################
+#### INTERNATIONALISATION (I18N)                                         ####
+#############################################################################
+
+ADD_COMPILE_OPTIONS(-Wall -Wextra -Wpedantic -Wsign-conversion)
+ADD_COMPILE_DEFINITIONS(_FILE_OFFSET_BITS=64 _TIME_BITS=64)
 
 
 #############################################################################

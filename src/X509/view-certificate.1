@@ -28,13 +28,13 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 7, 2026
 .Dt view-certificate 1
 .Os view-certificate
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm view-certificate
-.Nd Displays an X.509 certificate in PEM or DER format
+.Nd displays important details of an X.509 certificate in PEM or DER format
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
@@ -49,7 +49,7 @@ certificate_file
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm view-certificate
-displays important details on an X.509 certificate, including:
+displays important details of an X.509 certificate in PEM or DER format, including:
 .Bl -tag -width indent
 .It * Common Name (CN),
 .It * Validity Range,
@@ -65,7 +65,7 @@ displays important details on an X.509 certificate, including:
 The following options are available:
 .Bl -tag -width indent
 .It certificate_file [...]
-Specifies one ore more certificate files to be displayed. "-" is a shortcut for /dev/stdin, i.e. reading the certificate from standard input.
+Specifies one or more certificate files to be displayed. "-" is a shortcut for /dev/stdin, i.e. reading the certificate from standard input.
 .It Fl h | Fl Fl help
 Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version

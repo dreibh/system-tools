@@ -51,7 +51,7 @@ version () {
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
-GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
 options="$(${GETOPT} -o hv --long help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
@@ -63,17 +63,21 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -h | --help)
          usage 0
-         # shift
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         exit 1
+         ;;
   esac
+  shift
 done
 if [ $# -ne 2 ] ; then
    usage 1
@@ -87,12 +91,11 @@ fi
 OUTPUT="$2"
 
 TYPE="x509"
-# Check whether type is CRL, by using "file":
-if [ "$(file -b "${INPUT}")" == "data" ] ; then
+if [[ "$(basename "${INPUT}")" =~ \.[Cc][Rr][Ll]$ ]] ; then
    TYPE="crl"
 fi
 
-# ====== Convert PEM to DER =================================================
+# ====== Convert DER to PEM =================================================
 openssl "${TYPE}" \
    -inform der -in "${INPUT}" \
    -outform pem -out "${OUTPUT}"

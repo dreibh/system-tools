@@ -42,7 +42,7 @@ export TEXTDOMAIN="try-hard"
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   echo >&2 "$(gettext "Usage:") $0 max_trials max_delay [-m|--min-delay min_delay] [-A|--additive-increase delay_increment] [-M|multiplicative-increase delay_factor] [-T|--truncate-delay truncated_max_delay] [-D|--deterministic] [-q|--quiet] [-w|--verbose] [-h|--help] [-v|--version] -- command ..."
+   echo >&2 "$(gettext "Usage:") $0 max_trials max_delay [-m|--min-delay min_delay] [-A|--additive-increase delay_increment] [-M|--multiplicative-increase delay_factor] [-T|--truncate-delay truncated_max_delay] [-D|--deterministic] [-q|--quiet] [-w|--verbose] [-h|--help] [-v|--version] -- command ..."
    exit "${exitCode}"
 }
 
@@ -58,7 +58,7 @@ version () {
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
-GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
 options="$(${GETOPT} -o m:A:M:T:Dqwhv --long min-delay:,additive-increase:,multiplicative-increase:,truncate-delay:,deterministic,quiet,verbose,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
@@ -76,63 +76,58 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -m | --min-delay)
          delayValue="$2"
+         shift
          if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
             eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
             echo >&2
             exit 1
          fi
          MIN_DELAY="${delayValue}"
-         shift 2
          ;;
       -A | --additive-increase)
          delayValue="$2"
+         shift
          if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
             eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
             echo >&2
             exit 1
          fi
          ADDITIVE_INCREASE="${delayValue}"
-         shift 2
          ;;
       -M | --multiplicative-increase)
          delayValue="$2"
+         shift
          if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
             eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
             echo >&2
             exit 1
          fi
          MULTIPLICATIVE_INCREASE="${delayValue}"
-         shift 2
          ;;
       -T | --truncate-delay)
          delayValue="$2"
+         shift
          if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
             eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
             echo >&2
             exit 1
          fi
          TRUNCATE_DELAY="${delayValue}"
-         shift 2
          ;;
       -D | --deterministic)
          DETERMINISTIC=1
-         shift
          ;;
       -q | --quiet)
          VERBOSE=0
-         shift
          ;;
       -w | --verbose)
          VERBOSE=1
-         shift
          ;;
       -h | --help)
          usage 0
-         # shift
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
@@ -142,9 +137,9 @@ while [ $# -gt 0 ] ; do
          # This should not happen: wrong getopt parameters, or missing case?
          echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
          exit 1
-         # shift
          ;;
   esac
+  shift
 done
 if [ $# -lt 3 ] ; then
    usage 1
@@ -162,20 +157,27 @@ if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
    echo >&2
    exit 1
 fi
+if [ "${DETERMINISTIC}" -eq 0 ] && ! command -v random-sleep >/dev/null ; then
+   gettext >&2 "ERROR: Cannot find random-sleep in the search path!"
+   echo >&2
+   exit 1
+fi
 MAX_DELAY="${delayValue}"
 shift 2
 
 
 # ====== Ensure that min delay < max delay ==================================
-read -r minDelay maxDelay <<<"$(awk "\
+read -r minDelay maxDelay <<<"$(awk \
+   -v minDelayArgument="${MIN_DELAY}" \
+   -v maxDelayArgument="${MAX_DELAY}" '\
 function min(a, b) { return (a < b ? a : b); }
 function max(a, b) { return (a > b ? a : b); }
 BEGIN {
-   minDelay=min(${MIN_DELAY}, ${MAX_DELAY});
-   maxDelay=max(${MIN_DELAY}, ${MAX_DELAY});
-   printf(\"%g %g\n\", minDelay, maxDelay);
+   minDelay    = min(minDelayArgument, maxDelayArgument);
+   maxDelay    = max(minDelayArgument, maxDelayArgument);
+   printf("%g %g\n", minDelay, maxDelay);
 }
-"
+'
 )"
 
 
@@ -189,35 +191,40 @@ while true ; do
    fi
 
    # ====== Run the command =================================================
-   # shellcheck disable=SC2068
-   $@ && exit
+   if "$@" ; then
+      exit 0
+   fi
+   exitStatus=$?
 
    # ====== Check whether trial limit has been reached ======================
    if [ ${trial} -ge "${MAX_TRIALS}" ] ; then
       if [ "${VERBOSE}" -eq 1 ] ; then
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Tried \${MAX_TRIALS} times -> giving up now!")\x1b[0m"
       fi
-      exit 1
+      exit "${exitStatus}"
    fi
 
    # ====== Increase delay for next trial ===================================
    if [ ${trial} -gt 1 ] ; then
-      read -r minDelay maxDelay <<<"$(awk "\
+      read -r minDelay maxDelay <<<"$(awk \
+         -v minDelayArgument="${minDelay}" \
+         -v maxDelayArgument="${maxDelay}" \
+         -v additiveIncrease="${ADDITIVE_INCREASE}" \
+         -v multiplicativeIncrease="${MULTIPLICATIVE_INCREASE}" \
+         -v minDelayBoundary="${MIN_DELAY}" \
+         -v maxDelayBoundary="${TRUNCATE_DELAY}" '\
 function min(a, b) { return (a < b ? a : b); }
 function max(a, b) { return (a > b ? a : b); }
 BEGIN {
-   minDelay=min(${minDelay}, ${maxDelay});
-   maxDelay=max(${minDelay}, ${maxDelay});
-   additiveIncrease=${ADDITIVE_INCREASE};
-   multiplicativeIncrease=${MULTIPLICATIVE_INCREASE};
-   minDelayBoundary=${MIN_DELAY};
-   maxDelayBoundary=${TRUNCATE_DELAY};
+   minDelay    = min(minDelayArgument, maxDelayArgument);
+   maxDelay    = max(minDelayArgument, maxDelayArgument);
 
-   newMinDelay=max(min(minDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
-   newMaxDelay=max(min(maxDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
-   printf(\"%g %g\n\", min(newMinDelay, newMaxDelay),max(newMinDelay, newMaxDelay));
+   newMinDelay = max(min(minDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
+   newMaxDelay = max(min(maxDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
+   printf("%g %g\n", min(newMinDelay, newMaxDelay),max(newMinDelay, newMaxDelay));
 }
-")"
+'
+)"
    fi
 
    # ====== Wait a random time span =========================================

@@ -16,7 +16,7 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 - [System-Maintenance](#-system-maintenance) (run basic system maintenance tasks),
 - [Reset-Machine-ID](#-reset-machine-id) (reset the machine identity state, particularly for a cloned VM),
 - [Fingerprint-SSH-Keys](#-fingerprint-ssh-keys) (show the machine's SSH public key fingerprints in different formats),
-- [Configure-Grub](#-configure-grub) (configure options for the GRUB boot loader),
+- [Configure-GRUB](#-configure-grub) (configure options for the GRUB boot loader),
 - [Print-UTF8](#-print-utf8) (print UTF-8 text with options for centering, adjusting, etc.),
 - [Text-Block](#-text-block) (flexible tool for inserting, replacing or removing text blocks in files or streams),
 - [Try-Hard](#-try-hard) (run a command, with configurable retries on failure),
@@ -25,10 +25,12 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 - [GIMP-Scripts](#-gimp-scripts) (collection of scripts using GIMP and GraphicsMagick to apply effects on and resize images).
 
 
+System-Tools provides internationalisation&nbsp;(i18n) support using [GNU gettext](https://www.gnu.org/software/gettext/). That is, translation files for the output of the programs are supported. You can support the project by contributing translations for your language. See [Internationalisation&nbsp;(I18N)](#internationalisation) for details!
+
 
 # 📚 System-Info
 
-System-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System-Info can be configured to be automatically run when logging in, providing the user an up-to-date overview of the system.
+System-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System-Info can be configured to be automatically run when logging in, providing the user with an up-to-date overview of the system.
 
 One main purpose of System-Info is to run on login, to particularly show a nice login banner (for example, a project or company logo) and then present the basic system information. For this purpose, System-Info can be configured with banner scripts (by default looked up in `/etc/system-info.d` or `/usr/local/etc/system-info.d`), which are processed in alphabetically descending order by file name, like:
 
@@ -38,9 +40,9 @@ One main purpose of System-Info is to run on login, to particularly show a nice 
 * `50-company-logo`,
 * `01-example`.
 
-The names of all scripts MUST begin with two decimal numbers. That is, scripts must be named `[0-9][0-9]...` to be processed by System-Info!
+The names of all scripts MUST begin with two decimal digits. That is, scripts must be named `[0-9][0-9]...` to be processed by System-Info!
 
-If one of the scripts exits with non-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script `95-application-logo`).
+If one of the scripts exits with a non-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script `95-application-logo`).
 
 Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-helper) library provided by System-Info:
 
@@ -115,10 +117,10 @@ System-Maintenance runs some system maintenance tasks to keep the system clean a
 - Removing obsolete kernels,
 - Installing all available package updates,
 - Auto-removing unused packages,
-- Ensuring that Grub (the bootloader) is installed and up-to-date,
-- Delete network interface mapping (only on request by option, see below),
 - Updating package and file search caches,
+- Refreshing snap packages (Ubuntu),
 - Updating firmware,
+- Synchronizing the system time,
 - Trimming SSDs and virtual storage.
 
 The typical usage is quite simple, e.g.:
@@ -136,11 +138,11 @@ man System-Maintenance
 
 # 📚 Reset-Machine-ID
 
-Reset-Machine-ID resets the machine identity state, particularly for a cloned VM, to make it appear as a new machine.  It performs the following tasks:
+Reset-Machine-ID resets the machine identity state, particularly for a cloned VM, to make it appear as a new machine. It performs the following tasks:
 
-* Reset `/etc/machine-id`,
-* Reset `/var/lib/dbus/machine-id` (symlink to `/etc/machine-id`),
-* Change hostname, if a new one is provided.
+* Reset `/etc/machine-id`.
+* Reset `/var/lib/dbus/machine-id` (symlink to `/etc/machine-id`).
+* Change the hostname if a new one is provided.
 * Provide hardened settings for SSH client and server.
 * Create new SSH key pair.
 
@@ -152,7 +154,7 @@ The changes are made interactively on request only, unless the option `--yes-to-
   sudo Reset-Machine-ID
   ```
 
-* Reset machine ID, with changing the hostname to new-hostname.domain.example:
+* Reset machine ID, and change the hostname to new-hostname.domain.example:
 
   ```bash
   sudo Reset-Machine-ID --hostname new-hostname.domain.example
@@ -180,11 +182,11 @@ man Fingerprint-SSH-Keys
 ```
 
 
-# 📚 Configure-Grub
+# 📚 Configure-GRUB
 
-Configure-Grub adjusts a GRUB configuration file by applying a configuration from a template, and merging the existing configurations settings with additional customisations. It can for example be used to set a custom screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE option). The [Virtual Machine Image Builder and System Installation Scripts](https://www.nntb.no/~dreibh/vmimage-builder-scripts/) use Configure-Grub to configure the screen resolution and a boot splash image.
+Configure-GRUB adjusts a GRUB configuration file by applying a configuration from a template, and merging the existing configurations settings with additional customisations. It can for example be used to set a custom screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE option). The [Virtual Machine Image Builder and System Installation Scripts](https://www.nntb.no/~dreibh/vmimage-builder-scripts/) use Configure-GRUB to configure the screen resolution and a boot splash image.
 
-The manpage of Configure-Grub contains details and further examples:
+The manpage of Configure-GRUB contains details and further examples:
 
 ```bash
 man configure-grub
@@ -217,7 +219,7 @@ man print-utf8
 
 # 📚 Text-Block
 
-Text-Block is a flexible tool for automated editing operations of text blocks in files or streams:
+Text-Block is a flexible tool for automated editing operations of text blocks in files or streams. This allows for automated, non-interactive editing of specific sections of a file using begin and end tags or line numbers:
 
 * Copying input,
 * Discarding input,
@@ -246,10 +248,10 @@ For example, the publications list in [`index.html`](https://www.nntb.no/~dreibh
   text-block -i index.html -o output.html \
      --begin-tag '<!-- BEGIN-OF-PUBLICATIONS -->' \
      --end-tag '<!-- END-OF-PUBLICATIONS -->' \
-     --delete``
+     --delete
   ```
 
-* To replace the publications list by contents from update.block (e.g.&nbsp; generated by [BibTeXConv](https://www.nntb.no/~dreibh/bibtexconv/), and write the page to output.html:
+* To replace the publications list by contents from update.block (e.g.&nbsp; generated by [BibTeXConv](https://www.nntb.no/~dreibh/bibtexconv/)), and write the page to output.html:
 
   ```bash
   text-block -i index.html -o output.html \
@@ -267,7 +269,7 @@ For example, the publications list in [`index.html`](https://www.nntb.no/~dreibh
 
 # 📚 Try-Hard
 
-Try-Hard runs a command and retries for a given number of times in case of error, with a random or deterministic delay between the trials and possibility to automatically increase the delay.
+Try-Hard runs a command and retries for a given number of times in case of error, with a random or deterministic delay between the trials and possibility to automatically increase the delay. Furthermore, it allows automatically increasing the delay before a new trial, e.g.&nbsp;using a truncated binary exponential backoff.
 
 Examples:
 
@@ -311,11 +313,19 @@ man try-hard
 
 Random-Sleep waits for a random time, selected from a given interval, with support for fractional seconds.
 
-Example to wait between 0.5&nbsp;and 299.5&nbsp;seconds:
+Examples:
 
-```bash
-random-sleep 0.5 299.5 && echo "Finished waiting!"
-```
+* Wait between 0.5&nbsp;and 299.5&nbsp;seconds:
+
+  ```bash
+  random-sleep 0.5 299.5 && echo "Finished waiting!"
+  ```
+
+* Wait between 10&nbsp;and 60&nbsp;seconds, and print status information:
+
+  ```bash
+  random-sleep 10 60 --verbose && echo "Finished waiting!"
+  ```
 
 The manpage of Random-Sleep contains details and further examples:
 
@@ -353,7 +363,7 @@ Also see the manpage of View-Certificate for further details and examples:
 
 ## View-CRL
 
-View-CRL displays details of given [X.509](https://en.wikipedia.org/wiki/X.509) Certificate Revokation Lists&nbsp;(CRL) in [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) or [Distinguished Encoding Rules&nbsp;(DER)](https://en.wikipedia.org/wiki/X.690#DER_encoding) format, particularly the revoked certificates. Examples:
+View-CRL displays details of given [X.509](https://en.wikipedia.org/wiki/X.509) Certificate Revocation Lists&nbsp;(CRL) in [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) or [Distinguished Encoding Rules&nbsp;(DER)](https://en.wikipedia.org/wiki/X.690#DER_encoding) format, particularly the revoked certificates. Examples:
 
 * Display the CRL in file `TestGlobal.crl`:
 
@@ -377,7 +387,7 @@ Also see the manpage of View-CRL for further details and examples:
 
 ## Check-Certificate
 
-Check-Certificate verifies a certificate, by verifying its chain from a given Root CA certificate, and optionally a Certificate Revokation List&nbsp;(CRL) for certificate revocations. The checks are made using [OpenSSL](https://www.openssl.org/). If [GnuTLS](https://gnutls.org/) and/or [Network Security Services&nbsp;(NSS)](https://firefox-source-docs.mozilla.org/security/nss/) are installed as well, the verification is also made by these implementations in addition. This ensures that – in case of success – the certificate and its chain works with all three major X.509 implementations. Examples:
+Check-Certificate verifies a certificate, by verifying its chain from a given Root CA certificate, and optionally a Certificate Revocation List&nbsp;(CRL) for certificate revocations. The checks are made using [OpenSSL](https://www.openssl.org/). If [GnuTLS](https://gnutls.org/) and/or [Network Security Services&nbsp;(NSS)](https://firefox-source-docs.mozilla.org/security/nss/) are installed as well, the verification is also made by these implementations in addition. This ensures that – in case of success – the certificate and its chain work with all three major X.509 implementations. Examples:
 
 * Verify the server certificate in `My-Server-Certificate.crt` using the Root CA certificate in `My-CA-Certificate.crt`:
 
@@ -385,7 +395,7 @@ Check-Certificate verifies a certificate, by verifying its chain from a given Ro
   check-certificate My-CA-Certificate.crt My-Server-Certificate.crt
   ```
 
-* The same as above, but in addtion also checking the CRL in `CRL.crl` for certificate revocations:
+* The same as above, but in addition also checking the CRL in `CRL.crl` for certificate revocations:
 
   ```bash
   check-certificate --crl CRL.crl \
@@ -414,14 +424,14 @@ Extract-PEM extracts an X.509 certificate bundle from a [Privacy-Enhanced Mail&n
 * Extract the PEM file `My-Server-Certificate.crt`, into files `Certificate-<NUMBER>.<EXTENSION>`. The number is starting from&nbsp;1, and provides the position of an entry within the input file:
 
   ```bash
-   extract-pem My-Server-Certificate.crt --output Certificate-
+   extract-pem My-Server-Certificate.crt --output-prefix Certificate-
   ```
 
 * Extract the PEM file `My-Server-Certificate.crt`, into files `Intermediate-<NUMBER>.<EXTENSION>`, skipping the first and last entry. That is, only the intermediate certificates are extracted:
 
   ```bash
    extract-pem My-Server-Certificate.crt \
-      --skip-first-entry --skip-last-entry --output Intermediate-
+      --skip-first-entry --skip-last-entry --output-prefix Intermediate-
   ```
 
 Also see the manpage of Extract-PEM for further details and examples:
@@ -433,7 +443,7 @@ Also see the manpage of Extract-PEM for further details and examples:
 
 ## DER2PEM and PEM2DER
 
-DER2PEM and PEM2DER are simple scripts to convert between ASCII-encoded [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) and binary-encoded [Distinguished Encoding Rules&nbsp;(DER)](https://en.wikipedia.org/wiki/X.690#DER_encoding) certificate or CRL. Examples:
+DER2PEM and PEM2DER are simple scripts to convert between ASCII-encoded [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) and binary-encoded [Distinguished Encoding Rules&nbsp;(DER)](https://en.wikipedia.org/wiki/X.690#DER_encoding) certificates or CRLs. Examples:
 
 * Download the Google CRL (in DER format, from [http://c.pki.goog/wr2/GSyT1N4PBrg.crl](http://c.pki.goog/wr2/GSyT1N4PBrg.crl)) and convert it to PEM:
 
@@ -453,14 +463,14 @@ DER2PEM and PEM2DER are simple scripts to convert between ASCII-encoded [Privacy
 
 Test-TLS-Connection establishes a Transport Layer Security&nbsp;(TLS) connection to a remote TCP server on a given port number. The X.509 certificate is then verified by [Check-Certificate](#check-certificate). Examples:
 
-* Connect to [www.heise.de]([https://www.heise.de:443) and verify the certificate with the Root CA certificate in `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt` (used by [Let's Encrypt](https://letsencrypt.org/)):
+* Connect to [www.heise.de](https://www.heise.de:443) and verify the certificate with the Root CA certificate in `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt` (used by [Let's Encrypt](https://letsencrypt.org/)):
 
   ```bash
   test-tls-connection www.heise.de:443 \
      /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
   ```
 
-* Connect to [www.nntb.no]([https://www.nntb.no:443), store the received certificate in `www.nntb.no.crt`, and verify the certificate with the Root CA certificate in `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt` (used by [Let's Encrypt](https://letsencrypt.org/)):
+* Connect to [www.nntb.no](https://www.nntb.no:443), store the received certificate in `www.nntb.no.crt`, and verify the certificate with the Root CA certificate in `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt` (used by [Let's Encrypt](https://letsencrypt.org/)):
 
   ```bash
   test-tls-connection www.nntb.no:443 \
@@ -520,10 +530,10 @@ sudo dnf install td-system-tools
 
 ## FreeBSD
 
-For ready-to-install FreeBSD packages of System-Tools, it is included in the ports collection, see [FreeBSD ports tree index of net/td-system-tools/](https://cgit.freebsd.org/ports/tree/net/td-system-tools/)!
+For ready-to-install FreeBSD packages of System-Tools, it is included in the ports collection; see [FreeBSD ports tree index of net/td-system-tools/](https://cgit.freebsd.org/ports/tree/net/td-system-tools/)!
 
 ```bash
-sudo pkg install system-tools
+sudo pkg install td-system-tools
 ```
 
 Alternatively, to compile it from the ports sources:
@@ -537,7 +547,7 @@ sudo make install
 
 # 💾 Build from Sources
 
-System-Tools is released under the [GNU General Public Licence&nbsp;(GPL)](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text).
+System-Tools is released under the [GNU General Public License&nbsp;(GPL)](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text).
 
 Please use the issue tracker at [https://github.com/dreibh/system-tools/issues](https://github.com/dreibh/system-tools/issues) to report bugs and issues!
 
@@ -559,7 +569,7 @@ Optionally, for installation to the standard paths (usually under `/usr/local`):
 sudo make install
 ```
 
-Note: The script [`ci/get-dependencies`](https://github.com/dreibh/system-tools/blob/master/ci/get-dependencies) automatically  installs the build dependencies under Debian/Ubuntu Linux, Fedora Linux, and FreeBSD. For manual handling of the build dependencies, see the packaging configuration in [`debian/control`](https://github.com/dreibh/system-tools/blob/master/debian/control) (Debian/Ubuntu Linux), [`system-tools.spec`](https://github.com/dreibh/system-tools/blob/master/rpm/td-system-tools.spec) (Fedora Linux), and [`Makefile`](https://github.com/dreibh/system-tools/blob/master/freebsd/td-system-tools/Makefile) FreeBSD.
+Note: The script [`ci/get-dependencies`](https://github.com/dreibh/system-tools/blob/master/ci/get-dependencies) automatically installs the build dependencies under Debian/Ubuntu Linux, Fedora Linux, and FreeBSD. For manual handling of the build dependencies, see the packaging configuration in [`debian/control`](https://github.com/dreibh/system-tools/blob/master/debian/control) (Debian/Ubuntu Linux), [`system-tools.spec`](https://github.com/dreibh/system-tools/blob/master/rpm/td-system-tools.spec) (Fedora Linux), and [`Makefile`](https://github.com/dreibh/system-tools/blob/master/freebsd/td-system-tools/Makefile) for FreeBSD.
 
 Contributions:
 
@@ -574,6 +584,36 @@ Contributions:
 ## Release Versions
 
 See [https://www.nntb.no/~dreibh/system-tools/#current-stable-release](https://www.nntb.no/~dreibh/system-tools/#current-stable-release) for the release packages!
+
+
+# 🌏 Internationalisation
+
+To provide a translation of one or more components of System-Tools into your language, apply the following steps:
+
+1. Build System-Tools from the Git sources (see [Development Version](#development-version)), i.e.&nbsp;use the "master" branch with the latest development version. The build will create `.pot` (translation template files) under [`po`](po).
+
+2. Create a new Git branch for your translations, e.g.&nbsp;`my_username/translations_language_XX` (with `XX` the language code for your language, e.g. `da` for Danish):
+
+   ```bash
+   git branch my_username/translations_language_XX
+   git checkout my_username/translations_language_XX
+   ```
+
+3. Take a look at the existing `.po` files (translations files) in [`po/de`](po/de) (German) and [`po/nb`](po/nb) (Bokmål) as examples, e.g.&nbsp;[`po/de/System-Info.po`](po/de/System-Info.po) or [`po/nb/System-Info.po`](po/nb/System-Info.po) for System-Info. Then, prepare a translation for program `PROGRAM` (e.g.&nbsp;System-Info; see the name of the  `.pot` translation template file) for your language `XX` under [`po`](po):
+
+   ```bash
+   mkdir -p XX
+   msginit --input PROGRAM.pot \
+           --locale XX.UTF-8 \
+           --output-file XX/PROGRAM.po
+   git add XX/PROGRAM.po
+   ```
+
+4. Add your translations into `XX/PROGRAM.po`, with a text editor or PO file editor like [Poedit](https://poedit.com/).
+
+5. Test, commit and push your changes.
+
+6. Finally, make a pull request: [https://github.com/dreibh/system-tools/pulls](https://github.com/dreibh/system-tools/pulls).
 
 
 # 🔗 Useful Links
