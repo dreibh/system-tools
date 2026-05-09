@@ -39,9 +39,7 @@
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm gs-clothify
-input_filename
-output_filename
+.Nm gs-clothify Ar input_filename Ar output_filename
 .br
 .Op Fl X Ar value | Fl Fl blur-x Ar value
 .br
@@ -69,20 +67,20 @@ runs GIMP to load an image, and applies the GIMP Script-Fu "Clothify" filter
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It input_filename
+.It Ar input_filename
 The input image. Any format support by GIMP can be used. The format will be detected automatically.
-.It output_filename
+.It Ar output_filename
 The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
 .It Fl X Ar value | Fl Fl blur-x Ar value
-Sets the blur X parameter for the "Clothify" filter. Range: 3-100. Default: 3.
+Sets the blur X parameter for the "Clothify" filter. Range: 3\-100. Default: 3.
 .It Fl Y Ar value | Fl Fl blur-y Ar value
-Sets the blur Y parameter for the "Clothify" filter. Range: 3-100. Default: 3.
+Sets the blur Y parameter for the "Clothify" filter. Range: 3\-100. Default: 3.
 .It Fl A Ar bearing | Fl Fl azimuth Ar bearing
-Sets the azimuth parameter for the "Clothify" filter. Range: 0.0-360.0. Default: 135.0.
+Sets the azimuth parameter for the "Clothify" filter. Range: 0.0\-360.0. Default: 135.0.
 .It Fl E Ar bearing | Fl Fl elevation Ar bearing
-Sets the elevation parameter for the "Clothify" filter. Range: 0.5-90.0. Default: 45.0.
+Sets the elevation parameter for the "Clothify" filter. Range: 0.5\-90.0. Default: 45.0.
 .It Fl D Ar depth | Fl Fl depth Ar depth
-Sets the depth parameter for the "Clothify" filter. Range: 1-65. Default: 5.
+Sets the depth parameter for the "Clothify" filter. Range: 1\-65. Default: 5.
 .It Fl q | Fl Fl quiet
 Quiet mode: suppress GIMP console output. This is the default.
 .It Fl w | Fl Fl verbose
@@ -112,7 +110,6 @@ tool exits with 0 on success, and >0 in case of an error.
 .Sh SEE ALSO
 .Xr gs-bumpmap 1 ,
 .Xr gs-caption 1 ,
-.Xr gs-clothify 1 ,
 .Xr gs-glossytext 1 ,
 .Xr gs-list-fonts 1 ,
 .Xr gs-list-gradients 1 ,
@@ -125,8 +122,8 @@ tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Notes ############################################################
 .Sh NOTES
 This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
-.Lk https://www.nntb.no/\(tidreibh/system-tools/ .
+.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
 Thomas Dreibholz,
-.Lk https://www.nntb.no/\(tidreibh
+.Lk https://www.nntb.no/\(tidreibh "Homepage"
