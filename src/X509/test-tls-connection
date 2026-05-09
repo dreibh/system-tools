@@ -133,8 +133,7 @@ if [ "${CERTIFICATE_FILE}" == "" ] ; then
    CERTIFICATE_FILE="${tempCertFile}"
 fi
 
-# shellcheck disable=SC2068
-echo "" | openssl s_client -showcerts -connect "${ENDPOINT}" -no-CApath -no-CAstore -CAfile "${CA_FILE}" $@ >"${tempOutputFile}"
+echo "" | openssl s_client -showcerts -connect "${ENDPOINT}" -no-CApath -no-CAstore -CAfile "${CA_FILE}" "$@" >"${tempOutputFile}"
 
 text-block --extract \
            --begin-tag '-----BEGIN CERTIFICATE-----'  \
