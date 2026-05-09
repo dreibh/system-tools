@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 9, 2026
 .Dt gs-mosaic 1
 .Os gs-mosaic
 .\" ###### Name #############################################################
@@ -85,7 +85,7 @@ The following options are available:
 The input image. Any format support by GIMP can be used. The format will be detected automatically.
 .It output_filename
 The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It Fl T Ar triangles|squares|hexagons|octagons | --tile-type Ar triangles|squares|hexagons|octagons
+.It Fl T Ar triangles|squares|hexagons|octagons | \-\-tile-type Ar triangles|squares|hexagons|octagons
 Sets the tile type: triangles, squares, hexagons, octagons. Default: hexagons.
 .It Fl S Ar size | Fl Fl tile-size Ar size
 Specifies the tile size. Range: 1.0-1000.0. Default: 15.0.
@@ -114,14 +114,19 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It gs-mosaic Bergen.jpeg Bergen-Hexagons.png --tile-size 24 --tile-height 4 --tile-spacing 4 --tile-type hexagons --tile-surface rough
-.It gs-mosaic Bergen.jpeg Bergen-Octagons.webp -S 24 -H 4 -X 4 -T octagons -F smooth -T hexagons -N 1.0
-.It gs-mosaic Portobello.jpeg Portobello-Octagons.jpeg -S 32 -H 8 -X 8 -T octagons -F smooth -N 1.0
-.It gs-mosaic --help
-.It gs-mosaic -h
-.It gs-mosaic --version
-.It gs-mosaic -v
+.It gs-mosaic Bergen.jpeg Bergen-Hexagons.png \-\-tile-size 24 \-\-tile-height 4 \-\-tile-spacing 4 \-\-tile-type hexagons \-\-tile-surface rough
+.It gs-mosaic Bergen.jpeg Bergen-Octagons.webp \-S 24 \-H 4 \-X 4 \-T octagons \-F smooth \-T hexagons \-N 1.0
+.It gs-mosaic Portobello.jpeg Portobello-Octagons.jpeg \-S 32 \-H 8 \-X 8 \-T octagons \-F smooth \-N 1.0
+.It gs-mosaic \-\-help
+.It gs-mosaic \-h
+.It gs-mosaic \-\-version
+.It gs-mosaic \-v
 .El

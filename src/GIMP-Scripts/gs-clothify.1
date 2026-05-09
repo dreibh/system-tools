@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 9, 2026
 .Dt gs-clothify 1
 .Os gs-clothify
 .\" ###### Name #############################################################
@@ -90,14 +90,19 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It gs-clothify Bergen.jpeg Bergen-Clothify.jpeg
-.It gs-clothify Bergen.jpeg Bergen-Clothify-with-Border8.jpeg --depth 8 --verbose
-.It gs-clothify Bergen.jpeg Bergen-Clothify-with-Depth5.jpeg -D 5
-.It gs-clothify --help
-.It gs-clothify -h
-.It gs-clothify --version
-.It gs-clothify -v
+.It gs-clothify Bergen.jpeg Bergen-Clothify-with-Border8.jpeg \-\-depth 8 \-\-verbose
+.It gs-clothify Bergen.jpeg Bergen-Clothify-with-Depth5.jpeg \-D 5
+.It gs-clothify \-\-help
+.It gs-clothify \-h
+.It gs-clothify \-\-version
+.It gs-clothify \-v
 .El

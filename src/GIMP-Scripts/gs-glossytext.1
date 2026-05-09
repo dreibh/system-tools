@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 9, 2026
 .Dt gs-glossytext 1
 .Os gs-glossytext
 .\" ###### Name #############################################################
@@ -137,20 +137,25 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It gs-glossytext NorNet1.png \(dqNorNet Testbed\(dq --font-name \(dqNoto Sans Bold\(dq --font-size 128 --outline-size 5
-.It gs-glossytext NorNet2.png \(dqNorNet Testbed\(dq --font-name \(dqComic Sans MS Bold\(dq --font-size 256 --outline-size 32
-.It gs-glossytext NorNet3.png \(dqNorNet Testbed\(dq --font-name \(dqComic Sans MS Bold\(dq --font-size 256 --outline-size 32 --blend-gradient-text \(dqBrushed Aluminium\(dq --blend-gradient-outline \(dqGolden\(dq
-.It gs-glossytext Test1.png \(dqTest\(dq --font-size 256 --outline-size 32 --blend-gradient-text \(dqLand 1\(dq  --pattern-outline \(dqMarble #3\(dq --use-pattern-outline on
-.It gs-glossytext Test2.png \(dqTest\(dq --font-size 256 --outline-size 16 -I \(dqMarble #1\(dq -i on  -J \(dqMarble #2\(dq -j on
-.It gs-glossytext Test3.png \(dqTest\(dq --font-size 256 --outline-size 16 -G \(dqYellow Orange\(dq -L \(dqCold Steel\(dq
-.It gs-glossytext Test4.png \(dqGenerated on $(date -R)\(dq -F \(dqOpen Sans Bold\(dq -S 64 --use-shadow off
-.It gs-glossytext M2EC.webp \(dqM²EC 2026\(dq --font-name \(dqLobster Two Bold Italic\(dq --font-size 128 --outline-size 12
-.It gs-glossytext Chinese.png \(dq托马斯博士\(dq -F \(dqNoto Sans Bold\(dq -S 256 -O 24
-.It gs-glossytext --help
-.It gs-glossytext -h
-.It gs-glossytext --version
-.It gs-glossytext -v
+.It gs-glossytext NorNet1.png \(dqNorNet Testbed\(dq \-\-font-name \(dqNoto Sans Bold\(dq \-\-font-size 128 \-\-outline-size 5
+.It gs-glossytext NorNet2.png \(dqNorNet Testbed\(dq \-\-font-name \(dqComic Sans MS Bold\(dq \-\-font-size 256 \-\-outline-size 32
+.It gs-glossytext NorNet3.png \(dqNorNet Testbed\(dq \-\-font-name \(dqComic Sans MS Bold\(dq \-\-font-size 256 \-\-outline-size 32 \-\-blend-gradient-text \(dqBrushed Aluminium\(dq \-\-blend-gradient-outline \(dqGolden\(dq
+.It gs-glossytext Test1.png \(dqTest\(dq \-\-font-size 256 \-\-outline-size 32 \-\-blend-gradient-text \(dqLand 1\(dq  \-\-pattern-outline \(dqMarble #3\(dq \-\-use-pattern-outline on
+.It gs-glossytext Test2.png \(dqTest\(dq \-\-font-size 256 \-\-outline-size 16 \-I \(dqMarble #1\(dq \-i on  \-J \(dqMarble #2\(dq \-j on
+.It gs-glossytext Test3.png \(dqTest\(dq \-\-font-size 256 \-\-outline-size 16 \-G \(dqYellow Orange\(dq \-L \(dqCold Steel\(dq
+.It gs-glossytext Test4.png \(dqGenerated on $(date \-R)\(dq \-F \(dqOpen Sans Bold\(dq \-S 64 \-\-use-shadow off
+.It gs-glossytext M2EC.webp \(dqM²EC 2026\(dq \-\-font-name \(dqLobster Two Bold Italic\(dq \-\-font-size 128 \-\-outline-size 12
+.It gs-glossytext Chinese.png \(dq托马斯博士\(dq \-F \(dqNoto Sans Bold\(dq \-S 256 \-O 24
+.It gs-glossytext \-\-help
+.It gs-glossytext \-h
+.It gs-glossytext \-\-version
+.It gs-glossytext \-v
 .El

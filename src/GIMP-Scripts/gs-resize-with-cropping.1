@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 9, 2026
 .Dt gs-resize-with-cropping 1
 .Os gs-resize-with-cropping
 .\" ###### Name #############################################################
@@ -95,16 +95,21 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It gs-resize-with-cropping Bergen.jpeg Bergen-1920-4:3.webp 4:3 1920 --verbose
+.It gs-resize-with-cropping Bergen.jpeg Bergen-1920-4:3.webp 4:3 1920 \-\-verbose
 .It gs-resize-with-cropping Bergen.jpeg Bergen-1920-16:9.png 16x9 1920
 .It gs-resize-with-cropping Bergen.jpeg Bergen-3860-A3.pdf A3 3840
 .It gs-resize-with-cropping Bergen.jpeg Bergen-1024-An.jpeg 1.414214 1024
-.It gs-resize-with-cropping Portobello.jpeg Portobello-2048-16:9.jpeg -A 16:9 --width 2048 -v
-.It gs-resize-with-cropping --help
-.It gs-resize-with-cropping -h
-.It gs-resize-with-cropping --version
-.It gs-resize-with-cropping -v
+.It gs-resize-with-cropping Portobello.jpeg Portobello-2048-16:9.jpeg \-A 16:9 \-\-width 2048 \-v
+.It gs-resize-with-cropping \-\-help
+.It gs-resize-with-cropping \-h
+.It gs-resize-with-cropping \-\-version
+.It gs-resize-with-cropping \-v
 .El

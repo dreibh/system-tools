@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 9, 2026
 .Dt gs-oldphoto 1
 .Os gs-oldphoto
 .\" ###### Name #############################################################
@@ -86,15 +86,20 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It gs-oldphoto Bergen.jpeg Bergen-OldPhoto.jpeg
-.It gs-oldphoto Bergen.jpeg Bergen-OldPhoto-with-Border20.jpeg --border-size 20 --verbose
-.It gs-oldphoto Bergen.jpeg Bergen-OldPhoto-with-Border40.jpeg -B 40
-.It gs-oldphoto Portobello.jpeg Portobello-OldPhoto.jpeg --verbose --sepia off --mottle on
-.It gs-oldphoto --help
-.It gs-oldphoto -h
-.It gs-oldphoto --version
-.It gs-oldphoto -v
+.It gs-oldphoto Bergen.jpeg Bergen-OldPhoto-with-Border20.jpeg \-\-border-size 20 \-\-verbose
+.It gs-oldphoto Bergen.jpeg Bergen-OldPhoto-with-Border40.jpeg \-B 40
+.It gs-oldphoto Portobello.jpeg Portobello-OldPhoto.jpeg \-\-verbose \-\-sepia off \-\-mottle on
+.It gs-oldphoto \-\-help
+.It gs-oldphoto \-h
+.It gs-oldphoto \-\-version
+.It gs-oldphoto \-v
 .El
