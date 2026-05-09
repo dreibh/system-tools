@@ -36,11 +36,8 @@ _test_tls_connection()
    local cur prev words cword
    if type -t _comp_initialize >/dev/null; then
       _comp_initialize || return
-      # NOTE: -n ":" allows colons!
-      _get_comp_words_by_ref -n ":" cur
    elif type -t _init_completion >/dev/null; then
-      # NOTE: -n ":" allows colons!
-      _init_completion -n ":" || return
+      _init_completion || return
    else
       # Manual initialization for older bash completion versions:
       COMPREPLY=()
@@ -53,17 +50,33 @@ _test_tls_connection()
       cword="${COMP_CWORD}"
    fi
 
+   # ====== Handle the ":" in host:port =====================================
+   local real_cword=0
+   local i=1
+   while [ $i -le "${COMP_CWORD}" ] ; do
+      if [[ "${COMP_WORDS[i]}" == ":" ]] ; then
+         true   # Ignore a colon
+      elif [ $i -gt 1 ] && [[ "${COMP_WORDS[i-1]}" == ":" ]] && [[ "${COMP_WORDS[i]}" != "" ]] ; then
+         true    # Ignore text after the colon
+      else
+         real_cword=$((real_cword + 1))   # New word
+      fi
+      i=$((i + 1))
+   done
+
    if [[ "${cur}" != -* ]] ; then
-      if [ "${cword}" -eq 1 ] ; then
+      # ====== Suggest hostname:port ========================================
+      if [ "${real_cword}" -eq 1 ] ; then
          local hostname
-         hostname="$(hostname -f || echo "localhost")"
+         hostname="$(hostname -f 2>/dev/null || echo "localhost")"
          mapfile -t COMPREPLY < <(compgen -W "${hostname}:443 www.heise.de:443 www.ietf.org:443 www.nntb.no:443 www.simula.no:443" -- "${cur}")
          # NOTE: Block before colon may be duplicated -> need to truncate:
          if [[ ${cur} == *:* ]] ; then
             __ltrim_colon_completions "${cur}"
          fi
          return
-      elif [ "${cword}" -eq 2 ] ; then
+      # ====== Suggest CA certificate file ==================================
+      elif [ "${real_cword}" -eq 2 ] ; then
          _filedir '@(cert|crt|pem)'
          return
       fi
