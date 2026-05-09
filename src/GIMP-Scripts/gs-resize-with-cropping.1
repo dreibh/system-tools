@@ -41,7 +41,7 @@
 .Sh SYNOPSIS
 .Nm gs-resize-with-cropping Ar input_filename Ar output_filename
 .br
-.Op Fl A aspect_ratio | Fl Fl aspect Ar aspect_ratio
+.Op Fl A Ar aspect_ratio | Fl Fl aspect Ar aspect_ratio
 .br
 .Op Fl A Ar H:V|HxV | Fl Fl aspect Ar H:V|HxV
 .br
@@ -69,10 +69,10 @@ resizes an image, including cropping to fit a changed aspect ratio.
 The following options are available:
 .Bl -tag -width indent
 .It Ar input_filename
-The input image. Any format support by GraphicsMagick can be used. The format will be detected automatically.
+The input image. Any format supported by GraphicsMagick can be used. The format will be detected automatically.
 .It Ar output_filename
-The name for the output image to be written. Any format support by GraphicsMagick can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It Fl A aspect_ratio | Fl Fl aspect Ar aspect_ratio
+The name for the output image to be written. Any format supported by GraphicsMagick can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
+.It Fl A Ar aspect_ratio | Fl Fl aspect Ar aspect_ratio
 Specifies the aspect ratio directly as value (e.g. 1.414214).
 .It Fl A Ar H:V|HxV | Fl Fl aspect Ar H:V|HxV
 Specifies the aspect ratio as H:V or HxV (e.g. 16:9 or 16x9).
@@ -84,8 +84,6 @@ Leaves the aspect ratio unchanged. This is the default.
 Specifies the new width. Then, the new height is calculated based on the configured aspect ratio.
 .It Fl H Ar new_height | Fl Fl height Ar new_height
 Specifies the new height. Then, the new width is calculated based on the configured aspect ratio.
-.It Fl q | Fl Fl quiet
-Quiet mode: no output is made.
 .It Fl q | Fl Fl quiet
 Quiet mode: suppress status output. This is the default.
 .It Fl w | Fl Fl verbose
@@ -103,10 +101,10 @@ tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It gs-resize-with-cropping Bergen.jpeg Bergen-1920-4:3.webp 4:3 1920 \-\-verbose
-.It gs-resize-with-cropping Bergen.jpeg Bergen-1920-16:9.png 16x9 1920
-.It gs-resize-with-cropping Bergen.jpeg Bergen-3860-A3.pdf A3 3840
-.It gs-resize-with-cropping Bergen.jpeg Bergen-1024-An.jpeg 1.414214 1024
+.It gs-resize-with-cropping Bergen.jpeg Bergen-1920-4:3.webp \-\-aspect 4:3 \-\-width 1920 \-\-verbose
+.It gs-resize-with-cropping Bergen.jpeg Bergen-1920-16:9.png \-A 16x9 \-W 1920
+.It gs-resize-with-cropping Bergen.jpeg Bergen-3860-A3.pdf \-\-aspect A3 \-\-width 3840
+.It gs-resize-with-cropping Bergen.jpeg Bergen-1024-An.jpeg \-A 1.414214 \-W 1024
 .It gs-resize-with-cropping Portobello.jpeg Portobello-2048-16:9.jpeg \-A 16:9 \-\-width 2048 \-v
 .It gs-resize-with-cropping \-\-help
 .It gs-resize-with-cropping \-h
