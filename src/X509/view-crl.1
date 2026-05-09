@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 7, 2026
+.Dd May 9, 2026
 .Dt view-crl 1
 .Os view-crl
 .\" ###### Name #############################################################
@@ -67,11 +67,29 @@ Prints the program version and exits.
 .Bl -tag -width indent
 .It view-crl My-CA-CRL.crl
 .It view-crl /usr/lib/python3.12/test/certdata/revocation.crl
-.It curl -o google-crl.der.crl http://c.pki.goog/wr2/GSyT1N4PBrg.crl && \
+.It curl \-o google-crl.der.crl http://c.pki.goog/wr2/GSyT1N4PBrg.crl && \
 view-crl google-crl.der.crl
-.It curl --output - http://c.pki.goog/wr2/GSyT1N4PBrg.crl | view-crl -
-.It view-crl --help
-.It view-crl -h
-.It view-crl --version
-.It view-crl -v
+.It curl \-\-output \- http://c.pki.goog/wr2/GSyT1N4PBrg.crl | view-crl \-
+.It view-crl \-\-help
+.It view-crl \-h
+.It view-crl \-\-version
+.It view-crl \-v
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr check-certificate 1 ,
+.Xr der2pem 1 ,
+.Xr extract-pem 1 ,
+.Xr pem2der 1 ,
+.Xr test-tls-connection 1 ,
+.Xr view-certificate 1 ,
+.Xr view-crl 1 ,
+.Xr openssl 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/~dreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/~dreibh

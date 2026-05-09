@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 7, 2026
+.Dd May 9, 2026
 .Dt check-certificate 1
 .Os check-certificate
 .\" ###### Name #############################################################
@@ -77,10 +77,28 @@ Prints the program version and exits.
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It check-certificate My-CA-Certificate.crt My-Server-Certificate.crt
-.It check-certificate --crl CRL.crl My-CA-Certificate.crt My-Server-Certificate.crt
+.It check-certificate \-\-crl CRL.crl My-CA-Certificate.crt My-Server-Certificate.crt
 .It check-certificate /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt www.nntb.no.crt
-.It check-certificate --help
-.It check-certificate -h
-.It check-certificate --version
-.It check-certificate -v
+.It check-certificate \-\-help
+.It check-certificate \-h
+.It check-certificate \-\-version
+.It check-certificate \-v
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr check-certificate 1 ,
+.Xr der2pem 1 ,
+.Xr extract-pem 1 ,
+.Xr pem2der 1 ,
+.Xr test-tls-connection 1 ,
+.Xr view-certificate 1 ,
+.Xr view-crl 1 ,
+.Xr openssl 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/~dreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/~dreibh
