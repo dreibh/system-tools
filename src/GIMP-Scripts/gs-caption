@@ -35,7 +35,7 @@ set -euo pipefail
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 output_filename caption_width caption_height caption_text [-F|--font-name font] [-S|--font-size percentage] [-f|--foreground color] [-b|--background color] [|-t|--transparency percentage] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
+   echo >&2 "Usage: $0 output_filename caption_width caption_height caption_text [-F|--font-name font] [-S|--font-size percentage] [-f|--foreground color] [-b|--background color] [-t|--transparency percentage] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
 
@@ -83,7 +83,7 @@ while [ $# -gt 0 ] ; do
          FONT_SIZE="$2"
          shift
          if [[ ! "${FONT_SIZE}" =~ ^[0-9]+$ ]] || [ "${FONT_SIZE}" -lt 1 ] || [ "${FONT_SIZE}" -gt 100 ] ; then
-            echo >&2 "ERROR: Invalid value ${FONT_SIZE} for -s|--font-size!"
+            echo >&2 "ERROR: Invalid value ${FONT_SIZE} for -S|--font-size!"
             exit 1
          fi
          ;;

@@ -199,7 +199,7 @@ while [ $# -gt 0 ] ; do
             echo >&2 "ERROR: Invalid value ${HUE_RANGE} for -H|--hue-range!"
             exit 1
          fi
-         HUE_RANGE="${hueRanges[$2]}"
+         HUE_RANGE="${hueRanges["${HUE_RANGE}"]}"
          ;;
       -O | --hue-offset)
          HUE_OFFSET="$2"
@@ -305,8 +305,8 @@ rm -f "${OUTPUT_FILENAME}"
 ( cat <<EOF
 (let*
    ; ------ Initialise and load image ---------------------------------------
-   ((inputFileName  ${INPUT_FILENAME}")
-    (outputFileName ${OUTPUT_FILENAME}")
+   ((inputFileName  "${INPUT_FILENAME}")
+    (outputFileName "${OUTPUT_FILENAME}")
     (azimuth        ${AZIMUTH})
     (elevation      ${ELEVATION})
     (depth          ${DEPTH})
@@ -353,7 +353,7 @@ rm -f "${OUTPUT_FILENAME}"
    (if (defined? 'gimp-drawable-merge-new-filter)
       (begin  ; New GIMP >= 3.0 API:
         (gimp-drawable-merge-new-filter layer "gegl:bump-map" 0 LAYER-MODE-REPLACE 1.0
-            "azimut"     azimuth
+            "azimuth"    azimuth
             "elevation"  elevation
             "depth"      depth
             "offset-x"   offsetX

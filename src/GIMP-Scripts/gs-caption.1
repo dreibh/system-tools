@@ -39,14 +39,7 @@
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm gs-caption
-output_filename
-.br
-caption_width
-.br
-caption_height
-.br
-caption_text
+.Nm gs-caption Ar output_filename Ar caption_width Ar caption_height Ar caption_text
 .br
 .Op Fl F Ar font | Fl Fl font-name Ar font
 .br
@@ -74,27 +67,29 @@ generate a caption image with given text using a specific font. The foreground a
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It output_filename
-The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It caption_width
+.It Ar output_filename
+The name for the output image to be written. Any format supported by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
+.It Ar caption_width
 The width of the image to be generated.
-.It caption_height
+.It Ar caption_height
 The height of the image to be generated.
-.It caption_text
+.It Ar caption_text
 The caption text.
 .It Fl F Ar font | Fl Fl font-name Ar font
 Specifies the font and style to be used. Font and style are space separated, e.g. \(dqURW Gothic Book Oblique\(dq for font \(dqURW Gothic\(dq in style \(dqURW Gothic Book Oblique\(dq.
-Use `fc-list\~: family style -f \(dq%{family[0]} %{style[0]}\[rs]n\(dq | sort -u` to list all installed fonts and styles.
+Use `fc-list\~: family style \-f \(dq%{family[0]} %{style[0]}\[rs]n\(dq | sort \-u` to list all installed fonts and styles.
 .It  Fl S Ar percentage | Fl Fl font-size Ar percentage
-Specifies the font size, in percentage of the caption height. Range: 1-100. Default: 50.
+Specifies the font size, in percentage of the caption height. Range: 1\-100. Default: 50.
 .It  Fl f Ar color | Fl Fl foreground Ar color
 Specifies the foreground color, as \(dq#RRGGBB\(dq in hexadecimal. Default: \(dq#02266b\(dq (dark blue).
 .It  Fl b Ar color | Fl Fl background Ar color
 Specifies the background color, as \(dq#RRGGBB\(dq in hexadecimal. Default: \(dq#ffd700\(dq (gold).
 .It  Fl t Ar percentage | Fl Fl transparency Ar percentage
-Specifies the transparency of the caption box in percent. Range: 0-100. Default: 25.
+Specifies the transparency of the caption box in percent. Range: 0\-100. Default: 25.
+.It Fl q | Fl Fl quiet
+Quiet mode: suppress GIMP console output. This is the default.
 .It Fl w | Fl Fl verbose
-Verbose mode: print selected delay and wake-up.
+Verbose mode: print GIMP console output and processing details.
 .It Fl h | Fl Fl help
 Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
@@ -117,3 +112,24 @@ tool exits with 0 on success, and >0 in case of an error.
 .It gs-caption \-\-version
 .It gs-caption \-v
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr gs-bumpmap 1 ,
+.Xr gs-clothify 1 ,
+.Xr gs-glossytext 1 ,
+.Xr gs-list-fonts 1 ,
+.Xr gs-list-gradients 1 ,
+.Xr gs-list-patterns 1 ,
+.Xr gs-mosaic 1 ,
+.Xr gs-oilify 1 ,
+.Xr gs-oldphoto 1 ,
+.Xr gs-resize-with-cropping 1 ,
+.Xr gs-test-gimp 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

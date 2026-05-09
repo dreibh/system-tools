@@ -65,14 +65,23 @@ _gs_bumpmap()
             mapfile -t COMPREPLY < <(compgen -W "on off" --  "${cur}")
             return
             ;;
+         # ====== Hue range =================================================
+         -H | --hue-range)
+            mapfile -t COMPREPLY < <(compgen -W "all red yellow green cyan blue magenta" -- "${cur}")
+            return
+            ;;
          #  ====== Generic value ============================================
-         -A | --azimuth     | \
+         -A | --azimuth    | \
          -E | --elevation  | \
          -D | --depth      | \
          -X | --offset-x   | \
          -Y | --offset-y   | \
          -W | --waterlevel | \
-         -B | --ambient)
+         -B | --ambient    | \
+         -O | --hue-offset | \
+         -L | --lightness  | \
+         -S | --saturation | \
+         -V | --overlap)
             return
             ;;
       esac
