@@ -50,12 +50,14 @@ _der2pem()
       cword="${COMP_CWORD}"
    fi
 
-   if [ "${cword}" -le 1 ] ; then
-      _filedir '@(der)'
-      return
-   elif [ "${cword}" -le 2 ] ; then
-      _filedir '@(cert|crt|pem)'
-      return
+   if [[ "${cur}" != -* ]] ; then
+      if [ "${cword}" -eq 1 ] ; then
+         _filedir '@(der)'
+         return
+      elif [ "${cword}" -eq 2 ] ; then
+         _filedir '@(cert|crt|pem)'
+         return
+      fi
    fi
 
    # ====== All options =====================================================

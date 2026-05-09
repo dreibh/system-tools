@@ -111,6 +111,9 @@ if [ $# -lt 2 ] ; then
    usage 1
 fi
 ENDPOINT="$1"
+if [[ ! "${ENDPOINT}" =~ :.+$ ]] ; then
+   ENDPOINT="${ENDPOINT}:443"
+fi
 CA_FILE="$2"
 shift 2
 if [ ! -e "${CA_FILE}" ] ; then
