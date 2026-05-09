@@ -64,11 +64,11 @@ _System_Info()
                              "Sat Oct 26 01:35:00 PDT 1985"
                              "Wed Oct 21 16:29:00 PDT 2015"
                              "Tue Sep 29 13:10:00 CEST 2026" )
-         local search="${cur//\\/}"
          COMPREPLY=()
+         local search="${cur//\\/}"   # The strings contain spaces!
          for item in "${dateOptions[@]}" ; do
             if [[ "${item}" == "${search}"* ]] ; then
-               COMPREPLY+=( "${item// /\\ }" )
+               COMPREPLY+=( "${item// /\\ }" )   # The strings contain spaces!
             fi
          done
          return
