@@ -39,9 +39,7 @@
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm gs-bumpmap
-input_filename
-output_filename
+.Nm gs-bumpmap Ar input_filename Ar output_filename
 .br
 .Op Fl C Ar on|off | Fl Fl compensate-darkening Ar on|off
 .br
@@ -82,19 +80,24 @@ output_filename
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs-bumpmap
-runs GIMP to load an image, and applies the GIMP GEGL "Bump Map" filter
-(details: https://gegl.org/operations/gegl-bump-map.html) as well as
+runs GIMP to load an image, and applies the
+GIMP GEGL "Bump Map" filter
+(details:
+.Lk https://gegl.org/operations/gegl-bump-map.html "GEGL Bump Map" )
+as well as
 "Hue-Saturation" adjustment
-(details: https://docs.gimp.org/3.0/en/gimp-tool-hue-saturation.html).
+(details:
+.Lk https://docs.gimp.org/3.0/en/gimp-tool-hue-saturation.html "GIMP: Hue-Saturation" )
+and stores the result into an output file.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It input_filename
-The input image. Any format support by GIMP can be used. The format will be detected automatically.
-.It output_filename
-The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
+.It Ar input_filename
+The input image. Any format supported by GIMP can be used. The format will be detected automatically.
+.It Ar output_filename
+The name for the output image to be written. Any format supported by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
 .It Fl C Ar on|off | Fl Fl compensate-darkening Ar on|off
 Turns compensation for darkening on or off. Default: on.
 .It Fl I Ar on|off | Fl Fl invert Ar on|off
@@ -108,9 +111,9 @@ Sets the elevation parameter for the "Bump Map" filter. Range: 0.5-90.0. Default
 .It Fl D Ar depth | Fl Fl depth Ar depth
 Sets the depth parameter for the "Bump Map" filter. Range: 1-65. Default: 20.
 .It Fl X Ar value | Fl Fl offset-x Ar value
-Sets the offset X parameter for the "Bump Map" filter. Range: -20000-20000. Default: 0.
+Sets the offset X parameter for the "Bump Map" filter. Range: \-20000-20000. Default: 0.
 .It Fl Y Ar value | Fl Fl offset-y Ar value
-Sets the offset Y parameter for the "Bump Map" filter. Range: -20000-20000. Default: 0.
+Sets the offset Y parameter for the "Bump Map" filter. Range: \-20000-20000. Default: 0.
 .It Fl W Ar level | Fl Fl waterlevel Ar level
 Sets the water level (level that full transparency should represent). Range: 0.0-1.0. Default: 0.0.
 .It Fl B Ar factor | Fl Fl ambient Ar factor
@@ -118,15 +121,17 @@ Sets the ambient lighting factor. Range: 0.0-1.0. Default: 0.0.
 .It Fl H Ar all|red|yellow|green|cyan|blue|magenta | Fl Fl hue-range Ar all|red|yellow|green|cyan|blue|magenta
 Sets the hue range (affected colors): red, yellow, green, cyan, blue, magenta, or all. Default: all.
 .It Fl O Ar degrees | Fl Fl hue-offset Ar degrees
-Sets the hue offset. Range: -180.0-180.0. Default: .
+Sets the hue offset. Range: \-180.0-180.0. Default: 0.0.
 .It Fl L Ar adjustment | Fl Fl lightness Ar adjustment
-Sets the lightness adjustment. Range: -100.0-100.0. Default: 0.0.
+Sets the lightness adjustment. Range: \-100.0-100.0. Default: 0.0.
 .It Fl S Ar adjustment | Fl Fl saturation Ar adjustment
-Sets the saturation adjustment. Range: -100.0-100.0. Default: 0.0.
+Sets the saturation adjustment. Range: \-100.0-100.0. Default: 0.0.
 .It Fl V Ar overlap | Fl Fl overlap Ar overlap
 Sets the overlap. Range: 0.0-100.0. Default: 0.0.
+.It Fl q | Fl Fl quiet
+Quiet mode: suppress GIMP console output. This is the default.
 .It Fl w | Fl Fl verbose
-Verbose mode: print selected delay and wake-up.
+Verbose mode: print GIMP console output and processing details.
 .It Fl h | Fl Fl help
 Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
@@ -141,7 +146,7 @@ tool exits with 0 on success, and >0 in case of an error.
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It gs-bumpmap Image1.png BumpMap1.png
-.It gs-bumpmap Image3.png BumpMap3.png \-\-hue-range all \-hue-offset 120.0 \-\-lightness \-15.0
+.It gs-bumpmap Image3.png BumpMap3.png \-\-hue-range all \-\-hue-offset 120.0 \-\-lightness \-15.0
 .It gs-bumpmap \-\-help
 .It gs-bumpmap \-h
 .It gs-bumpmap \-\-version
@@ -149,7 +154,6 @@ tool exits with 0 on success, and >0 in case of an error.
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
-.Xr gs-bumpmap 1 ,
 .Xr gs-caption 1 ,
 .Xr gs-clothify 1 ,
 .Xr gs-glossytext 1 ,
