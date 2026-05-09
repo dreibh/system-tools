@@ -29,54 +29,54 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd May 9, 2026
-.Dt gs-oilify 1
-.Os gs-oilify
+.Dt gs\-oilify 1
+.Os gs\-oilify
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm gs-oilify
+.Nm gs\-oilify
 .Nd applies the GIMP GEGL "Oilify" filter on an image
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm gs-oilify Ar input_filename Ar output_filename
+.Nm gs\-oilify Ar input\_filename Ar output\_filename
 .br
-.Op Fl S Ar masksize | Fl Fl mask-size Ar masksize
+.Op Fl S Ar masksize | Fl Fl mask\-size Ar masksize
 .br
-.Op Fl I Ar on|off | Fl Fl intensity-mode Ar on|off
+.Op Fl I Ar on|off | Fl Fl intensity\-mode Ar on|off
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
-.Nm gs-oilify
+.Nm gs\-oilify
 .Op Fl h | Fl Fl help
-.Nm gs-oilify
+.Nm gs\-oilify
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm gs-oilify
+.Nm gs\-oilify
 runs GIMP to load an image, and applies the GIMP GEGL "Oilify" filter
 (details:
-.Lk https://gegl.org/operations/gegl-oilify.html "GEGL Oilify" )
+.Lk https://gegl.org/operations/gegl\-oilify.html "GEGL Oilify" )
 and stores the result into an output file.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Ar input_filename
+.It Ar input\_filename
 The input image. Any format supported by GIMP can be used. The format will be detected automatically.
-.It Ar output_filename
+.It Ar output\_filename
 The name for the output image to be written. Any format supported by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It Fl S Ar masksize | Fl Fl mask-size Ar masksize
+.It Fl S Ar masksize | Fl Fl mask\-size Ar masksize
 Specifies the mask size. Range: 2\-200. Default: 8.
-.It Fl I Ar on|off | Fl Fl intensity-mode Ar on|off
+.It Fl I Ar on|off | Fl Fl intensity\-mode Ar on|off
 Turns intensity mode on or off. Default: on.
 .It Fl q | Fl Fl quiet
 Quiet mode: suppress GIMP console output. This is the default.
 .It Fl w | Fl Fl verbose
 Verbose mode: print GIMP console output and processing details.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
@@ -88,29 +88,29 @@ tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It gs-oilify Bergen.jpeg Bergen-Oilify.png \-S 12 \-I off
-.It gs-oilify Bergen.jpeg Bergen-Oilify.webp \-\-mask\-size 10 \-\-verbose
-.It gs-oilify \-\-help
-.It gs-oilify \-h
-.It gs-oilify \-\-version
-.It gs-oilify \-v
+.It gs\-oilify Bergen.jpeg Bergen\-Oilify.png \-S 12 \-I off
+.It gs\-oilify Bergen.jpeg Bergen\-Oilify.webp \-\-mask\-size 10 \-\-verbose
+.It gs\-oilify \-\-help
+.It gs\-oilify \-h
+.It gs\-oilify \-\-version
+.It gs\-oilify \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
-.Xr gs-bumpmap 1 ,
-.Xr gs-caption 1 ,
-.Xr gs-clothify 1 ,
-.Xr gs-glossytext 1 ,
-.Xr gs-list-gradients 1 ,
-.Xr gs-list-patterns 1 ,
-.Xr gs-mosaic 1 ,
-.Xr gs-oldphoto 1 ,
-.Xr gs-resize-with-cropping 1 ,
-.Xr gs-test-gimp 1
+.Xr gs\-bumpmap 1 ,
+.Xr gs\-caption 1 ,
+.Xr gs\-clothify 1 ,
+.Xr gs\-glossytext 1 ,
+.Xr gs\-list\-gradients 1 ,
+.Xr gs\-list\-patterns 1 ,
+.Xr gs\-mosaic 1 ,
+.Xr gs\-oldphoto 1 ,
+.Xr gs\-resize\-with\-cropping 1 ,
+.Xr gs\-test\-gimp 1
 .\" ###### Notes ############################################################
 .Sh NOTES
-This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
-.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
 Thomas Dreibholz,

@@ -29,113 +29,113 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd May 9, 2026
-.Dt gs-glossytext 1
-.Os gs-glossytext
+.Dt gs\-glossytext 1
+.Os gs\-glossytext
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm gs-glossytext
-.Nd applies the GIMP Script-Fu "Glossy" filter on an image
+.Nm gs\-glossytext
+.Nd applies the GIMP Script\-Fu "Glossy" filter on an image
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm gs-glossytext Ar output_filename Ar text
-.Op Fl F Ar font | Fl Fl font-name Ar font
-.Op Fl S Ar size | Fl Fl font-size Ar size
+.Nm gs\-glossytext Ar output\_filename Ar text
+.Op Fl F Ar font | Fl Fl font\-name Ar font
+.Op Fl S Ar size | Fl Fl font\-size Ar size
 .br
-.Op Fl G Ar gradient | Fl Fl blend-gradient-text Ar gradient
-.Op Fl g Ar on|off | Fl Fl blend-gradient-text-reverse Ar on|off
+.Op Fl G Ar gradient | Fl Fl blend\-gradient\-text Ar gradient
+.Op Fl g Ar on|off | Fl Fl blend\-gradient\-text\-reverse Ar on|off
 .br
-.Op Fl L Ar gradient | Fl Fl blend-gradient-outline Ar gradient
-.Op Fl l Ar on|off | Fl Fl blend-gradient-outline-reverse Ar on|off
+.Op Fl L Ar gradient | Fl Fl blend\-gradient\-outline Ar gradient
+.Op Fl l Ar on|off | Fl Fl blend\-gradient\-outline\-reverse Ar on|off
 .br
-.Op Fl O Ar size | Fl Fl outline-size Ar size
+.Op Fl O Ar size | Fl Fl outline\-size Ar size
 .br
-.Op Fl B Ar color | Fl Fl background-color Ar color
+.Op Fl B Ar color | Fl Fl background\-color Ar color
 .br
-.Op Fl I Ar pattern | Fl Fl pattern-text Ar pattern
-.Op Fl i Ar on|off | Fl Fl use-pattern-text Ar on|off
+.Op Fl I Ar pattern | Fl Fl pattern\-text Ar pattern
+.Op Fl i Ar on|off | Fl Fl use\-pattern\-text Ar on|off
 .br
-.Op Fl J Ar pattern | Fl Fl pattern-outline Ar pattern
-.Op Fl j Ar on|off | Fl Fl use-pattern-outline Ar on|off
+.Op Fl J Ar pattern | Fl Fl pattern\-outline Ar pattern
+.Op Fl j Ar on|off | Fl Fl use\-pattern\-outline Ar on|off
 .br
-.Op Fl R Ar pattern | Fl Fl pattern-overlay Ar pattern
-.Op Fl r Ar on|off | Fl Fl use-pattern-overlay Ar on|off
+.Op Fl R Ar pattern | Fl Fl pattern\-overlay Ar pattern
+.Op Fl r Ar on|off | Fl Fl use\-pattern\-overlay Ar on|off
 .br
-.Op Fl s Ar on|off | Fl Fl use-shadow Ar on|off
+.Op Fl s Ar on|off | Fl Fl use\-shadow Ar on|off
 .br
-.Op Fl X Ar offset | Fl Fl shadow-offset-x Ar offset
-.Op Fl Y Ar offset | Fl Fl shadow-offset-y Ar offset
+.Op Fl X Ar offset | Fl Fl shadow\-offset\-x Ar offset
+.Op Fl Y Ar offset | Fl Fl shadow\-offset\-y Ar offset
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
-.Nm gs-glossytext
+.Nm gs\-glossytext
 .Op Fl h | Fl Fl help
-.Nm gs-glossytext
+.Nm gs\-glossytext
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm gs-glossytext
-runs GIMP to load an image, and applies the GIMP Script-Fu "Glossy" filter
+.Nm gs\-glossytext
+runs GIMP to load an image, and applies the GIMP Script\-Fu "Glossy" filter
 (details:
-.Lk https://docs.gimp.org/2.8/en/script-fu-glossy-logo-alpha.html "GIMP Script-Fu Alpha to Logo Filters" )
+.Lk https://docs.gimp.org/2.8/en/script\-fu\-glossy\-logo\-alpha.html "GIMP Script\-Fu Alpha to Logo Filters" )
 and stores the result into an output file.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Ar output_filename
+.It Ar output\_filename
 The name for the output image to be written. Any format supported by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
 .It Ar text
 The text to be printed.
-.It Fl F Ar font | Fl Fl font-name Ar font
+.It Fl F Ar font | Fl Fl font\-name Ar font
 Specifies the font and style to be used. Font and style are space separated, e.g. \(dqURW Gothic Book Oblique\(dq for font \(dqURW Gothic\(dq in style \(dqURW Gothic Book Oblique\(dq.
-Use `fc-list\~: family style -f \(dq%{family[0]} %{style[0]}\[rs]n\(dq | sort -u` to list all installed fonts and styles.
-.It  Fl S Ar size | Fl Fl font-size Ar size
+Use `fc\-list\~: family style \-f \(dq%{family[0]} %{style[0]}\[rs]n\(dq | sort \-u` to list all installed fonts and styles.
+.It  Fl S Ar size | Fl Fl font\-size Ar size
 Specifies the font size in pixels. Default: 50.
-.It Fl G Ar gradient | Fl Fl blend-gradient-text Ar gradient
+.It Fl G Ar gradient | Fl Fl blend\-gradient\-text Ar gradient
 Specifies the blend gradient for the text, e.g. \(dqGolden\(dq. The name must be a gradient in GIMP (.ggr file, usually in /usr/share/gimp/*/gradients/ or /usr/local/share/gimp/*/gradients/). Default: Golden.
-.It Fl g Ar on|off | Fl Fl blend-gradient-text-reverse Ar on|off
+.It Fl g Ar on|off | Fl Fl blend\-gradient\-text\-reverse Ar on|off
 Turns reversing the blend gradient for the text on or off. Default: off.
-.It Fl L Ar gradient | Fl Fl blend-gradient-outline Ar gradient
+.It Fl L Ar gradient | Fl Fl blend\-gradient\-outline Ar gradient
 Specifies the blend gradient for the outline, e.g. \(dqGolden\(dq. The name must be a gradient in GIMP (.ggr file, usually in /usr/share/gimp/*/gradients/ or /usr/local/share/gimp/*/gradients/). Default: Golden.
-.It Fl l Ar on|off | Fl Fl blend-gradient-outline-reverse Ar on|off
+.It Fl l Ar on|off | Fl Fl blend\-gradient\-outline\-reverse Ar on|off
 Turns reversing the blend gradient for the outline on or off. Default: off.
-.It Fl O Ar size | Fl Fl outline-size Ar size
+.It Fl O Ar size | Fl Fl outline\-size Ar size
 Specifies the outline size. Range: 2\-250. Default: 5.
-.It Fl B Ar color | Fl Fl background-color Ar color
+.It Fl B Ar color | Fl Fl background\-color Ar color
 Specifies the background color, as \(dq#RRGGBB\(dq in hexadecimal (e.g. \(dq#02266b\(dq for dark blue) or name (e.g. \(dqwhite\(dq). Default: white.
-.It Fl I Ar pattern | Fl Fl pattern-text Ar pattern
+.It Fl I Ar pattern | Fl Fl pattern\-text Ar pattern
 Specifies a pattern for the text, e.g. \(dqElectric Blue\(dq. The name must be a pattern in GIMP (.pat file, usually in /usr/share/gimp/*/patterns/ or /usr/local/share/gimp/*/patterns/). Default: Electric Blue.
 .br
-Note: The usage of the pattern still needs to be enabled by `\-\-use-pattern-text on`!
-.It Fl i Ar on|off | Fl Fl use-pattern-text Ar on|off
+Note: The usage of the pattern still needs to be enabled by `\-\-use\-pattern\-text on`!
+.It Fl i Ar on|off | Fl Fl use\-pattern\-text Ar on|off
 Turns usage of a pattern for the text on or off. Default: off.
-.It Fl J Ar pattern | Fl Fl pattern-outline Ar pattern
+.It Fl J Ar pattern | Fl Fl pattern\-outline Ar pattern
 Specifies a pattern for the outline, e.g. \(dqElectric Blue\(dq. The name must be a pattern in GIMP (.pat file, usually in /usr/share/gimp/*/patterns/ or /usr/local/share/gimp/*/patterns/). Default: Electric Blue.
 .br
-Note: The usage of the pattern still needs to be enabled by `\-\-use-pattern-outline on`!
-.It Fl j Ar on|off | Fl Fl use-pattern-outline Ar on|off
+Note: The usage of the pattern still needs to be enabled by `\-\-use\-pattern\-outline on`!
+.It Fl j Ar on|off | Fl Fl use\-pattern\-outline Ar on|off
 Turns usage of a pattern for the outline on or off. Default: off.
-.It Fl R Ar pattern | Fl Fl pattern-overlay Ar pattern
+.It Fl R Ar pattern | Fl Fl pattern\-overlay Ar pattern
 Specifies a pattern for the overlay, e.g. \(dqParque #1\(dq. The name must be a pattern in GIMP (.pat file, usually in /usr/share/gimp/*/patterns/ or /usr/local/share/gimp/*/patterns/). Default: Parque #1.
 .br
-Note: The usage of the pattern still needs to be enabled by `\-\-use-pattern-overlay on`!
-.It Fl r Ar on|off | Fl Fl use-pattern-overlay Ar on|off
+Note: The usage of the pattern still needs to be enabled by `\-\-use\-pattern\-overlay on`!
+.It Fl r Ar on|off | Fl Fl use\-pattern\-overlay Ar on|off
 Turns usage of a pattern for the overlay on or off. Default: off.
-.It Fl s Ar on|off | Fl Fl use-shadow Ar on|off
+.It Fl s Ar on|off | Fl Fl use\-shadow Ar on|off
 Turns usage of shadow on or off. Default: on.
-.It Fl X Ar offset | Fl Fl shadow-offset-x Ar offset
-Sets the x-offset for the shadow. Range: 0\-100. Default: 8.
-.It Fl Y Ar offset | Fl Fl shadow-offset-y Ar offset
-Sets the y-offset for the shadow. Range: 0\-100. Default: 8.
+.It Fl X Ar offset | Fl Fl shadow\-offset\-x Ar offset
+Sets the x\-offset for the shadow. Range: 0\-100. Default: 8.
+.It Fl Y Ar offset | Fl Fl shadow\-offset\-y Ar offset
+Sets the y\-offset for the shadow. Range: 0\-100. Default: 8.
 .It Fl q | Fl Fl quiet
 Quiet mode: suppress GIMP console output. This is the default.
 .It Fl w | Fl Fl verbose
 Verbose mode: print GIMP console output and processing details.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
@@ -147,37 +147,37 @@ tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It gs-glossytext NorNet1.png \(dqNorNet Testbed\(dq \-\-font-name \(dqNoto Sans Bold\(dq \-\-font-size 128 \-\-outline-size 5
-.It gs-glossytext NorNet2.png \(dqNorNet Testbed\(dq \-\-font-name \(dqComic Sans MS Bold\(dq \-\-font-size 256 \-\-outline-size 32
-.It gs-glossytext NorNet3.png \(dqNorNet Testbed\(dq \-\-font-name \(dqComic Sans MS Bold\(dq \-\-font-size 256 \-\-outline-size 32 \-\-blend-gradient-text \(dqBrushed Aluminium\(dq \-\-blend-gradient-outline \(dqGolden\(dq
-.It gs-glossytext Test1.png \(dqTest\(dq \-\-font-size 256 \-\-outline-size 32 \-\-blend-gradient-text \(dqLand 1\(dq  \-\-pattern-outline \(dqMarble #3\(dq \-\-use-pattern-outline on
-.It gs-glossytext Test2.png \(dqTest\(dq \-\-font-size 256 \-\-outline-size 16 \-I \(dqMarble #1\(dq \-i on  \-J \(dqMarble #2\(dq \-j on
-.It gs-glossytext Test3.png \(dqTest\(dq \-\-font-size 256 \-\-outline-size 16 \-G \(dqYellow Orange\(dq \-L \(dqCold Steel\(dq
-.It gs-glossytext Test4.png \(dqGenerated on $(date \-R)\(dq \-F \(dqOpen Sans Bold\(dq \-S 64 \-\-use-shadow off
-.It gs-glossytext M2EC.webp \(dqM²EC 2026\(dq \-\-font-name \(dqLobster Two Bold Italic\(dq \-\-font-size 128 \-\-outline-size 12
-.It gs-glossytext Chinese.png \(dq托马斯博士\(dq \-F \(dqNoto Sans Bold\(dq \-S 256 \-O 24
-.It gs-glossytext \-\-help
-.It gs-glossytext \-h
-.It gs-glossytext \-\-version
-.It gs-glossytext \-v
+.It gs\-glossytext NorNet1.png \(dqNorNet Testbed\(dq \-\-font\-name \(dqNoto Sans Bold\(dq \-\-font\-size 128 \-\-outline\-size 5
+.It gs\-glossytext NorNet2.png \(dqNorNet Testbed\(dq \-\-font\-name \(dqComic Sans MS Bold\(dq \-\-font\-size 256 \-\-outline\-size 32
+.It gs\-glossytext NorNet3.png \(dqNorNet Testbed\(dq \-\-font\-name \(dqComic Sans MS Bold\(dq \-\-font\-size 256 \-\-outline\-size 32 \-\-blend\-gradient\-text \(dqBrushed Aluminium\(dq \-\-blend\-gradient\-outline \(dqGolden\(dq
+.It gs\-glossytext Test1.png \(dqTest\(dq \-\-font\-size 256 \-\-outline\-size 32 \-\-blend\-gradient\-text \(dqLand 1\(dq  \-\-pattern\-outline \(dqMarble #3\(dq \-\-use\-pattern\-outline on
+.It gs\-glossytext Test2.png \(dqTest\(dq \-\-font\-size 256 \-\-outline\-size 16 \-I \(dqMarble #1\(dq \-i on  \-J \(dqMarble #2\(dq \-j on
+.It gs\-glossytext Test3.png \(dqTest\(dq \-\-font\-size 256 \-\-outline\-size 16 \-G \(dqYellow Orange\(dq \-L \(dqCold Steel\(dq
+.It gs\-glossytext Test4.png \(dqGenerated on $(date \-R)\(dq \-F \(dqOpen Sans Bold\(dq \-S 64 \-\-use\-shadow off
+.It gs\-glossytext M2EC.webp \(dqM²EC 2026\(dq \-\-font\-name \(dqLobster Two Bold Italic\(dq \-\-font\-size 128 \-\-outline\-size 12
+.It gs\-glossytext Chinese.png \(dq托马斯博士\(dq \-F \(dqNoto Sans Bold\(dq \-S 256 \-O 24
+.It gs\-glossytext \-\-help
+.It gs\-glossytext \-h
+.It gs\-glossytext \-\-version
+.It gs\-glossytext \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
-.Xr gs-bumpmap 1 ,
-.Xr gs-caption 1 ,
-.Xr gs-clothify 1 ,
-.Xr gs-list-fonts 1 ,
-.Xr gs-list-gradients 1 ,
-.Xr gs-list-patterns 1 ,
-.Xr gs-mosaic 1 ,
-.Xr gs-oilify 1 ,
-.Xr gs-oldphoto 1 ,
-.Xr gs-resize-with-cropping 1 ,
-.Xr gs-test-gimp 1
+.Xr gs\-bumpmap 1 ,
+.Xr gs\-caption 1 ,
+.Xr gs\-clothify 1 ,
+.Xr gs\-list\-fonts 1 ,
+.Xr gs\-list\-gradients 1 ,
+.Xr gs\-list\-patterns 1 ,
+.Xr gs\-mosaic 1 ,
+.Xr gs\-oilify 1 ,
+.Xr gs\-oldphoto 1 ,
+.Xr gs\-resize\-with\-cropping 1 ,
+.Xr gs\-test\-gimp 1
 .\" ###### Notes ############################################################
 .Sh NOTES
-This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
-.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
 Thomas Dreibholz,

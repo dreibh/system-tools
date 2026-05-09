@@ -29,19 +29,19 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd May 9, 2026
-.Dt gs-resize-with-cropping 1
-.Os gs-resize-with-cropping
+.Dt gs\-resize\-with\-cropping 1
+.Os gs\-resize\-with\-cropping
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm gs-resize-with-cropping
+.Nm gs\-resize\-with\-cropping
 .Nd resizes an image, including cropping to fit a changed aspect ratio.
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm gs-resize-with-cropping Ar input_filename Ar output_filename
+.Nm gs\-resize\-with\-cropping Ar input\_filename Ar output\_filename
 .br
-.Op Fl A Ar aspect_ratio | Fl Fl aspect Ar aspect_ratio
+.Op Fl A Ar aspect\_ratio | Fl Fl aspect Ar aspect\_ratio
 .br
 .Op Fl A Ar H:V|HxV | Fl Fl aspect Ar H:V|HxV
 .br
@@ -49,30 +49,30 @@
 .br
 .Op Fl A Ar keep | Fl Fl aspect Ar keep
 .br
-.Op Fl W Ar new_width | Fl Fl width Ar new_width
+.Op Fl W Ar new\_width | Fl Fl width Ar new\_width
 .br
-.Op Fl H Ar new_height | Fl Fl height Ar new_height
+.Op Fl H Ar new\_height | Fl Fl height Ar new\_height
 .br
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
-.Nm gs-resize-with-cropping
+.Nm gs\-resize\-with\-cropping
 .Op Fl h | Fl Fl help
-.Nm gs-resize-with-cropping
+.Nm gs\-resize\-with\-cropping
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm gs-resize-with-cropping
+.Nm gs\-resize\-with\-cropping
 resizes an image, including cropping to fit a changed aspect ratio.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Ar input_filename
+.It Ar input\_filename
 The input image. Any format supported by GraphicsMagick can be used. The format will be detected automatically.
-.It Ar output_filename
+.It Ar output\_filename
 The name for the output image to be written. Any format supported by GraphicsMagick can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It Fl A Ar aspect_ratio | Fl Fl aspect Ar aspect_ratio
+.It Fl A Ar aspect\_ratio | Fl Fl aspect Ar aspect\_ratio
 Specifies the aspect ratio directly as value (e.g. 1.414214).
 .It Fl A Ar H:V|HxV | Fl Fl aspect Ar H:V|HxV
 Specifies the aspect ratio as H:V or HxV (e.g. 16:9 or 16x9).
@@ -80,16 +80,16 @@ Specifies the aspect ratio as H:V or HxV (e.g. 16:9 or 16x9).
 Specifies the aspect ratio as DIN An format ratio (A1, A2, ..., A9, or An; i.e. sqrt(2):1 ≈ 1.414213562373).
 .It Fl A Ar keep | Fl Fl aspect Ar keep
 Leaves the aspect ratio unchanged. This is the default.
-.It Fl W Ar new_width | Fl Fl width Ar new_width
+.It Fl W Ar new\_width | Fl Fl width Ar new\_width
 Specifies the new width. Then, the new height is calculated based on the configured aspect ratio.
-.It Fl H Ar new_height | Fl Fl height Ar new_height
+.It Fl H Ar new\_height | Fl Fl height Ar new\_height
 Specifies the new height. Then, the new width is calculated based on the configured aspect ratio.
 .It Fl q | Fl Fl quiet
 Quiet mode: suppress status output. This is the default.
 .It Fl w | Fl Fl verbose
 Verbose mode: print status output and processing details.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
@@ -101,30 +101,30 @@ tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It gs-resize-with-cropping Bergen.jpeg Bergen-1920-4:3.webp \-\-aspect 4:3 \-\-width 1920 \-\-verbose
-.It gs-resize-with-cropping Bergen.jpeg Bergen-1920-16:9.png \-A 16x9 \-W 1920
-.It gs-resize-with-cropping Bergen.jpeg Bergen-3860-A3.pdf \-\-aspect A3 \-\-width 3840
-.It gs-resize-with-cropping Bergen.jpeg Bergen-1024-An.jpeg \-A 1.414214 \-W 1024
-.It gs-resize-with-cropping Portobello.jpeg Portobello-2048-16:9.jpeg \-A 16:9 \-\-width 2048 \-v
-.It gs-resize-with-cropping \-\-help
-.It gs-resize-with-cropping \-h
-.It gs-resize-with-cropping \-\-version
-.It gs-resize-with-cropping \-v
+.It gs\-resize\-with\-cropping Bergen.jpeg Bergen\-1920\-4:3.webp \-\-aspect 4:3 \-\-width 1920 \-\-verbose
+.It gs\-resize\-with\-cropping Bergen.jpeg Bergen\-1920\-16:9.png \-A 16x9 \-W 1920
+.It gs\-resize\-with\-cropping Bergen.jpeg Bergen\-3860\-A3.pdf \-\-aspect A3 \-\-width 3840
+.It gs\-resize\-with\-cropping Bergen.jpeg Bergen\-1024\-An.jpeg \-A 1.414214 \-W 1024
+.It gs\-resize\-with\-cropping Portobello.jpeg Portobello\-2048\-16:9.jpeg \-A 16:9 \-\-width 2048 \-v
+.It gs\-resize\-with\-cropping \-\-help
+.It gs\-resize\-with\-cropping \-h
+.It gs\-resize\-with\-cropping \-\-version
+.It gs\-resize\-with\-cropping \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
-.Xr gs-bumpmap 1 ,
-.Xr gs-caption 1 ,
-.Xr gs-clothify 1 ,
-.Xr gs-glossytext 1 ,
-.Xr gs-mosaic 1 ,
-.Xr gs-oilify 1 ,
-.Xr gs-oldphoto 1 ,
-.Xr gs-test-gimp 1
+.Xr gs\-bumpmap 1 ,
+.Xr gs\-caption 1 ,
+.Xr gs\-clothify 1 ,
+.Xr gs\-glossytext 1 ,
+.Xr gs\-mosaic 1 ,
+.Xr gs\-oilify 1 ,
+.Xr gs\-oldphoto 1 ,
+.Xr gs\-test\-gimp 1
 .\" ###### Notes ############################################################
 .Sh NOTES
-This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
-.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
 Thomas Dreibholz,
