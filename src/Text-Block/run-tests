@@ -35,12 +35,22 @@ RUN=""
 # RUN="valgrind "
 
 
+# ###### Helper function to show success ####################################
+exit-success ()
+{
+   echo
+   print-utf8 -n -s "\e[1;32m█" "▀" "█\e[0m" ;
+   echo "ALL CHECKS SUCCEEDED!" | figlet -w "${COLUMNS}" | print-utf8 -n -C "\e[1;32m█\e[25m" "█\e[0m" ;
+   print-utf8 -n -s "\e[1;32m█" "▄" "█\e[0m"
+   exit 0
+}
+
+
 
 # ###### Main program #######################################################
 
 # ====== Find tools =========================================================
-PRINT_UTF8="$(command -v print-utf8 || true)"
-if [ ! -x "${PRINT_UTF8}" ] ; then
+if ! command -v print-utf8 2>/dev/null ; then
    echo >&2 "ERROR: Print-UTF8 (from System-Tools) is not installed!"
    echo >&2 "Try this:"
    echo >&2 "* Ubuntu:  sudo apt-add-repository -sy ppa:dreibh/ppa"
@@ -50,8 +60,7 @@ if [ ! -x "${PRINT_UTF8}" ] ; then
    echo >&2 "* FreeBSD: sudo pkg install -y td-system-tools"
    exit 1
 fi
-FIGLET="$(command -v figlet || true)"
-if [ ! -x "${FIGLET}" ] ; then
+if ! command -v figlet 2>/dev/null ; then
    echo >&2 "ERROR: Figlet is not installed!"
    echo >&2 "* Ubuntu:  sudo apt install -y figlet"
    echo >&2 "* Fedora:  sudo dnf install -y figlet"
@@ -71,7 +80,7 @@ for test in simple markers advanced1 advanced2 example1 example2 ; do
          for o2 in tags-only full-tag-lines ; do
 
             # ====== Prepare test run =======================================
-            "${PRINT_UTF8}" -x 86 -s "\x1b[34m###### Testing: ${test} --${mode} --${o1} --${o2} " "#" "#\x1b[0m   " >&2
+            print-utf8 -x 86 -s "\x1b[34m###### Testing: ${test} --${mode} --${o1} --${o2} " "#" "#\x1b[0m   " >&2
 
             # ------ Default parameters -------------------------------------
             inputFile="text-block-tests/${test}.txt"
@@ -116,19 +125,19 @@ for test in simple markers advanced1 advanced2 example1 example2 ; do
                   failures=$((failures+1))
                   (
                      echo
-                     "${PRINT_UTF8}" -n -s "\e[1;31;5m█" "▀" "█\e[0m" ;
-                     echo "TEST FAILED!" | figlet -w 64 | "${PRINT_UTF8}" -n -C "\e[1;31;5m█\e[25m" "\e[5m█\e[0m" ;
-                     "${PRINT_UTF8}" -n -s "\e[1;31;5m█" "▄" "█\e[0m"
+                     print-utf8 -n -s "\e[1;31;5m█" "▀" "█\e[0m" ;
+                     echo "CHECK FAILED!" | figlet -w "${COLUMNS}" | print-utf8 -n -C "\e[1;31;5m█\e[25m" "\e[5m█\e[0m" ;
+                     print-utf8 -n -s "\e[1;31;5m█" "▄" "█\e[0m"
                      echo "Failure #${failures}:"
                      echo "Command:${command}"
                      echo
-                     "${PRINT_UTF8}" -x 78 -n -s  "\x1b[33m------ Good ($(basename "${goodFile}")) " "-" "-\x1b[0m"
+                     print-utf8 -x 78 -n -s  "\x1b[33m------ Good ($(basename "${goodFile}")) " "-" "-\x1b[0m"
                      cat "${goodFile}"
                      echo
-                     "${PRINT_UTF8}" -x 78 -n -s  "\x1b[35m------ Output ($(basename "${outputFile}")) " "-" "-\x1b[0m"
+                     print-utf8 -x 78 -n -s  "\x1b[35m------ Output ($(basename "${outputFile}")) " "-" "-\x1b[0m"
                      cat "${outputFile}"
                      echo
-                     "${PRINT_UTF8}" -x 78 -n -s  "\x1b[31m------ Differences: " "-" "-\x1b[0m"
+                     print-utf8 -x 78 -n -s  "\x1b[31m------ Differences: " "-" "-\x1b[0m"
                      diff --color "${goodFile}" "${outputFile}" || true
                      echo
                      cp "${outputFile}" "${badFile}"
@@ -145,3 +154,5 @@ for test in simple markers advanced1 advanced2 example1 example2 ; do
       done
    done
 done
+
+exit-success
