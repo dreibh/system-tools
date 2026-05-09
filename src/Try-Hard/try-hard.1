@@ -41,11 +41,11 @@
 .Sh SYNOPSIS
 .Nm try-hard Ar max_trials Ar max_delay
 .br
-.Op Fl m Ar min_delay | Fl Fl min-delay Ar min_delay
+.Op Fl m Ar min_delay | Fl Fl min\-delay Ar min_delay
 .br
-.Op Fl A Ar delay_increment | Fl Fl additive-increase Ar delay_increment
+.Op Fl A Ar delay_increment | Fl Fl additive\-increase Ar delay_increment
 .br
-.Op Fl M Ar delay_factor | Fl Fl multiplicative-increase Ar delay_factor
+.Op Fl M Ar delay_factor | Fl Fl multiplicative\-increase Ar delay_factor
 .br
 .Op Fl T Ar max_delay | Fl Fl truncate-delay Ar truncated_max_delay
 .br
@@ -63,11 +63,11 @@ command ...
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm try-hard
-tries to run a command up to a given number of trials. In case of failure, the program waits for a specific delay before the next trial.
+tries to run a command up to a given number of trials max_trials. In case of failure, the program waits for a specific delay before the next trial.
 .br
 The delay to wait is by default randomly chosen (using random-sleep) from the interval [min_delay, max_delay]. Alternatively, in deterministic mode, the delay is always max_delay.
 .br
-For each new trial, it is possible to increase the interval [min_delay, max_delay] by a multiplicative-increase factor as well as an additive-increase increment. The upper bound for max_delay can be limited by truncated_max_delay to prevent further increases. The initial min_delay is always the lower bound.
+For each new trial, it is possible to increase the interval [min_delay, max_delay] by a multiplicative\-increase factor as well as an additive\-increase increment. The upper bound for max_delay can be limited by truncated_max_delay to prevent further increases. The initial min_delay is always the lower bound.
 .br
 On failure, the exit code of the last failed trial is returned.
 .Pp
@@ -75,12 +75,16 @@ On failure, the exit code of the last failed trial is returned.
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl m Ar min_delay | Fl Fl min-delay Ar min_delay
+.It Ar max_trials
+The maximum number of trials.
+.It Ar max_delay
+The maximum delay.
+.It Fl m Ar min_delay | Fl Fl min\-delay Ar min_delay
 Sets the minimum delay min_delay (default: 0.0).
-.It Fl A Ar delay_increment | Fl Fl additive-increase Ar delay_increment
-Sets the additive-increase delay increment (default: 0.0).
-.It Fl M Ar delay_factor | Fl Fl multiplicative-increase Ar delay_factor
-Sets the multiplicative-increase delay factor (default: 1.0).
+.It Fl A Ar delay_increment | Fl Fl additive\-increase Ar delay_increment
+Sets the additive\-increase delay increment (default: 0.0).
+.It Fl M Ar delay_factor | Fl Fl multiplicative\-increase Ar delay_factor
+Sets the multiplicative\-increase delay factor (default: 1.0).
 .It Fl T Ar max_delay | Fl Fl truncate-delay Ar truncated_max_delay
 Sets the truncated_max_delay for limiting the increase of max_delay (default: 31536000.0, i.e. 1 year).
 .It Fl D | Fl Fl deterministic
@@ -88,7 +92,7 @@ Sets deterministic mode, i.e. turns off randomisation of the delay.
 .It Fl q | Fl Fl quiet
 Quiet mode: no output is made.
 .It Fl w | Fl Fl verbose
-Verbose mode: print selected delay and wake-up.
+Verbose mode: print selected delay and wake\-up.
 .It Fl h | Fl Fl help
 Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
@@ -106,9 +110,9 @@ tool exits with 0 on success. On failure, the exit code of the last failed trial
 .It try-hard 3 300 \-q \-\- git clone https://git.freebsd.org/ports.git
 .It try-hard 3 65.5 \-\- wget \-O example.tar.gz https://www.example.net/example.tar.gz
 .It try-hard 10 1.0 \-w \-\- false
-.It try-hard 10 2.0 \-\-min-delay 1.0 \-\-multiplicative-increase 2.0 \-\-truncate-delay 3600.0 \-w \-\- false
+.It try-hard 10 2.0 \-\-min\-delay 1.0 \-\-multiplicative\-increase 2.0 \-\-truncate-delay 3600.0 \-w \-\- false
 .It try-hard 10 1.0 \-m 1 \-M 2 \-T 3600 \-w \-\- false
-.It try-hard 10 1 \-\-min-delay 0.5 \-\-additive-increase 5 \-\-truncate-delay 300 \-w \-\- false
+.It try-hard 10 1 \-\-min\-delay 0.5 \-\-additive\-increase 5 \-\-truncate-delay 300 \-w \-\- false
 .It try-hard 10 1 \-m 1 \-A 5 \-T 300 \-w \-\- false
 .It try-hard 10 1.0 \-\-deterministic \-w \-\- false
 .It try-hard 10 1.0 \-D \-w \-\- false
@@ -120,8 +124,8 @@ tool exits with 0 on success. On failure, the exit code of the last failed trial
 .Xr random-sleep 1
 .\" ###### Notes ############################################################
 .Sh NOTES
-This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
-.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
 Thomas Dreibholz,

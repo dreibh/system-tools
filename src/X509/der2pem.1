@@ -39,9 +39,7 @@
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm der2pem
-der_file
-pem_file
+.Nm der2pem Ar der_file Ar pem_file
 .Nm der2pem
 .Op Fl h | Fl Fl help
 .Nm der2pem
@@ -55,9 +53,9 @@ converts a given certificate or CRL file from DER to PEM format.
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It der_file
+.It Ar der_file
 The certificate or CRL file in DER format to be converted.
-.It pem_file
+.It Ar pem_file
 The certificate or CRL file in PEM format to be written.
 .It Fl h | Fl Fl help
 Prints the program's command-line parameters and exits.
@@ -91,8 +89,8 @@ tool exits with 0 on success, and >0 in case of an error.
 .Xr openssl 1
 .\" ###### Notes ############################################################
 .Sh NOTES
-This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
-.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
 Thomas Dreibholz,

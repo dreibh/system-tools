@@ -39,8 +39,7 @@
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm extract-pem
-pem_file
+.Nm extract-pem Ar pem_file
 .Op ...
 .br
 .Op Fl o Ar file_name_prefix | Fl Fl output-prefix Ar file_name_prefix
@@ -69,7 +68,7 @@ extracts the blocks of PEM files into separate files. The output files will be n
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It pem_file [...]
+.It Ar pem_file [...]
 Specifies one or more PEM files to be extracted.
 .It Fl o Ar file_name_prefix | Fl Fl output-prefix Ar file_name_prefix
 Sets the output file prefix (default: "output-").
@@ -114,8 +113,8 @@ tool exits with 0 on success, and >0 in case of an error.
 .Xr openssl 1
 .\" ###### Notes ############################################################
 .Sh NOTES
-This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
-.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
 Thomas Dreibholz,

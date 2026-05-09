@@ -9,7 +9,7 @@
 .\"                  https://www.nntb.no/~dreibh/system-tools/
 .\" ==========================================================================
 .\"
-.\" Get-System-Info
+.\" Get-System\-Info
 .\" Copyright (C) 2024-2026 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
@@ -47,20 +47,26 @@
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-get-system-info obtains system information in machine-readable form. It is
-mainly intended for being used by System-Info.
+get-system-info obtains system information in machine\-readable form. It is
+mainly intended for being used by
+.Xr System\-Info 1 .
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
 .It Fl c Ar version | Fl Fl compatibility Ar version
 Request a certain version for the output. This option is to allow for future
-changes of get-system-info. Currently, the only available version is 0.
+changes of get\-system\-info. Currently, the only available version is 0.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
@@ -69,3 +75,14 @@ Prints the program version and exits.
 .It LANGUAGE=nb get-system-info
 .It get-system-info \-\-version
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr System\-Info 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

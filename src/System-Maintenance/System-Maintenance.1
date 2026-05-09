@@ -9,7 +9,7 @@
 .\"                  https://www.nntb.no/~dreibh/system-tools/
 .\" ==========================================================================
 .\"
-.\" System-Maintenance
+.\" System\-Maintenance
 .\" Copyright (C) 2013-2026 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
@@ -29,23 +29,23 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd May 9, 2026
-.Dt System-Maintenance 1
-.Os System-Maintenance
+.Dt System\-Maintenance 1
+.Os System\-Maintenance
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm System-Maintenance
+.Nm System\-Maintenance
 .Nd performs system maintenance tasks
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
-.Nm System-Maintenance
-.Op Fl k | Fl Fl interactive-kernel-removal
-.Nm System-Maintenance
+.Nm System\-Maintenance
+.Op Fl k | Fl Fl interactive\-kernel\-removal
+.Nm System\-Maintenance
 .Op Fl h | Fl Fl help
-.Nm System-Maintenance
+.Nm System\-Maintenance
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm System-Maintenance
+.Nm System\-Maintenance
 runs some system maintenance tasks to keep the system clean and up to date.
 These tasks are:
 .Bl -bullet -compact
@@ -58,7 +58,7 @@ Removing obsolete kernels
 .It
 Installing all available package updates
 .It
-Auto-removing unused packages
+Auto\-removing unused packages
 .It
 Updating package and file search caches
 .It
@@ -71,10 +71,10 @@ Trimming SSDs and virtual storage
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl k | Fl Fl interactive-kernel-removal
+.It Fl k | Fl Fl interactive\-kernel\-removal
 Remove obsolete kernels interactively.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
@@ -86,20 +86,20 @@ tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It sudo System-Maintenance
-.It sudo System-Maintenance \-\-interactive-kernel-removal
-.It System-Maintenance \-\-version
-.It System-Maintenance \-\-help
+.It sudo System\-Maintenance
+.It sudo System\-Maintenance \-\-interactive\-kernel\-removal
+.It System\-Maintenance \-\-version
+.It System\-Maintenance \-\-help
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
-.Xr Fingerprint-SSH-Keys 1 ,
-.Xr Reset-Machine-ID 1 ,
-.Xr System-Info 1
+.Xr Fingerprint\-SSH\-Keys 1 ,
+.Xr Reset\-Machine\-ID 1 ,
+.Xr System\-Info 1
 .\" ###### Notes ############################################################
 .Sh NOTES
-This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
-.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
 Thomas Dreibholz,

@@ -39,8 +39,7 @@
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm test-tls-connection
-host:port ca_certificate_file
+.Nm test-tls-connection Ar host:port Ar ca_certificate_file
 .br
 .Op Fl s Ar certificate_file | Fl Fl save\%-certificate Ar certificate_file
 .br
@@ -63,9 +62,9 @@ can be verified (by calling check-certificate) or only displayed (by using view-
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It host:port
+.It Ar host:port
 Specifies hostname or IP address, and TCP port number of the remote endpoint to connect to. If no port number is provided, 443 (HTTPS) is used.
-.It ca_certificate_file
+.It Ar ca_certificate_file
 Specifies the CA certificate to verify the certificate of the remote endpoint.
 .It Fl s Ar certificate_file | Fl Fl save-certificate Ar certificate_file
 Specifies a file name to store the certificate of the remote endpoint (as a PEM file).
@@ -112,8 +111,8 @@ tool exits with 0 on success, and >0 in case of an error.
 .Xr openssl 1
 .\" ###### Notes ############################################################
 .Sh NOTES
-This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
-.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
 Thomas Dreibholz,

@@ -39,8 +39,7 @@
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm view-crl
-CRL_file
+.Nm view-crl Ar CRL_file
 .Op ...
 .Nm view-crl
 .Op Fl h | Fl Fl help
@@ -55,7 +54,7 @@ displays important details of an X.509 CRL in PEM or DER format, including the s
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It crl_file [...]
+.It Ar crl_file [...]
 Specifies one or more CRL files to be displayed. "-" is a shortcut for /dev/stdin, i.e. reading the CRL from standard input.
 .It Fl h | Fl Fl help
 Prints the program's command-line parameters and exits.
@@ -91,8 +90,8 @@ view-crl google-crl.der.crl
 .Xr openssl 1
 .\" ###### Notes ############################################################
 .Sh NOTES
-This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
-.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
 Thomas Dreibholz,
