@@ -31,6 +31,7 @@
 # Bash options:
 set -euo pipefail
 
+STYLESHEET="stylesheet.css"   # https://www.nntb.no/~dreibh/stylesheet.css"
 
 while [ $# -gt 0 ] ; do
    input="$1"
@@ -40,7 +41,16 @@ while [ $# -gt 0 ] ; do
    if [ "${output}" != "${input}" ] ; then
       echo "Converting ${input} -> ${output} ..."
 
-      mandoc -Thtml -Ostyle=style.css  "${input}" >"${output}"
+      mandoc -T html -O "style=${STYLESHEET}"  "${input}" >"${output}"
+
+#       pandoc -f man -t html \
+#          --standalone \
+#          --highlight-style=kate \
+#          --metadata title="$(basename "${input}")" "${input}" | \
+#       sed -e 's#lang=""#lang="en"#'         \
+#          -e 's#<table>#<table summary="">#' \
+#          -e 's/\( href="#\)-/\1/g'          \
+#          >"${output}"
 
       tidy -q -o /dev/null --strict-tags-attributes yes "${output}"
    else
