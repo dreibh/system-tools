@@ -41,18 +41,18 @@
 .Sh SYNOPSIS
 .Nm time2unixts
 .Op Fl F | Fl Fl float
-.Op Fl I | Fl Fl integer-decimal
-.Op Fl X | Fl Fl integer-hexadecimal
-.Op Fl 0 | Fl Fl integer-0x-hexadecimal
+.Op Fl I | Fl Fl integer\-decimal
+.Op Fl X | Fl Fl integer\-hexadecimal
+.Op Fl 0 | Fl Fl integer\-0x\-hexadecimal
 .br
-.Op Fl H | Fl Fl human-readable
+.Op Fl H | Fl Fl human\-readable
 .br
 .Op Fl s | Fl Fl seconds
 .Op Fl m | Fl Fl milliseconds
 .Op Fl u | Fl Fl microseconds
 .Op Fl n | Fl Fl nanoseconds
 .br
-time_string
+time\_string
 .Op ...
 .Nm time2unixts
 .Op Fl h | Fl Fl help
@@ -61,24 +61,24 @@ time_string
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm time2unixts
-converts date/time strings in the format %Y-%m-%d %H:%M:%S in UTC to Unix timestamps, which is the time (nanoseconds, microseconds, milliseconds, or seconds) since the Unix Epoch, i.e. January 1, 1970, 00:00:00.000000000 UTC.
+converts date/time strings in the format %Y\-%m\-%d %H:%M:%S in UTC to Unix timestamps, which is the time (nanoseconds, microseconds, milliseconds, or seconds) since the Unix Epoch, i.e. January 1, 1970, 00:00:00.000000000 UTC.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It time_string ...
-The date/time strings to be converted, as %Y-%m-%d %H:%M:%S[.SSSSSSSSS]. The seconds part may be fractional; the fraction is optional. If no date/time string is provided, the current system time is used.
+.It time\_string ...
+The date/time strings to be converted, as %Y\-%m\-%d %H:%M:%S[.SSSSSSSSS]. The seconds part may be fractional; the fraction is optional. If no date/time string is provided, the current system time is used.
 .It Fl F | Fl Fl float
 Print the Unix timestamp as a floating-point number.
-.It Fl I | Fl Fl integer-decimal
+.It Fl I | Fl Fl integer\-decimal
 Print the Unix timestamp as a decimal integer number. This is the default.
-.It Fl X | Fl Fl integer-hexadecimal
+.It Fl X | Fl Fl integer\-hexadecimal
 Print the Unix timestamp as a hexadecimal integer number.
-.It Fl 0 | Fl Fl integer-0x-hexadecimal
+.It Fl 0 | Fl Fl integer\-0x\-hexadecimal
 Print the Unix timestamp as a hexadecimal integer number, prefixed by 0x.
-.It Fl H | Fl Fl human-readable
-Provide the output in human-readable form. Default: off.
+.It Fl H | Fl Fl human\-readable
+Provide the output in human\-readable form. Default: off.
 .It Fl s | Fl Fl seconds
 The Unix timestamp is printed in seconds. Default is in nanoseconds.
 .It Fl m | Fl Fl milliseconds
@@ -88,7 +88,7 @@ The Unix timestamp is printed in microseconds. Default is in nanoseconds.
 .It Fl n | Fl Fl nanoseconds
 The Unix timestamp is printed in nanoseconds. This is the default.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
@@ -101,14 +101,14 @@ tool exits with 0 on success, and >0 in case of an error.
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It time2unixts
-.It time2unixts \-\-integer-0x-hexadecimal
-.It time2unixts \-\-integer-hexadecimal \-\-seconds
-.It time2unixts \(dq2026-03-17 10:52:35\(dq \-\-seconds
-.It time2unixts \(dq1969-12-20 10:13:20\(dq
-.It time2unixts \(dq1955-12-24 22:22:22.000\(dq \-\-milliseconds
-.It time2unixts \(dq2026-03-17 08:31:19\(dq \-\-human-readable \-\-seconds
-.It time2unixts \(dq2026-03-17 08:31:19\(dq \-s
-.It time2unixts \(dq1976-09-29 12:12:03.123\(dq \-m
+.It time2unixts \-\-integer\-0x\-hexadecimal
+.It time2unixts \-\-integer\-hexadecimal \-\-seconds
+.It time2unixts \(dq2026\-03\-17 10:52:35\(dq \-\-seconds
+.It time2unixts \(dq1969\-12\-20 10:13:20\(dq
+.It time2unixts \(dq1955\-12\-24 22:22:22.000\(dq \-\-milliseconds
+.It time2unixts \(dq2026\-03\-17 08:31:19\(dq \-\-human\-readable \-\-seconds
+.It time2unixts \(dq2026\-03\-17 08:31:19\(dq \-s
+.It time2unixts \(dq1976\-09\-29 12:12:03.123\(dq \-m
 .It time2unixts \-\-version
 .It time2unixts \-\-help
 .El

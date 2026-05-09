@@ -45,20 +45,20 @@
 .Op string
 .Nm print\-utf8
 .Op Fl n | Fl Fl newline
-.Op Fl x Ar console_width | Fl Fl columns Ar console_width
+.Op Fl x Ar console\_width | Fl Fl columns Ar console\_width
 .Op Fl c | Fl Fl center
 .Op string
 .Nm print\-utf8
 .Op Fl n | Fl Fl newline
-.Op Fl x Ar console_width | Fl Fl columns Ar console_width
-.Op Fl I Ar indent\%ation Ar left Ar right | Fl Fl multiline-\%indent Ar indent\%ation Ar left Ar right
+.Op Fl x Ar console\_width | Fl Fl columns Ar console\_width
+.Op Fl I Ar indent\%ation Ar left Ar right | Fl Fl multiline\-indent Ar indent\%ation Ar left Ar right
 .Nm print\-utf8
 .Op Fl n | Fl Fl newline
-.Op Fl x Ar console_width | Fl Fl columns Ar console_width
-.Op Fl C Ar left Ar right | Fl Fl multiline-center Ar left Ar right
+.Op Fl x Ar console\_width | Fl Fl columns Ar console\_width
+.Op Fl C Ar left Ar right | Fl Fl multiline\-center Ar left Ar right
 .Nm print\-utf8
 .Op Fl n | Fl Fl newline
-.Op Fl x Ar console_width | Fl Fl columns Ar console_width
+.Op Fl x Ar console\_width | Fl Fl columns Ar console\_width
 .Op Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
 .Nm print\-utf8
 .Op Fl b | Fl Fl size
@@ -104,12 +104,12 @@ Reads multiple lines from stdin, pads them to the same length, and prints them c
 .It Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
 Generates a separator, consisting of a left part, a variable number of separator string occurrences, as well as a right part.
 The separator string must have a width >= 1 to fill the line. Otherwise, a space (" ") is used instead.
-.It Fl x Ar console_width | Fl Fl columns Ar console_width
+.It Fl x Ar console\_width | Fl Fl columns Ar console\_width
 Set number of columns (console width) for "center", "multiline\-center", and
 "separator" functions (see above).
-For console_width=0, the current console width (or from 80, if unknown) is used.
-For console_width<0, the current console width (or from 80, if unknown) plus
-console_width (subtraction, since it is negative!) is used.
+For console\_width=0, the current console width (or from 80, if unknown) is used.
+For console\_width<0, the current console width (or from 80, if unknown) plus
+console\_width (subtraction, since it is negative!) is used.
 Default: 0, i.e. current console width.
 .It Fl b | Fl Fl size
 Print the size (bytes) of the string without ANSI control sequences.
@@ -121,7 +121,9 @@ Print the width (columns in the console) of the string without ANSI control sequ
 Print the size, length and width of the string without ANSI control sequences.
 .It Fl t | Fl Fl terminal\-info
 Print current width and height of the console.
-Note that if /dev/tty is not available, the default of 80x24 is returned!
+Note that if
+.Pa /dev/tty
+is not available, the default of 80x24 is returned!
 .It Fl h | Fl Fl help
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
@@ -138,8 +140,8 @@ tool exits with 0 on success, and >0 in case of an error.
 .It print\-utf8 \-\-newline \-\-center \[dq]This line is centered in console width!\[dq]
 .It print\-utf8 \-\-newline \-\-columns 80 \-\-center \[dq]This line is centered in 80 columns!\[dq]
 .It print\-utf8 \-\-newline \-\-center \[aq]\ex1b[38;2;241;71;29mThis line is centered!\ex1b[0m\[aq]
-.It figlet \[dq]$(date +\[dq]%y-%m-%d\[dq])\[dq] | print\-utf8 \-\-newline \-\-multiline\-indent 64 \[dq]< \[dq] \[dq] >\[dq]
-.It figlet \[dq]$(date +\[dq]%y-%m-%d\[dq])\[dq] | print\-utf8 \-\-newline \-\-multiline\-indent \-64 \[dq]< \[dq] \[dq] >\[dq]
+.It figlet \[dq]$(date +\[dq]%y\-%m\-%d\[dq])\[dq] | print\-utf8 \-\-newline \-\-multiline\-indent 64 \[dq]< \[dq] \[dq] >\[dq]
+.It figlet \[dq]$(date +\[dq]%y\-%m\-%d\[dq])\[dq] | print\-utf8 \-\-newline \-\-multiline\-indent \-64 \[dq]< \[dq] \[dq] >\[dq]
 .It figlet \[dq]This is a test!\[dq] | print\-utf8 \-\-newline \-\-multiline\-center \[dq]<🏁\[dq] \[dq]🏁>\[dq]
 .It figlet \[dq]This is another test!\[dq] | print\-utf8 \-x \-8 \-n \-C \[dq]<🏁\[dq] \[dq]🏁>\[dq]
 .It figlet \[dq]Right\[dq] | print\-utf8 \-n \-I +72 \[dq]😀\[dq] \[dq]😀\[dq]
@@ -189,8 +191,8 @@ print\-utf8 \-n \-x 44 \-s \[dq]\[rs]e[1;32m╘\[dq] \[dq]═\[dq] \[dq]╛\[rs]
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
-.Xr System-Info 1 ,
-.Xr text-block 1
+.Xr System\-Info 1 ,
+.Xr text\-block 1
 .\" ###### Notes ############################################################
 .Sh NOTES
 This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at

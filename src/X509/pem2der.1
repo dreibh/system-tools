@@ -39,7 +39,7 @@
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm pem2der Ar pem_file Ar der_file
+.Nm pem2der Ar pem\_file Ar der\_file
 .Nm pem2der
 .Op Fl h | Fl Fl help
 .Nm pem2der
@@ -53,12 +53,12 @@ converts a given certificate or CRL file from PEM to DER format.
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Ar pem_file
+.It Ar pem\_file
 The certificate or CRL file in PEM format to be converted.
-.It Ar der_file
+.It Ar der\_file
 The certificate or CRL file in DER format to be written.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
@@ -70,8 +70,8 @@ tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It pem2der my-server-certificate.crt my-server-certificate.der
-.It pem2der my-crl.crl my-crl.der
+.It pem2der my\-server\-certificate.crt my\-server\-certificate.der
+.It pem2der my\-crl.crl my\-crl.der
 .It pem2der \-\-help
 .It pem2der \-h
 .It pem2der \-\-version
@@ -79,12 +79,12 @@ tool exits with 0 on success, and >0 in case of an error.
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
-.Xr check-certificate 1 ,
+.Xr check\-certificate 1 ,
 .Xr der2pem 1 ,
-.Xr extract-pem 1 ,
-.Xr test-tls-connection 1 ,
-.Xr view-certificate 1 ,
-.Xr view-crl 1 ,
+.Xr extract\-pem 1 ,
+.Xr test\-tls\-connection 1 ,
+.Xr view\-certificate 1 ,
+.Xr view\-crl 1 ,
 .Xr openssl 1
 .\" ###### Notes ############################################################
 .Sh NOTES

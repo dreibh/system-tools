@@ -29,34 +29,34 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd May 9, 2026
-.Dt test-tls-connection 1
-.Os test-tls-connection
+.Dt test\-tls\-connection 1
+.Os test\-tls\-connection
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm test-tls-connection
+.Nm test\-tls\-connection
 .Nd tests the TLS connection to a remote endpoint
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm test-tls-connection Ar host:port Ar ca_certificate_file
+.Nm test\-tls\-connection Ar host:port Ar ca\_certificate\_file
 .br
-.Op Fl s Ar certificate_file | Fl Fl save\%-certificate Ar certificate_file
+.Op Fl s Ar certificate\_file | Fl Fl save\-certificate Ar certificate\_file
 .br
-.Op Fl n | Fl Fl no-view-certificate
+.Op Fl n | Fl Fl no\-view\-certificate
 .br
-.Op Fl c | Fl Fl no-check-certificate
+.Op Fl c | Fl Fl no\-check\-certificate
 .br
-.Op \-\- openssl_args ...
-.Nm test-tls-connection
+.Op \-\- openssl\_args ...
+.Nm test\-tls\-connection
 .Op Fl h | Fl Fl help
-.Nm test-tls-connection
+.Nm test\-tls\-connection
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm test-tls-connection
+.Nm test\-tls\-connection
 tests the TLS connection to a remote endpoint. The certificate provided by the remote endpoint
-can be verified (by calling check-certificate) or only displayed (by using view-certificate). Optionally, it can also be saved as a PEM file.
+can be verified (by calling check\-certificate) or only displayed (by using view\-certificate). Optionally, it can also be saved as a PEM file.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -64,18 +64,18 @@ The following options are available:
 .Bl -tag -width indent
 .It Ar host:port
 Specifies hostname or IP address, and TCP port number of the remote endpoint to connect to. If no port number is provided, 443 (HTTPS) is used.
-.It Ar ca_certificate_file
+.It Ar ca\_certificate\_file
 Specifies the CA certificate to verify the certificate of the remote endpoint.
-.It Fl s Ar certificate_file | Fl Fl save-certificate Ar certificate_file
+.It Fl s Ar certificate\_file | Fl Fl save\-certificate Ar certificate\_file
 Specifies a file name to store the certificate of the remote endpoint (as a PEM file).
-.It \-\- openssl_args ...
+.It \-\- openssl\_args ...
 Specifies optional OpenSSL arguments. All arguments after \-\- are passed to OpenSSL.
-.It Fl n | Fl Fl no-view-certificate
-Do not run view-certificate on the received certificate of the remote endpoint.
-.It Fl c | Fl Fl no-check-certificate
-Do not run check-certificate on the received certificate of the remote endpoint.
+.It Fl n | Fl Fl no\-view\-certificate
+Do not run view\-certificate on the received certificate of the remote endpoint.
+.It Fl c | Fl Fl no\-check\-certificate
+Do not run check\-certificate on the received certificate of the remote endpoint.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
@@ -87,27 +87,27 @@ tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It test-tls-connection www.heise.de:443 /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt
-.It test-tls-connection www.nntb.no:443 /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt \-\-no-view-certificate
-.It test-tls-connection www.nntb.no:443 /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt \-\-no-check-certificate
-.It test-tls-connection www.nntb.no:443 /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt \-\-save-certificate www.nntb.no.crt
-.It test-tls-connection www.heise.de:443 /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt \-n \-c \-s www.heise.de.crt
-.It test-tls-connection www.ietf.org:443 /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt \-s www.ietf.org.crt
-.It test-tls-connection www.simula.no /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt \-n \-c \-s www.simula.no.crt
-.It test-tls-connection www.dnb.no /etc/ssl/\%certs/\%DigiCert_Global_Root_G2.pem \-s www.dnb.no
-.It test-tls-connection \-\-help
-.It test-tls-connection \-h
-.It test-tls-connection \-\-version
-.It test-tls-connection \-v
+.It test\-tls\-connection www.heise.de:443 /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt
+.It test\-tls\-connection www.nntb.no:443 /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt \-\-no\-view\-certificate
+.It test\-tls\-connection www.nntb.no:443 /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt \-\-no\-check\-certificate
+.It test\-tls\-connection www.nntb.no:443 /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt \-\-save\-certificate www.nntb.no.crt
+.It test\-tls\-connection www.heise.de:443 /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt \-n \-c \-s www.heise.de.crt
+.It test\-tls\-connection www.ietf.org:443 /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt \-s www.ietf.org.crt
+.It test\-tls\-connection www.simula.no /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt \-n \-c \-s www.simula.no.crt
+.It test\-tls\-connection www.dnb.no /etc/ssl/certs/DigiCert\_Global\_Root\_G2.pem \-s www.dnb.no
+.It test\-tls\-connection \-\-help
+.It test\-tls\-connection \-h
+.It test\-tls\-connection \-\-version
+.It test\-tls\-connection \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
-.Xr check-certificate 1 ,
+.Xr check\-certificate 1 ,
 .Xr der2pem 1 ,
-.Xr extract-pem 1 ,
+.Xr extract\-pem 1 ,
 .Xr pem2der 1 ,
-.Xr view-certificate 1 ,
-.Xr view-crl 1 ,
+.Xr view\-certificate 1 ,
+.Xr view\-crl 1 ,
 .Xr openssl 1
 .\" ###### Notes ############################################################
 .Sh NOTES

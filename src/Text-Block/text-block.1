@@ -64,13 +64,13 @@
 .Op Fl D | Fl Fl delete | Fl Fl remove
 .Op OPTIONS
 .Nm text\-block
-.Op Fl F Ar insert_file | Fl Fl insert\-front Ar insert_file
+.Op Fl F Ar insert\_file | Fl Fl insert\-front Ar insert\_file
 .Op OPTIONS
 .Nm text\-block
-.Op Fl B Ar insert_file | Fl Fl insert\-back Ar insert_file
+.Op Fl B Ar insert\_file | Fl Fl insert\-back Ar insert\_file
 .Op OPTIONS
 .Nm text\-block
-.Op Fl R Ar insert_file | Fl Fl replace Ar insert_file
+.Op Fl R Ar insert\_file | Fl Fl replace Ar insert\_file
 .Op OPTIONS
 .Nm text\-block
 .Op Fl h | Fl Fl help
@@ -78,12 +78,12 @@
 .Op Fl v | Fl Fl version
 .Pp
 .Nm OPTIONS:
-.Op Fl b Ar begin_tag | Fl Fl begin-tag Ar begin_tag
-.Op Fl e Ar end_tag | Fl Fl end-tag Ar end_tag
+.Op Fl b Ar begin\_tag | Fl Fl begin\-tag Ar begin\_tag
+.Op Fl e Ar end\_tag | Fl Fl end\-tag Ar end\_tag
 .br
-.Op Fl i | Fl Fl input Ar input_file
+.Op Fl i | Fl Fl input Ar input\_file
 .br
-.Op Fl o | Fl Fl output Ar output_file
+.Op Fl o | Fl Fl output Ar output\_file
 .br
 .Op Fl a | Fl Fl append
 .br
@@ -94,7 +94,7 @@
 .Op Fl m | Fl Fl min\-actions
 .Op Fl M | Fl Fl max\-actions
 .br
-.Op Fl s | Fl Fl select Ar from_line Ar to_line
+.Op Fl s | Fl Fl select Ar from\_line Ar to\_line
 .br
 .Op Fl t | Fl Fl tag Ar tag
 .br
@@ -120,7 +120,7 @@
 .Op Fl Fl highlight\-marked1 Ar string
 .Op Fl Fl highlight\-marked2 Ar string
 .br
-.Op Fl Fl highlight\-param Ar begin_\%label Ar end_\%label Ar unmarked1_\%label Ar unmarked2_\%label Ar marked1_\%label Ar marked2_\%label
+.Op Fl Fl highlight\-param Ar begin\_label Ar end\_label Ar unmarked1\_label Ar unmarked2\_label Ar marked1\_label Ar marked2\_label
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm text\-block
@@ -186,15 +186,15 @@ Run in Enumerate mode.
 Run in Extract mode.
 .It Fl D | Fl Fl delete | Fl Fl remove
 Run in Delete mode.
-.It Fl F Ar insert_file | Fl Fl insert\-front Ar insert_file
-Run in Insert-Front mode.
-"-" is placeholder for inserting from standard input.
+.It Fl F Ar insert\_file | Fl Fl insert\-front Ar insert\_file
+Run in Insert\-Front mode.
+"\-" is placeholder for inserting from standard input.
 In this case, an input file is required.
-.It Fl B Ar insert_file | Fl Fl insert\-back Ar insert_file
-Run in Insert-Back mode.
-"-" is placeholder for inserting from standard input.
+.It Fl B Ar insert\_file | Fl Fl insert\-back Ar insert\_file
+Run in Insert\-Back mode.
+"\-" is placeholder for inserting from standard input.
 In this case, an input file is required.
-.It Fl R Ar insert_file | Fl Fl replace Ar insert_file
+.It Fl R Ar insert\_file | Fl Fl replace Ar insert\_file
 Run in Replace mode.
 "\-" is placeholder for replacing from standard input.
 In this case, an input file is required.
@@ -202,33 +202,33 @@ In this case, an input file is required.
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
-.It Fl s | Fl Fl select Ar from_line Ar to_line
-Select a line range, ranging from line from_line to line to_line.
-A from_line of one (1) denotes marking from start of the file.
-A to_line of zero (0) denotes marking until end of the file.
+.It Fl s | Fl Fl select Ar from\_line Ar to\_line
+Select a line range, ranging from line from\_line to line to\_line.
+A from\_line of one (1) denotes marking from start of the file.
+A to\_line of zero (0) denotes marking until end of the file.
 If a line number is negative, it is counted backwards from the end of the
-file. This requires an input file (\-\-input|-\i), which is line-counted
+file. This requires an input file (\-\-input|-\i), which is line\-counted
 first. Line range selection is mutually exclusive with tags
 (\-\-begin\-tag|\-b|\-\-end\-tag|\-\-tag|\-t).
-.It Fl b Ar begin_tag | Fl Fl begin\-tag Ar begin_tag
+.It Fl b Ar begin\_tag | Fl Fl begin\-tag Ar begin\_tag
 Sets the begin tag.
 Tags are mutually exclusive with line selection (\-\-select|\-s).
-.It Fl e Ar end_tag | Fl Fl end\-tag Ar end_tag
+.It Fl e Ar end\_tag | Fl Fl end\-tag Ar end\_tag
 Sets the end tag.
 Tags are mutually exclusive with line selection (\-\-select|\-s).
 .It Fl t Ar tag | Fl Fl tag Ar tag
 Sets a combined begin/end tag, i.e. the tag marks begin and end.
 Tags are mutually exclusive with line selection (\-\-select|\-s).
-.It Fl i | Fl Fl input Ar input_file
+.It Fl i | Fl Fl input Ar input\_file
 Sets the input file.
-"-" is placeholder for reading from standard input (default).
-.It Fl o | Fl Fl output Ar output_file
+"\-" is placeholder for reading from standard input (default).
+.It Fl o | Fl Fl output Ar output\_file
 Sets the output file. By default, an existing output file will be overwritten.
-"-" is placeholder for writing to standard output (default)
+"\-" is placeholder for writing to standard output (default)
 .It Fl a | Fl Fl append
 Opens the output file in append mode, appending new output instead of overwriting an existing file.
 .It Fl p | Fl Fl in\-place
-In-place update into the input file. The output is written to a temporary file with extension "~" first, which replaces the input file on success.
+In\-place update into the input file. The output is written to a temporary file with extension "~" first, which replaces the input file on success.
 .It Fl k | Fl Fl keep\-broken
 Keep broken output in case of error (default: off).
 .It Fl m | Fl Fl min\-actions
@@ -257,7 +257,7 @@ In Enumerate mode, sets the format of the line number output according to printf
 .It
 4 \-> 4\-digit line numbers, prepended with space when necessary (e.g. "   2", etc.).
 .It
-\-4 -> left\-adjusted 4-digit number (e.g. "3   ").
+\-4 \-> left\-adjusted 4\-digit number (e.g. "3   ").
 .El
 .It Fl Fl enumerate\-label1 Ar string
 For Enumerate mode: prepends the given string before the line number output. Default: $\[aq]\ex1b[36m\[aq] (enables cyan colour output).
@@ -276,7 +276,7 @@ For Highlight mode: Sets string to visualise the begin of a marked text fragment
 (enables red colour output).
 .It Fl Fl highlight\-marked2 Ar string
 For Highlight mode: Sets string to visualise the end of a marked text fragment. Default: $\[aq]\ex1b[0m \[aq] (disables colour output).
-.It Fl Fl highlight\-param Ar begin_label Ar end_label Ar unmarked1_label Ar unmarked2_label Ar marked1_label Ar marked2_label
+.It Fl Fl highlight\-param Ar begin\_label Ar end\_label Ar unmarked1\_label Ar unmarked2\_label Ar marked1\_label Ar marked2\_label
 A shortcut to set all 6 highlight parameters at once.
 .El
 .\" ###### Exit status ######################################################
@@ -287,7 +287,7 @@ tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 Note: the example input files example1.txt, example2.txt, insert.txt, and
-numbers.txt, referred to in the following command-line examples, are usually
+numbers.txt, referred to in the following command\-line examples, are usually
 installed under
 .Pa /usr/share/text\-block
 or
@@ -297,9 +297,9 @@ or
 .It
 text\-block \-i example1.txt \-\-cat
 .It
-text\-block \-i /etc/system-info.d/01-example
+text\-block \-i /etc/system\-info.d/01\-example
 .It
-text\-block \-i /etc/system-info.d/01-example \-C
+text\-block \-i /etc/system\-info.d/01\-example \-C
 .El
 .Ss Enumerate Mode
 .Bl -bullet
@@ -308,22 +308,22 @@ text\-block \-i example1.txt \-\-enumerate
 .It
 figlet \[dq]Test!\[dq] | text\-block \-E
 .It
-text\-block \-i /etc/system-info.d/01-example \-E
+text\-block \-i /etc/system\-info.d/01\-example \-E
 .It
-text\-block \-i /etc/system-info.d/01-example \-\-enumerate \-\-enumerate\-format \[dq]6\[dq] \-\-enumerate\-label1 $\[aq]\ex1b[37m<\[aq] \-\-enumerate\-label2 $\[aq]>\ex1b[0m \[aq]
+text\-block \-i /etc/system\-info.d/01\-example \-\-enumerate \-\-enumerate\-format \[dq]6\[dq] \-\-enumerate\-label1 $\[aq]\ex1b[37m<\[aq] \-\-enumerate\-label2 $\[aq]>\ex1b[0m \[aq]
 .El
 .Ss Highlight Mode
 .Bl -bullet
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-highlight
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-highlight
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-H \-\-exclude\-tags \-\-tags\-only
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-H \-\-exclude\-tags \-\-tags\-only
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-H \-\-include\-tags \-\-tags\-only
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-H \-\-include\-tags \-\-tags\-only
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-H \-\-include\-tags \-\-full\-tag\-lines
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-H \-\-include\-tags \-\-full\-tag\-lines
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-H \-\-exclude\-tags \-\-full\-tag\-lines
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-H \-\-exclude\-tags \-\-full\-tag\-lines
 .It
 text\-block \-i example2.txt \-b '<MARKER>' \-H \-\-exclude\-tags \-\-tags\-only
 .It
@@ -333,7 +333,7 @@ text\-block \-i example2.txt \-b '<MARKER>' \-H \-\-include\-tags \-\-full\-tag\
 .It
 text\-block \-i example2.txt \-b '<MARKER>' \-H \-\-exclude\-tags \-\-full\-tag\-lines
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-highlight \-\-highlight\-param "☀" "🌙" $\[aq]\e[32m' $\[aq]\e[0m' $\[aq]\e[31;5m' $\[aq]\e[0m'
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-highlight \-\-highlight\-param "☀" "🌙" $\[aq]\e[32m' $\[aq]\e[0m' $\[aq]\e[31;5m' $\[aq]\e[0m'
 .It
 text\-block \-i numbers.txt \-\-select 1 3 \-H
 .It
@@ -344,9 +344,9 @@ text\-block \-i numbers.txt \-\-select \-5 0 \-H
 .Ss Delete Mode
 .Bl -bullet
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-delete
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-delete
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-D
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-D
 .It
 text\-block \-i numbers.txt \-\-select 2 4 \-D
 .It
@@ -357,15 +357,15 @@ text\-block \-i numbers.txt \-s \-7 0 \-D
 .Ss Insert Front Mode
 .Bl -bullet
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-insert\-front insert.txt
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-insert\-front insert.txt
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-F insert.txt
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-F insert.txt
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-F insert.txt \-f
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-F insert.txt \-f
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-F insert.txt \-\-min\-actions 1 \-\-max\-actions 1
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-F insert.txt \-\-min\-actions 1 \-\-max\-actions 1
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-F insert.txt \-m 1 \-M 1
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-F insert.txt \-m 1 \-M 1
 .It
 text\-block \-i numbers.txt \-F insert.txt \-\-select 4 7
 .It
@@ -376,15 +376,15 @@ text\-block \-i numbers.txt \-F insert.txt \-s 4 0
 .Ss Insert Back Mode
 .Bl -bullet
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-insert\-back insert.txt
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-insert\-back insert.txt
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-B insert.txt
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-B insert.txt
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-B insert.txt \-f
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-B insert.txt \-f
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-B insert.txt \-\-min\-actions 1 \-\-max\-actions 1
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-B insert.txt \-\-min\-actions 1 \-\-max\-actions 1
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-B insert.txt \-m 1 \-M 1
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-B insert.txt \-m 1 \-M 1
 .It
 text\-block \-i numbers.txt \-B insert.txt \-\-select 4 7
 .It
@@ -395,13 +395,13 @@ text\-block \-i numbers.txt \-B insert.txt \-s 4 0
 .Ss Replace Mode
 .Bl -bullet
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-replace insert.txt
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-replace insert.txt
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-replace insert.txt \-\-include\-tags
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-replace insert.txt \-\-include\-tags
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-replace insert.txt \-\-include\-tags \-\-full\-tag\-lines
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-replace insert.txt \-\-include\-tags \-\-full\-tag\-lines
 .It
-text\-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-R insert.txt \-gy
+text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-R insert.txt \-gy
 .It
 text\-block \-i numbers.txt \-R insert.txt \-\-select 4 7
 .It
