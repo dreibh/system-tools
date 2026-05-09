@@ -80,29 +80,46 @@
 .Nm OPTIONS:
 .Op Fl b Ar begin_tag | Fl Fl begin-tag Ar begin_tag
 .Op Fl e Ar end_tag | Fl Fl end-tag Ar end_tag
+.br
 .Op Fl i | Fl Fl input Ar input_file
+.br
 .Op Fl o | Fl Fl output Ar output_file
+.br
 .Op Fl a | Fl Fl append
+.br
 .Op Fl p | Fl Fl in-place
+.br
 .Op Fl k | Fl Fl keep-broken
+.br
 .Op Fl m | Fl Fl min-actions
 .Op Fl M | Fl Fl max-actions
+.br
 .Op Fl s | Fl Fl select Ar from_line Ar to_line
+.br
 .Op Fl t | Fl Fl tag Ar tag
+.br
 .Op Fl y | Fl Fl include-tags
 .Op Fl x | Fl Fl exclude-tags
+.br
 .Op Fl f | Fl Fl full-tag-lines
 .Op Fl g | Fl Fl tags-only
+.br
 .Op Fl q | Fl Fl suppress-warnings
+.br
 .Op Fl Fl enumerate-format Ar format
+.br
 .Op Fl Fl enumerate-label1 Ar string
 .Op Fl Fl enumerate-label2 Ar string
+.br
 .Op Fl Fl highlight-begin Ar string
 .Op Fl Fl highlight-end Ar string
+.br
 .Op Fl Fl highlight-unmarked1 Ar string
 .Op Fl Fl highlight-unmarked2 Ar string
+.br
 .Op Fl Fl highlight-marked1 Ar string
 .Op Fl Fl highlight-marked2 Ar string
+.br
 .Op Fl Fl highlight-param Ar begin_\%label Ar end_\%label Ar unmarked1_\%label Ar unmarked2_\%label Ar marked1_\%label Ar marked2_\%label
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
@@ -293,7 +310,7 @@ text-block \-i /etc/system-info.d/01-example \-E
 text-block \-i /etc/system-info.d/01-example \-\-enumerate \-\-enumerate-format \[dq]6\[dq] \-\-enumerate-label1 $\[aq]\ex1b[37m<\[aq] \-\-enumerate-label2 $\[aq]>\ex1b[0m \[aq]
 .El
 .Ss Highlight Mode
-.Bl \-bullet
+.Bl -bullet
 .It
 text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-highlight
 .It
@@ -322,7 +339,7 @@ text-block \-i numbers.txt \-\-select \-3 \-1 \-H
 text-block \-i numbers.txt \-\-select \-5 0 \-H
 .El
 .Ss Delete Mode
-.Bl \-bullet
+.Bl -bullet
 .It
 text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-delete
 .It
@@ -335,7 +352,7 @@ text-block \-i numbers.txt \-\-select \-4 \-2 \-D
 text-block \-i numbers.txt \-s \-7 0 \-D
 .El
 .Ss Insert Front Mode
-.Bl \-bullet
+.Bl -bullet
 .It
 text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-insert-front insert.txt
 .It
@@ -354,7 +371,7 @@ text-block \-i numbers.txt \-F insert.txt \-\-select \-4 \-2
 text-block \-i numbers.txt \-F insert.txt \-s 4 0
 .El
 .Ss Insert Back Mode
-.Bl \-bullet
+.Bl -bullet
 .It
 text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-insert-back insert.txt
 .It
@@ -373,7 +390,7 @@ text-block \-i numbers.txt \-B insert.txt \-\-select \-4 \-2
 text-block \-i numbers.txt \-B insert.txt \-s 4 0
 .El
 .Ss Replace Mode
-.Bl \-bullet
+.Bl -bullet
 .It
 text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-replace insert.txt
 .It
@@ -392,11 +409,11 @@ text-block \-i numbers.txt \-R insert.txt \-s 4 0
 .Ss Other Examples
 .Bl -bullet
 .It
-text-block --help
+text-block \-\-help
 .It
-text-block --version
+text-block \-\-version
 .It
-text-block --v
+text-block \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
