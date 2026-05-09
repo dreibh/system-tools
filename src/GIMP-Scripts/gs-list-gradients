@@ -33,8 +33,8 @@ set -euo pipefail
 
 (
    for baseDirectory in /usr/local/share /usr/share ; do
-     if [ -d $baseDirectory/gimp ] ; then
-        find $baseDirectory/gimp -name "*.ggr" -exec basename {} .ggr \;
-     fi
-  done
+      if [ -d "${baseDirectory}/gimp" ] ; then
+         find "${baseDirectory}/gimp" -name "*.ggr" -exec basename {} .ggr \;
+      fi
+   done
 ) | tr '_' ' ' | sort -u
