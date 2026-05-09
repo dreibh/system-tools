@@ -35,7 +35,7 @@ set -euo pipefail
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_filename output_filename [-C|--compensate-darkening on|off] [-I|--invert on|off] [-T|--tiled on|off] [-A|--azimut bearing] [-E|--elevation bearing] [-D|--depth depth] [-X|--offset-x value] [-Y|--offset-y value] [-W|--waterlevel level] [-B|--ambient factor] [-H|--hue-range all|red|yellow|green|cyan|blue|magenta] [-O|--hue-offset degrees] [-L|--lightness adjustment] [-S|--saturation adjustment] [-V|--overlap overlap] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
+   echo >&2 "Usage: $0 input_filename output_filename [-C|--compensate-darkening on|off] [-I|--invert on|off] [-T|--tiled on|off] [-A|--azimuth bearing] [-E|--elevation bearing] [-D|--depth depth] [-X|--offset-x value] [-Y|--offset-y value] [-W|--waterlevel level] [-B|--ambient factor] [-H|--hue-range all|red|yellow|green|cyan|blue|magenta] [-O|--hue-offset degrees] [-L|--lightness adjustment] [-S|--saturation adjustment] [-V|--overlap overlap] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
 
@@ -60,7 +60,7 @@ if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
    echo >&2 "ERROR: Enhanced/GNU getopt is required!"
    exit 1
 fi
-options="$(${GETOPT} -o C:I:T:A:E:D:X:Y:W:B:H:O:L:S:V:wqhv --long compensate-darkening:,invert:,tiled:,azimut:,elevation:,depth:,offset-x:,offset-y:,waterlevel:,ambient:,hue-range:,hue-offset:,lightness:,saturation:,overlap:,verbose,quiet,help,version -a -- "$@")"
+options="$(${GETOPT} -o C:I:T:A:E:D:X:Y:W:B:H:O:L:S:V:wqhv --long compensate-darkening:,invert:,tiled:,azimuth:,elevation:,depth:,offset-x:,offset-y:,waterlevel:,ambient:,hue-range:,hue-offset:,lightness:,saturation:,overlap:,verbose,quiet,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage 1
@@ -80,7 +80,7 @@ declare -A hueRanges=(
 COMPENSATE="TRUE"
 INVERT="FALSE"
 TILED="FALSE"
-AZIMUT=135.0
+AZIMUTH=135.0
 ELEVATION=45.0
 DEPTH=20
 OFFSET_X=0
@@ -131,12 +131,12 @@ while [ $# -gt 0 ] ; do
             exit 1
          fi
          ;;
-      -A | --azimut)
-         AZIMUT="$2"
+      -A | --azimuth)
+         AZIMUTH="$2"
          shift
-         if [[ ! "${AZIMUT}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] || \
-            awk "BEGIN { exit ( ($AZIMUT < 0.0) || ($AZIMUT > 360.0) ? 0 : 1) }" ; then
-            echo >&2 "ERROR: Invalid value ${AZIMUT} for -A|--azimut!"
+         if [[ ! "${AZIMUTH}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] || \
+            awk "BEGIN { exit ( ($AZIMUTH < 0.0) || ($AZIMUTH > 360.0) ? 0 : 1) }" ; then
+            echo >&2 "ERROR: Invalid value ${AZIMUTH} for -A|--azimuth!"
             exit 1
          fi
          ;;
@@ -305,36 +305,36 @@ rm -f "${OUTPUT_FILENAME}"
 ( cat <<EOF
 (let*
    ; ------ Initialise and load image ---------------------------------------
-   ((inputFileName    "${INPUT_FILENAME}")
-    (outputFileName   "${OUTPUT_FILENAME}")
-    (azimut           ${AZIMUT})
-    (elevation        ${ELEVATION})
-    (depth            ${DEPTH})
-    (offsetX          ${OFFSET_X})
-    (offsetY          ${OFFSET_Y})
-    (waterlevel       ${WATERLEVEL})
-    (ambient          ${AMBIENT})
-    (compensate       ${COMPENSATE})
-    (invert           ${INVERT})
-    (tiled            ${TILED})
-    (hueRange         ${HUE_RANGE})
-    (hueOffset        ${HUE_OFFSET})
-    (lightness        ${LIGHTNESS})
-    (saturation       ${SATURATION})
-    (overlap          ${OVERLAP})
-    (image            (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
-    (imageType        (if (not (defined? 'gimp-image-get-active-layer))
-                         ; New GIMP 3.0 API:
-                         (car (gimp-image-get-base-type image))
-                         ; Old GIMP 2.x API:
-                         (car (gimp-image-base-type image)))
-                      )
-    (layer            (if (not (defined? 'gimp-image-get-active-layer))
-                         ; New GIMP 3.0 API:
-                         (car (list (vector-ref (car (gimp-image-get-selected-layers image)) 0)))
-                         ; Old GIMP 2.x API:
-                         (car (gimp-image-get-active-layer image)))
-                      )
+   ((inputFileName  ${INPUT_FILENAME}")
+    (outputFileName ${OUTPUT_FILENAME}")
+    (azimuth        ${AZIMUTH})
+    (elevation      ${ELEVATION})
+    (depth          ${DEPTH})
+    (offsetX        ${OFFSET_X})
+    (offsetY        ${OFFSET_Y})
+    (waterlevel     ${WATERLEVEL})
+    (ambient        ${AMBIENT})
+    (compensate     ${COMPENSATE})
+    (invert         ${INVERT})
+    (tiled          ${TILED})
+    (hueRange       ${HUE_RANGE})
+    (hueOffset      ${HUE_OFFSET})
+    (lightness      ${LIGHTNESS})
+    (saturation     ${SATURATION})
+    (overlap        ${OVERLAP})
+    (image          (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
+    (imageType      (if (not (defined? 'gimp-image-get-active-layer))
+                       ; New GIMP 3.0 API:
+                       (car (gimp-image-get-base-type image))
+                       ; Old GIMP 2.x API:
+                       (car (gimp-image-base-type image)))
+                    )
+    (layer          (if (not (defined? 'gimp-image-get-active-layer))
+                       ; New GIMP 3.0 API:
+                       (car (list (vector-ref (car (gimp-image-get-selected-layers image)) 0)))
+                       ; Old GIMP 2.x API:
+                       (car (gimp-image-get-active-layer image)))
+                    )
    )
 
    ; ------ Apply filter ----------------------------------------------------
@@ -353,7 +353,7 @@ rm -f "${OUTPUT_FILENAME}"
    (if (defined? 'gimp-drawable-merge-new-filter)
       (begin  ; New GIMP >= 3.0 API:
         (gimp-drawable-merge-new-filter layer "gegl:bump-map" 0 LAYER-MODE-REPLACE 1.0
-            "azimuth"    azimut
+            "azimut"     azimuth
             "elevation"  elevation
             "depth"      depth
             "offset-x"   offsetX
@@ -368,7 +368,7 @@ rm -f "${OUTPUT_FILENAME}"
       )
       (begin  ; Old GIMP < 3.0 API:
          (plug-in-bump-map RUN-NONINTERACTIVE image layer layer
-           azimut elevation depth
+           azimuth elevation depth
            offsetX offsetY waterlevel ambient
            compensate invert tiled)
       )
