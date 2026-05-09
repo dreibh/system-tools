@@ -41,6 +41,9 @@
 .Sh SYNOPSIS
 .Nm System-Info
 .Op Fl S Ar scripts_directory | Fl Fl scripts Ar scripts_directory
+.br
+.Op Fl X Ar date_string | Fl Fl test-date Ar date_string
+.Op Fl Y Ar input_file | Fl Fl test-system-info Ar input_file
 .Nm System-Info
 .Op Fl h | Fl Fl help
 .Nm System-Info
@@ -75,6 +78,10 @@ Sets the directory to look for scripts, for example to test own scripts. Default
 Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
+.It Fl X Ar date_string | Fl Fl test-date Ar date_string
+Test option: instead of calling \(dqdate\(dq to obtain the current system date, use the given date string, to make the output deterministic for testing.
+.It Fl Y Ar input_file | Fl Fl test-system-info Ar input_file
+Test option: instead of calling \(dqget\-system\-info\(dq to obtain the system information, read get\-system\-info output from a given file, to make the output deterministic for testing.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES

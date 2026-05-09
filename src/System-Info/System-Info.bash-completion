@@ -51,9 +51,31 @@ _System_Info()
    fi
 
    case "${prev}" in
-      #  ====== Directory ===================================================
+      #  ====== Special case: directory =====================================
       -S | --scripts)
          _filedir -d
+         return
+         ;;
+      #  ====== Special case: test date =====================================
+      -X | --test-date)
+         local dateOptions=( "$(env LC_TIME=C.UTF-8 date)"
+                             "Sat Nov  5 06:15:00 PST 1955"
+                             "Thu Jan  1 00:00:00 UTC 1970"
+                             "Sat Oct 26 01:35:00 PDT 1985"
+                             "Wed Oct 21 16:29:00 PDT 2015"
+                             "Tue Sep 29 13:10:00 CEST 2026" )
+         local search="${cur//\\/}"
+         COMPREPLY=()
+         for item in "${dateOptions[@]}" ; do
+            if [[ "${item}" == "${search}"* ]] ; then
+               COMPREPLY+=( "${item// /\\ }" )
+            fi
+         done
+         return
+         ;;
+      #  ====== Special case: test input file ===============================
+      -Y | --test-system-info)
+         _filedir
          return
          ;;
    esac
@@ -62,6 +84,10 @@ _System_Info()
    local opts="
 -S
 --scripts
+-X
+--test-date
+-Y
+--test-system-info
 -h
 --help
 -v
