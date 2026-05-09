@@ -100,22 +100,38 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It unixts2time
-.It unixts2time --human-readable
-.It unixts2time --human-readable --seconds 1773744755
-.It unixts2time --human-readable --seconds -- -1000000
-.It unixts2time --human-readable --milliseconds -- -442460258000
-.It unixts2time --human-readable --seconds 1773736279
-.It unixts2time --seconds 1 1000 1000000 1000000000 2000000000
-.It unixts2time -s 1773736279
-.It unixts2time --milliseconds 212847000000
-.It unixts2time -H 212847008123456789
+.It unixts2time \-\-human-readable
+.It unixts2time \-\-human-readable \-\-seconds 1773744755
+.It unixts2time \-\-human-readable \-\-seconds \-\- \-1000000
+.It unixts2time \-\-human-readable \-\-milliseconds \-\- \-442460258000
+.It unixts2time \-\-human-readable \-\-seconds 1773736279
+.It unixts2time \-\-seconds 1 1000 1000000 1000000000 2000000000
+.It unixts2time \-s 1773736279
+.It unixts2time \-\-milliseconds 212847000000
+.It unixts2time \-H 212847008123456789
 .It unixts2time 0x179cb2ae8af3dd89
-.It unixts2time -H 0x179cb2ae8af3dd89
-.It unixts2time -s 212847123.123
-.It unixts2time --version
-.It unixts2time --help
+.It unixts2time \-H 0x179cb2ae8af3dd89
+.It unixts2time \-s 212847123.123
+.It unixts2time \-\-version
+.It unixts2time \-\-help
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr time2unixts 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/~dreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/~dreibh

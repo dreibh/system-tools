@@ -92,18 +92,34 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It time2unixts
-.It time2unixts --integer-0x-hexadecimal
-.It time2unixts --integer-hexadecimal --seconds
-.It time2unixts \(dq2026-03-17 10:52:35\(dq --seconds
+.It time2unixts \-\-integer-0x-hexadecimal
+.It time2unixts \-\-integer-hexadecimal \-\-seconds
+.It time2unixts \(dq2026-03-17 10:52:35\(dq \-\-seconds
 .It time2unixts \(dq1969-12-20 10:13:20\(dq
-.It time2unixts \(dq1955-12-24 22:22:22.000\(dq --milliseconds
-.It time2unixts \(dq2026-03-17 08:31:19\(dq --human-readable --seconds
-.It time2unixts \(dq2026-03-17 08:31:19\(dq -s
-.It time2unixts \(dq1976-09-29 12:12:03.123\(dq -m
-.It time2unixts --version
-.It time2unixts --help
+.It time2unixts \(dq1955-12-24 22:22:22.000\(dq \-\-milliseconds
+.It time2unixts \(dq2026-03-17 08:31:19\(dq \-\-human-readable \-\-seconds
+.It time2unixts \(dq2026-03-17 08:31:19\(dq \-s
+.It time2unixts \(dq1976-09-29 12:12:03.123\(dq \-m
+.It time2unixts \-\-version
+.It time2unixts \-\-help
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr unixts2time 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/~dreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/~dreibh
