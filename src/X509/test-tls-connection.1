@@ -69,7 +69,7 @@ Specifies hostname or IP address, and TCP port number of the remote endpoint to 
 Specifies the CA certificate to verify the certificate of the remote endpoint.
 .It Fl s Ar certificate_file | Fl Fl save-certificate Ar certificate_file
 Specifies a file name to store the certificate of the remote endpoint (as a PEM file).
-.It \-\-openssl_args ...
+.It \-\- openssl_args ...
 Specifies optional OpenSSL arguments. All arguments after \-\- are passed to OpenSSL.
 .It Fl n | Fl Fl no-view-certificate
 Do not run view-certificate on the received certificate of the remote endpoint.
@@ -80,6 +80,11 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
