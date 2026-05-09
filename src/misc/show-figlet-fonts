@@ -1,4 +1,4 @@
-#!/bin/sh -eu
+#!/usr/bin/env bash
 # ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
@@ -28,16 +28,19 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
+# Bash options:
+set -euo pipefail
+
 (
    for base in /usr/local/share /usr/share ; do
-      if [ -d $base/figlet ] ; then
-         find $base/figlet -name "*.[tf]lf" -printf "%P\n"
+      if [ -d ${base}/figlet ] ; then
+         find ${base}/figlet -name "*.[tf]lf" -printf "%P\n"
       fi
    done
 ) | sort | (
    while read -r font ; do
-      figlet -t -f "$font" "${font%.*}" 2>/dev/null || \
-         toilet -t -f "$font" "${font%.*}" 2>/dev/null || \
+      figlet -t -f "${font}" "${font%.*}" 2>/dev/null || \
+         toilet -t -f "${font}" "${font%.*}" 2>/dev/null || \
             echo "${font%.*}"
    done
 )

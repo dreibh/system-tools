@@ -35,23 +35,16 @@ set -euo pipefail
 while [ $# -gt 0 ] ; do
    input="$1"
    shift 1
-   output="${input/\.md/.html}"
+   output="${input/\.[0-9]/.html}"
 
    if [ "${output}" != "${input}" ] ; then
       echo "Converting ${input} -> ${output} ..."
 
-      pandoc -t html \
-         --standalone \
-         --highlight-style=kate \
-         --metadata title="$(basename "${input}")" "${input}" | \
-      sed -e 's#lang=""#lang="en"#'         \
-         -e 's#<table>#<table summary="">#' \
-         -e 's/\( href="#\)-/\1/g'          \
-         >"${output}"
+      mandoc -Thtml -Ostyle=style.css  "${input}" >"${output}"
 
-      # tidy -q -o /dev/null --strict-tags-attributes yes "${output}"
+      tidy -q -o /dev/null --strict-tags-attributes yes "${output}"
    else
-      echo "ERROR: Unable to handle ${input}. No .md file?"
+      echo "ERROR: Unable to handle ${input}. No manpage file?"
       exit 1
    fi
 done
