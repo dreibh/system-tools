@@ -199,10 +199,7 @@ while true ; do
    fi
 
    # ====== Run the command =================================================
-   if "$@" ; then
-      exit 0
-   fi
-   exitStatus=$?
+   "$@" && exitStatus=0 || exitStatus=$?
 
    # ====== Check whether trial limit has been reached ======================
    if [ ${trial} -ge "${MAX_TRIALS}" ] ; then
