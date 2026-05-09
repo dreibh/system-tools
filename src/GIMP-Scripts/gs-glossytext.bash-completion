@@ -30,7 +30,7 @@
 
 
 # ###### Bash completion for gs-glossytext ##################################
-_gs_caption()
+_gs_glossytext()
 {
    # Based on: https://www.benningtons.net/index.php/bash-completion/
    local cur prev words cword
@@ -178,4 +178,4 @@ _gs_caption()
    return 0
 }
 
-complete -F _gs_caption gs-glossytext
+complete -F _gs_glossytext gs-glossytext

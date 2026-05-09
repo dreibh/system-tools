@@ -187,11 +187,11 @@ rm -f "${OUTPUT_FILENAME}"
    ; GEGL Oilify options: https://gegl.org/operations/gegl-oilify.html
    ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   (cond( (not(defined? 'plug-in-mosaic))
+   (cond( (not(defined? 'plug-in-oilify))
       ; New GIMP 3.0 API:
       (gimp-drawable-merge-new-filter layer "gegl:oilify" 0 LAYER-MODE-REPLACE 1.0
-          "mask-radius" (max 1 (/ maskSize 2))
-          "use-inten"   intensityMode
+          "mask-radius"   (max 1 (/ maskSize 2))
+          "use-intensity" intensityMode
       )
    )
    (else

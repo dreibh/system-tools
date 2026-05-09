@@ -57,8 +57,10 @@ The following options are available:
 .Bl -tag -width indent
 .It Fl q | Fl Fl quiet
 Quiet mode: no output is made.
+.It Fl q | Fl Fl quiet
+Quiet mode: suppress GIMP console output. This is the default.
 .It Fl w | Fl Fl verbose
-Verbose mode: print selected delay and wake-up.
+Verbose mode: print GIMP console output and processing details.
 .It Fl h | Fl Fl help
 Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
@@ -80,3 +82,23 @@ tool exits with 0 on success, and >0 in case of an error.
 .It gs-test-gimp \-\-version
 .It gs-test-gimp \-v
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr gs-bumpmap 1 ,
+.Xr gs-caption 1 ,
+.Xr gs-clothify 1 ,
+.Xr gs-glossytext 1 ,
+.Xr gs-list-fonts 1 ,
+.Xr gs-list-gradients 1 ,
+.Xr gs-list-patterns 1 ,
+.Xr gs-mosaic 1 ,
+.Xr gs-oilify 1 ,
+.Xr gs-oldphoto 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

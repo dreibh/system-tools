@@ -211,8 +211,14 @@ rm -f "${OUTPUT_FILENAME}"
    (if (not (= RGB imageType))
       (gimp-image-convert-rgb image))
 
-   (script-fu-old-photo image layer
-                        defocus borderSize sepia mottle FALSE)
+   (if (not (defined? 'gimp-image-get-active-layer))
+      (begin ; New GIMP 3.0 API
+         (script-fu-old-photo image (vector layer) defocus borderSize sepia mottle FALSE)
+      )
+      (begin ; Old GIMP 2.x API
+         (script-fu-old-photo image layer defocus borderSize sepia mottle FALSE)
+      )
+   )
 
    ; ------ Save result -----------------------------------------------------
    (if (defined? 'gimp-drawable-merge-new-filter)

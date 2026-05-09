@@ -175,7 +175,7 @@ while [ $# -gt 0 ] ; do
          elif [[ "${COLOR_AVERAGING}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
             COLOR_AVERAGING="FALSE"
          else
-            echo >&2 "ERROR: Invalid value ${COLOR_AVERAGING} for -g|--color-averaging!"
+            echo >&2 "ERROR: Invalid value ${COLOR_AVERAGING} for -G|--color-averaging!"
             exit 1
          fi
          ;;
@@ -196,7 +196,7 @@ while [ $# -gt 0 ] ; do
          shift
          if [[ ! "${LIGHT_DIRECTION}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
             awk "BEGIN { exit ( ($LIGHT_DIRECTION < 0.0) || ($LIGHT_DIRECTION > 360.0) ? 0 : 1) }" ; then
-            echo >&2 "ERROR: Invalid value ${LIGHT_DIRECTION} for -C|--light-direction!"
+            echo >&2 "ERROR: Invalid value ${LIGHT_DIRECTION} for -L|--light-direction!"
             exit 1
          fi
          ;;

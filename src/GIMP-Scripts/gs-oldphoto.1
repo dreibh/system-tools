@@ -39,13 +39,11 @@
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm gs-oldphoto
-input_filename
-output_filename
+.Nm gs-oldphoto Ar input_filename Ar output_filename
 .br
 .Op Fl D Ar on|off | Fl Fl defocus Ar on|off
 .br
-.Op Fl B  Ar border_size | Fl Fl border-size Ar border_size
+.Op Fl B Ar border_size | Fl Fl border-size Ar border_size
 .br
 .Op Fl S Ar on|off | Fl Fl sepia Ar on|off
 .br
@@ -67,10 +65,10 @@ runs GIMP to load an image, and applies the GIMP Script-Fu "Old Photo" filter
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It input_filename
-The input image. Any format support by GIMP can be used. The format will be detected automatically.
-.It output_filename
-The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
+.It Ar input_filename
+The input image. Any format supported by GIMP can be used. The format will be detected automatically.
+.It Ar output_filename
+The name for the output image to be written. Any format supported by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
 .It Fl D Ar on|off | Fl Fl defocus Ar on|off
 Turns defocus on or off. Default: on.
 .It Fl B Ar border_size | Fl Fl border-size Ar border_size
@@ -78,9 +76,11 @@ Sets the border size for the "Old Photo" filter. Default: 10.
 .It Fl S Ar on|off | Fl Fl sepia Ar on|off
 Turns sepia on or off. Default: on.
 .It Fl M Ar on|off | Fl Fl mottle Ar on|off
-Turns defocus on or off. Default: off.
+Turns mottle on or off. Default: off.
+.It Fl q | Fl Fl quiet
+Quiet mode: suppress GIMP console output. This is the default.
 .It Fl w | Fl Fl verbose
-Verbose mode: print selected delay and wake-up.
+Verbose mode: print GIMP console output and processing details.
 .It Fl h | Fl Fl help
 Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
@@ -103,3 +103,23 @@ tool exits with 0 on success, and >0 in case of an error.
 .It gs-oldphoto \-\-version
 .It gs-oldphoto \-v
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr gs-bumpmap 1 ,
+.Xr gs-caption 1 ,
+.Xr gs-clothify 1 ,
+.Xr gs-glossytext 1 ,
+.Xr gs-list-gradients 1 ,
+.Xr gs-list-patterns 1 ,
+.Xr gs-mosaic 1 ,
+.Xr gs-oilify 1 ,
+.Xr gs-resize-with-cropping 1 ,
+.Xr gs-test-gimp 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

@@ -39,11 +39,9 @@
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm gs-mosaic
-input_filename
-output_filename
+.Nm gs-mosaic Ar input_filename Ar output_filename
 .br
-.Op Fl T Ar triangles|squares|hexagons|octagons | --tile-type Ar triangles|squares|hexagons|octagons
+.Op Fl T Ar triangles|squares|hexagons|octagons | Fl Fl tile-type Ar triangles|squares|hexagons|octagons
 .br
 .Op Fl S Ar size | Fl Fl tile-size Ar size
 .br
@@ -81,34 +79,36 @@ runs GIMP to load an image, and applies the GIMP GEGL "Mosaic" filter
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It input_filename
-The input image. Any format support by GIMP can be used. The format will be detected automatically.
-.It output_filename
-The name for the output image to be written. Any format support by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It Fl T Ar triangles|squares|hexagons|octagons | \-\-tile-type Ar triangles|squares|hexagons|octagons
+.It Ar input_filename
+The input image. Any format supported by GIMP can be used. The format will be detected automatically.
+.It Ar output_filename
+The name for the output image to be written. Any format supported by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
+.It Fl T Ar triangles|squares|hexagons|octagons | Fl Fl tile-type Ar triangles|squares|hexagons|octagons
 Sets the tile type: triangles, squares, hexagons, octagons. Default: hexagons.
 .It Fl S Ar size | Fl Fl tile-size Ar size
-Specifies the tile size. Range: 1.0-1000.0. Default: 15.0.
+Specifies the tile size. Range: 1.0\-1000.0. Default: 15.0.
 .It Fl H Ar height | Fl Fl tile-height Ar height
-Specifies the tile height. Range: 1.0-1000.0. Default: 4.0.
+Specifies the tile height. Range: 1.0\-1000.0. Default: 4.0.
 .It Fl N Ar neatness | Fl Fl tile-neatness Ar neatness
-Specifies the tile neatness. Range: 0.0-1.0. Default: 0.65.
+Specifies the tile neatness. Range: 0.0\-1.0. Default: 0.65.
 .It Fl F Ar rough|smooth | Fl Fl tile-surface Ar rough|smooth
 Sets the tile surface to rough or smooth. Default: rough.
 .It Fl X Ar spacing | Fl Fl tile-spacing Ar spacing
-Specifies the tile spacing. Range: 0.0-1000.0. Default: 4.0.
+Specifies the tile spacing. Range: 0.0\-1000.0. Default: 4.0.
 .It Fl I Ar on|off | Fl Fl tile-allow-split Ar on|off
 Turns allowing tile split on sharp edges on or off. Default: on.
 .It Fl C Ar variation | Fl Fl color-variation Ar variation
-Specifies the color variation. Range: 0.0-1.0. Default: 0.2.
+Specifies the color variation. Range: 0.0\-1.0. Default: 0.2.
 .It Fl G Ar on|off | Fl Fl color-averaging Ar on|off
 Turns color averaging on or off. Default: on.
 .It Fl A Ar on|off | Fl Fl antialiasing Ar on|off
 Turns antialiasing on or off. Default: on.
 .It Fl L Ar degrees | Fl Fl light-direction Ar degrees
-Specifies the light direction in degrees. Range: 0.0-360.0. Default: 135.0.
+Specifies the light direction in degrees. Range: 0.0\-360.0. Default: 135.0.
+.It Fl q | Fl Fl quiet
+Quiet mode: suppress GIMP console output. This is the default.
 .It Fl w | Fl Fl verbose
-Verbose mode: print selected delay and wake-up.
+Verbose mode: print GIMP console output and processing details.
 .It Fl h | Fl Fl help
 Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
@@ -130,3 +130,23 @@ tool exits with 0 on success, and >0 in case of an error.
 .It gs-mosaic \-\-version
 .It gs-mosaic \-v
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr gs-bumpmap 1 ,
+.Xr gs-caption 1 ,
+.Xr gs-clothify 1 ,
+.Xr gs-glossytext 1 ,
+.Xr gs-list-gradients 1 ,
+.Xr gs-list-patterns 1 ,
+.Xr gs-oilify 1 ,
+.Xr gs-oldphoto 1 ,
+.Xr gs-resize-with-cropping 1 ,
+.Xr gs-test-gimp 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system-tools/ "System-Tools Homepage" .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

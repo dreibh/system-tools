@@ -35,7 +35,7 @@ set -euo pipefail
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 filename text [-F|--font-name font] [-S|--font-size size] [-G|--blend-gradient-text gradient] [-g|--blend-gradient-text-reverse on|off] [-L|--blend-gradient-outline gradient] [-l|--blend-gradient-outline-reverse on|off] [-O|--outline-size size] [-B|--background-color color] [-I|--pattern-text pattern] [-i|--use-pattern-text on|off] [-J|--pattern-outline pattern] [-j|--use-pattern-outline on|off] [-R|--pattern-overlay pattern] [-r|--use-pattern-overlay on|off] [-s|--use-shadow on|off] [-X|--shadow-offset-x offset] [-Y|--shadow-offset-y offset] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
+   echo >&2 "Usage: $0 output_filename text [-F|--font-name font] [-S|--font-size size] [-G|--blend-gradient-text gradient] [-g|--blend-gradient-text-reverse on|off] [-L|--blend-gradient-outline gradient] [-l|--blend-gradient-outline-reverse on|off] [-O|--outline-size size] [-B|--background-color color] [-I|--pattern-text pattern] [-i|--use-pattern-text on|off] [-J|--pattern-outline pattern] [-j|--use-pattern-outline on|off] [-R|--pattern-overlay pattern] [-r|--use-pattern-overlay on|off] [-s|--use-shadow on|off] [-X|--shadow-offset-x offset] [-Y|--shadow-offset-y offset] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
 
@@ -214,11 +214,11 @@ while [ $# -gt 0 ] ; do
             exit 1
          fi
          ;;
-      -Y | --shadow-offet-y)
+      -Y | --shadow-offset-y)
          SHADOW_OFFSET_Y="$2"
          shift
          if [[ ! "${SHADOW_OFFSET_Y}" =~ ^[0-9]+$ ]] || [ "${SHADOW_OFFSET_Y}" -lt 1 ] || [ "${SHADOW_OFFSET_Y}" -gt 100 ] ; then
-            echo >&2 "ERROR: Invalid value ${SHADOW_OFFSET_Y} for -Y|--shadow-offet-y!"
+            echo >&2 "ERROR: Invalid value ${SHADOW_OFFSET_Y} for -Y|--shadow-offset-y!"
             exit 1
          fi
          ;;
