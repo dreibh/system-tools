@@ -437,7 +437,7 @@ while [ $# -gt 0 ] ; do
       -Y | --test-system-info)
          testSystemInfoInput="$2"
          if [ ! -e "${testSystemInfoInput}" ] ; then
-            eval_gettext >&2 "ERROR: Unable to find \${testSystemInfoInput}!"
+            eval_gettext >&2 "ERROR: Unable to find input file \${testSystemInfoInput}!"
             echo >&2
             exit 1
          fi
