@@ -29,61 +29,63 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd May 9, 2026
-.Dt print-utf8 1
-.Os print-utf8
+.Dt print\-utf8 1
+.Os print\-utf8
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm print-utf8
-.Nd prints UTF-8 strings
+.Nm print\-utf8
+.Nd prints UTF\-8 strings
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm print-utf8
+.Nm print\-utf8
 .Op Fl n | Fl Fl newline
 .Op Fl i Ar indentation | Fl Fl indent Ar indentation
 .Op string
-.Nm print-utf8
+.Nm print\-utf8
 .Op Fl n | Fl Fl newline
-.Op Fl x Ar console_width | Fl Fl columns Ar console_width
+.Op Fl x Ar console\_width | Fl Fl columns Ar console\_width
 .Op Fl c | Fl Fl center
 .Op string
-.Nm print-utf8
+.Nm print\-utf8
 .Op Fl n | Fl Fl newline
-.Op Fl x Ar console_width | Fl Fl columns Ar console_width
-.Op Fl I Ar indent\%ation Ar left Ar right | Fl Fl multiline-\%indent Ar indent\%ation Ar left Ar right
-.Nm print-utf8
+.Op Fl x Ar console\_width | Fl Fl columns Ar console\_width
+.Op Fl I Ar indent\%ation Ar left Ar right | Fl Fl multiline\-indent Ar indent\%ation Ar left Ar right
+.Nm print\-utf8
 .Op Fl n | Fl Fl newline
-.Op Fl x Ar console_width | Fl Fl columns Ar console_width
-.Op Fl C Ar left Ar right | Fl Fl multiline-center Ar left Ar right
-.Nm print-utf8
+.Op Fl x Ar console\_width | Fl Fl columns Ar console\_width
+.Op Fl C Ar left Ar right | Fl Fl multiline\-center Ar left Ar right
+.Nm print\-utf8
 .Op Fl n | Fl Fl newline
-.Op Fl x Ar console_width | Fl Fl columns Ar console_width
+.Op Fl x Ar console\_width | Fl Fl columns Ar console\_width
 .Op Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
-.Nm print-utf8
+.Nm print\-utf8
 .Op Fl b | Fl Fl size
 .Op string
-.Nm print-utf8
+.Nm print\-utf8
 .Op Fl l | Fl Fl length
 .Op string
-.Nm print-utf8
+.Nm print\-utf8
 .Op Fl w | Fl Fl width
 .Op string
-.Nm print-utf8
-.Op Fl a | Fl Fl size-length-width
+.Nm print\-utf8
+.Op Fl a | Fl Fl size\-length\-width
 .Op string
-.Nm print-utf8
-.Op Fl t | Fl Fl terminal-info
-.Nm print-utf8
+.Nm print\-utf8
+.Op Fl t | Fl Fl terminal\-info
+.Nm print\-utf8
 .Op Fl h | Fl Fl help
-.Nm print-utf8
+.Nm print\-utf8
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-print-utf8 is a simple program to print UTF-8 strings in the console with
+print\-utf8 is a simple program to print UTF\-8 strings in the console with
 options for indentation, centering, separator as well as size/length/width
 information.
-If /dev/tty is not available to obtain the terminal width and height, the
+If
+.Pa /dev/tty
+is not available to obtain the terminal width and height, the
 default of 80x24 is assumed.
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -92,36 +94,38 @@ The following options are available:
 .It Fl n | Fl Fl newline
 Add a newline to the output. Default: off.
 .It Fl i Ar indentation | Fl Fl indent Ar indentation
-Indent the string by the given number of characters (columns in the console). A negative number leads to left-justified text, a positive number leads to right-justified text.
+Indent the string by the given number of characters (columns in the console). A negative number leads to left\-justified text, a positive number leads to right\-justified text.
 .It Fl c | Fl Fl center
 Center the string, using indentation based on the current console width.
-.It Fl I Ar indentation Ar left Ar right | Fl Fl multiline-indent Ar indentation Ar left Ar right
+.It Fl I Ar indentation Ar left Ar right | Fl Fl multiline\-indent Ar indentation Ar left Ar right
 Reads multiple lines from stdin, indent each line by given indentation, add a prefix left and a suffix right.
-.It Fl C Ar left Ar right | Fl Fl multiline-center Ar left Ar right
+.It Fl C Ar left Ar right | Fl Fl multiline\-center Ar left Ar right
 Reads multiple lines from stdin, pads them to the same length, and prints them centered with given borders on left and right side.
 .It Fl s Ar left Ar separator Ar right | Fl Fl separator Ar left Ar separator Ar right
 Generates a separator, consisting of a left part, a variable number of separator string occurrences, as well as a right part.
 The separator string must have a width >= 1 to fill the line. Otherwise, a space (" ") is used instead.
-.It Fl x Ar console_width | Fl Fl columns Ar console_width
-Set number of columns (console width) for "center", "multiline-center", and
+.It Fl x Ar console\_width | Fl Fl columns Ar console\_width
+Set number of columns (console width) for "center", "multiline\-center", and
 "separator" functions (see above).
-For console_width=0, the current console width (or from 80, if unknown) is used.
-For console_width<0, the current console width (or from 80, if unknown) plus
-console_width (subtraction, since it is negative!) is used.
+For console\_width=0, the current console width (or from 80, if unknown) is used.
+For console\_width<0, the current console width (or from 80, if unknown) plus
+console\_width (subtraction, since it is negative!) is used.
 Default: 0, i.e. current console width.
 .It Fl b | Fl Fl size
 Print the size (bytes) of the string without ANSI control sequences.
 .It Fl l | Fl Fl length
-Print the length (in UTF-8 characters) of the string without ANSI control sequences.
+Print the length (in UTF\-8 characters) of the string without ANSI control sequences.
 .It Fl w | Fl Fl width
 Print the width (columns in the console) of the string without ANSI control sequences.
-.It Fl a | Fl Fl size-length-width
+.It Fl a | Fl Fl size\-length\-width
 Print the size, length and width of the string without ANSI control sequences.
-.It Fl t | Fl Fl terminal-info
+.It Fl t | Fl Fl terminal\-info
 Print current width and height of the console.
-Note that if /dev/tty is not available, the default of 80x24 is returned!
+Note that if
+.Pa /dev/tty
+is not available, the default of 80x24 is returned!
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
@@ -133,67 +137,67 @@ tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It print-utf8 \-\-newline \-\-center \[dq]This line is centered in console width!\[dq]
-.It print-utf8 \-\-newline \-\-columns 80 \-\-center \[dq]This line is centered in 80 columns!\[dq]
-.It print-utf8 \-\-newline \-\-center \[aq]\ex1b[38;2;241;71;29mThis line is centered!\ex1b[0m\[aq]
-.It figlet \[dq]$(date +\[dq]%y-%m-%d\[dq])\[dq] | print-utf8 \-\-newline \-\-multiline-indent 64 \[dq]< \[dq] \[dq] >\[dq]
-.It figlet \[dq]$(date +\[dq]%y-%m-%d\[dq])\[dq] | print-utf8 \-\-newline \-\-multiline-indent \-64 \[dq]< \[dq] \[dq] >\[dq]
-.It figlet \[dq]This is a test!\[dq] | print-utf8 \-\-newline \-\-multiline-center \[dq]<🏁\[dq] \[dq]🏁>\[dq]
-.It figlet \[dq]This is another test!\[dq] | print-utf8 \-x \-8 \-n \-C \[dq]<🏁\[dq] \[dq]🏁>\[dq]
-.It figlet \[dq]Right\[dq] | print-utf8 \-n \-I +72 \[dq]😀\[dq] \[dq]😀\[dq]
-.It figlet \[dq]Left\[dq]  | print-utf8 \-n \-I \-72 \[dq]😀\[dq] \[dq]😀\[dq]
-.It date +\[dq]%d. %m.  %Y %H:%M:%S\[dq] | figlet \-w 128 | print-utf8 \-n \-C \[dq][🕑\[dq] \[dq]🕑]\[dq]
-.It print-utf8 \-n \-c \[dq]😀😀😀 This line is centered in console width! 😀😀😀\[dq]
-.It print-utf8 \-n \-x 80 \-c \[dq]😀😀😀 This line is centered in 80 columns! 😀😀😀\[dq]
-.It print-utf8 \-\-indent \-32 \[dq]Left: \[dq] && echo \[dq]1234\[dq]
-.It print-utf8 \-\-indent +32 \[dq]Right: \[dq] && echo \[dq]1234\[dq]
-.It print-utf8 \-\-newline \-\-separator \[dq]<*\[dq] \[dq]=\[dq] \[dq]*>\[dq]
-.It print-utf8 \-\-columns 80 \-\-newline \-\-separator \[dq]<*\[dq] \[dq]=\[dq] \[dq]*>\[dq]
-.It print-utf8 \-n \-s \[dq]<💻😀\[dq] \[dq]=\[dq] \[dq]😀💻>\[dq]
-.It print-utf8 \-\-width \[dq]Test\[dq]
-.It print-utf8 \-\-width \[dq]Test äöü\[dq]
-.It print-utf8 \-b \[dq]😀 Test 😀\[dq]
-.It print-utf8 \-l \[dq]😀 Test 😀\[dq]
-.It print-utf8 \-w \[dq]😀 Test 😀\[dq]
-.It print-utf8 \-a \[dq]😀 Test 😀\[dq]
-.It print-utf8 \-\-terminal-info
-.It print-utf8 \-n \-s \[dq]\[rs]e[1;34m╔\[dq] \[dq]═\[dq] \[dq]╗\[rs]e[0m\[dq]\~;
+.It print\-utf8 \-\-newline \-\-center \[dq]This line is centered in console width!\[dq]
+.It print\-utf8 \-\-newline \-\-columns 80 \-\-center \[dq]This line is centered in 80 columns!\[dq]
+.It print\-utf8 \-\-newline \-\-center \[aq]\ex1b[38;2;241;71;29mThis line is centered!\ex1b[0m\[aq]
+.It figlet \[dq]$(date +\[dq]%y\-%m\-%d\[dq])\[dq] | print\-utf8 \-\-newline \-\-multiline\-indent 64 \[dq]< \[dq] \[dq] >\[dq]
+.It figlet \[dq]$(date +\[dq]%y\-%m\-%d\[dq])\[dq] | print\-utf8 \-\-newline \-\-multiline\-indent \-64 \[dq]< \[dq] \[dq] >\[dq]
+.It figlet \[dq]This is a test!\[dq] | print\-utf8 \-\-newline \-\-multiline\-center \[dq]<🏁\[dq] \[dq]🏁>\[dq]
+.It figlet \[dq]This is another test!\[dq] | print\-utf8 \-x \-8 \-n \-C \[dq]<🏁\[dq] \[dq]🏁>\[dq]
+.It figlet \[dq]Right\[dq] | print\-utf8 \-n \-I +72 \[dq]😀\[dq] \[dq]😀\[dq]
+.It figlet \[dq]Left\[dq]  | print\-utf8 \-n \-I \-72 \[dq]😀\[dq] \[dq]😀\[dq]
+.It date +\[dq]%d. %m.  %Y %H:%M:%S\[dq] | figlet \-w 128 | print\-utf8 \-n \-C \[dq][🕑\[dq] \[dq]🕑]\[dq]
+.It print\-utf8 \-n \-c \[dq]😀😀😀 This line is centered in console width! 😀😀😀\[dq]
+.It print\-utf8 \-n \-x 80 \-c \[dq]😀😀😀 This line is centered in 80 columns! 😀😀😀\[dq]
+.It print\-utf8 \-\-indent \-32 \[dq]Left: \[dq] && echo \[dq]1234\[dq]
+.It print\-utf8 \-\-indent +32 \[dq]Right: \[dq] && echo \[dq]1234\[dq]
+.It print\-utf8 \-\-newline \-\-separator \[dq]<*\[dq] \[dq]=\[dq] \[dq]*>\[dq]
+.It print\-utf8 \-\-columns 80 \-\-newline \-\-separator \[dq]<*\[dq] \[dq]=\[dq] \[dq]*>\[dq]
+.It print\-utf8 \-n \-s \[dq]<💻😀\[dq] \[dq]=\[dq] \[dq]😀💻>\[dq]
+.It print\-utf8 \-\-width \[dq]Test\[dq]
+.It print\-utf8 \-\-width \[dq]Test äöü\[dq]
+.It print\-utf8 \-b \[dq]😀 Test 😀\[dq]
+.It print\-utf8 \-l \[dq]😀 Test 😀\[dq]
+.It print\-utf8 \-w \[dq]😀 Test 😀\[dq]
+.It print\-utf8 \-a \[dq]😀 Test 😀\[dq]
+.It print\-utf8 \-\-terminal\-info
+.It print\-utf8 \-n \-s \[dq]\[rs]e[1;34m╔\[dq] \[dq]═\[dq] \[dq]╗\[rs]e[0m\[dq]\~;
 .br
-date +\[dq]%d. %m. %Y %H:%M:%S\[dq] | figlet -w 128 | \[rs]
+date +\[dq]%d. %m. %Y %H:%M:%S\[dq] | figlet \-w 128 | \[rs]
 .br
-print-utf8 -n -C \[dq]\[rs]e[1;34m║🕑\[rs]e[1;31m\[dq] \[dq]\[rs]e[1;34m🕑║\[rs]e[0m\[dq] ;
+print\-utf8 \-n \-C \[dq]\[rs]e[1;34m║🕑\[rs]e[1;31m\[dq] \[dq]\[rs]e[1;34m🕑║\[rs]e[0m\[dq] ;
 .br
-print-utf8 -n -s \[dq]\[rs]e[1;34m╚\[dq] \[dq]═\[dq] \[dq]╝\[rs]e[0m\[dq]
-.It print-utf8 \-n \-s \[dq]\[rs]e[1;31;5m█\[dq] \[dq]▀\[dq] \[dq]█\[rs]e[0m\[dq]\~;
-echo \[dq]ERROR  1234\[dq] | figlet -w 128 | print-utf8 -n -C \[dq]\[rs]e[1;31;5m█\[rs]e[25m\[dq] \[dq]\[rs]e[5m█\[rs]e[0m\[dq]\~;
+print\-utf8 \-n \-s \[dq]\[rs]e[1;34m╚\[dq] \[dq]═\[dq] \[dq]╝\[rs]e[0m\[dq]
+.It print\-utf8 \-n \-s \[dq]\[rs]e[1;31;5m█\[dq] \[dq]▀\[dq] \[dq]█\[rs]e[0m\[dq]\~;
+echo \[dq]ERROR  1234\[dq] | figlet \-w 128 | print\-utf8 \-n \-C \[dq]\[rs]e[1;31;5m█\[rs]e[25m\[dq] \[dq]\[rs]e[5m█\[rs]e[0m\[dq]\~;
 .br
-print-utf8 -n -s \[dq]\[rs]e[1;31;5m█\[dq] \[dq]▄\[dq] \[dq]█\[rs]e[0m\[dq]
-.It print-utf8 \-n \-s \[dq]\[rs]e[1;31;40;5m█\[dq] \[dq]▀\[dq] \[dq]█\[rs]e[0m\[dq]\~;
+print\-utf8 \-n \-s \[dq]\[rs]e[1;31;5m█\[dq] \[dq]▄\[dq] \[dq]█\[rs]e[0m\[dq]
+.It print\-utf8 \-n \-s \[dq]\[rs]e[1;31;40;5m█\[dq] \[dq]▀\[dq] \[dq]█\[rs]e[0m\[dq]\~;
 .br
-echo -e \[dq]Software Failure.   Press left mouse button to continue.\[rs]nGuru Meditation #00000004.48454C50\[dq] | \[rs]
+echo \-e \[dq]Software Failure.   Press left mouse button to continue.\[rs]nGuru Meditation #00000004.48454C50\[dq] | \[rs]
 .br
-print-utf8 -n -C \[dq]\[rs]e[1;31;40;5m█\[rs]e[25m\[dq] \[dq]\[rs]e[5m█\[rs]e[0m\[dq]\~;
+print\-utf8 \-n \-C \[dq]\[rs]e[1;31;40;5m█\[rs]e[25m\[dq] \[dq]\[rs]e[5m█\[rs]e[0m\[dq]\~;
 .br
-print-utf8 -n -s \[dq]\[rs]e[1;31;40;5m█\[dq] \[dq]▄\[dq] \[dq]█\[rs]e[0m\[dq]
-.It print-utf8 \-n \-x 44 \-s \[dq]\[rs]e[1;32m╒\[dq] \[dq]═\[dq] \[dq]╕\[rs]e[0m\[dq]\~;
+print\-utf8 \-n \-s \[dq]\[rs]e[1;31;40;5m█\[dq] \[dq]▄\[dq] \[dq]█\[rs]e[0m\[dq]
+.It print\-utf8 \-n \-x 44 \-s \[dq]\[rs]e[1;32m╒\[dq] \[dq]═\[dq] \[dq]╕\[rs]e[0m\[dq]\~;
 .br
-ls / | print-utf8 -n --multiline-indent -42 \[dq]\[rs]e[1;32m│\[rs]e[34m\[dq] \[dq]\[rs]e[1;32m│\[rs]e[0m\[dq]\~;
+ls / | print\-utf8 \-n \-\-multiline\-indent \-42 \[dq]\[rs]e[1;32m│\[rs]e[34m\[dq] \[dq]\[rs]e[1;32m│\[rs]e[0m\[dq]\~;
 .br
-print-utf8 -n -x 44 -s \[dq]\[rs]e[1;32m╘\[dq] \[dq]═\[dq] \[dq]╛\[rs]e[0m\[dq]
-.It print-utf8 \-h
-.It print-utf8 \-\-help
-.It print-utf8 \-\-version
-.It print-utf8 \-v
+print\-utf8 \-n \-x 44 \-s \[dq]\[rs]e[1;32m╘\[dq] \[dq]═\[dq] \[dq]╛\[rs]e[0m\[dq]
+.It print\-utf8 \-h
+.It print\-utf8 \-\-help
+.It print\-utf8 \-\-version
+.It print\-utf8 \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
-.Xr System-Info 1 ,
-.Xr text-block 1
+.Xr System\-Info 1 ,
+.Xr text\-block 1
 .\" ###### Notes ############################################################
 .Sh NOTES
-This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
-.Lk https://www.nntb.no/\(tidreibh/system-tools/ .
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
 Thomas Dreibholz,
-.Lk https://www.nntb.no/\(tidreibh
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

@@ -126,8 +126,7 @@ Package: td-try-hard
 Architecture: all
 Depends: gettext-base,
          td-random-sleep (>= ${source:Version}),
-         ${misc:Depends},
-         ${shlibs:Depends}
+         ${misc:Depends}
 Provides: td-misc
 Replaces: td-misc (<< 2.4.1)
 Breaks: td-misc (<< 2.4.1)

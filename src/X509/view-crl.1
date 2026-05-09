@@ -29,36 +29,37 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd May 9, 2026
-.Dt view-crl 1
-.Os view-crl
+.Dt view\-crl 1
+.Os view\-crl
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm view-crl
+.Nm view\-crl
 .Nd displays important details of an X.509 CRL in PEM or DER format
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm view-crl
-CRL_file
+.Nm view\-crl Ar crl\_file
 .Op ...
-.Nm view-crl
+.Nm view\-crl
 .Op Fl h | Fl Fl help
-.Nm view-crl
+.Nm view\-crl
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm view-crl
+.Nm view\-crl
 displays important details of an X.509 CRL in PEM or DER format, including the serial numbers and dates of revoked certificates.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It crl_file [...]
-Specifies one or more CRL files to be displayed. "-" is a shortcut for /dev/stdin, i.e. reading the CRL from standard input.
+.It Ar crl\_file ...
+Specifies one or more CRL files to be displayed. "\-" is a shortcut for
+.Pa /dev/stdin ,
+i.e. reading the CRL from standard input.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
@@ -70,30 +71,30 @@ tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It view-crl My-CA-CRL.crl
-.It view-crl /usr/lib/python3.12/test/certdata/revocation.crl
-.It curl \-o google-crl.der.crl http://c.pki.goog/wr2/GSyT1N4PBrg.crl && \
-view-crl google-crl.der.crl
-.It curl \-\-output \- http://c.pki.goog/wr2/GSyT1N4PBrg.crl | view-crl \-
-.It view-crl \-\-help
-.It view-crl \-h
-.It view-crl \-\-version
-.It view-crl \-v
+.It view\-crl My\-CA\-CRL.crl
+.It view\-crl /usr/lib/python3.12/test/certdata/revocation.crl
+.It curl \-o google\-crl.der.crl http://c.pki.goog/wr2/GSyT1N4PBrg.crl && \
+view\-crl google\-crl.der.crl
+.It curl \-\-output \- http://c.pki.goog/wr2/GSyT1N4PBrg.crl | view\-crl \-
+.It view\-crl \-\-help
+.It view\-crl \-h
+.It view\-crl \-\-version
+.It view\-crl \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
-.Xr check-certificate 1 ,
+.Xr check\-certificate 1 ,
 .Xr der2pem 1 ,
-.Xr extract-pem 1 ,
+.Xr extract\-pem 1 ,
 .Xr pem2der 1 ,
-.Xr test-tls-connection 1 ,
-.Xr view-certificate 1 ,
+.Xr test\-tls\-connection 1 ,
+.Xr view\-certificate 1 ,
 .Xr openssl 1
 .\" ###### Notes ############################################################
 .Sh NOTES
-This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
-.Lk https://www.nntb.no/\(tidreibh/system-tools/ .
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
 Thomas Dreibholz,
-.Lk https://www.nntb.no/\(tidreibh
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

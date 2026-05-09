@@ -29,15 +29,15 @@
 .\"
 .\" ###### Setup ############################################################
 .Dd May 9, 2026
-.Dt configure-grub 1
-.Os configure-grub
+.Dt configure\-grub 1
+.Os configure\-grub
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm configure-grub
-.Nd helps to change some GRUB boot-loader options
+.Nm configure\-grub
+.Nd helps to change some GRUB boot\-loader options
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
-.Nm configure-grub grub-defaults-template-file
+.Nm configure\-grub grub\-defaults\-template\-file
 .br
 .Op Fl i Ar input-\%grub-\%defaults-\%file | Fl Fl input Ar input-\%grub-\%defaults-\%file
 .br
@@ -46,13 +46,13 @@
 .Op Fl V Ar GRUB_GFXMODE | Fl Fl video Ar GRUB_GFXMODE
 .br
 .Op Fl T Ar GRUB_INIT_TUNE | Fl Fl tune Ar GRUB_INIT_TUNE
-.Nm configure-grub
+.Nm configure\-grub
 .Op Fl h | Fl Fl help
-.Nm configure-grub
+.Nm configure\-grub
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm configure-grub
+.Nm configure\-grub
 adjusts a GRUB configuration file by applying a configuration
 from a template, and merging the existing configuration settings with
 additional customisations. It can for example be used to set a custom
@@ -67,16 +67,16 @@ a rescue media to fix a broken setup!
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl i Ar input-grub-defaults-file | Fl Fl input Ar input-grub-defaults-file
+.It Fl i Ar input\-grub\-defaults\-file | Fl Fl input Ar input\-grub\-defaults\-file
 Set name of input GRUB file (default: /etc/default/grub).
-.It Fl o Ar output-grub-defaults-file | Fl Fl output Ar output-grub-defaults-file
+.It Fl o Ar output\-grub\-defaults\-file | Fl Fl output Ar output\-grub\-defaults\-file
 Set name of output GRUB file to write (default: grub-defaults.new).
 .It Fl V Ar GRUB_GFXMODE | Fl Fl video Ar GRUB_GFXMODE
 Replace GRUB_GFXMODE by the provided setting.
 .It Fl T Ar GRUB_INIT_TUNE | Fl Fl tune Ar GRUB_INIT_TUNE
 Replace GRUB_INIT_TUNE by the provided setting.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
@@ -88,29 +88,29 @@ tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It configure-grub /usr/share/configure-grub/grub-defaults-standard \
+.It configure\-grub /usr/share/configure\-grub/grub\-defaults\-standard \
    \-V 'auto,1920x1080,1024x768' \
    \-T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192'
-.It sudo configure-grub /usr/share/configure-grub/grub-defaults-nornet \
+.It sudo configure\-grub /usr/share/configure\-grub/grub\-defaults\-nornet \
    \-V 'auto,1024x768' \
    \-o /etc/default/grub
-.It sudo configure-grub /usr/share/configure-grub/grub-defaults-nornet \
+.It sudo configure\-grub /usr/share/configure\-grub/grub\-defaults\-nornet \
    \-i /etc/default/grub \
    \-V 'auto,1920x1080,1024x768' \
    \-T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192' \
    \-o /etc/default/grub
-.It configure-grub \-\-version
-.It configure-grub \-\-help
+.It configure\-grub \-\-version
+.It configure\-grub \-\-help
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
-.Xr Reset-Machine-ID 1 ,
-.Xr System-Maintenance 1
+.Xr Reset\-Machine\-ID 1 ,
+.Xr System\-Maintenance 1
 .\" ###### Notes ############################################################
 .Sh NOTES
-This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
-.Lk https://www.nntb.no/\(tidreibh/system-tools/ .
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
 .\" ###### Authors ##########################################################
 .Sh AUTHORS
 Thomas Dreibholz,
-.Lk https://www.nntb.no/\(tidreibh
+.Lk https://www.nntb.no/\(tidreibh "Homepage"
