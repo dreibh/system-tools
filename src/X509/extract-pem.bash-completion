@@ -50,7 +50,7 @@ _extract_pem ()
       cword="${COMP_CWORD}"
    fi
 
-   if [[ "$cur" != -* ]] ; then
+   if [[ "${cur}" != -* ]] ; then
       _filedir '@(cert|crt|crl|pem)'
       return
    fi

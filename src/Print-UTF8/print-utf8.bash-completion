@@ -63,7 +63,7 @@ _print_utf8()
          terminalColumns="$(print-utf8 -t | awk '{ print $1 }')"
          sortedColumnsList="$(printf "%s\n" "${terminalColumns}" 60 78 80 100 120 128 140 160 180 200 | sort -nu)"
          compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
-         mapfile -t COMPREPLY < <(compgen -W "${sortedColumnsList}" -- "$cur")
+         mapfile -t COMPREPLY < <(compgen -W "${sortedColumnsList}" -- "${cur}")
          return
          ;;
 
@@ -71,7 +71,7 @@ _print_utf8()
       -i | --indent | \
       -I | --multiline-indent)
          compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
-         mapfile -t COMPREPLY < <(compgen -W "-64 -48 -32 -24 -20 -16 -12 -10 0 10 12 16 20 24 32 48 64" -- "$cur")
+         mapfile -t COMPREPLY < <(compgen -W "-64 -48 -32 -24 -20 -16 -12 -10 0 10 12 16 20 24 32 48 64" -- "${cur}")
          return
          ;;
 
@@ -81,7 +81,7 @@ _print_utf8()
          # Left border decorations:
          local suggestions=("#" "=" "|" "║"   "▌" "▐"   "│" "┃" "┆" "┇" "┊" "┋" "😀")
          local matches
-         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "$cur")
+         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "${cur}")
          COMPREPLY=( "${matches[@]@Q}" )
          return
          ;;
@@ -96,7 +96,7 @@ _print_utf8()
          # Left (multiline-indent) or right (multiline-center) border decorations:
          local suggestions=("#" "=" "|" "║"   "▌" "▐"   "│" "┃" "┆" "┇" "┊" "┋" "😀")
          local matches
-         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "$cur")
+         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "${cur}")
          COMPREPLY=( "${matches[@]@Q}" )
          return
          ;;
@@ -106,7 +106,7 @@ _print_utf8()
          # Horizontal border decorations:
          local suggestions=("#" "=" "-" "─" "═"   "▀" "▄"   "━")
          local matches
-         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "$cur")
+         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "${cur}")
          COMPREPLY=( "${matches[@]@Q}" )
          return
          ;;
@@ -121,7 +121,7 @@ _print_utf8()
          # Right border decorations:
          local suggestions=("#" "=" "|" "║"   "▌" "▐"   "│" "┃" "┆" "┇" "┊" "┋" "😀")
          local matches
-         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "$cur")
+         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "${cur}")
          COMPREPLY=( "${matches[@]@Q}" )
          return
          ;;
