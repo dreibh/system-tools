@@ -32,8 +32,11 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
-INSTALL(PROGRAMS    try-hard   DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES       try-hard.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+CONFIGURE_FILE(try-hard try-hard.versioned @ONLY)
+INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/try-hard.versioned
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+        RENAME      try-hard)
+INSTALL(FILES try-hard.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       try-hard.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      try-hard)

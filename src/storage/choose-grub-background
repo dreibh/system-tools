@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 #
 # System-Info
 # Copyright (C) 2013-2026 by Thomas Dreibholz
@@ -17,6 +17,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -euo pipefail
 
 theme="NorNet Management"
 image="/usr/share/nornet-desktop/Desktop-with-Logo/TimeSrv1"   #  "/boot/NorNet/Management1"

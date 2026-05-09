@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 echo -e "\x1b[34mUpdating template po file ...\x1b[0m"
 

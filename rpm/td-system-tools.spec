@@ -1,7 +1,7 @@
 Name: td-system-tools
-Version: 2.3.0
+Version: 2.4.1
 Release: 1
-Summary: Print basic system information and banners
+Summary: Tools for basic system management
 Group: Applications/System
 License: GPL-3.0-or-later
 URL: https://www.nntb.no/~dreibh/system-tools/
@@ -14,32 +14,11 @@ BuildRequires: gcc-c++
 BuildRequires: gettext
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
-Requires: td-system-tools-fingerprint-ssh-keys = %{version}-%{release}
-Requires: td-system-tools-misc = %{version}-%{release}
-Requires: td-system-tools-reset-machine-id = %{version}-%{release}
-Requires: td-system-tools-system-info = %{version}-%{release}
-Requires: td-system-tools-system-maintenance = %{version}-%{release}
-Requires: td-system-tools-text-block = %{version}-%{release}
-Requires: td-system-tools-x509-tools = %{version}-%{release}
-Recommends: td-system-tools-configure-grub = %{version}-%{release}
+Requires: %{name}-basic = %{version}-%{release}
 
 
 %description
-This package contains programs for printing basic system
-information and for system maintenance.
-System-Info displays basic status information about the
-system: hostname, uptime, CPU, memory statistics, disk
-space statistics, SSH public key hashes, and networking
-information. Furthermore, it can be configured to show
-one or more banners (for example,  a project name).
-System-Info can be configured to be automatically run when
-logging in, providing the user an up-to-date overview of
-the system.
-System-Maintenance runs basic system maintenance tasks:
-trying to repair broken package management, updating the
-package management databases, installing all available
-updates, checking for old kernels and removing them, trim
-SSD or unmap unused storage.
+System-Tools is a collection of helpful tools for basic system management of Linux and FreeBSD systems. Particularly, the tool System-Info displays important system information on log-in, including customised banners e.g. for company or project branding.
 
 %prep
 %setup -q
@@ -58,8 +37,8 @@ SSD or unmap unused storage.
 Summary: Perform basic system maintenance
 Group: Applications/System
 BuildArch: noarch
-Requires: td-system-tools-get-system-info = %{version}-%{release}
-Requires: td-system-tools-print-utf8 = %{version}-%{release}
+Requires: %{name}-get-system-info = %{version}-%{release}
+Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: (figlet or toilet)
 Requires: gettext-runtime
 Requires: (mbuffer or buffer)
@@ -89,13 +68,30 @@ in, providing the user an up-to-date overview of the system.
 %{_sysconfdir}/system-info.d/01-example
 
 
+%package get-system-info
+Summary: Obtain basic system information
+Group: Applications/System
+Requires: procps
+
+%description get-system-info
+This small program obtains basic status information about the system:
+hostname, uptime, CPU, memory statistics, and networking information.
+The output is printed in machine-readable form, which can be used
+with evaluation in shell scripts for further processing.
+
+%files get-system-info
+%{_bindir}/get-system-info
+%{_datadir}/bash-completion/completions/get-system-info
+%{_mandir}/man1/get-system-info.1.gz
+
+
 %package system-maintenance
 Summary: Perform basic system maintenance tasks
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
 Requires: sudo
-Recommends: td-system-tools-system-info
+Recommends: %{name}-system-info
 
 %description system-maintenance
 This program runs basic system maintenance tasks:
@@ -117,8 +113,9 @@ Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
 Requires: sudo
-Recommends: td-system-tools-system-info
-Recommends: td-system-tools-system-maintenance
+Requires: uuid
+Recommends: %{name}-system-info
+Recommends: %{name}-system-maintenance
 
 %description reset-machine-id
 This program helps to reset the machine identity state:
@@ -137,7 +134,7 @@ Summary: Reset machine identity state
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
-Recommends: td-system-tools-system-info
+Recommends: %{name}-system-info
 
 %description fingerprint-ssh-keys
 This program prints the SSH key fingerprints of the local machine
@@ -155,7 +152,7 @@ Summary: Helper tool to adjust GRUB configuration
 Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime
-Recommends: td-system-tools-system-maintenance
+Recommends: %{name}-system-maintenance
 
 %description configure-grub
 This program adjusts a GRUB configuration file by applying a configuration
@@ -173,23 +170,6 @@ a rescue media to fix a broken configuration!
 %{_datadir}/configure-grub/grub-defaults-nornet
 %{_datadir}/configure-grub/grub-defaults-standard
 %{_mandir}/man1/configure-grub.1.gz
-
-
-%package get-system-info
-Summary: Obtain basic system information
-Group: Applications/System
-Requires: procps
-
-%description get-system-info
-This small program obtains basic status information about the system:
-hostname, uptime, CPU, memory statistics, and networking information.
-The output is printed in machine-readable form, which can be used
-with evaluation in shell scripts for further processing.
-
-%files get-system-info
-%{_bindir}/get-system-info
-%{_datadir}/bash-completion/completions/get-system-info
-%{_mandir}/man1/get-system-info.1.gz
 
 
 %package print-utf8
@@ -220,16 +200,56 @@ text-block reads text from standard input or given file, and writes it to standa
 %{_mandir}/man1/text-block.1.gz
 %{_datadir}/bash-completion/completions/text-block
 %{_datadir}/locale/*/LC_MESSAGES/text-block.mo
+%{_datadir}/text-block/example1.txt
+%{_datadir}/text-block/example2.txt
+%{_datadir}/text-block/insert.txt
+%{_datadir}/text-block/numbers.txt
+
+
+%package try-hard
+Summary: Make multiple trials to successfully run a command
+Group: Applications/System
+BuildArch: noarch
+Conflicts: %{name}-misc
+
+%description try-hard
+Try-hard runs a command and retries for a given number of times in case
+of error, with a delay between the trials.
+
+%files try-hard
+%{_bindir}/try-hard
+%{_datadir}/bash-completion/completions/try-hard
+%{_datadir}/locale/*/LC_MESSAGES/try-hard.mo
+%{_mandir}/man1/try-hard.1.gz
+
+
+%package random-sleep
+Summary: Wait for a random time span
+Group: Applications/System
+Conflicts: %{name}-misc
+
+%description random-sleep
+Random-sleep waits for a random time span, selected from a given
+interval, with support for fractional seconds.
+
+%files random-sleep
+%{_bindir}/random-sleep
+%{_datadir}/bash-completion/completions/random-sleep
+%{_datadir}/locale/*/LC_MESSAGES/random-sleep.mo
+%{_mandir}/man1/random-sleep.1.gz
 
 
 %package x509-tools
 Summary: X.509 certificate handling tools
 Group: Applications/System
 BuildArch: noarch
-Requires: td-system-tools-text-block = %{version}-%{release}
+Requires: %{name}-text-block = %{version}-%{release}
 Requires: openssl
 Recommends: gnutls-utils
 Recommends: nss-tools
+Suggests: pwgen
+Suggests: python3
+Suggests: python3-netifaces
 
 %description x509-tools
 This package contains X.509 certificate handling tools:
@@ -262,6 +282,9 @@ test-tls-connection tests a TCP TLS connection to a remote endpoint.
 %{_datadir}/locale/*/LC_MESSAGES/test-tls-connection.mo
 %{_datadir}/locale/*/LC_MESSAGES/view-certificate.mo
 %{_datadir}/locale/*/LC_MESSAGES/view-crl.mo
+%{_datadir}/system-tools/CertificateHelper.py
+%{_datadir}/system-tools/generate-test-certificates
+%{_datadir}/system-tools/make-test-certificates
 %{_mandir}/man1/check-certificate.1.gz
 %{_mandir}/man1/der2pem.1.gz
 %{_mandir}/man1/extract-pem.1.gz
@@ -271,37 +294,49 @@ test-tls-connection tests a TCP TLS connection to a remote endpoint.
 %{_mandir}/man1/view-crl.1.gz
 
 
-%package misc
-Summary: Miscellaneous tools
+%package basic
+Summary: Metapackage for basic system tools sub-packages
 Group: Applications/System
-Recommends: td-system-tools-print-utf8
+Requires: %{name}-fingerprint-ssh-keys = %{version}-%{release}
+Requires: %{name}-random-sleep = %{version}-%{release}
+Requires: %{name}-reset-machine-id = %{version}-%{release}
+Requires: %{name}-system-info = %{version}-%{release}
+Requires: %{name}-system-maintenance = %{version}-%{release}
+Requires: %{name}-text-block = %{version}-%{release}
+Requires: %{name}-try-hard = %{version}-%{release}
+Requires: %{name}-x509-tools = %{version}-%{release}
+Recommends: %{name}-configure-grub = %{version}-%{release}
 
-%description misc
-This package contains two simple tools:
-try-hard runs a command and retries for a given number of times in case
-of error, with a delay between the trials.
-random-sleep waits for a random time, selected from a given interval, with
-support for fractional seconds.
+%description basic
+This package is a metapackage for the system information and maintenance
+tools. It installs the basic sub-packages.
+Note that td-system-configure-grub is only added as weak dependency
+("recommends"),  since it is only available on selected architectures.
 
-%files misc
-%{_bindir}/random-sleep
-%{_bindir}/text-block
-%{_bindir}/try-hard
-%{_datadir}/bash-completion/completions/random-sleep
-%{_datadir}/bash-completion/completions/text-block
-%{_datadir}/bash-completion/completions/try-hard
-%{_datadir}/locale/*/LC_MESSAGES/random-sleep.mo
-%{_datadir}/locale/*/LC_MESSAGES/try-hard.mo
-%{_datadir}/text-block/example1.txt
-%{_datadir}/text-block/example2.txt
-%{_datadir}/text-block/insert.txt
-%{_datadir}/text-block/numbers.txt
-%{_mandir}/man1/random-sleep.1.gz
-%{_mandir}/man1/text-block.1.gz
-%{_mandir}/man1/try-hard.1.gz
+%files basic
+
+
+%package complete
+Summary: Metapackage for complete system tools sub-packages
+Group: Applications/System
+Requires: %{name}-basic = %{version}-%{release}
+
+%description complete
+This package is a metapackage for the system information and maintenance
+tools. It installs all sub-packages.
+
+%files complete
 
 
 %changelog
+* Sat Apr 25 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.4.1-1
+- New upstream release.
+* Fri Apr 24 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.4.0-1
+- New upstream release.
+* Thu Apr 23 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.3.2-1
+- New upstream release.
+* Mon Apr 20 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.3.1-1
+- New upstream release.
 * Sun Apr 19 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.3.0-1
 - New upstream release.
 * Wed Feb 25 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.2.5-1

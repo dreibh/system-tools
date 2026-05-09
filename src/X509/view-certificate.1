@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 5, 2026
+.Dd April 24, 2026
 .Dt view-certificate 1
 .Os view-certificate
 .\" ###### Name #############################################################
@@ -44,6 +44,8 @@ certificate_file
 .Op ...
 .Nm view-certificate
 .Op Fl h | Fl Fl help
+.Nm view-certificate
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm view-certificate
@@ -65,7 +67,9 @@ The following options are available:
 .It certificate_file [...]
 Specifies one ore more certificate files to be displayed. "-" is a shortcut for /dev/stdin, i.e. reading the certificate from standard input.
 .It Fl h | Fl Fl help
-Prints command-line parameters.
+Prints the program's command-line parameters and exits.
+.It Fl v | Fl Fl version
+Prints the program version and exits.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -76,4 +80,6 @@ Prints command-line parameters.
 .It view-certificate www-nntb-no-chain.pem
 .It view-certificate --help
 .It view-certificate -h
+.It view-certificate --version
+.It view-certificate -v
 .El

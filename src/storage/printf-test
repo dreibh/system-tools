@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Formatting bug report:
 # https://debbugs.gnu.org/cgi/bugreport.cgi?bug=69951

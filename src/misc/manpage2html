@@ -1,4 +1,4 @@
-# shellcheck shell=bash
+#!/usr/bin/env bash
 # ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
@@ -10,8 +10,8 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# Random-Sleep
-# Copyright (C) 2024-2026 by Thomas Dreibholz
+# Manpage to HTML Conversion
+# Copyright (C) 2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,45 +28,29 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
+# Bash options:
+set -eu
 
-# ###### Bash completion for random-sleep ###################################
-_random_sleep()
-{
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
-      _init_completion || return
+
+# ###### Main program #######################################################
+
+while [ $# -gt 0 ] ; do
+   input="$1"
+   shift 1
+   output="${input/\.[0-9]/.html}"
+
+   if [ "${output}" != "${input}" ] ; then
+      echo "Converting ${input} -> ${output} ..."
+
+      groff -mandoc -Thtml <"${input}" | \
+      sed -e 's#lang=""#lang="en"#'          \
+          -e 's#<table>#<table summary="">#' \
+          -e 's/\( href="#\)-/\1/g'          \
+         >"${output}"
+
+      # tidy -q -o /dev/null --strict-tags-attributes yes "${output}"
    else
-      # Manual initialization for older bash completion versions:
-      COMPREPLY=()
-      cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
-      prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
-      cword="${COMP_CWORD}"
+      echo "ERROR: Unable to handle ${input}. No .md file?"
+      exit 1
    fi
-
-   if [ "${cword}" -lt 3 ] ; then
-      return
-   fi
-
-   # ====== All options =====================================================
-   local opts="
--q
---quiet
--w
---verbose
--h
---help
--v
---version
-"
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
-   return 0
-}
-
-complete -F _random_sleep random-sleep
+done

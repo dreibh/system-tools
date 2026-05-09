@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd November 28, 2025
+.Dd April 24, 2026
 .Dt Reset-Machine-ID 1
 .Os Reset-Machine-ID
 .\" ###### Name #############################################################
@@ -54,6 +54,8 @@
 .Op Fl Fl yes-to-all-i-am-really-sure
 .Nm Reset-Machine-ID
 .Op Fl h | Fl Fl help
+.Nm Reset-Machine-ID
+.Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Reset-Machine-ID
@@ -94,7 +96,9 @@ Try to install Zabbix Agent, if necessary, when a Zabbix server is given but no 
 Create new keys (delete old ones) as well as replace sshd_config and
 ssh_config without interactively asking for confirmation.
 .It Fl h | Fl Fl help
-Prints command-line parameters.
+Prints the program's command-line parameters and exits.
+.It Fl v | Fl Fl version
+Prints the program version and exits.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
@@ -105,4 +109,6 @@ Prints command-line parameters.
 .It sudo Reset-Machine-ID -H server.domain.example -Z zabbix.domain.example -A
 .It sudo Reset-Machine-ID -H server.domain.example --zabbix zabbix.domain.example --install-zabbix-agent
 .It sudo Reset-Machine-ID --skip-ssh-configuration --skip-ssh-key-replacement
+.It Reset-Machine-ID --version
+.It Reset-Machine-ID --help
 .El

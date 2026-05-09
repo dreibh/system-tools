@@ -32,8 +32,11 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
-INSTALL(PROGRAMS Fingerprint-SSH-Keys DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES Fingerprint-SSH-Keys.1  DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+CONFIGURE_FILE(Fingerprint-SSH-Keys Fingerprint-SSH-Keys.versioned @ONLY)
+INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/Fingerprint-SSH-Keys.versioned
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+        RENAME      Fingerprint-SSH-Keys)
+INSTALL(FILES Fingerprint-SSH-Keys.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       Fingerprint-SSH-Keys.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      Fingerprint-SSH-Keys)

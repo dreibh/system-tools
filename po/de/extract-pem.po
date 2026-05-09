@@ -9,7 +9,7 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# System-Tools
+# Extract-PEM
 # Copyright (C) 2024-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-11-26 12:10+0100\n"
+"POT-Creation-Date: 2026-04-25 13:54+0200\n"
 "PO-Revision-Date: 2025-10-28 12:45+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -44,39 +44,39 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/X509/extract-pem:44
+#: src/X509/extract-pem:45
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/X509/extract-pem:102
+#: src/X509/extract-pem:114
 msgid "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
 msgstr "FEHLER: --only-first-entry und --skip-first-entry/--skip-last-entry schließen sich gegenseitig aus!"
 
-#: src/X509/extract-pem:118
+#: src/X509/extract-pem:130
 #, sh-format
 msgid "ERROR: Unable to find PEM file ${PEM_FILE}!"
 msgstr "FEHLER: PEM-Datei ${PEM_FILE} wurde nicht gefunden!"
 
-#: src/X509/extract-pem:124
+#: src/X509/extract-pem:136
 #, sh-format
 msgid "Extracting ${PEM_FILE} ..."
 msgstr "Extrahiere ${PEM_FILE} ..."
 
-#: src/X509/extract-pem:153
+#: src/X509/extract-pem:165
 #, sh-format
 msgid "ERROR: Unexpected type ${type} in ${PEM_FILE}!"
 msgstr "FEHLER: Unerwarteter Typ ${type} in ${PEM_FILE}!"
 
-#: src/X509/extract-pem:160
+#: src/X509/extract-pem:172
 #, sh-format
 msgid "ERROR: Unexpected data in ${PEM_FILE}!"
 msgstr "FEHLER: Unerwartete Daten in ${PEM_FILE}!"
 
-#: src/X509/extract-pem:175 src/X509/extract-pem:191
+#: src/X509/extract-pem:187 src/X509/extract-pem:203
 msgid "SKIPPING"
 msgstr "ÜBERSPRINGE"
 
-#: src/X509/extract-pem:200
+#: src/X509/extract-pem:212
 #, sh-format
 msgid "Done: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys"
 msgstr "Erledigt: ${certificate} Zertifikate, ${csr} CSRs, ${crl} CRLs, ${key} Schlüssel"
