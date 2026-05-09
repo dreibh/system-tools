@@ -35,7 +35,7 @@ set -euo pipefail
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_filename output_filename [-X|--blur-x value] [-Y|--blur-y value] [-A|--azimut bearing] [-E|--elevation bearing] [-D|--depth depth] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
+   echo >&2 "Usage: $0 input_filename output_filename [-X|--blur-x value] [-Y|--blur-y value] [-A|--azimuth bearing] [-E|--elevation bearing] [-D|--depth depth] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
 
@@ -60,7 +60,7 @@ if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
    echo >&2 "ERROR: Enhanced/GNU getopt is required!"
    exit 1
 fi
-options="$(${GETOPT} -o X:Y:A:E:D:wqhv --long blur-x:,blur-y:,azimut:,elevation:,depth:,verbose,quiet,help,version -a -- "$@")"
+options="$(${GETOPT} -o X:Y:A:E:D:wqhv --long blur-x:,blur-y:,azimuth:,elevation:,depth:,verbose,quiet,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage 1
@@ -69,7 +69,7 @@ eval set -- "${options}"
 
 BLUR_X=3
 BLUR_Y=3
-AZIMUT=135.0
+AZIMUTH=135.0
 ELEVATION=45.0
 DEPTH=5
 VERBOSE=0
@@ -91,12 +91,12 @@ while [ $# -gt 0 ] ; do
             exit 1
          fi
          ;;
-      -A | --azimut)
-         AZIMUT="$2"
+      -A | --azimuth)
+         AZIMUTH="$2"
          shift
-         if [[ ! "${AZIMUT}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
-            awk "BEGIN { exit ( ($AZIMUT < 0.0) || ($AZIMUT > 360.0) ? 0 : 1) }" ; then
-            echo >&2 "ERROR: Invalid value ${AZIMUT} for -A|--azimut!"
+         if [[ ! "${AZIMUTH}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
+            awk "BEGIN { exit ( ($AZIMUTH < 0.0) || ($AZIMUTH > 360.0) ? 0 : 1) }" ; then
+            echo >&2 "ERROR: Invalid value ${AZIMUTH} for -A|--azimuth!"
             exit 1
          fi
          ;;
@@ -184,26 +184,26 @@ rm -f "${OUTPUT_FILENAME}"
 ( cat <<EOF
 (let*
    ; ------ Initialise and load image ---------------------------------------
-   ((inputFileName    "${INPUT_FILENAME}")
-    (outputFileName   "${OUTPUT_FILENAME}")
-    (blurX            ${BLUR_X})
-    (blurY            ${BLUR_Y})
-    (azimut           ${AZIMUT})
-    (elevation        ${ELEVATION})
-    (depth            ${DEPTH})
-    (image            (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
-    (imageType        (if (not (defined? 'gimp-image-get-active-layer))
-                         ; New GIMP 3.0 API:
-                         (car (gimp-image-get-base-type image))
-                         ; Old GIMP 2.x API:
-                         (car (gimp-image-base-type image)))
-                      )
-    (layer            (if (not (defined? 'gimp-image-get-active-layer))
-                         ; New GIMP 3.0 API:
-                         (car (list (vector-ref (car (gimp-image-get-selected-layers image)) 0)))
-                         ; Old GIMP 2.x API:
-                         (car (gimp-image-get-active-layer image)))
-                      )
+   ((inputFileName  "${INPUT_FILENAME}")
+    (outputFileName "${OUTPUT_FILENAME}")
+    (blurX          ${BLUR_X})
+    (blurY          ${BLUR_Y})
+    (azimuth        ${AZIMUTH})
+    (elevation      ${ELEVATION})
+    (depth          ${DEPTH})
+    (image          (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
+    (imageType      (if (not (defined? 'gimp-image-get-active-layer))
+                       ; New GIMP 3.0 API:
+                       (car (gimp-image-get-base-type image))
+                       ; Old GIMP 2.x API:
+                       (car (gimp-image-base-type image)))
+                    )
+    (layer          (if (not (defined? 'gimp-image-get-active-layer))
+                       ; New GIMP 3.0 API:
+                       (car (list (vector-ref (car (gimp-image-get-selected-layers image)) 0)))
+                       ; Old GIMP 2.x API:
+                       (car (gimp-image-get-active-layer image)))
+                    )
    )
 
    ; ------ Apply filter ----------------------------------------------------
@@ -213,11 +213,11 @@ rm -f "${OUTPUT_FILENAME}"
 
    (cond( (not(defined? 'plug-in-bump-map))
       ; New GIMP 3.0 API:
-      (script-fu-clothify image (vector layer) blurX blurY azimut elevation depth)
+      (script-fu-clothify image (vector layer) blurX blurY azimuth elevation depth)
    )
    (else
       ; Old GIMP 2.x API:
-      (script-fu-clothify image layer blurX blurY azimut elevation depth)
+      (script-fu-clothify image layer blurX blurY azimuth elevation depth)
    ))
 
    ; ------ Save result -----------------------------------------------------

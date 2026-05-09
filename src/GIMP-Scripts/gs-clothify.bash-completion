@@ -61,7 +61,7 @@ _gs_clothify()
          #  ====== Generic value ============================================
          -X | --blur-x    | \
          -Y | --blur-y    | \
-         -A | --azimut    | \
+         -A | --azimuth    | \
          -E | --elevation | \
          -D | --depth)
             return
@@ -76,7 +76,7 @@ _gs_clothify()
 -Y
 --blur-y
 -A
---azimut
+--azimuth
 -E
 --elevation
 -D
