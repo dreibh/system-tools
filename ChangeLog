@@ -1,3 +1,185 @@
+commit 7d0710614ada5a9945131803533d965b4df247e6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 23:01:16 2026 +0200
+
+    Fixed too-long manpage line.
+
+commit f0699f0589d852c78b645170e5573e136b6850db
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 23:00:53 2026 +0200
+
+    Debian packaging update.
+
+commit 4ab3a07b69dac6e70705752233c3d8a1d3fcfd78
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 22:02:44 2026 +0200
+
+    Further manpage syntax improvements.
+
+commit 925700ae7ebf59b4b8b995628b70549c7b7bff91
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 20:03:03 2026 +0200
+
+    Further manpage syntax improvements.
+
+commit 7656d0bdd66cbeef0bb9175c9e8a538aeb39d3f8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 17:28:01 2026 +0200
+
+    Improved URL formatting in manpages.
+
+commit c40ec0da1068597cfe019b032ff052ab0176f045
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 16:05:27 2026 +0200
+
+    Added missing commata in manpages' "See Also" lists.
+
+commit 8b5aa53051c74755585c033796c0e1a5bab22ca5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 15:57:34 2026 +0200
+
+    Updated PO files.
+
+commit 502cf4402c32c51d452c5dc2ea7a7901e5397726
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 15:48:49 2026 +0200
+
+    The last set of manpage improvements.
+
+commit f57c2cd1243ff819e5a24fb28acb3c5b72d8620a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 15:38:10 2026 +0200
+
+    Improved manpage.
+
+commit 345b2e53fe82b715efaa644bebfb3252fd0d1b0d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 15:27:04 2026 +0200
+
+    Another set of manpage improvements.
+
+commit 78162c98fabfb1cd67a56fe86a4e84fd8265b0aa
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 15:24:41 2026 +0200
+
+    Improved manpage.
+
+commit 29a88c72f7ab5eefdd55039b72de02ffd2cf9aa4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 14:55:53 2026 +0200
+
+    Manpage improvements for the Unix timestamp tools.
+
+commit b39bbba6eef24c31f235b70e9186f9583bc75769
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 14:44:27 2026 +0200
+
+    Another set of manpage improvements.
+
+commit f2962efa796190da66a70eed66b60a8313165a42
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 14:38:39 2026 +0200
+
+    Further manpage improvements.
+
+commit 124d1309c842d75e9cde67d2a35b441ff8726aeb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 14:21:44 2026 +0200
+
+    Manpage improvements.
+
+commit 38c1766f18663f1595f64c7b096e53593e81fd75
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 12:45:54 2026 +0200
+
+    Minor improvement for IPv6 address handling.
+
+commit 1111631da06ef361bd62c893a54c08cf817a7622
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 12:25:42 2026 +0200
+
+    Bugfix: minor parameter passing fix.
+
+commit ea2aa1a2f87daa52659e8818ed4d04462374866f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 12:13:56 2026 +0200
+
+    Further shell completion improvements for Test-TLS-Connection, now properly handling host:port.
+
+commit 8d6cbc82988182547e2185ef40cee7bec32c25ab
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 11:35:36 2026 +0200
+
+    Improved shell completions.
+
+commit 7fc25545834762e43a1cc8f7e5efca1cad89d3a2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 10:38:04 2026 +0200
+
+    Minor shell completion clean-ups.
+
+commit 347ea7f7439a94982a5126139fb8651fdec5c827
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 10:33:26 2026 +0200
+
+    Improved shell completions.
+
+commit b2dea83457678f4e3944ad4c5050330e215ef48f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 10:15:00 2026 +0200
+
+    Added test options, using fixed date and get-system-info output, to provide deterministic results for testing.
+
+commit dce3b7c7f4c4b40653066ffc88ba07619eca5880
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 08:44:57 2026 +0200
+
+    Improved test scripts.
+
+commit 81a95406911dccbd44d588ca0a64956bc042f751
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 08:35:15 2026 +0200
+
+    Improved test script.
+
+commit 701f53eb1ab203d8c854e7c6e9dd39b4b4563a83
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 08:33:36 2026 +0200
+
+    Bugfix: fixed clearing of exitStatus by "if" call, which was introduced by the recent update for status code returning.
+
+commit c4d6718d10f5b8820e8265b8903a8f02a65fce65
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 08:14:04 2026 +0200
+
+    Script improvements:
+    * Ensure that Bash 4.4 or higher is used.
+    * Ensure that getopt is enhanced/GNU getopt.
+
+commit d2212a9a22a90859e0dff6eb3cb963edf3762632
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 07:59:55 2026 +0200
+
+    Added missing include for MacOS.
+
+commit 20a9d102a7efacfb9857ca890e44ff2b00364ed1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 07:52:20 2026 +0200
+
+    Fixed compiler warning.
+
+commit 573e1680dc3525a093bcc52d631c6b2fe7104e9c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 23:31:57 2026 +0200
+
+    Updated FreeBSD port.
+
+commit 8151054a15e91b11391ba56153eb9f3f73667747
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 23:17:54 2026 +0200
+
+    New release td-system-tools-2.6.0.
+
 commit 474cc9cbe3125b1fb04fa3187e64dde43dadc0f4
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri May 8 23:17:17 2026 +0200
