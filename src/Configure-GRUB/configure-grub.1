@@ -80,6 +80,11 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
@@ -94,6 +99,18 @@ Prints the program version and exits.
    -V 'auto,1920x1080,1024x768' \
    -T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192' \
    -o /etc/default/grub
-.It configure-grub --version
-.It configure-grub --help
+.It configure-grub \-\-version
+.It configure-grub \-\-help
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr Reset-Machine-ID 1
+.Xr System-Maintenance 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/~dreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/~dreibh

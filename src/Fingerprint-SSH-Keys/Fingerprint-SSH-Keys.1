@@ -75,12 +75,29 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It Fingerprint-SSH-Keys
-.It Fingerprint-SSH-Keys --include-deprecated
-.It Fingerprint-SSH-Keys -d
-.It Fingerprint-SSH-Keys --version
-.It Fingerprint-SSH-Keys --help
+.It Fingerprint-SSH-Keys \-\-include-deprecated
+.It Fingerprint-SSH-Keys \-d
+.It Fingerprint-SSH-Keys \-\-version
+.It Fingerprint-SSH-Keys \-\-help
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr Reset-Machine-ID 1
+.Xr System-Info 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/~dreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/~dreibh
