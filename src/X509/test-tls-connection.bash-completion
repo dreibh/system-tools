@@ -50,9 +50,36 @@ _test_tls_connection()
       cword="${COMP_CWORD}"
    fi
 
-   if [ "${cword}" -eq 2 ] ; then
-      _filedir '@(cert|crt|pem)'
-      return
+   # ====== Handle the ":" in host:port =====================================
+   local real_cword=0
+   local i=1
+   while [ $i -le "${COMP_CWORD}" ] ; do
+      if [[ "${COMP_WORDS[i]}" == ":" ]] ; then
+         true   # Ignore a colon
+      elif [ $i -gt 1 ] && [[ "${COMP_WORDS[i-1]}" == ":" ]] && [[ "${COMP_WORDS[i]}" != "" ]] ; then
+         true    # Ignore text after the colon
+      else
+         real_cword=$((real_cword + 1))   # New word
+      fi
+      i=$((i + 1))
+   done
+
+   if [[ "${cur}" != -* ]] ; then
+      # ====== Suggest hostname:port ========================================
+      if [ "${real_cword}" -eq 1 ] ; then
+         local hostname
+         hostname="$(hostname -f 2>/dev/null || echo "localhost")"
+         mapfile -t COMPREPLY < <(compgen -W "${hostname}:443 www.heise.de:443 www.ietf.org:443 www.nntb.no:443 www.simula.no:443" -- "${cur}")
+         # NOTE: Block before colon may be duplicated -> need to truncate:
+         if [[ ${cur} == *:* ]] ; then
+            __ltrim_colon_completions "${cur}"
+         fi
+         return
+      # ====== Suggest CA certificate file ==================================
+      elif [ "${real_cword}" -eq 2 ] ; then
+         _filedir '@(cert|crt|pem)'
+         return
+      fi
    fi
 
    case "${prev}" in

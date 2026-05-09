@@ -58,7 +58,15 @@ version () {
 
 # ====== Handle arguments ===================================================
 DIRNAME="$(dirname "$0")"
+if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
+   echo "ERROR: Bash 4.4 or higher is required, but Bash ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]} installed!"
+   exit 1
+fi
 GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
+if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+   echo >&2 "ERROR: Enhanced/GNU getopt is required!"
+   exit 1
+fi
 options="$(${GETOPT} -o s:nchv --long save-certificate:,no-view-certificate,no-check-certificate,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
@@ -93,7 +101,7 @@ while [ $# -gt 0 ] ; do
          ;;
       *)
          # This should not happen: wrong getopt parameters, or missing case?
-         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         echo >&2 "INTERNAL ERROR: Unhandled option $1!"
          exit 1
          ;;
   esac
@@ -103,6 +111,9 @@ if [ $# -lt 2 ] ; then
    usage 1
 fi
 ENDPOINT="$1"
+if [[ ! "${ENDPOINT}" =~ :[a-zA-Z0-9]+$ ]] ; then
+   ENDPOINT="${ENDPOINT}:443"
+fi
 CA_FILE="$2"
 shift 2
 if [ ! -e "${CA_FILE}" ] ; then
@@ -122,8 +133,7 @@ if [ "${CERTIFICATE_FILE}" == "" ] ; then
    CERTIFICATE_FILE="${tempCertFile}"
 fi
 
-# shellcheck disable=SC2068
-echo "" | openssl s_client -showcerts -connect "${ENDPOINT}" -no-CApath -no-CAstore -CAfile "${CA_FILE}" $@ >"${tempOutputFile}"
+echo "" | openssl s_client -showcerts -connect "${ENDPOINT}" -no-CApath -no-CAstore -CAfile "${CA_FILE}" "$@" >"${tempOutputFile}"
 
 text-block --extract \
            --begin-tag '-----BEGIN CERTIFICATE-----'  \

@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 7, 2026
+.Dd May 9, 2026
 .Dt try-hard 1
 .Os try-hard
 .\" ###### Name #############################################################
@@ -96,19 +96,35 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success. On failure, the exit code of the last failed trial is returned.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It try-hard 10 60 --verbose -- git clone https://dreibh@github.com/dreibh/rserpooldemo.git
-.It try-hard 3 300 -q -- git clone https://git.freebsd.org/ports.git
-.It try-hard 3 65.5 -- wget -O example.tar.gz https://www.example.net/example.tar.gz
-.It try-hard 10 1.0 -w -- false
-.It try-hard 10 2.0 --min-delay 1.0 --multiplicative-increase 2.0 --truncate-delay 3600.0 -w -- false
-.It try-hard 10 1.0 -m 1 -M 2 -T 3600 -w -- false
-.It try-hard 10 1 --min-delay 0.5 --additive-increase 5 --truncate-delay 300 -w -- false
-.It try-hard 10 1 -m 1 -A 5 -T 300 -w -- false
-.It try-hard 10 1.0 --deterministic -w -- false
-.It try-hard 10 1.0 -D -w -- false
-.It try-hard --version
-.It try-hard --help
+.It try-hard 10 60 \-\-verbose \-\- git clone https://dreibh@github.com/dreibh/rserpooldemo.git
+.It try-hard 3 300 \-q \-\- git clone https://git.freebsd.org/ports.git
+.It try-hard 3 65.5 \-\- wget \-O example.tar.gz https://www.example.net/example.tar.gz
+.It try-hard 10 1.0 \-w \-\- false
+.It try-hard 10 2.0 \-\-min-delay 1.0 \-\-multiplicative-increase 2.0 \-\-truncate-delay 3600.0 \-w \-\- false
+.It try-hard 10 1.0 \-m 1 \-M 2 \-T 3600 \-w \-\- false
+.It try-hard 10 1 \-\-min-delay 0.5 \-\-additive-increase 5 \-\-truncate-delay 300 \-w \-\- false
+.It try-hard 10 1 \-m 1 \-A 5 \-T 300 \-w \-\- false
+.It try-hard 10 1.0 \-\-deterministic \-w \-\- false
+.It try-hard 10 1.0 \-D \-w \-\- false
+.It try-hard \-\-version
+.It try-hard \-\-help
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr random-sleep 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh

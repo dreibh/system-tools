@@ -51,18 +51,18 @@ _unixts2time()
    fi
 
    # ====== Suggest time stamps as first parameter ==========================
-   if [[ "$cur" != -* ]] ; then
+   if [[ "${cur}" != -* ]] ; then
       local today
       # Suggested time stamp: today, 12:34:56.* in s, ms, µs, and ns.
-      today="$(time2unixts --seconds)"
+      today="$(date +%s)"
       today="$(( ((today / 86400) * 86400) + (12*3600) + (34*60) + 56 ))"
       local timestampOptions=( "${today}" "${today}.789" "${today}111" "${today}222333" "${today}444555666" )
 
+      compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
       COMPREPLY=()
       for item in "${timestampOptions[@]}"; do
-         if [[ "${item}" == "${cur}"* ]]; then
-            compopt -o nosort 2>/dev/null || true   # Numerical sorting (Bash >= 4.4)
-            COMPREPLY+=( "$(printf "%q" "${item}")" )
+         if [[ "${item}" == "${cur}"* ]] ; then
+            COMPREPLY+=( "${item}" )
          fi
       done
       return

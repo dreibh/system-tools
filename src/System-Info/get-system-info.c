@@ -65,6 +65,7 @@
 #include <mach/mach.h>
 #include <mach/mach_host.h>
 #include <mach/mach_time.h>
+#include <net/if_dl.h>
 #include <sys/sysctl.h>
 #else
 #error Unknown system! The system-specific code parts need an update!

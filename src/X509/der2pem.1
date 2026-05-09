@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 7, 2026
+.Dd May 9, 2026
 .Dt der2pem 1
 .Os der2pem
 .\" ###### Name #############################################################
@@ -64,14 +64,36 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It der2pem my-server-certificate.der my-server-certificate.crt
 .It der2pem my-crl.der my-crl.crl
-.It curl -o google-crl.der.crl http://c.pki.goog/wr2/GSyT1N4PBrg.crl && der2pem google-crl.der.crl google-crl.pem
-.It der2pem --help
-.It der2pem -h
-.It der2pem --version
-.It der2pem -v
+.It curl \-o google-crl.der.crl http://c.pki.goog/wr2/GSyT1N4PBrg.crl && der2pem google-crl.der.crl google-crl.pem
+.It der2pem \-\-help
+.It der2pem \-h
+.It der2pem \-\-version
+.It der2pem \-v
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr check-certificate 1 ,
+.Xr extract-pem 1 ,
+.Xr pem2der 1 ,
+.Xr test-tls-connection 1 ,
+.Xr view-certificate 1 ,
+.Xr view-crl 1 ,
+.Xr openssl 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh

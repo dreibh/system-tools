@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 7, 2026
+.Dd May 9, 2026
 .Dt Reset-Machine-ID 1
 .Os Reset-Machine-ID
 .\" ###### Name #############################################################
@@ -101,15 +101,32 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It sudo Reset-Machine-ID
-.It sudo Reset-Machine-ID --yes-to-all-i-am-really-sure
-.It sudo Reset-Machine-ID --hostname dbserver.domain.example
-.It sudo Reset-Machine-ID -H server.domain.example -Z zabbix.domain.example -A
-.It sudo Reset-Machine-ID -H server.domain.example --zabbix zabbix.domain.example --install-zabbix-agent
-.It sudo Reset-Machine-ID --skip-ssh-configuration --skip-ssh-key-replacement
-.It Reset-Machine-ID --version
-.It Reset-Machine-ID --help
+.It sudo Reset-Machine-ID \-\-yes-to-all-i-am-really-sure
+.It sudo Reset-Machine-ID \-\-hostname dbserver.domain.example
+.It sudo Reset-Machine-ID \-H server.domain.example \-Z zabbix.domain.example \-A
+.It sudo Reset-Machine-ID \-H server.domain.example \-\-zabbix zabbix.domain.example \-\-install-zabbix-agent
+.It sudo Reset-Machine-ID \-\-skip-ssh-configuration \-\-skip-ssh-key-replacement
+.It Reset-Machine-ID \-\-version
+.It Reset-Machine-ID \-\-help
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr System-Info 1
+.Xr System-Maintenance 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh

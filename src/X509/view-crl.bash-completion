@@ -50,7 +50,7 @@ _view_crl()
       cword="${COMP_CWORD}"
    fi
 
-   if [[ "$cur" != -* ]] ; then
+   if [[ "${cur}" != -* ]] ; then
       _filedir '@(crl|der|pem)'
       return
    fi

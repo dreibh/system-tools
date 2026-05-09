@@ -36,7 +36,7 @@
 .\" -------------------------------------------------------------------------
 .\"
 .\" ###### Setup ############################################################
-.Dd May 7, 2026
+.Dd May 9, 2026
 .Dt text-block 1
 .Os text-block
 .\" ###### Name #############################################################
@@ -80,29 +80,46 @@
 .Nm OPTIONS:
 .Op Fl b Ar begin_tag | Fl Fl begin-tag Ar begin_tag
 .Op Fl e Ar end_tag | Fl Fl end-tag Ar end_tag
+.br
 .Op Fl i | Fl Fl input Ar input_file
+.br
 .Op Fl o | Fl Fl output Ar output_file
+.br
 .Op Fl a | Fl Fl append
+.br
 .Op Fl p | Fl Fl in-place
+.br
 .Op Fl k | Fl Fl keep-broken
+.br
 .Op Fl m | Fl Fl min-actions
 .Op Fl M | Fl Fl max-actions
+.br
 .Op Fl s | Fl Fl select Ar from_line Ar to_line
+.br
 .Op Fl t | Fl Fl tag Ar tag
+.br
 .Op Fl y | Fl Fl include-tags
 .Op Fl x | Fl Fl exclude-tags
+.br
 .Op Fl f | Fl Fl full-tag-lines
 .Op Fl g | Fl Fl tags-only
+.br
 .Op Fl q | Fl Fl suppress-warnings
+.br
 .Op Fl Fl enumerate-format Ar format
+.br
 .Op Fl Fl enumerate-label1 Ar string
 .Op Fl Fl enumerate-label2 Ar string
+.br
 .Op Fl Fl highlight-begin Ar string
 .Op Fl Fl highlight-end Ar string
+.br
 .Op Fl Fl highlight-unmarked1 Ar string
 .Op Fl Fl highlight-unmarked2 Ar string
+.br
 .Op Fl Fl highlight-marked1 Ar string
 .Op Fl Fl highlight-marked2 Ar string
+.br
 .Op Fl Fl highlight-param Ar begin_\%label Ar end_\%label Ar unmarked1_\%label Ar unmarked2_\%label Ar marked1_\%label Ar marked2_\%label
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
@@ -262,6 +279,11 @@ For Highlight mode: Sets string to visualise the end of a marked text fragment. 
 .It Fl Fl highlight-param Ar begin_label Ar end_label Ar unmarked1_label Ar unmarked2_label Ar marked1_label Ar marked2_label
 A shortcut to set all 6 highlight parameters at once.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 Note: the example input files example1.txt, example2.txt, insert.txt, and
@@ -270,126 +292,138 @@ installed under /usr/share/text-block or /usr/local/share/text-block/!
 .Ss Cat Mode
 .Bl -bullet
 .It
-text-block -i example1.txt --cat
+text-block \-i example1.txt \-\-cat
 .It
-text-block -i /etc/system-info.d/01-example
+text-block \-i /etc/system-info.d/01-example
 .It
-text-block -i /etc/system-info.d/01-example -C
+text-block \-i /etc/system-info.d/01-example \-C
 .El
 .Ss Enumerate Mode
 .Bl -bullet
 .It
-text-block -i example1.txt --enumerate
+text-block \-i example1.txt \-\-enumerate
 .It
-figlet \[dq]Test!\[dq] | text-block -E
+figlet \[dq]Test!\[dq] | text-block \-E
 .It
-text-block -i /etc/system-info.d/01-example -E
+text-block \-i /etc/system-info.d/01-example \-E
 .It
-text-block -i /etc/system-info.d/01-example --enumerate --enumerate-format \[dq]6\[dq] --enumerate-label1 $\[aq]\ex1b[37m<\[aq] --enumerate-label2 $\[aq]>\ex1b[0m \[aq]
+text-block \-i /etc/system-info.d/01-example \-\-enumerate \-\-enumerate-format \[dq]6\[dq] \-\-enumerate-label1 $\[aq]\ex1b[37m<\[aq] \-\-enumerate-label2 $\[aq]>\ex1b[0m \[aq]
 .El
 .Ss Highlight Mode
 .Bl -bullet
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-highlight
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --exclude-tags --tags-only
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-H \-\-exclude-tags \-\-tags-only
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --include-tags --tags-only
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-H \-\-include-tags \-\-tags-only
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --include-tags --full-tag-lines
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-H \-\-include-tags \-\-full-tag-lines
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -H --exclude-tags --full-tag-lines
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-H \-\-exclude-tags \-\-full-tag-lines
 .It
-text-block -i example2.txt -b '<MARKER>' -H --exclude-tags --tags-only
+text-block \-i example2.txt \-b '<MARKER>' \-H \-\-exclude-tags \-\-tags-only
 .It
-text-block -i example2.txt -b '<MARKER>' -H --include-tags --tags-only
+text-block \-i example2.txt \-b '<MARKER>' \-H \-\-include-tags \-\-tags-only
 .It
-text-block -i example2.txt -b '<MARKER>' -H --include-tags --full-tag-lines
+text-block \-i example2.txt \-b '<MARKER>' \-H \-\-include-tags \-\-full-tag-lines
 .It
-text-block -i example2.txt -b '<MARKER>' -H --exclude-tags --full-tag-lines
+text-block \-i example2.txt \-b '<MARKER>' \-H \-\-exclude-tags \-\-full-tag-lines
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --highlight --highlight-param "☀" "🌙" $\[aq]\e[32m' $\[aq]\e[0m' $\[aq]\e[31;5m' $\[aq]\e[0m'
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-highlight \-\-highlight-param "☀" "🌙" $\[aq]\e[32m' $\[aq]\e[0m' $\[aq]\e[31;5m' $\[aq]\e[0m'
 .It
-text-block -i numbers.txt --select 1 3 -H
+text-block \-i numbers.txt \-\-select 1 3 \-H
 .It
-text-block -i numbers.txt --select -3 -1 -H
+text-block \-i numbers.txt \-\-select \-3 \-1 \-H
 .It
-text-block -i numbers.txt --select -5 0 -H
+text-block \-i numbers.txt \-\-select \-5 0 \-H
 .El
 .Ss Delete Mode
 .Bl -bullet
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --delete
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-delete
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -D
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-D
 .It
-text-block -i numbers.txt --select 2 4 -D
+text-block \-i numbers.txt \-\-select 2 4 \-D
 .It
-text-block -i numbers.txt --select -4 -2 -D
+text-block \-i numbers.txt \-\-select \-4 \-2 \-D
 .It
-text-block -i numbers.txt -s -7 0 -D
+text-block \-i numbers.txt \-s \-7 0 \-D
 .El
 .Ss Insert Front Mode
 .Bl -bullet
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --insert-front insert.txt
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-insert-front insert.txt
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -F insert.txt
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-F insert.txt
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -F insert.txt -f
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-F insert.txt \-f
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -F insert.txt --min-actions 1 --max-actions 1
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-F insert.txt \-\-min-actions 1 \-\-max-actions 1
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -F insert.txt -m 1 -M 1
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-F insert.txt \-m 1 \-M 1
 .It
-text-block -i numbers.txt -F insert.txt --select 4 7
+text-block \-i numbers.txt \-F insert.txt \-\-select 4 7
 .It
-text-block -i numbers.txt -F insert.txt --select -4 -2
+text-block \-i numbers.txt \-F insert.txt \-\-select \-4 \-2
 .It
-text-block -i numbers.txt -F insert.txt -s 4 0
+text-block \-i numbers.txt \-F insert.txt \-s 4 0
 .El
 .Ss Insert Back Mode
 .Bl -bullet
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --insert-back insert.txt
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-insert-back insert.txt
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -B insert.txt
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-B insert.txt
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -B insert.txt -f
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-B insert.txt \-f
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -B insert.txt --min-actions 1 --max-actions 1
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-B insert.txt \-\-min-actions 1 \-\-max-actions 1
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -B insert.txt -m 1 -M 1
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-B insert.txt \-m 1 \-M 1
 .It
-text-block -i numbers.txt -B insert.txt --select 4 7
+text-block \-i numbers.txt \-B insert.txt \-\-select 4 7
 .It
-text-block -i numbers.txt -B insert.txt --select -4 -2
+text-block \-i numbers.txt \-B insert.txt \-\-select \-4 \-2
 .It
-text-block -i numbers.txt -B insert.txt -s 4 0
+text-block \-i numbers.txt \-B insert.txt \-s 4 0
 .El
 .Ss Replace Mode
 .Bl -bullet
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --replace insert.txt
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-replace insert.txt
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --replace insert.txt --include-tags
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-replace insert.txt \-\-include-tags
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' --replace insert.txt --include-tags --full-tag-lines
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-\-replace insert.txt \-\-include-tags \-\-full-tag-lines
 .It
-text-block -i example1.txt -b '<BEGIN-BLOCK>' -e '<END-BLOCK>' -R insert.txt -gy
+text-block \-i example1.txt \-b '<BEGIN-BLOCK>' \-e '<END-BLOCK>' \-R insert.txt \-gy
 .It
-text-block -i numbers.txt -R insert.txt --select 4 7
+text-block \-i numbers.txt \-R insert.txt \-\-select 4 7
 .It
-text-block -i numbers.txt -R insert.txt --select -4 -2
+text-block \-i numbers.txt \-R insert.txt \-\-select \-4 \-2
 .It
-text-block -i numbers.txt -R insert.txt -s 4 0
+text-block \-i numbers.txt \-R insert.txt \-s 4 0
 .El
 .Ss Other Examples
 .Bl -bullet
 .It
-text-block --help
+text-block \-\-help
 .It
-text-block --version
+text-block \-\-version
 .It
-text-block --v
+text-block \-v
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr print-utf8 1,
+.Xr System-Info 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh

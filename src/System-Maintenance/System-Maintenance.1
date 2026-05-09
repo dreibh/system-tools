@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 7, 2026
+.Dd May 9, 2026
 .Dt System-Maintenance 1
 .Os System-Maintenance
 .\" ###### Name #############################################################
@@ -78,11 +78,29 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It sudo System-Maintenance
-.It sudo System-Maintenance --interactive-kernel-removal
-.It System-Maintenance --version
-.It System-Maintenance --help
+.It sudo System-Maintenance \-\-interactive-kernel-removal
+.It System-Maintenance \-\-version
+.It System-Maintenance \-\-help
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr Fingerprint-SSH-Keys 1
+.Xr Reset-Machine-ID 1
+.Xr System-Info 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh

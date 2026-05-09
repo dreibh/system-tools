@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 7, 2026
+.Dd May 9, 2026
 .Dt print-utf8 1
 .Os print-utf8
 .\" ###### Name #############################################################
@@ -125,57 +125,75 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It print-utf8 --newline --center \[dq]This line is centered in console width!\[dq]
-.It print-utf8 --newline --columns 80 --center \[dq]This line is centered in 80 columns!\[dq]
-.It print-utf8 --newline --center \[aq]\ex1b[38;2;241;71;29mThis line is centered!\ex1b[0m\[aq]
-.It figlet \[dq]$(date +\[dq]%y-%m-%d\[dq])\[dq] | ./print-utf8 --newline --multiline-indent 64 \[dq]< \[dq] \[dq] >\[dq]
-.It figlet \[dq]$(date +\[dq]%y-%m-%d\[dq])\[dq] | ./print-utf8 --newline --multiline-indent -64 \[dq]< \[dq] \[dq] >\[dq]
-.It figlet \[dq]This is a test!\[dq] | print-utf8 --newline --multiline-center \[dq]<🏁\[dq] \[dq]🏁>\[dq]
-.It figlet \[dq]This is another test!\[dq] | print-utf8 -x -8 -n -C \[dq]<🏁\[dq] \[dq]🏁>\[dq]
-.It figlet \[dq]Right\[dq] | print-utf8 -n -I +72 \[dq]😀\[dq] \[dq]😀\[dq]
-.It figlet \[dq]Left\[dq]  | print-utf8 -n -I -72 \[dq]😀\[dq] \[dq]😀\[dq]
-.It date +\[dq]%d. %m.  %Y %H:%M:%S\[dq] | figlet -w 128 | ./print-utf8 -n -C \[dq][🕑\[dq] \[dq]🕑]\[dq]
-.It print-utf8 -n -c \[dq]😀😀😀 This line is centered in console width! 😀😀😀\[dq]
-.It print-utf8 -n -x 80 -c \[dq]😀😀😀 This line is centered in 80 columns! 😀😀😀\[dq]
-.It print-utf8 --indent -32 \[dq]Left: \[dq] && echo \[dq]1234\[dq]
-.It print-utf8 --indent +32 \[dq]Right: \[dq] && echo \[dq]1234\[dq]
-.It print-utf8 --newline --separator \[dq]<*\[dq] \[dq]=\[dq] \[dq]*>\[dq]
-.It print-utf8 --columns 80 --newline --separator \[dq]<*\[dq] \[dq]=\[dq] \[dq]*>\[dq]
-.It print-utf8 -n -s \[dq]<💻😀\[dq] \[dq]=\[dq] \[dq]😀💻>\[dq]
-.It print-utf8 --width \[dq]Test\[dq]
-.It print-utf8 --width \[dq]Test äöü\[dq]
-.It print-utf8 -b \[dq]😀 Test 😀\[dq]
-.It print-utf8 -l \[dq]😀 Test 😀\[dq]
-.It print-utf8 -w \[dq]😀 Test 😀\[dq]
-.It print-utf8 -a \[dq]😀 Test 😀\[dq]
-.It print-utf8 --terminal-info
-.It print-utf8 -n -s \[dq]\[rs]e[1;34m╔\[dq] \[dq]═\[dq] \[dq]╗\[rs]e[0m\[dq]\~;
+.It print-utf8 \-\-newline \-\-center \[dq]This line is centered in console width!\[dq]
+.It print-utf8 \-\-newline \-\-columns 80 \-\-center \[dq]This line is centered in 80 columns!\[dq]
+.It print-utf8 \-\-newline \-\-center \[aq]\ex1b[38;2;241;71;29mThis line is centered!\ex1b[0m\[aq]
+.It figlet \[dq]$(date +\[dq]%y-%m-%d\[dq])\[dq] | print-utf8 \-\-newline \-\-multiline-indent 64 \[dq]< \[dq] \[dq] >\[dq]
+.It figlet \[dq]$(date +\[dq]%y-%m-%d\[dq])\[dq] | print-utf8 \-\-newline \-\-multiline-indent \-64 \[dq]< \[dq] \[dq] >\[dq]
+.It figlet \[dq]This is a test!\[dq] | print-utf8 \-\-newline \-\-multiline-center \[dq]<🏁\[dq] \[dq]🏁>\[dq]
+.It figlet \[dq]This is another test!\[dq] | print-utf8 \-x \-8 \-n \-C \[dq]<🏁\[dq] \[dq]🏁>\[dq]
+.It figlet \[dq]Right\[dq] | print-utf8 \-n \-I +72 \[dq]😀\[dq] \[dq]😀\[dq]
+.It figlet \[dq]Left\[dq]  | print-utf8 \-n \-I \-72 \[dq]😀\[dq] \[dq]😀\[dq]
+.It date +\[dq]%d. %m.  %Y %H:%M:%S\[dq] | figlet \-w 128 | print-utf8 \-n \-C \[dq][🕑\[dq] \[dq]🕑]\[dq]
+.It print-utf8 \-n \-c \[dq]😀😀😀 This line is centered in console width! 😀😀😀\[dq]
+.It print-utf8 \-n \-x 80 \-c \[dq]😀😀😀 This line is centered in 80 columns! 😀😀😀\[dq]
+.It print-utf8 \-\-indent \-32 \[dq]Left: \[dq] && echo \[dq]1234\[dq]
+.It print-utf8 \-\-indent +32 \[dq]Right: \[dq] && echo \[dq]1234\[dq]
+.It print-utf8 \-\-newline \-\-separator \[dq]<*\[dq] \[dq]=\[dq] \[dq]*>\[dq]
+.It print-utf8 \-\-columns 80 \-\-newline \-\-separator \[dq]<*\[dq] \[dq]=\[dq] \[dq]*>\[dq]
+.It print-utf8 \-n \-s \[dq]<💻😀\[dq] \[dq]=\[dq] \[dq]😀💻>\[dq]
+.It print-utf8 \-\-width \[dq]Test\[dq]
+.It print-utf8 \-\-width \[dq]Test äöü\[dq]
+.It print-utf8 \-b \[dq]😀 Test 😀\[dq]
+.It print-utf8 \-l \[dq]😀 Test 😀\[dq]
+.It print-utf8 \-w \[dq]😀 Test 😀\[dq]
+.It print-utf8 \-a \[dq]😀 Test 😀\[dq]
+.It print-utf8 \-\-terminal-info
+.It print-utf8 \-n \-s \[dq]\[rs]e[1;34m╔\[dq] \[dq]═\[dq] \[dq]╗\[rs]e[0m\[dq]\~;
 .br
 date +\[dq]%d. %m. %Y %H:%M:%S\[dq] | figlet -w 128 | \[rs]
 .br
 print-utf8 -n -C \[dq]\[rs]e[1;34m║🕑\[rs]e[1;31m\[dq] \[dq]\[rs]e[1;34m🕑║\[rs]e[0m\[dq] ;
 .br
 print-utf8 -n -s \[dq]\[rs]e[1;34m╚\[dq] \[dq]═\[dq] \[dq]╝\[rs]e[0m\[dq]
-.It print-utf8 -n -s \[dq]\[rs]e[1;31;5m█\[dq] \[dq]▀\[dq] \[dq]█\[rs]e[0m\[dq]\~;
+.It print-utf8 \-n \-s \[dq]\[rs]e[1;31;5m█\[dq] \[dq]▀\[dq] \[dq]█\[rs]e[0m\[dq]\~;
 echo \[dq]ERROR  1234\[dq] | figlet -w 128 | print-utf8 -n -C \[dq]\[rs]e[1;31;5m█\[rs]e[25m\[dq] \[dq]\[rs]e[5m█\[rs]e[0m\[dq]\~;
 .br
 print-utf8 -n -s \[dq]\[rs]e[1;31;5m█\[dq] \[dq]▄\[dq] \[dq]█\[rs]e[0m\[dq]
-.It print-utf8 -n -s \[dq]\[rs]e[1;31;40;5m█\[dq] \[dq]▀\[dq] \[dq]█\[rs]e[0m\[dq]\~;
+.It print-utf8 \-n \-s \[dq]\[rs]e[1;31;40;5m█\[dq] \[dq]▀\[dq] \[dq]█\[rs]e[0m\[dq]\~;
 .br
 echo -e \[dq]Software Failure.   Press left mouse button to continue.\[rs]nGuru Meditation #00000004.48454C50\[dq] | \[rs]
 .br
 print-utf8 -n -C \[dq]\[rs]e[1;31;40;5m█\[rs]e[25m\[dq] \[dq]\[rs]e[5m█\[rs]e[0m\[dq]\~;
 .br
 print-utf8 -n -s \[dq]\[rs]e[1;31;40;5m█\[dq] \[dq]▄\[dq] \[dq]█\[rs]e[0m\[dq]
-.It print-utf8 -n -x 44 -s \[dq]\[rs]e[1;32m╒\[dq] \[dq]═\[dq] \[dq]╕\[rs]e[0m\[dq]\~;
+.It print-utf8 \-n \-x 44 \-s \[dq]\[rs]e[1;32m╒\[dq] \[dq]═\[dq] \[dq]╕\[rs]e[0m\[dq]\~;
 .br
 ls / | print-utf8 -n --multiline-indent -42 \[dq]\[rs]e[1;32m│\[rs]e[34m\[dq] \[dq]\[rs]e[1;32m│\[rs]e[0m\[dq]\~;
 .br
 print-utf8 -n -x 44 -s \[dq]\[rs]e[1;32m╘\[dq] \[dq]═\[dq] \[dq]╛\[rs]e[0m\[dq]
-.It print-utf8 -h
-.It print-utf8 --help
-.It print-utf8 --version
+.It print-utf8 \-h
+.It print-utf8 \-\-help
+.It print-utf8 \-\-version
+.It print-utf8 \-v
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr System-Info 1
+.Xr text-block 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh

@@ -51,7 +51,7 @@ _time2unixts()
    fi
 
    # ====== Suggest dates as first parameter ================================
-   if [[ "$cur" != -* ]] ; then
+   if [[ "${cur}" != -* ]] ; then
       local dateFormat="%Y-%m-%d %H:00:00.000000000"
       local dateToday
       local dateTomorrow
@@ -64,9 +64,10 @@ _time2unixts()
       local dateOptions=( "${dateToday}" "${dateTomorrow}" )
 
       COMPREPLY=()
-      for item in "${dateOptions[@]}"; do
-         if [[ "${item}" == "${cur}"* ]]; then
-            COMPREPLY+=( "$(printf "%q" "${item}")" )
+      local search="${cur//\\/}"   # The strings contain spaces!
+      for item in "${dateOptions[@]}" ; do
+         if [[ "${item}" == "${search}"* ]] ; then
+            COMPREPLY+=( "${item// /\\ }" )   # The strings contain spaces!
          fi
       done
       return

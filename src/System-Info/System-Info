@@ -76,6 +76,8 @@ function print-banners ()
 # ###### Print system information ###########################################
 function print-system-information ()
 {
+   local testSystemInfoInput="$1"
+
    # ====== Obtain system information =======================================
    if ! command -v get-system-info >/dev/null ; then
       gettext >&2 "ERROR: get-system-info not found in search path!"
@@ -109,7 +111,11 @@ function print-system-information ()
    disk_list=""
    netif_list=""
    # Set the variables:
-   eval "$(get-system-info)"
+   if [ "${testSystemInfoInput}" == "" ] ; then
+      eval "$(get-system-info)"
+   else
+      eval "$(cat "${testSystemInfoInput}")"
+   fi
 
    # ====== Obtain operating system information =============================
    DISTRIB_ID="$(gettext "Unknown")"   # Unknown, yet.
@@ -382,7 +388,7 @@ function print-ssh-key-fingerprints ()
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   echo >&2 "$(gettext "Usage:") $0 [-S|--scripts scripts_directory] [-h|--help] [-v|--version]"
+   echo >&2 "$(gettext "Usage:") $0 [-S|--scripts scripts_directory] [-X|--test-date date_string] [-Y|--test-system-info input_file [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
 
@@ -398,8 +404,16 @@ version () {
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
+if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
+   echo "ERROR: Bash 4.4 or higher is required, but Bash ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]} installed!"
+   exit 1
+fi
 GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
-options="$(${GETOPT} -o S:hv --long scripts:,help,version -a -- "$@")"
+if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+   echo >&2 "ERROR: Enhanced/GNU getopt is required!"
+   exit 1
+fi
+options="$(${GETOPT} -o S:X:Y:hv --long scripts:,test-date:,test-system-info:,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage 1
@@ -407,11 +421,26 @@ fi
 eval set -- "${options}"
 
 now="$(date)"
+testSystemInfoInput=""
 scriptDirectories=( "/etc/system-info.d" "/usr/local/etc/system-info.d" )
 while [ $# -gt 0 ] ; do
    case "$1" in
       -S | --scripts)
          scriptDirectories=( "$2" )
+         shift
+         ;;
+      -X | --test-date)
+         # shellcheck disable=SC2034
+         now="$2"
+         shift
+         ;;
+      -Y | --test-system-info)
+         testSystemInfoInput="$2"
+         if [ ! -e "${testSystemInfoInput}" ] ; then
+            eval_gettext >&2 "ERROR: Unable to find input file \${testSystemInfoInput}!"
+            echo >&2
+            exit 1
+         fi
          shift
          ;;
       -h | --help)
@@ -426,7 +455,7 @@ while [ $# -gt 0 ] ; do
          ;;
       *)
          # This should not happen: wrong getopt parameters, or missing case?
-         echo >&2 "INTERNAL ERROR: Unhandled argument $1!"
+         echo >&2 "INTERNAL ERROR: Unhandled option $1!"
          exit 1
          ;;
   esac
@@ -438,15 +467,16 @@ fi
 
 
 # ====== Startup ============================================================
-# shellcheck disable=SC2059
-printf "\n$(gettext "System information on %s")\n\n" "${now}"
+echo
+eval_gettext "System information on \${now}"
+echo ; echo
 
 # ====== Obtain and print information =======================================
 # Getting the network information may take a few hundreds of ms on a router
 # => prepare it in background, while printing other information.
 # shellcheck disable=SC2086
 (
-   print-system-information
+   print-system-information "${testSystemInfoInput}"
 ) 2>&1 | (
    print-banners "${scriptDirectories[@]}"
    cat

@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-06 14:23+0200\n"
+"POT-Creation-Date: 2026-05-09 14:47+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -47,58 +47,58 @@ msgstr ""
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/X509/view-certificate:113
+#: src/X509/view-certificate:121
 msgid "ERROR: OpenSSL is not installed!"
 msgstr "FEIL: OpenSSL er ikke installert!"
 
-#: src/X509/view-certificate:120
+#: src/X509/view-certificate:128
 msgid "Subject:"
 msgstr "Innehaver:"
 
-#: src/X509/view-certificate:121
+#: src/X509/view-certificate:129
 msgid "Subject Alternative Name:"
 msgstr "Alternativt innehavernavn:"
 
-#: src/X509/view-certificate:122
+#: src/X509/view-certificate:130
 msgid "Validity:"
 msgstr "Gyldighet:"
 
-#: src/X509/view-certificate:123
+#: src/X509/view-certificate:131
 msgid "Basic Constraints:"
 msgstr "Grunnleggende begrensninger:"
 
-#: src/X509/view-certificate:124
+#: src/X509/view-certificate:132
 msgid "Key Usage:"
 msgstr "Nøkkelbruk:"
 
-#: src/X509/view-certificate:125
+#: src/X509/view-certificate:133
 msgid "Extended Key Usage:"
 msgstr "Utvidet nøkkelbruk:"
 
-#: src/X509/view-certificate:126
+#: src/X509/view-certificate:134
 msgid "Subject Key Identifier:"
 msgstr "Innehaver-nøkkelidentifikator:"
 
-#: src/X509/view-certificate:127
+#: src/X509/view-certificate:135
 msgid "Authority Key Identifier:"
 msgstr "Utsteder-nøkkelidentifikator:"
 
-#: src/X509/view-certificate:149
+#: src/X509/view-certificate:157
 #, sh-format
 msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
 msgstr "FEIL: Finner ikke sertifikatfilen ${CERTIFICATE_FILE}!"
 
-#: src/X509/view-certificate:154
+#: src/X509/view-certificate:162
 #, sh-format
 msgid "Certificate in ${CERTIFICATE_FILE}:"
 msgstr "Sertifikat i ${CERTIFICATE_FILE}:"
 
-#: src/X509/view-certificate:210
+#: src/X509/view-certificate:218
 #, sh-format
 msgid "Hierarchy in ${CERTIFICATE_FILE}:"
 msgstr "Hierarki i ${CERTIFICATE_FILE}:"
 
-#: src/X509/view-certificate:221
+#: src/X509/view-certificate:229
 #, sh-format
 msgid "#${entry}."
 msgstr "№${entry}"

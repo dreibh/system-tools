@@ -49,7 +49,7 @@
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
 #endif
-static void version()
+static void version(void)
 {
    printf("time2unixts %s\n", SYSTEMTOOLS_VERSION);
    exit(0);

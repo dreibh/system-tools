@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 7, 2026
+.Dd May 9, 2026
 .Dt System-Info 1
 .Os System-Info
 .\" ###### Name #############################################################
@@ -41,6 +41,9 @@
 .Sh SYNOPSIS
 .Nm System-Info
 .Op Fl S Ar scripts_directory | Fl Fl scripts Ar scripts_directory
+.br
+.Op Fl X Ar date_string | Fl Fl test-date Ar date_string
+.Op Fl Y Ar input_file | Fl Fl test-system-info Ar input_file
 .Nm System-Info
 .Op Fl h | Fl Fl help
 .Nm System-Info
@@ -75,17 +78,42 @@ Sets the directory to look for scripts, for example to test own scripts. Default
 Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
+.It Fl X Ar date_string | Fl Fl test-date Ar date_string
+Test option: instead of calling \(dqdate\(dq to obtain the current system date, use the given date string, to make the output deterministic for testing.
+.It Fl Y Ar input_file | Fl Fl test-system-info Ar input_file
+Test option: instead of calling \(dqget\-system\-info\(dq to obtain the system information, read get\-system\-info output from a given file, to make the output deterministic for testing.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It System-Info
-.It System-Info -S /usr/share/System-Info
-.It System-Info -S ~/src/system-info/src/system-info.d
-.It System-Info --scripts ~/my-system-info-scripts
+.It System-Info \-S /usr/share/System-Info
+.It System-Info \-S ~/src/system-info/src/system-info.d
+.It System-Info \-\-scripts ~/my-system-info-scripts
 .It LANGUAGE=nb System-Info
 .It LANGUAGE=de_AT System-Info
-.It LANGUAGE=nb System-Info -S /usr/share/System-Info
-.It System-Info --version
-.It System-Info --help
+.It LANGUAGE=nb System-Info \-S /usr/share/System-Info
+.It System-Info \-\-version
+.It System-Info \-\-help
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr Fingerprint-SSH-Keys 1
+.Xr get-system-info 1
+.Xr print-utf8 1
+.Xr Reset-Machine-ID 1
+.Xr System-Maintenance 1
+.Xr text-block 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh

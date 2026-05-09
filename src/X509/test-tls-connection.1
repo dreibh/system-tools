@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 7, 2026
+.Dd May 9, 2026
 .Dt test-tls-connection 1
 .Os test-tls-connection
 .\" ###### Name #############################################################
@@ -42,7 +42,7 @@
 .Nm test-tls-connection
 host:port ca_certificate_file
 .br
-.Op Fl s Ar certificate_file | Fl Fl save-certificate Ar certificate_file
+.Op Fl s Ar certificate_file | Fl Fl save\%-certificate Ar certificate_file
 .br
 .Op Fl n | Fl Fl no-view-certificate
 .br
@@ -64,7 +64,7 @@ can be verified (by calling check-certificate) or only displayed (by using view-
 The following options are available:
 .Bl -tag -width indent
 .It host:port
-Specifies hostname or IP address, and TCP port number of the remote endpoint to connect to.
+Specifies hostname or IP address, and TCP port number of the remote endpoint to connect to. If no port number is provided, 443 (HTTPS) is used.
 .It ca_certificate_file
 Specifies the CA certificate to verify the certificate of the remote endpoint.
 .It Fl s Ar certificate_file | Fl Fl save-certificate Ar certificate_file
@@ -80,18 +80,41 @@ Prints the program's command-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It test-tls-connection www.heise.de:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
-.It test-tls-connection www.nntb.no:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt --no-view-certificate
-.It test-tls-connection www.nntb.no:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt --no-check-certificate
-.It test-tls-connection www.nntb.no:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt --save-certificate www.nntb.no.crt
-.It test-tls-connection www.heise.de:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt -n -c -s www.heise.de.crt
-.It test-tls-connection www.ietf.org:443 /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt -s www.ietf.org.crt
-.It test-tls-connection www.dnb.no:443 /usr/share/ca-certificates/mozilla/Buypass_Class_3_Root_CA.crt -s www.dnb.no
-.It test-tls-connection --help
-.It test-tls-connection -h
-.It test-tls-connection --version
-.It test-tls-connection -v
+.It test-tls-connection www.heise.de:443 /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt
+.It test-tls-connection www.nntb.no:443 /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt \-\-no-view-certificate
+.It test-tls-connection www.nntb.no:443 /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt \-\-no-check-certificate
+.It test-tls-connection www.nntb.no:443 /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt \-\-save-certificate www.nntb.no.crt
+.It test-tls-connection www.heise.de:443 /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt \-n \-c \-s www.heise.de.crt
+.It test-tls-connection www.ietf.org:443 /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt \-s www.ietf.org.crt
+.It test-tls-connection www.simula.no /usr/share/\%ca-certificates/\%mozilla/\%ISRG_Root_X1.crt \-n \-c \-s www.simula.no.crt
+.It test-tls-connection www.dnb.no /etc/ssl/\%certs/\%DigiCert_Global_Root_G2.pem \-s www.dnb.no
+.It test-tls-connection \-\-help
+.It test-tls-connection \-h
+.It test-tls-connection \-\-version
+.It test-tls-connection \-v
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr check-certificate 1 ,
+.Xr der2pem 1 ,
+.Xr extract-pem 1 ,
+.Xr pem2der 1 ,
+.Xr view-certificate 1 ,
+.Xr view-crl 1 ,
+.Xr openssl 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System-Tools. The latest version of System-Tools can be found on the System-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system-tools/ .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh

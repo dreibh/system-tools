@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-07 13:05+0200\n"
+"POT-Creation-Date: 2026-05-09 14:47+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -47,38 +47,32 @@ msgstr ""
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Try-Hard/try-hard:81 src/Try-Hard/try-hard:91 src/Try-Hard/try-hard:101
-#: src/Try-Hard/try-hard:111 src/Try-Hard/try-hard:156
+#: src/Try-Hard/try-hard:89 src/Try-Hard/try-hard:99 src/Try-Hard/try-hard:109
+#: src/Try-Hard/try-hard:119 src/Try-Hard/try-hard:164
 #, sh-format
 msgid "ERROR: Invalid delay value ${delayValue}!"
 msgstr "FEIL: Ugyldig forsinkelse ${delayValue}!"
 
-#: src/Try-Hard/try-hard:150
+#: src/Try-Hard/try-hard:158
 #, sh-format
 msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
 msgstr "FEIL: Ugyldig maksimalt antall forsøk ${MAX_TRIALS}!"
 
-#: src/Try-Hard/try-hard:161
+#: src/Try-Hard/try-hard:169
 msgid "ERROR: Cannot find random-sleep in the search path!"
 msgstr "FEIL: Finner ikke random-sleep i søkestien!"
 
-#: src/Try-Hard/try-hard:202
+#: src/Try-Hard/try-hard:207
 #, sh-format
 msgid "Tried ${MAX_TRIALS} times -> giving up now!"
 msgstr "Prøvde ${MAX_TRIALS} ganger -> gir opp nå!"
 
-#: src/Try-Hard/try-hard:233
+#: src/Try-Hard/try-hard:238
 #, sh-format
-msgid ""
-"Trial ${trial}/${MAX_TRIALS} failed -> waiting random time from "
-"[${minDelay}, ${maxDelay}] s ..."
-msgstr ""
-"Forsøk ${trial}/${MAX_TRIALS} feilet -> venter en tilfeldig tidsperiode "
-"mellom [${minDelay}, ${maxDelay}] s før nytt forsøk ..."
+msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting random time from [${minDelay}, ${maxDelay}] s ..."
+msgstr "Forsøk ${trial}/${MAX_TRIALS} feilet -> venter en tilfeldig tidsperiode mellom [${minDelay}, ${maxDelay}] s før nytt forsøk ..."
 
-#: src/Try-Hard/try-hard:240
+#: src/Try-Hard/try-hard:245
 #, sh-format
 msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting for ${maxDelay} s ..."
-msgstr ""
-"Forsøk ${trial}/${MAX_TRIALS} feilet -> venter ${maxDelay} s før nytt "
-"forsøk ..."
+msgstr "Forsøk ${trial}/${MAX_TRIALS} feilet -> venter ${maxDelay} s før nytt forsøk ..."
