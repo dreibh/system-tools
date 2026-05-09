@@ -111,7 +111,7 @@ if [ $# -lt 2 ] ; then
    usage 1
 fi
 ENDPOINT="$1"
-if [[ ! "${ENDPOINT}" =~ :.+$ ]] ; then
+if [[ ! "${ENDPOINT}" =~ :[a-zA-Z0-9]+$ ]] ; then
    ENDPOINT="${ENDPOINT}:443"
 fi
 CA_FILE="$2"
