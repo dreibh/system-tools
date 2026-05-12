@@ -149,6 +149,7 @@ Package: td-x509-tools
 Architecture: all
 Depends: gettext-base,
          openssl,
+         td-print-utf8,
          td-text-block,
          ${misc:Depends}
 Provides: td-x509

@@ -281,6 +281,7 @@ interval, with support for fractional seconds.
 %package x509-tools
 Summary: X.509 certificate handling tools
 BuildArch: noarch
+Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
 Requires: openssl
 Recommends: gnutls-utils
