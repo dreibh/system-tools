@@ -33,6 +33,7 @@
 #############################################################################
 
 CONFIGURE_FILE(System-Info System-Info.versioned @ONLY)
+SET_PROPERTY(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES System-Info.versioned)
 INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/System-Info.versioned
         DESTINATION ${CMAKE_INSTALL_BINDIR}
         RENAME      System-Info)
@@ -43,6 +44,7 @@ INSTALL(FILES       System-Info.bash-completion
 
 ADD_EXECUTABLE(get-system-info get-system-info.c)
 # SET_PROPERTY(TARGET get-system-info PROPERTY C_STANDARD 23)
+TARGET_LINK_LIBRARIES(get-system-info ${Intl_LIBRARIES})
 INSTALL(TARGETS get-system-info DESTINATION ${CMAKE_INSTALL_BINDIR})
 INSTALL(FILES get-system-info.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       get-system-info.bash-completion

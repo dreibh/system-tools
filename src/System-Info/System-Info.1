@@ -9,7 +9,7 @@
 .\"                  https://www.nntb.no/~dreibh/system-tools/
 .\" ==========================================================================
 .\"
-.\" System-Info
+.\" System\-Info
 .\" Copyright (C) 2013-2026 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
@@ -28,63 +28,100 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
-.Dt System-Info 1
-.Os System-Info
+.Dd May 9, 2026
+.Dt System\-Info 1
+.Os System\-Info
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm System-Info
+.Nm System\-Info
 .Nd shows system information and banners
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm System-Info
+.Nm System\-Info
 .Op Fl S Ar scripts_directory | Fl Fl scripts Ar scripts_directory
-.Nm System-Info
+.br
+.Op Fl X Ar date\_string | Fl Fl test\-date Ar date\_string
+.Op Fl Y Ar input\_file | Fl Fl test\-system\-info Ar input\_file
+.Nm System\-Info
 .Op Fl h | Fl Fl help
-.Nm System-Info
+.Nm System\-Info
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-System-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System-Info can be configured to be automatically run when logging in, providing the user an up-to-date overview of the system.
+System\-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System\-Info can be configured to be automatically run when logging in, providing the user an up\-to\-date overview of the system.
 .br
-One main purpose of System-Info is to run on login, to particularly show a nice login banner (for example, a project or company logo) and then present the basic system information. For this purpose, System-Info can be configured with banner scripts (by default looked up in /etc/system-info.d or /usr/local/etc/system-info.d), which are processed in alphabetically descending order by file name, like:
-.br
-* 95-application-logo,
-.br
-* 90-project-logo,
-.br
-* 60-department-logo,
-.br
-* 50-company-logo,
-.br
-* 01-example.
-.br
-The names of all scripts MUST begin with two decimal numbers. That is, scripts must be named [0-9][0-9]... to be processed by System-Info!
-If one of the scripts exits with non-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script 95-application-logo).
+One main purpose of System\-Info is to run on login, to particularly show a nice login banner (for example, a project or company logo) and then present the basic system information. For this purpose, System\-Info can be configured with banner scripts (by default looked up in
+.Pa /etc/system\-info.d
+or
+.Pa /usr/local/etc/system\-info.d
+), which are processed in alphabetically descending order by file name, like:
+.Bl -bullet -compact
+.It
+.Pa 95\-application\-logo
+.It
+.Pa 90\-project\-logo
+.It
+.Pa 60\-department\-logo
+.It
+.Pa 50\-company\-logo
+.It
+.Pa 01\-example
+.El
+The names of all scripts MUST begin with two decimal numbers. That is, scripts must be named [0\-9][0\-9]... to be processed by System\-Info!
+If one of the scripts exits with non\-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script
+.Pa 95\-application\-logo
+).
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
 .It Fl S Ar scripts_directory | Fl Fl scripts Ar scripts_directory
-Sets the directory to look for scripts, for example to test own scripts. Default: /etc/system-info.d or /usr/local/etc/system-info.d.
+Sets the directory to look for scripts, for example to test own scripts. Default:
+.Pa /etc/system\-info.d
+.Pa or /usr/local/etc/system\-info.d .
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
+.It Fl X Ar date\_string | Fl Fl test\-date Ar date\_string
+Test option: instead of calling \(dqdate\(dq to obtain the current system date, use the given date string, to make the output deterministic for testing.
+.It Fl Y Ar input\_file | Fl Fl test\-system\-info Ar input\_file
+Test option: instead of calling \(dqget\-system\-info\(dq to obtain the system information, read get\-system\-info output from a given file, to make the output deterministic for testing.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It System-Info
-.It System-Info -S /usr/share/System-Info
-.It System-Info -S ~/src/system-info/src/system-info.d
-.It System-Info --scripts ~/my-system-info-scripts
-.It LANGUAGE=nb System-Info
-.It LANGUAGE=de_AT System-Info
-.It LANGUAGE=nb System-Info -S /usr/share/System-Info
-.It System-Info --version
-.It System-Info --help
+.It System\-Info
+.It System\-Info \-S /usr/share/System\-Info
+.It System\-Info \-S ~/src/system\-info/src/system\-info.d
+.It System\-Info \-\-scripts ~/my-system\-info-scripts
+.It LANGUAGE=nb System\-Info
+.It LANGUAGE=de_AT System\-Info
+.It LANGUAGE=nb System\-Info \-S /usr/share/System\-Info
+.It System\-Info \-\-version
+.It System\-Info \-\-help
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr Fingerprint\-SSH\-Keys 1 ,
+.Xr get\-system\-info 1 ,
+.Xr print\-utf8 1 ,
+.Xr Reset\-Machine\-ID 1 ,
+.Xr System\-Maintenance 1 ,
+.Xr text\-block 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

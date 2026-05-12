@@ -27,13 +27,12 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-04-25 13:54+0200\n"
-"PO-Revision-Date: 2025-10-28 12:45+0100\n"
+"POT-Creation-Date: 2026-05-09 14:47+0200\n"
+"PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
 "Language: de\n"
@@ -48,35 +47,35 @@ msgstr ""
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/X509/extract-pem:114
+#: src/X509/extract-pem:122
 msgid "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
 msgstr "FEHLER: --only-first-entry und --skip-first-entry/--skip-last-entry schließen sich gegenseitig aus!"
 
-#: src/X509/extract-pem:130
+#: src/X509/extract-pem:137
 #, sh-format
 msgid "ERROR: Unable to find PEM file ${PEM_FILE}!"
 msgstr "FEHLER: PEM-Datei ${PEM_FILE} wurde nicht gefunden!"
 
-#: src/X509/extract-pem:136
+#: src/X509/extract-pem:143
 #, sh-format
 msgid "Extracting ${PEM_FILE} ..."
 msgstr "Extrahiere ${PEM_FILE} ..."
 
-#: src/X509/extract-pem:165
+#: src/X509/extract-pem:174
 #, sh-format
 msgid "ERROR: Unexpected type ${type} in ${PEM_FILE}!"
 msgstr "FEHLER: Unerwarteter Typ ${type} in ${PEM_FILE}!"
 
-#: src/X509/extract-pem:172
+#: src/X509/extract-pem:181
 #, sh-format
 msgid "ERROR: Unexpected data in ${PEM_FILE}!"
 msgstr "FEHLER: Unerwartete Daten in ${PEM_FILE}!"
 
-#: src/X509/extract-pem:187 src/X509/extract-pem:203
+#: src/X509/extract-pem:196 src/X509/extract-pem:211
 msgid "SKIPPING"
 msgstr "ÜBERSPRINGE"
 
-#: src/X509/extract-pem:212
+#: src/X509/extract-pem:222
 #, sh-format
 msgid "Done: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys"
 msgstr "Erledigt: ${certificate} Zertifikate, ${csr} CSRs, ${crl} CRLs, ${key} Schlüssel"

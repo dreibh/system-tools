@@ -28,52 +28,71 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
-.Dt random-sleep 1
-.Os random-sleep
+.Dd May 9, 2026
+.Dt random\-sleep 1
+.Os random\-sleep
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm random-sleep
+.Nm random\-sleep
 .Nd waits for a randomly selected time
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm random-sleep
-min_delay
-max_delay
+.Nm random\-sleep Ar min_delay Ar max_delay
 .Op Fl q | Fl Fl quiet
 .Op Fl w | Fl Fl verbose
-.Nm random-sleep
+.Nm random\-sleep
 .Op Fl h | Fl Fl help
-.Nm random-sleep
+.Nm random\-sleep
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm random-sleep
+.Nm random\-sleep
 waits for a randomly selected time. The sleep time is chosen from the interval
-[min_delay, max_delay] given in seconds. Fractional seconds are supported.
+.Bq Ar min_delay , Ar max_delay
+given in seconds. Fractional seconds are supported.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
+.It Ar min_delay
+The minimum delay.
+.It Ar max_delay
+The maximum delay.
 .It Fl q | Fl Fl quiet
 Quiet mode: no output is made.
 .It Fl w | Fl Fl verbose
-Verbose mode: print selected delay and wake-up.
+Verbose mode: print selected delay and wake\-up.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It random-sleep 0 3600
-.It random-sleep 0 300 --verbose
-.It random-sleep 60.0 120.5 -w
-.It random-sleep 0.10 0.50 --verbose
-.It random-sleep --version
-.It random-sleep --help
+.It random\-sleep 0 3600
+.It random\-sleep 0 300 \-\-verbose
+.It random\-sleep 60.0 120.5 \-w
+.It random\-sleep 0.10 0.50 \-\-verbose
+.It random\-sleep \-\-version
+.It random\-sleep \-\-help
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr try\-hard 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

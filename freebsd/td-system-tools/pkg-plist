@@ -12,7 +12,9 @@ bin/print-utf8
 bin/random-sleep
 bin/test-tls-connection
 bin/text-block
+bin/time2unixts
 bin/try-hard
+bin/unixts2time
 bin/view-certificate
 bin/view-crl
 etc/profile.d/system-info.csh
@@ -38,7 +40,9 @@ share/bash-completion/completions/print-utf8
 share/bash-completion/completions/random-sleep
 share/bash-completion/completions/test-tls-connection
 share/bash-completion/completions/text-block
+share/bash-completion/completions/time2unixts
 share/bash-completion/completions/try-hard
+share/bash-completion/completions/unixts2time
 share/bash-completion/completions/view-certificate
 share/bash-completion/completions/view-crl
 share/configure-grub/grub-defaults-nornet
@@ -53,7 +57,9 @@ share/locale/de/LC_MESSAGES/print-utf8.mo
 share/locale/de/LC_MESSAGES/random-sleep.mo
 share/locale/de/LC_MESSAGES/test-tls-connection.mo
 share/locale/de/LC_MESSAGES/text-block.mo
+share/locale/de/LC_MESSAGES/time2unixts.mo
 share/locale/de/LC_MESSAGES/try-hard.mo
+share/locale/de/LC_MESSAGES/unixts2time.mo
 share/locale/de/LC_MESSAGES/view-certificate.mo
 share/locale/de/LC_MESSAGES/view-crl.mo
 share/locale/nb/LC_MESSAGES/Fingerprint-SSH-Keys.mo
@@ -66,7 +72,9 @@ share/locale/nb/LC_MESSAGES/print-utf8.mo
 share/locale/nb/LC_MESSAGES/random-sleep.mo
 share/locale/nb/LC_MESSAGES/test-tls-connection.mo
 share/locale/nb/LC_MESSAGES/text-block.mo
+share/locale/nb/LC_MESSAGES/time2unixts.mo
 share/locale/nb/LC_MESSAGES/try-hard.mo
+share/locale/nb/LC_MESSAGES/unixts2time.mo
 share/locale/nb/LC_MESSAGES/view-certificate.mo
 share/locale/nb/LC_MESSAGES/view-crl.mo
 share/man/man1/Fingerprint-SSH-Keys.1.gz
@@ -83,7 +91,9 @@ share/man/man1/print-utf8.1.gz
 share/man/man1/random-sleep.1.gz
 share/man/man1/test-tls-connection.1.gz
 share/man/man1/text-block.1.gz
+share/man/man1/time2unixts.1.gz
 share/man/man1/try-hard.1.gz
+share/man/man1/unixts2time.1.gz
 share/man/man1/view-certificate.1.gz
 share/man/man1/view-crl.1.gz
 share/system-tools/CertificateHelper.py

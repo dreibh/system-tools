@@ -1,24 +1,47 @@
 Name: td-system-tools
-Version: 2.5.1
+Version: 2.6.1
 Release: 1
 Summary: Tools for basic system management
-Group: Applications/System
 License: GPL-3.0-or-later
 URL: https://www.nntb.no/~dreibh/system-tools/
 Source: https://www.nntb.no/~dreibh/system-tools/download/%{name}-%{version}.tar.xz
 
-AutoReqProv: on
 BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: gettext >= 0.21
-BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 Requires: %{name}-basic = %{version}-%{release}
 
 
 %description
-System-Tools is a collection of helpful tools for basic system management of Linux and FreeBSD systems. Particularly, the tool System-Info displays important system information on log-in, including customised banners e.g. for company or project branding.
+System-Tools is a collection of utilities for system management and
+maintenance.
+
+The package includes:
+- System-Info: Displays system status (CPU, memory, storage, network)
+  and configurable login banners.
+- System-Maintenance: Automates package updates, old kernel removal,
+  and storage cleanup (e.g., SSD trimming).
+- Reset-Machine-ID: Resets machine IDs, hostnames, and SSH keys for
+  cloned machines.
+- Fingerprint-SSH-Keys: Shows the machine's SSH public key fingerprints
+  in different formats.
+- Configure-GRUB: Configures options for the GRUB boot loader.
+- Print-UTF8: Prints UTF-8 text with options for centering,
+  adjusting, etc.
+- Text-Block: Edits files or streams by inserting, replacing, or
+  removing text blocks.
+- Unix-Timestamp-Tools: Convert Unix timestamps (s, ms, us, ns) to
+  and from date/time strings.
+- Try-Hard: Retries commands with a configurable backoff.
+- Random-Sleep: Waits for a random time span, with support for
+  fractional seconds.
+- X.509-Tools: Provide utilities for viewing, verifying, and
+  converting X.509 certificates, and testing TLS connections.
+
+The utilities are suitable for non-interactive use in shell scripts and
+feature native internationalization support via GNU gettext.
 
 %prep
 %setup -q
@@ -34,8 +57,7 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 
 
 %package system-info
-Summary: Perform basic system maintenance
-Group: Applications/System
+Summary: Print basic system information and banners
 BuildArch: noarch
 Requires: %{name}-get-system-info = %{version}-%{release}
 Requires: %{name}-print-utf8 = %{version}-%{release}
@@ -70,14 +92,13 @@ in, providing the user an up-to-date overview of the system.
 
 %package get-system-info
 Summary: Obtain basic system information
-Group: Applications/System
 Requires: procps
 
 %description get-system-info
 This small program obtains basic status information about the system:
 hostname, uptime, CPU, memory statistics, and networking information.
-The output is printed in machine-readable form, which can be used
-with evaluation in shell scripts for further processing.
+The output is printed in machine-readable form, which can be evaluated
+in shell scripts for further processing.
 
 %files get-system-info
 %{_bindir}/get-system-info
@@ -86,8 +107,7 @@ with evaluation in shell scripts for further processing.
 
 
 %package system-maintenance
-Summary: Perform basic system maintenance tasks
-Group: Applications/System
+Summary: Perform basic system maintenance
 BuildArch: noarch
 Requires: gettext-runtime >= 0.21
 Requires: sudo
@@ -97,7 +117,8 @@ Recommends: %{name}-system-info
 This program runs basic system maintenance tasks:
 trying to repair broken package management, updating the package
 management databases, installing all available updates, checking
-for old kernels and removing them, trim SSD or unmap unused storage.
+for old kernels and removing them, trimming SSDs, or unmapping
+unused storage.
 
 %files system-maintenance
 %{_bindir}/System-Maintenance
@@ -109,7 +130,6 @@ for old kernels and removing them, trim SSD or unmap unused storage.
 
 %package reset-machine-id
 Summary: Reset machine identity state
-Group: Applications/System
 BuildArch: noarch
 Requires: gettext-runtime >= 0.21
 Requires: sudo
@@ -118,9 +138,9 @@ Recommends: %{name}-system-info
 Recommends: %{name}-system-maintenance
 
 %description reset-machine-id
-This program helps to reset the machine identity state:
-reset machine ID, change hostname, replace SSH keys, suggest hardened
-SSH client and server settings.
+This program helps to reset the machine identity state: resetting the
+machine ID, changing the hostname, replacing SSH keys, and suggesting
+hardened SSH client and server settings.
 
 %files reset-machine-id
 %{_bindir}/Reset-Machine-ID
@@ -130,8 +150,7 @@ SSH client and server settings.
 
 
 %package fingerprint-ssh-keys
-Summary: Reset machine identity state
-Group: Applications/System
+Summary: Print SSH key fingerprints
 BuildArch: noarch
 Requires: gettext-runtime >= 0.21
 Recommends: %{name}-system-info
@@ -149,19 +168,18 @@ in different formats: SSH hash, DNS SSHFP RR.
 
 %package configure-grub
 Summary: Helper tool to adjust GRUB configuration
-Group: Applications/System
 BuildArch: noarch
 Recommends: %{name}-system-maintenance
 
 %description configure-grub
 This program adjusts a GRUB configuration file by applying a configuration
-from a template, and merging the existing configurations settings with
+from a template, and merging the existing configuration settings with
 additional customisations. It can for example be used to set a custom
 screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE
 option).
 Warning: This program is meant to be used by expert users! Do not modify
 a working GRUB configuration without knowing how to boot the system from
-a rescue media to fix a broken configuration!
+a rescue medium to fix a broken configuration!
 
 %files configure-grub
 %{_bindir}/configure-grub
@@ -173,12 +191,11 @@ a rescue media to fix a broken configuration!
 
 %package print-utf8
 Summary: Print UTF-8 strings and obtain size/length/width information
-Group: Applications/System
 
 %description print-utf8
-print-utf8 is a simple program to print UTF-8 strings in the console with
-options for indentation, centering, separator as well as size/length/width
-information.
+The print-utf8 tool is a simple program to print UTF-8 strings in the
+console with options for indentation, centering, and separators, as well
+as size/length/width information.
 
 %files print-utf8
 %{_bindir}/print-utf8
@@ -189,10 +206,11 @@ information.
 
 %package text-block
 Summary: Apply modifications to text
-Group: Applications/System
 
 %description text-block
-text-block reads text from standard input or given file, and writes it to standard output or a given file. On the text, various modifications can be applied, according to the operation mode.
+The text-block tool reads text from standard input or given file, and
+writes it to standard output or a given file. Various modifications can
+be applied to the text depending on the operation mode.
 
 %files text-block
 %{_bindir}/text-block
@@ -205,9 +223,31 @@ text-block reads text from standard input or given file, and writes it to standa
 %{_datadir}/text-block/numbers.txt
 
 
+%package unixtimestamp-tools
+Summary: Unix timestamp handling tools
+Group: Applications/System
+
+%description unixtimestamp-tools
+This package contains two simple tools:
+time2unixts converts a time string to a Unix timestamp.
+unixts2time converts a Unix timestamp to a time string.
+These tools support Unix timestamps (i.e. the time since
+January 1, 1970, 00:00:00.000000000 UTC) in seconds,
+milliseconds, microseconds, and nanoseconds.
+
+%files unixtimestamp-tools
+%{_bindir}/time2unixts
+%{_bindir}/unixts2time
+%{_datadir}/bash-completion/completions/time2unixts
+%{_datadir}/bash-completion/completions/unixts2time
+%{_datadir}/locale/*/LC_MESSAGES/time2unixts.mo
+%{_datadir}/locale/*/LC_MESSAGES/unixts2time.mo
+%{_mandir}/man1/time2unixts.1.gz
+%{_mandir}/man1/unixts2time.1.gz
+
+
 %package try-hard
 Summary: Make multiple trials to successfully run a command
-Group: Applications/System
 BuildArch: noarch
 Conflicts: %{name}-misc
 
@@ -224,7 +264,6 @@ of error, with a delay between the trials.
 
 %package random-sleep
 Summary: Wait for a random time span
-Group: Applications/System
 Conflicts: %{name}-misc
 
 %description random-sleep
@@ -240,7 +279,6 @@ interval, with support for fractional seconds.
 
 %package x509-tools
 Summary: X.509 certificate handling tools
-Group: Applications/System
 BuildArch: noarch
 Requires: %{name}-text-block = %{version}-%{release}
 Requires: openssl
@@ -252,14 +290,14 @@ Suggests: python3-netifaces
 
 %description x509-tools
 This package contains X.509 certificate handling tools:
-view-certificate displays an X.509 certificate and its hierarchy.
-view-crl shows an X.509 certificate revocation list (CRL).
-check-certificate verifies an X.509 certificate using a CA certificate
-and optionally a revocation list.
-extract-pem extracts a PEM file.
-der2pem converts a certificate or CRL in DER format to PEM format.
-pem2der converts a certificate or CRL in PEM format to DER format.
-test-tls-connection tests a TCP TLS connection to a remote endpoint.
+* The view-certificate tool displays an X.509 certificate and its hierarchy.
+* The view-crl tool shows an X.509 certificate revocation list (CRL).
+* The check-certificate tool verifies an X.509 certificate using a CA
+  certificate and optionally a revocation list.
+* The extract-pem tool extracts a PEM file.
+* The der2pem tool converts a certificate or CRL in DER format to PEM format.
+* The pem2der tool converts a certificate or CRL in PEM format to DER format.
+* The test-tls-connection tool tests a TCP TLS connection to a remote endpoint.
 
 %files x509-tools
 %{_bindir}/check-certificate
@@ -295,7 +333,6 @@ test-tls-connection tests a TCP TLS connection to a remote endpoint.
 
 %package basic
 Summary: Metapackage for basic system tools sub-packages
-Group: Applications/System
 Requires: %{name}-fingerprint-ssh-keys = %{version}-%{release}
 Requires: %{name}-random-sleep = %{version}-%{release}
 Requires: %{name}-reset-machine-id = %{version}-%{release}
@@ -303,6 +340,7 @@ Requires: %{name}-system-info = %{version}-%{release}
 Requires: %{name}-system-maintenance = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
 Requires: %{name}-try-hard = %{version}-%{release}
+Requires: %{name}-unixtimestamp-tools = %{version}-%{release}
 Requires: %{name}-x509-tools = %{version}-%{release}
 Recommends: %{name}-configure-grub = %{version}-%{release}
 
@@ -317,7 +355,6 @@ Note that td-system-configure-grub is only added as weak dependency
 
 %package complete
 Summary: Metapackage for complete system tools sub-packages
-Group: Applications/System
 Requires: %{name}-basic = %{version}-%{release}
 
 %description complete
@@ -328,6 +365,20 @@ tools. It installs all sub-packages.
 
 
 %changelog
+* Sat May 09 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.1-1
+- New upstream release.
+* Fri May 08 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.0-1
+- New upstream release.
+* Fri May 08 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.5.6-1
+- New upstream release.
+* Thu May 07 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.5.5-1
+- New upstream release.
+* Wed May 06 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.5.4-1
+- New upstream release.
+* Tue May 05 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.5.3-1
+- New upstream release.
+* Mon May 04 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.5.2-1
+- New upstream release.
 * Sun May 03 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.5.1-1
 - New upstream release.
 * Sat May 02 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.5.0-1

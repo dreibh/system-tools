@@ -33,6 +33,7 @@
 #############################################################################
 
 CONFIGURE_FILE(try-hard try-hard.versioned @ONLY)
+SET_PROPERTY(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES try-hard.versioned)
 INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/try-hard.versioned
         DESTINATION ${CMAKE_INSTALL_BINDIR}
         RENAME      try-hard)

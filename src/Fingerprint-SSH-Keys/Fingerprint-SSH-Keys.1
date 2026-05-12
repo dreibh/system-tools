@@ -28,57 +28,76 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
-.Dt Fingerprint-SSH-Keys 1
-.Os Fingerprint-SSH-Keys
+.Dd May 9, 2026
+.Dt Fingerprint\-SSH\-Keys 1
+.Os Fingerprint\-SSH\-Keys
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm Fingerprint-SSH-Keys
+.Nm Fingerprint\-SSH\-Keys
 .Nd prints SSH key fingerprints
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm Fingerprint-SSH-Keys
-.Op Fl d | Fl Fl include-deprecated
-.Op Fl r | Fl Fl include-raw
-.Op Fl p | Fl Fl include-raw-python
-.Nm Fingerprint-SSH-Keys
+.Nm Fingerprint\-SSH\-Keys
+.Op Fl d | Fl Fl include\-deprecated
+.Op Fl r | Fl Fl include\-raw
+.Op Fl p | Fl Fl include\-raw\-python
+.Nm Fingerprint\-SSH\-Keys
 .Op Fl h | Fl Fl help
-.Nm Fingerprint-SSH-Keys
+.Nm Fingerprint\-SSH\-Keys
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm Fingerprint-SSH-Keys
+.Nm Fingerprint\-SSH\-Keys
 prints the SSH key fingerprints of the local machine in different formats:
-.br
-* SSH hash format,
-.br
-* DNS SSHFP FF format,
-.br
-* Python dictionary.
+.Bl -bullet -compact
+.It
+SSH hash format
+.It
+DNS SSHFP RR format
+.It
+Python dictionary
+.El
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl d | Fl Fl include-deprecated
+.It Fl d | Fl Fl include\-deprecated
 Also include deprecated key types and hash algorithms in DNS SSHFP RR output.
-.It Fl r | Fl Fl include-raw
+.It Fl r | Fl Fl include\-raw
 Also include the keys in raw format.
-.It Fl p | Fl Fl include-raw-python
+.It Fl p | Fl Fl include\-raw\-python
 Also include the keys in raw format as Python dictionary.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It Fingerprint-SSH-Keys
-.It Fingerprint-SSH-Keys --include-deprecated
-.It Fingerprint-SSH-Keys -d
-.It Fingerprint-SSH-Keys --version
-.It Fingerprint-SSH-Keys --help
+.It Fingerprint\-SSH\-Keys
+.It Fingerprint\-SSH\-Keys \-\-include\-deprecated
+.It Fingerprint\-SSH\-Keys \-d
+.It Fingerprint\-SSH\-Keys \-\-version
+.It Fingerprint\-SSH\-Keys \-\-help
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr Reset\-Machine\-ID 1 ,
+.Xr System\-Info 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

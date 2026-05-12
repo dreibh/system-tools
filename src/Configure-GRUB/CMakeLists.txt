@@ -33,6 +33,7 @@
 #############################################################################
 
 CONFIGURE_FILE(configure-grub configure-grub.versioned @ONLY)
+SET_PROPERTY(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES configure-grub.versioned)
 INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/configure-grub.versioned
         DESTINATION ${CMAKE_INSTALL_BINDIR}
         RENAME      configure-grub)

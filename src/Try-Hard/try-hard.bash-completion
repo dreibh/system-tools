@@ -51,33 +51,33 @@ _try_hard()
    fi
 
    if [ "${cword}" -eq 1 ] ; then
-      compopt -o nosort 2>/dev/null || true   # Numerical sorting (Bash >= 4.4)
-      mapfile -t COMPREPLY < <(compgen -W "{1..20}" -- "$cur")
+      compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
+      mapfile -t COMPREPLY < <(compgen -W "{1..20}" -- "${cur}")
       return
    elif [ "${cword}" -eq 2 ] ; then
-      compopt -o nosort 2>/dev/null || true   # Numerical sorting (Bash >= 4.4)
-      mapfile -t COMPREPLY < <(compgen -W "1 2 5 10 30 60 120 300 900 1800 3600 86400" -- "$cur")
+      compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
+      mapfile -t COMPREPLY < <(compgen -W "1 2 5 10 30 60 120 300 900 1800 3600 86400" -- "${cur}")
       return
    else
       case "${prev}" in
          -m | --min-delay)
-            compopt -o nosort 2>/dev/null || true   # Numerical sorting (Bash >= 4.4)
-            mapfile -t COMPREPLY < <(compgen -W "0 0.1 0.333 0.5 10 30 60 120 300 900 3600" -- "$cur")
+            compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
+            mapfile -t COMPREPLY < <(compgen -W "0 0.1 0.333 0.5 10 30 60 120 300 900 3600" -- "${cur}")
             return
             ;;
          -A | --additive-increase)
-            compopt -o nosort 2>/dev/null || true   # Numerical sorting (Bash >= 4.4)
-            mapfile -t COMPREPLY < <(compgen -W "0 1 2 10 60" -- "$cur")
+            compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
+            mapfile -t COMPREPLY < <(compgen -W "0 1 2 10 60" -- "${cur}")
             return
             ;;
-         -M | multiplicative-increase)
-            compopt -o nosort 2>/dev/null || true   # Numerical sorting (Bash >= 4.4)
-            mapfile -t COMPREPLY < <(compgen -W "1.0 1.1 1.25 1.5 2" -- "$cur")
+         -M | --multiplicative-increase)
+            compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
+            mapfile -t COMPREPLY < <(compgen -W "1.0 1.1 1.25 1.5 2" -- "${cur}")
             return
             ;;
          -T | --truncate-delay)
-            compopt -o nosort 2>/dev/null || true   # Numerical sorting (Bash >= 4.4)
-            mapfile -t COMPREPLY < <(compgen -W "30 60 120 300 900 1800 3600 86400" -- "$cur")
+            compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
+            mapfile -t COMPREPLY < <(compgen -W "30 60 120 300 900 1800 3600 86400" -- "${cur}")
             return
             ;;
       esac
@@ -89,7 +89,6 @@ _try_hard()
             _command_offset $((i+1))
             return
          fi
-         i=$((i+1))
       done
    fi
 
@@ -100,7 +99,7 @@ _try_hard()
 -A
 --additive-increase
 -M
-multiplicative-increase
+--multiplicative-increase
 -T
 --truncate-delay
 -D
