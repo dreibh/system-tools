@@ -65,7 +65,7 @@ gm identify figures/Caption1.png
 gm identify figures/Caption2.png
 ./gs-caption figures/Caption3.png 1024 42 \
    "Yet Another Test on $(LC_ALL=C.UTF-8 date)" \
-   --font-name "URW Gothic Book Bold" \
+   --font-name "URW Gothic Book" \
    --font-size 70 \
    --foreground "#02266b" --background "#777777" --transparency 40
 gm identify figures/Caption3.png

@@ -70,3 +70,13 @@ FOREACH(script IN LISTS gimpSimpleScripts)
            RENAME      ${script})
    INSTALL(FILES ${script}.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 ENDFOREACH()
+
+
+#############################################################################
+#### EXAMPLE FILES                                                       ####
+#############################################################################
+
+INSTALL(FILES examples/Bergen.jpeg
+              examples/Fractal.fsf
+              examples/Portobello.jpeg
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/system-tools/gimp-script-examples)
