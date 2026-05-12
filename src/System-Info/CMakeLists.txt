@@ -33,6 +33,7 @@
 #############################################################################
 
 CONFIGURE_FILE(System-Info System-Info.versioned @ONLY)
+SET_PROPERTY(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES System-Info.versioned)
 INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/System-Info.versioned
         DESTINATION ${CMAKE_INSTALL_BINDIR}
         RENAME      System-Info)
