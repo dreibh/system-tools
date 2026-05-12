@@ -340,6 +340,7 @@ Requires: fontconfig
 Requires: gimp
 Requires: GraphicsMagick
 Requires: util-linux
+Recommends: %{name}-gimp-scripts-examples
 Recommends: fractgen-clifractgen
 Recommends: open-sans-fonts
 Recommends: urw-base35-fonts
@@ -385,6 +386,20 @@ Recommends: urw-base35-fonts
 %{_mandir}/man1/gs-test-gimp.1.gz
 
 
+%package gimp-scripts-examples
+Summary: GIMP image processing scripts example files
+Group: Applications/System
+BuildArch: noarch
+
+%description gimp-scripts-examples
+ This package contains some example input files for the GIMP scripts.
+
+%files gimp-scripts-examples
+%{_datadir}/system-tools/gimp-scripts-examples/Bergen.jpeg
+%{_datadir}/system-tools/gimp-scripts-examples/Fractal.fsf
+%{_datadir}/system-tools/gimp-scripts-examples/Portobello.jpeg
+
+
 %package basic
 Summary: Metapackage for basic system tools sub-packages
 Requires: %{name}-fingerprint-ssh-keys = %{version}-%{release}
@@ -410,6 +425,8 @@ Note that td-system-configure-grub is only added as weak dependency
 %package complete
 Summary: Metapackage for complete system tools sub-packages
 Requires: %{name}-basic = %{version}-%{release}
+Requires: %{name}-gimp-scripts = %{version}-%{release}
+Requires: %{name}-gimp-scripts-examples = %{version}-%{release}
 
 %description complete
 This package is a metapackage for the system information and maintenance
