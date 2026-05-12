@@ -29,7 +29,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="view-certificate"
@@ -41,8 +41,16 @@ export TEXTDOMAIN="view-certificate"
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "$(gettext "Usage:") $0 [-h|--help] certificate [...]"
-   exit 1
+   local exitCode="$1"
+   echo >&2 "$(gettext "Usage:") $0 [-h|--help] [-v|--version] certificate [...]"
+   exit "${exitCode}"
+}
+
+
+# ###### Version ############################################################
+version () {
+   echo "view-certificate @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
 }
 
 
@@ -68,17 +76,21 @@ print-date ()
 
 # ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o h --long help -a -- "$@")"
+options="$(${GETOPT} -o hv --long help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage
+   usage 1
 fi
-
 eval set -- "${options}"
+
 while [ $# -gt 0 ] ; do
    case "$1" in
       -h | --help)
-         usage
+         usage 0
+         # shift
+         ;;
+      -v | --version)
+         version
          # shift
          ;;
       --)
@@ -88,7 +100,7 @@ while [ $# -gt 0 ] ; do
   esac
 done
 if [ $# -lt 1 ] ; then
-   usage
+   usage 1
 fi
 
 # ====== Check availability of tools ========================================

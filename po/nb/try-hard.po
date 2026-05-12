@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2025-11-01 18:08+0100\n"
+"POT-Creation-Date: 2026-05-03 13:08+0200\n"
 "PO-Revision-Date: 2025-04-26 11:43+0100\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -44,30 +44,32 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Try-Hard/try-hard:44
+#: src/Try-Hard/try-hard:45
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Try-Hard/try-hard:89
+#: src/Try-Hard/try-hard:80 src/Try-Hard/try-hard:90 src/Try-Hard/try-hard:100
+#: src/Try-Hard/try-hard:110 src/Try-Hard/try-hard:161
+#, sh-format
+msgid "ERROR: Invalid delay value ${delayValue}!"
+msgstr "FEIL: Ugyldig forsinkelse ${delayValue}!"
+
+#: src/Try-Hard/try-hard:155
 #, sh-format
 msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
 msgstr "FEIL: Ugyldige maksimale prøveperioder ${MAX_TRIALS}!"
 
-#: src/Try-Hard/try-hard:94
-#, sh-format
-msgid "ERROR: Invalid delay ${DELAY}!"
-msgstr "FEIL: Ugyldig forsinkelse ${DELAY}!"
-
-#: src/Try-Hard/try-hard:113
+#: src/Try-Hard/try-hard:198
 #, sh-format
 msgid "Tried ${MAX_TRIALS} times -> giving up now!"
 msgstr "Prøvde ${MAX_TRIALS} ganger -> gir opp nå!"
 
-#: src/Try-Hard/try-hard:118
+#: src/Try-Hard/try-hard:226
 #, sh-format
-msgid "Waiting for ${DELAY} s before trying again ..."
-msgstr "Venter på ${DELAY} s før å prøve igjen ..."
+msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting random time from [${minDelay}, ${maxDelay}] s ..."
+msgstr "Forsøk ${trial}/${MAX_TRIALS} feilet -> venter en tilfeldig tidsperiode mellom [${minDelay}, ${maxDelay}] s før nytt forsøk ..."
 
+#: src/Try-Hard/try-hard:233
 #, sh-format
-#~ msgid "ERROR: Invalid argument ${arg}!"
-#~ msgstr "FEIL: Ugyldig argument ${arg}!"
+msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting for ${maxDelay} s ..."
+msgstr "Forsøk ${trial}/${MAX_TRIALS} feilet -> venter ${maxDelay} s før nytt forsøk ..."

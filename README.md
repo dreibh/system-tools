@@ -15,19 +15,20 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 - [System-Info](#-system-info) (display banners and system information),
 - [System-Maintenance](#-system-maintenance) (run basic system maintenance tasks),
 - [Reset-Machine-ID](#-reset-machine-id) (reset the machine identity state, particularly for a cloned VM),
-- [Print-UTF8](#-print-utf8) (print UTF-8 text with options for centering, adjusting, etc.),
-- [Text-Block](#-text-block) (flexible tool for inserting, replacing or removing text blocks in files or streams),
 - [Fingerprint-SSH-Keys](#-fingerprint-ssh-keys) (show the machine's SSH public key fingerprints in different formats),
 - [Configure-Grub](#-configure-grub) (configure options for the GRUB boot loader),
+- [Print-UTF8](#-print-utf8) (print UTF-8 text with options for centering, adjusting, etc.),
+- [Text-Block](#-text-block) (flexible tool for inserting, replacing or removing text blocks in files or streams),
 - [Try-Hard](#-try-hard) (run a command, with configurable retries on failure),
 - [Random-Sleep](#-random-sleep) (wait for random time span, with support of fractional seconds),
 - [X.509-Tools](#-x.509-tools) (tools for viewing, verifying and testing X.509 certificates).
+
 
 # 📚 System-Info
 
 System-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System-Info can be configured to be automatically run when logging in, providing the user an up-to-date overview of the system.
 
-One main purpose of System-Info is to run on login, to particularly show a nice login banner (for example, a project or company logo) and then present the basic system information. For this purpose, System-Info can be configured with banner scripts (by default looked up in /etc/system-info.d or /usr/local/etc/system-info.d), which are processed in alphabetically descending order by file name, like:
+One main purpose of System-Info is to run on login, to particularly show a nice login banner (for example, a project or company logo) and then present the basic system information. For this purpose, System-Info can be configured with banner scripts (by default looked up in `/etc/system-info.d` or `/usr/local/etc/system-info.d`), which are processed in alphabetically descending order by file name, like:
 
 * `95-application-logo`,
 * `90-project-logo`,
@@ -162,6 +163,32 @@ The changes are made interactively on request only, unless the option `--yes-to-
   ```
 
 
+# 📚 Fingerprint-SSH-Keys
+
+Fingerprint-SSH-Keys prints the SSH key fingerprints of the local machine in different formats: SSH hash, DNS SSHFP RR, or Python dictionary. Its typical usage is straightforward:
+
+```bash
+Fingerprint-SSH-Keys
+```
+
+The manpage of Fingerprint-SSH-Keys contains details and further examples:
+
+```bash
+man Fingerprint-SSH-Keys
+```
+
+
+# 📚 Configure-Grub
+
+Configure-Grub adjusts a GRUB configuration file by applying a configuration from a template, and merging the existing configurations settings with additional customisations. It can for example be used to set a custom screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE option). The [Virtual Machine Image Builder and System Installation Scripts](https://www.nntb.no/~dreibh/vmimage-builder-scripts/) use Configure-Grub to configure the screen resolution and a boot splash image.
+
+The manpage of Configure-Grub contains details and further examples:
+
+```bash
+man configure-grub
+```
+
+
 # 📚 Print-UTF8
 
 Print-UTF8 is a simple program to print UTF-8 strings in the console with options for indentation, centering, separator as well as size/length/width information. It can e.g.&nbsp;be utilised for printing System-Info banners, or for displaying error messages like this classic Amiga [Guru Meditation](https://en.wikipedia.org/wiki/Guru_Meditation) example:
@@ -236,47 +263,45 @@ For example, the publications list in [`index.html`](https://www.nntb.no/~dreibh
   ```
 
 
-# 📚 Fingerprint-SSH-Keys
-
-Fingerprint-SSH-Keys prints the SSH key fingerprints of the local machine in different formats: SSH hash, DNS SSHFP RR, or Python dictionary. Its typical usage is straightforward:
-
-```bash
-Fingerprint-SSH-Keys
-```
-
-The manpage of Fingerprint-SSH-Keys contains details and further examples:
-
-```bash
-man Fingerprint-SSH-Keys
-```
-
-
-# 📚 Configure-Grub
-
-Configure-Grub adjusts a GRUB configuration file by applying a configuration from a template, and merging the existing configurations settings with additional customisations. It can for example be used to set a custom screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE option). The [Virtual Machine Image Builder and System Installation Scripts](https://www.nntb.no/~dreibh/vmimage-builder-scripts/) use Configure-Grub to configure the screen resolution and a boot splash image.
-
-The manpage of Configure-Grub contains details and further examples:
-
-```bash
-man Configure-Grub
-```
-
-
 # 📚 Try-Hard
 
-Try-Hard runs a command and retries for a given number of times in case of error, with a delay between the trials.
+Try-Hard runs a command and retries for a given number of times in case of error, with a random or deterministic delay between the trials and possibility to automatically increase the delay.
 
-Example to try a file download up to 3&nbsp;times, with a delay of 60&nbsp;seconds between trials:
+Examples:
 
-```bash
-try-hard 3 60 -- wget -O example.tar.gz \
-   https://www.example.net/example.tar.gz
-```
+* Try a file download up to 3&nbsp;times, with a random delay from [0, 60]&nbsp;seconds between trials:
+
+  ```bash
+  try-hard 3 60 --verbose -- \
+     wget -O example.tar.gz \
+        https://www.example.net/example.tar.gz
+  ```
+
+* Try a file download up to 32&nbsp;times, with an initial random delay interval [1, 2]&nbsp;seconds, but increasing it multiplicatively by factor 2.0 for each new trial, with an upper delay bound of 512&nbsp;seconds (i.e.&nbsp;realising a truncated binary exponential backoff):
+
+  ```bash
+  try-hard 32 2 \
+    --verbose \
+    --min-delay 1.0 \
+    --multiplicative-increase 2.0 \
+    --truncate-delay 512.0 \
+    -- \
+    wget -O example.tar.gz \
+       https://www.example.net/example.tar.gz
+  ```
+
+* Try a file download up to 6&nbsp;times, with a fixed (i.e.&nbsp;deterministic) 10&nbsp;seconds delay between trials, without verbose status printing:
+
+  ```bash
+  try-hard 3 10 --deterministic -- \
+     wget -O example.tar.gz \
+        https://www.example.net/example.tar.gz
+  ```
 
 The manpage of Try-Hard contains details and further examples:
 
 ```bash
-man Try-Hard
+man try-hard
 ```
 
 
@@ -293,7 +318,7 @@ random-sleep 0.5 299.5 && echo "Finished waiting!"
 The manpage of Random-Sleep contains details and further examples:
 
 ```bash
-man Random-Sleep
+man random-sleep
 ```
 
 

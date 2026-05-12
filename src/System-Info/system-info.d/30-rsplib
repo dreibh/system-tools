@@ -32,7 +32,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eu
+set -euo pipefail
 
 # Helper function library -> just return when it is not available.
 # Exit code 0 will let System-Info continue with the next script!

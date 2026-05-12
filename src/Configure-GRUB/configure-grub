@@ -28,13 +28,21 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -eu
+set -euo pipefail
 
 
 # ###### Usage ##############################################################
 usage () {
-   echo >&2 "Usage: $0 grub-defaults-template-file [-i|--input input-grub-defaults-file] [-o|--output output-grub-defaults-file] [-V|--video GRUB_GFXMODE] [-T|--tune GRUB_INIT_TUNE] [-h|--help]"
-   exit 1
+   local exitCode="$1"
+   echo >&2 "Usage: $0 grub-defaults-template-file [-i|--input input-grub-defaults-file] [-o|--output output-grub-defaults-file] [-V|--video GRUB_GFXMODE] [-T|--tune GRUB_INIT_TUNE] [-h|--help] [-v|--version]"
+   exit "${exitCode}"
+}
+
+
+# ###### Version ############################################################
+version () {
+   echo "configure-grub @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
 }
 
 
@@ -42,17 +50,17 @@ usage () {
 
 # ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
-options="$(${GETOPT} -o i:o:V:T:h --long input:,output:,video:,tune:,help -a -- "$@")"
+options="$(${GETOPT} -o i:o:V:T:hv --long input:,output:,video:,tune:,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage
+   usage 1
 fi
+eval set -- "${options}"
 
 INPUT_CONFIGURATION=""
 OUTPUT_CONFIGURATION=""
 REPLACE_GRUB_GFXMODE=""
 REPLACE_GRUB_INIT_TUNE=""
-eval set -- "${options}"
 while [ $# -gt 0 ] ; do
    case "$1" in
       -i | --input)
@@ -72,7 +80,11 @@ while [ $# -gt 0 ] ; do
          shift 2
          ;;
       -h | --help)
-         usage
+         usage 0
+         # shift
+         ;;
+      -v | --version)
+         version
          # shift
          ;;
       --)
@@ -82,7 +94,7 @@ while [ $# -gt 0 ] ; do
   esac
 done
 if [ $# -ne 1 ] ; then
-   usage
+   usage 1
 fi
 
 TEMPLATE_CONFIGURATION="$1"

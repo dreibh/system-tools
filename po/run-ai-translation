@@ -2,7 +2,7 @@
 # ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
-#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#        \___ \| | | / __| __/ _ \ "_ ` _ \ _____| |/ _ \ / _ \| / __|
 #         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
 #        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 #               |___/
@@ -29,28 +29,98 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -eu
+set -euo pipefail
 
-MODEL="translategemma:27b"   # "deepseek-r1:671b" "translategemma:27b" "ministral-3:14b"
+
+MODEL="qwen3.6:35b"   # "aya-expanse:32b" "deepseek-r1:671b" "translategemma:27b" "ministral-3:14b" "qwen3.5:122b" "qwen3.6:35b" "mistral-medium-3.5:128b"
+
+CONTEXT="You are an expert technical translator localizing a Unix (Linux, FreeBSD) system administration scripts. The target audience consists of technical users and sysadmins. Maintain standard Unix terminology in the target language for concepts like 'operating system', 'network', 'processes', 'processor', 'kernel', 'swap', 'uptime', 'kernel', 'load', and 'mount points', and topics like X.509 certificates, Unix epoch and timestamps.
+Strictly preserve all C-style formatting variables (such as '%s', '%d', '%1.1f') exactly.
+Strictly preserve all C-style escaping (such as '%%' for the percent character) exactly.
+Strictly preserve all shell variables (such as \${now}, \${os_label}, \${system_release}, \${systemCoresString}, \${systemMachineString}, \${processesString}, \${usersString}), exactly.
+Some error and warning messages begin with upper-case prefix 'ERROR:' or 'WARNING:'. Translate these prefixes as appropriate in the target language.
+Return ONLY the valid translation structure. Do not include any conversational text, greetings, explanations, or markdown notes. Output exactly what the parser expects."
+
+LANGUAGES="ar cs de el en es fa fr he hi id it ja ko nl pl pt ro ru tr uk vi zh"   # for "aya-expanse:32b"
+# LANGUAGES="ar be bg bn cs da de el en es et fa fi fr ga he hi hr hu is it ja ko lt lv mi mt nb nl nn no pl pt ro ru sk sl sq sr sv ta th tr uk zh"
+LANGUAGES="ar he ru zh"
+
 PROGRAMS="System-Info"
-LANGUAGES="ar be bg bn cs da de el en es et fa fi fr ga he hi hr hu is it ja ko lt lv mi mt nb nl nn no pl pt ro ru sk sl sq sr sv ta th tr uk zh"
+
+
+# ###### Helper function to show program information #########################
+show-program ()
+{
+   local program="$1"
+
+   "${PRINT_UTF8}" -n -s "\e[1;36m█" "▀" "█\e[0m" ;
+   "${FIGLET}" -w "${COLUMNS}" "$(basename "${program}")" | "${PRINT_UTF8}" -n -C "\e[1;36m█\e[25m" "█\e[0m" ;
+   "${PRINT_UTF8}" -n -s "\e[1;36m█" "▄" "█\e[0m"
+}
+
+
+
+# ###### Main program #######################################################
+
+# ====== Find locations of Python interpreter, MyPy, and tools ==============
+PRINT_UTF8="$(which print-utf8 2>/dev/null || true)"
+if [ ! -x "${PRINT_UTF8}" ] ; then
+   echo >&2 "ERROR: Print-UTF8 (from System-Tools) is not installed!"
+   echo >&2 "Try this:"
+   echo >&2 "* Ubuntu:  sudo apt-add-repository -sy ppa:dreibh/ppa"
+   echo >&2 "           sudo apt install -y td-system-tools"
+   echo >&2 "* Fedora:  sudo dnf copr enable -y dreibh/ppa"
+   echo >&2 "           sudo dnf install -y td-system-tools"
+   echo >&2 "* FreeBSD: sudo pkg install -y td-system-tools"
+   exit 1
+fi
+FIGLET="$(which figlet 2>/dev/null || true)"
+if [ ! -x "${FIGLET}" ] ; then
+   echo >&2 "ERROR: Figlet is not installed!"
+   echo >&2 "* Ubuntu:  sudo apt install -y figlet"
+   echo >&2 "* Fedora:  sudo dnf install -y figlet"
+   echo >&2 "* FreeBSD: sudo pkg install -y figlet"
+   exit 1
+fi
+
+# ====== Translate PO files =================================================
 for program in ${PROGRAMS} ; do
-   context="
-      $(cat ../README.md)
-      $(awk '{ print "../" $2 }' <"${program}.sources" | xargs cat)
-   "
+   show-program "${program}"
+
    for language in ${LANGUAGES} ; do
+
+      # ====== Prepare initial PO file ======================================
       mkdir -p "${language}"
       # rm -f "${language}/${program}.po"
-      msginit --input "${program}.pot" \
-         --locale "${language}.UTF-8" \
-         --output-file "${language}/${program}.po" \
-         --no-translator
+      if [ ! -e "${language}/${program}.po" ] ; then
+         msginit --input "${program}.pot" \
+            --locale "${language}.UTF-8" \
+            --output-file "${language}/${program}.po" \
+            --no-translator
+
+         # ====== Indicate RTL usage for right-to-left languages ============
+         ll="$(echo "${language}" | cut -d_ -f1 || true)"
+         if [[ "${ll}" =~ ^(ar|dv|fa|he|ps|ur|yi)$ ]] ; then
+            sed -i '/^msgid "LTR"$/{n;s/^msgstr .*/msgstr "RTL"/;}' -i "${language}/${program}.po"
+         fi
+
+         # ====== Work-arounds ==============================================
+         if [ "${ll}" == "ar" ] ; then
+            sed 's/nplurals=INTEGER; plural=EXPRESSION;/nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 \&\& n%100<=10 ? 3 : n%100>=11 \&\& n%100<=99 ? 4 : 5);/' -i "${language}/${program}.po"
+         fi
+      fi
+
+      # ====== Let Ollama do the translation ================================
+      gpt-po-translator \
+         --provider ollama \
+         --model "${MODEL}" \
+         --folder . \
+         --lang   "${language}" \
+         --ollama-timeout 300 \
+         --verbose \
+         --default-context "${CONTEXT}"
+
+         # --bulk --bulksize 6 \
+
    done
-   gpt-po-translator \
-      --provider ollama \
-      --model "${MODEL}" \
-      --folder . \
-      --bulk --verbose \
-      --default-context "${context}"
 done
