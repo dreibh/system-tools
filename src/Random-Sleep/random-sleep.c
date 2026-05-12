@@ -2,7 +2,7 @@
 //         ____            _                     _____           _
 //        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 //        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \.
 //        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 //               |___/
 //                             --- System-Tools ---
@@ -27,14 +27,16 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#include <ctype.h>
 #include <getopt.h>
 #include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/time.h>
+#include <time.h>
 #include <unistd.h>
+#include <sys/time.h>
 #ifndef nullptr
 #define nullptr NULL
 #endif
@@ -69,7 +71,7 @@ static double runiform(const double min, const  double max)
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
 #endif
-static void version()
+static void version(void)
 {
    printf("random-sleep %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -102,11 +104,12 @@ int main(int argc, char** argv)
    if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
+   setlocale(LC_NUMERIC, "C.UTF-8");  // Use "." for fractional numbers!
    bindtextdomain("random-sleep", nullptr);
    textdomain("random-sleep");
 
    // ====== Handle arguments ===============================================
-   const static struct option long_options[] = {
+   static const struct option long_options[] = {
       { "verbose", no_argument, 0, 'w' },
       { "quiet",   no_argument, 0, 'q' },
       { "help",    no_argument, 0, 'h' },
@@ -128,11 +131,16 @@ int main(int argc, char** argv)
             version();
           break;
          case 'h':
-            usage(argv[0], 0);
+         case '?':
+            // Exit with 0 on h/help, exit with 1 on '?' (unknown option):
+            usage(argv[0], (option == 'h') ? 0 : 1);
+          break;
+         case '-':
           break;
          default:
-            fprintf(stderr, gettext("ERROR: Invalid argument %s!"), argv[optind - 1]);
-            fputs("\n", stderr);
+            // This should not happen: wrong getopt parameters, or missing case?
+            fprintf(stderr, "INTERNAL ERROR: Unhandled option c=%c code=%x!\n",
+                    (isprint(option) ? (char)option : ' '), option);
             return 1;
           break;
       }
@@ -140,9 +148,15 @@ int main(int argc, char** argv)
    if(optind + 2 != argc) {
       usage(argv[0], 1);
    }
-   const double delayMin = atof(argv[optind + 0]);
-   const double delayMax = atof(argv[optind + 1]);
-   if( (delayMin < 0.0) || (delayMin > delayMax) ) {
+
+   // ====== Parse delay bounds =============================================
+   char*        endptrDelayMin;
+   char*        endptrDelayMax;
+   const double delayMin = strtod(argv[optind + 0], &endptrDelayMin);
+   const double delayMax = strtod(argv[optind + 1], &endptrDelayMax);
+   if( (endptrDelayMin == argv[optind + 0]) || (*endptrDelayMin != 0x00) ||
+       (endptrDelayMax == argv[optind + 1]) || (*endptrDelayMax != 0x00) ||
+       (delayMin < 0.0) || (delayMin > delayMax) ) {
       fputs(gettext("ERROR: Invalid min_delay/max_delay"), stderr);
       fputs("\n", stderr);
       return 1;
@@ -151,7 +165,7 @@ int main(int argc, char** argv)
    // ====== Initialise random number generator =============================
    struct timeval tv;
    if(gettimeofday(&tv, nullptr) == 0) {
-      srand(tv.tv_usec);
+      srand(tv.tv_sec ^ tv.tv_usec ^ getpid());
    }
 
    // ====== Random sleep ===================================================
@@ -164,7 +178,16 @@ int main(int argc, char** argv)
       printf(gettext("Sleeping for %1.6f s ..."), delay);
       puts("");
    }
-   usleep((useconds_t)(1000000.0 * delay));
+
+   struct timespec sleepTime;
+   sleepTime.tv_sec  = (time_t)delay;
+   sleepTime.tv_nsec = (long)((delay - (double)sleepTime.tv_sec) * 1000000000.0);
+
+   struct timespec remainingTime;
+   while(nanosleep(&sleepTime, &remainingTime) == -1) {
+      sleepTime = remainingTime;
+   }
+
    if(verboseMode) {
       puts(gettext("Woke up!"));
    }

@@ -18,12 +18,17 @@ Depends: td-fingerprint-ssh-keys
 
 Tests: 41-try-hard
 Depends: td-try-hard
+Restrictions: allow-stderr
 
 Tests: 42-random-sleep
 Depends: td-random-sleep
 
 Tests: 50-system-info-run, 51-system-info-i18n
 Depends: td-system-info
+
+Tests: 60-unix-timestamp-tools
+Depends: gawk,
+         td-unixtimestamp-tools
 
 Tests: 80-x509
 Depends: gnutls-bin,

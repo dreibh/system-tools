@@ -2,7 +2,7 @@
 //         ____            _                     _____           _
 //        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 //        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \.
 //        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 //               |___/
 //                             --- System-Tools ---
@@ -30,6 +30,7 @@
 #define _XOPEN_SOURCE 700
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <getopt.h>
 #include <locale.h>
@@ -37,8 +38,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <unistd.h>
-#include <errno.h>
 #ifndef nullptr
 #define nullptr NULL
 #endif
@@ -85,15 +86,16 @@ static long long       TotalInputLines      = -1;
 static bool            IncludeTags          = false;
 static bool            FullTagLines         = false;
 static char            EnumerateFormat[128] = "%06llu";
-static const char*     Enumerate1           = "\e[36m";
-static const char*     Enumerate2           = "\e[0m ";
+static const char*     Enumerate1           = "\x1b[36m";
+static const char*     Enumerate2           = "\x1b[0m ";
 static const char*     HighlightBegin       = "⭐";
 static const char*     HighlightEnd         = "🛑";
-static const char*     HighlightUnmarked1   = "\e[34m";
-static const char*     HighlightUnmarked2   = "\e[0m";
-static const char*     HighlightMarked1     = "\e[31m";
-static const char*     HighlightMarked2     = "\e[0m";
+static const char*     HighlightUnmarked1   = "\x1b[34m";
+static const char*     HighlightUnmarked2   = "\x1b[0m";
+static const char*     HighlightMarked1     = "\x1b[31m";
+static const char*     HighlightMarked2     = "\x1b[0m";
 static const char*     InputFileName        = nullptr;
+static char*           RealInputFileName    = nullptr;
 static FILE*           InputFile            = nullptr;
 static bool            OpenInputFile        = false;
 static const char*     OutputFileName       = nullptr;
@@ -113,7 +115,6 @@ static size_t          BufferSize           = 65536;
 static int             Actions;
 static long long       LineNo;
 static const char*     EndOfLine;
-static const char*     Line;
 static const char*     MarkerTag;
 static size_t          MarkerTagLength;
 static const char*     Pointer;
@@ -156,6 +157,21 @@ static void cleanUp(int exitCode)
          }
       }
       else if( (exitCode == 0) && (OutputTempFileName != nullptr) ) {
+         // ------ Restore original file permissions and ownership ----------
+         struct stat fileInfo;
+         if(stat(InputFileName, &fileInfo) == 0) {
+            // Try to change ownership:
+            int result = chown(OutputTempFileName, fileInfo.st_uid, fileInfo.st_gid);
+            (void)result;   // just ignore errors
+            // Restore file permissions:
+            if(chmod(OutputTempFileName, fileInfo.st_mode & 07777) != 0) {
+               fprintf(stderr, gettext("WARNING: Unable to restore file permissions for %s: %s"),
+                       InputFileName, strerror(errno));
+               fputs("\n", stderr);
+            }
+         }
+
+         // ------ Overwrite original file ----------------------------------
          if(rename(OutputTempFileName, InputFileName) != 0) {
             fprintf(stderr, gettext("ERROR: Unable to change name of temporary output file from %s to %s: %s"),
                     OutputTempFileName, InputFileName, strerror(errno));
@@ -179,6 +195,10 @@ static void cleanUp(int exitCode)
       OpenInputFile = false;
    }
    InputFile = nullptr;
+   if(RealInputFileName) {
+      free(RealInputFileName);
+      RealInputFileName = nullptr;
+   }
 
    // ====== Free buffer ====================================================
    if(Buffer) {
@@ -195,6 +215,9 @@ static char* makeTempOutputFileName(const char* outputFileName)
 {
    const size_t ouputFileNameLength = strlen(outputFileName);
    OutputTempFileName = malloc(ouputFileNameLength + 2);
+   if(OutputTempFileName == nullptr) {
+      cleanUp(1);
+   }
    strncpy(OutputTempFileName, outputFileName, ouputFileNameLength);
    OutputTempFileName[ouputFileNameLength + 0] = '~';
    OutputTempFileName[ouputFileNameLength + 1] = 0x00;
@@ -221,10 +244,9 @@ static long long countLines(FILE* inputFile)
 {
    long long lines = 0;
 
-   char* line = Buffer;
-   while( (getline((char**)&line, &BufferSize, inputFile)) > 0 ) {
+   while( (getline((char**)&Buffer, &BufferSize, inputFile)) > 0 ) {
+      // getline() may have reallocated the buffer, if it was necessary!
       lines++;
-      line = Buffer;
    }
    if(inputFile != stdin) {
       rewind(inputFile);
@@ -235,18 +257,12 @@ static long long countLines(FILE* inputFile)
 
 
 // ###### Write contents of insert file #####################################
-static void copyInsertFileIntoOutputFile()
+static void copyInsertFileIntoOutputFile(void)
 {
-   char    buffer[65536];
-   ssize_t bytesRead;
+   char   buffer[65536];
+   size_t bytesRead;
    while( (bytesRead = fread((char*)&buffer, 1, sizeof(buffer), InsertFile)) > 0 ) {
       writeToOutputFile(buffer, bytesRead);
-   }
-   if(bytesRead < 0) {
-      fprintf(stderr, gettext("ERROR: Unable to read from insert file %s: %s"),
-              InsertFileName, strerror(errno));
-      fputs("\n", stderr);
-      cleanUp(1);
    }
    if(InsertFile != stdin) {
       rewind(InsertFile);
@@ -262,31 +278,32 @@ static void processUnmarked(const char*   text,
    assert(InMarkedBlock == false);
    assert(textLength >= 0);
 
+   const size_t outputLength = (size_t)textLength;
    switch(Mode) {
       case Cat:
       case Remove:
       case Replace:
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
        break;
       case InsertFront:
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
          if(beginOfMarking) {
             copyInsertFileIntoOutputFile();
          }
        break;
       case InsertBack:
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
        break;
       case Enumerate:
          fputs(Enumerate1, OutputFile);
          fprintf(OutputFile, EnumerateFormat, LineNo);
          fputs(Enumerate2, OutputFile);
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
        break;
       case Highlight:
-         if(textLength > 0) {
+         if(outputLength > 0) {
             fputs(HighlightUnmarked1, OutputFile);
-            writeToOutputFile(text, textLength);
+            writeToOutputFile(text, outputLength);
             fputs(HighlightUnmarked2, OutputFile);
          }
          if(beginOfMarking) {
@@ -312,9 +329,10 @@ static void processMarked(const char*   text,
    assert(InMarkedBlock == true);
    assert(textLength >= 0);
 
+   const size_t outputLength = (size_t)textLength;
    switch(Mode) {
       case Extract:
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
        break;
       case Replace:
          if(endOfMarking) {
@@ -322,18 +340,18 @@ static void processMarked(const char*   text,
          }
        break;
       case InsertFront:
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
        break;
       case InsertBack:
-         writeToOutputFile(text, textLength);
+         writeToOutputFile(text, outputLength);
          if(endOfMarking) {
             copyInsertFileIntoOutputFile();
          }
        break;
       case Highlight:
-         if(textLength > 0) {
+         if(outputLength > 0) {
             fputs(HighlightMarked1, OutputFile);
-            writeToOutputFile(text, textLength);
+            writeToOutputFile(text, outputLength);
             fputs(HighlightMarked2, OutputFile);
          }
          if(endOfMarking) {
@@ -354,7 +372,7 @@ static void processMarked(const char*   text,
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
 #endif
-static void version()
+static void version(void)
 {
    printf("text-block %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -387,15 +405,16 @@ static void usage(const char* program, const int exitCode)
            " [-s|--select from_line to_line]"
            " [-b|--begin-tag begin_tag]"
            " [-e|--end-tag end_tag]"
+           " [-t|--tag tag]"
            " [-y|--include-tags]"
            " [-x|--exclude-tags]"
            " [-f|--full-tag-lines]"
            " [-g|--tags-only]"
            " [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label]"
-           " [--highlight-param begin_label end_label unmarked1_label unmarked2_label marked1_label marked2_label]"
+           " [--highlight-params begin_label end_label unmarked1_label unmarked2_label marked1_label marked2_label]"
            " [--enumerate-format format]"
            " [--enumerate-label[1|2] string]"
-           " [-w|--suppress-warnings]"
+           " [-q|--suppress-warnings]"
            " [-h|--help]"
            " [-v|--version]\n",
            gettext("Usage:"), program);
@@ -416,7 +435,7 @@ int main (int argc, char** argv)
 
    // ====== Handle arguments ===============================================
    bool showWarnings = true;
-   const static struct option long_options[] = {
+   static const struct option long_options[] = {
       { "cat",                 no_argument,       0, 'C' },
       { "discard",             no_argument,       0, '0' },
       { "highlight",           no_argument,       0, 'H' },
@@ -519,7 +538,7 @@ int main (int argc, char** argv)
           break;
          case 's':
             if(optind < argc) {
-               SelectBegin = atoll(argv[optind - 1]);
+               SelectBegin = atoll(optarg);
                SelectEnd   = atoll(argv[optind]);
                optind++;
             }
@@ -557,7 +576,7 @@ int main (int argc, char** argv)
          case 0x1000:
             for(unsigned int i = 0; i < strlen(optarg); i++) {
                if( (optarg[i] == '%') ||
-                   !( (isalnum(optarg[i]) || (optarg[i] != '-') || (optarg[i] != '\'') ) ) ) {
+                   ( !isalnum(optarg[i]) && (optarg[i] != '-') && (optarg[i] != '\'') ) ) {
                   fputs(gettext("ERROR: Invalid value for enumeration format (--enumerate-format)!"), stderr);
                   fputs("\n", stderr);
                   return 1;
@@ -595,7 +614,7 @@ int main (int argc, char** argv)
             //       will be the *second* parameter!
             if(optind + 4 < argc) {
                // NOTE: optind points to the *second* parameter here!
-               HighlightBegin     = argv[optind - 1];
+               HighlightBegin     = optarg;
                HighlightEnd       = argv[optind];
                HighlightUnmarked1 = argv[optind + 1];
                HighlightUnmarked2 = argv[optind + 2];
@@ -613,11 +632,16 @@ int main (int argc, char** argv)
             version();
           break;
          case 'h':
-            usage(argv[0], 0);
+         case '?':
+            // Exit with 0 on h/help, exit with 1 on '?' (unknown option):
+            usage(argv[0], (option == 'h') ? 0 : 1);
+          break;
+         case '-':
           break;
          default:
-            fprintf(stderr, gettext("ERROR: Invalid argument %s!"), argv[optind - 1]);
-            fputs("\n", stderr);
+            // This should not happen: wrong getopt parameters, or missing case?
+            fprintf(stderr, "INTERNAL ERROR: Unhandled option c=%c code=%x!\n",
+                    (isprint(option) ? (char)option : ' '), option);
             return 1;
           break;
       }
@@ -680,6 +704,16 @@ int main (int argc, char** argv)
    InputFile = stdin;
    if( (InputFileName != nullptr) && (strcmp(InputFileName, "-") == 0) ) {
       InputFileName = nullptr;   // Special case: - => stdin
+   }
+   if( (InputFileName != nullptr) && InPlaceUpdate ) {
+      RealInputFileName = realpath(InputFileName, nullptr);
+      if(RealInputFileName == nullptr) {
+         fprintf(stderr, gettext("ERROR: Unable to resolve absolute path for input file %s: %s"),
+                 InputFileName, strerror(errno));
+         fputs("\n", stderr);
+         cleanUp(1);
+      }
+      InputFileName = RealInputFileName;
    }
    if(InputFileName != nullptr) {
       InputFile = fopen(InputFileName, "r");
@@ -758,15 +792,33 @@ int main (int argc, char** argv)
 
    // ====== Open insert file ===============================================
    if( (InsertFileName != nullptr) && (strcmp(InsertFileName, "-") == 0) ) {
+      // ------ Insert file is stdin => copy to temporary file --------------
       InsertFileName = nullptr;   // Special case: - => stdin
       if(InputFile == stdin) {
          fputs(gettext("ERROR: Insert from standard input requires an input file!"), stderr);
          fputs("\n", stderr);
          cleanUp(1);
       }
-      InsertFile = stdin;
+      InsertFile = tmpfile();
+      if(InsertFile == nullptr) {
+         fprintf(stderr, gettext("ERROR: Unable to create temporary file for insertion: %s"), strerror(errno));
+         fputs("\n", stderr);
+         cleanUp(1);
+      }
+      char   buffer[65536];
+      size_t bytesRead;
+      while( (bytesRead = fread(buffer, 1, sizeof(buffer), stdin)) > 0 ) {
+         if(fwrite(buffer, 1, bytesRead, InsertFile) < bytesRead) {
+            fprintf(stderr, gettext("ERROR: Failed to write to temporary file: %s"), strerror(errno));
+            fputs("\n", stderr);
+            cleanUp(1);
+         }
+      }
+      rewind(InsertFile);
+      OpenInsertFile = true;
    }
    if(InsertFileName != nullptr) {
+      // ------ Insert file is a file => just open it -----------------------
       InsertFile = fopen(InsertFileName, "r");
       if(InsertFile == nullptr) {
          fprintf(stderr, gettext("ERROR: Unable to open insert file %s: %s"),
@@ -775,11 +827,13 @@ int main (int argc, char** argv)
          cleanUp(1);
       }
       OpenInsertFile = true;
+   }
+   if(InsertFile != nullptr) {
 #ifdef POSIX_FADV_SEQUENTIAL
-      posix_fadvise(fileno(InputFile), 0, 0, POSIX_FADV_SEQUENTIAL|POSIX_FADV_WILLNEED);
+      posix_fadvise(fileno(InsertFile), 0, 0, POSIX_FADV_SEQUENTIAL|POSIX_FADV_WILLNEED);
 #endif
    }
-   if(InsertFile == nullptr) {
+   else {
       if( (Mode == InsertFront) || (Mode == InsertBack) || (Mode == Replace) ) {
          fputs(gettext("ERROR: No insert file provided!"), stderr);
          fputs("\n", stderr);
@@ -797,29 +851,28 @@ int main (int argc, char** argv)
    printf("FullTagLines=%u\n", FullTagLines);
 #endif
 
-   Line            = Buffer;
    LineNo          = 0;
    Actions         = 0;
    MarkerTag       = BeginTag;
    MarkerTagLength = BeginTagLength;
 
-   char*   line       = Buffer;
    ssize_t lineLength;
    errno = 0;
-   while( (lineLength = (getline((char**)&line, &BufferSize, InputFile))) > 0 ) {
+   while( (lineLength = (getline((char**)&Buffer, &BufferSize, InputFile))) > 0 ) {
+      // getline() may have reallocated the buffer, if it was necessary!
 
       // ====== Process line ================================================
       LineNo++;
-      EndOfLine = Line + lineLength;
+      EndOfLine = Buffer + lineLength;
 #ifdef DEBUG_MODE
       printf("%llu (l=%u m=%s):\t%s",
              (unsigned long long)LineNo, (unsigned int)lineLength, MarkerTag,
-             Line);
+             Buffer);
 #endif
 
       // ====== Tag handling ================================================
       if(MarkerTag != nullptr) {
-         Pointer = Line;
+         Pointer = Buffer;
          const char* next;
          bool        foundMarker = false;
          while( (next = (MarkerTag != nullptr) ? strstr(Pointer, MarkerTag) : nullptr) != nullptr ) {
@@ -831,7 +884,7 @@ int main (int argc, char** argv)
                if(FullTagLines) {
                   next += MarkerTagLength;
                   if(IncludeTags) {
-                     processUnmarked(Line, 0, true);
+                     processUnmarked(Buffer, 0, true);
                      processMarked(Pointer, (ssize_t)(next - Pointer), false);
                   }
                   else {
@@ -848,7 +901,7 @@ int main (int argc, char** argv)
                   // ------ Special case: BeginTag == EndTag ----------------
                   if(BeginTag == EndTag) {
                      if(IncludeTags) {
-                        processMarked(next, MarkerTagLength, true);
+                        processMarked(next, (ssize_t)MarkerTagLength, true);
                         next += MarkerTagLength;
                      }
                      else {
@@ -869,7 +922,7 @@ int main (int argc, char** argv)
                      // Postponed end of block until end of the line!
                   }
                   else {
-                     processMarked(Line, 0, true);
+                     processMarked(Buffer, 0, true);
                      processUnmarked(Pointer, (ssize_t)(next - Pointer), false);
                   }
                }
@@ -924,9 +977,9 @@ int main (int argc, char** argv)
       else if( (SelectBegin > 0) && (LineNo >= SelectBegin) &&
                ( (SelectEnd == 0) || (LineNo <= SelectEnd) ) ) {
          if(LineNo == SelectBegin) {
-            processUnmarked(Line, 0, true);
+            processUnmarked(Buffer, 0, true);
          }
-         processMarked(Line, (ssize_t)(EndOfLine - Line), false);
+         processMarked(Buffer, (ssize_t)(EndOfLine - Buffer), false);
          if(LineNo == SelectEnd) {
             processMarked(EndOfLine, 0, true);
          }
@@ -934,12 +987,11 @@ int main (int argc, char** argv)
 
       // ====== Just process a regular, unmarked line =======================
       else {
-         processUnmarked(Line, (ssize_t)(EndOfLine - line), false);
+         processUnmarked(Buffer, (ssize_t)(EndOfLine - Buffer), false);
       }
 
 
       // ====== Prepare next iteration ======================================
-      line  = Buffer;
       errno = 0;
    }
    if( (lineLength < 0) && (errno != 0) ) {
@@ -951,7 +1003,7 @@ int main (int argc, char** argv)
    // ====== Clean up =======================================================
    if(InMarkedBlock) {
       // Finish the marked block, if it is still active:
-      processMarked(Line, 0, true);
+      processMarked(Buffer, 0, true);
    }
    const bool success =
       ( (MinActions < 0) || (Actions >= MinActions) ) &&

@@ -9,7 +9,7 @@
 .\"                  https://www.nntb.no/~dreibh/system-tools/
 .\" ==========================================================================
 .\"
-.\" Reset-Machine-ID
+.\" Reset\-Machine\-ID
 .\" Copyright (C) 2024-2026 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
@@ -28,53 +28,58 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
-.Dt Reset-Machine-ID 1
-.Os Reset-Machine-ID
+.Dd May 9, 2026
+.Dt Reset\-Machine\-ID 1
+.Os Reset\-Machine\-ID
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm Reset-Machine-ID
+.Nm Reset\-Machine\-ID
 .Nd resets the machine identity state
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm Reset-Machine-ID
+.Nm Reset\-Machine\-ID
 .Op Fl H Ar hostname | Fl Fl hostname Ar hostname
 .br
-.Op Fl M | Fl Fl skip-machine-id
+.Op Fl M | Fl Fl skip\-machine\-id
 .br
-.Op Fl S | Fl Fl skip-ssh-configuration
+.Op Fl S | Fl Fl skip\-ssh\-configuration
 .br
-.Op Fl K | Fl Fl skip-ssh-key-replacement
+.Op Fl K | Fl Fl skip\-ssh\-key\-replacement
 .br
 .Op Fl Z Ar zabbix_server | Fl Fl zabbix Ar zabbix_server
-.Op Fl A | Fl Fl install-zabbix-agent
+.Op Fl A | Fl Fl install\-zabbix\-agent
 .br
-.Op Fl Fl yes-to-all-i-am-really-sure
-.Nm Reset-Machine-ID
+.Op Fl Fl yes\-to\-all\-i\-am\-really\-sure
+.Nm Reset\-Machine\-ID
 .Op Fl h | Fl Fl help
-.Nm Reset-Machine-ID
+.Nm Reset\-Machine\-ID
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm Reset-Machine-ID
+.Nm Reset\-Machine\-ID
 resets the machine identity state, particularly for a cloned VM, to make it appear as a new machine.
 It performs the following tasks:
-.br
-* Reset /etc/machine-id,
-.br
-* Reset /var/lib/dbus/machine-id (symlink to /etc/machine-id),
-.br
-* Reset host ID in Debian Popularity Contest configuration file (if installed),
-.br
-* Change hostname, if a new one is provided (\-\-hostname parameter).
-.br
-* Provide hardened settings for SSH client and server.
-.br
-* Create new SSH key pair.
-.br
-The changes are made interactively on request, unless the option --yes-to-all-i-am-really-sure is used.
+.Bl -bullet -compact
+.It
+Reset
+.Pa /etc/machine\-id
+.It
+Reset
+.Pa /var/lib/dbus/machine\-id
+(symlink to
+.Pa /etc/machine\-id )
+.It
+Reset host ID in Debian Popularity Contest configuration file (if installed)
+.It
+Change hostname, if a new one is provided (\-\-hostname parameter)
+.It
+Provide hardened settings for SSH client and server
+.It
+Create new SSH key pair
+.El
+The changes are made interactively on request, unless the option \-\-yes\-to\-all\-i\-am\-really\-sure is used.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
@@ -82,33 +87,49 @@ The following options are available:
 .Bl -tag -width indent
 .It Fl H Ar hostname | Fl Fl hostname Ar hostname
 Set the given hostname.
-.It Fl M | Fl Fl skip-machine-id
+.It Fl M | Fl Fl skip\-machine\-id
 Do not reset the machine ID.
-.It Fl S | Fl Fl skip-ssh-configuration
+.It Fl S | Fl Fl skip\-ssh\-configuration
 Do not make SSH configuration changes.
-.It Fl K | Fl Fl skip-ssh-key-replacement
+.It Fl K | Fl Fl skip\-ssh\-key\-replacement
 Do not replace SSH keys.
 .It Fl Z Ar zabbix_server | Fl Fl zabbix Ar zabbix_server
-Configure an already-installed Zabbix Agent for a given Zabbix server.
-.It Fl A | Fl Fl install-zabbix-agent
+Configure an already\-installed Zabbix Agent for a given Zabbix server.
+.It Fl A | Fl Fl install\-zabbix\-agent
 Try to install Zabbix Agent, if necessary, when a Zabbix server is given but no Zabbix Agent is installed. This will add the current Zabbix PPA on Debian/Ubuntu/Fedora systems. Note that a Zabbix PPA may not be available for the used distribution! On FreeBSD, the Zabbix Agent is installed from the FreeBSD Ports Collection.
-.It Fl Fl yes-to-all-i-am-really-sure
-Create new keys (delete old ones) as well as replace sshd_config and
-ssh_config without interactively asking for confirmation.
+.It Fl Fl yes\-to\-all\-i\-am\-really\-sure
+Create new keys (delete old ones) as well as replace sshd_config and ssh_config without interactively asking for confirmation.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It sudo Reset-Machine-ID
-.It sudo Reset-Machine-ID --yes-to-all-i-am-really-sure
-.It sudo Reset-Machine-ID --hostname dbserver.domain.example
-.It sudo Reset-Machine-ID -H server.domain.example -Z zabbix.domain.example -A
-.It sudo Reset-Machine-ID -H server.domain.example --zabbix zabbix.domain.example --install-zabbix-agent
-.It sudo Reset-Machine-ID --skip-ssh-configuration --skip-ssh-key-replacement
-.It Reset-Machine-ID --version
-.It Reset-Machine-ID --help
+.It sudo Reset\-Machine\-ID
+.It sudo Reset\-Machine\-ID \-\-yes\-to\-all\-i\-am\-really\-sure
+.It sudo Reset\-Machine\-ID \-\-hostname dbserver.domain.example
+.It sudo Reset\-Machine\-ID \-H server.domain.example \-Z zabbix.domain.example \-A
+.It sudo Reset\-Machine\-ID \-H server.domain.example \-\-zabbix zabbix.domain.example \-\-install\-zabbix\-agent
+.It sudo Reset\-Machine\-ID \-\-skip\-ssh\-configuration \-\-skip\-ssh\-key\-replacement
+.It Reset\-Machine\-ID \-\-version
+.It Reset\-Machine\-ID \-\-help
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr System\-Info 1 ,
+.Xr System\-Maintenance 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

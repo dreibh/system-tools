@@ -50,7 +50,7 @@ _view_certificate()
       cword="${COMP_CWORD}"
    fi
 
-   if [ "${cword}" -le 1 ] ; then
+   if [[ "${cur}" != -* ]] ; then
       _filedir '@(cert|crt|der|pem)'
       return
    fi

@@ -50,8 +50,18 @@ _get_system_info()
       cword="${COMP_CWORD}"
    fi
 
+   case "${prev}" in
+      -c | --compatibility)
+         compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
+         mapfile -t COMPREPLY < <(compgen -W "0" -- "${cur}")
+         return
+         ;;
+   esac
+
    # ====== All options =====================================================
    local opts="
+-c
+--compatibility
 -h
 --help
 -v

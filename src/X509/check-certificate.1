@@ -28,59 +28,80 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
-.Dt check-certificate 1
-.Os check-certificate
+.Dd May 9, 2026
+.Dt check\-certificate 1
+.Os check\-certificate
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm check-certificate
-.Nd Checks and verifies X.509 certificates in PEM format
+.Nm check\-certificate
+.Nd checks and verifies X.509 certificates in PEM format
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm check-certificate
-ca_certificate_file certificate_file
+.Nm check\-certificate Ar ca\_certificate\_file Ar certificate\_file
 .Op ...
 .br
-.Op Fl C Ar crl_file | Fl Fl crl Ar crl_file
+.Op Fl C Ar crl\_file | Fl Fl crl Ar crl\_file
 .br
-.Op Fl n | Fl Fl no-view-certificate
+.Op Fl n | Fl Fl no\-view\-certificate
 .br
-.Nm check-certificate
+.Nm check\-certificate
 .Op Fl h | Fl Fl help
-.Nm check-certificate
+.Nm check\-certificate
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm check-certificate
-verifies X.509 certificates against a Certification Authority (CA) certificate and optionally a Certificate Revocation List (CRL). The verification is made using OpenSSL, and if available GnuTSL and NSS, to ensure the certificates are working properly with all three TLS implementations.
+.Nm check\-certificate
+verifies X.509 certificates against a Certification Authority (CA) certificate and optionally a Certificate Revocation List (CRL). The verification is made using OpenSSL, and if available GnuTLS and NSS, to ensure the certificates are working properly with all three TLS implementations.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It ca_certificate_file
+.It Ar ca\_certificate\_file
 Specifies the CA certificate file to verify certificates.
-.It certificate_file [...]
-Specifies one ore more certificate files to be verified.
-.It Fl C Ar crl_file | Fl Fl crl Ar crl_file
+.It Ar certificate\_file [...]
+Specifies one or more certificate files to be verified.
+.It Fl C Ar crl\_file | Fl Fl crl Ar crl\_file
 Specifies a CRL file.
-.It Fl n | Fl Fl no-view-certificate
+.It Fl n | Fl Fl no\-view\-certificate
 Do not display a certificate before verification.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It check-certificate My-CA-Certificate.crt My-Server-Certificate.crt
-.It check-certificate --crl CRL.crl My-CA-Certificate.crt My-Server-Certificate.crt
-.It check-certificate /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt www.nntb.no.crt
-.It check-certificate --help
-.It check-certificate -h
-.It check-certificate --version
-.It check-certificate -v
+.It check\-certificate My\-CA\-Certificate.crt My\-Server\-Certificate.crt
+.It check\-certificate \-\-crl CRL.crl My\-CA\-Certificate.crt My\-Server\-Certificate.crt
+.It check\-certificate /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt www.nntb.no.crt
+.It check\-certificate \-\-help
+.It check\-certificate \-h
+.It check\-certificate \-\-version
+.It check\-certificate \-v
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr der2pem 1 ,
+.Xr extract\-pem 1 ,
+.Xr pem2der 1 ,
+.Xr test\-tls\-connection 1 ,
+.Xr view\-certificate 1 ,
+.Xr view\-crl 1 ,
+.Xr openssl 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

@@ -2,7 +2,7 @@
 //         ____            _                     _____           _
 //        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
 //        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \.
 //        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 //               |___/
 //                             --- System-Tools ---
@@ -27,29 +27,46 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#include <ctype.h>
+#include <fcntl.h>
 #include <getopt.h>
 #include <ifaddrs.h>
 #include <locale.h>
 #include <netdb.h>
+#include <netinet/in.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <utmpx.h>
 #include <arpa/inet.h>
 #include <net/if.h>
-#include <netinet/in.h>
 #include <sys/socket.h>
+#include <sys/statvfs.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
-#if defined(__linux)
-#include <sys/sysinfo.h>
+#if defined(__linux__)
+#include <dirent.h>
+#include <linux/if.h>
 #include <netpacket/packet.h>
+#include <sys/sysinfo.h>
 #elif defined(__FreeBSD__)
+#include <dev/acpica/acpiio.h>
+#include <net/if_dl.h>
+#include <netlink/route/interface.h>
+#include <sys/ioctl.h>
+#include <sys/sysctl.h>
+#include <sys/user.h>
+#include <vm/vm_param.h>
+#elif defined(__APPLE__)
+#include <libproc.h>
+#include <mach/mach.h>
+#include <mach/mach_host.h>
+#include <mach/mach_time.h>
 #include <net/if_dl.h>
 #include <sys/sysctl.h>
-#include <vm/vm_param.h>
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
@@ -67,14 +84,12 @@
 #define ngettext(singular, plural, n) ((n) == 1 ? (singular) : (plural))
 #endif
 
-// FIXME: For some reasons, IFF_LOWER_UP seems to be undefined here.
-#if defined(__linux)
-#define IFF_LOWER_UP (1 << 16)
-#elif defined(__FreeBSD__)
-#include <netlink/route/interface.h>
-#endif
-
 #include "package-version.h"
+
+
+// Compatibility version of get-system-info, to allow for future changes:
+// Currently, there is just version 0.
+#define COMPATIBILITY_VERSION 0
 
 
 struct interfaceaddress {
@@ -99,15 +114,38 @@ static int compareInterfaceAddresses(const void* a, const void* b)
          return -1;
       }
       else if(ifa1->address->sa_family == ifa2->address->sa_family) {
-         const int cmpAddress =
-            (ifa1->address->sa_family == AF_INET6) ?
-               memcmp( (const void*)&((const struct sockaddr_in6*)ifa1->address)->sin6_addr,
-                       (const void*)&((const struct sockaddr_in6*)ifa2->address)->sin6_addr,
-                       16 ) :
-               memcmp( (const void*)&((const struct sockaddr_in*)ifa1->address)->sin_addr,
-                       (const void*)&((const struct sockaddr_in*)ifa2->address)->sin_addr,
-                       4 );
-         return cmpAddress;
+         if(ifa1->address->sa_family == AF_INET6) {
+            const struct sockaddr_in6* ip1 = (const struct sockaddr_in6*)ifa1->address;
+            const struct sockaddr_in6* ip2 = (const struct sockaddr_in6*)ifa2->address;
+            return memcmp( &ip1->sin6_addr, &ip2->sin6_addr, 16 );
+         }
+         else if(ifa1->address->sa_family == AF_INET) {
+            const struct sockaddr_in* ip1 = (const struct sockaddr_in*)ifa1->address;
+            const struct sockaddr_in* ip2 = (const struct sockaddr_in*)ifa2->address;
+            return memcmp( &ip1->sin_addr, &ip2->sin_addr, 4 );
+         }
+#if defined(__linux__)
+         else if(ifa1->address->sa_family == AF_PACKET) {
+            const struct sockaddr_ll* mac1 = (const struct sockaddr_ll*)ifa1->address;
+            const struct sockaddr_ll* mac2 = (const struct sockaddr_ll*)ifa2->address;
+            const int lengthComparison = (int)mac1->sll_halen - (int)mac2->sll_halen;
+            if(lengthComparison != 0) {
+               return lengthComparison;
+            }
+            return memcmp(mac1->sll_addr, mac2->sll_addr, mac1->sll_halen);
+         }
+#elif defined(__FreeBSD__) || defined(__APPLE__)
+         else if(ifa1->address->sa_family == AF_LINK) {
+            const struct sockaddr_dl* mac1 = (const struct sockaddr_dl*)ifa1->address;
+            const struct sockaddr_dl* mac2 = (const struct sockaddr_dl*)ifa2->address;
+            const int lengthComparison = (int)mac1->sdl_alen - (int)mac2->sdl_alen;
+            if(lengthComparison != 0) {
+               return lengthComparison;
+            }
+            return memcmp(LLADDR(mac1), LLADDR(mac2), mac1->sdl_alen);
+         }
+#endif
+         return 0;   // Fallback for unknown family
       }
    }
    return 1;
@@ -149,7 +187,7 @@ static void printaddress(const struct sockaddr* address,
       }
       printf("%s/%u", resolvedHost, prefixlen);
    }
-#if defined(__linux)
+#if defined(__linux__)
    else if(address->sa_family == AF_PACKET) {
       const struct sockaddr_ll* macAddress = (const struct sockaddr_ll*)address;
       for(unsigned int i = 0; i < 6; i++) {
@@ -171,9 +209,16 @@ static void printaddress(const struct sockaddr* address,
 static void printflags(const u_int flags)
 {
    printf("0x%x: <%s>", flags, (flags & IFF_UP) ? "UP" : "DOWN");
+#if defined(IFF_LOWER_UP)
    if(flags & IFF_LOWER_UP) {
       fputs(" <LOWER_UP>", stdout);
    }
+#endif
+#if defined(IFF_RUNNING)
+   if(flags & IFF_RUNNING) {
+      fputs(" <RUNNING>", stdout);
+   }
+#endif
    if(flags & IFF_LOOPBACK) {
       fputs(" <LOOPBACK>", stdout);
    }
@@ -184,7 +229,7 @@ static void printflags(const u_int flags)
 
 
 // ###### Print hostname information ########################################
-static void showHostnameInformation()
+static void showHostnameInformation(void)
 {
    char hostname[256];
    if(gethostname((char*)&hostname, sizeof(hostname)) != 0) {
@@ -205,7 +250,7 @@ static void showHostnameInformation()
 
 
 // ###### Print kernel information ##########################################
-static void showKernelInformation()
+static void showKernelInformation(void)
 {
    struct utsname kernelInfo;
    if(uname(&kernelInfo) == 0) {
@@ -218,11 +263,25 @@ static void showKernelInformation()
 }
 
 
+// ###### Obtain the system uptime ##########################################
+static bool obtainUptime(struct timespec* ts)
+{
+#if !defined(__APPLE__)
+   return clock_gettime(CLOCK_BOOTTIME, ts) == 0;
+#else
+   const uint64_t uptime = mach_absolute_time();
+   ts->tv_sec  = uptime / 1000000;
+   ts->tv_nsec = (uptime % 1000000) * 1000;
+   return true;
+#endif
+}
+
+
 // ###### Print uptime information ##########################################
-static void showUptimeInformation()
+static void showUptimeInformation(void)
 {
    struct timespec ts;
-   if(clock_gettime(CLOCK_BOOTTIME, &ts) == 0) {
+   if(obtainUptime(&ts)) {
       const unsigned int days  = ts.tv_sec / 86400;
       const unsigned int hours = (ts.tv_sec / 3600) - (days * 24);
       const unsigned int mins  = (ts.tv_sec / 60) - (days * 1440) - (hours * 60);
@@ -238,53 +297,139 @@ static void showUptimeInformation()
 }
 
 
+#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__))
 // ###### Query information via shell #######################################
 static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 {
    FILE* fh = popen(command, "r");
    if(fh != nullptr) {
       size_t resultSize = 0;
-      char*  r;
+      char*  resultPtr;
       do {
-         r = fgets((char*)&result[resultSize], resultMaxSize - 1 - resultSize, fh);
-         if(r == nullptr) {
+         resultPtr = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
+         if(resultPtr == nullptr) {
             break;
          }
-         resultSize += strlen(r);
+         resultSize += strlen(resultPtr);
       }
-      while(resultSize < resultMaxSize- 1);
+      while(resultSize < resultMaxSize - 1);
       result[resultSize] = 0x00;
       pclose(fh);
-      return true;
+      return (resultSize > 0);
    }
    return false;
 }
+#endif
 
 
+#if defined(__linux__)
 // ###### Query information from file #######################################
 static bool queryFile(const char* file, char* result, size_t resultMaxSize)
 {
    FILE* fh = fopen(file, "r");
    if(fh != nullptr) {
       size_t resultSize = 0;
-      char*  r;
+      char*  resultPtr;
       do {
-         r = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
-         if(r == nullptr) {
+         resultPtr = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
+         if(resultPtr == nullptr) {
             break;
          }
-         resultSize += strlen(r);
+         resultSize += strlen(resultPtr);
       }
-      while(resultSize < resultMaxSize);
+      while(resultSize < resultMaxSize - 1);
+      result[resultSize] = 0x00;
       fclose(fh);
-      return true;
+      return (resultSize > 0);
    }
    return false;
+}
+#endif
+
+
+// ###### Obtain the number of processes on the system ######################
+static unsigned int obtainProcessCount(void)
+{
+   unsigned int count = 0;
+
+#if defined(__linux__)
+   // ====== Linux: count processes in /proc ================================
+   struct dirent* dirEntry;
+   DIR*           dir = opendir("/proc");
+   if(dir != nullptr) {
+      while((dirEntry = readdir(dir)) != nullptr) {
+         // The name of a process directory starts with a digit:
+         if(isdigit(dirEntry->d_name[0])) {
+            count++;
+         }
+      }
+   }
+   closedir(dir);
+
+#elif defined(__FreeBSD__)
+   // ====== FreeBSD: use sysctl to query the number of processes ===========
+   // ------  Get memory size necessary to obtain the process list ----------
+   const int mib[3] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC};
+   size_t length = 0;
+   if(sysctl((const int*)&mib, 3, nullptr, &length, nullptr, 0) == 0) {
+      // The memory size is more than necessary for the process list, since
+      // the list may change. To obtain the process count, it is necessary
+      // to actually fetch the process list:
+      void* processList = malloc(length);
+      if(processList != nullptr) {
+         // ------ Obtain the process list ----------------------------------
+         if(sysctl(mib, 3, processList, &length, nullptr, 0) == 0) {
+            // The current process count is the number of entries fetched:
+            count = length / sizeof(struct kinfo_proc);
+         }
+         free(processList);
+      }
+   }
+
+#elif defined(__APPLE__)
+   // ====== Apple: use libproc to query the number of processes ============
+   // proc_listpids() with nullptr buffer returns the required buffer size:
+   const int bufferSize = proc_listpids(PROC_ALL_PIDS, 0, nullptr, 0);
+   if(bufferSize > 0) {
+      count = (unsigned int)bufferSize / sizeof(pid_t);
+   }
+
+#else
+#warning Using fallback solution for obtaining the process count!
+   // ====== Fallback =======================================================
+   char         buffer[64];
+   unsigned int value;
+   if( (queryPipe("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
+       (sscanf(buffer, "%u", &value) == 1) ) {
+      count = value;
+   }
+#endif
+
+    return count;
+}
+
+
+// ###### Obtain the number of users on the system ##########################
+static unsigned int obtainUserCount(void)
+{
+   unsigned int count = 0;
+
+   // Count the number of user sessions, the same as "who | wc -l":
+   setutxent();
+   struct utmpx* utx;
+   while( (utx = getutxent()) != nullptr ) {
+      if(utx->ut_type == USER_PROCESS) {
+         count++;
+      }
+   }
+   endutxent();
+
+   return count;
 }
 
 
 // ###### Print load information ############################################
-static void showLoadInformation()
+static void showLoadInformation(void)
 {
    // ====== Cores and page size ============================================
    const unsigned int cores = sysconf(_SC_NPROCESSORS_ONLN);
@@ -292,28 +437,15 @@ static void showLoadInformation()
    const unsigned int pageSize = sysconf(_SC_PAGESIZE);
    printf("system_pagesize=%u\n", pageSize);
 
-   // ====== Number of running processes ====================================
-   char         buffer[64];
-   unsigned int value;
-   if( (queryPipe("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("system_procs=%u\n", value);
-   }
-   else {
-      printf("system_procs=0");
-   }
+   // ====== Number of running processes and number of users ================
+   const unsigned int processCount = obtainProcessCount();
+   printf("system_procs=%u\n", processCount);
 
-   // ====== Number of users ================================================
-   if( (queryPipe("who | cut -d' ' -f1 | sort -ud | wc -l", (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("system_users=%u\n", value);
-   }
-   else {
-      printf("system_users=0");
-   }
+   const unsigned int userCount = obtainUserCount();
+   printf("system_users=%u\n", userCount);
 
    // ====== Load averages ==================================================
-#if defined(__linux)
+#if defined(__linux__)
    struct sysinfo systemInfo;
    if(sysinfo(&systemInfo) == 0) {
       const double fFraction = 1.0 / (1 << SI_LOAD_SHIFT);
@@ -326,29 +458,34 @@ static void showLoadInformation()
       printf("system_load_avg15minpct=%1.4f\n", (double)systemInfo.loads[2] * fPercent);
    }
 
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__APPLE__)
    double loadavg[3];
    if(getloadavg(loadavg, 3) == 3) {
       printf("system_load_avg1min=%1.6f\n",  loadavg[0]);
       printf("system_load_avg5min=%1.6f\n",  loadavg[1]);
       printf("system_load_avg15min=%1.6f\n", loadavg[2]);
-      printf("system_load_avg1minpct=%1.6f\n",  100.0 * loadavg[0]);
-      printf("system_load_avg5minpct=%1.6f\n",  100.0 * loadavg[1]);
-      printf("system_load_avg15minpct=%1.6f\n", 100.0 * loadavg[2]);
+      printf("system_load_avg1minpct=%1.4f\n",  100.0 * loadavg[0]);
+      printf("system_load_avg5minpct=%1.4f\n",  100.0 * loadavg[1]);
+      printf("system_load_avg15minpct=%1.4f\n", 100.0 * loadavg[2]);
    }
+
+#else
+#error Missing case!
 #endif
 }
 
 
 // ###### Print battery information #########################################
-static void showBatteryInformation()
+static void showBatteryInformation(void)
 {
    const unsigned int maxBatteries = 2;
    unsigned int       batteries    = 0;
    unsigned int       batteryIDs[maxBatteries];
 
-#if defined(__linux)
+   // ====== Linux: Obtain battery status via /sys file system ==============
+#if defined(__linux__)
    for(unsigned int i = 0; i < maxBatteries; i++) {
+      // ------ Obtain status of battery unit -------------------------------
       char capacityFileName[64];
       char capacityBuffer[64];
       unsigned int capacity;
@@ -360,8 +497,10 @@ static void showBatteryInformation()
          char* statusEnd;
          snprintf((char*)&statusFileName, sizeof(statusFileName), "/sys/class/power_supply/BAT%u/status", i);
          if( (queryFile(statusFileName, (char*)&statusBuffer, sizeof(statusBuffer))) &&
-             (statusEnd = index(statusBuffer, '\n')) ) {
+             (statusEnd = strchr(statusBuffer, '\n')) ) {
             *statusEnd = 0x00;
+
+            // ------ Extract status as status code -------------------------
             int status = 0;   // Unknown
             if(strcmp(statusBuffer, "Not charging") == 0) {
                status = 1;    // Not charging
@@ -375,6 +514,8 @@ static void showBatteryInformation()
             else if(strcmp(statusBuffer, "Discharging") == 0) {
                status = 4;    // Discharging
             }
+
+            // ------ Print battery status and capacity ---------------------
             printf("battery_%u_status=%u\n",   i, status);
             printf("battery_%u_capacity=%u\n", i, capacity);
             batteryIDs[batteries++] = i;
@@ -382,21 +523,55 @@ static void showBatteryInformation()
       }
    }
 
+   // ====== FreeBSD: Obtain battery status via ACPI device ioctls ==========
 #elif defined(__FreeBSD__)
-   char batteryInfoQuery[64];
-   char batteryInfo[4096];
-   for(unsigned int i = 0; i < maxBatteries; i++) {
-      snprintf((char*)&batteryInfoQuery, sizeof(batteryInfoQuery),
-               "acpiconf -i%u 2>/dev/null", i);
-      if( queryPipe(batteryInfoQuery, (char*)&batteryInfo, sizeof(batteryInfo)) ) {
-         const char* r = (const char*)&batteryInfo;
-         do {
-            printf("x");
-            r = index(r, '\n');
-         } while(r++ != nullptr);
-         batteryIDs[batteries++] = i;
+   int acpiFD = open("/dev/acpi", O_RDONLY);
+   if(acpiFD >= 0) {
+      unsigned int batteryUnits = 0;
+      if(ioctl(acpiFD, ACPIIO_BATT_GET_UNITS, &batteryUnits) == 0) {
+         for(unsigned int i = 0; i < batteryUnits; i++) {
+
+            // ------ Obtain status of battery unit -------------------------
+            union acpi_battery_ioctl_arg batteryInfo;
+            memset(&batteryInfo, 0, sizeof(batteryInfo));
+            batteryInfo.unit = (int)i;
+            if(ioctl(acpiFD, ACPIIO_BATT_GET_BATTINFO, &batteryInfo) == 0) {
+
+               // ------ Extract status as status code ----------------------
+               unsigned int status = 0;   // Unknown
+               if(batteryInfo.battinfo.state != ACPI_BATT_STAT_NOT_PRESENT) {
+                  if(batteryInfo.battinfo.state == 0) {
+                     status = 3;   // Full
+                  }
+                  else {
+                     if(batteryInfo.battinfo.state & ACPI_BATT_STAT_CHARGING) {
+                        status = 2;   // Charging
+                     }
+                     else if(batteryInfo.battinfo.state & ACPI_BATT_STAT_DISCHARG) {
+                        status = 4;   // Discharging
+                     }
+                     else {
+                        status = 1;   // Not charging
+                     }
+                  }
+               }
+               const unsigned int capacity = (unsigned int)batteryInfo.battinfo.cap;
+
+               // ------ Print battery status and capacity ------------------
+               printf("battery_%u_status=%u\n",   i, status);
+               printf("battery_%u_capacity=%u\n", i, capacity);
+               batteryIDs[batteries++] = i;
+               if(batteries == maxBatteries) {
+                  break;
+               }
+            }
+         }
       }
+      close(acpiFD);
    }
+
+#else
+// #error Missing case!
 #endif
 
    fputs("battery_list=\"", stdout);
@@ -408,7 +583,7 @@ static void showBatteryInformation()
 
 
 // ###### Print memory information ##########################################
-static void showMemoryInformation()
+static void showMemoryInformation(void)
 {
    unsigned long long memoryTotal     = 0;
    unsigned long long memoryAvailable = 0;
@@ -417,7 +592,7 @@ static void showMemoryInformation()
    unsigned long long swapAvailable   = 0;
    unsigned long long swapUsed        = 0;
 
-#if defined(__linux)
+#if defined(__linux__)
    // ====== Query memory information via /proc =============================
    FILE* fh = fopen("/proc/meminfo", "r");
    if(fh != nullptr) {
@@ -506,7 +681,7 @@ static void showMemoryInformation()
    // Based on: https://cgit.freebsd.org/src/tree/sbin/swapon/swapon.c
    int mib[16];
    size_t mibsize = 16;
-   if(sysctlnametomib("vm.swap_info", mib, &mibsize) != -0) {
+   if(sysctlnametomib("vm.swap_info", mib, &mibsize) != 0) {
       perror("sysctlnametomib(vm.swap_info)");
       return;
    }
@@ -527,6 +702,43 @@ static void showMemoryInformation()
       swapAvailable  += available;
       swapUsed       += used;
    }
+
+#elif defined(__APPLE__)
+   // ====== Query system information via sysctl ============================
+
+   // ------ Query hw.memsize -----------------------------------------------
+   int64_t memSize;
+   size_t len = sizeof(memSize);
+   if(sysctlbyname("hw.memsize", &memSize, &len, NULL, 0) == 0) {
+      memoryTotal = (unsigned long long)memSize;
+   }
+
+   // ------ Query memory statistics ----------------------------------------
+   mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+   vm_statistics64_data_t memoryStatistics;
+   vm_size_t              pageSize;
+   host_page_size(mach_host_self(), &pageSize);
+   if(host_statistics64(mach_host_self(), HOST_VM_INFO64,
+                        (host_info64_t)&memoryStatistics, &count) == KERN_SUCCESS) {
+      const unsigned long long free        = (unsigned long long)memoryStatistics.free_count * pageSize;
+      const unsigned long long inactive    = (unsigned long long)memoryStatistics.inactive_count * pageSize;
+      const unsigned long long speculative = (unsigned long long)memoryStatistics.speculative_count * pageSize;
+
+      memoryAvailable = free + inactive + speculative;
+      memoryUsed      = memoryTotal - memoryAvailable;
+   }
+
+   // ------ Query swap usage -----------------------------------------------
+   struct xsw_usage swapUsageStatistics;
+   size_t swapUsageStatisticsSize = sizeof(swapUsageStatistics);
+   if(sysctlbyname("vm.swapusage", &swapUsageStatistics, &swapUsageStatisticsSize, nullptr, 0) == 0) {
+      swapTotal     = swapUsageStatistics.xsu_total;
+      swapUsed      = swapUsageStatistics.xsu_used;
+      swapAvailable = swapUsageStatistics.xsu_avail;
+   }
+
+#else
+#error Missing case!
 #endif
 
    printf("system_mem_total=%llu\n", memoryTotal);
@@ -550,27 +762,43 @@ static void showMemoryInformation()
 }
 
 
-// ###### Print disk information ############################################
-static void showDiskInformation()
+// ###### Obtain disk usage statistics ######################################
+static bool obtainDiskUsage(const char* mountPoint, const char* label)
 {
-   char         buffer[64];
-   unsigned int value;
+   // ====== Obtain file system status of mount point =======================
+   struct statvfs status;
+   if(statvfs(mountPoint, &status) != 0) {
+      return false;
+   }
 
-   if( (queryPipe("env LANGUAGE=en df -hT / | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
-                  (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("disk_root_pct=%1.1f\n", (double)value);
-   }
-   if( (queryPipe("env LANGUAGE=en df -hT /home | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
-                  (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("disk_home_pct=%1.1f\n", (double)value);
-   }
-   if( (queryPipe("env LANGUAGE=en df -hT /tmp | grep -vE '^Filesystem|shm' | awk '{ print $6 }' | tr -d '%'",
-                  (char*)&buffer, sizeof(buffer))) &&
-       (sscanf(buffer, "%u", &value) == 1) ) {
-      printf("disk_tmp_pct=%1.1f\n", (double)value);
-   }
+   // ====== Compute the size statistics ====================================
+   // Computations according to "df" command's output:
+   const unsigned long long totalSpace =
+      (unsigned long long)status.f_blocks * (unsigned long long)status.f_frsize;
+   const unsigned long long availableSpace =   /* available for user */
+      (unsigned long long)status.f_bavail * (unsigned long long)status.f_frsize;
+   const unsigned long long freeSpace =   /* actual free space */
+      (unsigned long long)status.f_bfree * (unsigned long long)status.f_frsize;
+   const unsigned long long usedSpace = totalSpace - freeSpace;
+   const double usagePercentage = (totalSpace > 0) ?
+      (100.0 * (double)(totalSpace - availableSpace) / (double)totalSpace) : 0.0;
+
+   // ====== Print the results ==============================================
+   printf("disk_%s_total=%llu\n",     label, totalSpace);
+   printf("disk_%s_used=%llu\n",      label, usedSpace);
+   printf("disk_%s_available=%llu\n", label, availableSpace);
+   printf("disk_%s_pct=%1.3f\n",      label, usagePercentage);
+   return true;
+}
+
+
+// ###### Print disk information ############################################
+static void showDiskInformation(void)
+{
+   obtainDiskUsage("/",     "root");
+   obtainDiskUsage("/home", "home");
+   obtainDiskUsage("/tmp",  "tmp");
+   // obtainDiskUsage("/boot/efi", "efi");
    fputs("disk_list=\"root home tmp\"\n", stdout);
 }
 
@@ -585,11 +813,12 @@ static void showNetworkInformation(const bool filterLocalScope)
       return;
    }
 
-   // ====== Build list of interfaces and their addresses ==================
-   struct interfaceaddress ifaArray[4096];
+   // ====== Build list of interfaces and their addresses ===================
+   struct interfaceaddress ifaArray[1024];
    unsigned int n = 0;
    for(struct ifaddrs* ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
       if(ifa->ifa_addr != nullptr) {
+         // ====== IP address ===============================================
          if( (ifa->ifa_addr->sa_family == AF_INET6) ||
              (ifa->ifa_addr->sa_family == AF_INET) ) {
             if(n >= (sizeof(ifaArray) / sizeof(ifaArray[0]))) {
@@ -603,32 +832,47 @@ static void showNetworkInformation(const bool filterLocalScope)
                      (IN6_IS_ADDR_LINKLOCAL(&((const struct sockaddr_in6*)ifa->ifa_addr)->sin6_addr)) ) ) {
                   continue;
                }
-               const uint8_t* netmask =
-                  (const uint8_t*)&((const struct sockaddr_in6*)ifa->ifa_netmask)->sin6_addr.s6_addr;
-               ifaArray[n].prefixlen = countSetBits(netmask, 16);
+               if(__builtin_expect(ifa->ifa_netmask != nullptr, 1)) {
+                  const uint8_t* netmask =
+                     (const uint8_t*)&((const struct sockaddr_in6*)ifa->ifa_netmask)->sin6_addr.s6_addr;
+                  ifaArray[n].prefixlen = countSetBits(netmask, 16);
+               }
+               else {
+                  ifaArray[n].prefixlen = 128;
+               }
             }
             else {
                if( filterLocalScope &&
                    (ntohl( ((const struct sockaddr_in*)ifa->ifa_addr)->sin_addr.s_addr) == INADDR_LOOPBACK) ) {
                   continue;
                }
-               const uint8_t* netmask =
-                  (const uint8_t*)&((const struct sockaddr_in*)ifa->ifa_netmask)->sin_addr;
-               ifaArray[n].prefixlen = countSetBits(netmask, 4);
+               if(__builtin_expect(ifa->ifa_netmask != nullptr, 1)) {
+                  const uint8_t* netmask =
+                     (const uint8_t*)&((const struct sockaddr_in*)ifa->ifa_netmask)->sin_addr;
+                  ifaArray[n].prefixlen = countSetBits(netmask, 4);
+               }
+               else {
+                  ifaArray[n].prefixlen = 32;
+               }
             }
             ifaArray[n].ifname    = ifa->ifa_name;
             ifaArray[n].address   = ifa->ifa_addr;
             ifaArray[n].flags     = ifa->ifa_flags;
             n++;
          }
-#if defined(__linux)
+
+         // ====== MAC address ==============================================
+#if defined(__linux__)
          else if(ifa->ifa_addr->sa_family == AF_PACKET) {
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__APPLE__)
          else if(ifa->ifa_addr->sa_family == AF_LINK) {
+#else
+#error Missing case!
 #endif
-            ifaArray[n].ifname  = ifa->ifa_name;
-            ifaArray[n].address = ifa->ifa_addr;
-            ifaArray[n].flags   = ifa->ifa_flags;
+            ifaArray[n].prefixlen = 0;   // Just to be sure ...
+            ifaArray[n].ifname    = ifa->ifa_name;
+            ifaArray[n].address   = ifa->ifa_addr;
+            ifaArray[n].flags     = ifa->ifa_flags;
             n++;
          }
       }
@@ -663,10 +907,12 @@ static void showNetworkInformation(const bool filterLocalScope)
             case AF_INET:
                printf("netif_%u_ipv4=\"", ifIndex);
              break;
-#if defined(__linux)
+#if defined(__linux__)
             case AF_PACKET:
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__APPLE__)
             case AF_LINK:
+#else
+#error Missing case!
 #endif
                printf("netif_%u_mac=\"", ifIndex);
              break;
@@ -683,7 +929,9 @@ static void showNetworkInformation(const bool filterLocalScope)
       lastIfIndex = ifIndex;
       lastFamily  = ifaArray[i].address->sa_family;
    }
-   puts("\"");
+   if(n > 0) {
+      puts("\"");
+   }
 
    // ====== Print interfaces list ==========================================
    lastIfIndex = 0;
@@ -708,7 +956,7 @@ static void showNetworkInformation(const bool filterLocalScope)
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
 #endif
-static void version()
+static void version(void)
 {
    printf("get-system-info %s\n", SYSTEMTOOLS_VERSION);
    exit(0);
@@ -721,7 +969,7 @@ static void version()
 #endif
 static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "Usage: %s [-h|--help] [-v|--version]\n", program);
+   fprintf(stderr, "Usage: %s [-h|--help] [-v|--version] [-c|--compatibility version]\n", program);
    exit(exitCode);
 }
 
@@ -730,30 +978,47 @@ static void usage(const char* program, const int exitCode)
 // ###### Main program ######################################################
 int main(int argc, char** argv)
 {
+   unsigned int compatibilityVersion = COMPATIBILITY_VERSION;
+
    // ====== Initialise locale support ======================================
    if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
 
    // ====== Handle arguments ===============================================
-   const static struct option long_options[] = {
-      { "help",    no_argument, 0, 'h' },
-      { "version", no_argument, 0, 'v' },
-      {  nullptr,  0,           0, 0   }
+   static const struct option long_options[] = {
+      { "help",          no_argument,       0, 'h' },
+      { "version",       no_argument,       0, 'v' },
+      { "compatibility", required_argument, 0, 'c' },
+      {  nullptr,        0,                 0, 0   }
    };
 
-   int option;
-   int longIndex;
-   while( (option = getopt_long(argc, argv, "hv", long_options, &longIndex)) != -1 ) {
+   int          option;
+   int          longIndex;
+   while( (option = getopt_long(argc, argv, "hvc:", long_options, &longIndex)) != -1 ) {
       switch(option) {
+         case 'c':
+            compatibilityVersion = atoll(optarg);
+            if(compatibilityVersion > COMPATIBILITY_VERSION) {
+               fprintf(stderr, "ERROR: Requested compatibility version %u > available version %u!\n",
+                       compatibilityVersion, COMPATIBILITY_VERSION);
+               return 1;
+            }
+          break;
          case 'v':
             version();
           break;
          case 'h':
-            usage(argv[0], 0);
+         case '?':
+            // Exit with 0 on h/help, exit with 1 on '?' (unknown option):
+            usage(argv[0], (option == 'h') ? 0 : 1);
+          break;
+         case '-':
           break;
          default:
-            fprintf(stderr, "ERROR: Invalid argument %s!", argv[optind - 1]);
+            // This should not happen: wrong getopt parameters, or missing case?
+            fprintf(stderr, "INTERNAL ERROR: Unhandled option c=%c code=%x!\n",
+                    (isprint(option) ? (char)option : ' '), option);
             return 1;
           break;
       }
@@ -763,6 +1028,7 @@ int main(int argc, char** argv)
    }
 
    // ====== Show system information in machine-readable form ===============
+   printf("compatibility=%u\n", compatibilityVersion);
    showHostnameInformation();
    showUptimeInformation();
    showKernelInformation();

@@ -28,20 +28,18 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
+.Dd May 9, 2026
 .Dt pem2der 1
 .Os pem2der
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm pem2der
-.Nd Convert a certificate or CRL from PEM to DER format
+.Nd converts a certificate or CRL from PEM to DER format
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm pem2der
-pem_file
-der_file
+.Nm pem2der Ar pem\_file Ar der\_file
 .Nm pem2der
 .Op Fl h | Fl Fl help
 .Nm pem2der
@@ -55,22 +53,44 @@ converts a given certificate or CRL file from PEM to DER format.
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It pem_file
+.It Ar pem\_file
 The certificate or CRL file in PEM format to be converted.
-.It der_file
+.It Ar der\_file
 The certificate or CRL file in DER format to be written.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It pem2der my-server-certificate.crt my-server-certificate.der
-.It pem2der my-crl.crl my-crl.der
-.It pem2der --help
-.It pem2der -h
-.It pem2der --version
-.It pem2der -v
+.It pem2der my\-server\-certificate.crt my\-server\-certificate.der
+.It pem2der my\-crl.crl my\-crl.der
+.It pem2der \-\-help
+.It pem2der \-h
+.It pem2der \-\-version
+.It pem2der \-v
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr check\-certificate 1 ,
+.Xr der2pem 1 ,
+.Xr extract\-pem 1 ,
+.Xr test\-tls\-connection 1 ,
+.Xr view\-certificate 1 ,
+.Xr view\-crl 1 ,
+.Xr openssl 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

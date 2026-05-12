@@ -51,7 +51,15 @@ version () {
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
-GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
+   echo "ERROR: Bash 4.4 or higher is required, but Bash ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]} is installed!"
+   exit 1
+fi
+GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
+if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+   echo >&2 "ERROR: Enhanced/GNU getopt is required!"
+   exit 1
+fi
 options="$(${GETOPT} -o hv --long help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
@@ -63,27 +71,38 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -h | --help)
          usage 0
-         # shift
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled option $1!"
+         exit 1
+         ;;
   esac
+  shift
 done
 if [ $# -ne 2 ] ; then
    usage 1
 fi
 
+INPUT="$1"
+if [ ! -e "${INPUT}" ] ; then
+   echo >&2 "ERROR: PEM file ${INPUT} does not exist!"
+   exit 1
+fi
+OUTPUT="$2"
+
 TYPE="x509"
 # Check whether type is CRL, by extension or using "file":
 if [[ "$(basename "${INPUT}")" =~ \.[Cc][Rr][Ll]$ ]] ; then
    TYPE="crl"
-elif [ "$(file -b "${INPUT}")" == "ASCII text" ] ; then
+elif grep -q "BEGIN X509 CRL" "${INPUT}" ; then
    TYPE="crl"
 fi
 

@@ -10,7 +10,7 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# X.509 Certificate Checker
+# PEM File Extractor
 # Copyright (C) 2025-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -50,13 +50,13 @@ _extract_pem ()
       cword="${COMP_CWORD}"
    fi
 
-   if [ "${cword}" -le 1 ] ; then
+   if [[ "${cur}" != -* ]] ; then
       _filedir '@(cert|crt|crl|pem)'
       return
    fi
 
    case "${prev}" in
-      #  ====== Special case: CRL file ======================================
+      #  ====== Special case: output file prefix ============================
       -o | --output-prefix)
          _filedir
          return
@@ -77,6 +77,8 @@ _extract_pem ()
 --quiet
 -h
 --help
+-v
+--version
 "
    mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
    return 0

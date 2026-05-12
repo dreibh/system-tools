@@ -42,7 +42,7 @@ export TEXTDOMAIN="System-Maintenance"
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   echo 2>&1 "$(gettext "Usage:") $0 [-k|--interactive-kernel-removal] [-h|--help] [-v|--version]"
+   echo >&2 "$(gettext "Usage:") $0 [-k|--interactive-kernel-removal] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
 
@@ -58,7 +58,15 @@ version () {
 # ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
-GETOPT="$(PATH=/usr/local/bin:${PATH} which getopt)"
+if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
+   echo "ERROR: Bash 4.4 or higher is required, but Bash ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]} is installed!"
+   exit 1
+fi
+GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
+if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+   echo >&2 "ERROR: Enhanced/GNU getopt is required!"
+   exit 1
+fi
 options="$(${GETOPT} -o khv --long interactive-kernel-removal,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
@@ -71,30 +79,28 @@ while [ $# -gt 0 ] ; do
    case "$1" in
       -k | --interactive-kernel-removal)
          INTERACTIVE_KERNEL_REMOVAL=1
-         shift
          ;;
       -h | --help)
          usage 0
-         # shift
          ;;
       -v | --version)
          version
-         # shift
          ;;
       --)
          shift
          break
          ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled option $1!"
+         exit 1
+         ;;
   esac
+  shift
 done
 if [ $# -ne 0 ] ; then
    usage 1
 fi
-
-fullPackageList=""
-packageVersionsFile=""
-trap 'echo ; echo "Aborted." ; rm -f "${fullPackageList}" "${packageVersionsFile}" ; exit' INT
-trap 'rm -f "${fullPackageList}" "${packageVersionsFile}"' EXIT TERM HUP
 
 # ====== Find distribution variant ==========================================
 if [ ! -e /etc/os-release ] ; then
@@ -110,12 +116,20 @@ if [ -e /etc/init.d/autofs ] ; then
    sudo service autofs stop >/dev/null 2>&1 || true
 fi
 
+# ====== Temporary file handling ============================================
+fullPackageList=""
+packageVersionsFile=""
+installOutputFile=""
+trap 'echo ; echo "Aborted." ; rm -f "${installOutputFile}" "${fullPackageList}" "${packageVersionsFile}" ; exit' INT
+trap 'rm -f "${installOutputFile}" "${fullPackageList}" "${packageVersionsFile}"' EXIT TERM HUP
+
+installOutputFile="$(mktemp -t SystemMaintenance.install.XXXXXXXXXX.log)"
+
 # ====== dpkg package fixes =================================================
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Applying package fixes, if necessary ...")\x1b[0m"
-   sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+   sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 fi
 
 # ====== Update package repositories ========================================
@@ -126,8 +140,11 @@ elif [ "${ID}" == "freebsd" ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating package repositories ...")\x1b[0m"
    sudo env PAGER=cat freebsd-update fetch || true
    sudo env ASSUME_ALWAYS_YES=yes pkg-static update
-   if [ -x /usr/sbin/portsnap ] ; then
-      sudo /usr/sbin/portsnap -I fetch
+   if [ -x /usr/ports/.git ] ; then
+      pushd /usr/ports >/dev/null
+      git fetch --all
+      git pull
+      popd >/dev/null
    fi
 fi
 
@@ -135,63 +152,58 @@ fi
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing missing dependencies, if necessary ...")\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 fi
 
-# ====== system update ======================================================
+# ====== Install updates ====================================================
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing updates ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
-   # ------ Download --------------------------------------
+   # ------ Download --------------------------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -yd -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
-   wait
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee "${installOutputFile}"
 
-   # ------ Update special packages -----------------------
-   for package in nornet-server nornet-tunnelbox ; do
-      if dpkg -l $package >/dev/null 2>&1 ; then
-         if [ "$(find /var/cache/apt/archives/ -name "$package*.deb")" != "" ] ; then
-            echo "Updating $package package ..."
-            # Do not restart the service on update, in order to avoid
-            # unnecessary downtime. Needs a manual restart, if necessary!
-            (
-               echo "#!/bin/sh"
-               echo "exit 101"
-            ) | sudo tee /usr/sbin/policy-rc.d >/dev/null
-            sudo chmod +x /usr/sbin/policy-rc.d
-            sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
-               -o APT::Get::Always-Include-Phased-Updates=true \
-               -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-              $package -y -q 2>&1 | sudo tee /tmp/install.log &
-            wait
-            echo "Updated $package package."
-         fi
-      fi
-   done
+   # ------ Update special packages -----------------------------------------
+   # NOTE: This block is likely obsolete, and therefore commented out!
+   # for package in nornet-server nornet-tunnelbox ; do
+   #    if dpkg -l ${package} >/dev/null 2>&1 ; then
+   #       if [ "$(find /var/cache/apt/archives/ -name "${package}*.deb")" != "" ] ; then
+   #          echo "Updating ${package} package ..."
+   #          # Do not restart the service on update, in order to avoid
+   #          # unnecessary downtime. Then, a manual restart can be made.
+   #          (
+   #             echo "#!/bin/sh"
+   #             echo "exit 101"
+   #          ) | sudo tee /usr/sbin/policy-rc.d >/dev/null
+   #          sudo chmod +x /usr/sbin/policy-rc.d
+   #          sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
+   #             -o APT::Get::Always-Include-Phased-Updates=true \
+   #             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
+   #            ${package} -y -q 2>&1 | sudo tee "${installOutputFile}"
+   #          echo "Updated ${package} package."
+   #       fi
+   #    fi
+   # done
+   #
+   # # Ensure to remove modified policy-rc.d!
+   # sudo rm -f /usr/sbin/policy-rc.d
 
-   # Ensure to remove modified policy-rc.d!
-   sudo rm -f /usr/sbin/policy-rc.d
-
-   # ------ Update the rest -------------------------------
+   # ------ Update the rest -------------------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -y -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 elif [ "${ID}" == "fedora" ] ; then
-   ( sudo dnf clean all && sudo dnf upgrade -y ) | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+   ( sudo dnf clean all && sudo dnf upgrade -y ) | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 elif [ "${ID}" == "freebsd" ] ; then
    ( sudo freebsd-update install ; sudo env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y
      if [ -x /usr/sbin/portsnap ] ; then
         sudo /usr/sbin/portsnap -I update
      fi
-   ) | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+   ) | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 fi
 
 # ====== Auto-remove ========================================================
@@ -199,15 +211,13 @@ echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Cleaning up ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ------ Remove unnecessary dependencies ---------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -q \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 
    # ------ Purge all previously-removed packages ---------
    dpkg --get-selections | awk '$2=="deinstall" { print $1 }' | xargs --no-run-if-empty sudo DEBIAN_FRONTEND=noninteractive apt-get purge -y \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 
    # ------ Clean up the package cache --------------------
    sudo DEBIAN_FRONTEND=noninteractive apt-get clean
@@ -217,9 +227,8 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
       find /var/crash/ -name "*.crash" -exec sudo rm -f {} \;
    fi
 elif [ "${ID}" == "fedora" ] ; then
-   sudo DEBIAN_FRONTEND=noninteractive nohup dnf autoremove -y 2>&1 | sudo tee /tmp/install.log &
-   wait
-   cat /tmp/install.log
+   sudo DEBIAN_FRONTEND=noninteractive nohup dnf autoremove -y 2>&1 | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
    sudo dnf clean all
 elif [ "${ID}" == "freebsd" ] ; then
    sudo env ASSUME_ALWAYS_YES=yes pkg-static autoremove -y
@@ -279,7 +288,9 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
       linux-image-extra-virtual
 "
 
-   toBeRemoved=$(
+   # Create a list of packages to be removed. Packets to keep get a "+"
+   # suffix, so apt-get ensures to keep them:
+   toBeRemoved="$(
       while read -r line ; do
          mayBeRemoved=0
          for packageToRemove in ${packagesToRemove} ; do
@@ -304,11 +315,11 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
             fi
         fi
       done <"${packageVersionsFile}"
-   )
+   )"
 
    rm -f "${packageVersionsFile}"
 
-   if [ "$(echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$")" != "" ] ; then
+   if [ "$(echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$" || true)" != "" ] ; then
 
       echo -e "$(gettext "To be removed:")\x1b[31m"
       echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$" || true
@@ -321,9 +332,8 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
          # shellcheck disable=SC2086
          sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -qq --purge \
             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-            ${toBeRemoved} 2>&1 | sudo tee /tmp/install.log &
-         wait
-         cat /tmp/install.log
+            ${toBeRemoved} 2>&1 | sudo tee "${installOutputFile}"
+         cat "${installOutputFile}"
       else
          # shellcheck disable=SC2086
          sudo apt-get autoremove --purge \
@@ -336,28 +346,31 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    fi
 fi
 
+rm -f "${installOutputFile}"
+
 # ====== Refresh snaps ======================================================
-if [ -x /usr/bin/snap ] ; then
+if command -v snap >/dev/null ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Refreshing snaps ...")\x1b[0m"
-   sudo /usr/bin/snap refresh || true
+   sudo snap refresh || true
 fi
 
 # ====== Firmware updates ===================================================
-if [ -x /usr/bin/fwupdmgr ] ; then
+if command -v fwupdmgr >/dev/null ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Checking for firmware updates ...")\x1b[0m"
-   sudo /usr/bin/fwupdmgr update || true
+   sudo fwupdmgr refresh || true
+   sudo fwupdmgr update  || true
 fi
 
 # ====== apt-file cache update ==============================================
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating caches ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
-   if [ -x /usr/bin/apt-file ] ; then
-      sudo /usr/bin/apt-file update >/dev/null
+   if command -v apt-file >/dev/null ; then
+      sudo apt-file update >/dev/null
       sudo apt-show-versions -i
    fi
 fi
 if [ "${ID}" != "freebsd" ] ; then
-   if [ -x /usr/bin/updatedb ] ; then
+   if command -v updatedb >/dev/null ; then
       sudo updatedb
    fi
 else
@@ -374,26 +387,55 @@ if [ -e /etc/init.d/autofs ] ; then
 fi
 
 # ====== Fix time ===========================================================
-if [ -x /usr/sbin/ntpdate ] ; then
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Synchronising system time ...")\x1b[0m"
-   if [ -e /etc/ntp.conf ] ; then
-      for ntpServiceName in ntp ntpd ; do
-         sudo service ${ntpServiceName} stop >/dev/null 2>&1 || true
-      done
+echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Synchronising system time ...")\x1b[0m"
+
+# Sychronise time from a reliable NTP servers:
+# 1. Try Universitetet i Oslo (UiO) NTP servers.
+# 2. Try Physikalisch-Technische Bundesanstalt (PTB) NTP servers.
+# 3. Try ISC NTP server (clock.isc.org).
+# 4. Try Microsoft as last resort, which is likely allowed in a firewall.
+NTP_SERVERS=(
+   "ntp2.uio.no"
+   "ntp1.uio.no"
+   "ntp2.ptb.de"
+   "ntp1.ptb.de"
+   "clock.isc.org"
+   "time.windows.com"
+)
+
+# ------ Try chronyd (Fedora, RHEL, newer Debian/Ubuntu) --------------------
+updatedTime=0
+if command -v chronyc >/dev/null ; then
+   if sudo chronyc makestep >/dev/null 2>&1 ; then
+      updatedTime=1
    fi
+fi
 
-   # Sychronise time from a reliable NTP server:
-   # 1. Try Universitetet i Oslo (UiO) NTP servers.
-   # 2. Try Physikalisch-Technische Bundesanstalt (PTB) NTP servers.
-   # 3. Try ISC NTP server (clock.isc.org).
-   # 4. Try Microsoft as last resort, which is likely allowed in a firewall.
-   sudo ntpdate ntp2.uio.no || sudo ntpdate ntp1.uio.no || \
-      sudo ntpdate ntp2.ptb.de || sudo ntpdate ntp1.ptb.de || \
-      sudo ntpdate clock.isc.org || \
-      sudo ntpdate time.windows.com || \
-      true
+# ------ Try systemd-timesyncd (modern Debian/Ubuntu) -----------------------
+if [ ${updatedTime} -eq 0 ] && command -v timedatectl >/dev/null ; then
+   if sudo timedatectl set-ntp false && sudo timedatectl set-ntp true >/dev/null 2>&1 ; then
+      updatedTime=1
+   fi
+fi
 
-   # Write time to hardware clock
+# ------ Try ntpdate (FreeBSD) ----------------------------------------------
+if [ ${updatedTime} -eq 0 ] && command -v ntpdate >/dev/null ; then
+   for ntpServiceName in ntpd ntp ; do
+      sudo service ${ntpServiceName} stop >/dev/null 2>&1 || true
+   done
+   for server in "${NTP_SERVERS[@]}" ; do
+      if sudo ntpdate "${server}" ; then
+         updatedTime=1
+         break
+      fi
+   done
+   for ntpServiceName in ntpd ntp ; do
+      sudo service ${ntpServiceName} start >/dev/null 2>&1 || true
+   done
+fi
+
+# ------ Write updated time to hardware clock -------------------------------
+if [ ${updatedTime} -eq 0 ] ; then
    if [ "${ID}" != "freebsd" ] ; then
       if [ -x /usr/sbin/hwclock ] ; then
          sudo hwclock -w
@@ -401,20 +443,14 @@ if [ -x /usr/sbin/ntpdate ] ; then
    else
       sudo date -v +0S
    fi
-
-   if [ -e /etc/ntp.conf ] ; then
-      for ntpServiceName in ntp ntpd ; do
-         sudo service ${ntpServiceName} start >/dev/null 2>&1 || true
-      done
-   fi
 fi
 
 # ====== SSD trimming =======================================================
-if [ -x /sbin/fstrim ] || [ -x /usr/sbin/fstrim ] ; then
+if command -v fstrim >/dev/null ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Running fstrim ...")\x1b[0m"
    sudo fstrim -a -v 2>/dev/null || ( sudo fstrim -v / && sudo fstrim -v /home ) || true
 fi
-if [ -x /sbin/zpool ] || [ -x /usr/sbin/zpool ] ; then
+if command -v zpool >/dev/null ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Running zpool trim ...")\x1b[0m"
    zpools=$(zpool list -H | cut -f1)
    for zpool in ${zpools} ; do
@@ -427,18 +463,21 @@ fi
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Done!")\x1b[0m"
 
 # ====== Finally, show project package versions =============================
-filterScripts=""
+filterScripts=()
 for directory in /etc/system-maintenance.d /usr/local/etc/system-maintenance.d ; do
-   if [ -d ${directory} ] ; then
-      filterScripts=$(find ${directory} -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" | sort)
+   if [ -d "${directory}" ] ; then
+      while IFS= read -r -d "" scriptPath ; do
+         filterScripts+=( "${scriptPath}" )
+      done < <(find "${directory}" -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" -print0 | sort -z)
    fi
 done
-if [ "${filterScripts}" != "" ] ; then
+
+if [ ${#filterScripts[@]} -gt 0 ] ; then
    fullPackageList="$(mktemp -t SystemMaintenance.XXXXXXXXXX.out)"
 
    if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
-      if [ -x /usr/bin/apt-show-versions ] ; then
-         /usr/bin/apt-show-versions | grep -v "not installed$" >"${fullPackageList}" || true
+      if command -v apt-show-versions >/dev/null ; then
+         apt-show-versions | grep -v "not installed$" >"${fullPackageList}" || true
       fi
    elif [ "${ID}" == "fedora" ] ; then
       rpm -qa | sort >"${fullPackageList}" || true
@@ -447,8 +486,8 @@ if [ "${filterScripts}" != "" ] ; then
    fi
 
    if [ -e "${fullPackageList}" ] ; then
-      for filterScript in ${filterScripts} ; do
-         ${filterScript} "${fullPackageList}"
+      for filterScript in "${filterScripts[@]}" ; do
+         "${filterScript}" "${fullPackageList}"
       done
       rm -f "${fullPackageList}"
       echo "=============================================================================="

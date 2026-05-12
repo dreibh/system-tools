@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+MIN_DELAY=2.0
+MAX_DELAY=16.0
+MAX_TRIALS=16
+ADDITIVE_INCREASE=0.0
+MULTIPLICATIVE_INCREASE=1.25
+TRUNCATE_DELAY=4096
+
+
+read -r minDelay maxDelay <<<"$(awk "\
+function min(a, b) { return (a < b ? a : b); }
+function max(a, b) { return (a > b ? a : b); }
+BEGIN {
+   minDelay=min(${MIN_DELAY}, ${MAX_DELAY});
+   maxDelay=max(${MIN_DELAY}, ${MAX_DELAY});
+   printf(\"%g %g\n\", minDelay, maxDelay);
+}
+"
+)"
+
+
+trial=0
+while true ; do
+   # ====== Start next trial ================================================
+   trial=$(( trial+1 ))
+   if [ ${trial} -ge "${MAX_TRIALS}" ] ; then
+      break
+   fi
+
+   read -r minDelay maxDelay <<<"$(awk "\
+function min(a, b) { return (a < b ? a : b); }
+function max(a, b) { return (a > b ? a : b); }
+BEGIN {
+   minDelay=min(${minDelay}, ${maxDelay});
+   maxDelay=max(${minDelay}, ${maxDelay});
+   additiveIncrease=${ADDITIVE_INCREASE};
+   multiplicativeIncrease=${MULTIPLICATIVE_INCREASE};
+   minDelayBoundary=${MIN_DELAY};
+   maxDelayBoundary=${TRUNCATE_DELAY};
+
+   newMinDelay=max(min(minDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
+   newMaxDelay=max(min(maxDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
+   printf(\"%g %g\n\", min(newMinDelay, newMaxDelay),max(newMinDelay, newMaxDelay));
+}
+"
+   )"
+
+   echo "$trial: $minDelay, $maxDelay"
+done

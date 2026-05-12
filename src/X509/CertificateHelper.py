@@ -91,7 +91,7 @@ def execute(command : str, mayFail : bool = False) -> int:
 
 # ###### Make "subjectAltName" string #######################################
 RE_USEREMAIL : Final[re.Pattern[str]] = \
-   re.compile(r'^(.*)( <)([a-zA-Z0–9. _%+-]+@[a-zA-Z0–9. -]+\.[a-zA-Z]{2,})(>)$')
+   re.compile(r'^(.*)( <)([a-zA-Z0-9. _%+-]+@[a-zA-Z0-9. -]+\.[a-zA-Z]{2,})(>)$')
 def prepareSubjectAltName(certType : CertificateType,
                           name     : str,
                           hint     : str | None) -> tuple[str,str]:

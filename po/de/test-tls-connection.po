@@ -27,13 +27,12 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-04-25 13:54+0200\n"
-"PO-Revision-Date: 2025-10-28 12:45+0100\n"
+"POT-Creation-Date: 2026-05-09 14:47+0200\n"
+"PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
 "Language: de\n"
@@ -48,12 +47,12 @@ msgstr ""
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/X509/test-tls-connection:107
+#: src/X509/test-tls-connection:120
 #, sh-format
 msgid "ERROR: Unable to find CA certificate file ${CA_FILE}!"
 msgstr "FEHLER: CA-Zertifikatsdatei ${CA_FILE} wurde nicht gefunden!"
 
-#: src/X509/test-tls-connection:113
+#: src/X509/test-tls-connection:126
 #, sh-format
 msgid "Connecting to ${ENDPOINT} ..."
 msgstr "Verbindung zu ${ENDPOINT} wird hergestellt ..."

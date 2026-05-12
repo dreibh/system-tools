@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [ $# -ne 1 ] ; then
+   echo >&2 "Usage: $0 destination_directory"
+   exit 1
+fi
+destinationDirectory="$1"
+
+find . -maxdepth 1 -name "*.versioned" | while read -r name ; do
+   script="$(basename "${name/.versioned/}")"
+   cp "${name}" "${destinationDirectory}/${script}"
+done
