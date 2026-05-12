@@ -52,6 +52,7 @@ SET(gimpSimpleScripts
 
 FOREACH(script IN LISTS gimpScripts)
    CONFIGURE_FILE(${script} ${script}.versioned @ONLY)
+   SET_PROPERTY(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES ${script}.versioned)
    INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/${script}.versioned
            DESTINATION ${CMAKE_INSTALL_BINDIR}
            RENAME      ${script})
@@ -63,6 +64,7 @@ ENDFOREACH()
 
 FOREACH(script IN LISTS gimpSimpleScripts)
    CONFIGURE_FILE(${script} ${script}.versioned @ONLY)
+   SET_PROPERTY(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES ${script}.versioned)
    INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/${script}.versioned
            DESTINATION ${CMAKE_INSTALL_BINDIR}
            RENAME      ${script})
