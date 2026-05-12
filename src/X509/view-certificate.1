@@ -28,28 +28,27 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd April 24, 2026
-.Dt view-certificate 1
-.Os view-certificate
+.Dd May 9, 2026
+.Dt view\-certificate 1
+.Os view\-certificate
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm view-certificate
-.Nd Displays an X.509 certificate in PEM or DER format
+.Nm view\-certificate
+.Nd displays important details of an X.509 certificate in PEM or DER format
 .\" ###### Synopsis #########################################################
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm view-certificate
-certificate_file
+.Nm view\-certificate Ar certificate\_file
 .Op ...
-.Nm view-certificate
+.Nm view\-certificate
 .Op Fl h | Fl Fl help
-.Nm view-certificate
+.Nm view\-certificate
 .Op Fl v | Fl Fl version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-.Nm view-certificate
-displays important details on an X.509 certificate, including:
+.Nm view\-certificate
+displays important details of an X.509 certificate in PEM or DER format, including:
 .Bl -tag -width indent
 .It * Common Name (CN),
 .It * Validity Range,
@@ -64,22 +63,46 @@ displays important details on an X.509 certificate, including:
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It certificate_file [...]
-Specifies one ore more certificate files to be displayed. "-" is a shortcut for /dev/stdin, i.e. reading the certificate from standard input.
+.It Ar certificate\_file ...
+Specifies one or more certificate files to be displayed. "\-" is a shortcut for
+.Pa /dev/stdin ,
+i.e. reading the certificate from standard input.
 .It Fl h | Fl Fl help
-Prints the program's command-line parameters and exits.
+Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
-.It view-certificate My-CA-Certificate.crt My-Server-Certificate.crt
-.It view-certificate /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt
-.It cat /usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt | view-certificate -
-.It view-certificate www-nntb-no-chain.pem
-.It view-certificate --help
-.It view-certificate -h
-.It view-certificate --version
-.It view-certificate -v
+.It view\-certificate My\-CA\-Certificate.crt My\-Server\-Certificate.crt
+.It view\-certificate /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt
+.It cat /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt | view\-certificate \-
+.It view\-certificate www\-nntb\-no\-chain.pem
+.It view\-certificate \-\-help
+.It view\-certificate \-h
+.It view\-certificate \-\-version
+.It view\-certificate \-v
 .El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr check\-certificate 1 ,
+.Xr der2pem 1 ,
+.Xr extract\-pem 1 ,
+.Xr pem2der 1 ,
+.Xr test\-tls\-connection 1 ,
+.Xr view\-crl 1 ,
+.Xr openssl 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

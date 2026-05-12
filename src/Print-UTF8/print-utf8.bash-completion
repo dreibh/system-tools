@@ -50,26 +50,85 @@ _print_utf8()
       cword="${COMP_CWORD}"
    fi
 
+   # To handle multi-argument parameters:
+   local prev2="" prev3=""
+   [[ ${cword} -ge 2 ]] && prev2="${words[cword-2]}"
+   [[ ${cword} -ge 3 ]] && prev3="${words[cword-3]}"
+
+   # ====== Handle 1st argument =============================================
    case "${prev}" in
-      #  ====== Generic value ===============================================
-      -i | --indent            | \
-      -x | --columns           | \
-      -c | --center            | \
-      -s | --separator         | \
-      -b | --size              | \
-      -l | --length            | \
-      -w | --width             | \
-      -a | --size-length-width)
+      # ====== Special case: terminal columns ===============================
+      -x | --columns)
+         local terminalColumns sortedColumnsList
+         terminalColumns="$(print-utf8 -t | awk '{ print $1 }')"
+         sortedColumnsList="$(printf "%s\n" "${terminalColumns}" 60 78 80 100 120 128 140 160 180 200 | sort -nu)"
+         compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
+         mapfile -t COMPREPLY < <(compgen -W "${sortedColumnsList}" -- "${cur}")
+         return
+         ;;
+
+      # ====== Special case: indentation ====================================
+      -i | --indent | \
+      -I | --multiline-indent)
+         compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
+         mapfile -t COMPREPLY < <(compgen -W "-64 -48 -32 -24 -20 -16 -12 -10 0 10 12 16 20 24 32 48 64" -- "${cur}")
+         return
+         ;;
+
+      # ====== Special case: border decoration ==============================
+      -s | --separator |\
+      -C | --multiline-center)
+         # Left border decorations:
+         local suggestions=("#" "=" "|" "║"   "▌" "▐"   "│" "┃" "┆" "┇" "┊" "┋" "😀")
+         local matches
+         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "${cur}")
+         COMPREPLY=( "${matches[@]@Q}" )
+         return
+         ;;
+   esac
+
+   # ====== Special case: multiline-indent, multiline-center, separator =====
+   # Handle 2nd argument
+   case "${prev2}" in
+      # ====== Special case: border decoration ==============================
+      -I | --multiline-indent | \
+      -C | --multiline-center)
+         # Left (multiline-indent) or right (multiline-center) border decorations:
+         local suggestions=("#" "=" "|" "║"   "▌" "▐"   "│" "┃" "┆" "┇" "┊" "┋" "😀")
+         local matches
+         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "${cur}")
+         COMPREPLY=( "${matches[@]@Q}" )
+         return
+         ;;
+
+      # ====== Generic value ================================================
+      -s | --separator)
+         # Horizontal border decorations:
+         local suggestions=("#" "=" "-" "─" "═"   "▀" "▄"   "━")
+         local matches
+         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "${cur}")
+         COMPREPLY=( "${matches[@]@Q}" )
+         return
+         ;;
+   esac
+
+   # ====== Special case: multiline-indent, separator =======================
+   # Handle 3rd argument
+   case "${prev3}" in
+      # ====== Generic value ================================================
+      -I | --multiline-indent | \
+      -s | --separator)
+         # Right border decorations:
+         local suggestions=("#" "=" "|" "║"   "▌" "▐"   "│" "┃" "┆" "┇" "┊" "┋" "😀")
+         local matches
+         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "${cur}")
+         COMPREPLY=( "${matches[@]@Q}" )
          return
          ;;
    esac
 
    # ====== All options =====================================================
    local opts="
--h
---help
--v
---version
 -n
 --newline
 -i
@@ -78,6 +137,10 @@ _print_utf8()
 --columns
 -c
 --center
+-I
+--multiline-indent
+-C
+--multiline-center
 -s
 --separator
 -b
@@ -90,7 +153,10 @@ _print_utf8()
 --size-length-width
 -t
 --terminal-info
-"
+-h
+--help
+-v
+--version"
    mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
    return 0
 }

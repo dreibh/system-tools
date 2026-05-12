@@ -45,7 +45,7 @@ imageTable=$(find "${imageDirectory}" -name "${imagePrefix}*" | (
 
 
 background=""
-screenResolutions=$(grep "^GRUB_GFXMODE=" /etc/default/grub | sed -e "s/GRUB_GFXMODE=//g" -e "s/[,\"]/ /g")
+screenResolutions=$(grep "^GRUB_GFXMODE=" /etc/default/grub | sed -e "s/GRUB_GFXMODE=//g" -e "s/[,\"]/ /g" || true)
 for screenResolution in ${screenResolutions} 1024x768 ; do
    if [[ "${screenResolution}" =~ ^[0-9]*x[0-9]* ]] ; then
       # shellcheck disable=SC2001

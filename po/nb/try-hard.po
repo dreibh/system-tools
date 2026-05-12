@@ -27,13 +27,12 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-04-25 13:54+0200\n"
-"PO-Revision-Date: 2025-04-26 11:43+0100\n"
+"POT-Creation-Date: 2026-05-09 14:47+0200\n"
+"PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
 "Language: nb\n"
@@ -48,26 +47,32 @@ msgstr ""
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Try-Hard/try-hard:102
+#: src/Try-Hard/try-hard:89 src/Try-Hard/try-hard:99 src/Try-Hard/try-hard:109
+#: src/Try-Hard/try-hard:119 src/Try-Hard/try-hard:164
+#, sh-format
+msgid "ERROR: Invalid delay value ${delayValue}!"
+msgstr "FEIL: Ugyldig forsinkelse ${delayValue}!"
+
+#: src/Try-Hard/try-hard:158
 #, sh-format
 msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
-msgstr "FEIL: Ugyldige maksimale prøveperioder ${MAX_TRIALS}!"
+msgstr "FEIL: Ugyldig maksimalt antall forsøk ${MAX_TRIALS}!"
 
-#: src/Try-Hard/try-hard:107
-#, sh-format
-msgid "ERROR: Invalid delay ${DELAY}!"
-msgstr "FEIL: Ugyldig forsinkelse ${DELAY}!"
+#: src/Try-Hard/try-hard:169
+msgid "ERROR: Cannot find random-sleep in the search path!"
+msgstr "FEIL: Finner ikke random-sleep i søkestien!"
 
-#: src/Try-Hard/try-hard:126
+#: src/Try-Hard/try-hard:207
 #, sh-format
 msgid "Tried ${MAX_TRIALS} times -> giving up now!"
 msgstr "Prøvde ${MAX_TRIALS} ganger -> gir opp nå!"
 
-#: src/Try-Hard/try-hard:131
+#: src/Try-Hard/try-hard:238
 #, sh-format
-msgid "Waiting for ${DELAY} s before trying again ..."
-msgstr "Venter på ${DELAY} s før å prøve igjen ..."
+msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting random time from [${minDelay}, ${maxDelay}] s ..."
+msgstr "Forsøk ${trial}/${MAX_TRIALS} feilet -> venter en tilfeldig tidsperiode mellom [${minDelay}, ${maxDelay}] s før nytt forsøk ..."
 
+#: src/Try-Hard/try-hard:245
 #, sh-format
-#~ msgid "ERROR: Invalid argument ${arg}!"
-#~ msgstr "FEIL: Ugyldig argument ${arg}!"
+msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting for ${maxDelay} s ..."
+msgstr "Forsøk ${trial}/${MAX_TRIALS} feilet -> venter ${maxDelay} s før nytt forsøk ..."

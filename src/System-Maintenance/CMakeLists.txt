@@ -33,6 +33,7 @@
 #############################################################################
 
 CONFIGURE_FILE(System-Maintenance System-Maintenance.versioned @ONLY)
+SET_PROPERTY(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES System-Maintenance.versioned)
 INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/System-Maintenance.versioned
         DESTINATION ${CMAKE_INSTALL_BINDIR}
         RENAME      System-Maintenance)
