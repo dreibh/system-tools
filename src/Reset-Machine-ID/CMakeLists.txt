@@ -33,6 +33,7 @@
 #############################################################################
 
 CONFIGURE_FILE(Reset-Machine-ID Reset-Machine-ID.versioned @ONLY)
+SET_PROPERTY(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES Reset-Machine-ID.versioned)
 INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/Reset-Machine-ID.versioned
         DESTINATION ${CMAKE_INSTALL_BINDIR}
         RENAME      Reset-Machine-ID)

@@ -33,6 +33,7 @@
 #############################################################################
 
 CONFIGURE_FILE(Fingerprint-SSH-Keys Fingerprint-SSH-Keys.versioned @ONLY)
+SET_PROPERTY(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES Fingerprint-SSH-Keys.versioned)
 INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/Fingerprint-SSH-Keys.versioned
         DESTINATION ${CMAKE_INSTALL_BINDIR}
         RENAME      Fingerprint-SSH-Keys)

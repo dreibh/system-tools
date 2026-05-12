@@ -46,9 +46,9 @@ If one of the scripts exits with a non-zero exit code, the processing of further
 
 Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-helper) library provided by System-Info:
 
-<table summary="System-Info Banner Examples">
+<table summary="System-Info Banner Examples" style="table-layout: fixed; width: 100%;">
   <tr>
-    <td style="vertical-align: center;">
+    <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/System-Info/figures/01-example.webp">
         <img alt="" src="src/System-Info/figures/01-example.webp" width="100%" height="100%" />
@@ -57,7 +57,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
       The default example.
       </p>
     </td>
-    <td style="vertical-align: center;">
+    <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/System-Info/figures/09-hostname-example.webp">
         <img alt="" src="src/System-Info/figures/09-hostname-example.webp" width="100%" height="100%" />
@@ -66,7 +66,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
       Dynamically showing the hostname of the machine.
      </p>
     </td>
-    <td style="vertical-align: center;">
+    <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/System-Info/figures/10-company-logo-example.webp">
         <img alt="" src="src/System-Info/figures/10-company-logo-example.webp" width="100%" height="100%" />
@@ -77,7 +77,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
     </td>
   </tr>
   <tr>
-    <td style="vertical-align: center;">
+    <td style="vertical-align: middle;">
      <p align="center">
       <a href="src/System-Info/figures/10-nornet.webp">
         <img alt="" src="src/System-Info/figures/10-nornet.webp" width="100%" height="100%" />
@@ -86,7 +86,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
       A <a href="https://www.nntb.no/">NorNet</a> project branding.
      </p>
     </td>
-    <td style="vertical-align: center;">
+    <td style="vertical-align: middle;">
      <p align="center">
       <a href="src/System-Info/figures/18-neat.webp">
         <img alt="" src="src/System-Info/figures/18-neat.webp" width="100%" height="100%" />
@@ -95,7 +95,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
       A <a href="https://neat.nntb.no/">NEAT</a> project branding.
      </p>
     </td>
-    <td style="vertical-align: center;">
+    <td style="vertical-align: middle;">
      <p align="center">
       <a href="src/System-Info/figures/30-rsplib.webp">
         <img alt="" src="src/System-Info/figures/30-rsplib.webp" width="100%" height="100%" />
