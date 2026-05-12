@@ -45,6 +45,8 @@ Restrictions: allow-stderr
 Tests: 90-gimp-scripts
 Depends: clifractgen,
          fonts-lobstertwo,
+         fonts-noto-core,
+         fonts-open-sans,
          fonts-urw-base35,
          td-gimp-scripts,
          td-gimp-scripts-examples
