@@ -5,8 +5,8 @@ Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 Homepage: https://www.nntb.no/~dreibh/system-tools/
 Vcs-Git: https://github.com/dreibh/system-tools.git
 Vcs-Browser: https://github.com/dreibh/system-tools
-Build-Depends: debhelper-compat (= 13),
-               cmake
+Build-Depends: cmake,
+               debhelper-compat (= 13)
 Standards-Version: 4.7.4
 Rules-Requires-Root: no
 
@@ -180,9 +180,9 @@ Depends: fontconfig,
 Recommends: clifractgen,
             fonts-lobstertwo,
             fonts-open-sans,
-            fonts-urw-base35,
-            td-gimp-scripts-examples
-Description: GIMP Scripts
+            fonts-urw-base35
+Suggests: td-gimp-scripts-examples
+Description: GIMP image processing scripts
  This package contains some GIMP scripts for automated image processing.
  The main purpose of this script is to generate background images for
  desktops, boot splashes, etc. with some branding.
@@ -193,8 +193,13 @@ Depends: fontconfig,
          gimp,
          graphicsmagick,
          ${misc:Depends}
-Description: GIMP Scripts
- This package contains some example input files for the GIMP scripts.
+Description: Example files for the GIMP image processing scripts
+ The GIMP scripts are scripts for automated image processing.
+ The main purpose of this script is to generate background images for
+ desktops, boot splashes, etc. with some branding.
+ .
+ This package contains some example input files for the testing the
+ GIMP scripts.
 
 Package: td-system-tools-basic
 Replaces: td-system-tools (<< 2.4.0)

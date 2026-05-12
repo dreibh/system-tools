@@ -340,10 +340,10 @@ Requires: fontconfig
 Requires: gimp
 Requires: GraphicsMagick
 Requires: util-linux
-Recommends: %{name}-gimp-scripts-examples
 Recommends: fractgen-clifractgen
 Recommends: open-sans-fonts
 Recommends: urw-base35-fonts
+Suggests: %{name}-gimp-scripts-examples
 
 %description gimp-scripts
  This package contains some GIMP scripts for automated image processing.
@@ -387,12 +387,16 @@ Recommends: urw-base35-fonts
 
 
 %package gimp-scripts-examples
-Summary: GIMP image processing scripts example files
+Summary: Example files for the GIMP image processing scripts
 Group: Applications/System
 BuildArch: noarch
 
 %description gimp-scripts-examples
- This package contains some example input files for the GIMP scripts.
+The GIMP scripts are scripts for automated image processing.
+The main purpose of this script is to generate background images for
+desktops, boot splashes, etc. with some branding.
+This package contains some example input files for the testing the
+GIMP scripts.
 
 %files gimp-scripts-examples
 %{_datadir}/system-tools/gimp-scripts-examples/Bergen.jpeg

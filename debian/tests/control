@@ -42,7 +42,7 @@ Depends: gnutls-bin,
          td-x509
 Restrictions: allow-stderr
 
-Tests: 90-gimp-scrpts
+Tests: 90-gimp-scripts
 Depends: clifractgen,
          fonts-lobstertwo,
          fonts-urw-base35,

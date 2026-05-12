@@ -79,4 +79,4 @@ ENDFOREACH()
 INSTALL(FILES examples/Bergen.jpeg
               examples/Fractal.fsf
               examples/Portobello.jpeg
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/system-tools/gimp-script-examples)
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/system-tools/gimp-scripts-examples)
