@@ -129,9 +129,12 @@ for test in simple markers advanced1 advanced2 example1 example2 ; do
                if ! diff -q "${goodFile}" "${outputFile}" >/dev/null ; then
                   failures=$((failures+1))
                   (
+                     columns="$(print-utf8 -t 2>/dev/null || echo "80")"
+                     columns="${columns/ */}"
+                     columns=$((columns - 2))
                      echo
                      print-utf8 -n -s "\e[1;31;5m█" "▀" "█\e[0m" ;
-                     echo "CHECK FAILED!" | figlet -w "${COLUMNS}" | print-utf8 -n -C "\e[1;31;5m█\e[25m" "\e[5m█\e[0m" ;
+                     echo "CHECK FAILED!" | figlet -w "${columns}" | print-utf8 -n -C "\e[1;31;5m█\e[25m" "\e[5m█\e[0m" ;
                      print-utf8 -n -s "\e[1;31;5m█" "▄" "█\e[0m"
                      echo "Failure #${failures}:"
                      echo "Command:${command}"
