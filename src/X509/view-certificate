@@ -136,7 +136,7 @@ declare -A labels=(
 )
 
 indent=0
-for label in "${!labels[@]}" ; do
+for label in "${labels[@]}" ; do
    width="$(print-utf8 --width "${label}")"
    if [ "${width}" -gt "${indent}" ] ; then
       indent="${width}"
