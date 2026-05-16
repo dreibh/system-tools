@@ -410,7 +410,7 @@ keyUsage               = critical, digitalSignature, keyEncipherment
 extendedKeyUsage       = critical, serverAuth
 subjectAltName         = ${ENV::SAN}
 
-# ====== Settings for a server certificate ==================================
+# ====== Settings for a client certificate ==================================
 [ client_cert ]
 # Extensions for server certificates (`man x509v3_config`).
 basicConstraints       = CA:FALSE
