@@ -139,7 +139,7 @@ static void cleanUp(int exitCode)
    if(OpenOutputFile) {
       if(OutputFile) {
          if(fclose(OutputFile) != 0) {
-            fprintf(stderr, gettext("ERROR: Unable to open output file %s: %s"),
+            fprintf(stderr, gettext("ERROR: Unable to open output file %s: %s!"),
                   OutputFileName, strerror(errno));
             fputs("\n", stderr);
             exitCode = 1;
@@ -150,7 +150,7 @@ static void cleanUp(int exitCode)
                                          OutputTempFileName : OutputFileName;
          if(brokenFileName) {
             if(unlink(brokenFileName) != 0) {
-               fprintf(stderr, gettext("ERROR: Unable to delete broken output file %s: %s"),
+               fprintf(stderr, gettext("ERROR: Unable to delete broken output file %s: %s!"),
                      brokenFileName, strerror(errno));
                fputs("\n", stderr);
             }
@@ -165,7 +165,7 @@ static void cleanUp(int exitCode)
             (void)result;   // just ignore errors
             // Restore file permissions:
             if(chmod(OutputTempFileName, fileInfo.st_mode & 07777) != 0) {
-               fprintf(stderr, gettext("WARNING: Unable to restore file permissions for %s: %s"),
+               fprintf(stderr, gettext("WARNING: Unable to restore file permissions for %s: %s!"),
                        InputFileName, strerror(errno));
                fputs("\n", stderr);
             }
@@ -173,7 +173,7 @@ static void cleanUp(int exitCode)
 
          // ------ Overwrite original file ----------------------------------
          if(rename(OutputTempFileName, InputFileName) != 0) {
-            fprintf(stderr, gettext("ERROR: Unable to change name of temporary output file from %s to %s: %s"),
+            fprintf(stderr, gettext("ERROR: Unable to change name of temporary output file from %s to %s: %s!"),
                     OutputTempFileName, InputFileName, strerror(errno));
             fputs("\n", stderr);
          }
@@ -216,6 +216,8 @@ static char* makeTempOutputFileName(const char* outputFileName)
    const size_t ouputFileNameLength = strlen(outputFileName);
    OutputTempFileName = malloc(ouputFileNameLength + 2);
    if(OutputTempFileName == nullptr) {
+      fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
+      fputs("\n", stderr);
       cleanUp(1);
    }
    strncpy(OutputTempFileName, outputFileName, ouputFileNameLength);
@@ -230,7 +232,7 @@ static void writeToOutputFile(const char* data, const size_t length)
 {
    if(length > 0) {
       if(fwrite(data, 1, length, OutputFile) < length) {
-         fprintf(stderr, gettext("ERROR: Unable to write to output file %s: %s"),
+         fprintf(stderr, gettext("ERROR: Unable to write to output file %s: %s!"),
                  OutputFileName, strerror(errno));
          fputs("\n", stderr);
          cleanUp(1);
@@ -697,6 +699,8 @@ int main (int argc, char** argv)
    // ====== Allocate buffer ================================================
    Buffer = (char*)malloc(BufferSize);
    if(Buffer == nullptr) {
+      fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
+      fputs("\n", stderr);
       cleanUp(1);
    }
 
@@ -708,7 +712,7 @@ int main (int argc, char** argv)
    if( (InputFileName != nullptr) && InPlaceUpdate ) {
       RealInputFileName = realpath(InputFileName, nullptr);
       if(RealInputFileName == nullptr) {
-         fprintf(stderr, gettext("ERROR: Unable to resolve absolute path for input file %s: %s"),
+         fprintf(stderr, gettext("ERROR: Unable to resolve absolute path for input file %s: %s!"),
                  InputFileName, strerror(errno));
          fputs("\n", stderr);
          cleanUp(1);
@@ -718,7 +722,7 @@ int main (int argc, char** argv)
    if(InputFileName != nullptr) {
       InputFile = fopen(InputFileName, "r");
       if(InputFile == nullptr) {
-         fprintf(stderr, gettext("ERROR: Unable to open input file %s: %s"),
+         fprintf(stderr, gettext("ERROR: Unable to open input file %s: %s!"),
                  InputFileName, strerror(errno));
          fputs("\n", stderr);
          cleanUp(1);
@@ -779,7 +783,7 @@ int main (int argc, char** argv)
                              OutputTempFileName : OutputFileName,
                           (OpenOutputAppend == false) ? "w" : "a");
       if(OutputFile == nullptr) {
-         fprintf(stderr, gettext("ERROR: Unable to create output file %s: %s"),
+         fprintf(stderr, gettext("ERROR: Unable to create output file %s: %s!"),
                  OutputFileName, strerror(errno));
          fputs("\n", stderr);
          cleanUp(1);
@@ -801,7 +805,7 @@ int main (int argc, char** argv)
       }
       InsertFile = tmpfile();
       if(InsertFile == nullptr) {
-         fprintf(stderr, gettext("ERROR: Unable to create temporary file for insertion: %s"), strerror(errno));
+         fprintf(stderr, gettext("ERROR: Unable to create temporary file for insertion: %s!"), strerror(errno));
          fputs("\n", stderr);
          cleanUp(1);
       }
@@ -809,7 +813,7 @@ int main (int argc, char** argv)
       size_t bytesRead;
       while( (bytesRead = fread(buffer, 1, sizeof(buffer), stdin)) > 0 ) {
          if(fwrite(buffer, 1, bytesRead, InsertFile) < bytesRead) {
-            fprintf(stderr, gettext("ERROR: Failed to write to temporary file: %s"), strerror(errno));
+            fprintf(stderr, gettext("ERROR: Failed to write to temporary file: %s!"), strerror(errno));
             fputs("\n", stderr);
             cleanUp(1);
          }
@@ -821,7 +825,7 @@ int main (int argc, char** argv)
       // ------ Insert file is a file => just open it -----------------------
       InsertFile = fopen(InsertFileName, "r");
       if(InsertFile == nullptr) {
-         fprintf(stderr, gettext("ERROR: Unable to open insert file %s: %s"),
+         fprintf(stderr, gettext("ERROR: Unable to open insert file %s: %s!"),
                  InsertFileName, strerror(errno));
          fputs("\n", stderr);
          cleanUp(1);
@@ -995,7 +999,7 @@ int main (int argc, char** argv)
       errno = 0;
    }
    if( (lineLength < 0) && (errno != 0) ) {
-      fprintf(stderr, gettext("ERROR: Read error: %s"), strerror(errno));
+      fprintf(stderr, gettext("ERROR: Read error: %s!"), strerror(errno));
       fputs("\n", stderr);
       cleanUp(1);
    }
