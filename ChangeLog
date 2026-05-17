@@ -1,3 +1,129 @@
+commit d5415eddbb85bcf1703a89eb010e3793e328f058
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 17 11:36:56 2026 +0200
+
+    Ensure deterministic sorting order of NSS certificate usages.
+
+commit 5b06ec3f038840a2789aa4f84db90336066beaa8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 16 22:49:52 2026 +0200
+
+    Corrected comment.
+
+commit 119fe01f0c5029d0c8927b26271ca0c87410460d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 16 20:35:25 2026 +0200
+
+    Yet another minor test script update.
+
+commit a5ee18fc9f3afdbe6e8a423f3b504bdcc24e8be7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 16 20:24:03 2026 +0200
+
+    Minor clean-ups in the test scripts.
+
+commit f6c3bd192b9afc0120cd1c2cfe34304c2ff391fd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 16 20:17:42 2026 +0200
+
+    Minor parameter update.
+
+commit e3dc394032fc9c2a5840b208bd48c6e53e87cdbd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 16 14:37:56 2026 +0200
+
+    Updated error message.
+
+commit c56637066c2c4de5ece9960a24b2787b5a1145b4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 16 14:37:26 2026 +0200
+
+    Updated PO files.
+
+commit 9e6dbbd484bfa78d0528bc874fbf96f35eb576f7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 16 14:34:55 2026 +0200
+
+    Improved error messages in Text-Block.
+
+commit 7b560c2a6e657cf61d314016d7f1ec295881237b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 16 14:25:09 2026 +0200
+
+    Improved error messages in Print-UTF8.
+
+commit 9a9bd3e51277c7ba9605bdd75b540448242c1481
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 16 13:03:52 2026 +0200
+
+    Updated PO files.
+
+commit ccf2ac99710d1f906ff6ce610c3a8c583c874622
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 16 12:55:22 2026 +0200
+
+    Added output of public key and signature algorithms.
+
+commit 3e6c099a73f3176eb806054c8b9a245e7e9efd6a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 16 12:23:33 2026 +0200
+
+    Bugfix: Fixed wrong indentation when printing the certificate and CRL details.
+
+commit 21bb7b8e3eed2bc1f1aed36f3d4d8b54675764ce
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 16 12:12:20 2026 +0200
+
+    Some clean-ups, and added EC support in CertificateHelper.py.
+
+commit 75e0c7ee6b1fb548974066dff95f6903ab7a0078
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 14 21:39:01 2026 +0200
+
+    Improved X.509 test scripts.
+
+commit 956c24c1747827e24189ba306ac05b119d5aa42f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 22:19:56 2026 +0200
+
+    Dependency fix.
+
+commit 26beca16f90a03d662499d53517a02639df1fda7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 22:18:38 2026 +0200
+
+    Reverted addition of fallback code; simplified code block.
+
+commit 678ae0dceccc08b8aaff296f75ab9c2406292e2d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 21:21:38 2026 +0200
+
+    Added fallback code to use when Text-Block is unavailable.
+
+commit 6cfae20f786157a3fab713de77c25cd42a237639
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 11:33:04 2026 +0200
+
+    "make clean" now also includes the generated versioned scripts.
+
+commit e9b3deaa42bf27af6e094060327ddce87ddddacd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 10:11:43 2026 +0200
+
+    Minor documentation improvements.
+
+commit 1ce41b6e6b66ba710425e6b3b0efc30c2aeacb3d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 11 15:16:55 2026 +0200
+
+    Improved error message.
+
+commit f81d251975d297daf2284d47b0e3958160449cbb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 23:09:04 2026 +0200
+
+    New release td-system-tools-2.6.1.
+
 commit 7d0710614ada5a9945131803533d965b4df247e6
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat May 9 23:01:16 2026 +0200

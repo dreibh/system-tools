@@ -260,20 +260,20 @@ while [ $# -gt 0 ] ; do
       # "${CRLUTIL}" -L -d "${db}"
 
       # ------ Finally, it is possible to verify the validity chain ---------
-      declare -A types=(
-         ["server"]="V"
-         ["client"]="C"
-         ["CA"]="L"
-         ["email_signer"]="S"
-         ["email_recipient"]="R"
+      declare -A certUsageLabels=(
+         ["V"]="server"
+         ["C"]="client"
+         ["L"]="CA"
+         ["S"]="email_signer"
+         ["R"]="email_recipient"
+         ["A"]="any"
       )
       good=0
-      for type in "${!types[@]}" ; do
-         setting="${types[$type]}"
-         command="\"${CERTUTIL}\" -V -e -u \"${setting}\" -n \"My Certificate\" -d \"${db}\"" && sh -c "${command}" >/dev/null 2>&1 && \
+      for certUsage in V C L S R A ; do
+         command="\"${CERTUTIL}\" -V -e -u \"${certUsage}\" -n \"My Certificate\" -d \"${db}\"" && sh -c "${command}" >/dev/null 2>&1 && \
             good=$((good + 1)) && \
             if [ ${good} -eq 1 ] ; then echo -en "\e[32;1m$(gettext "✓OKAY")\e[0m" ; fi && \
-            echo -en "   \e[36m${type}\e[0m"
+            echo -en "   \e[36m${certUsageLabels["${certUsage}"]}\e[0m"
       done
       echo
       if [ ${good} -eq 0 ] ; then

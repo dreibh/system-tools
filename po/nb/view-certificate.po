@@ -31,8 +31,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-09 14:47+0200\n"
-"PO-Revision-Date: 2026-07-05 16:39+0200\n"
+"POT-Creation-Date: 2026-05-16 12:58+0200\n"
+"PO-Revision-Date: 2026-16-05 14:36+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
 "Language: nb\n"
@@ -60,45 +60,53 @@ msgid "Subject Alternative Name:"
 msgstr "Alternativt innehavernavn:"
 
 #: src/X509/view-certificate:130
+msgid "Public Key Algorithm:"
+msgstr "Algoritme for offentlig nøkkel:"
+
+#: src/X509/view-certificate:131
+msgid "Signature Algorithm:"
+msgstr "Signaturalgoritme:"
+
+#: src/X509/view-certificate:132
 msgid "Validity:"
 msgstr "Gyldighet:"
 
-#: src/X509/view-certificate:131
+#: src/X509/view-certificate:133
 msgid "Basic Constraints:"
 msgstr "Grunnleggende begrensninger:"
 
-#: src/X509/view-certificate:132
+#: src/X509/view-certificate:134
 msgid "Key Usage:"
 msgstr "Nøkkelbruk:"
 
-#: src/X509/view-certificate:133
+#: src/X509/view-certificate:135
 msgid "Extended Key Usage:"
 msgstr "Utvidet nøkkelbruk:"
 
-#: src/X509/view-certificate:134
+#: src/X509/view-certificate:136
 msgid "Subject Key Identifier:"
 msgstr "Innehaver-nøkkelidentifikator:"
 
-#: src/X509/view-certificate:135
+#: src/X509/view-certificate:137
 msgid "Authority Key Identifier:"
 msgstr "Utsteder-nøkkelidentifikator:"
 
-#: src/X509/view-certificate:157
+#: src/X509/view-certificate:159
 #, sh-format
 msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
 msgstr "FEIL: Finner ikke sertifikatfilen ${CERTIFICATE_FILE}!"
 
-#: src/X509/view-certificate:162
+#: src/X509/view-certificate:164
 #, sh-format
 msgid "Certificate in ${CERTIFICATE_FILE}:"
 msgstr "Sertifikat i ${CERTIFICATE_FILE}:"
 
-#: src/X509/view-certificate:218
+#: src/X509/view-certificate:242
 #, sh-format
 msgid "Hierarchy in ${CERTIFICATE_FILE}:"
 msgstr "Hierarki i ${CERTIFICATE_FILE}:"
 
-#: src/X509/view-certificate:229
+#: src/X509/view-certificate:253
 #, sh-format
 msgid "#${entry}."
 msgstr "№${entry}"

@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.6.1
+Version: 2.6.2
 Release: 1
 Summary: Tools for basic system management
 License: GPL-3.0-or-later
@@ -281,6 +281,7 @@ interval, with support for fractional seconds.
 %package x509-tools
 Summary: X.509 certificate handling tools
 BuildArch: noarch
+Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
 Requires: openssl
 Recommends: gnutls-utils
@@ -440,6 +441,8 @@ tools. It installs all sub-packages.
 
 
 %changelog
+* Sun May 17 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.2-1
+- New upstream release.
 * Sat May 09 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.1-1
 - New upstream release.
 * Fri May 08 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.0-1

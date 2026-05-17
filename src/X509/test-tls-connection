@@ -49,7 +49,7 @@ usage () {
 
 # ###### Version ############################################################
 version () {
-   echo "test-tls-connection @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   echo "test-tls-connection 2.6.1"
    exit 0
 }
 
@@ -124,23 +124,21 @@ fi
 
 # ====== Connect to endpoint ================================================
 echo -e "\e[34m$(eval_gettext "Connecting to \${ENDPOINT} ...")\e[0m"
-tempOutputFile=""
 tempCertFile=""
-trap 'rm -f "${tempCertFile}" "${tempOutputFile}"' EXIT INT TERM HUP
-tempOutputFile="$(mktemp -t test-tls-connection.XXXXXXXXXX.out)"
+trap 'rm -f "${tempCertFile}"' EXIT INT TERM HUP
 if [ "${CERTIFICATE_FILE}" == "" ] ; then
    tempCertFile="$(mktemp -t test-tls-connection.XXXXXXXXXX.pem)"
    CERTIFICATE_FILE="${tempCertFile}"
 fi
 
-echo "" | openssl s_client -showcerts -connect "${ENDPOINT}" -no-CApath -no-CAstore -CAfile "${CA_FILE}" "$@" >"${tempOutputFile}"
-
-text-block --extract \
-           --begin-tag '-----BEGIN CERTIFICATE-----'  \
-           --end-tag '-----END CERTIFICATE-----' \
-           --full-tag-lines --include-tags --min-actions 1 \
-           --input "${tempOutputFile}" \
-           --output "${CERTIFICATE_FILE}"
+echo "" | openssl s_client -showcerts -connect "${ENDPOINT}" -no-CApath -no-CAstore -CAfile "${CA_FILE}" "$@" | \
+   text-block \
+      --extract \
+      --begin-tag '-----BEGIN CERTIFICATE-----'  \
+      --end-tag '-----END CERTIFICATE-----' \
+      --full-tag-lines --include-tags --min-actions 1 \
+      --input - \
+      --output "${CERTIFICATE_FILE}"
 
 # ====== Display and verify certificate using check-certificate =============
 if [ ${VIEW_CERTIFICATE} -eq 1 ] && [ ${CHECK_CERTIFICATE} -eq 1 ] ; then
