@@ -575,11 +575,21 @@ man test-tls-connection
 
 # 📚 GIMP-Scripts
 
-The GIMP-Scripts are a collection of scripts using GIMP and GraphicsMagick to apply effects on and resize images.
+The GIMP-Scripts are a collection of scripts using GIMP and GraphicsMagick to render text as well as to apply effects on and resize images.
 
 ## GS-BumpMap
+
+TBD
+
+
 ## GS-Caption
+
+TBD
+
+
 ## GS-Clothify
+
+TBD
 
 
 ## GS-GlossyText
@@ -652,10 +662,29 @@ man gs-glossytext
 
 
 ## GS-Mosaic
+
+TBD
+
+
 ## GS-Oilify
+
+TBD
+
+
 ## GS-OldPhoto
+
+TBD
+
+
 ## GS-Resize-with-Cropping
+
+TBD
+
+
 ## GS-Test-Gimp
+
+TBD
+
 
 ## Helper Scripts
 
