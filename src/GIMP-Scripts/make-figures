@@ -73,7 +73,7 @@ gm identify figures/Caption3.png
 # ====== gs-glossytext ====================================================
 echo "GlossyText:"
 ./gs-glossytext figures/GlossyText1.webp "System-Tools" \
-   --font-name "Open Sans Bold" \
+   --font-name "Lobster Two Bold Italic" \
    --font-size 64 \
    --outline-size 8 \
    --blend-gradient-text "Brushed Aluminium" \

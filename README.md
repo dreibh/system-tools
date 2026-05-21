@@ -444,9 +444,9 @@ View-Certificate displays basic details of given certificates in [Privacy-Enhanc
 
 Also see the manpage of View-Certificate for further details and examples:
 
-  ```bash
-  man view-certificate
-  ```
+```bash
+man view-certificate
+```
 
 
 ## View-CRL
@@ -468,9 +468,9 @@ View-CRL displays details of given [X.509](https://en.wikipedia.org/wiki/X.509) 
 
 Also see the manpage of View-CRL for further details and examples:
 
-  ```bash
-  man view-crl
-  ```
+```bash
+man view-crl
+```
 
 
 ## Check-Certificate
@@ -500,9 +500,9 @@ Check-Certificate verifies a certificate, by verifying its chain from a given Ro
 
 Also see the manpage of Check-Certificate for further details and examples:
 
-  ```bash
-  man check-certificate
-  ```
+```bash
+man check-certificate
+```
 
 
 ## Extract-PEM
@@ -524,9 +524,9 @@ Extract-PEM extracts an X.509 certificate bundle from a [Privacy-Enhanced Mail&n
 
 Also see the manpage of Extract-PEM for further details and examples:
 
-  ```bash
-  man extract-pem
-  ```
+```bash
+man extract-pem
+```
 
 
 ## DER2PEM and PEM2DER
@@ -568,29 +568,100 @@ Test-TLS-Connection establishes a Transport Layer Security&nbsp;(TLS) connection
 
 Also see the manpage of Test-TLS-Connection for further details and examples:
 
-  ```bash
-  man test-tls-connection
-  ```
+```bash
+man test-tls-connection
+```
 
 
 # 📚 GIMP-Scripts
 
 The GIMP-Scripts are a collection of scripts using GIMP and GraphicsMagick to apply effects on and resize images.
 
-## BumpMap
-## Caption
-## Clothify
-## GlossyText
-## Mosaic
-## Oilify
-## OldPhoto
-## Resize-with-Cropping
-## Test-Gimp
+## GS-BumpMap
+## GS-Caption
+## GS-Clothify
+
+
+## GS-GlossyText
+
+GS-GlossyText runs GIMP and the <a href="https://docs.gimp.org/2.8/en/script-fu-glossy-logo-alpha.html">GIMP Script-Fu "Glossy" script</a> to render a given text using a specific font. The color gradients, patterns, font, and font size are configurable.
+
+Examples:
+
+<table summary="GS-GlossyText Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/GlossyText1.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/GlossyText1.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/GlossyText2.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/GlossyText2.webp" width="100%" height="100%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/GlossyText3.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/GlossyText3.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <span id="GlossyText1" />
+```bash
+gs-glossytext GlossyText1.webp "System-Tools" \
+   --font-name "Lobster Two Bold Italic" \
+   --font-size 64 \
+   --outline-size 8 \
+   --blend-gradient-text "Brushed Aluminium" \
+   --blend-gradient-outline "Golden"
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="GlossyText2" />
+```bash
+gs-glossytext GlossyText2.webp "Simula" \
+   --font-name "Open Sans Bold" \
+   --font-size 64 \
+   --outline-size 12 \
+   --blend-gradient-text "Golden" \
+   --blend-gradient-outline "Golden"
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="GlossyText3" />
+```bash
+gs-glossytext GlossyText3.webp "NorNet" -S 64
+```
+    </td>
+  </tr>
+</table>
+
+Also see the manpage of GS-GlossyText for further details and examples:
+
+```bash
+man gs-glossytext
+```
+
+
+## GS-Mosaic
+## GS-Oilify
+## GS-OldPhoto
+## GS-Resize-with-Cropping
+## GS-Test-Gimp
 
 ## Helper Scripts
-### List-Fonts
-### List-Gradients
-### List-Patterns
+
+### GS-List-Fonts
+### GS-List-Gradients
+### GS-List-Patterns
 
 
 # 📦 Binary Package Installation
