@@ -1,3 +1,27 @@
+commit 4d2aa66f48e312be2dfd59af86efa57ec2baed81
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 15:41:13 2026 +0200
+
+    Updated PO files.
+
+commit 4c76bae88c8ed666d247a74f94e1172b64a914be
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 15:34:03 2026 +0200
+
+    Improved exit code handling in Try-Hard.
+
+commit ef26fb9410e27c788517e1146e54b4815338f2e7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 12:40:41 2026 +0200
+
+    Dependency fix.
+
+commit 2e6953540056c599e00adbe14cc6012d36fe0bbe
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 17 18:06:48 2026 +0200
+
+    New release td-system-tools-2.6.2.
+
 commit d5415eddbb85bcf1703a89eb010e3793e328f058
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun May 17 11:36:56 2026 +0200
