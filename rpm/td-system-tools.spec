@@ -251,6 +251,7 @@ milliseconds, microseconds, and nanoseconds.
 Summary: Make multiple trials to successfully run a command
 BuildArch: noarch
 Conflicts: %{name}-misc
+Requires: gettext-runtime
 
 %description try-hard
 Try-hard runs a command and retries for a given number of times in case
@@ -283,6 +284,7 @@ Summary: X.509 certificate handling tools
 BuildArch: noarch
 Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
+Requires: gettext-runtime
 Requires: openssl
 Recommends: gnutls-utils
 Recommends: nss-tools
