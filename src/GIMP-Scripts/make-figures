@@ -38,37 +38,36 @@ INPUT1="Bergen"
 INPUT2="Portobello"
 INPUT3="Fractal"
 
-WIDTH=1980
+WIDTH=1920
 HEIGHT=1080
-# WIDTH=1024
-# HEIGHT=768
+PREVIEW_WIDTH=512
 
 # ====== Generate input images ==============================================
 echo "Generating input images ..."
 ./gs-resize-with-cropping "examples/${INPUT1}.jpeg" "figures/${INPUT1}.webp" --aspect 16:9 --width "${WIDTH}"
 ./gs-resize-with-cropping "examples/${INPUT2}.jpeg" "figures/${INPUT2}.webp" --aspect keep --width "${WIDTH}"
-clifractgen "examples/Fractal.fsf" "figures/${INPUT3}.png" --width "${WIDTH}" --height "${HEIGHT}" --max-iterations 2048
+clifractgen "examples/Fractal.fsf" "figures/${INPUT3}.webp" --width "${WIDTH}" --height "${HEIGHT}" --max-iterations 2048
 
 # ====== gs-caption =======================================================
 echo "Caption:"
-./gs-caption figures/Caption1.png 1024 42 \
+./gs-caption figures/Caption1.webp 1024 42 \
    "Test on $(LC_ALL=C.UTF-8 date)" \
    --font-name "Open Sans Bold" \
    --font-size 70 \
    --foreground "#02266b" --background "#ffd7cc" --transparency 50
-gm identify figures/Caption1.png
-./gs-caption figures/Caption2.png 1024 42 \
+gm identify figures/Caption1.webp
+./gs-caption figures/Caption2.webp 1024 42 \
    "Another Test on $(LC_ALL=C.UTF-8 date)" \
    --font-name "Lobster Two Bold Italic" \
    --font-size 70 \
    --foreground "#02266b" --background "#ffd700" --transparency 26
-gm identify figures/Caption2.png
-./gs-caption figures/Caption3.png 1024 42 \
+gm identify figures/Caption2.webp
+./gs-caption figures/Caption3.webp 1024 42 \
    "Yet Another Test on $(LC_ALL=C.UTF-8 date)" \
    --font-name "URW Gothic Book" \
    --font-size 70 \
    --foreground "#02266b" --background "#777777" --transparency 40
-gm identify figures/Caption3.png
+gm identify figures/Caption3.webp
 
 # ====== gs-glossytext ====================================================
 echo "GlossyText:"
@@ -117,7 +116,7 @@ gm identify "figures/${INPUT1}-Mosaic.webp"
    --antialiasing     on       \
    --light-direction  35.0
  gm identify "figures/${INPUT2}-Mosaic.webp"
-./gs-mosaic "figures/${INPUT3}.png" "figures/${INPUT3}-Mosaic.webp" \
+./gs-mosaic "figures/${INPUT3}.webp" "figures/${INPUT3}-Mosaic.webp" \
    --tile-type        squares \
    --tile-size        15.0     \
    --tile-height      4.0      \
@@ -147,7 +146,7 @@ gm identify "figures/${INPUT1}-Cloth.webp"
    --elevation 20.0  \
    --depth 4
 gm identify "figures/${INPUT2}-Cloth.webp"
-./gs-clothify "figures/${INPUT3}.png" "figures/${INPUT3}-Cloth.webp" \
+./gs-clothify "figures/${INPUT3}.webp" "figures/${INPUT3}-Cloth.webp" \
    --blur-x    4     \
    --blur-y    4     \
    --azimuth   180.0 \
@@ -165,7 +164,7 @@ gm identify "figures/${INPUT1}-Oil.webp"
    --mask-size      16 \
    --intensity-mode off
 gm identify "figures/${INPUT2}-Oil.webp"
-./gs-oilify "figures/${INPUT3}.png" "figures/${INPUT3}-Oil.webp" \
+./gs-oilify "figures/${INPUT3}.webp" "figures/${INPUT3}-Oil.webp" \
    --mask-size      12 \
    --intensity-mode on
 gm identify "figures/${INPUT3}-Oil.webp"
@@ -194,7 +193,7 @@ gm identify "figures/${INPUT1}-BumpMap.webp"
    --invert               off    \
    --tiled                on
 gm identify "figures/${INPUT2}-BumpMap.webp"
-./gs-bumpmap "figures/${INPUT3}.png" "figures/${INPUT3}-BumpMap.webp" \
+./gs-bumpmap "figures/${INPUT3}.webp" "figures/${INPUT3}-BumpMap.webp" \
    --azimuth              135.0  \
    --elevation            20.0   \
    --depth                20     \
@@ -205,3 +204,14 @@ gm identify "figures/${INPUT2}-BumpMap.webp"
    --invert               off    \
    --tiled                on
 gm identify "figures/${INPUT3}-BumpMap.webp"
+
+# ====== Generate preview images ============================================
+echo "Previews:"
+find figures -mindepth 1 -maxdepth 1 -name "*.webp" -print0 | \
+   while read -r -d "" imageName ; do
+      if [[ ! "$imageName}" =~ -preview\.webp$ ]] ; then
+         previewName="${imageName/\.webp/}"
+         previewName="${previewName}-preview.webp"
+         ./gs-resize-with-cropping "${imageName}" "${previewName}" --aspect keep --width "${PREVIEW_WIDTH}"
+      fi
+   done
