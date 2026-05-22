@@ -577,19 +577,81 @@ man test-tls-connection
 
 The GIMP-Scripts are a collection of scripts using GIMP and GraphicsMagick to render text as well as to apply effects on and resize images.
 
-## GS-BumpMap
-
-TBD
-
 
 ## GS-Caption
 
-TBD
+GS-Caption runs GIMP to generate a caption image with given text using a specific font. The foreground and background color, transparency, font, and font size are configurable.
 
+Examples (click on image for full-size view):
 
-## GS-Clothify
+<table summary="GS-Caption Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Caption1.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Caption1-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Caption2.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Caption2-preview.webp" width="100%" height="100%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Caption3.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Caption3-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <span id="Caption1" />
+```bash
+gs-caption Caption1.webp 1024 42 \
+   "Test on $(LC_ALL=C.UTF-8 date)" \
+   --font-name "Open Sans Bold" \
+   --font-size 70 \
+   --foreground "#02266b" --background "#ffd7cc" \
+   --transparency 50
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="Caption2" />
+```bash
+gs-caption Caption2.webp 1024 42 \
+   "Another Test on $(LC_ALL=C.UTF-8 date)" \
+   --font-name "Lobster Two Bold Italic" \
+   --font-size 70 \
+   --foreground "#02266b" --background "#ffd700" \
+   --transparency 26
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="Caption3" />
+```bash
+gs-caption Caption3.webp 1024 42 \
+   "Yet Another Test on $(LC_ALL=C.UTF-8 date)" \
+   --font-name "URW Gothic Book" \
+   --font-size 70 \
+   --foreground "#02266b" --background "#777777" \
+   --transparency 40
+```
+    </td>
+  </tr>
+</table>
 
-TBD
+See the manpage of GS-Caption for further details and examples:
+
+```bash
+man gs-caption
+```
+
+Also see [GS-List-Fonts](#gs-list-fonts) for obtaining a list of available fonts.
 
 
 ## GS-GlossyText
@@ -654,10 +716,94 @@ gs-glossytext GlossyText3.webp "NorNet" -S 64
   </tr>
 </table>
 
-Also see the manpage of GS-GlossyText for further details and examples:
+See the manpage of GS-GlossyText for further details and examples:
 
 ```bash
 man gs-glossytext
+```
+
+
+Also see [GS-List-Fonts](#gs-list-fonts), [GS-List-Gradients](#gs-list-gradients), and [GS-List-Patterns](#gs-list-patterns) for obtaining lists of available fonts, gradients, and patterns.
+
+
+
+## GS-BumpMap
+
+TBD
+
+
+## GS-Clothify
+
+GS-Clothify runs GIMP to load an image, applies the <a href="https://docs.gimp.org/3.0/en/script-fu-clothify.html">GIMP Script-Fu "Clothify" filter</a>, and stores the result into an output file.
+The blurring, bearing, and depth are configurable.
+
+Examples (click on image for full-size view):
+
+<table summary="GS-Clothify Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Bergen-Clothify.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Bergen-Clothify-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Portobello-Clothify.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Portobello-Clothify-preview.webp" width="43%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Fractal-Clothify.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Fractal-Clothify-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <span id="Clothify1" />
+```bash
+gs-clothify Bergen.webp Bergen-Clothify.webp \
+   --blur-x    3    \
+   --blur-y    3    \
+   --azimuth   90.0 \
+   --elevation 10.0 \
+   --depth 4
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="Clothify2" />
+```bash
+gs-clothify Portobello.webp Portobello-Clothify.webp \
+   --blur-x    5     \
+   --blur-y    5     \
+   --azimuth   135.0 \
+   --elevation 20.0  \
+   --depth 4
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="Clothify3" />
+```bash
+gs-clothify Fractal.webp Fractal-Clothify.webp \
+   --blur-x    4     \
+   --blur-y    4     \
+   --azimuth   180.0 \
+   --elevation 80.0  \
+   --depth 4
+```
+    </td>
+  </tr>
+</table>
+
+Also see the manpage of GS-Clothify for further details and examples:
+
+```bash
+man gs-clothify
 ```
 
 
@@ -990,7 +1136,18 @@ For ready-to-install Ubuntu Linux packages of System-Tools, see [Launchpad PPA f
 ```bash
 sudo apt-add-repository -sy ppa:dreibh/ppa
 sudo apt-get update
-sudo apt-get install td-system-tools
+```
+
+For the basic System-Tools (without the dependency-heavy GIMP-Scripts):
+
+```bash
+sudo apt-get install td-system-tools-basic
+```
+
+For the complete System-Tools (including the GIMP-Scripts):
+
+```bash
+sudo apt-get install td-system-tools-complete
 ```
 
 ## Fedora Linux
@@ -999,7 +1156,18 @@ For ready-to-install Fedora Linux packages of System-Tools, see [COPR PPA for Th
 
 ```bash
 sudo dnf copr enable -y dreibh/ppa
-sudo dnf install td-system-tools
+```
+
+For the basic System-Tools (without the dependency-heavy GIMP-Scripts):
+
+```bash
+sudo dnf install td-system-tools-basic
+```
+
+For the complete System-Tools (including the GIMP-Scripts):
+
+```bash
+sudo dnf install td-system-tools-complete
 ```
 
 ## FreeBSD
@@ -1010,6 +1178,8 @@ For ready-to-install FreeBSD packages of System-Tools, it is included in the por
 sudo pkg install td-system-tools
 ```
 
+Note: The FreeBSD port contains the basic System-Tools (without the dependency-heavy GIMP-Scripts, and without Configure-GRUB).
+
 Alternatively, to compile it from the ports sources:
 
 ```bash
@@ -1017,6 +1187,8 @@ cd /usr/ports/net/td-system-tools
 make
 sudo make install
 ```
+
+Compiling from the port sources provides the optional installation of the GIMP-Scripts and/or Configure-GRUB.
 
 
 # 💾 Build from Sources
