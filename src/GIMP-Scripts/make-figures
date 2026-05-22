@@ -254,6 +254,35 @@ if [ ! -e "figures/${INPUT3}-BumpMap.webp" ] ; then
 fi
 gm identify "figures/${INPUT3}-BumpMap.webp"
 
+
+# ====== gs-oldphoto ======================================================
+echo "OldPhoto:"
+if [ ! -e "figures/${INPUT1}-OldPhoto.webp" ] ; then
+   ./gs-oldphoto "figures/${INPUT1}.webp" "figures/${INPUT1}-OldPhoto.webp" \
+      --defocus on     \
+      --border-size 24 \
+      --sepia on       \
+      --mottle on
+fi
+gm identify "figures/${INPUT1}-OldPhoto.webp"
+if [ ! -e "figures/${INPUT2}-OldPhoto.webp" ] ; then
+   ./gs-oldphoto "figures/${INPUT2}.webp" "figures/${INPUT2}-OldPhoto.webp" \
+      --defocus off    \
+      --border-size 16 \
+      --sepia on       \
+      --mottle off
+fi
+gm identify "figures/${INPUT2}-OldPhoto.webp"
+if [ ! -e "figures/${INPUT3}-OldPhoto.webp" ] ; then
+   ./gs-oldphoto "figures/${INPUT3}.webp" "figures/${INPUT3}-OldPhoto.webp" \
+      --defocus on     \
+      --border-size 32 \
+      --sepia off      \
+      --mottle on
+fi
+gm identify "figures/${INPUT3}-OldPhoto.webp"
+
+
 # ====== Generate preview images ============================================
 echo "Previews:"
 find figures -mindepth 1 -maxdepth 1 -name "*.webp" -print0 | \
