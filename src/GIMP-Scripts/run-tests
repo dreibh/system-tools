@@ -205,13 +205,13 @@ for blurX in 3 6 ; do
    blurY="${blurX}"
    for azimuth in 90.0 135.0 180.0 ; do
       for elevation in 10.0 45.0 80.0 ; do
-         ./gs-clothify Image1.png "Cloth1-X${blurX}-Y${blurY}-A${azimuth}-E${elevation}-D4.png" \
+         ./gs-clothify Image1.png "Clothify1-X${blurX}-Y${blurY}-A${azimuth}-E${elevation}-D4.png" \
             --blur-x ${blurX}          \
             --blur-y ${blurY}          \
             --azimuth "${azimuth}"     \
             --elevation "${elevation}" \
             --depth 4 || exit-failed
-         ./gs-clothify Image2.png "Cloth2-X${blurX}-Y${blurY}-A${azimuth}-E${elevation}-D8.png" \
+         ./gs-clothify Image2.png "Clothify2-X${blurX}-Y${blurY}-A${azimuth}-E${elevation}-D8.png" \
             -X ${blurX}       \
             -Y ${blurY}       \
             -A "${azimuth}"   \

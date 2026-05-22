@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 9, 2026
+.Dd May 22, 2026
 .Dt gs\-mosaic 1
 .Os gs\-mosaic
 .\" ###### Name #############################################################
@@ -72,10 +72,13 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs\-mosaic
-runs GIMP to load an image, and applies the GIMP GEGL "Mosaic" filter
+runs GIMP to load an image, applies the GIMP GEGL "Mosaic" filter
 (details:
-.Lk https://gegl.org/operations/gegl\-mosaic.html "GEGL Mosaic" )
+.Lk https://gegl.org/operations/gegl\-mosaic.html "GEGL Mosaic" ) ,
 and stores the result into an output file.
+The tile type (triangles, squares, hexagons, octagons), tile size, tile
+height, tile neatness, tile surface (smooth or rough) tile spacing, coloring
+and lighting are configurable.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS

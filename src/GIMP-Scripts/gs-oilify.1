@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 9, 2026
+.Dd May 22, 2026
 .Dt gs\-oilify 1
 .Os gs\-oilify
 .\" ###### Name #############################################################
@@ -54,10 +54,11 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs\-oilify
-runs GIMP to load an image, and applies the GIMP GEGL "Oilify" filter
+runs GIMP to load an image, applies the GIMP GEGL "Oilify" filter
 (details:
-.Lk https://gegl.org/operations/gegl\-oilify.html "GEGL Oilify" )
+.Lk https://gegl.org/operations/gegl\-oilify.html "GEGL Oilify" ) ,
 and stores the result into an output file.
+The mask size and intensity mode (on or off) are configurable.
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
