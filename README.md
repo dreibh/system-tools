@@ -729,7 +729,88 @@ Also see [GS-List-Fonts](#gs-list-fonts), [GS-List-Gradients](#gs-list-gradients
 
 ## GS-BumpMap
 
-TBD
+GS-BumpMap runs GIMP to load an image, applies the <a href="https://gegl.org/operations/gegl-bump-map.html">GIMP GEGL "Bump Map" filter</a> as well as <a href="https://docs.gimp.org/3.0/en/gimp-tool-hue-saturation.html">Hue-Saturation adjustment</a>, and stores the result into an output file.
+
+Examples (click on image for full-size view):
+
+<table summary="GS-BumpMap Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Bergen-BumpMap.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Bergen-BumpMap-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Portobello-BumpMap.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Portobello-BumpMap-preview.webp" width="43%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Fractal-BumpMap.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Fractal-BumpMap-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <span id="BumpMap1" />
+```bash
+gs-bumpmap Bergen.webp Bergen-BumpMap.webp \
+   --azimuth              90.0 \
+   --elevation            10.0 \
+   --depth                20   \
+   --offset-x             4    \
+   --offset-y             4    \
+   --compensate-darkening on   \
+   --waterlevel           0.1  \
+   --invert               off  \
+   --tiled                on
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="BumpMap2" />
+```bash
+gs-bumpmap Portobello.webp Portobello-BumpMap.webp \
+   --azimuth              135.0 \
+   --elevation            20.0  \
+   --depth                20    \
+   --offset-x             16    \
+   --offset-y             16    \
+   --compensate-darkening on    \
+   --waterlevel           0.1   \
+   --invert               off   \
+   --tiled                on
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="BumpMap3" />
+```bash
+gs-bumpmap Fractal.webp Fractal-BumpMap.webp \
+   --azimuth              135.0 \
+   --elevation            48.0  \
+   --depth                32    \
+   --offset-x             0     \
+   --offset-y             0     \
+   --compensate-darkening on    \
+   --waterlevel           0.2   \
+   --invert               off   \
+   --tiled                on
+```
+    </td>
+  </tr>
+</table>
+
+Also see the manpage of GS-BumpMap for further details and examples:
+
+```bash
+man gs-bumpmap
+```
 
 
 ## GS-Clothify
@@ -1040,7 +1121,9 @@ man gs-oldphoto
 
 ## GS-Resize-with-Cropping
 
-TBD
+GS-Resize-with-Cropping resizes an image, including cropping to fit a changed aspect ratio.
+
+FIXME! TBD
 
 
 ## GS-Test-Gimp
@@ -1178,7 +1261,7 @@ For ready-to-install FreeBSD packages of System-Tools, it is included in the por
 sudo pkg install td-system-tools
 ```
 
-Note: The FreeBSD port contains the basic System-Tools (without the dependency-heavy GIMP-Scripts, and without Configure-GRUB).
+Note: The FreeBSD port package contains the basic System-Tools (without the dependency-heavy GIMP-Scripts, and without Configure-GRUB).
 
 Alternatively, to compile it from the ports sources:
 
