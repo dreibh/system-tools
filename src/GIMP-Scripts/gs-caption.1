@@ -77,7 +77,8 @@ The height of the image to be generated.
 The caption text.
 .It Fl F Ar font | Fl Fl font\-name Ar font
 Specifies the font and style to be used. Font and style are space separated, e.g. \(dqURW Gothic Book Oblique\(dq for font \(dqURW Gothic\(dq in style \(dqURW Gothic Book Oblique\(dq.
-Use `fc\-list\~: family style \-f \(dq%{family[0]} %{style[0]}\[rs]n\(dq | sort \-u` to list all installed fonts and styles.
+The available font/style combinations can be listed with
+.Xr gs-list-fonts 1 .
 .It  Fl S Ar percentage | Fl Fl font\-size Ar percentage
 Specifies the font size, in percentage of the caption height. Range: 1\-100. Default: 50.
 .It  Fl f Ar color | Fl Fl foreground Ar color
@@ -106,7 +107,6 @@ tool exits with 0 on success, and >0 in case of an error.
 .It gs\-caption Caption1.png 1024 42 \(dqTest!\(dq
 .It gs\-caption Caption2.png 1024 42 \(dqThis is a test!\(dq \-\-font\-name \(dqNoto Sans Bold\(dq \-\-font\-size 70 \-\-foreground \(dq#02266b\(dq \-\-background \(dq#ffd7cc\(dq \-\-transparency 50
 .It gs\-caption Caption3.png 1920 64 \(dqAnother test!\(dq \-F \(dqLobster Two Bold Italic\(dq \-S 70 \-f \(dq#02266b\(dq \-b \(dq#ffd700\(dq \-t 26
-.It fc\-list\~: family style \-f \(dq%{family[0]} %{style[0]}\[rs]n\(dq | sort \-u
 .It gs\-caption \-\-help
 .It gs\-caption \-h
 .It gs\-caption \-\-version
@@ -118,8 +118,6 @@ tool exits with 0 on success, and >0 in case of an error.
 .Xr gs\-clothify 1 ,
 .Xr gs\-glossytext 1 ,
 .Xr gs\-list\-fonts 1 ,
-.Xr gs\-list\-gradients 1 ,
-.Xr gs\-list\-patterns 1 ,
 .Xr gs\-mosaic 1 ,
 .Xr gs\-oilify 1 ,
 .Xr gs\-oldphoto 1 ,
