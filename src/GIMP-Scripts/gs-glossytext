@@ -13,6 +13,10 @@
 # GIMP Scripts
 # Copyright (C) 2013-2026 by Thomas Dreibholz
 #
+# Based on glossy-300.scm from https://github.com/vitforlinux-gimp/scm:
+# Copyright (C) 1995 Spencer Kimball and Peter Mattis
+# Copyright (C) 1998 Hrvoje Horvat
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or

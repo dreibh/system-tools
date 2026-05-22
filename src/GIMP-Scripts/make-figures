@@ -42,6 +42,9 @@ WIDTH=1920
 HEIGHT=1080
 PREVIEW_WIDTH=512
 
+
+# ###### Main program #######################################################
+
 # ====== Generate input images ==============================================
 echo "Generating input images ..."
 if [ ! -e "figures/${INPUT1}.webp" ] ; then
@@ -88,6 +91,7 @@ if [ ! -e figures/Caption3.webp ] ; then
 fi
 gm identify figures/Caption3.webp
 
+
 # ====== gs-glossytext ====================================================
 echo "GlossyText:"
 if [ ! -e figures/GlossyText1.webp ] ; then
@@ -112,6 +116,81 @@ if [ ! -e figures/GlossyText3.webp ] ; then
    ./gs-glossytext figures/GlossyText3.webp "NorNet" -S 64
 fi
 gm identify figures/GlossyText3.webp
+
+
+# ====== gs-bumpmap ==========================================================
+echo "BumpMap:"
+if [ ! -e "figures/${INPUT1}-BumpMap.webp" ] ; then
+   ./gs-bumpmap "figures/${INPUT1}.webp" "figures/${INPUT1}-BumpMap.webp" \
+      --azimuth              90.0  \
+      --elevation            10.0  \
+      --depth                20    \
+      --offset-x             4     \
+      --offset-y             4     \
+      --compensate-darkening on    \
+      --waterlevel           0.1   \
+      --invert               off   \
+      --tiled                on
+fi
+gm identify "figures/${INPUT1}-BumpMap.webp"
+if [ ! -e "figures/${INPUT2}-BumpMap.webp" ] ; then
+   ./gs-bumpmap "figures/${INPUT2}.webp" "figures/${INPUT2}-BumpMap.webp" \
+      --azimuth              135.0  \
+      --elevation            20.0   \
+      --depth                20     \
+      --offset-x             16     \
+      --offset-y             16     \
+      --compensate-darkening on     \
+      --waterlevel           0.1    \
+      --invert               off    \
+      --tiled                on
+fi
+gm identify "figures/${INPUT2}-BumpMap.webp"
+if [ ! -e "figures/${INPUT3}-BumpMap.webp" ] ; then
+   ./gs-bumpmap "figures/${INPUT3}.webp" "figures/${INPUT3}-BumpMap.webp" \
+      --azimuth              135.0  \
+      --elevation            20.0   \
+      --depth                20     \
+      --offset-x             0      \
+      --offset-y             0      \
+      --compensate-darkening on     \
+      --waterlevel           0.1    \
+      --invert               off    \
+      --tiled                on
+fi
+gm identify "figures/${INPUT3}-BumpMap.webp"
+
+
+# ====== gs-clothify ==========================================================
+echo "Clothify"
+if [ ! -e "figures/${INPUT1}-Clothify.webp" ] ; then
+   ./gs-clothify "figures/${INPUT1}.webp" "figures/${INPUT1}-Clothify.webp" \
+      --blur-x    3    \
+      --blur-y    3    \
+      --azimuth   90.0 \
+      --elevation 10.0 \
+      --depth 4
+fi
+gm identify "figures/${INPUT1}-Clothify.webp"
+if [ ! -e "figures/${INPUT2}-Clothify.webp" ] ; then
+   ./gs-clothify "figures/${INPUT2}.webp" "figures/${INPUT2}-Clothify.webp" \
+      --blur-x    5     \
+      --blur-y    5     \
+      --azimuth   135.0 \
+      --elevation 20.0  \
+      --depth 4
+fi
+gm identify "figures/${INPUT2}-Clothify.webp"
+if [ ! -e "figures/${INPUT3}-Clothify.webp" ] ; then
+   ./gs-clothify "figures/${INPUT3}.webp" "figures/${INPUT3}-Clothify.webp" \
+      --blur-x    4     \
+      --blur-y    4     \
+      --azimuth   180.0 \
+      --elevation 80.0  \
+      --depth 4
+fi
+gm identify "figures/${INPUT3}-Clothify.webp"
+
 
 # ====== gs-mosaic ==========================================================
 echo "Mosaic:"
@@ -161,35 +240,6 @@ if [ ! -e "figures/${INPUT3}-Mosaic.webp" ] ; then
 fi
 gm identify "figures/${INPUT3}-Mosaic.webp"
 
-# ====== gs-clothify ==========================================================
-echo "Clothify"
-if [ ! -e "figures/${INPUT1}-Clothify.webp" ] ; then
-   ./gs-clothify "figures/${INPUT1}.webp" "figures/${INPUT1}-Clothify.webp" \
-      --blur-x    3    \
-      --blur-y    3    \
-      --azimuth   90.0 \
-      --elevation 10.0 \
-      --depth 4
-fi
-gm identify "figures/${INPUT1}-Clothify.webp"
-if [ ! -e "figures/${INPUT2}-Clothify.webp" ] ; then
-   ./gs-clothify "figures/${INPUT2}.webp" "figures/${INPUT2}-Clothify.webp" \
-      --blur-x    5     \
-      --blur-y    5     \
-      --azimuth   135.0 \
-      --elevation 20.0  \
-      --depth 4
-fi
-gm identify "figures/${INPUT2}-Clothify.webp"
-if [ ! -e "figures/${INPUT3}-Clothify.webp" ] ; then
-   ./gs-clothify "figures/${INPUT3}.webp" "figures/${INPUT3}-Clothify.webp" \
-      --blur-x    4     \
-      --blur-y    4     \
-      --azimuth   180.0 \
-      --elevation 80.0  \
-      --depth 4
-fi
-gm identify "figures/${INPUT3}-Clothify.webp"
 
 # ====== gs-oilify ==========================================================
 echo "Oilify:"
@@ -211,48 +261,6 @@ if [ ! -e "figures/${INPUT3}-Oilify.webp" ] ; then
       --intensity-mode on
 fi
 gm identify "figures/${INPUT3}-Oilify.webp"
-
-# ====== gs-bumpmap ==========================================================
-echo "BumpMap:"
-if [ ! -e "figures/${INPUT1}-BumpMap.webp" ] ; then
-   ./gs-bumpmap "figures/${INPUT1}.webp" "figures/${INPUT1}-BumpMap.webp" \
-      --azimuth              90.0  \
-      --elevation            10.0  \
-      --depth                20    \
-      --offset-x             4     \
-      --offset-y             4     \
-      --compensate-darkening on    \
-      --waterlevel           0.1   \
-      --invert               off   \
-      --tiled                on
-fi
-gm identify "figures/${INPUT1}-BumpMap.webp"
-if [ ! -e "figures/${INPUT2}-BumpMap.webp" ] ; then
-   ./gs-bumpmap "figures/${INPUT2}.webp" "figures/${INPUT2}-BumpMap.webp" \
-      --azimuth              135.0  \
-      --elevation            20.0   \
-      --depth                20     \
-      --offset-x             16     \
-      --offset-y             16     \
-      --compensate-darkening on     \
-      --waterlevel           0.1    \
-      --invert               off    \
-      --tiled                on
-fi
-gm identify "figures/${INPUT2}-BumpMap.webp"
-if [ ! -e "figures/${INPUT3}-BumpMap.webp" ] ; then
-   ./gs-bumpmap "figures/${INPUT3}.webp" "figures/${INPUT3}-BumpMap.webp" \
-      --azimuth              135.0  \
-      --elevation            20.0   \
-      --depth                20     \
-      --offset-x             0      \
-      --offset-y             0      \
-      --compensate-darkening on     \
-      --waterlevel           0.1    \
-      --invert               off    \
-      --tiled                on
-fi
-gm identify "figures/${INPUT3}-BumpMap.webp"
 
 
 # ====== gs-oldphoto ======================================================
