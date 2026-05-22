@@ -596,7 +596,7 @@ TBD
 
 GS-GlossyText runs GIMP and the <a href="https://docs.gimp.org/2.8/en/script-fu-glossy-logo-alpha.html">GIMP Script-Fu "Glossy" script</a> to render a given text using a specific font. The color gradients, patterns, font, and font size are configurable.
 
-Examples (click image for full-size view):
+Examples (click on image for full-size view):
 
 <table summary="GS-GlossyText Examples" style="table-layout: fixed; width: 100%;">
   <tr>
@@ -666,7 +666,7 @@ man gs-glossytext
 GS-Mosaic runs GIMP to load an image, applies the <a href="https://gegl.org/operations/gegl-mosaic.html">GIMP GEGL "Mosaic" filter</a>, and stores the result into an output file.
 The tile type (triangles, squares, hexagons, octagons), tile size, tile height, tile neatness, tile surface (smooth or rough) tile spacing, coloring and lighting are configurable.
 
-Examples (click image for full-size view):
+Examples (click on image for full-size view):
 
 <table summary="GS-Mosaic Examples" style="table-layout: fixed; width: 100%;">
   <tr>
@@ -759,7 +759,7 @@ man gs-mosaic
 GS-Oilify runs GIMP to load an image, applies the <a href="https://gegl.org/operations/gegl-oilify.html">GIMP GEGL "Oilify" filter</a>, and stores the result into an output file.
 The mask size and intensity mode (on or off) are configurable.
 
-Examples (click image for full-size view):
+Examples (click on image for full-size view):
 
 <table summary="GS-Oilify Examples" style="table-layout: fixed; width: 100%;">
   <tr>
@@ -822,7 +822,74 @@ man gs-oilify
 
 ## GS-OldPhoto
 
-TBD
+GS-OldPhoto runs GIMP to load an image, applies the <a href="https://docs.gimp.org/3.0/en/script-fu-old-photo.html">GIMP Script-Fu "Old Photo" filter</a>, and stores the result into an output file.
+The defocus mode (on or off), border size, sepia mode (on or off) and mottle mode (on or off) are configurable.
+
+Examples (click on image for full-size view):
+
+<table summary="GS-OldPhoto Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Bergen-OldPhoto.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Bergen-OldPhoto-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Portobello-OldPhoto.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Portobello-OldPhoto-preview.webp" width="43%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Fractal-OldPhoto.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Fractal-OldPhoto-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <span id="OldPhoto1" />
+```bash
+gs-oldphoto Bergen.webp Bergen-OldPhoto.webp \
+   --defocus on     \
+   --border-size 24 \
+   --sepia on       \
+   --mottle on
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="OldPhoto2" />
+```bash
+gs-oldphoto Portobello.webp Portobello-OldPhoto.webp \
+   --defocus off    \
+   --border-size 16 \
+   --sepia on       \
+   --mottle off
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="OldPhoto3" />
+```bash
+gs-oldphoto Fractal.webp Fractal-OldPhoto.webp \
+   --defocus on     \
+   --border-size 32 \
+   --sepia off      \
+   --mottle on
+```
+    </td>
+  </tr>
+</table>
+
+Also see the manpage of GS-OldPhoto for further details and examples:
+
+```bash
+man gs-oldphoto
+```
 
 
 ## GS-Resize-with-Cropping
@@ -832,14 +899,84 @@ TBD
 
 ## GS-Test-Gimp
 
-TBD
+GS-Test-Gimp runs a short test to verify that GIMP can run a GIMP script in non-GUI mode. If not already initialised, GIMP will create the GIMP directory with configuration files on first startup. The storage location of this directory is provided to GIMP by its environment variables GIMP3_DIRECTORY (Gimp 3.x) and GIMP2_DIRECTORY (Gimp 2.x).
+
+Examples:
+
+* Simply run a GIMP test:
+
+  ```bash
+  GIMP2_DIRECTORY=/tmp/gimp-temp-dir GIMP3_DIRECTORY=/tmp/gimp-temp-dir \
+     gs-test-gimp
+  ```
+
+* Run a GIMP test, with verbose output for debugging:
+
+  ```bash
+  GIMP2_DIRECTORY=/tmp/gimp-temp-dir GIMP3_DIRECTORY=/tmp/gimp-temp-dir \
+     gs-test-gimp --verbose
+  ```
+
+Also see the manpage of GS-Test-Gimp for further details and examples:
+
+```bash
+man gs-test-gimp
+```
 
 
 ## Helper Scripts
 
 ### GS-List-Fonts
+
+GS-List-Fonts lists the available GIMP fonts and their styles as combined strings. These font/style strings are e.g.&nbsp;valid settings for the `--font-name` parameter of [GS-Caption](#gs-caption) and [GS-GlossyText](#gs-glossytext).
+
+Usage:
+
+```bash
+gs-list-fonts
+```
+
+Also see the manpage of GS-List-Fonts for further information:
+
+```bash
+man gs-list-fonts
+```
+
 ### GS-List-Gradients
+
+GS-List-Gradients lists the available GIMP gradients.
+
+Usage:
+
+```bash
+gs-list-gradients
+```
+
+Also see the manpage of GS-List-Gradients for further information:
+
+```bash
+man gs-list-gradients
+```
+
+These gradients are e.g.&nbsp;valid settings for the `--blend-gradient-*` parameters of [GS-GlossyText](#gs-glossytext).
+
+
+
 ### GS-List-Patterns
+
+GS-List-Patterns lists the available GIMP patterns. These patterns are e.g.&nbsp;valid settings for the `--pattern-*` parameters of [GS-GlossyText](#gs-glossytext).
+
+Usage:
+
+```bash
+gs-list-patterns
+```
+
+Also see the manpage of GS-List-Patterns for further information:
+
+```bash
+man gs-list-patterns
+```
 
 
 # 📦 Binary Package Installation
