@@ -44,17 +44,18 @@ OPTIONS_DEFAULT=I18N \
 		UNIX_TIMESTAMP_TOOLS \
 		X509_TOOLS
 
-I18N_DESC=				"Build with Internationalization (i18n) support"
-SYSTEM_INFO=				"Include System-Info"
-SYSTEM_MAINTENANCE=			"Include System-Maintenance"
-PRINT_UTF8=				"Include Print-UTF8"
-TEXT_BLOCK=				"Include Text-Block"
-FINGERPRINT_SSH_KEYS=			"Include Fingerprint-SSH-Keys"
-CONFIGURE_GRUB=				"Include Configure-GRUB"
-RESET_MACHINE_ID=			"Include Reset-Machine-ID"
-TRY_HARD=				"Include Try-Hard"
-RANDOM_SLEEP=				"Include Random-Sleep"
-UNIX_TIMESTAMP_TOOLS=			"Include Unix-Timestamp Tools"
+I18N_DESC=				Build with Internationalization (i18n) support
+SYSTEM_INFO_DESC=			Include System-Info
+SYSTEM_MAINTENANCE_DESC=		Include System-Maintenance
+PRINT_UTF8_DESC=			Include Print-UTF8
+TEXT_BLOCK_DESC=			Include Text-Block
+FINGERPRINT_SSH_KEYS_DESC=		Include Fingerprint-SSH-Keys
+CONFIGURE_GRUB_DESC=			Include Configure-GRUB
+RESET_MACHINE_ID_DESC=			Include Reset-Machine-ID
+TRY_HARD_DESC=				Include Try-Hard
+RANDOM_SLEEP_DESC=			Include Random-Sleep
+UNIX_TIMESTAMP_TOOLS_DESC=		Include Unix-Timestamp Tools
+X509_TOOLS_DESC=			Include X.509 Tools
 
 I18N_CMAKE_BOOL=			WITH_I18N
 SYSTEM_INFO_CMAKE_BOOL=			WITH_SYSTEM_INFO
@@ -70,5 +71,7 @@ UNIX_TIMESTAMP_TOOLS_CMAKE_BOOL=	WITH_UNIX_TIMESTAMP_TOOLS
 X509_TOOLS_CMAKE_BOOL=			WITH_X509_TOOLS
 
 CMAKE_ARGS=	-DCMAKE_INSTALL_MANDIR=${PREFIX}/share/man
+
+CLFAGS+=	-std=c23
 
 .include <bsd.port.mk>
