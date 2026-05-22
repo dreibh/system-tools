@@ -596,7 +596,7 @@ TBD
 
 GS-GlossyText runs GIMP and the <a href="https://docs.gimp.org/2.8/en/script-fu-glossy-logo-alpha.html">GIMP Script-Fu "Glossy" script</a> to render a given text using a specific font. The color gradients, patterns, font, and font size are configurable.
 
-Examples:
+Examples (click image for full-size view):
 
 <table summary="GS-GlossyText Examples" style="table-layout: fixed; width: 100%;">
   <tr>
@@ -666,7 +666,7 @@ man gs-glossytext
 GS-Mosaic runs GIMP to load an image, applies the <a href="https://gegl.org/operations/gegl-mosaic.html">GIMP GEGL "Mosaic" filter</a>, and stores the result into an output file.
 The tile type (triangles, squares, hexagons, octagons), tile size, tile height, tile neatness, tile surface (smooth or rough) tile spacing, coloring and lighting are configurable.
 
-Examples:
+Examples (click image for full-size view):
 
 <table summary="GS-Mosaic Examples" style="table-layout: fixed; width: 100%;">
   <tr>
@@ -680,7 +680,7 @@ Examples:
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Portobello-Mosaic.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Portobello-Mosaic-preview.webp" width="100%" height="100%" />
+        <img alt="" src="src/GIMP-Scripts/figures/Portobello-Mosaic-preview.webp" width="43%" />
       </a>
      </p>
     </td>
@@ -756,7 +756,68 @@ man gs-mosaic
 
 ## GS-Oilify
 
-TBD
+GS-Oilify runs GIMP to load an image, applies the <a href="https://gegl.org/operations/gegl-oilify.html">GIMP GEGL "Oilify" filter</a>, and stores the result into an output file.
+The mask size and intensity mode (on or off) are configurable.
+
+Examples (click image for full-size view):
+
+<table summary="GS-Oilify Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Bergen-Oilify.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Bergen-Oilify-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Portobello-Oilify.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Portobello-Oilify-preview.webp" width="43%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Fractal-Oilify.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Fractal-Oilify-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <span id="Oilify1" />
+```bash
+gs-oilify Bergen.webp Bergen-Oilify.webp \
+   --mask-size      20 \
+   --intensity-mode on
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="Oilify2" />
+```bash
+gs-oilify Portobello.webp Portobello-Oilify.webp \
+   --mask-size      16 \
+   --intensity-mode off
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="Oilify3" />
+```bash
+gs-oilify Fractal.webp Fractal-Oilify.webp \
+   --mask-size      12 \
+   --intensity-mode on
+```
+    </td>
+  </tr>
+</table>
+
+Also see the manpage of GS-Oilify for further details and examples:
+
+```bash
+man gs-oilify
+```
 
 
 ## GS-OldPhoto
