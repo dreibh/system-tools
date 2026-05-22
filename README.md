@@ -603,21 +603,21 @@ Examples:
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/GlossyText1.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/GlossyText1.webp" width="100%" height="100%" />
+        <img alt="" src="src/GIMP-Scripts/figures/GlossyText1-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/GlossyText2.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/GlossyText2.webp" width="100%" height="100%" />
+        <img alt="" src="src/GIMP-Scripts/figures/GlossyText2-preview.webp" width="100%" height="100%" />
       </a>
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/GlossyText3.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/GlossyText3.webp" width="100%" height="100%" />
+        <img alt="" src="src/GIMP-Scripts/figures/GlossyText3-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
@@ -663,7 +663,95 @@ man gs-glossytext
 
 ## GS-Mosaic
 
-TBD
+GS-Mosaic runs GIMP to load an image, applies the <a href="https://gegl.org/operations/gegl-mosaic.html">GIMP GEGL "Mosaic" filter</a>, and stores the result into an output file.
+The tile type (triangles, squares, hexagons, octagons), tile size, tile height, tile neatness, tile surface (smooth or rough) tile spacing, coloring and lighting are configurable.
+
+Examples:
+
+<table summary="GS-Mosaic Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Bergen-Mosaic.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Bergen-Mosaic-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Portobello-Mosaic.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Portobello-Mosaic-preview.webp" width="100%" height="100%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Fractal-Mosaic.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Fractal-Mosaic-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <span id="Mosaic1" />
+```bash
+gs-mosaic Bergen.webp Bergen-Mosaic.webp \
+   --tile-type        hexagons \
+   --tile-size        15.0     \
+   --tile-height      4.0      \
+   --tile-neatness    0.65     \
+   --tile-surface     rough    \
+   --tile-spacing     4.0      \
+   --tile-allow-split on       \
+   --color-variation  0.15     \
+   --color-averaging  on       \
+   --antialiasing     on       \
+   --light-direction  135.0
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="Mosaic2" />
+```bash
+gs-mosaic Portobello.webp Portobello-Mosaic.webp \
+   --tile-type        octagons \
+   --tile-size        15.0     \
+   --tile-height      4.0      \
+   --tile-neatness    0.25     \
+   --tile-surface     smooth   \
+   --tile-spacing     4.0      \
+   --tile-allow-split on       \
+   --color-variation  0.35     \
+   --color-averaging  on       \
+   --antialiasing     on       \
+   --light-direction  35.0
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="Mosaic3" />
+```bash
+gs-mosaic Fractal.webp Fractal-Mosaic.webp \
+   --tile-type        squares \
+   --tile-size        15.0     \
+   --tile-height      4.0      \
+   --tile-neatness    0.65     \
+   --tile-surface     rough    \
+   --tile-spacing     4.0      \
+   --tile-allow-split on       \
+   --color-variation  0.15     \
+   --color-averaging  on       \
+   --antialiasing     on       \
+   --light-direction  275.0
+```
+    </td>
+  </tr>
+</table>
+
+Also see the manpage of GS-Mosaic for further details and examples:
+
+```bash
+man gs-mosaic
+```
 
 
 ## GS-Oilify
