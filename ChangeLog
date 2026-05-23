@@ -1,3 +1,27 @@
+commit 2d1ff0ec0771953ec4875959603aea37f9e07dce
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 18:57:32 2026 +0200
+
+    Build fix for ENABLE_I18N=OFF.
+
+commit 18c0d2b305fd183e10d8db5addc5a12aa843a9d2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 18:47:02 2026 +0200
+
+    Improved FreeBSD port configuration.
+
+commit a662ea28b41cfc3cce747a47f051159d77efa27e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 18:30:43 2026 +0200
+
+    Made FreeBSD port configurable.
+
+commit b9f2fb461f780497abc5bef61b1efffc6da455e2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 15:55:33 2026 +0200
+
+    New release td-system-tools-2.6.3.
+
 commit 4d2aa66f48e312be2dfd59af86efa57ec2baed81
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri May 22 15:41:13 2026 +0200

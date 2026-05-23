@@ -34,7 +34,7 @@ ENABLE_LANGUAGE(C)
 
 SET(BUILD_MAJOR "2")
 SET(BUILD_MINOR "6")
-SET(BUILD_PATCH "3")
+SET(BUILD_PATCH "4")
 SET(BUILD_VERSION ${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH})
 
 
@@ -134,7 +134,7 @@ ENDIF()
 #############################################################################
 
 ADD_COMPILE_OPTIONS(-Wall -Wextra -Wpedantic -Wsign-conversion)
-ADD_COMPILE_DEFINITIONS(_FILE_OFFSET_BITS=64 _TIME_BITS=64)
+ADD_DEFINITIONS(-D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64)
 
 
 #############################################################################

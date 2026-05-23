@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.6.3
+Version: 2.6.4
 Release: 1
 Summary: Tools for basic system management
 License: GPL-3.0-or-later
@@ -369,6 +369,8 @@ tools. It installs all sub-packages.
 
 
 %changelog
+* Sat May 23 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.4-1
+- New upstream release.
 * Fri May 22 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.3-1
 - New upstream release.
 * Sun May 17 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.2-1
