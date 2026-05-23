@@ -199,7 +199,7 @@ while true ; do
    fi
 
    # ====== Run the command =================================================
-   "$@" && exitStatus=0 || exitStatus=$?
+   "$@" && exit 0 || exitStatus=$?
 
    # ====== Check whether trial limit has been reached ======================
    if [ ${trial} -ge "${MAX_TRIALS}" ] ; then
@@ -235,7 +235,7 @@ BEGIN {
    # ====== Wait a random time span =========================================
    if [ "${DETERMINISTIC}" -eq 0 ] ; then
       if [ "${VERBOSE}" -eq 1 ] ; then
-         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS} failed -> waiting random time from [\${minDelay}, \${maxDelay}] s ...")\x1b[0m"
+         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS} failed (exit code \${exitStatus}) -> waiting random time from [\${minDelay}, \${maxDelay}] s ...")\x1b[0m"
          random-sleep -w "${minDelay}" "${maxDelay}"
       else
          random-sleep "${minDelay}" "${maxDelay}"

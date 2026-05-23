@@ -30,7 +30,6 @@
 #define _GNU_SOURCE   /* for timegm() */
 #include <ctype.h>
 #include <getopt.h>
-#include <libintl.h>
 #include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -40,6 +39,15 @@
 #include <unistd.h>
 #ifndef nullptr
 #define nullptr NULL
+#endif
+
+#ifdef ENABLE_NLS
+#include <libintl.h>
+#else
+#define bindtextdomain(domain, dirname) { }
+#define textdomain(domain) { }
+#define gettext(string) string
+#define ngettext(singular, plural, n) ((n) == 1 ? (singular) : (plural))
 #endif
 
 #include "package-version.h"
