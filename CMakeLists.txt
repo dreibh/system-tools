@@ -28,7 +28,7 @@
 # Contact: dreibh@simula.no
 
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
 PROJECT(td-system-tools)
 ENABLE_LANGUAGE(C)
 
@@ -134,7 +134,7 @@ ENDIF()
 #############################################################################
 
 ADD_COMPILE_OPTIONS(-Wall -Wextra -Wpedantic -Wsign-conversion)
-ADD_DEFINITIONS(-D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64)
+ADD_COMPILE_DEFINITIONS(_FILE_OFFSET_BITS=64 _TIME_BITS=64)
 
 
 #############################################################################
