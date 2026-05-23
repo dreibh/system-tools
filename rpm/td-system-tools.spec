@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.6.2
+Version: 2.6.4
 Release: 1
 Summary: Tools for basic system management
 License: GPL-3.0-or-later
@@ -250,6 +250,7 @@ milliseconds, microseconds, and nanoseconds.
 Summary: Make multiple trials to successfully run a command
 BuildArch: noarch
 Conflicts: %{name}-misc
+Requires: gettext-runtime
 
 %description try-hard
 Try-hard runs a command and retries for a given number of times in case
@@ -282,6 +283,7 @@ Summary: X.509 certificate handling tools
 BuildArch: noarch
 Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
+Requires: gettext-runtime
 Requires: openssl
 Recommends: gnutls-utils
 Recommends: nss-tools
@@ -366,6 +368,10 @@ tools. It installs all sub-packages.
 
 
 %changelog
+* Sat May 23 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.4-1
+- New upstream release.
+* Fri May 22 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.3-1
+- New upstream release.
 * Sun May 17 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.2-1
 - New upstream release.
 * Sat May 09 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.1-1

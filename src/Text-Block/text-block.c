@@ -47,7 +47,6 @@
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #else
-#warning NLS is disabled!
 #define bindtextdomain(domain, dirname) { }
 #define textdomain(domain) { }
 #define gettext(string) string
