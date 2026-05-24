@@ -64,6 +64,28 @@ fi
 gm identify "figures/${INPUT3}.webp"
 
 
+# ====== gs-resize-with-cropping ======================================================
+echo "Resize-with-Cropping:"
+if [ ! -e "figures/${INPUT1}-Resize-with-Cropping.webp" ] ; then
+   ./gs-resize-with-cropping "figures/${INPUT1}.webp" "figures/${INPUT1}-Resize-with-Cropping.webp" \
+      --width 1024 \
+      --aspect 1:1
+fi
+gm identify "figures/${INPUT1}-Resize-with-Cropping.webp"
+if [ ! -e "figures/${INPUT2}-Resize-with-Cropping.webp" ] ; then
+   ./gs-resize-with-cropping "figures/${INPUT2}.webp" "figures/${INPUT2}-Resize-with-Cropping.webp" \
+      --width 1024 \
+      --aspect 2:1
+fi
+gm identify "figures/${INPUT2}-Resize-with-Cropping.webp"
+if [ ! -e "figures/${INPUT3}-Resize-with-Cropping.webp" ] ; then
+   ./gs-resize-with-cropping "figures/${INPUT3}.webp" "figures/${INPUT3}-Resize-with-Cropping.webp" \
+      --height 512 \
+      --aspect 3:1
+fi
+gm identify "figures/${INPUT3}-Resize-with-Cropping.webp"
+
+
 # ====== gs-caption =======================================================
 echo "Caption:"
 if [ ! -e figures/Caption1.webp ] ; then

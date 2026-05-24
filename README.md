@@ -575,156 +575,105 @@ man test-tls-connection
 
 # 📚 GIMP-Scripts
 
-The GIMP-Scripts are a collection of scripts using GIMP and GraphicsMagick to render text as well as to apply effects on and resize images.
+The GIMP-Scripts are a collection of scripts using [GIMP](https://www.gimp.org/) and [GraphicsMagick](https://graphicsmagick.sourceforge.io/index.html) to render text as well as to apply effects on and resize images.
 
+Examples input images for the following non-rendering examples (click on image for full-size view):
 
-## GS-Caption
-
-GS-Caption runs GIMP to generate a caption image with given text using a specific font. The foreground and background color, transparency, font, and font size are configurable.
-
-Examples (click on image for full-size view):
-
-<table summary="GS-Caption Examples" style="table-layout: fixed; width: 100%;">
+<table summary="Original Examples" style="table-layout: fixed; width: 100%;">
   <tr>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
-      <a href="src/GIMP-Scripts/figures/Caption1.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Caption1-preview.webp" width="100%" height="100%" />
+      <a href="src/GIMP-Scripts/figures/Bergen.webp">
+        <img alt="Bergen, Norway" src="src/GIMP-Scripts/figures/Bergen-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
-      <a href="src/GIMP-Scripts/figures/Caption2.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Caption2-preview.webp" width="100%" height="100%" />
+      <a href="src/GIMP-Scripts/figures/Portobello.webp">
+        <img alt="Portobello, New Zealand" src="src/GIMP-Scripts/figures/Portobello-preview.webp" width="43%" />
       </a>
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
-      <a href="src/GIMP-Scripts/figures/Caption3.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Caption3-preview.webp" width="100%" height="100%" />
+      <a href="src/GIMP-Scripts/figures/Fractal.webp">
+        <img alt="Mandelbrot Fractal rendered by FractGen" src="src/GIMP-Scripts/figures/Fractal-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
   </tr>
   <tr>
-    <td style="vertical-align: middle;">
-     <span id="Caption1" />
-```bash
-gs-caption Caption1.webp 1024 42 \
-   "Test on $(LC_ALL=C.UTF-8 date)" \
-   --font-name "Open Sans Bold" \
-   --font-size 70 \
-   --foreground "#02266b" --background "#ffd7cc" \
-   --transparency 50
-```
-    </td>
-    <td style="vertical-align: middle;">
-     <span id="Caption2" />
-```bash
-gs-caption Caption2.webp 1024 42 \
-   "Another Test on $(LC_ALL=C.UTF-8 date)" \
-   --font-name "Lobster Two Bold Italic" \
-   --font-size 70 \
-   --foreground "#02266b" --background "#ffd700" \
-   --transparency 26
-```
-    </td>
-    <td style="vertical-align: middle;">
-     <span id="Caption3" />
-```bash
-gs-caption Caption3.webp 1024 42 \
-   "Yet Another Test on $(LC_ALL=C.UTF-8 date)" \
-   --font-name "URW Gothic Book" \
-   --font-size 70 \
-   --foreground "#02266b" --background "#777777" \
-   --transparency 40
-```
-    </td>
+    <td style="vertical-align: middle;"><p align="center"><a href="src/GIMP-Scripts/figures/Bergen.webp">Bergen.webp</a></p></td>
+    <td style="vertical-align: middle;"><p align="center"><a href="src/GIMP-Scripts/figures/Portobello.webp">Portobello.webp</a></p></td>
+    <td style="vertical-align: middle;"><p align="center"><a href="src/GIMP-Scripts/figures/Fractal.webp">Fractal.webp</a><br/><a href="https://www.nntb.no/~dreibh/fractalgenerator/">FractGen</a> input file <a type="application/x-fractgen" href="src/GIMP-Scripts/examples/Fractal.fsf">Fractal.fsf</a></p></td>
   </tr>
 </table>
 
-See the manpage of GS-Caption for further details and examples:
 
-```bash
-man gs-caption
-```
+## GS-Resize-with-Cropping
 
-Also see [GS-List-Fonts](#gs-list-fonts) for obtaining a list of available fonts.
-
-
-## GS-GlossyText
-
-GS-GlossyText runs GIMP and the <a href="https://docs.gimp.org/2.8/en/script-fu-glossy-logo-alpha.html">GIMP Script-Fu "Glossy" script</a> to render a given text using a specific font. The color gradients, patterns, font, and font size are configurable.
+GS-Resize-with-Cropping resizes an image, including cropping to fit a changed aspect ratio.
 
 Examples (click on image for full-size view):
 
-<table summary="GS-GlossyText Examples" style="table-layout: fixed; width: 100%;">
+<table summary="GS-Resize-with-Cropping Examples" style="table-layout: fixed; width: 100%;">
   <tr>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
-      <a href="src/GIMP-Scripts/figures/GlossyText1.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/GlossyText1-preview.webp" width="100%" height="100%" />
+      <a href="src/GIMP-Scripts/figures/Bergen-Resize-with-Cropping.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Bergen-Resize-with-Cropping-preview.webp" height="256px" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
-      <a href="src/GIMP-Scripts/figures/GlossyText2.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/GlossyText2-preview.webp" width="100%" height="100%" />
+      <a href="src/GIMP-Scripts/figures/Portobello-Resize-with-Cropping.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Portobello-Resize-with-Cropping-preview.webp" height="256px" />
       </a>
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
-      <a href="src/GIMP-Scripts/figures/GlossyText3.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/GlossyText3-preview.webp" width="100%" height="100%" />
+      <a href="src/GIMP-Scripts/figures/Fractal-Resize-with-Cropping.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Fractal-Resize-with-Cropping-preview.webp" height="256px" />
       </a><br />
      </p>
     </td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">
-     <span id="GlossyText1" />
+     <span id="Resize-with-Cropping1" />
 ```bash
-gs-glossytext GlossyText1.webp "System-Tools" \
-   --font-name "Lobster Two Bold Italic" \
-   --font-size 64 \
-   --outline-size 8 \
-   --blend-gradient-text "Brushed Aluminium" \
-   --blend-gradient-outline "Golden"
+gs-resize-with-cropping Bergen.webp Bergen-Resize-with-Cropping.webp \
+   --width 1024 \
+   --aspect 1:1
 ```
     </td>
     <td style="vertical-align: middle;">
-     <span id="GlossyText2" />
+     <span id="Resize-with-Cropping2" />
 ```bash
-gs-glossytext GlossyText2.webp "Simula" \
-   --font-name "Open Sans Bold" \
-   --font-size 64 \
-   --outline-size 12 \
-   --blend-gradient-text "Golden" \
-   --blend-gradient-outline "Golden"
+gs-resize-with-cropping Portobello.webp Portobello-Resize-with-Cropping.webp \
+   --width 1024 \
+   --aspect 2:1
 ```
     </td>
     <td style="vertical-align: middle;">
-     <span id="GlossyText3" />
+     <span id="Resize-with-Cropping3" />
 ```bash
-gs-glossytext GlossyText3.webp "NorNet" -S 64
+gs-resize-with-cropping Fractal.webp Fractal-Resize-with-Cropping.webp \
+   --height 512 \
+   --aspect 3:1
 ```
     </td>
   </tr>
 </table>
 
-See the manpage of GS-GlossyText for further details and examples:
+Also see the manpage of GS-Resize-with-Cropping for further details and examples:
 
 ```bash
-man gs-glossytext
+man gs-resize-with-cropping
 ```
-
-
-Also see [GS-List-Fonts](#gs-list-fonts), [GS-List-Gradients](#gs-list-gradients), and [GS-List-Patterns](#gs-list-patterns) for obtaining lists of available fonts, gradients, and patterns.
-
 
 
 ## GS-BumpMap
@@ -1119,11 +1068,152 @@ man gs-oldphoto
 ```
 
 
-## GS-Resize-with-Cropping
+## GS-Caption
 
-GS-Resize-with-Cropping resizes an image, including cropping to fit a changed aspect ratio.
+GS-Caption runs GIMP to generate a caption image with given text using a specific font. The foreground and background color, transparency, font, and font size are configurable.
 
-FIXME! TBD
+Examples (click on image for full-size view):
+
+<table summary="GS-Caption Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Caption1.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Caption1-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Caption2.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Caption2-preview.webp" width="100%" height="100%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Caption3.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/Caption3-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <span id="Caption1" />
+```bash
+gs-caption Caption1.webp 1024 42 \
+   "Test on $(LC_ALL=C.UTF-8 date)" \
+   --font-name "Open Sans Bold" \
+   --font-size 70 \
+   --foreground "#02266b" --background "#ffd7cc" \
+   --transparency 50
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="Caption2" />
+```bash
+gs-caption Caption2.webp 1024 42 \
+   "Another Test on $(LC_ALL=C.UTF-8 date)" \
+   --font-name "Lobster Two Bold Italic" \
+   --font-size 70 \
+   --foreground "#02266b" --background "#ffd700" \
+   --transparency 26
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="Caption3" />
+```bash
+gs-caption Caption3.webp 1024 42 \
+   "Yet Another Test on $(LC_ALL=C.UTF-8 date)" \
+   --font-name "URW Gothic Book" \
+   --font-size 70 \
+   --foreground "#02266b" --background "#777777" \
+   --transparency 40
+```
+    </td>
+  </tr>
+</table>
+
+See the manpage of GS-Caption for further details and examples:
+
+```bash
+man gs-caption
+```
+
+Also see [GS-List-Fonts](#gs-list-fonts) for obtaining a list of available fonts.
+
+
+## GS-GlossyText
+
+GS-GlossyText runs GIMP and the <a href="https://docs.gimp.org/2.8/en/script-fu-glossy-logo-alpha.html">GIMP Script-Fu "Glossy" script</a> to render a given text using a specific font. The color gradients, patterns, font, and font size are configurable.
+
+Examples (click on image for full-size view):
+
+<table summary="GS-GlossyText Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/GlossyText1.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/GlossyText1-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/GlossyText2.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/GlossyText2-preview.webp" width="100%" height="100%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/GlossyText3.webp">
+        <img alt="" src="src/GIMP-Scripts/figures/GlossyText3-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <span id="GlossyText1" />
+```bash
+gs-glossytext GlossyText1.webp "System-Tools" \
+   --font-name "Lobster Two Bold Italic" \
+   --font-size 64 \
+   --outline-size 8 \
+   --blend-gradient-text "Brushed Aluminium" \
+   --blend-gradient-outline "Golden"
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="GlossyText2" />
+```bash
+gs-glossytext GlossyText2.webp "Simula" \
+   --font-name "Open Sans Bold" \
+   --font-size 64 \
+   --outline-size 12 \
+   --blend-gradient-text "Golden" \
+   --blend-gradient-outline "Golden"
+```
+    </td>
+    <td style="vertical-align: middle;">
+     <span id="GlossyText3" />
+```bash
+gs-glossytext GlossyText3.webp "NorNet" -S 64
+```
+    </td>
+  </tr>
+</table>
+
+See the manpage of GS-GlossyText for further details and examples:
+
+```bash
+man gs-glossytext
+```
+
+
+Also see [GS-List-Fonts](#gs-list-fonts), [GS-List-Gradients](#gs-list-gradients), and [GS-List-Patterns](#gs-list-patterns) for obtaining lists of available fonts, gradients, and patterns.
 
 
 ## GS-Test-Gimp
@@ -1298,7 +1388,7 @@ Optionally, for installation to the standard paths (usually under `/usr/local`):
 sudo make install
 ```
 
-Note: The script [`ci/get-dependencies`](https://github.com/dreibh/system-tools/blob/master/ci/get-dependencies) automatically installs the build dependencies under Debian/Ubuntu Linux, Fedora Linux, and FreeBSD. For manual handling of the build dependencies, see the packaging configuration in [`debian/control`](https://github.com/dreibh/system-tools/blob/master/debian/control) (Debian/Ubuntu Linux), [`system-tools.spec`](https://github.com/dreibh/system-tools/blob/master/rpm/td-system-tools.spec) (Fedora Linux), and [`Makefile`](https://github.com/dreibh/system-tools/blob/master/freebsd/td-system-tools/Makefile) for FreeBSD.
+Note: The script [`ci/get-dependencies`](https://github.com/dreibh/system-tools/blob/master/ci/get-dependencies) automatically installs the build dependencies under Debian/Ubuntu Linux, Fedora Linux, and FreeBSD. For manual handling of the build dependencies, see the packaging configuration in [`debian/control`](https://github.com/dreibh/system-tools/blob/master/debian/control) (Debian/Ubuntu Linux), [`td-system-tools.spec`](https://github.com/dreibh/system-tools/blob/master/rpm/td-system-tools.spec) (Fedora Linux), and [`Makefile`](https://github.com/dreibh/system-tools/blob/master/freebsd/td-system-tools/Makefile) for FreeBSD.
 
 Contributions:
 
