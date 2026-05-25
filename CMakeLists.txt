@@ -143,7 +143,7 @@ ADD_DEFINITIONS(-D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64)
 #############################################################################
 
 IF (WITH_I18N)
-   FIND_PACKAGE (Intl)
+   FIND_PACKAGE(Intl)
    IF (Intl_FOUND)
       MESSAGE(STATUS "Internationalization (i18n) support found:")
       MESSAGE(STATUS " INTL_INCLUDE_DIRS: ${Intl_INCLUDE_DIRS}")
@@ -158,7 +158,8 @@ IF (WITH_I18N)
             " * Fedora:        sudo dnf install -y gettext-devel\n"
             " * SuSE:          sudo zypper install -y gettext-devel\n"
             " * Alpine:        sudo apk add gettext-dev\n"
-            " * FreeBSD:       sudo pkg install -y gettext-runtime")
+            " * FreeBSD:       sudo pkg install -y gettext-runtime\n"
+            " * Apple:         brew install gettext")
    ENDIF()
 
    FIND_PROGRAM(XGETTEXT xgettext REQUIRED)
