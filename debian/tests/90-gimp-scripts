@@ -49,7 +49,7 @@ PREVIEW_WIDTH=512
 echo "Generating input images ..."
 gs-resize-with-cropping "/usr/share/system-tools/gimp-scripts-examples/${INPUT1}.jpeg" "figures/${INPUT1}.webp" --aspect 16:9 --width "${WIDTH}"
 gs-resize-with-cropping "/usr/share/system-tools/gimp-scripts-examples/${INPUT2}.jpeg" "figures/${INPUT2}.webp" --aspect keep --width "${WIDTH}"
-clifractgen "/usr/share/system-tools/gimp-scripts-examples/Fractal.fsf" "figures/${INPUT3}.png" --width "${WIDTH}" --height "${HEIGHT}" --max-iterations 2048
+clifractgen "/usr/share/system-tools/gimp-scripts-examples/Fractal.fsf" "figures/${INPUT3}.webp" --width "${WIDTH}" --height "${HEIGHT}" --max-iterations 2048
 
 
 # ====== gs-resize-with-cropping ======================================================
