@@ -1,3 +1,11 @@
+td-system-tools (2.6.4-2ubuntu1) unstable; urgency=medium
+
+  * Closes: #1073548 (ITP).
+  * Closes: #1137620 (missing td-system-tools for hipercontracer-node).
+  * Closes: #1137618 (missing td-system-tools for hipercontracer-collector).
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Sat, 23 May 2026 21:27:33 +0200
+
 td-system-tools (2.6.4-1ubuntu1) unstable; urgency=medium
 
   * New upstream release.
