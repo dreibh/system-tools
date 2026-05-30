@@ -158,7 +158,7 @@ IF (WITH_I18N)
             " * Fedora:        sudo dnf install -y gettext-devel\n"
             " * SuSE:          sudo zypper install -y gettext-devel\n"
             " * Alpine:        sudo apk add gettext-dev\n"
-            " * FreeBSD:       sudo pkg install -y gettext-runtime\n"
+            " * FreeBSD:       sudo pkg install -y gettext\n"
             " * Apple:         brew install gettext")
    ENDIF()
 
