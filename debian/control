@@ -30,8 +30,7 @@ Description: Print basic system information and banners
 
 Package: td-get-system-info
 Architecture: any
-Depends: procps,
-         ${misc:Depends},
+Depends: ${misc:Depends},
          ${shlibs:Depends}
 Description: Obtain basic system information
  This small program obtains basic status information about the system:
@@ -150,6 +149,7 @@ Depends: gettext-base,
          openssl,
          td-print-utf8,
          td-text-block,
+         mbuffer | buffer,
          ${misc:Depends}
 Provides: td-x509
 Replaces: td-x509 (<< 2.2.0)
@@ -189,10 +189,7 @@ Description: GIMP image processing scripts
 
 Package: td-gimp-scripts-examples
 Architecture: all
-Depends: fontconfig,
-         gimp,
-         graphicsmagick,
-         ${misc:Depends}
+Depends: ${misc:Depends}
 Description: Example files for the GIMP image processing scripts
  The GIMP scripts are scripts for automated image processing.
  The main purpose of this script is to generate background images for
