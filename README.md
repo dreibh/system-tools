@@ -874,11 +874,11 @@ Examples (click on image for full-size view):
 ```bash
 gs-mosaic Bergen.webp Bergen-Mosaic.webp \
    --tile-type        hexagons \
-   --tile-size        15.0     \
-   --tile-height      4.0      \
+   --tile-size        21.0     \
+   --tile-height      3.0      \
    --tile-neatness    0.65     \
    --tile-surface     rough    \
-   --tile-spacing     4.0      \
+   --tile-spacing     2.0      \
    --tile-allow-split on       \
    --color-variation  0.15     \
    --color-averaging  on       \
@@ -891,11 +891,11 @@ gs-mosaic Bergen.webp Bergen-Mosaic.webp \
 ```bash
 gs-mosaic Portobello.webp Portobello-Mosaic.webp \
    --tile-type        octagons \
-   --tile-size        15.0     \
+   --tile-size        25.0     \
    --tile-height      4.0      \
    --tile-neatness    0.25     \
    --tile-surface     smooth   \
-   --tile-spacing     4.0      \
+   --tile-spacing     2.0      \
    --tile-allow-split on       \
    --color-variation  0.35     \
    --color-averaging  on       \
@@ -907,16 +907,16 @@ gs-mosaic Portobello.webp Portobello-Mosaic.webp \
      <span id="Mosaic3" />
 ```bash
 gs-mosaic Fractal.webp Fractal-Mosaic.webp \
-   --tile-type        squares \
-   --tile-size        15.0     \
-   --tile-height      4.0      \
-   --tile-neatness    0.65     \
-   --tile-surface     rough    \
-   --tile-spacing     4.0      \
-   --tile-allow-split on       \
-   --color-variation  0.15     \
-   --color-averaging  on       \
-   --antialiasing     on       \
+   --tile-type        triangles \
+   --tile-size        32.0      \
+   --tile-height      4.0       \
+   --tile-neatness    0.65      \
+   --tile-surface     rough     \
+   --tile-spacing     3.0       \
+   --tile-allow-split on        \
+   --color-variation  0.15      \
+   --color-averaging  on        \
+   --antialiasing     on        \
    --light-direction  275.0
 ```
     </td>

@@ -48,7 +48,6 @@ Depends: clifractgen,
          fonts-noto-core,
          fonts-open-sans,
          fonts-urw-base35,
-         qt6-image-formats-plugins,
          td-gimp-scripts,
          td-gimp-scripts-examples
 Restrictions: allow-stderr

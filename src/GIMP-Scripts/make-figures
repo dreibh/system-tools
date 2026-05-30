@@ -38,112 +38,112 @@ INPUT1="Bergen"
 INPUT2="Portobello"
 INPUT3="Fractal"
 
-WIDTH=1920
-HEIGHT=1080
-PREVIEW_WIDTH=512
+WIDTH=3840
+HEIGHT=2160
+PREVIEW_WIDTH=768
 
 
 # ###### Main program #######################################################
 
 # ====== Generate input images ==============================================
 echo "Generating input images ..."
-if [ ! -e "figures/${INPUT1}.webp" ] ; then
-   ./gs-resize-with-cropping "examples/${INPUT1}.jpeg" "figures/${INPUT1}.webp" \
+if [ ! -e "figures/${INPUT1}.png" ] ; then
+   ./gs-resize-with-cropping "examples/${INPUT1}.jpeg" "figures/${INPUT1}.png" \
       --aspect 16:9 --width "${WIDTH}"
 fi
-gm identify "figures/${INPUT1}.webp"
-if [ ! -e "figures/${INPUT2}.webp" ] ; then
-   ./gs-resize-with-cropping "examples/${INPUT2}.jpeg" "figures/${INPUT2}.webp" \
+gm identify "figures/${INPUT1}.png"
+if [ ! -e "figures/${INPUT2}.png" ] ; then
+   ./gs-resize-with-cropping "examples/${INPUT2}.jpeg" "figures/${INPUT2}.png" \
       --aspect keep --width "${WIDTH}"
 fi
-gm identify "figures/${INPUT2}.webp"
-if [ ! -e "figures/${INPUT3}.webp" ] ; then
-   clifractgen "examples/Fractal.fsf" "figures/${INPUT3}.webp" \
+gm identify "figures/${INPUT2}.png"
+if [ ! -e "figures/${INPUT3}.png" ] ; then
+   clifractgen "examples/Fractal.fsf" "figures/${INPUT3}.png" \
       --width "${WIDTH}" --height "${HEIGHT}" --max-iterations 2048
 fi
-gm identify "figures/${INPUT3}.webp"
+gm identify "figures/${INPUT3}.png"
 
 
 # ====== gs-resize-with-cropping ======================================================
 echo "Resize-with-Cropping:"
-if [ ! -e "figures/${INPUT1}-Resize-with-Cropping.webp" ] ; then
-   ./gs-resize-with-cropping "figures/${INPUT1}.webp" "figures/${INPUT1}-Resize-with-Cropping.webp" \
+if [ ! -e "figures/${INPUT1}-Resize-with-Cropping.png" ] ; then
+   ./gs-resize-with-cropping "figures/${INPUT1}.png" "figures/${INPUT1}-Resize-with-Cropping.png" \
       --width 1024 \
       --aspect 1:1
 fi
-gm identify "figures/${INPUT1}-Resize-with-Cropping.webp"
-if [ ! -e "figures/${INPUT2}-Resize-with-Cropping.webp" ] ; then
-   ./gs-resize-with-cropping "figures/${INPUT2}.webp" "figures/${INPUT2}-Resize-with-Cropping.webp" \
+gm identify "figures/${INPUT1}-Resize-with-Cropping.png"
+if [ ! -e "figures/${INPUT2}-Resize-with-Cropping.png" ] ; then
+   ./gs-resize-with-cropping "figures/${INPUT2}.png" "figures/${INPUT2}-Resize-with-Cropping.png" \
       --width 1024 \
       --aspect 2:1
 fi
-gm identify "figures/${INPUT2}-Resize-with-Cropping.webp"
-if [ ! -e "figures/${INPUT3}-Resize-with-Cropping.webp" ] ; then
-   ./gs-resize-with-cropping "figures/${INPUT3}.webp" "figures/${INPUT3}-Resize-with-Cropping.webp" \
+gm identify "figures/${INPUT2}-Resize-with-Cropping.png"
+if [ ! -e "figures/${INPUT3}-Resize-with-Cropping.png" ] ; then
+   ./gs-resize-with-cropping "figures/${INPUT3}.png" "figures/${INPUT3}-Resize-with-Cropping.png" \
       --height 512 \
       --aspect 3:1
 fi
-gm identify "figures/${INPUT3}-Resize-with-Cropping.webp"
+gm identify "figures/${INPUT3}-Resize-with-Cropping.png"
 
 
 # ====== gs-caption =======================================================
 echo "Caption:"
-if [ ! -e figures/Caption1.webp ] ; then
-   ./gs-caption figures/Caption1.webp 1024 42 \
+if [ ! -e figures/Caption1.png ] ; then
+   ./gs-caption figures/Caption1.png 1024 42 \
       "Test on $(LC_ALL=C.UTF-8 date)" \
       --font-name "Open Sans Bold" \
       --font-size 70 \
       --foreground "#02266b" --background "#ffd7cc" --transparency 50
 fi
-gm identify figures/Caption1.webp
-if [ ! -e figures/Caption2.webp ] ; then
-   ./gs-caption figures/Caption2.webp 1024 42 \
+gm identify figures/Caption1.png
+if [ ! -e figures/Caption2.png ] ; then
+   ./gs-caption figures/Caption2.png 1024 42 \
       "Another Test on $(LC_ALL=C.UTF-8 date)" \
       --font-name "Lobster Two Bold Italic" \
       --font-size 70 \
       --foreground "#02266b" --background "#ffd700" --transparency 26
 fi
-gm identify figures/Caption2.webp
-if [ ! -e figures/Caption3.webp ] ; then
-   ./gs-caption figures/Caption3.webp 1024 42 \
+gm identify figures/Caption2.png
+if [ ! -e figures/Caption3.png ] ; then
+   ./gs-caption figures/Caption3.png 1024 42 \
       "Yet Another Test on $(LC_ALL=C.UTF-8 date)" \
       --font-name "URW Gothic Book" \
       --font-size 70 \
       --foreground "#02266b" --background "#777777" --transparency 40
 fi
-gm identify figures/Caption3.webp
+gm identify figures/Caption3.png
 
 
 # ====== gs-glossytext ====================================================
 echo "GlossyText:"
-if [ ! -e figures/GlossyText1.webp ] ; then
-   ./gs-glossytext figures/GlossyText1.webp "System-Tools" \
+if [ ! -e figures/GlossyText1.png ] ; then
+   ./gs-glossytext figures/GlossyText1.png "System-Tools" \
       --font-name "Lobster Two Bold Italic" \
       --font-size 64 \
       --outline-size 8 \
       --blend-gradient-text "Brushed Aluminium" \
       --blend-gradient-outline "Golden"
 fi
-gm identify figures/GlossyText1.webp
-if [ ! -e figures/GlossyText2.webp ] ; then
-   ./gs-glossytext figures/GlossyText2.webp "Simula" \
+gm identify figures/GlossyText1.png
+if [ ! -e figures/GlossyText2.png ] ; then
+   ./gs-glossytext figures/GlossyText2.png "Simula" \
       --font-name "Open Sans Bold" \
       --font-size 64 \
       --outline-size 12 \
       --blend-gradient-text "Golden" \
       --blend-gradient-outline "Golden"
 fi
-gm identify figures/GlossyText2.webp
-if [ ! -e figures/GlossyText3.webp ] ; then
-   ./gs-glossytext figures/GlossyText3.webp "NorNet" -S 64
+gm identify figures/GlossyText2.png
+if [ ! -e figures/GlossyText3.png ] ; then
+   ./gs-glossytext figures/GlossyText3.png "NorNet" -S 64
 fi
-gm identify figures/GlossyText3.webp
+gm identify figures/GlossyText3.png
 
 
 # ====== gs-bumpmap ==========================================================
 echo "BumpMap:"
-if [ ! -e "figures/${INPUT1}-BumpMap.webp" ] ; then
-   ./gs-bumpmap "figures/${INPUT1}.webp" "figures/${INPUT1}-BumpMap.webp" \
+if [ ! -e "figures/${INPUT1}-BumpMap.png" ] ; then
+   ./gs-bumpmap "figures/${INPUT1}.png" "figures/${INPUT1}-BumpMap.png" \
       --azimuth              90.0 \
       --elevation            10.0 \
       --depth                20   \
@@ -154,9 +154,9 @@ if [ ! -e "figures/${INPUT1}-BumpMap.webp" ] ; then
       --invert               off  \
       --tiled                on
 fi
-gm identify "figures/${INPUT1}-BumpMap.webp"
-if [ ! -e "figures/${INPUT2}-BumpMap.webp" ] ; then
-   ./gs-bumpmap "figures/${INPUT2}.webp" "figures/${INPUT2}-BumpMap.webp" \
+gm identify "figures/${INPUT1}-BumpMap.png"
+if [ ! -e "figures/${INPUT2}-BumpMap.png" ] ; then
+   ./gs-bumpmap "figures/${INPUT2}.png" "figures/${INPUT2}-BumpMap.png" \
       --azimuth              135.0 \
       --elevation            20.0  \
       --depth                20    \
@@ -167,9 +167,9 @@ if [ ! -e "figures/${INPUT2}-BumpMap.webp" ] ; then
       --invert               off   \
       --tiled                on
 fi
-gm identify "figures/${INPUT2}-BumpMap.webp"
-if [ ! -e "figures/${INPUT3}-BumpMap.webp" ] ; then
-   ./gs-bumpmap "figures/${INPUT3}.webp" "figures/${INPUT3}-BumpMap.webp" \
+gm identify "figures/${INPUT2}-BumpMap.png"
+if [ ! -e "figures/${INPUT3}-BumpMap.png" ] ; then
+   ./gs-bumpmap "figures/${INPUT3}.png" "figures/${INPUT3}-BumpMap.png" \
       --azimuth              135.0 \
       --elevation            48.0  \
       --depth                32    \
@@ -180,150 +180,170 @@ if [ ! -e "figures/${INPUT3}-BumpMap.webp" ] ; then
       --invert               off   \
       --tiled                on
 fi
-gm identify "figures/${INPUT3}-BumpMap.webp"
+gm identify "figures/${INPUT3}-BumpMap.png"
 
 
 # ====== gs-clothify ==========================================================
 echo "Clothify"
-if [ ! -e "figures/${INPUT1}-Clothify.webp" ] ; then
-   ./gs-clothify "figures/${INPUT1}.webp" "figures/${INPUT1}-Clothify.webp" \
+if [ ! -e "figures/${INPUT1}-Clothify.png" ] ; then
+   ./gs-clothify "figures/${INPUT1}.png" "figures/${INPUT1}-Clothify.png" \
       --blur-x    3    \
       --blur-y    3    \
       --azimuth   90.0 \
       --elevation 60.0 \
       --depth 4
 fi
-gm identify "figures/${INPUT1}-Clothify.webp"
-if [ ! -e "figures/${INPUT2}-Clothify.webp" ] ; then
-   ./gs-clothify "figures/${INPUT2}.webp" "figures/${INPUT2}-Clothify.webp" \
+gm identify "figures/${INPUT1}-Clothify.png"
+if [ ! -e "figures/${INPUT2}-Clothify.png" ] ; then
+   ./gs-clothify "figures/${INPUT2}.png" "figures/${INPUT2}-Clothify.png" \
       --blur-x    5     \
       --blur-y    5     \
       --azimuth   135.0 \
       --elevation 50.0  \
       --depth 4
 fi
-gm identify "figures/${INPUT2}-Clothify.webp"
-if [ ! -e "figures/${INPUT3}-Clothify.webp" ] ; then
-   ./gs-clothify "figures/${INPUT3}.webp" "figures/${INPUT3}-Clothify.webp" \
+gm identify "figures/${INPUT2}-Clothify.png"
+if [ ! -e "figures/${INPUT3}-Clothify.png" ] ; then
+   ./gs-clothify "figures/${INPUT3}.png" "figures/${INPUT3}-Clothify.png" \
       --blur-x    4     \
       --blur-y    4     \
       --azimuth   180.0 \
       --elevation 80.0  \
       --depth 4
 fi
-gm identify "figures/${INPUT3}-Clothify.webp"
+gm identify "figures/${INPUT3}-Clothify.png"
 
 
 # ====== gs-mosaic ==========================================================
 echo "Mosaic:"
-if [ ! -e "figures/${INPUT1}-Mosaic.webp" ] ; then
-   ./gs-mosaic "figures/${INPUT1}.webp" "figures/${INPUT1}-Mosaic.webp" \
+if [ ! -e "figures/${INPUT1}-Mosaic.png" ] ; then
+   ./gs-mosaic "figures/${INPUT1}.png" "figures/${INPUT1}-Mosaic.png" \
       --tile-type        hexagons \
-      --tile-size        15.0     \
-      --tile-height      4.0      \
+      --tile-size        21.0     \
+      --tile-height      3.0      \
       --tile-neatness    0.65     \
       --tile-surface     rough    \
-      --tile-spacing     4.0      \
+      --tile-spacing     2.0      \
       --tile-allow-split on       \
       --color-variation  0.15     \
       --color-averaging  on       \
       --antialiasing     on       \
       --light-direction  135.0
 fi
-gm identify "figures/${INPUT1}-Mosaic.webp"
-if [ ! -e "figures/${INPUT2}-Mosaic.webp" ] ; then
-   ./gs-mosaic "figures/${INPUT2}.webp" "figures/${INPUT2}-Mosaic.webp" \
+gm identify "figures/${INPUT1}-Mosaic.png"
+if [ ! -e "figures/${INPUT2}-Mosaic.png" ] ; then
+   ./gs-mosaic "figures/${INPUT2}.png" "figures/${INPUT2}-Mosaic.png" \
       --tile-type        octagons \
-      --tile-size        15.0     \
+      --tile-size        25.0     \
       --tile-height      4.0      \
       --tile-neatness    0.25     \
       --tile-surface     smooth   \
-      --tile-spacing     4.0      \
+      --tile-spacing     2.0      \
       --tile-allow-split on       \
       --color-variation  0.35     \
       --color-averaging  on       \
       --antialiasing     on       \
       --light-direction  35.0
 fi
-gm identify "figures/${INPUT2}-Mosaic.webp"
-if [ ! -e "figures/${INPUT3}-Mosaic.webp" ] ; then
-   ./gs-mosaic "figures/${INPUT3}.webp" "figures/${INPUT3}-Mosaic.webp" \
-      --tile-type        squares \
-      --tile-size        15.0     \
-      --tile-height      4.0      \
-      --tile-neatness    0.65     \
-      --tile-surface     rough    \
-      --tile-spacing     4.0      \
-      --tile-allow-split on       \
-      --color-variation  0.15     \
-      --color-averaging  on       \
-      --antialiasing     on       \
+gm identify "figures/${INPUT2}-Mosaic.png"
+if [ ! -e "figures/${INPUT3}-Mosaic.png" ] ; then
+   ./gs-mosaic "figures/${INPUT3}.png" "figures/${INPUT3}-Mosaic.png" \
+      --tile-type        triangles \
+      --tile-size        32.0      \
+      --tile-height      4.0       \
+      --tile-neatness    0.65      \
+      --tile-surface     rough     \
+      --tile-spacing     3.0       \
+      --tile-allow-split on        \
+      --color-variation  0.15      \
+      --color-averaging  on        \
+      --antialiasing     on        \
       --light-direction  275.0
 fi
-gm identify "figures/${INPUT3}-Mosaic.webp"
+gm identify "figures/${INPUT3}-Mosaic.png"
 
 
 # ====== gs-oilify ==========================================================
 echo "Oilify:"
-if [ ! -e "figures/${INPUT1}-Oilify.webp" ] ; then
-   ./gs-oilify "figures/${INPUT1}.webp" "figures/${INPUT1}-Oilify.webp" \
+if [ ! -e "figures/${INPUT1}-Oilify.png" ] ; then
+   ./gs-oilify "figures/${INPUT1}.png" "figures/${INPUT1}-Oilify.png" \
       --mask-size      20 \
       --intensity-mode on
 fi
-gm identify "figures/${INPUT1}-Oilify.webp"
-if [ ! -e "figures/${INPUT2}-Oilify.webp" ] ; then
-   ./gs-oilify "figures/${INPUT2}.webp" "figures/${INPUT2}-Oilify.webp" \
+gm identify "figures/${INPUT1}-Oilify.png"
+if [ ! -e "figures/${INPUT2}-Oilify.png" ] ; then
+   ./gs-oilify "figures/${INPUT2}.png" "figures/${INPUT2}-Oilify.png" \
       --mask-size      16 \
       --intensity-mode off
 fi
-gm identify "figures/${INPUT2}-Oilify.webp"
-if [ ! -e "figures/${INPUT3}-Oilify.webp" ] ; then
-   ./gs-oilify "figures/${INPUT3}.webp" "figures/${INPUT3}-Oilify.webp" \
+gm identify "figures/${INPUT2}-Oilify.png"
+if [ ! -e "figures/${INPUT3}-Oilify.png" ] ; then
+   ./gs-oilify "figures/${INPUT3}.png" "figures/${INPUT3}-Oilify.png" \
       --mask-size      12 \
       --intensity-mode on
 fi
-gm identify "figures/${INPUT3}-Oilify.webp"
+gm identify "figures/${INPUT3}-Oilify.png"
 
 
 # ====== gs-oldphoto ======================================================
 echo "OldPhoto:"
-if [ ! -e "figures/${INPUT1}-OldPhoto.webp" ] ; then
-   ./gs-oldphoto "figures/${INPUT1}.webp" "figures/${INPUT1}-OldPhoto.webp" \
+if [ ! -e "figures/${INPUT1}-OldPhoto.png" ] ; then
+   ./gs-oldphoto "figures/${INPUT1}.png" "figures/${INPUT1}-OldPhoto.png" \
       --defocus on     \
       --border-size 24 \
       --sepia on       \
       --mottle on
 fi
-gm identify "figures/${INPUT1}-OldPhoto.webp"
-if [ ! -e "figures/${INPUT2}-OldPhoto.webp" ] ; then
-   ./gs-oldphoto "figures/${INPUT2}.webp" "figures/${INPUT2}-OldPhoto.webp" \
+gm identify "figures/${INPUT1}-OldPhoto.png"
+if [ ! -e "figures/${INPUT2}-OldPhoto.png" ] ; then
+   ./gs-oldphoto "figures/${INPUT2}.png" "figures/${INPUT2}-OldPhoto.png" \
       --defocus off    \
       --border-size 16 \
       --sepia on       \
       --mottle off
 fi
-gm identify "figures/${INPUT2}-OldPhoto.webp"
-if [ ! -e "figures/${INPUT3}-OldPhoto.webp" ] ; then
-   ./gs-oldphoto "figures/${INPUT3}.webp" "figures/${INPUT3}-OldPhoto.webp" \
+gm identify "figures/${INPUT2}-OldPhoto.png"
+if [ ! -e "figures/${INPUT3}-OldPhoto.png" ] ; then
+   ./gs-oldphoto "figures/${INPUT3}.png" "figures/${INPUT3}-OldPhoto.png" \
       --defocus on     \
       --border-size 32 \
       --sepia off      \
       --mottle on
 fi
-gm identify "figures/${INPUT3}-OldPhoto.webp"
+gm identify "figures/${INPUT3}-OldPhoto.png"
 
 
 # ====== Generate preview images ============================================
 echo "Previews:"
-find figures -mindepth 1 -maxdepth 1 -name "*.webp" -print0 | \
+find figures -mindepth 1 -maxdepth 1 -name "*.png" -print0 | \
    while IFS= read -r -d '' imageName ; do
-      if [[ ! "${imageName}" =~ ^(.*-preview\.webp)$ ]] ; then
-         previewName="${imageName/\.webp/}"
-         previewName="${previewName}-preview.webp"
+      if [[ ! "${imageName}" =~ ^(.*-preview\.png)$ ]] ; then
+         previewName="${imageName/\.png/}"
+         previewName="${previewName}-preview.png"
          if [ ! -e "${previewName}" ] ; then
             ./gs-resize-with-cropping "${imageName}" "${previewName}" \
                --aspect keep --width "${PREVIEW_WIDTH}"
          fi
          gm identify "${previewName}"
       fi
+   done
+
+
+# ====== Generate AVIF versions =============================================
+echo "Conversion to AVIF and WebP:"
+find figures -mindepth 1 -maxdepth 1 -name "*.png" -print0 | \
+   while IFS= read -r -d '' imageName ; do
+      # avifName="${imageName%.*}.avif"
+      # if [ ! -e "${avifName}" ] ; then
+      #    avifenc --jobs all --ignore-xmp \
+      #       --min 20 --max 32 --speed 4  \
+      #       "${imageName}" "${avifName}"
+      # fi
+      # gm identify "${avifName}"
+
+      webpName="${imageName%.*}.webp"
+      if [ ! -e "${webpName}" ] ; then
+         cwebp -q 70 -mt "${imageName}" -o "${webpName}"
+      fi
+      gm identify "${webpName}"
    done
