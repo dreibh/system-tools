@@ -178,7 +178,7 @@ if [ ! -e "figures/${INPUT1}-Clothify.webp" ] ; then
       --blur-x    3    \
       --blur-y    3    \
       --azimuth   90.0 \
-      --elevation 10.0 \
+      --elevation 60.0 \
       --depth 4
 fi
 gm identify "figures/${INPUT1}-Clothify.webp"
@@ -187,7 +187,7 @@ if [ ! -e "figures/${INPUT2}-Clothify.webp" ] ; then
       --blur-x    5     \
       --blur-y    5     \
       --azimuth   135.0 \
-      --elevation 20.0  \
+      --elevation 50.0  \
       --depth 4
 fi
 gm identify "figures/${INPUT2}-Clothify.webp"

@@ -801,7 +801,7 @@ gs-clothify Bergen.webp Bergen-Clothify.webp \
    --blur-x    3    \
    --blur-y    3    \
    --azimuth   90.0 \
-   --elevation 10.0 \
+   --elevation 60.0 \
    --depth 4
 ```
     </td>
@@ -812,7 +812,7 @@ gs-clothify Portobello.webp Portobello-Clothify.webp \
    --blur-x    5     \
    --blur-y    5     \
    --azimuth   135.0 \
-   --elevation 20.0  \
+   --elevation 50.0  \
    --depth 4
 ```
     </td>
