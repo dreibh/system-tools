@@ -146,6 +146,7 @@ Description: Wait for a random time span
 Package: td-x509-tools
 Architecture: all
 Depends: gettext-base,
+         mbuffer | buffer,
          openssl,
          td-print-utf8,
          td-text-block,
