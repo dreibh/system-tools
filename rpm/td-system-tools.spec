@@ -92,7 +92,6 @@ in, providing the user an up-to-date overview of the system.
 
 %package get-system-info
 Summary: Obtain basic system information
-Requires: procps
 
 %description get-system-info
 This small program obtains basic status information about the system:
@@ -285,6 +284,7 @@ BuildArch: noarch
 Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
 Requires: gettext-runtime
+Requires: (mbuffer or buffer)
 Requires: openssl
 Recommends: gnutls-utils
 Recommends: nss-tools
