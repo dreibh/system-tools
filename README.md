@@ -51,7 +51,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/System-Info/figures/01-example.webp">
-        <img alt="" src="src/System-Info/figures/01-example.webp" width="100%" height="100%" />
+        <img alt="System-Info Banner Example 1" src="src/System-Info/figures/01-example.webp" width="100%" height="100%" />
       </a><br />
       <tt><a href="src/System-Info/system-info.d/01-example">01-example</a></tt><br />
       The default example.
@@ -60,7 +60,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/System-Info/figures/09-hostname-example.webp">
-        <img alt="" src="src/System-Info/figures/09-hostname-example.webp" width="100%" height="100%" />
+        <img alt="System-Info Banner Example 2" src="src/System-Info/figures/09-hostname-example.webp" width="100%" height="100%" />
       </a><br />
       <tt><a href="src/System-Info/system-info.d/09-hostname-example">09-hostname-example</a></tt><br />
       Dynamically showing the hostname of the machine.
@@ -69,7 +69,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/System-Info/figures/10-company-logo-example.webp">
-        <img alt="" src="src/System-Info/figures/10-company-logo-example.webp" width="100%" height="100%" />
+        <img alt="System-Info Banner Example 3" src="src/System-Info/figures/10-company-logo-example.webp" width="100%" height="100%" />
       </a><br />
       <tt><a href="src/System-Info/system-info.d/10-company-logo-example">10-company-logo-example</a></tt><br />
       A <a href="https://www.simulamet.no/">SimulaMet</a> company branding.
@@ -80,7 +80,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
     <td style="vertical-align: middle;">
      <p align="center">
       <a href="src/System-Info/figures/10-nornet.webp">
-        <img alt="" src="src/System-Info/figures/10-nornet.webp" width="100%" height="100%" />
+        <img alt="System-Info Banner Example 4" src="src/System-Info/figures/10-nornet.webp" width="100%" height="100%" />
       </a><br />
       <tt><a href="src/System-Info/system-info.d/10-nornet">10-nornet</a></tt><br />
       A <a href="https://www.nntb.no/">NorNet</a> project branding.
@@ -89,7 +89,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
     <td style="vertical-align: middle;">
      <p align="center">
       <a href="src/System-Info/figures/18-neat.webp">
-        <img alt="" src="src/System-Info/figures/18-neat.webp" width="100%" height="100%" />
+        <img alt="System-Info Banner Example 5" src="src/System-Info/figures/18-neat.webp" width="100%" height="100%" />
       </a><br />
       <tt><a href="src/System-Info/system-info.d/18-neat">18-neat</a></tt><br />
       A <a href="https://neat.nntb.no/">NEAT</a> project branding.
@@ -98,7 +98,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
     <td style="vertical-align: middle;">
      <p align="center">
       <a href="src/System-Info/figures/30-rsplib.webp">
-        <img alt="" src="src/System-Info/figures/30-rsplib.webp" width="100%" height="100%" />
+        <img alt="System-Info Banner Example 6" src="src/System-Info/figures/30-rsplib.webp" width="100%" height="100%" />
       </a><br />
       <tt><a href="src/System-Info/system-info.d/30-rsplib">30-rsplib</a></tt><br />
       A <a href="https://www.nntb.no/~dreibh/rserpool/">RSPLIB</a> project branding.
@@ -584,14 +584,14 @@ Examples input images for the following non-rendering examples (click on image f
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Bergen.webp">
-        <img alt="Bergen, Norway" src="src/GIMP-Scripts/figures/Bergen-preview.webp" width="100%" height="100%" />
+        <img alt="Picture of Bergen, Norway" src="src/GIMP-Scripts/figures/Bergen-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Portobello.webp">
-        <img alt="Portobello, New Zealand" src="src/GIMP-Scripts/figures/Portobello-preview.webp" width="43%" />
+        <img alt="Picture of Portobello, New Zealand" src="src/GIMP-Scripts/figures/Portobello-preview.webp" width="43%" />
       </a>
      </p>
     </td>
@@ -622,21 +622,21 @@ Examples (click on image for full-size view):
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Bergen-Resize-with-Cropping.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Bergen-Resize-with-Cropping-preview.webp" height="256px" />
+        <img alt="Picture of Bergen, Norway; 1:1 aspect ratio" src="src/GIMP-Scripts/figures/Bergen-Resize-with-Cropping-preview.webp" height="256" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Portobello-Resize-with-Cropping.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Portobello-Resize-with-Cropping-preview.webp" height="256px" />
+        <img alt="Picture of Portobello, New Zealand; 2:1 aspect ratio" src="src/GIMP-Scripts/figures/Portobello-Resize-with-Cropping-preview.webp" height="256" />
       </a>
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Fractal-Resize-with-Cropping.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Fractal-Resize-with-Cropping-preview.webp" height="256px" />
+        <img alt="Mandelbrot Fractal; 3:1 aspect ratio" src="src/GIMP-Scripts/figures/Fractal-Resize-with-Cropping-preview.webp" height="256" />
       </a><br />
      </p>
     </td>
@@ -687,21 +687,21 @@ Examples (click on image for full-size view):
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Bergen-BumpMap.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Bergen-BumpMap-preview.webp" width="100%" height="100%" />
+        <img alt="Picture of Bergen, Norway; Bump Map effect" src="src/GIMP-Scripts/figures/Bergen-BumpMap-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Portobello-BumpMap.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Portobello-BumpMap-preview.webp" width="43%" />
+        <img alt="Picture of Portobello, New Zealand; Bump Map effect" src="src/GIMP-Scripts/figures/Portobello-BumpMap-preview.webp" width="43%" />
       </a>
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Fractal-BumpMap.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Fractal-BumpMap-preview.webp" width="100%" height="100%" />
+        <img alt="Mandelbrot Fractal; Bump Map effect" src="src/GIMP-Scripts/figures/Fractal-BumpMap-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
@@ -774,21 +774,21 @@ Examples (click on image for full-size view):
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Bergen-Clothify.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Bergen-Clothify-preview.webp" width="100%" height="100%" />
+        <img alt="Picture of Bergen, Norway; Clothify effect" src="src/GIMP-Scripts/figures/Bergen-Clothify-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Portobello-Clothify.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Portobello-Clothify-preview.webp" width="43%" />
+        <img alt="Picture of Portobello, New Zealand; Clothify effect" src="src/GIMP-Scripts/figures/Portobello-Clothify-preview.webp" width="43%" />
       </a>
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Fractal-Clothify.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Fractal-Clothify-preview.webp" width="100%" height="100%" />
+        <img alt="Mandelbrot Fractal; Clothify effect" src="src/GIMP-Scripts/figures/Fractal-Clothify-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
@@ -849,21 +849,21 @@ Examples (click on image for full-size view):
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Bergen-Mosaic.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Bergen-Mosaic-preview.webp" width="100%" height="100%" />
+        <img alt="Picture of Bergen, Norway; Mosaic effect" src="src/GIMP-Scripts/figures/Bergen-Mosaic-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Portobello-Mosaic.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Portobello-Mosaic-preview.webp" width="43%" />
+        <img alt="Picture of Portobello, New Zealand; Mosaic effect" src="src/GIMP-Scripts/figures/Portobello-Mosaic-preview.webp" width="43%" />
       </a>
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Fractal-Mosaic.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Fractal-Mosaic-preview.webp" width="100%" height="100%" />
+        <img alt="Mandelbrot Fractal; Mosaic effect" src="src/GIMP-Scripts/figures/Fractal-Mosaic-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
@@ -942,21 +942,21 @@ Examples (click on image for full-size view):
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Bergen-Oilify.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Bergen-Oilify-preview.webp" width="100%" height="100%" />
+        <img alt="Picture of Bergen, Norway; Oilify effect" src="src/GIMP-Scripts/figures/Bergen-Oilify-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Portobello-Oilify.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Portobello-Oilify-preview.webp" width="43%" />
+        <img alt="Picture of Portobello, New Zealand; Oilify effect" src="src/GIMP-Scripts/figures/Portobello-Oilify-preview.webp" width="43%" />
       </a>
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Fractal-Oilify.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Fractal-Oilify-preview.webp" width="100%" height="100%" />
+        <img alt="Mandelbrot Fractal; Oilify effect" src="src/GIMP-Scripts/figures/Fractal-Oilify-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
@@ -1008,21 +1008,21 @@ Examples (click on image for full-size view):
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Bergen-OldPhoto.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Bergen-OldPhoto-preview.webp" width="100%" height="100%" />
+        <img alt="Picture of Bergen, Norway; Old Photo effect" src="src/GIMP-Scripts/figures/Bergen-OldPhoto-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Portobello-OldPhoto.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Portobello-OldPhoto-preview.webp" width="43%" />
+        <img alt="Picture of Portobello, New Zealand; Old Photo effect" src="src/GIMP-Scripts/figures/Portobello-OldPhoto-preview.webp" width="43%" />
       </a>
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Fractal-OldPhoto.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Fractal-OldPhoto-preview.webp" width="100%" height="100%" />
+        <img alt="Mandelbrot Fractal; Old Photo effect" src="src/GIMP-Scripts/figures/Fractal-OldPhoto-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
@@ -1079,21 +1079,21 @@ Examples (click on image for full-size view):
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Caption1.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Caption1-preview.webp" width="100%" height="100%" />
+        <img alt="Caption Example 1" src="src/GIMP-Scripts/figures/Caption1-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Caption2.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Caption2-preview.webp" width="100%" height="100%" />
+        <img alt="Caption Example 2" src="src/GIMP-Scripts/figures/Caption2-preview.webp" width="100%" height="100%" />
       </a>
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Caption3.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/Caption3-preview.webp" width="100%" height="100%" />
+        <img alt="Caption Example 3" src="src/GIMP-Scripts/figures/Caption3-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
@@ -1155,21 +1155,21 @@ Examples (click on image for full-size view):
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/GlossyText1.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/GlossyText1-preview.webp" width="100%" height="100%" />
+        <img alt="Glossy Text Example «System-Tools»" src="src/GIMP-Scripts/figures/GlossyText1-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/GlossyText2.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/GlossyText2-preview.webp" width="100%" height="100%" />
+        <img alt="Glossy Text Example «Simula»" src="src/GIMP-Scripts/figures/GlossyText2-preview.webp" width="100%" height="100%" />
       </a>
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/GlossyText3.webp">
-        <img alt="" src="src/GIMP-Scripts/figures/GlossyText3-preview.webp" width="100%" height="100%" />
+        <img alt="Glossy Text Example «NorNet»" src="src/GIMP-Scripts/figures/GlossyText3-preview.webp" width="100%" height="100%" />
       </a><br />
      </p>
     </td>
