@@ -1,3 +1,21 @@
+commit 4d3d1915a8df0fd7f79febdd7e101491a57723c5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 17:39:02 2026 +0200
+
+    Packaging fixes.
+
+commit aa722f3c559b81868b2756d220638db2806e830a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 17:12:44 2026 +0200
+
+    Fixed URL.
+
+commit ffee33b26e8f6e8b9c3675750dbc19eeb2454939
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 17:04:52 2026 +0200
+
+    New release td-system-tools-2.7.0.
+
 commit 89900a449046f20c0069883ea92ee4ff5f5af7b1
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun May 31 16:54:23 2026 +0200
