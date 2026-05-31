@@ -700,7 +700,7 @@ Examples (click on image for full-size view):
   <tr>
     <td style="vertical-align: middle;">
      <pre id="BumpMap1"><code class="language-bash"><span class="ex">gs-bumpmap</span> Bergen.webp Bergen-BumpMap.webp <span class="dt">\</span>
-   <span class="at">--azimuth</span>h             90.0 <span class="dt">\</span>
+   <span class="at">--azimuth</span>              90.0 <span class="dt">\</span>
    <span class="at">--elevation</span>            10.0 <span class="dt">\</span>
    <span class="at">--depth</span>                20   <span class="dt">\</span>
    <span class="at">--offset-x</span>             4    <span class="dt">\</span>
