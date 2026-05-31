@@ -40,9 +40,6 @@
 #include <unistd.h>
 #include <wchar.h>
 #include <sys/ioctl.h>
-#ifndef nullptr
-#define nullptr NULL
-#endif
 
 #ifdef ENABLE_NLS
 #include <libintl.h>
@@ -54,6 +51,12 @@
 #endif
 
 #include "package-version.h"
+
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ < 202311L)
+#ifndef nullptr
+#define nullptr ((void*)0)
+#endif
+#endif
 
 
 typedef enum printmode {

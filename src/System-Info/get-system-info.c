@@ -27,6 +27,7 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#define _POSIX_C_SOURCE 200809L
 #include <ctype.h>
 #include <fcntl.h>
 #include <getopt.h>
@@ -70,9 +71,6 @@
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
-#ifndef nullptr
-#define nullptr NULL
-#endif
 
 #ifdef ENABLE_NLS
 #include <libintl.h>
@@ -85,6 +83,12 @@
 
 #include "package-version.h"
 
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ < 202311L)
+#ifndef nullptr
+#define nullptr ((void*)0)
+#endif
+#endif
+
 
 // Compatibility version of get-system-info, to allow for future changes:
 // Currently, there is just version 0.
@@ -95,7 +99,7 @@ struct interfaceaddress {
    const char*            ifname;
    const struct sockaddr* address;
    unsigned int           prefixlen;
-   u_int                  flags;
+   unsigned int           flags;
 };
 
 
@@ -173,11 +177,11 @@ static void printaddress(const struct sockaddr* address,
                          const unsigned int     prefixlen)
 {
    if( (address->sa_family == AF_INET6) || (address->sa_family == AF_INET) ) {
-      char resolvedHost[NI_MAXHOST];
+      char resolvedHost[1025];
       int error = getnameinfo(address,
                               (address->sa_family == AF_INET6) ?
                                  sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in),
-                              (char*)&resolvedHost, sizeof(resolvedHost),
+                              resolvedHost, sizeof(resolvedHost),
                               nullptr, 0,
                               NI_NUMERICHOST);
       if(error != 0) {
@@ -205,7 +209,7 @@ static void printaddress(const struct sockaddr* address,
 
 
 // ###### Print interface flags #############################################
-static void printflags(const u_int flags)
+static void printflags(const unsigned int flags)
 {
    printf("0x%x: <%s>", flags, (flags & IFF_UP) ? "UP" : "DOWN");
 #if defined(IFF_LOWER_UP)
@@ -231,8 +235,8 @@ static void printflags(const u_int flags)
 static void showHostnameInformation(void)
 {
    char hostname[256];
-   if(gethostname((char*)&hostname, sizeof(hostname)) != 0) {
-      strcpy((char*)&hostname, "localhost");
+   if(gethostname(hostname, sizeof(hostname)) != 0) {
+      strcpy(hostname, "localhost");
    }
 
    char* domainname = strchr(hostname, '.');
@@ -305,7 +309,7 @@ static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
       size_t resultSize = 0;
       char*  resultPtr;
       do {
-         resultPtr = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
+         resultPtr = fgets(&result[resultSize], resultMaxSize - resultSize, fh);
          if(resultPtr == nullptr) {
             break;
          }
@@ -330,7 +334,7 @@ static bool queryFile(const char* file, char* result, size_t resultMaxSize)
       size_t resultSize = 0;
       char*  resultPtr;
       do {
-         resultPtr = fgets((char*)&result[resultSize], resultMaxSize - resultSize, fh);
+         resultPtr = fgets(&result[resultSize], resultMaxSize - resultSize, fh);
          if(resultPtr == nullptr) {
             break;
          }
@@ -398,7 +402,7 @@ static unsigned int obtainProcessCount(void)
    // ====== Fallback =======================================================
    char         buffer[64];
    unsigned int value;
-   if( (queryPipe("ps -aex -o pid= | wc -l", (char*)&buffer, sizeof(buffer))) &&
+   if( (queryPipe("ps -aex -o pid= | wc -l", buffer, sizeof(buffer))) &&
        (sscanf(buffer, "%u", &value) == 1) ) {
       count = value;
    }
@@ -488,14 +492,14 @@ static void showBatteryInformation(void)
       char capacityFileName[64];
       char capacityBuffer[64];
       unsigned int capacity;
-      snprintf((char*)&capacityFileName, sizeof(capacityFileName), "/sys/class/power_supply/BAT%u/capacity", i);
-      if( (queryFile(capacityFileName, (char*)&capacityBuffer, sizeof(capacityBuffer))) &&
+      snprintf(capacityFileName, sizeof(capacityFileName), "/sys/class/power_supply/BAT%u/capacity", i);
+      if( (queryFile(capacityFileName, capacityBuffer, sizeof(capacityBuffer))) &&
           (sscanf(capacityBuffer, "%u", &capacity) == 1) ) {
          char  statusFileName[64];
          char  statusBuffer[64];
          char* statusEnd;
-         snprintf((char*)&statusFileName, sizeof(statusFileName), "/sys/class/power_supply/BAT%u/status", i);
-         if( (queryFile(statusFileName, (char*)&statusBuffer, sizeof(statusBuffer))) &&
+         snprintf(statusFileName, sizeof(statusFileName), "/sys/class/power_supply/BAT%u/status", i);
+         if( (queryFile(statusFileName, statusBuffer, sizeof(statusBuffer))) &&
              (statusEnd = strchr(statusBuffer, '\n')) ) {
             *statusEnd = 0x00;
 
