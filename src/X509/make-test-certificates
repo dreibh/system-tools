@@ -46,7 +46,7 @@ DIRNAME="$(dirname "$0")"
 # Generate some test server certificates:
 "${DIRNAME}/generate-test-certificates" TestCA --server sognsvann.company.example
 "${DIRNAME}/generate-test-certificates" TestCA --server svartkulp.company.example
-"${DIRNAME}/generate-test-certificates" TestCA --server svartkulp.company.example
+"${DIRNAME}/generate-test-certificates" TestCA --server maridalsvannet.company.example
 "${DIRNAME}/generate-test-certificates" TestCA --server blanksjoe.company.example
 "${DIRNAME}/generate-test-certificates" TestCA --server tryvann.company.example
 "${DIRNAME}/generate-test-certificates" TestCA --server aaklungen.company.example

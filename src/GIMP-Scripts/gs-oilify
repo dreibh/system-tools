@@ -1,0 +1,253 @@
+#!/usr/bin/env bash
+# ==========================================================================
+#         ____            _                     _____           _
+#        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+#               |___/
+#                             --- System-Tools ---
+#                  https://www.nntb.no/~dreibh/system-tools/
+# ==========================================================================
+#
+# GIMP Scripts
+# Copyright (C) 2013-2026 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -euo pipefail
+
+
+# ###### Usage ##############################################################
+usage () {
+   local exitCode="$1"
+   echo >&2 "Usage: $0 input_filename output_filename [-S|--mask-size masksize] [-I|--intensity-mode on|off] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
+   exit "${exitCode}"
+}
+
+
+# ###### Version ############################################################
+version () {
+   echo "gs-oilify @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
+}
+
+
+
+# ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
+if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 2) )) ; then
+   echo "ERROR: Bash 4.2 or higher is required, but Bash ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]} is installed!"
+   exit 1
+fi
+GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
+if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+   echo >&2 "ERROR: Enhanced/GNU getopt is required!"
+   exit 1
+fi
+options="$(${GETOPT} -o S:I:wqhv --long mask-size:,intensity-mode:,verbose,quiet,help,version -a -- "$@")"
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+   usage 1
+fi
+eval set -- "${options}"
+
+MASK_SIZE=8
+INTENSITY_MODE="TRUE"
+VERBOSE=0
+while [ $# -gt 0 ] ; do
+   case "$1" in
+      -S | --mask-size)
+         MASK_SIZE="$2"
+         shift
+         if [[ ! "${MASK_SIZE}" =~ ^([0-9]+)$ ]] ; then
+            echo >&2 "ERROR: Invalid value ${MASK_SIZE} for -S|--mask-size!"
+            exit 1
+         fi
+         ;;
+      -I | --intensity-mode)
+         INTENSITY_MODE="$2"
+         shift
+         if [[ "${INTENSITY_MODE}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            INTENSITY_MODE="TRUE"
+         elif [[ "${INTENSITY_MODE}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            INTENSITY_MODE="FALSE"
+         else
+            echo >&2 "ERROR: Invalid value ${INTENSITY_MODE} for -I|--intensity-mode!"
+            exit 1
+         fi
+         ;;
+      -w | --verbose)
+         VERBOSE=1
+         ;;
+      -q | --quiet)
+         VERBOSE=0
+         ;;
+      -h | --help)
+         usage 0
+         ;;
+      -v | --version)
+         version
+         ;;
+      --)
+         shift
+         break
+         ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled option $1!"
+         exit 1
+         ;;
+  esac
+  shift
+done
+
+if [ $# -ne 2 ] ; then
+   usage 1
+fi
+INPUT_FILENAME="$1"
+OUTPUT_FILENAME="$2"
+
+if [ ! -f "${INPUT_FILENAME}" ] ; then
+   echo >&2 "ERROR: Input file ${INPUT_FILENAME} does not exist!"
+   exit 1
+fi
+
+
+# ====== Detect GIMP, and determine version-specific call options ===========
+GIMP_CONSOLE="$(command -v gimp-console || true)"
+if [ "${GIMP_CONSOLE}" == "" ] ; then
+   echo >&2 "ERROR: GIMP is not installed!"
+   echo >&2 "* Ubuntu:  sudo apt install -y gimp"
+   echo >&2 "* Fedora:  sudo dnf install -y gimp"
+   echo >&2 "* SuSE     sudo zypper install -y gimp"
+   echo >&2 "* Alpine:  sudo apk add gimp"
+   echo >&2 "* FreeBSD: sudo pkg install -y gimp3-app"
+   exit 1
+fi
+GIMP_VERSION="$(LC_ALL=C.UTF-8 "${GIMP_CONSOLE}" --version | sed -e 's/GNU Image Manipulation Program version //')"
+if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
+   # GIMP 2.x:
+   GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+else
+   # GIMP 3.x:
+   GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+fi
+
+# This script does not use fonts, or gradients/palettes/brushes:
+GIMP_OPTIONS="${GIMP_OPTIONS} --no-fonts --no-data"
+
+
+# ====== Call GIMP ==========================================================
+rm -f "${OUTPUT_FILENAME}"
+# shellcheck disable=SC2086
+( cat <<EOF
+(let*
+   ; ------ Initialise and load image ---------------------------------------
+   ((inputFileName    "${INPUT_FILENAME}")
+    (outputFileName   "${OUTPUT_FILENAME}")
+    (maskSize         ${MASK_SIZE})
+    (intensityMode    ${INTENSITY_MODE})
+    (image            (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
+    (imageType        (if (not (defined? 'gimp-image-get-active-layer))
+                         ; New GIMP 3.0 API:
+                         (car (gimp-image-get-base-type image))
+                         ; Old GIMP 2.x API:
+                         (car (gimp-image-base-type image)))
+                      )
+    (layer            (if (not (defined? 'gimp-image-get-active-layer))
+                         ; New GIMP 3.0 API:
+                         (car (list (vector-ref (car (gimp-image-get-selected-layers image)) 0)))
+                         ; Old GIMP 2.x API:
+                         (car (gimp-image-get-active-layer image)))
+                      )
+   )
+
+   ; ------ Apply filter ----------------------------------------------------
+   ; First, make sure that the image is RGB, not indexed color mode!
+   (if (not (= RGB imageType))
+      (gimp-image-convert-rgb image))
+
+   ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   ; GEGL Oilify options: https://gegl.org/operations/gegl-oilify.html
+   ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   (cond( (not(defined? 'plug-in-oilify))
+      ; New GIMP 3.0 API:
+      (gimp-drawable-merge-new-filter layer "gegl:oilify" 0 LAYER-MODE-REPLACE 1.0
+          "mask-radius" (max 1 (/ maskSize 2))
+          "use-inten"   intensityMode
+          "intensities" 128
+      )
+   )
+   (else
+      ; Old GIMP 2.x API:
+      (display maskSize) (newline)
+      (plug-in-oilify RUN-NONINTERACTIVE image layer maskSize intensityMode)
+   ))
+
+   ; ------ Save result -----------------------------------------------------
+   (if (defined? 'gimp-drawable-merge-new-filter)
+      (begin  ; New GIMP >= 3.0 API:
+         ; FIXME: This does not work when running in GIMP 2.x!
+         ; (file-png-export
+         ;    #:run-mode         RUN-NONINTERACTIVE
+         ;    #:image            image
+         ;    #:file             outputFileName
+         ;    #:options          -1
+         ;    #:interlaced       TRUE
+         ;    #:compression      6
+         ;    #:bkgd             TRUE
+         ;    #:offs             FALSE
+         ;    #:phys             TRUE
+         ;    #:time             TRUE
+         ;    #:save-transparent FALSE
+         ;    #:optimize-palette TRUE
+         ; )
+         (file-png-export RUN-NONINTERACTIVE image
+            outputFileName -1
+            TRUE 6 TRUE FALSE TRUE TRUE FALSE TRUE)
+      )
+      (begin  ; Old GIMP < 3.0 API:
+         (file-png-save2 RUN-NONINTERACTIVE image
+            (car (gimp-image-get-active-layer image))
+            outputFileName outputFileName
+            TRUE 6 TRUE TRUE FALSE TRUE TRUE FALSE TRUE)
+      )
+   )
+
+   ; ------ Clean up --------------------------------------------------------
+   (gimp-image-delete image)
+)
+(gimp-quit TRUE)
+EOF
+) | env LC_ALL=C.UTF-8 HOME=/tmp "${GIMP_CONSOLE}" ${GIMP_OPTIONS} 2>&1 | \
+(
+   if [ ${VERBOSE} -ne 0 ] ; then
+      cat
+   else
+      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|^gimp_color_transform_new: using babl|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
+   fi
+)
+
+
+# ====== Check result =======================================================
+if [ ! -e "${OUTPUT_FILENAME}" ] ; then
+   echo >&2 "ERROR: ${OUTPUT_FILENAME} has not been produced. Something went wrong!"
+   exit 1
+fi

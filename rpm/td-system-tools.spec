@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.6.1
+Version: 2.7.1
 Release: 1
 Summary: Tools for basic system management
 License: GPL-3.0-or-later
@@ -92,7 +92,6 @@ in, providing the user an up-to-date overview of the system.
 
 %package get-system-info
 Summary: Obtain basic system information
-Requires: procps
 
 %description get-system-info
 This small program obtains basic status information about the system:
@@ -251,6 +250,7 @@ milliseconds, microseconds, and nanoseconds.
 Summary: Make multiple trials to successfully run a command
 BuildArch: noarch
 Conflicts: %{name}-misc
+Requires: gettext-runtime
 
 %description try-hard
 Try-hard runs a command and retries for a given number of times in case
@@ -281,7 +281,10 @@ interval, with support for fractional seconds.
 %package x509-tools
 Summary: X.509 certificate handling tools
 BuildArch: noarch
+Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
+Requires: gettext-runtime
+Requires: (mbuffer or buffer)
 Requires: openssl
 Recommends: gnutls-utils
 Recommends: nss-tools
@@ -332,6 +335,78 @@ This package contains X.509 certificate handling tools:
 %{_mandir}/man1/view-crl.1.gz
 
 
+%package gimp-scripts
+Summary: GIMP image processing scripts
+Group: Applications/System
+BuildArch: noarch
+Requires: fontconfig
+Requires: gimp
+Requires: GraphicsMagick
+Requires: util-linux
+Recommends: fractgen-clifractgen
+Recommends: open-sans-fonts
+Recommends: urw-base35-fonts
+Suggests: %{name}-gimp-scripts-examples
+
+%description gimp-scripts
+ This package contains some GIMP scripts for automated image processing.
+ The main purpose of this script is to generate background images for
+ desktops, boot splashes, etc. with some branding.
+
+%files gimp-scripts
+%{_bindir}/gs-bumpmap
+%{_bindir}/gs-caption
+%{_bindir}/gs-clothify
+%{_bindir}/gs-glossytext
+%{_bindir}/gs-list-fonts
+%{_bindir}/gs-list-gradients
+%{_bindir}/gs-list-patterns
+%{_bindir}/gs-mosaic
+%{_bindir}/gs-oilify
+%{_bindir}/gs-oldphoto
+%{_bindir}/gs-resize-with-cropping
+%{_bindir}/gs-test-gimp
+%{_datadir}/bash-completion/completions/gs-bumpmap
+%{_datadir}/bash-completion/completions/gs-caption
+%{_datadir}/bash-completion/completions/gs-clothify
+%{_datadir}/bash-completion/completions/gs-glossytext
+%{_datadir}/bash-completion/completions/gs-mosaic
+%{_datadir}/bash-completion/completions/gs-oilify
+%{_datadir}/bash-completion/completions/gs-oldphoto
+%{_datadir}/bash-completion/completions/gs-resize-with-cropping
+%{_datadir}/bash-completion/completions/gs-test-gimp
+%{_mandir}/man1/gs-bumpmap.1.gz
+%{_mandir}/man1/gs-caption.1.gz
+%{_mandir}/man1/gs-clothify.1.gz
+%{_mandir}/man1/gs-glossytext.1.gz
+%{_mandir}/man1/gs-list-fonts.1.gz
+%{_mandir}/man1/gs-list-gradients.1.gz
+%{_mandir}/man1/gs-list-patterns.1.gz
+%{_mandir}/man1/gs-mosaic.1.gz
+%{_mandir}/man1/gs-oilify.1.gz
+%{_mandir}/man1/gs-oldphoto.1.gz
+%{_mandir}/man1/gs-resize-with-cropping.1.gz
+%{_mandir}/man1/gs-test-gimp.1.gz
+
+
+%package gimp-scripts-examples
+Summary: Example files for the GIMP image processing scripts
+Group: Applications/System
+BuildArch: noarch
+
+%description gimp-scripts-examples
+The GIMP scripts are scripts for automated image processing.
+The main purpose of this script is to generate background images for
+desktops, boot splashes, etc. with some branding.
+This package contains some example input files for the testing the
+GIMP scripts.
+
+%files gimp-scripts-examples
+%{_datadir}/system-tools/gimp-scripts-examples/Bergen.jpeg
+%{_datadir}/system-tools/gimp-scripts-examples/Fractal.fsf
+%{_datadir}/system-tools/gimp-scripts-examples/Portobello.jpeg
+
+
 %package basic
 Summary: Metapackage for basic system tools sub-packages
 Requires: %{name}-fingerprint-ssh-keys = %{version}-%{release}
@@ -357,6 +432,8 @@ Note that td-system-configure-grub is only added as weak dependency
 %package complete
 Summary: Metapackage for complete system tools sub-packages
 Requires: %{name}-basic = %{version}-%{release}
+Requires: %{name}-gimp-scripts = %{version}-%{release}
+Requires: %{name}-gimp-scripts-examples = %{version}-%{release}
 
 %description complete
 This package is a metapackage for the system information and maintenance
@@ -366,6 +443,16 @@ tools. It installs all sub-packages.
 
 
 %changelog
+* Sun May 31 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.7.1-1
+- New upstream release.
+* Sun May 31 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.7.0-1
+- New upstream release.
+* Sat May 23 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.4-1
+- New upstream release.
+* Fri May 22 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.3-1
+- New upstream release.
+* Sun May 17 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.2-1
+- New upstream release.
 * Sat May 09 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.1-1
 - New upstream release.
 * Fri May 08 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.6.0-1

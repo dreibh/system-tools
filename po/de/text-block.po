@@ -31,8 +31,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-08 23:05+0200\n"
-"PO-Revision-Date: 2026-07-05 16:38+0200\n"
+"POT-Creation-Date: 2026-05-22 18:57+0200\n"
+"PO-Revision-Date: 2026-16-05 14:36+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
 "Language: de\n"
@@ -43,127 +43,132 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Text-Block/text-block.c:142
+#: src/Text-Block/text-block.c:141
 #, c-format
-msgid "ERROR: Unable to open output file %s: %s"
-msgstr "FEHLER: Ausgabedatei %s kann nicht erstellt werden: %s"
+msgid "ERROR: Unable to open output file %s: %s!"
+msgstr "FEHLER: Ausgabedatei %s kann nicht erstellt werden: %s!"
 
-#: src/Text-Block/text-block.c:153
+#: src/Text-Block/text-block.c:152
 #, c-format
-msgid "ERROR: Unable to delete broken output file %s: %s"
-msgstr "FEHLER: Unvollständige Ausgabedatei %s kann nicht gelöscht werden: %s"
+msgid "ERROR: Unable to delete broken output file %s: %s!"
+msgstr "FEHLER: Unvollständige Ausgabedatei %s kann nicht gelöscht werden: %s!"
 
-#: src/Text-Block/text-block.c:168
+#: src/Text-Block/text-block.c:167
 #, c-format
-msgid "WARNING: Unable to restore file permissions for %s: %s"
-msgstr "WARNUNG: Dateirechte für %s können nicht wiederhergestellt werden: %s"
+msgid "WARNING: Unable to restore file permissions for %s: %s!"
+msgstr "WARNUNG: Dateirechte für %s können nicht wiederhergestellt werden: %s!"
 
-#: src/Text-Block/text-block.c:176
+#: src/Text-Block/text-block.c:175
 #, c-format
-msgid "ERROR: Unable to change name of temporary output file from %s to %s: %s"
-msgstr "FEHLER: Der Name der temporären Ausgabedatei kann nicht von %s in %s geändert werden: %s"
+msgid "ERROR: Unable to change name of temporary output file from %s to %s: %s!"
+msgstr "FEHLER: Der Name der temporären Ausgabedatei kann nicht von %s in %s geändert werden: %s!"
 
-#: src/Text-Block/text-block.c:233
+#: src/Text-Block/text-block.c:218 src/Text-Block/text-block.c:701
 #, c-format
-msgid "ERROR: Unable to write to output file %s: %s"
-msgstr "FEHLER: Ausgabedatei %s kann nicht beschrieben werden: %s"
+msgid "ERROR: malloc() failed: %s!"
+msgstr "FEHLER: malloc() ist fehlgeschlagen: %s!"
 
-#: src/Text-Block/text-block.c:420
+#: src/Text-Block/text-block.c:234
+#, c-format
+msgid "ERROR: Unable to write to output file %s: %s!"
+msgstr "FEHLER: Ausgabedatei %s kann nicht beschrieben werden: %s!"
+
+#: src/Text-Block/text-block.c:421
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Text-Block/text-block.c:546
+#: src/Text-Block/text-block.c:547
 msgid "ERROR: Too few arguments for line selection (--select|-s)!"
 msgstr "FEHLER: Zu wenige Argumente für Zeilenauswahl (--select|-s)!"
 
-#: src/Text-Block/text-block.c:580
+#: src/Text-Block/text-block.c:581
 msgid "ERROR: Invalid value for enumeration format (--enumerate-format)!"
 msgstr "FEHLER: Ungültiger Wert für das Nummerierungsformat (--enumerate-format)!"
 
-#: src/Text-Block/text-block.c:626
+#: src/Text-Block/text-block.c:627
 msgid "ERROR: Too few arguments for highlight parameters (--highlight-params)!"
 msgstr "FEHLER: Zu wenige Argumente für Highlight-Parameter (--highlight-params)!"
 
-#: src/Text-Block/text-block.c:655
+#: src/Text-Block/text-block.c:656
 msgid "ERROR: Invalid min/max settings (--min-actions/-m/--max-actions/-M)!"
 msgstr "FEHLER: Ungültige Min/Max-Einstellungen (--min-actions/-m/--max-actions/-M)!"
 
-#: src/Text-Block/text-block.c:667
+#: src/Text-Block/text-block.c:668
 msgid "ERROR: Line selection (--select|-s) and tags (--begin-tag/-b/--end-tag/-e/--tag/-t) are mutually exclusive!"
 msgstr "FEHLER: Zeilenauswahl (--select|-s) und Tags (--begin-tag/-b/--end-tag/-e/--tag/-t) schließen sich gegenseitig aus!"
 
-#: src/Text-Block/text-block.c:679
+#: src/Text-Block/text-block.c:680
 msgid "WARNING: Begin/end tags (--begin-tag/-b/--end-tag/-e/--tag/-t) have no effect for Cat, Discard, or Enumerate!"
 msgstr "WARNUNG: Beginn-/End-Tags (--begin-tag/-b/--end-tag/-e/--tag/-t) haben keine Wirkung bei Cat, Discard oder Enumerate!"
 
-#: src/Text-Block/text-block.c:689
+#: src/Text-Block/text-block.c:690
 msgid "WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful for Extract, Remove, or Replace!"
 msgstr "WARNUNG: Identische Beginn/End-Tags (--tag/-t) mit ausgeschlossenen Tags (--exclude-tags/-x) sind nicht sinnvoll für Extract, Remove oder Replace!"
 
-#: src/Text-Block/text-block.c:711
+#: src/Text-Block/text-block.c:714
 #, c-format
-msgid "ERROR: Unable to resolve absolute path for input file %s: %s"
-msgstr "FEHLER: Absoluter Pfad für Eingabedatei %s kann nicht aufgelöst werden: %s"
+msgid "ERROR: Unable to resolve absolute path for input file %s: %s!"
+msgstr "FEHLER: Absoluter Pfad für Eingabedatei %s kann nicht aufgelöst werden: %s!"
 
-#: src/Text-Block/text-block.c:721
+#: src/Text-Block/text-block.c:724
 #, c-format
-msgid "ERROR: Unable to open input file %s: %s"
-msgstr "FEHLER: Eingabedatei %s kann nicht geöffnet werden: %s"
+msgid "ERROR: Unable to open input file %s: %s!"
+msgstr "FEHLER: Eingabedatei %s kann nicht geöffnet werden: %s!"
 
-#: src/Text-Block/text-block.c:742
+#: src/Text-Block/text-block.c:745
 #, c-format
 msgid "WARNING: Line selection range (%lld — %lld) is not useful. Input file too short?"
 msgstr "WARNUNG: Zeilenauswahlbereich (%lld — %lld) ist nicht sinnvoll. Eingabedatei zu kurz?"
 
-#: src/Text-Block/text-block.c:749
+#: src/Text-Block/text-block.c:752
 msgid "ERROR: Select from end of file (negative line number) is only possible with input file!"
 msgstr "FEHLER: Zeilenauswahl vom Ende der Datei (negative Zeilennummer) ist nur mit Eingabedatei möglich!"
 
-#: src/Text-Block/text-block.c:754
+#: src/Text-Block/text-block.c:757
 msgid "ERROR: In-place update (--in-place|-p) requires an input file (--input/-i)!"
 msgstr "FEHLER: Für die direkte Aktualisierung (--in-place|-p) ist eine Eingabedatei (--input/-i) erforderlich!"
 
-#: src/Text-Block/text-block.c:767
+#: src/Text-Block/text-block.c:770
 msgid "ERROR: In-place update (--in-place|-p) and output file (--output/-o) are mutually exclusive!"
 msgstr "FEHLER: Direkte Aktualisierung (--in-place|-p) und Ausgabedatei (--output/-o) schließen sich gegenseitig aus!"
 
-#: src/Text-Block/text-block.c:772
+#: src/Text-Block/text-block.c:775
 msgid "ERROR: Cannot generate temporary output file name!"
 msgstr "FEHLER: Dateiname für temporäre Ausgabedatei kann nicht erzeugt werden!"
 
-#: src/Text-Block/text-block.c:782
+#: src/Text-Block/text-block.c:785
 #, c-format
-msgid "ERROR: Unable to create output file %s: %s"
-msgstr "FEHLER: Ausgabedatei %s kann nicht erstellt werden: %s"
+msgid "ERROR: Unable to create output file %s: %s!"
+msgstr "FEHLER: Ausgabedatei %s kann nicht erstellt werden: %s!"
 
-#: src/Text-Block/text-block.c:798
+#: src/Text-Block/text-block.c:801
 msgid "ERROR: Insert from standard input requires an input file!"
 msgstr "FEHLER: Einfügen von der Standardeingabe erfordert eine Eingabedatei!"
 
-#: src/Text-Block/text-block.c:804
+#: src/Text-Block/text-block.c:807
 #, c-format
-msgid "ERROR: Unable to create temporary file for insertion: %s"
-msgstr "FEHLER: Temporäre Datei für Einfügung kann nicht erstellt werden: %s"
+msgid "ERROR: Unable to create temporary file for insertion: %s!"
+msgstr "FEHLER: Temporäre Datei für Einfügung kann nicht erstellt werden: %s!"
 
-#: src/Text-Block/text-block.c:812
+#: src/Text-Block/text-block.c:815
 #, c-format
-msgid "ERROR: Failed to write to temporary file: %s"
-msgstr "FEHLER: Temporäre Datei kann nicht beschrieben werden: %s"
+msgid "ERROR: Failed to write to temporary file: %s!"
+msgstr "FEHLER: Temporäre Datei kann nicht beschrieben werden: %s!"
 
-#: src/Text-Block/text-block.c:824
+#: src/Text-Block/text-block.c:827
 #, c-format
-msgid "ERROR: Unable to open insert file %s: %s"
-msgstr "FEHLER: Einfügedatei %s läßt sich nicht öffnen: %s"
+msgid "ERROR: Unable to open insert file %s: %s!"
+msgstr "FEHLER: Einfügedatei %s läßt sich nicht öffnen: %s!"
 
-#: src/Text-Block/text-block.c:838
+#: src/Text-Block/text-block.c:841
 msgid "ERROR: No insert file provided!"
 msgstr "FEHLER: Keine Einfügedatei angegeben!"
 
-#: src/Text-Block/text-block.c:998
+#: src/Text-Block/text-block.c:1001
 #, c-format
-msgid "ERROR: Read error: %s"
-msgstr "FEHLER: Lesefehler: %s"
+msgid "ERROR: Read error: %s!"
+msgstr "FEHLER: Lesefehler: %s!"
 
-#: src/Text-Block/text-block.c:1012
+#: src/Text-Block/text-block.c:1015
 msgid "ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!"
 msgstr "FEHLER: Anzahl der Aktionen liegt außerhalb der festgelegten Grenzen (--min-actions/-m/--max-actions/-M)!"

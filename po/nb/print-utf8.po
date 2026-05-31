@@ -31,8 +31,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-08 23:05+0200\n"
-"PO-Revision-Date: 2026-07-05 16:39+0200\n"
+"POT-Creation-Date: 2026-05-22 18:57+0200\n"
+"PO-Revision-Date: 2026-16-05 14:36+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
 "Language: nb\n"
@@ -55,12 +55,14 @@ msgstr "FEIL: Ugyldig oktalt siffer %c!"
 
 #: src/Print-UTF8/print-utf8.c:162 src/Print-UTF8/print-utf8.c:291
 #: src/Print-UTF8/print-utf8.c:318
-msgid "ERROR: malloc() failed!"
-msgstr "FEIL: malloc() mislyktes!"
+#, c-format
+msgid "ERROR: malloc() failed: %s!"
+msgstr "FEIL: malloc() mislyktes: %s!"
 
 #: src/Print-UTF8/print-utf8.c:324
-msgid "ERROR: mbstowcs() failed!"
-msgstr "FEIL: mbstowcs() mislyktes!"
+#, c-format
+msgid "ERROR: mbstowcs() failed: %s!"
+msgstr "FEIL: mbstowcs() mislyktes: %s!"
 
 #: src/Print-UTF8/print-utf8.c:575
 msgid "Usage:"

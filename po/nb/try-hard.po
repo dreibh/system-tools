@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-09 14:47+0200\n"
+"POT-Creation-Date: 2026-05-22 15:36+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -69,8 +69,8 @@ msgstr "Prøvde ${MAX_TRIALS} ganger -> gir opp nå!"
 
 #: src/Try-Hard/try-hard:238
 #, sh-format
-msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting random time from [${minDelay}, ${maxDelay}] s ..."
-msgstr "Forsøk ${trial}/${MAX_TRIALS} feilet -> venter en tilfeldig tidsperiode mellom [${minDelay}, ${maxDelay}] s før nytt forsøk ..."
+msgid "Trial ${trial}/${MAX_TRIALS} failed (exit code ${exitStatus}) -> waiting random time from [${minDelay}, ${maxDelay}] s ..."
+msgstr "Forsøk ${trial}/${MAX_TRIALS} feilet (avslutningskode ${exitStatus}) -> venter en tilfeldig tidsperiode mellom [${minDelay}, ${maxDelay}] s før nytt forsøk ..."
 
 #: src/Try-Hard/try-hard:245
 #, sh-format

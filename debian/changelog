@@ -1,7 +1,44 @@
-td-system-tools (2.6.1-1ubuntu1) unstable; urgency=medium
+td-system-tools (2.7.1-1ubuntu1) unstable; urgency=medium
 
   * New upstream release.
   * Closes: #1073548 (ITP).
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Sun, 31 May 2026 17:44:07 +0200
+
+td-system-tools (2.7.0-1ubuntu1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Sun, 31 May 2026 17:04:49 +0200
+
+td-system-tools (2.6.4-2ubuntu1) unstable; urgency=medium
+
+  * Closes: #1137620 (missing td-system-tools for hipercontracer-node).
+  * Closes: #1137618 (missing td-system-tools for hipercontracer-collector).
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Sat, 23 May 2026 21:27:33 +0200
+
+td-system-tools (2.6.4-1ubuntu1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Sat, 23 May 2026 21:27:33 +0200
+
+td-system-tools (2.6.3-1ubuntu1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Fri, 22 May 2026 15:55:31 +0200
+
+td-system-tools (2.6.2-1ubuntu1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Sun, 17 May 2026 18:06:44 +0200
+
+td-system-tools (2.6.1-1ubuntu1) unstable; urgency=medium
+
+  * New upstream release.
 
  -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Sat, 09 May 2026 23:09:03 +0200
 

@@ -29,6 +29,7 @@
 
 #define _XOPEN_SOURCE 700
 #include <ctype.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <getopt.h>
 #include <locale.h>
@@ -46,7 +47,6 @@
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #else
-#warning NLS is disabled!
 #define bindtextdomain(domain, dirname) { }
 #define textdomain(domain) { }
 #define gettext(string) string
@@ -159,7 +159,7 @@ static char* unescape(const char* originalString)
    size_t original_string_length = strlen(originalString);
    char*  unescapedString        = (char*)malloc(original_string_length + 1);
    if(unescapedString == nullptr) {
-      fputs(gettext("ERROR: malloc() failed!"), stderr);
+      fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
       fputs("\n", stderr);
       exit(1);
    }
@@ -288,7 +288,7 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
    // ====== Copy string, but filter out ANSI colouring sequences ===========
    char* utf8String = (char*)malloc(original_string_length + 1);
    if(utf8String == nullptr) {
-      fputs(gettext("ERROR: malloc() failed!"), stderr);
+      fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
       fputs("\n", stderr);
       exit(1);
    }
@@ -315,13 +315,13 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
    // ====== Get string width ===============================================
    wchar_t* wide_string = (wchar_t*)malloc(sizeof(wchar_t) * (j + 1));
    if(wide_string == nullptr) {
-      fputs(gettext("ERROR: malloc() failed!"), stderr);
+      fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
       fputs("\n", stderr);
       exit(1);
    }
    const size_t wide_string_length = mbstowcs(wide_string, utf8String, j);
    if(wide_string_length == (size_t)-1) {
-      fputs(gettext("ERROR: mbstowcs() failed!"), stderr);
+      fprintf(stderr, gettext("ERROR: mbstowcs() failed: %s!"), strerror(errno));
       fputs("\n", stderr);
       exit(1);
    }

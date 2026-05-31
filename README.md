@@ -23,6 +23,7 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 - [Try-Hard](#-try-hard): Retries commands with a configurable backoff.
 - [Random-Sleep](#-random-sleep): Waits for a random time span, with support for fractional seconds.
 - [X.509-Tools](#-x.509-tools): Provide utilities for viewing, verifying, and converting X.509 certificates, and testing TLS connections.
+- [GIMP-Scripts](#-gimp-scripts): Contains a collection of scripts for graphics processing using GIMP and GraphicsMagick.
 
 System-Tools provides internationalisation&nbsp;(i18n) support using [GNU gettext](https://www.gnu.org/software/gettext/). That is, translation files for the output of the programs are supported. You can support the project by contributing translations for your language. See [Internationalisation&nbsp;(I18N)](#internationalisation) for details!
 
@@ -50,7 +51,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/System-Info/figures/01-example.webp">
-        <img alt="" src="src/System-Info/figures/01-example.webp" width="100%" height="100%" />
+        <img alt="System-Info Banner Example 1" src="src/System-Info/figures/01-example.webp" width="100%" height="100%" />
       </a><br />
       <tt><a href="src/System-Info/system-info.d/01-example">01-example</a></tt><br />
       The default example.
@@ -59,7 +60,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/System-Info/figures/09-hostname-example.webp">
-        <img alt="" src="src/System-Info/figures/09-hostname-example.webp" width="100%" height="100%" />
+        <img alt="System-Info Banner Example 2" src="src/System-Info/figures/09-hostname-example.webp" width="100%" height="100%" />
       </a><br />
       <tt><a href="src/System-Info/system-info.d/09-hostname-example">09-hostname-example</a></tt><br />
       Dynamically showing the hostname of the machine.
@@ -68,7 +69,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/System-Info/figures/10-company-logo-example.webp">
-        <img alt="" src="src/System-Info/figures/10-company-logo-example.webp" width="100%" height="100%" />
+        <img alt="System-Info Banner Example 3" src="src/System-Info/figures/10-company-logo-example.webp" width="100%" height="100%" />
       </a><br />
       <tt><a href="src/System-Info/system-info.d/10-company-logo-example">10-company-logo-example</a></tt><br />
       A <a href="https://www.simulamet.no/">SimulaMet</a> company branding.
@@ -79,7 +80,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
     <td style="vertical-align: middle;">
      <p align="center">
       <a href="src/System-Info/figures/10-nornet.webp">
-        <img alt="" src="src/System-Info/figures/10-nornet.webp" width="100%" height="100%" />
+        <img alt="System-Info Banner Example 4" src="src/System-Info/figures/10-nornet.webp" width="100%" height="100%" />
       </a><br />
       <tt><a href="src/System-Info/system-info.d/10-nornet">10-nornet</a></tt><br />
       A <a href="https://www.nntb.no/">NorNet</a> project branding.
@@ -88,7 +89,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
     <td style="vertical-align: middle;">
      <p align="center">
       <a href="src/System-Info/figures/18-neat.webp">
-        <img alt="" src="src/System-Info/figures/18-neat.webp" width="100%" height="100%" />
+        <img alt="System-Info Banner Example 5" src="src/System-Info/figures/18-neat.webp" width="100%" height="100%" />
       </a><br />
       <tt><a href="src/System-Info/system-info.d/18-neat">18-neat</a></tt><br />
       A <a href="https://neat.nntb.no/">NEAT</a> project branding.
@@ -97,7 +98,7 @@ Some examples, using the [`banner-helper`](src/System-Info/system-info.d/banner-
     <td style="vertical-align: middle;">
      <p align="center">
       <a href="src/System-Info/figures/30-rsplib.webp">
-        <img alt="" src="src/System-Info/figures/30-rsplib.webp" width="100%" height="100%" />
+        <img alt="System-Info Banner Example 6" src="src/System-Info/figures/30-rsplib.webp" width="100%" height="100%" />
       </a><br />
       <tt><a href="src/System-Info/system-info.d/30-rsplib">30-rsplib</a></tt><br />
       A <a href="https://www.nntb.no/~dreibh/rserpool/">RSPLIB</a> project branding.
@@ -443,9 +444,9 @@ View-Certificate displays basic details of given certificates in [Privacy-Enhanc
 
 Also see the manpage of View-Certificate for further details and examples:
 
-  ```bash
-  man view-certificate
-  ```
+```bash
+man view-certificate
+```
 
 
 ## View-CRL
@@ -467,9 +468,9 @@ View-CRL displays details of given [X.509](https://en.wikipedia.org/wiki/X.509) 
 
 Also see the manpage of View-CRL for further details and examples:
 
-  ```bash
-  man view-crl
-  ```
+```bash
+man view-crl
+```
 
 
 ## Check-Certificate
@@ -499,9 +500,9 @@ Check-Certificate verifies a certificate, by verifying its chain from a given Ro
 
 Also see the manpage of Check-Certificate for further details and examples:
 
-  ```bash
-  man check-certificate
-  ```
+```bash
+man check-certificate
+```
 
 
 ## Extract-PEM
@@ -523,9 +524,9 @@ Extract-PEM extracts an X.509 certificate bundle from a [Privacy-Enhanced Mail&n
 
 Also see the manpage of Extract-PEM for further details and examples:
 
-  ```bash
-  man extract-pem
-  ```
+```bash
+man extract-pem
+```
 
 
 ## DER2PEM and PEM2DER
@@ -567,9 +568,662 @@ Test-TLS-Connection establishes a Transport Layer Security&nbsp;(TLS) connection
 
 Also see the manpage of Test-TLS-Connection for further details and examples:
 
+```bash
+man test-tls-connection
+```
+
+
+# 📚 GIMP-Scripts
+
+The GIMP-Scripts are a collection of scripts using [GIMP](https://www.gimp.org/) and [GraphicsMagick](https://graphicsmagick.sourceforge.io/index.html) to render text as well as to apply effects on and resize images.
+
+Examples input images for the following non-rendering examples (click on image for full-size view):
+
+<table summary="Original Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Bergen.webp">
+        <img alt="Picture of Bergen, Norway" src="src/GIMP-Scripts/figures/Bergen-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Portobello.webp">
+        <img alt="Picture of Portobello, New Zealand" src="src/GIMP-Scripts/figures/Portobello-preview.webp" width="43%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Fractal.webp">
+        <img alt="Mandelbrot Fractal rendered by FractGen" src="src/GIMP-Scripts/figures/Fractal-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;"><p align="center"><a href="src/GIMP-Scripts/figures/Bergen.webp">Bergen.webp</a></p></td>
+    <td style="vertical-align: middle;"><p align="center"><a href="src/GIMP-Scripts/figures/Portobello.webp">Portobello.webp</a></p></td>
+    <td style="vertical-align: middle;"><p align="center"><a href="src/GIMP-Scripts/figures/Fractal.webp">Fractal.webp</a><br/><a href="https://www.nntb.no/~dreibh/fractalgenerator/">FractGen</a> input file <a type="application/x-fractgen" href="src/GIMP-Scripts/examples/Fractal.fsf">Fractal.fsf</a></p></td>
+  </tr>
+</table>
+
+
+## GS-Resize-with-Cropping
+
+GS-Resize-with-Cropping resizes an image, including cropping to fit a changed aspect ratio.
+
+Examples (click on image for full-size view):
+
+<table summary="GS-Resize-with-Cropping Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Bergen-Resize-with-Cropping.webp">
+        <img alt="Picture of Bergen, Norway; 1:1 aspect ratio" src="src/GIMP-Scripts/figures/Bergen-Resize-with-Cropping-preview.webp" width="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Portobello-Resize-with-Cropping.webp">
+        <img alt="Picture of Portobello, New Zealand; 2:1 aspect ratio" src="src/GIMP-Scripts/figures/Portobello-Resize-with-Cropping-preview.webp" width="100%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Fractal-Resize-with-Cropping.webp">
+        <img alt="Mandelbrot Fractal; 3:1 aspect ratio" src="src/GIMP-Scripts/figures/Fractal-Resize-with-Cropping-preview.webp" width="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <pre id="Resize-with-Cropping1"><code class="language-bash"><span class="ex">gs-resize-with-cropping</span> Bergen.webp Bergen-Resize-with-Cropping.webp <span class="dt">\</span>
+   <span class="at">--width</span> 1024 <span class="dt">\</span>
+   <span class="at">--aspect</span> 1:1</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="Resize-with-Cropping2"><code class="language-bash"><span class="ex">gs-resize-with-cropping</span> Portobello.webp Portobello-Resize-with-Cropping.webp <span class="dt">\</span>
+   <span class="at">--width</span> 1024 <span class="dt">\</span>
+   <span class="at">--aspect</span> 2:1</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="Resize-with-Cropping3"><code class="language-bash"><span class="ex">gs-resize-with-cropping</span> Fractal.webp Fractal-Resize-with-Cropping.webp <span class="dt">\</span>
+   <span class="at">--height</span> 512 <span class="dt">\</span>
+   <span class="at">--aspect</span> 3:1</code></pre>
+    </td>
+  </tr>
+</table>
+
+Also see the manpage of GS-Resize-with-Cropping for further details and examples:
+
+```bash
+man gs-resize-with-cropping
+```
+
+
+## GS-BumpMap
+
+GS-BumpMap runs GIMP to load an image, applies the <a href="https://gegl.org/operations/gegl-bump-map.html">GIMP GEGL "Bump Map" filter</a> as well as <a href="https://docs.gimp.org/3.0/en/gimp-tool-hue-saturation.html">Hue-Saturation adjustment</a>, and stores the result into an output file.
+
+Examples (click on image for full-size view):
+
+<table summary="GS-BumpMap Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Bergen-BumpMap.webp">
+        <img alt="Picture of Bergen, Norway; Bump Map effect" src="src/GIMP-Scripts/figures/Bergen-BumpMap-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Portobello-BumpMap.webp">
+        <img alt="Picture of Portobello, New Zealand; Bump Map effect" src="src/GIMP-Scripts/figures/Portobello-BumpMap-preview.webp" width="43%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Fractal-BumpMap.webp">
+        <img alt="Mandelbrot Fractal; Bump Map effect" src="src/GIMP-Scripts/figures/Fractal-BumpMap-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <pre id="BumpMap1"><code class="language-bash"><span class="ex">gs-bumpmap</span> Bergen.webp Bergen-BumpMap.webp <span class="dt">\</span>
+   <span class="at">--azimuth</span>              90.0 <span class="dt">\</span>
+   <span class="at">--elevation</span>            10.0 <span class="dt">\</span>
+   <span class="at">--depth</span>                20   <span class="dt">\</span>
+   <span class="at">--offset-x</span>             4    <span class="dt">\</span>
+   <span class="at">--offset-y</span>             4    <span class="dt">\</span>
+   <span class="at">--compensate-darkening</span> on   <span class="dt">\</span>
+   <span class="at">--waterlevel</span>           0.1  <span class="dt">\</span>
+   <span class="at">--invert</span>               off  <span class="dt">\</span>
+   <span class="at">--tiled</span>                on</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="BumpMap2"><code class="language-bash"><span class="ex">gs-bumpmap</span> Portobello.webp Portobello-BumpMap.webp <span class="dt">\</span>
+   <span class="at">--azimuth</span>              135.0 <span class="dt">\</span>
+   <span class="at">--elevation</span>            20.0  <span class="dt">\</span>
+   <span class="at">--depth</span>                20    <span class="dt">\</span>
+   <span class="at">--offset-x</span>             16    <span class="dt">\</span>
+   <span class="at">--offset-y</span>             16    <span class="dt">\</span>
+   <span class="at">--compensate-darkening</span> on    <span class="dt">\</span>
+   <span class="at">--waterlevel</span>           0.1   <span class="dt">\</span>
+   <span class="at">--invert</span>               off   <span class="dt">\</span>
+   <span class="at">--tiled</span>                on</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="BumpMap3"><code class="language-bash"><span class="ex">gs-bumpmap</span> Fractal.webp Fractal-BumpMap.webp <span class="dt">\</span>
+   <span class="at">--azimuth</span>              135.0 <span class="dt">\</span>
+   <span class="at">--elevation</span>            48.0  <span class="dt">\</span>
+   <span class="at">--depth</span>                32    <span class="dt">\</span>
+   <span class="at">--offset-x</span>             0     <span class="dt">\</span>
+   <span class="at">--offset-y</span>             0     <span class="dt">\</span>
+   <span class="at">--compensate-darkening</span> on    <span class="dt">\</span>
+   <span class="at">--waterlevel</span>           0.2   <span class="dt">\</span>
+   <span class="at">--invert</span>               off   <span class="dt">\</span>
+   <span class="at">--tiled</span>                on</code></pre>
+    </td>
+  </tr>
+</table>
+
+Also see the manpage of GS-BumpMap for further details and examples:
+
+```bash
+man gs-bumpmap
+```
+
+
+## GS-Clothify
+
+GS-Clothify runs GIMP to load an image, applies the <a href="https://docs.gimp.org/3.0/en/script-fu-clothify.html">GIMP Script-Fu "Clothify" filter</a>, and stores the result into an output file.
+The blurring, bearing, and depth are configurable.
+
+Examples (click on image for full-size view):
+
+<table summary="GS-Clothify Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Bergen-Clothify.webp">
+        <img alt="Picture of Bergen, Norway; Clothify effect" src="src/GIMP-Scripts/figures/Bergen-Clothify-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Portobello-Clothify.webp">
+        <img alt="Picture of Portobello, New Zealand; Clothify effect" src="src/GIMP-Scripts/figures/Portobello-Clothify-preview.webp" width="43%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Fractal-Clothify.webp">
+        <img alt="Mandelbrot Fractal; Clothify effect" src="src/GIMP-Scripts/figures/Fractal-Clothify-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <pre id="Clothify1"><code class="language-bash"><span class="ex">gs-clothify</span> Bergen.webp Bergen-Clothify.webp <span class="dt">\</span>
+   <span class="at">--blur-x</span>    3    <span class="dt">\</span>
+   <span class="at">--blur-y</span>    3    <span class="dt">\</span>
+   <span class="at">--azimuth</span>   90.0 <span class="dt">\</span>
+   <span class="at">--elevation</span> 60.0 <span class="dt">\</span>
+   <span class="at">--depth</span>     4</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="Clothify2"><code class="language-bash"><span class="ex">gs-clothify</span> Portobello.webp Portobello-Clothify.webp <span class="dt">\</span>
+   <span class="at">--blur-x</span>    5     <span class="dt">\</span>
+   <span class="at">--blur-y</span>    5     <span class="dt">\</span>
+   <span class="at">--azimuth</span>   135.0 <span class="dt">\</span>
+   <span class="at">--elevation</span> 50.0  <span class="dt">\</span>
+   <span class="at">--depth</span>     4</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="Clothify3"><code class="language-bash"><span class="ex">gs-clothify</span> Fractal.webp Fractal-Clothify.webp <span class="dt">\</span>
+   <span class="at">--blur-x</span>    4     <span class="dt">\</span>
+   <span class="at">--blur-y</span>    4     <span class="dt">\</span>
+   <span class="at">--azimuth</span>   180.0 <span class="dt">\</span>
+   <span class="at">--elevation</span> 80.0  <span class="dt">\</span>
+   <span class="at">--depth</span>     4</code></pre>
+    </td>
+  </tr>
+</table>
+
+Also see the manpage of GS-Clothify for further details and examples:
+
+```bash
+man gs-clothify
+```
+
+
+## GS-Mosaic
+
+GS-Mosaic runs GIMP to load an image, applies the <a href="https://gegl.org/operations/gegl-mosaic.html">GIMP GEGL "Mosaic" filter</a>, and stores the result into an output file.
+The tile type (triangles, squares, hexagons, octagons), tile size, tile height, tile neatness, tile surface (smooth or rough) tile spacing, coloring and lighting are configurable.
+
+Examples (click on image for full-size view):
+
+<table summary="GS-Mosaic Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Bergen-Mosaic.webp">
+        <img alt="Picture of Bergen, Norway; Mosaic effect" src="src/GIMP-Scripts/figures/Bergen-Mosaic-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Portobello-Mosaic.webp">
+        <img alt="Picture of Portobello, New Zealand; Mosaic effect" src="src/GIMP-Scripts/figures/Portobello-Mosaic-preview.webp" width="43%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Fractal-Mosaic.webp">
+        <img alt="Mandelbrot Fractal; Mosaic effect" src="src/GIMP-Scripts/figures/Fractal-Mosaic-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <pre id="Mosaic1"><code class="language-bash"><span class="ex">gs-mosaic</span> Bergen.webp Bergen-Mosaic.webp <span class="dt">\</span>
+   <span class="at">--tile-type</span>        hexagons <span class="dt">\</span>
+   <span class="at">--tile-size</span>        21.0     <span class="dt">\</span>
+   <span class="at">--tile-height</span>      3.0      <span class="dt">\</span>
+   <span class="at">--tile-neatness</span>    0.65     <span class="dt">\</span>
+   <span class="at">--tile-surface</span>     rough    <span class="dt">\</span>
+   <span class="at">--tile-spacing</span>     2.0      <span class="dt">\</span>
+   <span class="at">--tile-allow-split</span> on       <span class="dt">\</span>
+   <span class="at">--color-variation</span>  0.15     <span class="dt">\</span>
+   <span class="at">--color-averaging</span>  on       <span class="dt">\</span>
+   <span class="at">--antialiasing</span>     on       <span class="dt">\</span>
+   <span class="at">--light-direction</span>  135.0</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="Mosaic2"><code class="language-bash"><span class="ex">gs-mosaic</span> Portobello.webp Portobello-Mosaic.webp <span class="dt">\</span>
+   <span class="at">--tile-type</span>        octagons <span class="dt">\</span>
+   <span class="at">--tile-size</span>        25.0     <span class="dt">\</span>
+   <span class="at">--tile-height</span>      4.0      <span class="dt">\</span>
+   <span class="at">--tile-neatness</span>    0.25     <span class="dt">\</span>
+   <span class="at">--tile-surface</span>     smooth   <span class="dt">\</span>
+   <span class="at">--tile-spacing</span>     2.0      <span class="dt">\</span>
+   <span class="at">--tile-allow-split</span> on       <span class="dt">\</span>
+   <span class="at">--color-variation</span>  0.35     <span class="dt">\</span>
+   <span class="at">--color-averaging</span>  on       <span class="dt">\</span>
+   <span class="at">--antialiasing</span>     on       <span class="dt">\</span>
+   <span class="at">--light-direction</span>  35.0</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="Mosaic3"><code class="language-bash"><span class="ex">gs-mosaic</span> Fractal.webp Fractal-Mosaic.webp <span class="dt">\</span>
+   <span class="at">--tile-type</span>        triangles <span class="dt">\</span>
+   <span class="at">--tile-size</span>        32.0      <span class="dt">\</span>
+   <span class="at">--tile-height</span>      4.0       <span class="dt">\</span>
+   <span class="at">--tile-neatness</span>    0.65      <span class="dt">\</span>
+   <span class="at">--tile-surface</span>     rough     <span class="dt">\</span>
+   <span class="at">--tile-spacing</span>     3.0       <span class="dt">\</span>
+   <span class="at">--tile-allow-split</span> on        <span class="dt">\</span>
+   <span class="at">--color-variation</span>  0.15      <span class="dt">\</span>
+   <span class="at">--color-averaging</span>  on        <span class="dt">\</span>
+   <span class="at">--antialiasing</span>     on        <span class="dt">\</span>
+   <span class="at">--light-direction</span>  275.0</code></pre>
+    </td>
+  </tr>
+</table>
+
+Also see the manpage of GS-Mosaic for further details and examples:
+
+```bash
+man gs-mosaic
+```
+
+
+## GS-Oilify
+
+GS-Oilify runs GIMP to load an image, applies the <a href="https://gegl.org/operations/gegl-oilify.html">GIMP GEGL "Oilify" filter</a>, and stores the result into an output file.
+The mask size and intensity mode (on or off) are configurable.
+
+Examples (click on image for full-size view):
+
+<table summary="GS-Oilify Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Bergen-Oilify.webp">
+        <img alt="Picture of Bergen, Norway; Oilify effect" src="src/GIMP-Scripts/figures/Bergen-Oilify-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Portobello-Oilify.webp">
+        <img alt="Picture of Portobello, New Zealand; Oilify effect" src="src/GIMP-Scripts/figures/Portobello-Oilify-preview.webp" width="43%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Fractal-Oilify.webp">
+        <img alt="Mandelbrot Fractal; Oilify effect" src="src/GIMP-Scripts/figures/Fractal-Oilify-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <pre id="Oilify1"><code class="language-bash"><span class="ex">gs-oilify</span> Bergen.webp Bergen-Oilify.webp <span class="dt">\</span>
+   <span class="at">--mask-size</span>      20 <span class="dt">\</span>
+   <span class="at">--intensity-mode</span> on</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="Oilify2"><code class="language-bash"><span class="ex">gs-oilify</span> Portobello.webp Portobello-Oilify.webp <span class="dt">\</span>
+   <span class="at">--mask-size</span>      16 <span class="dt">\</span>
+   <span class="at">--intensity-mode</span> off</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="Oilify3"><code class="language-bash"><span class="ex">gs-oilify</span> Fractal.webp Fractal-Oilify.webp <span class="dt">\</span>
+   <span class="at">--mask-size</span>      12 <span class="dt">\</span>
+   <span class="at">--intensity-mode</span> on</code></pre>
+    </td>
+  </tr>
+</table>
+
+Also see the manpage of GS-Oilify for further details and examples:
+
+```bash
+man gs-oilify
+```
+
+
+## GS-OldPhoto
+
+GS-OldPhoto runs GIMP to load an image, applies the <a href="https://docs.gimp.org/3.0/en/script-fu-old-photo.html">GIMP Script-Fu "Old Photo" filter</a>, and stores the result into an output file.
+The defocus mode (on or off), border size, sepia mode (on or off) and mottle mode (on or off) are configurable.
+
+Examples (click on image for full-size view):
+
+<table summary="GS-OldPhoto Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Bergen-OldPhoto.webp">
+        <img alt="Picture of Bergen, Norway; Old Photo effect" src="src/GIMP-Scripts/figures/Bergen-OldPhoto-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Portobello-OldPhoto.webp">
+        <img alt="Picture of Portobello, New Zealand; Old Photo effect" src="src/GIMP-Scripts/figures/Portobello-OldPhoto-preview.webp" width="43%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Fractal-OldPhoto.webp">
+        <img alt="Mandelbrot Fractal; Old Photo effect" src="src/GIMP-Scripts/figures/Fractal-OldPhoto-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <pre id="OldPhoto1"><code class="language-bash"><span class="ex">gs-oldphoto</span> Bergen.webp Bergen-OldPhoto.webp <span class="dt">\</span>
+   <span class="at">--defocus</span>     on <span class="dt">\</span>
+   <span class="at">--border-size</span> 24 <span class="dt">\</span>
+   <span class="at">--sepia</span>       on <span class="dt">\</span>
+   <span class="at">--mottle</span>      on</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="OldPhoto2"><code class="language-bash"><span class="ex">gs-oldphoto</span> Portobello.webp Portobello-OldPhoto.webp <span class="dt">\</span>
+   <span class="at">--defocus</span>     off <span class="dt">\</span>
+   <span class="at">--border-size</span> 16  <span class="dt">\</span>
+   <span class="at">--sepia</span>       on  <span class="dt">\</span>
+   <span class="at">--mottle</span>      off</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="OldPhoto3"><code class="language-bash"><span class="ex">gs-oldphoto</span> Fractal.webp Fractal-OldPhoto.webp <span class="dt">\</span>
+   <span class="at">--defocus</span>     on  <span class="dt">\</span>
+   <span class="at">--border-size</span> 32  <span class="dt">\</span>
+   <span class="at">--sepia</span>       off <span class="dt">\</span>
+   <span class="at">--mottle</span>      on</code></pre>
+    </td>
+  </tr>
+</table>
+
+Also see the manpage of GS-OldPhoto for further details and examples:
+
+```bash
+man gs-oldphoto
+```
+
+
+## GS-Caption
+
+GS-Caption runs GIMP to generate a caption image with given text using a specific font. The foreground and background color, transparency, font, and font size are configurable.
+
+Examples (click on image for full-size view):
+
+<table summary="GS-Caption Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Caption1.webp">
+        <img alt="Caption Example 1" src="src/GIMP-Scripts/figures/Caption1-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Caption2.webp">
+        <img alt="Caption Example 2" src="src/GIMP-Scripts/figures/Caption2-preview.webp" width="100%" height="100%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/Caption3.webp">
+        <img alt="Caption Example 3" src="src/GIMP-Scripts/figures/Caption3-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <pre id="Caption1"><code class="language-bash"><span class="ex">gs-caption</span> Caption1.webp 1024 42 <span class="dt">\</span>
+   <span class="st">"Test on </span><span class="va">$(LC_ALL=C.UTF-8 date)</span><span class="st">"</span> <span class="dt">\</span>
+   <span class="at">--font-name</span> <span class="st">"Open Sans Bold"</span> <span class="dt">\</span>
+   <span class="at">--font-size</span> 70 <span class="dt">\</span>
+   <span class="at">--foreground</span> <span class="st">"#02266b"</span> --background <span class="st">"#ffd7cc"</span> <span class="dt">\</span>
+   <span class="at">--transparency</span> 50</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="Caption2"><code class="language-bash"><span class="ex">gs-caption</span> Caption2.webp 1024 42 <span class="dt">\</span>
+   <span class="st">"Another Test on </span><span class="va">$(LC_ALL=C.UTF-8 date)</span><span class="st">"</span> <span class="dt">\</span>
+   <span class="at">--font-name</span> <span class="st">"Lobster Two Bold Italic"</span> <span class="dt">\</span>
+   <span class="at">--font-size</span> 70 <span class="dt">\</span>
+   <span class="at">--foreground</span> <span class="st">"#02266b"</span> --background <span class="st">"#ffd700"</span> <span class="dt">\</span>
+   <span class="at">--transparency</span> 26</code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="Caption3"><code class="language-bash"><span class="ex">gs-caption</span> Caption3.webp 1024 42 <span class="dt">\</span>
+   <span class="st">"Yet Another Test on </span><span class="va">$(LC_ALL=C.UTF-8 date)</span><span class="st">"</span> <span class="dt">\</span>
+   <span class="at">--font-name</span> <span class="st">"URW Gothic Book"</span> <span class="dt">\</span>
+   <span class="at">--font-size</span> 70 <span class="dt">\</span>
+   <span class="at">--foreground</span> <span class="st">"#02266b"</span> --background <span class="st">"#777777"</span> <span class="dt">\</span>
+   <span class="at">--transparency</span> 40</code></pre>
+    </td>
+  </tr>
+</table>
+
+See the manpage of GS-Caption for further details and examples:
+
+```bash
+man gs-caption
+```
+
+Also see [GS-List-Fonts](#gs-list-fonts) for obtaining a list of available fonts.
+
+
+## GS-GlossyText
+
+GS-GlossyText runs GIMP and the <a href="https://docs.gimp.org/2.8/en/script-fu-glossy-logo-alpha.html">GIMP Script-Fu "Glossy" script</a> to render a given text using a specific font. The color gradients, patterns, font, and font size are configurable.
+
+Examples (click on image for full-size view):
+
+<table summary="GS-GlossyText Examples" style="table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/GlossyText1.webp">
+        <img alt="Glossy Text Example «System-Tools»" src="src/GIMP-Scripts/figures/GlossyText1-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/GlossyText2.webp">
+        <img alt="Glossy Text Example «Simula»" src="src/GIMP-Scripts/figures/GlossyText2-preview.webp" width="100%" height="100%" />
+      </a>
+     </p>
+    </td>
+    <td style="vertical-align: middle; width: 33.33%;">
+     <p align="center">
+      <a href="src/GIMP-Scripts/figures/GlossyText3.webp">
+        <img alt="Glossy Text Example «NorNet»" src="src/GIMP-Scripts/figures/GlossyText3-preview.webp" width="100%" height="100%" />
+      </a><br />
+     </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">
+     <pre id="GlossyText1"><code class="language-bash"><span class="ex">gs-glossytext</span> GlossyText1.webp "System-Tools" <span class="dt">\</span>
+   <span class="at">--font-name</span> <span class="st">"Lobster Two Bold Italic"</span> <span class="dt">\</span>
+   <span class="at">--font-size</span> 64 <span class="dt">\</span>
+   <span class="at">--outline-size</span> 8 <span class="dt">\</span>
+   <span class="at">--blend-gradient-text</span> <span class="st">"Brushed Aluminium"</span> <span class="dt">\</span>
+   <span class="at">--blend-gradient-outline</span> <span class="st">"Golden"</span></code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="GlossyText2"><code class="language-bash"><span class="ex">gs-glossytext</span> GlossyText2.webp "Simula" <span class="dt">\</span>
+   <span class="at">--font-name</span> <span class="st">"Open Sans Bold"</span> <span class="dt">\</span>
+   <span class="at">--font-size 64</span> <span class="dt">\</span>
+   <span class="at">--outline-size</span> 12 <span class="dt">\</span>
+   <span class="at">--blend-gradient-text</span> <span class="st">"Golden"</span> <span class="dt">\</span>
+   <span class="at">--blend-gradient-outline</span> <span class="st">"Golden"</span></code></pre>
+    </td>
+    <td style="vertical-align: middle;">
+     <pre id="GlossyText3"><code class="language-bash"><span class="ex">gs-glossytext</span> GlossyText3.webp <span class="st">"NorNet"</span> <span class="at">-S</span> 64</code></pre>
+    </td>
+  </tr>
+</table>
+
+See the manpage of GS-GlossyText for further details and examples:
+
+```bash
+man gs-glossytext
+```
+
+
+Also see [GS-List-Fonts](#gs-list-fonts), [GS-List-Gradients](#gs-list-gradients), and [GS-List-Patterns](#gs-list-patterns) for obtaining lists of available fonts, gradients, and patterns.
+
+
+## GS-Test-Gimp
+
+GS-Test-Gimp runs a short test to verify that GIMP can run a GIMP script in non-GUI mode. If not already initialised, GIMP will create the GIMP directory with configuration files on first startup. The storage location of this directory is provided to GIMP by its environment variables GIMP3_DIRECTORY (Gimp 3.x) and GIMP2_DIRECTORY (Gimp 2.x).
+
+Examples:
+
+* Simply run a GIMP test:
+
   ```bash
-  man test-tls-connection
+  GIMP2_DIRECTORY=/tmp/gimp-temp-dir GIMP3_DIRECTORY=/tmp/gimp-temp-dir \
+     gs-test-gimp
   ```
+
+* Run a GIMP test, with verbose output for debugging:
+
+  ```bash
+  GIMP2_DIRECTORY=/tmp/gimp-temp-dir GIMP3_DIRECTORY=/tmp/gimp-temp-dir \
+     gs-test-gimp --verbose
+  ```
+
+Also see the manpage of GS-Test-Gimp for further details and examples:
+
+```bash
+man gs-test-gimp
+```
+
+
+## Helper Scripts
+
+### GS-List-Fonts
+
+GS-List-Fonts lists the available GIMP fonts and their styles as combined strings. These font/style strings are e.g.&nbsp;valid settings for the `--font-name` parameter of [GS-Caption](#gs-caption) and [GS-GlossyText](#gs-glossytext).
+
+Usage:
+
+```bash
+gs-list-fonts
+```
+
+Also see the manpage of GS-List-Fonts for further information:
+
+```bash
+man gs-list-fonts
+```
+
+### GS-List-Gradients
+
+GS-List-Gradients lists the available GIMP gradients.
+
+Usage:
+
+```bash
+gs-list-gradients
+```
+
+Also see the manpage of GS-List-Gradients for further information:
+
+```bash
+man gs-list-gradients
+```
+
+These gradients are e.g.&nbsp;valid settings for the `--blend-gradient-*` parameters of [GS-GlossyText](#gs-glossytext).
+
+
+
+### GS-List-Patterns
+
+GS-List-Patterns lists the available GIMP patterns. These patterns are e.g.&nbsp;valid settings for the `--pattern-*` parameters of [GS-GlossyText](#gs-glossytext).
+
+Usage:
+
+```bash
+gs-list-patterns
+```
+
+Also see the manpage of GS-List-Patterns for further information:
+
+```bash
+man gs-list-patterns
+```
 
 
 # 📦 Binary Package Installation
@@ -583,7 +1237,18 @@ For ready-to-install Ubuntu Linux packages of System-Tools, see [Launchpad PPA f
 ```bash
 sudo apt-add-repository -sy ppa:dreibh/ppa
 sudo apt-get update
-sudo apt-get install td-system-tools
+```
+
+For the basic System-Tools (without the dependency-heavy GIMP-Scripts):
+
+```bash
+sudo apt-get install td-system-tools-basic
+```
+
+For the complete System-Tools (including the GIMP-Scripts):
+
+```bash
+sudo apt-get install td-system-tools-complete
 ```
 
 ## Fedora Linux
@@ -592,7 +1257,18 @@ For ready-to-install Fedora Linux packages of System-Tools, see [COPR PPA for Th
 
 ```bash
 sudo dnf copr enable -y dreibh/ppa
-sudo dnf install td-system-tools
+```
+
+For the basic System-Tools (without the dependency-heavy GIMP-Scripts):
+
+```bash
+sudo dnf install td-system-tools-basic
+```
+
+For the complete System-Tools (including the GIMP-Scripts):
+
+```bash
+sudo dnf install td-system-tools-complete
 ```
 
 ## FreeBSD
@@ -603,6 +1279,8 @@ For ready-to-install FreeBSD packages of System-Tools, it is included in the por
 sudo pkg install td-system-tools
 ```
 
+Note: The FreeBSD port package contains the basic System-Tools (without the dependency-heavy GIMP-Scripts, and without Configure-GRUB).
+
 Alternatively, to compile it from the ports sources:
 
 ```bash
@@ -610,6 +1288,8 @@ cd /usr/ports/net/td-system-tools
 make
 sudo make install
 ```
+
+Compiling from the port sources provides the optional installation of the GIMP-Scripts and/or Configure-GRUB.
 
 
 # 💾 Build from Sources
@@ -636,7 +1316,7 @@ Optionally, for installation to the standard paths (usually under `/usr/local`):
 sudo make install
 ```
 
-Note: The script [`ci/get-dependencies`](https://github.com/dreibh/system-tools/blob/master/ci/get-dependencies) automatically installs the build dependencies under Debian/Ubuntu Linux, Fedora Linux, and FreeBSD. For manual handling of the build dependencies, see the packaging configuration in [`debian/control`](https://github.com/dreibh/system-tools/blob/master/debian/control) (Debian/Ubuntu Linux), [`system-tools.spec`](https://github.com/dreibh/system-tools/blob/master/rpm/td-system-tools.spec) (Fedora Linux), and [`Makefile`](https://github.com/dreibh/system-tools/blob/master/freebsd/td-system-tools/Makefile) for FreeBSD.
+Note: The script [`ci/get-dependencies`](https://github.com/dreibh/system-tools/blob/master/ci/get-dependencies) automatically installs the build dependencies under Debian/Ubuntu Linux, Fedora Linux, and FreeBSD. For manual handling of the build dependencies, see the packaging configuration in [`debian/control`](https://github.com/dreibh/system-tools/blob/master/debian/control) (Debian/Ubuntu Linux), [`td-system-tools.spec`](https://github.com/dreibh/system-tools/blob/master/rpm/td-system-tools.spec) (Fedora Linux), and [`Makefile`](https://github.com/dreibh/system-tools/blob/master/freebsd/td-system-tools/Makefile) for FreeBSD.
 
 Contributions:
 
@@ -692,4 +1372,5 @@ To provide a translation of one or more components of System-Tools into your lan
 * [NorNet – A Real-World, Large-Scale Multi-Homing Testbed](https://www.nntb.no/)
 * [NEAT – A New, Evolutive API and Transport-Layer Architecture for the Internet](https://neat.nntb.no/)
 * [Thomas Dreibholz's Reliable Server Pooling (RSerPool) Page – The RSPLIB Project](https://www.nntb.no/~dreibh/rserpool/)
-* [5G-VINNI – 5G Verticals Innovation Infrastructure](https://www.5g-vinni.eu/)
+* [5G-VINNI – 5G Verticals Innovation Infrastructure](https://www.eurescom.eu/archive/5G-VINNI/)
+* [RAKSHA: 5G Security for Critical Communications](https://www.sintef.no/en/projects/2021/raksha-5g-security-for-critical-communications/)

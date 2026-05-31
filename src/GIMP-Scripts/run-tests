@@ -1,0 +1,276 @@
+#!/usr/bin/env bash
+# ==========================================================================
+#         ____            _                     _____           _
+#        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+#               |___/
+#                             --- System-Tools ---
+#                  https://www.nntb.no/~dreibh/system-tools/
+# ==========================================================================
+#
+# GIMP Scripts
+# Copyright (C) 2013-2026 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -euo pipefail
+
+
+INPUT1="examples/Bergen.jpeg"
+INPUT2="examples/Portobello.jpeg"
+INPUT3="examples/Fractal.png"
+
+
+# ###### Helper function to show failure ####################################
+exit-failed ()
+{
+   echo
+   print-utf8 -n -s "\e[1;31;5m█" "▀" "█\e[0m" ;
+   echo "CHECK FAILED!" | figlet -w "${COLUMNS}" | print-utf8 -n -C "\e[1;31;5m█\e[25m" "\e[5m█\e[0m" ;
+   print-utf8 -n -s "\e[1;31;5m█" "▄" "█\e[0m"
+   exit 1
+}
+
+
+# ###### Helper function to show success ####################################
+exit-success ()
+{
+   echo
+   print-utf8 -n -s "\e[1;32m█" "▀" "█\e[0m" ;
+   echo "ALL CHECKS SUCCEEDED!" | figlet -w "${COLUMNS}" | print-utf8 -n -C "\e[1;32m█\e[25m" "█\e[0m" ;
+   print-utf8 -n -s "\e[1;32m█" "▄" "█\e[0m"
+   exit 0
+}
+
+
+# ###### Helper function to show script information #########################
+show-script ()
+{
+   local script="$1"
+
+   print-utf8 -n -s "\e[1;36m█" "▀" "█\e[0m" ;
+   figlet -w "${COLUMNS}" "$(basename "${script}")" | print-utf8 -n -C "\e[1;36m█\e[25m" "█\e[0m" ;
+   print-utf8 -n -s "\e[1;36m█" "▄" "█\e[0m"
+}
+
+
+
+# ###### Main program #######################################################
+
+# ====== Find tools =========================================================
+if ! command -v print-utf8 2>/dev/null ; then
+   echo >&2 "ERROR: Print-UTF8 (from System-Tools) is not installed!"
+   echo >&2 "Try this:"
+   echo >&2 "* Ubuntu:  sudo apt-add-repository -sy ppa:dreibh/ppa"
+   echo >&2 "           sudo apt install -y td-system-tools"
+   echo >&2 "* Fedora:  sudo dnf copr enable -y dreibh/ppa"
+   echo >&2 "           sudo dnf install -y td-system-tools"
+   echo >&2 "* FreeBSD: sudo pkg install -y td-system-tools"
+   exit 1
+fi
+if ! command -v figlet 2>/dev/null ; then
+   echo >&2 "ERROR: Figlet is not installed!"
+   echo >&2 "* Ubuntu:  sudo apt install -y figlet"
+   echo >&2 "* Fedora:  sudo dnf install -y figlet"
+   echo >&2 "* FreeBSD: sudo pkg install -y figlet"
+   exit 1
+fi
+
+
+# ====== gs-test-gimp ==========================================================
+export GIMP3_DIRECTORY
+GIMP3_DIRECTORY="$(mktemp -d -t gimp-tmp-XXXXXXXXXX)"
+trap 'if [ -d "${GIMP3_DIRECTORY}" ] ; then rm -rf "${GIMP3_DIRECTORY}" ; fi ; export GIMP3_DIRECTORY=""' EXIT INT TERM HUP
+./gs-test-gimp || exit-failed
+
+
+# ====== Use FractGen to generate the example image =========================
+# Requires: clifractgen
+if [ ! -e "${INPUT3}"  ] ; then
+   clifractgen examples/Fractal.fsf "${INPUT3}" -W 1920 -H 1080 -M 2048
+fi
+
+
+# ====== gs-resize-with-cropping ===============================================
+show-script "gs-resize-with-cropping"
+./gs-resize-with-cropping "${INPUT1}" Image1.png -A 16:9 -W 1920 || exit-failed
+./gs-resize-with-cropping "${INPUT2}" Image2.png --aspect 16:9 --width 1920 || exit-failed
+./gs-resize-with-cropping "${INPUT3}" Image3.png --aspect keep --width 1920 || exit-failed
+
+
+# ====== gs-caption =======================================================
+show-script "gs-caption"
+./gs-caption Caption1.png 1024 42 \
+   "Caption Text $(LC_ALL=C.UTF-8 date)" \
+   --font-name "Noto Sans Bold"          \
+   --font-size 70                        \
+   --foreground "#02266b" --background "#ffd7cc" --transparency 50 || exit-failed
+
+if ./gs-list-fonts | grep -q "^Lobster Two Bold Italic$" ; then
+   ./gs-caption Caption2.png 1920 64 \
+      "This is yet another test on $(LC_ALL=C.UTF-8 date)!" \
+      -F "Lobster Two Bold Italic"                          \
+      -S 70                                                 \
+      -f "#02266b" -b "#ffd700" -t 26 || exit-failed
+fi
+
+
+# ====== gs-glossytext ====================================================
+show-script "gs-glossytext"
+./gs-glossytext NorNet1.png "NorNet Testbed" -S 128  || exit-failed
+./gs-glossytext NorNet2.png "NorNet Testbed" \
+   --font-name "Noto Sans Bold"              \
+   --font-size 128                           \
+   --outline-size 16                         \
+   --blend-gradient-text "Brushed Aluminium" \
+   --blend-gradient-outline "Golden" || exit-failed
+./gs-glossytext NorNet3.png "NorNet Testbed" \
+   -F "URW Gothic Book Oblique"              \
+   -S 128                                    \
+   -O 5                                      \
+   -G "Brushed Aluminium"                    \
+   -L "Golden" || exit-failed
+
+
+# ====== gs-mosaic ========================================================
+show-script "gs-mosaic"
+for tileType in triangles squares hexagons octagons ; do
+   for tileSurface in smooth rough ; do
+      for tileSize in 12 24 ; do
+         ./gs-mosaic Image1.png "Mosaic1-T${tileType}-S${tileSize}-F${tileSurface}.png" \
+            --tile-type       "${tileType}"     \
+            --tile-size       "${tileSize}"     \
+            --tile-height      4.0              \
+            --tile-neatness    0.25             \
+            --tile-surface     "${tileSurface}" \
+            --tile-spacing     4.0              \
+            --tile-allow-split on               \
+            --color-variation  0.15             \
+            --color-averaging  on               \
+            --light-direction  275.5            \
+            --antialiasing     on || exit-failed
+         ./gs-mosaic Image2.png "Mosaic2-T${tileType}-S${tileSize}-F${tileSurface}.png" \
+            -T "${tileType}"    \
+            -S "${tileSize}"    \
+            -H 5.0              \
+            -N 0.25             \
+            -F "${tileSurface}" \
+            -X 5.0              \
+            -I off              \
+            -C 0.25             \
+            -G off              \
+            -L 75.5 || exit-failed
+      done
+   done
+done
+
+# ====== gs-oldphoto ======================================================
+show-script "gs-oldphoto"
+for defocus in on off ; do
+   for borderSize in 10 20 ; do
+      for sepia in on off ; do
+         ./gs-oldphoto Image1.png "OldPhoto1-D${defocus}-B${borderSize}-S${sepia}-Mon.png" \
+            --defocus "${defocus}"        \
+            --border-size "${borderSize}" \
+            --sepia "${sepia}"            \
+            --mottle on || exit-failed
+         ./gs-oldphoto Image2.png "OldPhoto2-D${defocus}-B${borderSize}-S${sepia}-Moff.png" \
+            -D "${defocus}"               \
+            -B "${borderSize}"            \
+            -S "${sepia}"                 \
+            -M off || exit-failed
+      done
+   done
+done
+
+# ====== gs-clothify ======================================================
+show-script "gs-clothify"
+for blurX in 3 6 ; do
+   blurY="${blurX}"
+   for azimuth in 90.0 135.0 180.0 ; do
+      for elevation in 10.0 45.0 80.0 ; do
+         ./gs-clothify Image1.png "Clothify1-X${blurX}-Y${blurY}-A${azimuth}-E${elevation}-D4.png" \
+            --blur-x ${blurX}          \
+            --blur-y ${blurY}          \
+            --azimuth "${azimuth}"     \
+            --elevation "${elevation}" \
+            --depth 4 || exit-failed
+         ./gs-clothify Image2.png "Clothify2-X${blurX}-Y${blurY}-A${azimuth}-E${elevation}-D8.png" \
+            -X ${blurX}       \
+            -Y ${blurY}       \
+            -A "${azimuth}"   \
+            -E "${elevation}" \
+            -D 8 || exit-failed
+      done
+   done
+done
+
+# ====== gs-oilify ========================================================
+show-script "gs-oilify"
+for maskSize in 4 8 16 ; do
+   ./gs-oilify Image1.png "Oilify1-S${maskSize}-Ion.png" \
+      --mask-size      "${maskSize}" \
+      --intensity-mode on || exit-failed
+   ./gs-oilify Image2.png "Oilify2-S${maskSize}-Ioff.png" \
+      -S "${maskSize}" \
+      -I off || exit-failed
+done
+
+# ====== gs-bumpmap =======================================================
+show-script "gs-bumpmap"
+
+./gs-bumpmap Image3.png Background1.png || exit-failed
+./gs-mosaic Background1.png Background2.png \
+   -T hexagons -S 18 -H 4 -X 4 -F smooth -N 0.5 || exit-failed
+
+for offsetX in 0 32 ; do
+   offsetY="${offsetX}"
+   for azimuth in 90.0 135.0 180.0 ; do
+      for elevation in 10.0 45.0 ; do
+         ./gs-bumpmap Image1.png "BumpMap1-X${offsetX}-Y${offsetY}-A${azimuth}-E${elevation}-D20.png" \
+            --azimuth              "${azimuth}"   \
+            --elevation            "${elevation}" \
+            --depth                20             \
+            --offset-x             ${offsetX}     \
+            --offset-y             ${offsetY}     \
+            --compensate-darkening on             \
+            --waterlevel           0.1            \
+            --invert               off            \
+            --tiled                on || exit-failed
+         ./gs-bumpmap Image2.png "BumpMap2-X${offsetX}-Y${offsetY}-A${azimuth}-E${elevation}-D5.png" \
+            -X ${offsetX}              \
+            -Y ${offsetY}              \
+            -A "${azimuth}"            \
+            -E "${elevation}"          \
+            -D 5                       \
+            -C off                     \
+            -W 0.1                     \
+            -I off                     \
+            -T off || exit-failed
+         ./gs-bumpmap Image3.png "BumpMap3-X${offsetX}-Y${offsetY}-A${azimuth}-E${elevation}-D30.png" \
+            --azimuth    "${azimuth}"  \
+            --elevation "${elevation}" \
+            --depth     30             \
+            --offset-x  ${offsetX}     \
+            --offset-y  ${offsetY} || exit-failed
+      done
+   done
+done
+
+exit-success
