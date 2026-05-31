@@ -27,7 +27,7 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-#define _GNU_SOURCE   /* for timegm() */
+#define _GNU_SOURCE
 #include <ctype.h>
 #include <getopt.h>
 #include <locale.h>
