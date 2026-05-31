@@ -622,21 +622,21 @@ Examples (click on image for full-size view):
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Bergen-Resize-with-Cropping.webp">
-        <img alt="Picture of Bergen, Norway; 1:1 aspect ratio" src="src/GIMP-Scripts/figures/Bergen-Resize-with-Cropping-preview.webp" height="256" />
+        <img alt="Picture of Bergen, Norway; 1:1 aspect ratio" src="src/GIMP-Scripts/figures/Bergen-Resize-with-Cropping-preview.webp" height="150" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Portobello-Resize-with-Cropping.webp">
-        <img alt="Picture of Portobello, New Zealand; 2:1 aspect ratio" src="src/GIMP-Scripts/figures/Portobello-Resize-with-Cropping-preview.webp" height="256" />
+        <img alt="Picture of Portobello, New Zealand; 2:1 aspect ratio" src="src/GIMP-Scripts/figures/Portobello-Resize-with-Cropping-preview.webp" height="150" />
       </a>
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Fractal-Resize-with-Cropping.webp">
-        <img alt="Mandelbrot Fractal; 3:1 aspect ratio" src="src/GIMP-Scripts/figures/Fractal-Resize-with-Cropping-preview.webp" height="256" />
+        <img alt="Mandelbrot Fractal; 3:1 aspect ratio" src="src/GIMP-Scripts/figures/Fractal-Resize-with-Cropping-preview.webp" height="150" />
       </a><br />
      </p>
     </td>
@@ -699,9 +699,7 @@ Examples (click on image for full-size view):
   </tr>
   <tr>
     <td style="vertical-align: middle;">
-     <span id="BumpMap1" />
-```bash
-gs-bumpmap Bergen.webp Bergen-BumpMap.webp \
+     <pre id=BumpMap1"><code class="language-bash"><span class="ex">gs-bumpmap</span> Bergen.webp Bergen-BumpMap.webp \
    --azimuth              90.0 \
    --elevation            10.0 \
    --depth                20   \
@@ -710,13 +708,10 @@ gs-bumpmap Bergen.webp Bergen-BumpMap.webp \
    --compensate-darkening on   \
    --waterlevel           0.1  \
    --invert               off  \
-   --tiled                on
-```
+   --tiled                on</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="BumpMap2" />
-```bash
-gs-bumpmap Portobello.webp Portobello-BumpMap.webp \
+     <pre id=BumpMap2"><code class="language-bash"><span class="ex">gs-bumpmap</span> Portobello-BumpMap.webp \
    --azimuth              135.0 \
    --elevation            20.0  \
    --depth                20    \
@@ -725,13 +720,10 @@ gs-bumpmap Portobello.webp Portobello-BumpMap.webp \
    --compensate-darkening on    \
    --waterlevel           0.1   \
    --invert               off   \
-   --tiled                on
-```
+   --tiled                on</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="BumpMap3" />
-```bash
-gs-bumpmap Fractal.webp Fractal-BumpMap.webp \
+     <pre id=BumpMap3"><code class="language-bash"><span class="ex">gs-bumpmap</span> Fractal.webp Fractal-BumpMap.webp \
    --azimuth              135.0 \
    --elevation            48.0  \
    --depth                32    \
@@ -740,8 +732,7 @@ gs-bumpmap Fractal.webp Fractal-BumpMap.webp \
    --compensate-darkening on    \
    --waterlevel           0.2   \
    --invert               off   \
-   --tiled                on
-```
+   --tiled                on</code></pre>
     </td>
   </tr>
 </table>
@@ -786,37 +777,28 @@ Examples (click on image for full-size view):
   </tr>
   <tr>
     <td style="vertical-align: middle;">
-     <span id="Clothify1" />
-```bash
-gs-clothify Bergen.webp Bergen-Clothify.webp \
+     <pre id=Clothify1"><code class="language-bash"><span class="ex">gs-clothify</span> Bergen.webp Bergen-Clothify.webp \
    --blur-x    3    \
    --blur-y    3    \
    --azimuth   90.0 \
    --elevation 60.0 \
-   --depth 4
-```
+   --depth 4</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="Clothify2" />
-```bash
-gs-clothify Portobello.webp Portobello-Clothify.webp \
+     <pre id=Clothify2"><code class="language-bash"><span class="ex">gs-clothify</span> Portobello.webp Portobello-Clothify.webp \
    --blur-x    5     \
    --blur-y    5     \
    --azimuth   135.0 \
    --elevation 50.0  \
-   --depth 4
-```
+   --depth 4</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="Clothify3" />
-```bash
-gs-clothify Fractal.webp Fractal-Clothify.webp \
+     <pre id=Clothify3"><code class="language-bash"><span class="ex">gs-clothify</span> Fractal.webp Fractal-Clothify.webp \
    --blur-x    4     \
    --blur-y    4     \
    --azimuth   180.0 \
    --elevation 80.0  \
-   --depth 4
-```
+   --depth 4</code></pre>
     </td>
   </tr>
 </table>
@@ -861,9 +843,7 @@ Examples (click on image for full-size view):
   </tr>
   <tr>
     <td style="vertical-align: middle;">
-     <span id="Mosaic1" />
-```bash
-gs-mosaic Bergen.webp Bergen-Mosaic.webp \
+     <pre id=Mosaic1"><code class="language-bash"><span class="ex">gs-mosaic</span> Bergen.webp Bergen-Mosaic.webp \
    --tile-type        hexagons \
    --tile-size        21.0     \
    --tile-height      3.0      \
@@ -874,13 +854,10 @@ gs-mosaic Bergen.webp Bergen-Mosaic.webp \
    --color-variation  0.15     \
    --color-averaging  on       \
    --antialiasing     on       \
-   --light-direction  135.0
-```
+   --light-direction  135.0</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="Mosaic2" />
-```bash
-gs-mosaic Portobello.webp Portobello-Mosaic.webp \
+     <pre id=Mosaic2"><code class="language-bash"><span class="ex">gs-mosaic</span> Portobello.webp Portobello-Mosaic.webp \
    --tile-type        octagons \
    --tile-size        25.0     \
    --tile-height      4.0      \
@@ -891,13 +868,10 @@ gs-mosaic Portobello.webp Portobello-Mosaic.webp \
    --color-variation  0.35     \
    --color-averaging  on       \
    --antialiasing     on       \
-   --light-direction  35.0
-```
+   --light-direction  35.0</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="Mosaic3" />
-```bash
-gs-mosaic Fractal.webp Fractal-Mosaic.webp \
+     <pre id=Mosaic3"><code class="language-bash"><span class="ex">gs-mosaic</span> Fractal.webp Fractal-Mosaic.webp \
    --tile-type        triangles \
    --tile-size        32.0      \
    --tile-height      4.0       \
@@ -908,8 +882,7 @@ gs-mosaic Fractal.webp Fractal-Mosaic.webp \
    --color-variation  0.15      \
    --color-averaging  on        \
    --antialiasing     on        \
-   --light-direction  275.0
-```
+   --light-direction  275.0</code></pre>
     </td>
   </tr>
 </table>
@@ -954,28 +927,19 @@ Examples (click on image for full-size view):
   </tr>
   <tr>
     <td style="vertical-align: middle;">
-     <span id="Oilify1" />
-```bash
-gs-oilify Bergen.webp Bergen-Oilify.webp \
+     <pre id=Oilify1"><code class="language-bash"><span class="ex">gs-oilify</span> Bergen.webp Bergen-Oilify.webp \
    --mask-size      20 \
-   --intensity-mode on
-```
+   --intensity-mode on</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="Oilify2" />
-```bash
-gs-oilify Portobello.webp Portobello-Oilify.webp \
+     <pre id=Oilify2"><code class="language-bash"><span class="ex">gs-oilify</span> Portobello.webp Portobello-Oilify.webp \
    --mask-size      16 \
-   --intensity-mode off
-```
+   --intensity-mode off</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="Oilify3" />
-```bash
-gs-oilify Fractal.webp Fractal-Oilify.webp \
+     <pre id=Oilify3"><code class="language-bash"><span class="ex">gs-oilify</span> Fractal.webp Fractal-Oilify.webp \
    --mask-size      12 \
-   --intensity-mode on
-```
+   --intensity-mode on</code></pre>
     </td>
   </tr>
 </table>
@@ -1020,34 +984,25 @@ Examples (click on image for full-size view):
   </tr>
   <tr>
     <td style="vertical-align: middle;">
-     <span id="OldPhoto1" />
-```bash
-gs-oldphoto Bergen.webp Bergen-OldPhoto.webp \
+     <pre id=OldPhoto1"><code class="language-bash"><span class="ex">gs-oldphoto</span> Bergen.webp Bergen-OldPhoto.webp \
    --defocus on     \
    --border-size 24 \
    --sepia on       \
-   --mottle on
-```
+   --mottle on</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="OldPhoto2" />
-```bash
-gs-oldphoto Portobello.webp Portobello-OldPhoto.webp \
+     <pre id=OldPhoto2"><code class="language-bash"><span class="ex">gs-oldphoto</span> Portobello.webp Portobello-OldPhoto.webp \
    --defocus off    \
    --border-size 16 \
    --sepia on       \
-   --mottle off
-```
+   --mottle off</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="OldPhoto3" />
-```bash
-gs-oldphoto Fractal.webp Fractal-OldPhoto.webp \
+     <pre id=OldPhoto3"><code class="language-bash"><span class="ex">gs-oldphoto</span> Fractal.webp Fractal-OldPhoto.webp \
    --defocus on     \
    --border-size 32 \
    --sepia off      \
-   --mottle on
-```
+   --mottle on</code></pre>
     </td>
   </tr>
 </table>
@@ -1091,37 +1046,28 @@ Examples (click on image for full-size view):
   </tr>
   <tr>
     <td style="vertical-align: middle;">
-     <span id="Caption1" />
-```bash
-gs-caption Caption1.webp 1024 42 \
+     <pre id="Caption1"><code class="language-bash"><span class="ex">gs-caption</span> Caption1.webp 1024 42 \
    "Test on $(LC_ALL=C.UTF-8 date)" \
    --font-name "Open Sans Bold" \
    --font-size 70 \
    --foreground "#02266b" --background "#ffd7cc" \
-   --transparency 50
-```
+   --transparency 50</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="Caption2" />
-```bash
-gs-caption Caption2.webp 1024 42 \
+     <pre id="Caption2"><code class="language-bash"><span class="ex">gs-caption</span> Caption2.webp 1024 42 \
    "Another Test on $(LC_ALL=C.UTF-8 date)" \
    --font-name "Lobster Two Bold Italic" \
    --font-size 70 \
    --foreground "#02266b" --background "#ffd700" \
-   --transparency 26
-```
+   --transparency 26</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="Caption3" />
-```bash
-gs-caption Caption3.webp 1024 42 \
+     <pre id="Caption3"><code class="language-bash"><span class="ex">gs-caption</span> Caption3.webp 1024 42 \
    "Yet Another Test on $(LC_ALL=C.UTF-8 date)" \
    --font-name "URW Gothic Book" \
    --font-size 70 \
    --foreground "#02266b" --background "#777777" \
-   --transparency 40
-```
+   --transparency 40</code></pre>
     </td>
   </tr>
 </table>
@@ -1167,32 +1113,23 @@ Examples (click on image for full-size view):
   </tr>
   <tr>
     <td style="vertical-align: middle;">
-     <span id="GlossyText1" />
-```bash
-gs-glossytext GlossyText1.webp "System-Tools" \
+     <pre id="GlossyText1"><code class="language-bash"><span class="ex">gs-glossytext</span> GlossyText1.webp "System-Tools" \
    --font-name "Lobster Two Bold Italic" \
    --font-size 64 \
    --outline-size 8 \
    --blend-gradient-text "Brushed Aluminium" \
-   --blend-gradient-outline "Golden"
-```
+   --blend-gradient-outline "Golden"</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="GlossyText2" />
-```bash
-gs-glossytext GlossyText2.webp "Simula" \
+     <pre id="GlossyText2"><code class="language-bash"><span class="ex">gs-glossytext</span> GlossyText2.webp "Simula" \
    --font-name "Open Sans Bold" \
    --font-size 64 \
    --outline-size 12 \
    --blend-gradient-text "Golden" \
-   --blend-gradient-outline "Golden"
-```
+   --blend-gradient-outline "Golden"</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="GlossyText3" />
-```bash
-gs-glossytext GlossyText3.webp "NorNet" -S 64
-```
+     <pre id="GlossyText3"><code class="language-bash"><span class="ex">gs-glossytext</span> GlossyText3.webp "NorNet" -S 64</code></pre>
     </td>
   </tr>
 </table>
