@@ -1,0 +1,223 @@
+#!/usr/bin/env bash
+# ==========================================================================
+#         ____            _                     _____           _
+#        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+#               |___/
+#                             --- System-Tools ---
+#                  https://www.nntb.no/~dreibh/system-tools/
+# ==========================================================================
+#
+# GIMP Scripts
+# Copyright (C) 2013-2026 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -euo pipefail
+
+
+# ###### Usage ##############################################################
+usage () {
+   local exitCode="$1"
+   echo >&2 "Usage: $0 input_filename output_filename [-A|--aspect aspect_ratio|H:V|HxV|An|keep] [-W|--width new_width] [-H|--height new_height] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
+   exit "${exitCode}"
+}
+
+
+# ###### Version ############################################################
+version () {
+   echo "gs-resize-with-cropping @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
+}
+
+
+
+# ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
+if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 2) )) ; then
+   echo "ERROR: Bash 4.2 or higher is required, but Bash ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]} is installed!"
+   exit 1
+fi
+GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
+if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+   echo >&2 "ERROR: Enhanced/GNU getopt is required!"
+   exit 1
+fi
+options="$(${GETOPT} -o A:W:H:wqhv --long aspect:,width:,height:,verbose,quiet,help,version -a -- "$@")"
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+   usage 1
+fi
+eval set -- "${options}"
+
+VERBOSE=0
+ASPECT="keep"
+NEW_WIDTH=""
+NEW_HEIGHT=""
+while [ $# -gt 0 ] ; do
+   case "$1" in
+      -A | --aspect)
+         ASPECT="$2"
+         shift
+         ;;
+      -W | --width)
+         NEW_WIDTH="$2"
+         shift
+         ;;
+      -H | --height)
+         NEW_HEIGHT="$2"
+         shift
+         ;;
+      -v | --version)
+         version
+         ;;
+      -w | --verbose)
+         VERBOSE=1
+         ;;
+      -q | --quiet)
+         VERBOSE=0
+         ;;
+      -h | --help)
+         usage 0
+         ;;
+      --)
+         shift
+         break
+         ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled option $1!"
+         exit 1
+         ;;
+  esac
+  shift
+done
+
+if [ $# -ne 2 ] ; then
+   usage 1
+fi
+INPUT_FILENAME="$1"
+OUTPUT_FILENAME="$2"
+
+
+# ====== Prepare output aspect ratio ========================================
+outputAspectRatio=
+if [ "${ASPECT}" != "keep" ] ; then
+   if [[ "${ASPECT}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)([:x])([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+      outputAspectRatio=$(LC_NUMERIC=C awk "BEGIN { printf \"%1.16f\\n\", ${BASH_REMATCH[1]}/${BASH_REMATCH[3]} }")
+   else
+      if [[ "${ASPECT}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+         outputAspectRatio="${BASH_REMATCH[1]}"
+      else
+         if [[ "${ASPECT}" =~ ^[Aa][0-9n]$ ]] ; then
+            outputAspectRatio="1.414213562373"   # DIN A<n> is sqrt(2):1 in landscape format
+         else
+            echo >&2 "ERROR: Bad aspect specification: ${ASPECT}!"
+            exit 1
+         fi
+      fi
+   fi
+fi
+if [ "${NEW_WIDTH}" != "" ] && [ "${NEW_HEIGHT}" != "" ] ; then
+   echo >&2 "ERROR: -W|--width and -H|--height are mutually exclusive!"
+   exit 1
+fi
+if [[ ! "${NEW_WIDTH}" =~ ^([0-9]*)$ ]] ; then
+   echo >&2 "ERROR: Invalid width ${NEW_WIDTH}!"
+   exit 1
+fi
+if [[ ! "${NEW_HEIGHT}" =~ ^([0-9]*)$ ]] ; then
+   echo >&2 "ERROR: Invalid height ${NEW_HEIGHT}!"
+   exit 1
+fi
+
+
+# ====== Detect GraphicsMagick ==============================================
+GM="$(command -v gm || true)"
+if [ "${GM}" == "" ] ; then
+   echo >&2 "ERROR: GraphicsMagick is not installed! Try:"
+   echo >&2 " * Ubuntu/Debian: sudo apt install -y graphicsmagick"
+   echo >&2 " * Fedora:        sudo dnf install -y GraphicsMagick"
+   echo >&2 " * SuSE:          sudo zypper install -y GraphicsMagick"
+   echo >&2 " * Alpine:        sudo apk add graphicsmagick"
+   echo >&2 " * FreeBSD:       sudo pkg install -y GraphicsMagick"
+   exit 1
+fi
+
+
+# ====== Obtain image width and height ======================================
+if [ ! -f "${INPUT_FILENAME}" ] ; then
+   echo >&2 "ERROR: Input file ${INPUT_FILENAME} does not exist!"
+   exit 1
+fi
+inputImageSize="$("${GM}" identify -format "%wx%h" "${INPUT_FILENAME}")"
+inputWidth="${inputImageSize/x[0-9]*/}"
+inputHeight="${inputImageSize/[0-9]*x/}"
+inputAspectRatio="$(LC_NUMERIC=C awk "BEGIN { printf \"%1.16f\\n\", ${inputWidth}/${inputHeight} }")"
+if [ "${outputAspectRatio}" == "" ] ; then
+   outputAspectRatio="${inputAspectRatio}"
+fi
+if [ ${VERBOSE} -ne 0 ] ; then
+   echo "Input: ${inputWidth}*${inputHeight} (${inputAspectRatio})"
+fi
+
+
+# ====== Crop image =========================================================
+if [[ "$(LC_NUMERIC=C awk "BEGIN { print ${inputAspectRatio}-${outputAspectRatio} }")" =~ ^- ]] ; then   # inputAspect < outputAspectRatio
+   croppedInputWidth=${inputWidth}
+   croppedInputHeight="$(LC_NUMERIC=C awk "BEGIN { print int( (${croppedInputWidth}/${outputAspectRatio}) + 0.5) }")"
+else
+   croppedInputHeight=${inputHeight}
+   croppedInputWidth="$(LC_NUMERIC=C awk "BEGIN { print int( (${inputHeight}*${outputAspectRatio}) + 0.5) }")"
+fi
+cx="$(LC_NUMERIC=C awk "BEGIN { print int(((${inputWidth}-${croppedInputWidth}) / 2) + 0.5) }")"
+cy="$(LC_NUMERIC=C awk "BEGIN { print int(((${inputHeight}-${croppedInputHeight}) / 2) + 0.5) }")"
+if [ ${VERBOSE} -ne 0 ] ; then
+   echo "Crop: ${croppedInputWidth}*${croppedInputHeight} [cx=${cx} cy=${cy}] (${outputAspectRatio}:1)"
+fi
+
+
+# ===== Set new width or height =============================================
+if [ "${NEW_WIDTH}" != "" ] ; then
+   NEW_HEIGHT="$(LC_NUMERIC=C awk "BEGIN { print int((${NEW_WIDTH}/${outputAspectRatio}) + 0.5) }")"
+elif [ "${NEW_HEIGHT}" != "" ] ; then
+   NEW_WIDTH="$(LC_NUMERIC=C awk "BEGIN { print int((${NEW_HEIGHT}*${outputAspectRatio}) + 0.5) }")"
+else
+   NEW_WIDTH="${inputWidth}"
+   NEW_HEIGHT="${inputHeight}"
+fi
+if [ ${VERBOSE} -ne 0 ] ; then
+   echo "Resize: ${NEW_WIDTH}*${NEW_HEIGHT} + (${outputAspectRatio}:1)"
+fi
+
+
+# ====== Run "convert" ======================================================
+rm -f "${OUTPUT_FILENAME}"
+"${GM}" convert "${INPUT_FILENAME}" \
+   -crop "${croppedInputWidth}"x"${croppedInputHeight}"+"${cx}"+"${cy}" \
+   -resize "${NEW_WIDTH}"x"${NEW_HEIGHT}" \
+   -auto-orient \
+   +repage \
+   "${OUTPUT_FILENAME}"
+
+if [ ${VERBOSE} -ne 0 ] ; then
+   echo -n "Done: "
+   "${GM}" identify "${OUTPUT_FILENAME}"
+fi

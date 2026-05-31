@@ -1,0 +1,102 @@
+.\" ==========================================================================
+.\"         ____            _                     _____           _
+.\"        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+.\"        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+.\"         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+.\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+.\"               |___/
+.\"                             --- System-Tools ---
+.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\" ==========================================================================
+.\"
+.\" GIMP Scripts
+.\" Copyright (C) 2013-2026 by Thomas Dreibholz
+.\"
+.\" This program is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\"
+.\" Contact: thomas.dreibholz@gmail.com
+.\"
+.\" ###### Setup ############################################################
+.Dd May 22, 2026
+.Dt gs\-test\-gimp 1
+.Os gs\-test\-gimp
+.\" ###### Name #############################################################
+.Sh NAME
+.Nm gs\-test\-gimp
+.Nd runs a short test to verify that GIMP can run a GIMP script in non-GUI mode.
+.\" ###### Synopsis #########################################################
+.\" Manpage syntax help:
+.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
+.Sh SYNOPSIS
+.Nm gs\-test\-gimp
+.Op Fl q | Fl Fl quiet
+.Op Fl w | Fl Fl verbose
+.Nm gs\-test\-gimp
+.Op Fl h | Fl Fl help
+.Nm gs\-test\-gimp
+.Op Fl v | Fl Fl version
+.\" ###### Description ######################################################
+.Sh DESCRIPTION
+.Nm gs\-test\-gimp
+runs a short test to verify that GIMP can run a GIMP script in non\-GUI mode. If not already initialised, GIMP will create the GIMP directory with configuration files on first startup. The storage location of this directory is provided to GIMP by its environment variables GIMP3_DIRECTORY (Gimp 3.x) and GIMP2_DIRECTORY (Gimp 2.x).
+.Pp
+.\" ###### Arguments ########################################################
+.Sh ARGUMENTS
+The following options are available:
+.Bl -tag -width indent
+.It Fl q | Fl Fl quiet
+Quiet mode: suppress GIMP console output. This is the default.
+.It Fl w | Fl Fl verbose
+Verbose mode: print GIMP console output and processing details.
+.It Fl h | Fl Fl help
+Prints the program's command\-line parameters and exits.
+.It Fl v | Fl Fl version
+Prints the program version and exits.
+.El
+.\" ###### Exit status ######################################################
+.Sh EXIT STATUS
+The
+.Nm
+tool exits with 0 on success, and >0 in case of an error.
+.\" ###### Examples #########################################################
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It gs\-test\-gimp
+.It GIMP3_DIRECTORY=/tmp/gimp3.tmp gs\-test\-gimp
+.It GIMP3_DIRECTORY=/tmp/gimp3.tmp gs\-test\-gimp \-\-verbose
+.It gs\-test\-gimp \-\-help
+.It gs\-test\-gimp \-h
+.It gs\-test\-gimp \-\-version
+.It gs\-test\-gimp \-v
+.El
+.\" ###### See also #########################################################
+.Sh SEE ALSO
+.Xr gs\-bumpmap 1 ,
+.Xr gs\-caption 1 ,
+.Xr gs\-clothify 1 ,
+.Xr gs\-glossytext 1 ,
+.Xr gs\-list\-fonts 1 ,
+.Xr gs\-list\-gradients 1 ,
+.Xr gs\-list\-patterns 1 ,
+.Xr gs\-mosaic 1 ,
+.Xr gs\-oilify 1 ,
+.Xr gs\-oldphoto 1
+.\" ###### Notes ############################################################
+.Sh NOTES
+This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
+.Lk https://www.nntb.no/\(tidreibh/system\-tools/ "System\-Tools Homepage" .
+.\" ###### Authors ##########################################################
+.Sh AUTHORS
+Thomas Dreibholz,
+.Lk https://www.nntb.no/\(tidreibh "Homepage"

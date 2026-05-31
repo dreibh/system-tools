@@ -44,7 +44,6 @@
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #else
-#warning NLS is disabled!
 #define bindtextdomain(domain, dirname) { }
 #define textdomain(domain) { }
 #define gettext(string) string
@@ -157,7 +156,7 @@ int main(int argc, char** argv)
    if( (endptrDelayMin == argv[optind + 0]) || (*endptrDelayMin != 0x00) ||
        (endptrDelayMax == argv[optind + 1]) || (*endptrDelayMax != 0x00) ||
        (delayMin < 0.0) || (delayMin > delayMax) ) {
-      fputs(gettext("ERROR: Invalid min_delay/max_delay"), stderr);
+      fputs(gettext("ERROR: Invalid min_delay/max_delay!"), stderr);
       fputs("\n", stderr);
       return 1;
    }
