@@ -7,11 +7,13 @@ Depends: td-get-system-info
 
 Tests: 30-system-maintenance
 Depends: td-system-maintenance
-Restrictions: needs-root, allow-stderr
+Restrictions: allow-stderr,
+              needs-root
 
 Tests: 31-reset-machine-id
 Depends: td-reset-machine-id
-Restrictions: needs-root, allow-stderr
+Restrictions: allow-stderr,
+              needs-root
 
 Tests: 40-fingerprint-ssh-keys
 Depends: td-fingerprint-ssh-keys
@@ -23,7 +25,8 @@ Restrictions: allow-stderr
 Tests: 42-random-sleep
 Depends: td-random-sleep
 
-Tests: 50-system-info-run, 51-system-info-i18n
+Tests: 50-system-info-run,
+       51-system-info-i18n
 Depends: td-system-info
 
 Tests: 60-unix-timestamp-tools
@@ -37,4 +40,14 @@ Depends: gnutls-bin,
          python3,
          python3-netifaces,
          td-x509
+Restrictions: allow-stderr
+
+Tests: 90-gimp-scripts
+Depends: clifractgen,
+         fonts-lobstertwo,
+         fonts-noto-core,
+         fonts-open-sans,
+         fonts-urw-base35,
+         td-gimp-scripts,
+         td-gimp-scripts-examples
 Restrictions: allow-stderr

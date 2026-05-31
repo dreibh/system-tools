@@ -1,3 +1,213 @@
+commit 4d3d1915a8df0fd7f79febdd7e101491a57723c5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 17:39:02 2026 +0200
+
+    Packaging fixes.
+
+commit aa722f3c559b81868b2756d220638db2806e830a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 17:12:44 2026 +0200
+
+    Fixed URL.
+
+commit ffee33b26e8f6e8b9c3675750dbc19eeb2454939
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 17:04:52 2026 +0200
+
+    New release td-system-tools-2.7.0.
+
+commit 89900a449046f20c0069883ea92ee4ff5f5af7b1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 16:54:23 2026 +0200
+
+    Minor update.
+
+commit b183f9a39f7bbc5e8db81ac94c767fad799cfec0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 15:28:32 2026 +0200
+
+    Added example files.
+
+commit 161f6bd5aeb377ef10431ef893ff2dbb41e5d8e4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 16:45:55 2026 +0200
+
+    Fixed typo.
+
+commit 1fcee19a5d099917e5cd94de455954a3ff93e74b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 16:42:35 2026 +0200
+
+    Minor clean-ups.
+
+commit 11a4beb8d00be000bbb895284d59844c6d6851ce
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 16:37:10 2026 +0200
+
+    Further updates of the descriptions.
+
+commit c6348a521916f5ae842d7c5fd374ddf82086afff
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 16:18:53 2026 +0200
+
+    Another update.
+
+commit 5cd7dd5b6c712c077480e1c7bd288cf07c2b0f38
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 15:56:50 2026 +0200
+
+    Another update.
+
+commit 1b74d77ed4c23a087b2da24be0e7bba68ceef2d3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 15:45:53 2026 +0200
+
+    Trying to fix Markdown issue in GitHub view.
+
+commit 8430fe339b0ba8d42c2582c001f6a6d8c78038ba
+Merge: 0b89147 314ba0e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 30 23:58:27 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
+commit 0b89147634a86e0de9a2144e8a4ba44f30b15064
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 30 23:58:02 2026 +0200
+
+    Fixed copy&paste error in test script.
+
+commit 314ba0e56d534277c6975c649ea8709692f84398
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 30 23:56:09 2026 +0200
+
+    Dependency fixes.
+
+commit bda932b54606711ce8c840e69f582675600724b6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 30 23:51:17 2026 +0200
+
+    Dependency improvements.
+
+commit 56408a2680c7f06286045051dbde71c796093318
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 30 23:05:20 2026 +0200
+
+    Improved documentation and example script.
+
+commit c2cb5f7777b6e62b3080d82df2c22d1495322764
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 30 08:11:47 2026 +0200
+
+    Updated examples.
+
+commit 4841ba93412cb0379490198baa0cd17e37aa3d44
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 30 07:56:13 2026 +0200
+
+    Improved documentation.
+
+commit f4f8d570e87605303823e7bbc3a5442b5b809687
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 30 07:30:32 2026 +0200
+
+    Added link.
+
+commit ccd7d002fdc9e3187c0322d7ab8de7c5bd894089
+Merge: 3e118dc d7cfaf0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 30 07:28:52 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
+commit d7cfaf0ee0ad2fa062aa26a9134d194c70a6c46c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 29 16:52:19 2026 +0200
+
+    Improved build help message.
+
+commit 5313130419d928c721c5f2fae7300b3c33ddc23a
+Merge: 369d82b 47c69a4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 29 10:08:03 2026 +0200
+
+    Merge branch 'master' of https://github.com/dreibh/system-tools
+
+commit 3e118dce50578ac46c75746dae2c71c935b3db02
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 29 10:03:41 2026 +0200
+
+    Fixed test script.
+
+commit 2b298e88bc626d133d91a5450a8545da8466350c
+Merge: ce0a1bf 47c69a4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 28 16:10:32 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
+commit 47c69a40b345dbdc9ad5595a3daba001b913f608
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 28 10:48:32 2026 +0200
+
+    Debian package update.
+
+commit 369d82bbadbaa5f6b05e5ffd1773ab095fd7eb1c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed May 27 14:50:44 2026 +0200
+
+    Updated FreeBSD port.
+
+commit ce0a1bffa4fea19f8909bd5738bd62fca4e95ce0
+Merge: 68c0950 501c2dd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 25 23:24:10 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
+commit 68c09501efc56c02d2d483cede2012158b319c77
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 25 23:23:53 2026 +0200
+
+    Test dependency update.
+
+commit 501c2dd183f2d6fd3e5db264786417337b7cb4a8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 25 22:37:08 2026 +0200
+
+    Minor CMakeLists.txt update.
+
+commit f8791a02de005ddbab5730181d425bdbf3b2f263
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 24 20:29:50 2026 +0200
+
+    Improved test script.
+
+commit 8e7fa58586cf1f9eec2f9cc429100d71469857cb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 24 20:27:00 2026 +0200
+
+    Improved examples and documentation.
+
+commit a9c912a055a4231f605ac354e83021784ed1a9af
+Merge: ecb16cc d053b9c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 23 22:28:22 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
+commit d053b9cf9ecbc2d19458778b2ab4831b5b50d9ac
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 23 22:05:54 2026 +0200
+
+    Updated FreeBSD port.
+
+commit 6d305ae8cba0abc84bf781840f71831513d1f869
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 23 21:27:35 2026 +0200
+
+    New release td-system-tools-2.6.4.
+
 commit 2d1ff0ec0771953ec4875959603aea37f9e07dce
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri May 22 18:57:32 2026 +0200
@@ -34,11 +244,102 @@ Date:   Fri May 22 15:34:03 2026 +0200
 
     Improved exit code handling in Try-Hard.
 
+commit ecb16ccd33c85c59d7cbb2b6894f80981add36c2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 13:09:46 2026 +0200
+
+    Further documentation and examples improvements.
+
+commit 9f735005eae2d6008ffcd561a7bb4e0e1d01ceb7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 12:49:34 2026 +0200
+
+    Some clean-ups.
+
 commit ef26fb9410e27c788517e1146e54b4815338f2e7
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri May 22 12:40:41 2026 +0200
 
     Dependency fix.
+
+commit 2d1318d4d7036d24badbda144749fac24cbd5d83
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 12:40:41 2026 +0200
+
+    Dependency fix.
+
+commit bcd6ba5894e1b1424cddb5a215d96d459719e553
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 12:40:23 2026 +0200
+
+    Improved documentation.
+
+commit 587bcc28151c70e427f89db4cfbe52ff0ce4b201
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 12:06:43 2026 +0200
+
+    Improved documentation.
+
+commit dcb6f89ae287a68b09f45190dbf3d88d58bbeee2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 12:06:19 2026 +0200
+
+    Improved examples.
+
+commit df7a02f1b0b86e4e7fe5dd60eee9ce01a56dae49
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 12:06:07 2026 +0200
+
+    Improved manpages.
+
+commit 29c334912f5ca54e9e1eb7de58d3d83db4f59d27
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 11:24:43 2026 +0200
+
+    Improved documentation.
+
+commit 1846a873e88eee50d3c5038c54a1da1bb78d0216
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 11:24:38 2026 +0200
+
+    Improved manpages.
+
+commit 145a7d4e8e65897e9cbc315a27a3e2d642b91572
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 10:30:47 2026 +0200
+
+    Improved examples.
+
+commit 506a181df4956529a837f837ba3c3361ab847849
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 22 10:30:27 2026 +0200
+
+    Improved README.md.
+
+commit 800018ad2273456cd9ca1a97d0ec0ddccfe844fc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 21 16:39:51 2026 +0200
+
+    Updated README.md.
+
+commit b128c4d1b564eb1d511ac55e53464a131b6c7a80
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 21 16:36:02 2026 +0200
+
+    Improved manpage, examples, and documentation.
+
+commit cbd6b174fefc7a8fb5b72ea9770cc241b125c12a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu May 21 16:28:07 2026 +0200
+
+    Updated manpage.
+
+commit f174234392a670859311a265f127b6d087f500dd
+Merge: 4c22865 2e69535
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 17 18:26:44 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
 
 commit 2e6953540056c599e00adbe14cc6012d36fe0bbe
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -148,6 +449,61 @@ Date:   Tue May 12 21:21:38 2026 +0200
 
     Added fallback code to use when Text-Block is unavailable.
 
+commit 4c22865d5f9de049c2e8dc55223de8bfc726e035
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 16:45:01 2026 +0200
+
+    Added missing dependency.
+
+commit a02ac8db248069b47c8843c6bc4271ec4292faf0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 16:35:01 2026 +0200
+
+    Packaging improvements.
+
+commit 6c318e24cc944c1ab1fe03de9e249b29bea85dde
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 16:19:32 2026 +0200
+
+    Packaging updates.
+
+commit 8e1b3f2557324d97efeb9522504dc4efd232d9a5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 16:10:58 2026 +0200
+
+    Added test script.
+
+commit 1c9030edf6459729cd4074531067f7445147f66b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 16:10:33 2026 +0200
+
+    Improved examples.
+
+commit 9c8bea897d350df96aaeb9575699b770bd38894d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 15:03:43 2026 +0200
+
+    Fix for GIMP 3.0 parameters.
+
+commit d7df21555c3712b001d30ee7436f813786caf37b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 11:35:34 2026 +0200
+
+    Added helper script.
+
+commit e6e68a93d76f46afa25dcd9963fad306d6f18695
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 11:34:47 2026 +0200
+
+    "make clean" now also includes the generated versioned GIMP scripts.
+
+commit d5b6a060123b07353d52191faae46cfee92fdf20
+Merge: 678d6c2 6cfae20
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue May 12 11:33:45 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit 6cfae20f786157a3fab713de77c25cd42a237639
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue May 12 11:33:04 2026 +0200
@@ -160,17 +516,42 @@ Date:   Tue May 12 10:11:43 2026 +0200
 
     Minor documentation improvements.
 
+commit 678d6c2b048bdccd6e56ba2c8eabe400e604a86d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 11 15:17:35 2026 +0200
+
+    Improved error message.
+
 commit 1ce41b6e6b66ba710425e6b3b0efc30c2aeacb3d
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon May 11 15:16:55 2026 +0200
 
     Improved error message.
 
+commit c58545c4cce21473ee4a321a5ddb641e7663c952
+Merge: 6b4e9ce f81d251
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 23:15:05 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit f81d251975d297daf2284d47b0e3958160449cbb
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat May 9 23:09:04 2026 +0200
 
     New release td-system-tools-2.6.1.
+
+commit 6b4e9ce0e2b1cc716eaa4e9198d42ea1e42129c9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 23:08:32 2026 +0200
+
+    Minor syntax fix in manpage.
+
+commit 88e740f5c43374aa1b3e4c6ac3e74557f9b72832
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 23:06:59 2026 +0200
+
+    Improved manpage syntax.
 
 commit 7d0710614ada5a9945131803533d965b4df247e6
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -196,17 +577,103 @@ Date:   Sat May 9 20:03:03 2026 +0200
 
     Further manpage syntax improvements.
 
+commit 70d86cd8b8de5d40067d74c98a2b42af956697d2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 18:45:23 2026 +0200
+
+    Improved test scripts.
+
+commit 6067fa8eebed20f2b6e52bab7bc309ce458359bc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 18:35:14 2026 +0200
+
+    Minor clean-ups.
+
+commit bfcd83e275f6bc51b8f4446032ec4df13201180e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 18:28:49 2026 +0200
+
+    Further progress.
+
+commit 34d788f265492140fdbf543519e685a2b070d16f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 18:18:52 2026 +0200
+
+    Further improvements and clean-ups.
+
 commit 7656d0bdd66cbeef0bb9175c9e8a538aeb39d3f8
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat May 9 17:28:01 2026 +0200
 
     Improved URL formatting in manpages.
 
+commit 56a254f246ee33cd85eb70e9411bfaa499b6f692
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 17:26:57 2026 +0200
+
+    Further progress with the manpages.
+
+commit eac2612c10e865f21083438d7761b3cb0a620343
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 17:25:00 2026 +0200
+
+    Further clean-ups.
+
+commit 7272c94adbef37a9b28e7731476df2d56e540f71
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 16:57:57 2026 +0200
+
+    Further improvements and clean-ups.
+
+commit d82cc0722aff0c2d7d50563c64ee4c219eb364b6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 16:57:30 2026 +0200
+
+    Further improvements and clean-ups.
+
+commit eabd038e4f79cd9c3a78fbbdb4ef90eb622b82f5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 16:47:49 2026 +0200
+
+    Further improvements.
+
+commit 03c5ba0eaa953aa110a87081101e46fa376ba2aa
+Merge: b4b6bf8 c40ec0d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 16:20:25 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
+commit b4b6bf8002f72d295f1e41ed378ad8cd44cb69a2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 16:19:24 2026 +0200
+
+    Added checks for Bash 4.2+ and GNU getopt.
+
+commit d18acd05f8d26a8e22f5662ccd619e06280c6d9c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 16:09:39 2026 +0200
+
+    Improved manpages.
+
+commit 13bb3fbb7f66eef5fdfccc177d38c9a0c67fd4d2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 16:09:29 2026 +0200
+
+    Minor test script improvements.
+
 commit c40ec0da1068597cfe019b032ff052ab0176f045
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat May 9 16:05:27 2026 +0200
 
     Added missing commata in manpages' "See Also" lists.
+
+commit 3e877c3ad83b7fc97a061604fc9c09b59d4077b0
+Merge: 643d6d1 8b5aa53
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 16:00:01 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
 
 commit 8b5aa53051c74755585c033796c0e1a5bab22ca5
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -286,6 +753,12 @@ Date:   Sat May 9 11:35:36 2026 +0200
 
     Improved shell completions.
 
+commit 643d6d10d60ea20e111d403e4a784c7998f6cbbd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat May 9 10:38:26 2026 +0200
+
+    Updated error messages for consistency with the other tools.
+
 commit 7fc25545834762e43a1cc8f7e5efca1cad89d3a2
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat May 9 10:38:04 2026 +0200
@@ -341,6 +814,32 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat May 9 07:52:20 2026 +0200
 
     Fixed compiler warning.
+
+commit a968a460ec2f419578eff2f74ac965c3f6f14975
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 23:50:11 2026 +0200
+
+    Another set of "which" => "command -v" replacements.
+
+commit a0c36228afe2ba3494da753ae1126b0048c70dd8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 23:46:26 2026 +0200
+
+    Replaced "which" by "command -v" for better portability.
+
+commit 539535e010f426b16ef65da1800c68447fa94621
+Merge: a8f7cb4 573e168
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 23:36:53 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
+commit a8f7cb4034eca7e79e991a669f946cdc8681d5e3
+Merge: eb3b630 7e697ff
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 8 23:33:19 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
 
 commit 573e1680dc3525a093bcc52d631c6b2fe7104e9c
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -1148,6 +1647,26 @@ Date:   Sun May 3 14:24:33 2026 +0200
 
     Merge branch 'master' into dreibh/unix-timestamp
 
+commit eb3b63035dabaa4c2b29219190f152448e70054f
+Merge: 6bcec19 584dc98
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 14:21:49 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
+commit 6bcec1900fc255248bda3ad90b17dcc1d1742328
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 14:20:42 2026 +0200
+
+    Fixed dependency.
+
+commit 59a305e8a596a50e04c53ba9521c69a8cdcd16ff
+Merge: b13058f 96ab0bc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 14:16:54 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit 584dc98f0d0528235c9da7dda646bf8b0e396bee
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun May 3 14:05:11 2026 +0200
@@ -1204,6 +1723,12 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun May 3 12:38:46 2026 +0200
 
     Added comment.
+
+commit b13058ffd2a61bd3904b958073f7a9c8c7558150
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 3 12:24:33 2026 +0200
+
+    Improved options handling.
 
 commit 0f1132e8bc60e8ae2216b15b85f9b7a87a243a70
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -1350,6 +1875,13 @@ Date:   Sat May 2 12:49:52 2026 +0200
 
     Updated PO files.
 
+commit c635d4ea9207556fe0b37122456786b044ce812e
+Merge: 9655f5d 0e95100
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri May 1 22:45:45 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit 145ce262e83082abde2d18f7d93a5f6efd358d66
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri May 1 10:50:36 2026 +0200
@@ -1469,6 +2001,13 @@ Date:   Sat Apr 25 20:12:29 2026 +0200
 
     Merge branch 'master' into dreibh/unix-timestamp
 
+commit 9655f5de888c3f01f748e0b12644a63cf9ce309c
+Merge: 835c361 66329db
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 20:12:14 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit 66329dbebdb9799d11e3391362e005e3c16a487c
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Apr 25 19:56:26 2026 +0200
@@ -1481,6 +2020,19 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Apr 25 16:05:57 2026 +0200
 
     Merge branch 'master' into dreibh/try-hard
+
+commit 835c36175ff6d3c518362dcb020c27b26236973c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 15:56:27 2026 +0200
+
+    Improved shell completions, making ShellCheck-override unnecessary.
+
+commit 12f813c5c3b3c131294fbd9e0b680a25a9bf326c
+Merge: bd51156 339300f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 15:56:07 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
 
 commit 79e9ac6ca3f09da8ca1377e0332a032266b2e88f
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -1550,6 +2102,13 @@ Date:   Sat Apr 25 13:35:38 2026 +0200
 
     Merge branch 'master' into dreibh/unix-timestamp
 
+commit bd51156c2e31af69d88892d74cc74aaf1e269948
+Merge: 822f9ff 9c036b7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 13:34:39 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit 9c036b71ecaec60748e19b9e36c5d37d4be6b51d
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Apr 25 13:33:15 2026 +0200
@@ -1588,6 +2147,19 @@ Date:   Sat Apr 25 12:50:07 2026 +0200
 
     Merge branch 'dreibh/usage' into dreibh/unix-timestamp
 
+commit 822f9ff86ac9514b625c76b0608753acd56ed22d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 12:49:34 2026 +0200
+
+    Using pipefail option in GIMP scripts.
+
+commit 1652db1be28a2b1f43a76b6e918934e28288c47e
+Merge: 5a7fc09 6c9573d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 12:48:21 2026 +0200
+
+    Merge branch 'dreibh/usage' into dreibh/gimp-scripts
+
 commit 6c9573d401b9981887eaf3b4afc20f055b1f9c71
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Apr 25 12:47:40 2026 +0200
@@ -1605,6 +2177,26 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Apr 25 12:38:57 2026 +0200
 
     Improved consistency of getopt usage.
+
+commit 5a7fc09c851f3c9033657c0da9fc75fdb373db85
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 12:35:15 2026 +0200
+
+    Improved consistency of getopt usage.
+
+commit 6bedf48cafe11c0766c284226e143ae4c9b05fa0
+Merge: 68a7e45 fb5e09e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 12:24:16 2026 +0200
+
+    Merge branch 'dreibh/usage' into dreibh/gimp-scripts
+
+commit 68a7e45df2fc4481f9f1521878f29b1b9f641263
+Merge: 3ce9a90 bedc367
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Apr 25 12:21:42 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
 
 commit fb5e09e613da660bca0e49f68073c4d212c49c57
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -1708,6 +2300,13 @@ Date:   Fri Apr 24 11:38:45 2026 +0200
 
     RPM packaging fix.
 
+commit 3ce9a9003f668375098cd1697784a43aebe5cbfe
+Merge: 41dd8ed e923d69
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 11:37:27 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit cf27ed174d4ea25f4cbfdd42f57dea4b2ef0ca01
 Merge: bf0bf1a e923d69
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -1720,6 +2319,19 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Apr 24 11:30:18 2026 +0200
 
     Packaging and documentation improvements.
+
+commit 41dd8eddb5c802a107787e7fc39824af63fd749e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 11:23:05 2026 +0200
+
+    Updated manpages.
+
+commit 6fc0617e54e4d18cd682ae887c09326c342348a7
+Merge: d9a0649 13af2a2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Apr 24 11:22:40 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
 
 commit bf0bf1a12a6693bc2f2e45b9963f2ff372151bd6
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -1789,6 +2401,56 @@ Date:   Fri Apr 24 09:36:55 2026 +0200
 
     Packaging improvements.
 
+commit d9a0649c18d528511326e666666e8786aeb133df
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 22:39:32 2026 +0200
+
+    Minor clean-ups.
+
+commit 3579ab72afa20a583924a830f01df3eebf514e89
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 22:38:45 2026 +0200
+
+    Improved scripts.
+
+commit add76126f6e9a2274dff00fd99e6a79bb62c23b6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 22:12:13 2026 +0200
+
+    Improved test script.
+
+commit 5073527ccfd121b922f47c80b903d82f35f82139
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 22:10:20 2026 +0200
+
+    Added helper script.
+
+commit dcb2883629e7eabe1fc538ca0690c14469a6419f
+Merge: 61b0b65 4c9ce7d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 19:40:45 2026 +0200
+
+    Merge branch 'dreibh/gimp-scripts' of github.com:dreibh/system-tools into dreibh/gimp-scripts
+
+commit 4c9ce7ddc4d115d9c58db13c852244b67a5956c4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 17:42:31 2026 +0200
+
+    Parameter fix.
+
+commit da85cb8c29dcfefbc4c18b68517ef5db7dd66eeb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 16:27:44 2026 +0200
+
+    Improved test script.
+
+commit 431d7046bb1a132421376369327fbbaddad3b969
+Merge: 678801c a4f2231
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 16:20:13 2026 +0200
+
+    Merge branch 'dreibh/version' into dreibh/gimp-scripts
+
 commit a4f223128f44e08e120fb823d4c0ae1cdff1bc92
 Merge: 5c7fa71 6fa371f
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -1808,6 +2470,25 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Apr 23 15:39:19 2026 +0200
 
     New release td-system-tools-2.3.2.
+
+commit 678801c70ae3e2eb977d5df8f3795a8a60185857
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 15:18:19 2026 +0200
+
+    Finished adding version option to GIMP-Scripts.
+
+commit ea0533ed504ad467c19d600863dc3b05c078aaf8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 13:59:17 2026 +0200
+
+    Started to add version option to GIMP-Scripts.
+
+commit 529118f4a6ebcca1532dec86d86eb185c47126ca
+Merge: 85c7c72 5c7fa71
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 13:47:23 2026 +0200
+
+    Merge branch 'dreibh/version' into dreibh/gimp-scripts
 
 commit 5c7fa71832286983bf70024efbb7717b7ffa96a3
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -1881,6 +2562,13 @@ Date:   Thu Apr 23 12:45:21 2026 +0200
 
     Added version option to System-Info.
 
+commit 85c7c72e1e9f835ef783aa9a9ac030bf131fa3d0
+Merge: 87073e8 32e1294
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Apr 23 12:26:27 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit 2c47f8dee52ffd5dde7644f9e58ca3acb668d17e
 Merge: a8aec1d 32e1294
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -1953,6 +2641,25 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Apr 22 15:10:06 2026 +0200
 
     Bugfix: "date -d" does not work under FreeBSD.
+
+commit 87073e8b3e6bfe7cc8d1c31b5d4444477fe1cc6a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Apr 22 15:10:06 2026 +0200
+
+    Bugfix: "date -d" does not work under FreeBSD.
+
+commit cfe5088878bfafb74cd8a0e883d9c4acf0a52f72
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Apr 22 14:17:36 2026 +0200
+
+    Minor fix in README.
+
+commit c24a333429a4afd082d9e17a6b7f0a4bde53f76c
+Merge: dab652d 7dca017
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Apr 22 14:16:08 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
 
 commit a8aec1d8242b5d12857e2c3717b8f682a80d9b6a
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -2040,6 +2747,61 @@ Date:   Mon Apr 20 22:29:47 2026 +0200
 
     Minor documentation update.
 
+commit 61b0b6532fb49ee36f55322274a7013fd8decc9b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Apr 20 22:28:12 2026 +0200
+
+    Minor update.
+
+commit dab652de291d848dd06a07414bc4794c9ab1c045
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Apr 20 22:03:54 2026 +0200
+
+    Packaging update.
+
+commit 96b6b682d5cb5fbfb2eede49455a70b5055ef3fa
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Apr 20 22:03:46 2026 +0200
+
+    Renamed manpage.
+
+commit dfa61d7181e9711ac5c173ff92d0afe217132170
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Apr 20 21:54:28 2026 +0200
+
+    Updated manpages.
+
+commit e4f274022175df068c136ea69f872cec35514395
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Apr 20 21:51:31 2026 +0200
+
+    Renamed manpage.
+
+commit e3860c698bf881fff34ce23a8e750ab34183dc3d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Apr 20 21:51:22 2026 +0200
+
+    Updated CMakeLists.txt.
+
+commit 8f317097b32ac6120b20e36701c8adaa16e9fd92
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Apr 20 21:43:16 2026 +0200
+
+    Renamed helper scripts and added headers.
+
+commit 553ffb9c21fd750e2222cdc63e877d126ddb2ef2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Apr 20 21:40:07 2026 +0200
+
+    Added some GIMP-Scripts documentation.
+
+commit 6d5f1ef29be5f1bd5c4eb98aaa997b9d560d09c3
+Merge: 43f9760 189fccd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Apr 20 21:32:10 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit 659cb3c7b7e58b4edd3278482978a5515415da4e
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon Apr 20 21:31:10 2026 +0200
@@ -2096,6 +2858,13 @@ Date:   Sun Apr 19 18:01:24 2026 +0200
 
     Merge branch 'master' into dreibh/unix-timestamp
 
+commit 43f9760da3fe37965f0e40b6c6fdd1f69bf9aef8
+Merge: 074f035 5304a8c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Apr 19 18:01:05 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit 5304a8cd0a29a15aa66dd055068b9b4f292edc8d
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun Apr 19 18:00:03 2026 +0200
@@ -2107,6 +2876,13 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun Apr 19 17:37:06 2026 +0200
 
     Header updates.
+
+commit 074f0352b92ed9d20962a96ee0d096e9f1bcf0b6
+Merge: 032a77c db13006
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Apr 19 13:05:54 2026 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
 
 commit 7913e92f60b878da398cbd045d213309113cd4a9
 Merge: ac32712 db13006
@@ -2312,6 +3088,156 @@ Date:   Sun Mar 22 15:58:17 2026 +0100
 
     Fix in the manpage.
 
+commit 032a77c631cfe4051316942b9d1f1d06f9f1daca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Mar 22 13:31:08 2026 +0100
+
+    Some improvements and clean-ups for aspect-ratio handling.
+
+commit f6921ecf217831744a2ff19bf689579cd2d7285f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 21 20:21:17 2026 +0100
+
+    Further clean-ups.
+
+commit c99807876ac71eda93c69819c8fc31acc2aa89ca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 21 19:31:09 2026 +0100
+
+    Renamed the GIMP scripts.
+
+commit 2065da34c28a866c02b447db1c59155b377fd09d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 21 14:01:18 2026 +0100
+
+    Improved helper scripts.
+
+commit 35262c233575bf0604c27e022536ba26570eb365
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 21 14:00:19 2026 +0100
+
+    Added helper scripts.
+
+commit d7dba6c2bfad542b566590741f2f177fcf44c714
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 21 13:55:30 2026 +0100
+
+    Updated test script.
+
+commit e22a11937418e38f81628a77a972646751ad0fa7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 21 13:02:25 2026 +0100
+
+    Improved error handling.
+
+commit 2aabefb447411aee73373aab6eaff93bcc96af1f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 21 12:55:43 2026 +0100
+
+    Improved regexp for parsing floating-point parameter.
+
+commit eef3a019ac5e677f98ad596437511ec70d87fbb5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 21 12:55:15 2026 +0100
+
+    Improved manpage.
+
+commit 0f964ec359cac9ebe902814e0fcf5e55c8fa405d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 21 12:55:06 2026 +0100
+
+    Further improvements.
+
+commit 4cf28ef6a87dd4495e361f54c572a297c9113f58
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 21 12:11:43 2026 +0100
+
+    Added missing parameters. Work in progress.
+
+commit 4415d1075d1dff7bc0694706da97419f65ef7461
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 21 11:20:22 2026 +0100
+
+    Minor clean-up.
+
+commit 3ac6f8642417ea32b3d38d36294ad2be3757441a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 20 23:12:47 2026 +0100
+
+    Minor update.
+
+commit db141b4b5eeca5019fecdbede177216409138cae
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 20 22:54:19 2026 +0100
+
+    Added shell completions.
+
+commit 42aac75198820ca692ebdaa6b19792652cc49f37
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 20 22:54:09 2026 +0100
+
+    Improved manpage.
+
+commit 0d97898c8294a2b31b5dad91b26b404c887d090a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 20 22:07:30 2026 +0100
+
+    Manpage improvements.
+
+commit 908243ad6c7141a64e06492a500ec2dd063f5f20
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 20 21:57:35 2026 +0100
+
+    Improved script and added manpage.
+
+commit 05d0ed10eec2f8057388dc24bd9d7885364a55e1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 20 20:08:20 2026 +0100
+
+    Further clean-ups.
+
+commit aa26980e7e6e020e7a3cbdeb2ce4545533c983a8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 20 15:54:45 2026 +0100
+
+    Improved test script.
+
+commit baee79352b60920802dad31ef7bbc3857deb2159
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 20 15:54:28 2026 +0100
+
+    Parameter handling fix.
+
+commit d8cda482465cac0f929ec2f1d16179d1d5733355
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 20 15:22:52 2026 +0100
+
+    Minor update.
+
+commit e8f2ff04821c158a94ec9b24bcf1c6dcdc1fcca1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 20 15:16:26 2026 +0100
+
+    Minor clean-up.
+
+commit 8c290f19590134461b4f130a7d584649b8e003d4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 20 15:16:14 2026 +0100
+
+    Added shell completion.
+
+commit 1f3ec68dc4b3bb0ff82741069470ef1b0fa70826
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 20 15:12:43 2026 +0100
+
+    Added missing options.
+
+commit 436e5de2006c3b68e32463a5fb3c56dc3f249311
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Mar 20 14:38:35 2026 +0100
+
+    Minor fixes.
+
 commit ee6cb0081f3e975cea7c82ba50ef13e309a8946b
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Mar 20 13:40:16 2026 +0100
@@ -2420,11 +3346,98 @@ Date:   Thu Mar 19 16:03:57 2026 +0100
 
     Improved helper script.
 
+commit 31715d97fd12601f34a493032ac716b192b2ac53
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 16:04:06 2026 +0100
+
+    Added test script.
+
+commit 75ec61b4ce03b6c6af5e84288d70242678b65e7e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 16:03:57 2026 +0100
+
+    Improved helper script.
+
+commit fd5523f0a4e4022aa03580fb31f4a2de5fe3dd98
+Merge: 1b234bd da1ecae
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 14:41:45 2026 +0100
+
+    Merge branch 'dreibh/gimp-scripts' of github.com:dreibh/system-tools into dreibh/gimp-scripts
+
+commit 1b234bdce30b8476a384c323c90c45b2eb930bbb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 14:41:18 2026 +0100
+
+    Ubuntu dependency update.
+
+commit da1ecaefcaee8c108b7d34b9014eec7eb182683f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 14:40:31 2026 +0100
+
+    Another Fedora dependency update.
+
+commit e3aaff060bdff62ade10fc2453adfb4621e42c54
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 14:34:15 2026 +0100
+
+    Fedora dependency update.
+
+commit fd4e9189e4c45954177067f5428629cac4efb8e9
+Merge: da34e80 3c7311c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 14:22:46 2026 +0100
+
+    Merge branch 'dreibh/gimp-scripts' of https://github.com/dreibh/system-tools into dreibh/gimp-scripts
+
+commit 3c7311cfb8a0c9cdb3b84e43ff71635198f003d1
+Merge: 9a5da56 d416042
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 14:22:40 2026 +0100
+
+    Merge branch 'dreibh/gimp-scripts' of github.com:dreibh/system-tools into dreibh/gimp-scripts
+
+commit 9a5da56fc2d1fe225bc177a268a7cc0181d88b91
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 14:22:15 2026 +0100
+
+    Added helper script.
+
+commit 27704cdfcb6afad07349690981003e95a4195a6d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 14:22:10 2026 +0100
+
+    Improved manpage.
+
+commit da34e802255bb6197e4f67cf7386571e78aa9311
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 14:12:32 2026 +0100
+
+    Improved shell completion with selection of an available font.
+
+commit d41604259f0f719faec4383f7a68f9d3f3104e3a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 13:45:25 2026 +0100
+
+    Improved test script.
+
 commit f71c35d8491922e65e2cd095620cf4c5c693656e
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Mar 19 13:37:54 2026 +0100
 
     Improved libintl detection in CMakeLists.txt.
+
+commit 144053df6d40bbf67440e4f446585141410176b8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 13:19:17 2026 +0100
+
+    Improved test script.
+
+commit d1bceacd9cd8e716e75913240577cf663709b9b5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 13:08:13 2026 +0100
+
+    Improved compatibility.
 
 commit c4616d5cbb41f14ad8acae685e63b888afb752b5
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -2468,6 +3481,114 @@ Date:   Thu Mar 19 11:05:03 2026 +0100
 
     Made building the components configurable.
 
+commit 54f53af7ff5e2eb7d1d1e664caa1093c2c8e1c71
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 00:22:01 2026 +0100
+
+    Improved test script.
+
+commit 7b81070defbddf6b0535d126dff77ec2506e689f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 00:09:13 2026 +0100
+
+    Packaging update.
+
+commit 9dc6322810f92f1ae14df9a504958fb94ffc251e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 00:09:03 2026 +0100
+
+    Updated test script.
+
+commit c889c2fbd2f8c175f5f557e8de3aa71742a91677
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Mar 19 00:08:36 2026 +0100
+
+    Improved script, added manpage and shell completion.
+
+commit db2fca3564f41328e3de1dcc29c7cac88ba7c05f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 23:17:19 2026 +0100
+
+    Updated test script.
+
+commit 2c3008d3076bc80dac879fe72aec8804ae589bc5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 23:16:18 2026 +0100
+
+    Improved script, added manpage and shell completion.
+
+commit c6824ec2b232db3e2c926e9116e6255d7a8b138f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 22:55:21 2026 +0100
+
+    Some clean-ups.
+
+commit b9f327e748e7ba2f71607335444ccfa8349ea4e8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 22:30:52 2026 +0100
+
+    Further parameter naming improvements.
+
+commit c051471d2b7e560173f04fba7b704d400bcdf074
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 22:23:03 2026 +0100
+
+    Updated test script.
+
+commit a6cee9d677b71c5ee9f2b8d064e2f58cde1f77f2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 22:22:48 2026 +0100
+
+    Parameter naming consistency improvements.
+
+commit ef66fa5c05bd325e91a67005c10602b3b93b4beb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 21:55:18 2026 +0100
+
+    Updated test script.
+
+commit fc44443624a5bb57fdb0e2c75b68e4a11efcfcea
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 21:55:11 2026 +0100
+
+    Further clean-ups.
+
+commit be54d8e426f3f5d6669ceb75438bfc5271716820
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 21:55:01 2026 +0100
+
+    Added shell completion.
+
+commit c54d08d63b047c2aa5645491093c9be6f1014d4b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 21:46:42 2026 +0100
+
+    Minor clean-ups.
+
+commit 0602e0db96f40a224f166bcac2a75eff695a4839
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 21:46:20 2026 +0100
+
+    Added manpage.
+
+commit 34e32612fc90da17850ac450d56dc18ad06c5866
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 21:46:00 2026 +0100
+
+    Added missing parameters and improved parameter handling.
+
+commit 1164b5ba652e27e1e4e5c5f22fe59770b61d2c23
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 21:25:50 2026 +0100
+
+    Removed debug output.
+
+commit 9741e26d2a2882daff089abb872c7c0514ea2732
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 13:42:09 2026 +0100
+
+    FreeBSD regexp fix.
+
 commit 05eb0f2a1dab1b1cbc5b0b8e5ca93b55008b7a77
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Mar 18 13:34:27 2026 +0100
@@ -2486,11 +3607,149 @@ Date:   Wed Mar 18 13:11:50 2026 +0100
 
     Minor clean-up.
 
+commit 75ca030f33c64c2a900b9c4ef3da7f7bcf186085
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 13:04:10 2026 +0100
+
+    Some clean-ups.
+
+commit 2d8ac3b1abe64bd8abb8eb6fdc9a870a7cc71872
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 13:04:02 2026 +0100
+
+    FreeBSD fix.
+
+commit c7657c14633663d04425e8ab2a358247b2819b54
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 12:32:59 2026 +0100
+
+    Locale usage clean-ups.
+
+commit ddaace2997872a9573ac1793c75e3c3341bf8608
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 12:28:31 2026 +0100
+
+    Some clean-ups.
+
+commit 09bb2d1e692b30f02f7d9932ebc48eaa6e50ddfa
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 12:27:59 2026 +0100
+
+    Added missing options.
+
+commit 60da206d68e87a63fd829c9cfc298c42d939b327
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 12:02:39 2026 +0100
+
+    Added missing parameters.
+
+commit ec28f1429fc4a4cec4903c51efb59496c92fecc5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Mar 18 11:15:49 2026 +0100
+
+    Minor manpage updates.
+
 commit d5ddce4786ea7ec294656c835813f346a36f9d1a
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Mar 18 09:47:43 2026 +0100
 
     Improved manpages.
+
+commit 2f75550a3b5b48d2c581ac8eab555c916b509b67
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 23:43:53 2026 +0100
+
+    Further clean-ups.
+
+commit 138672dde832c028f3f96e1216641e63b5c46f27
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 23:32:13 2026 +0100
+
+    Naming consistency fix: Gimp -> GIMP.
+
+commit 5faf359c7282f638c45c24fb5f983bb42de0b58e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 23:28:28 2026 +0100
+
+    Further clean-ups and improvements.
+
+commit e0add1e00af484e2d0089a9b6e17269d470a6341
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 23:14:32 2026 +0100
+
+    Small improvements and clean-ups.
+
+commit 080ab82347bf050806b20962f58da212c43ba940
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 23:09:51 2026 +0100
+
+    Added shell completion.
+
+commit 1cab553b67d29cb868b0f895bb85b2d1793b4143
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 23:09:44 2026 +0100
+
+    Added manpage.
+
+commit 20147b6cc3936ae74c11987486c98f33fddae6fd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 23:09:28 2026 +0100
+
+    Improved script.
+
+commit eb4d2850b4a389926501b187e64399f0cfed0072
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 22:51:17 2026 +0100
+
+    Parameter naming consistency improvement.
+
+commit b9f153f3be193bbcdb1bf5e98094c544be3897a2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 22:48:43 2026 +0100
+
+    A small fix.
+
+commit 6c99604a25532918e4c372a97279a0c235b522e0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 22:48:03 2026 +0100
+
+    Added manpage and shell completion for Test-Gimp.
+
+commit 99a816a0accc1d19b9551e18f71f2aa597958603
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 22:39:55 2026 +0100
+
+    Improved script, and updated manpage and shell completion.
+
+commit 45bafd58a5329417e1002130a820054d55c8f00a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 22:39:41 2026 +0100
+
+    Added another example.
+
+commit a5bb03905a6d1a94cb8120375c16f82617b130ba
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 21:37:18 2026 +0100
+
+    Further improvements.
+
+commit 1252af3aebdbe79f68da43b1f9edf094ba7fca2f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 21:15:01 2026 +0100
+
+    Added manpage.
+
+commit b42c12ac9b01b27e567d1fc6b4138b259208c398
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 20:58:30 2026 +0100
+
+    Minor clean-ups.
+
+commit 02b78cb417c29403966660ef5cf1eae60ebb6794
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Mar 17 20:58:15 2026 +0100
+
+    Improved script.
 
 commit 60e8da7e8d5b6519cd97bc47e407e551b4131f88
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -2594,6 +3853,13 @@ Date:   Tue Mar 17 09:56:44 2026 +0100
 
     Added time to Unix timestamp conversion tool.
 
+commit deb462ae092ff2e2ac21ac0657f64b63cb2b4873
+Merge: 4ce19ec 49563ca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Mar 14 20:35:33 2026 +0100
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit 353286efbf5d990b9b4f1330aadca15bb4c42775
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Mar 12 11:13:14 2026 +0100
@@ -2605,6 +3871,13 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Feb 25 12:16:23 2026 +0100
 
     Small improvements of the test script.
+
+commit 4ce19ecf7dd732aa2c49def7dad5ee32785d6c67
+Merge: 7ab8040 aa88d1e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 25 12:05:14 2026 +0100
+
+    Merge branch 'master' into dreibh/gimp-scripts
 
 commit 0edc3b745e30749667913b7219ebae4c46b7df60
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -2660,6 +3933,19 @@ Date:   Tue Dec 9 17:04:21 2025 +0100
 
     New release td-system-tools-2.2.3.
 
+commit 7ab80404deababdb7d0b2d8c5cc0f5f45fda9f19
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 16:13:41 2025 +0100
+
+    Packaging update.
+
+commit 09d935cd7136e0bf0429b303c8789048ea0041b9
+Merge: bcdba3f ab7bacc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 16:09:23 2025 +0100
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit ab7bacc76504943d665f4806376a1019d983087c
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Dec 9 16:09:11 2025 +0100
@@ -2671,6 +3957,24 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Dec 9 16:08:23 2025 +0100
 
     Packaging fix: X.509 Tools is noarch, not architecture-specific.
+
+commit bcdba3fd9a05f72c5d432ac749e24d72d7d2f0dc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 16:05:48 2025 +0100
+
+    Debian/Ubuntu packaging update.
+
+commit c78af005ba3b64851b06e91c84e517770761fd3e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 16:05:38 2025 +0100
+
+    Updated CMakeLists.txt.
+
+commit 4b76a7c951de53b1ac9a21e3e842d318ba083139
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 15:53:03 2025 +0100
+
+    Header updates.
 
 commit 2c16eb44cf39a5366031b2ade3e036e92f11d731
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -2786,6 +4090,13 @@ Date:   Wed Dec 3 15:19:16 2025 +0100
 
     Configure-GRUB: On Ubuntu 25.10, /etc/default/grub does not exist => use empty file as default input in this case.
 
+commit 8c7b92394737b777399f2c76c951ea4e1cc2c18b
+Merge: 6ba00b1 0573fe3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 16:34:51 2025 +0100
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit 0573fe360d0e6537a99f80fa18f8486676fb4454
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Nov 28 16:23:31 2025 +0100
@@ -2809,6 +4120,13 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Nov 28 15:49:02 2025 +0100
 
     Updated CI scripts
+
+commit 6ba00b1b61f1e47ea5fae97df16ef107c8647b4d
+Merge: 566ab23 8afaf2d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 11:42:41 2025 +0100
+
+    Merge branch 'master' into dreibh/gimp-scripts
 
 commit 8afaf2d809776ed5e57f02d65ad10e45a71f7e29
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -3028,6 +4346,13 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Nov 19 13:59:57 2025 +0100
 
     Package dependency clean-ups.
+
+commit 566ab2340cf8ed0ba1902c9df776011e584855ea
+Merge: f04a829 6cd106c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Nov 18 15:58:23 2025 +0100
+
+    Merge branch 'master' into dreibh/gimp-scripts
 
 commit 4e4e963d848fc05961f8e9b89f94ca0107d64647
 Merge: 50657c2 6cd106c
@@ -3609,6 +4934,13 @@ Date:   Sat Oct 25 12:16:27 2025 +0200
 
     Updated PO files.
 
+commit f04a829e1493ba64256afc36e3c2d73b7fda79fe
+Merge: 1e794cb ea9976d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Oct 25 12:15:40 2025 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit ea9976d1441ae8ac3a2f1dff49c53fcf975d227d
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Oct 25 12:13:51 2025 +0200
@@ -3682,6 +5014,13 @@ Date:   Mon Oct 13 20:18:29 2025 +0200
 
     Improved documentation.
 
+commit 1e794cbf66f88d5f36dc898ba21a514e4b3be642
+Merge: 6e6ac71 4eb896c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Oct 9 23:25:17 2025 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
 commit 4eb896c74756f2b3f51fb9110d8f47abdbe9c029
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Oct 8 09:10:56 2025 +0200
@@ -3711,6 +5050,20 @@ Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Oct 8 00:39:19 2025 +0200
 
     Some testing.
+
+commit 6e6ac710477f7ff7cbee62e73053aab72bcaae52
+Merge: 888aecd d8e87dd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Sep 28 15:55:37 2025 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
+
+commit 888aecd7cc6486a9a0c21afff10ac54e60b393c8
+Merge: 124cbb7 874f68f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Sep 28 15:55:13 2025 +0200
+
+    Merge branch 'master' into dreibh/gimp-scripts
 
 commit d8e87dd6ac9555945a1454050b3da6478ef2095a
 Author: Thomas Dreibholz <dreibh@simula.no>
@@ -3857,11 +5210,59 @@ Date:   Thu Aug 14 00:09:08 2025 +0200
 
     Updated CI scripts
 
+commit 124cbb7a52a5ef3c33adbf7a774ac84d7f890f00
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 12 14:24:32 2025 +0200
+
+    Updated CI scripts
+
+commit 7129e29e1a95a9a52814561c91107e2fc3da1053
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 12 11:35:55 2025 +0200
+
+    Updated workflows.
+
+commit 8ea8b9f0501518746d1cba8375c159376bd8b59c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 9 14:57:05 2025 +0200
+
+    Renamed another script, and some clean-ups.
+
+commit d4fe2862a69133e86461e1aa26596ac5869a391d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 9 14:46:19 2025 +0200
+
+    Renamed script.
+
+commit 1c55c281ae22330bb62d046e8b21726f651d46cf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 9 14:42:45 2025 +0200
+
+    Renamed script.
+
 commit 8192a2c61601f6f55df261c9eebcf13b02eb0b83
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Jul 9 14:11:11 2025 +0200
 
     Updated FreeBSD port.
+
+commit ee5aaf6ab0fbc339cf631d3e9b6be79b752f9993
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 9 10:14:40 2025 +0200
+
+    Updated test script.
+
+commit 7f73075f62b8b0b21807bf208595153670c58e4e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 9 09:51:20 2025 +0200
+
+    Header updates.
+
+commit 82c564803c22e0d08267169b9b7f885adede5612
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 9 09:47:21 2025 +0200
+
+    Added initial version of the scripts.
 
 commit c9ddf2d7a47e8f5a1fcef3ef1fa47516cf2be5dc
 Author: Thomas Dreibholz <dreibh@simula.no>

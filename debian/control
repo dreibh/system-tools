@@ -31,8 +31,7 @@ Description: Print basic system information and banners
 
 Package: td-get-system-info
 Architecture: any
-Depends: procps,
-         ${misc:Depends},
+Depends: ${misc:Depends},
          ${shlibs:Depends}
 Description: Obtain basic system information
  This small program obtains basic status information about the system:
@@ -148,6 +147,7 @@ Description: Wait for a random time span
 Package: td-x509-tools
 Architecture: all
 Depends: gettext-base (>= 0.21),
+         mbuffer | buffer,
          openssl,
          td-print-utf8,
          td-text-block,
@@ -171,6 +171,33 @@ Description: X.509 certificate handling tools
   * The pem2der tool converts a certificate or CRL in PEM format to DER format.
   * The test-tls-connection tool tests a TCP TLS connection to a remote
     endpoint.
+
+Package: td-gimp-scripts
+Architecture: all
+Depends: fontconfig,
+         gimp,
+         graphicsmagick,
+         ${misc:Depends}
+Recommends: clifractgen,
+            fonts-lobstertwo,
+            fonts-open-sans,
+            fonts-urw-base35
+Suggests: td-gimp-scripts-examples
+Description: GIMP image processing scripts
+ This package contains some GIMP scripts for automated image processing.
+ The main purpose of this script is to generate background images for
+ desktops, boot splashes, etc. with some branding.
+
+Package: td-gimp-scripts-examples
+Architecture: all
+Depends: ${misc:Depends}
+Description: Example files for the GIMP image processing scripts
+ The GIMP scripts are scripts for automated image processing.
+ The main purpose of this script is to generate background images for
+ desktops, boot splashes, etc. with some branding.
+ .
+ This package contains some example input files for the testing the
+ GIMP scripts.
 
 Package: td-system-tools-basic
 Replaces: td-system-tools (<< 2.4.0)
@@ -222,7 +249,8 @@ Description: Metapackage for basic system tools sub-packages
 
 Package: td-system-tools-complete
 Architecture: all
-Depends: td-system-tools-basic (>= ${source:Version}),
+Depends: td-gimp-scripts (>= ${source:Version}),
+         td-system-tools-basic (>= ${source:Version}),
          ${misc:Depends}
 Description: Metapackage for complete system tools sub-packages
  System-Tools is a collection of utilities for system management and
@@ -258,7 +286,9 @@ Description: Metapackage for complete system tools sub-packages
 Package: td-system-tools
 Section: oldlibs
 Architecture: all
-Depends: td-system-tools-basic (>= ${source:Version}),
+Depends: td-gimp-scripts  (>= ${source:Version}),
+         td-gimp-scripts-examples  (>= ${source:Version}),
+         td-system-tools-basic (>= ${source:Version}),
          ${misc:Depends}
 Description: Transitional package td-system-tools -> td-system-tools-basic
  This is a transitional dummy package. It can safely be removed.
