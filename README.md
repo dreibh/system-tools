@@ -643,12 +643,9 @@ Examples (click on image for full-size view):
   </tr>
   <tr>
     <td style="vertical-align: middle;">
-     <span id="Resize-with-Cropping1" />
-```bash
-gs-resize-with-cropping Bergen.webp Bergen-Resize-with-Cropping.webp \
+     <pre id="Resize-with-Cropping1"><code class="language-bash"><span class="ex">gs-resize-with-cropping</span> Bergen.webp Bergen-Resize-with-Cropping.webp \
    --width 1024 \
-   --aspect 1:1
-```
+   --aspect 1:1</code></pre>
     </td>
     <td style="vertical-align: middle;">
      <span id="Resize-with-Cropping2" />
