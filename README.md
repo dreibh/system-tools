@@ -622,21 +622,21 @@ Examples (click on image for full-size view):
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Bergen-Resize-with-Cropping.webp">
-        <img alt="Picture of Bergen, Norway; 1:1 aspect ratio" src="src/GIMP-Scripts/figures/Bergen-Resize-with-Cropping-preview.webp" height="150" />
+        <img alt="Picture of Bergen, Norway; 1:1 aspect ratio" src="src/GIMP-Scripts/figures/Bergen-Resize-with-Cropping-preview.webp" width="100%" />
       </a><br />
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Portobello-Resize-with-Cropping.webp">
-        <img alt="Picture of Portobello, New Zealand; 2:1 aspect ratio" src="src/GIMP-Scripts/figures/Portobello-Resize-with-Cropping-preview.webp" height="150" />
+        <img alt="Picture of Portobello, New Zealand; 2:1 aspect ratio" src="src/GIMP-Scripts/figures/Portobello-Resize-with-Cropping-preview.webp" width="100%" />
       </a>
      </p>
     </td>
     <td style="vertical-align: middle; width: 33.33%;">
      <p align="center">
       <a href="src/GIMP-Scripts/figures/Fractal-Resize-with-Cropping.webp">
-        <img alt="Mandelbrot Fractal; 3:1 aspect ratio" src="src/GIMP-Scripts/figures/Fractal-Resize-with-Cropping-preview.webp" height="150" />
+        <img alt="Mandelbrot Fractal; 3:1 aspect ratio" src="src/GIMP-Scripts/figures/Fractal-Resize-with-Cropping-preview.webp" width="100%" />
       </a><br />
      </p>
     </td>
