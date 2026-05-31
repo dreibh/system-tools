@@ -1372,5 +1372,5 @@ To provide a translation of one or more components of System-Tools into your lan
 * [NorNet – A Real-World, Large-Scale Multi-Homing Testbed](https://www.nntb.no/)
 * [NEAT – A New, Evolutive API and Transport-Layer Architecture for the Internet](https://neat.nntb.no/)
 * [Thomas Dreibholz's Reliable Server Pooling (RSerPool) Page – The RSPLIB Project](https://www.nntb.no/~dreibh/rserpool/)
-* [5G-VINNI – 5G Verticals Innovation Infrastructure](https://www.5g-vinni.eu/)
+* [5G-VINNI – 5G Verticals Innovation Infrastructure](https://www.eurescom.eu/archive/5G-VINNI/)
 * [RAKSHA: 5G Security for Critical Communications](https://www.sintef.no/en/projects/2021/raksha-5g-security-for-critical-communications/)
