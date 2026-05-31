@@ -289,26 +289,26 @@ gm identify "figures/${INPUT3}-Oilify.png"
 echo "OldPhoto:"
 if [ ! -e "figures/${INPUT1}-OldPhoto.png" ] ; then
    ./gs-oldphoto "figures/${INPUT1}.png" "figures/${INPUT1}-OldPhoto.png" \
-      --defocus on     \
+      --defocus     on \
       --border-size 24 \
-      --sepia on       \
-      --mottle on
+      --sepia       on \
+      --mottle      on
 fi
 gm identify "figures/${INPUT1}-OldPhoto.png"
 if [ ! -e "figures/${INPUT2}-OldPhoto.png" ] ; then
    ./gs-oldphoto "figures/${INPUT2}.png" "figures/${INPUT2}-OldPhoto.png" \
-      --defocus off    \
-      --border-size 16 \
-      --sepia on       \
-      --mottle off
+      --defocus     off \
+      --border-size 16  \
+      --sepia       on  \
+      --mottle      off
 fi
 gm identify "figures/${INPUT2}-OldPhoto.png"
 if [ ! -e "figures/${INPUT3}-OldPhoto.png" ] ; then
    ./gs-oldphoto "figures/${INPUT3}.png" "figures/${INPUT3}-OldPhoto.png" \
-      --defocus on     \
-      --border-size 32 \
-      --sepia off      \
-      --mottle on
+      --defocus     on  \
+      --border-size 32  \
+      --sepia       off \
+      --mottle      on
 fi
 gm identify "figures/${INPUT3}-OldPhoto.png"
 
