@@ -150,7 +150,6 @@ Depends: gettext-base,
          openssl,
          td-print-utf8,
          td-text-block,
-         mbuffer | buffer,
          ${misc:Depends}
 Provides: td-x509
 Replaces: td-x509 (<< 2.2.0)

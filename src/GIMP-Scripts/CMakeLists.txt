@@ -76,7 +76,9 @@ ENDFOREACH()
 #### EXAMPLE FILES                                                       ####
 #############################################################################
 
-INSTALL(FILES examples/Bergen.jpeg
-              examples/Fractal.fsf
-              examples/Portobello.jpeg
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/system-tools/gimp-scripts-examples)
+IF (WITH_GIMP_SCRIPTS_EXAMPLES)
+   INSTALL(FILES examples/Bergen.jpeg
+                 examples/Fractal.fsf
+                 examples/Portobello.jpeg
+           DESTINATION ${CMAKE_INSTALL_DATADIR}/system-tools/gimp-scripts-examples)
+ENDIF()
