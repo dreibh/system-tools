@@ -643,25 +643,19 @@ Examples (click on image for full-size view):
   </tr>
   <tr>
     <td style="vertical-align: middle;">
-     <pre id="Resize-with-Cropping1"><code class="language-bash"><span class="ex">gs-resize-with-cropping</span> Bergen.webp Bergen-Resize-with-Cropping.webp \
-   --width 1024 \
-   --aspect 1:1</code></pre>
+     <pre id="Resize-with-Cropping1"><code class="language-bash"><span class="ex">gs-resize-with-cropping</span> Bergen.webp Bergen-Resize-with-Cropping.webp <span class="dt">\</span>
+   <span class="at">--width</span> 1024 <span class="dt">\</span>
+   <span class="at">--aspect</span> 1:1</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="Resize-with-Cropping2" />
-```bash
-gs-resize-with-cropping Portobello.webp Portobello-Resize-with-Cropping.webp \
-   --width 1024 \
-   --aspect 2:1
-```
+     <pre id="Resize-with-Cropping2"><code class="language-bash"><span class="ex">gs-resize-with-cropping</span> Portobello.webp Portobello-Resize-with-Cropping.webp <span class="dt">\</span>
+   <span class="at">--width</span> 1024 <span class="dt">\</span>
+   <span class="at">--aspect</span> 2:1</code></pre>
     </td>
     <td style="vertical-align: middle;">
-     <span id="Resize-with-Cropping3" />
-```bash
-gs-resize-with-cropping Fractal.webp Fractal-Resize-with-Cropping.webp \
-   --height 512 \
-   --aspect 3:1
-```
+     <pre id="Resize-with-Cropping3"><code class="language-bash"><span class="ex">gs-resize-with-cropping</span> Fractal.webp Fractal-Resize-with-Cropping.webp <span class="dt">\</span>
+   <span class="at">--height</span> 512 <span class="dt">\</span>
+   <span class="at">--aspect</span> 3:1</code></pre>
     </td>
   </tr>
 </table>
