@@ -589,6 +589,14 @@ int main (int argc, char** argv)
    if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
+   else {
+      wchar_t wide_string[16];
+      static const char* utf8test = "😀";
+      const size_t wide_string_length = mbstowcs(wide_string, "😀", strlen(utf8test));
+      if(wide_string_length == (size_t)-1) {
+         setlocale(LC_CTYPE, "C.UTF-8");
+      }
+   }
    bindtextdomain("print-utf8", nullptr);
    textdomain("print-utf8");
 
