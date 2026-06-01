@@ -424,7 +424,6 @@ function print-system-information ()
    print-ssh-key-fingerprints
 
    # ------ Network ---------------------------------------------------------
-   echo -en "${colorBasic}"
    add-table-row \
       "$(gettext --context="The label of the field containing information about the network interfaces of the computer" "Network:")" ""
 
@@ -473,6 +472,8 @@ function print-system-information ()
       fi
    done
 
+   # ------ Print the system information table ------------------------------
+   echo -en "${colorBasic}"
    finish-table
    echo -en "${colorNone}"
 }
@@ -482,7 +483,6 @@ function print-system-information ()
 function print-ssh-key-fingerprints ()
 {
    if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
-      echo -en "${colorBasic}"
       local keyNumber=1
       local keyInfo
       local key
@@ -505,7 +505,6 @@ function print-ssh-key-fingerprints ()
             fi
          fi
       done
-      echo -en "${colorNone}"
    fi
 }
 
