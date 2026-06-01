@@ -27,7 +27,7 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-#define _GNU_SOURCE   /* for timegm() */
+#define _GNU_SOURCE
 #include <ctype.h>
 #include <getopt.h>
 #include <locale.h>
@@ -37,9 +37,6 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
-#ifndef nullptr
-#define nullptr NULL
-#endif
 
 #ifdef ENABLE_NLS
 #include <libintl.h>
@@ -51,6 +48,12 @@
 #endif
 
 #include "package-version.h"
+
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ < 202311L)
+#ifndef nullptr
+#define nullptr ((void*)0)
+#endif
+#endif
 
 
 // ###### Version ###########################################################

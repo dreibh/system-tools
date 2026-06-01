@@ -365,19 +365,21 @@ function print-ssh-key-fingerprints ()
       local label
       local keyInfo
       find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print0 | sort -z | while IFS= read -r -d "" key ; do
-         keyInfo="$(ssh-keygen -lf "$key" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g")"
-         if [[ "${keyInfo}" =~ ^[A-Z]+ ]] ; then
-            if [ ${number} -eq 1 ] ; then
-               label="$(gettext "SSH Keys:")"
-            else
-               label=""
+         if [[ ! "${key}" =~ _dsa_key.pub$ ]] ; then
+            keyInfo="$(ssh-keygen -lf "$key" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g")"
+            if [[ "${keyInfo}" =~ ^[A-Z]+ ]] ; then
+               if [ ${number} -eq 1 ] ; then
+                  label="$(gettext "SSH Keys:")"
+               else
+                  label=""
+               fi
+               print-utf8 -i "${indent}" "${label}"
+               # shellcheck disable=SC2059
+               printf "$(gettext "#%u %s")\n" \
+                  "${number}" \
+                  "${keyInfo}"
+               number=$((number+1))
             fi
-            print-utf8 -i "${indent}" "${label}"
-            # shellcheck disable=SC2059
-            printf "$(gettext "#%u %s")\n" \
-               "${number}" \
-               "${keyInfo}"
-            number=$((number+1))
          fi
       done
       echo -en "${colorNone}"
