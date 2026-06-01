@@ -364,13 +364,10 @@ function print-system-information ()
          "$(printf "%'5.1f" "${system_mem_freepct}")"
        )"
    if [ "${system_swap_total}" != "" ] && [ "${system_swap_total}" -gt 0 ] ; then
-      # xgettext: c-format
-      swapFormat="$(gettext "%s MiB of %s MiB (%s MiB available: %s %%)")"
-
       # shellcheck disable=SC2059
       add-table-row \
          "$(gettext "Used Swap:")" \
-         "$(printf "${swapFormat}\n" \
+         "$(printf "${memoryFormat}\n" \
             "$(printf "%'6.0f" "$((system_swap_used  / 1048576))")" \
             "$(printf "%'6.0f" "$((system_swap_total / 1048576))")" \
             "$(printf "%'6.0f" "$((system_swap_free  / 1048576))")" \
