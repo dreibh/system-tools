@@ -40,7 +40,14 @@ export TEXTDOMAIN="System-Info"
 
 
 # ###### Settings ###########################################################
-indent=-20
+is_ltr=1
+rlm=""
+lrm=""
+if [ "$(gettext "LTR")" == "RTL" ] ; then
+   is_ltr=0
+   rlm=$'\u200F'   # Right-to-Left Marker (RLM)
+   lrm=$'\u200E'   # Left-to-Right Marker (LRM)
+fi
 
 colorBasic="\e[33m"
 colorNetwork="\e[34m"
@@ -73,6 +80,66 @@ function print-banners ()
 }
 
 
+# ###### Begin the system information table #################################
+tableColumnLabels=
+tableColumnValues=
+function begin-table()
+{
+   tableColumnLabels=( )
+   tableColumnValues=( )
+}
+
+
+# ###### Finish and print the system information table ######################
+function finish-table()
+{
+   local i
+   local label
+   local value
+   local indent=0
+
+   # ====== Compute indentation =============================================
+   for ((i=0; i < ${#tableColumnLabels[@]}; i++)) ; do
+      label="${tableColumnLabels[$i]}"
+      width="$(print-utf8 --width "${label}")"
+      if [ "${width}" -gt "${indent}" ] ; then
+         indent="${width}"
+      fi
+   done
+   indent=-$((indent + 1))
+
+   # ====== Print table rows ================================================
+   for ((i=0; i < ${#tableColumnLabels[@]}; i++)) ; do
+      label="${tableColumnLabels[$i]}"
+      value="${tableColumnValues[$i]}"
+
+      # ====== Left-to-Right (LTR) locale =================================
+      if [ ${is_ltr} -eq 1 ] ; then
+         print-utf8 -i "${indent}" "${label}"
+         echo -e "${value}"
+      # ====== Right-to-Left (RTL) locale =================================
+      else
+         # Insert Right-to-Left Mark (RLM) to force treating the line as RTL
+         echo -ne "${rlm}"
+         print-utf8 -i "${indent}" "${label}"
+         echo -ne "${rlm}"
+         echo -e "${value}"
+      fi
+
+   done
+}
+
+
+# ###### Add a row to the table #############################################
+function add-table-row ()
+{
+   local label="$1"
+   local value="$2"
+   tableColumnLabels+=( "${label}" )
+   tableColumnValues+=( "${value}" )
+}
+
+
 # ###### Print system information ###########################################
 function print-system-information ()
 {
@@ -80,11 +147,13 @@ function print-system-information ()
 
    # ====== Obtain system information =======================================
    if ! command -v get-system-info >/dev/null ; then
-      gettext >&2 "ERROR: get-system-info not found in search path!"
+      gettext >&2 \
+         "ERROR: get-system-info not found in search path!"
       echo >&2
       exit 1
    fi
-   # For ShellCheck:
+
+   # Initialise variables with defaults:
    hostname_long=""
    uptime_days=0
    uptime_hours=0
@@ -110,6 +179,7 @@ function print-system-information ()
    system_swap_freepct=0
    disk_list=""
    netif_list=""
+
    # Set the variables:
    if [ "${testSystemInfoInput}" == "" ] ; then
       eval "$(get-system-info)"
@@ -155,128 +225,178 @@ function print-system-information ()
    if [ "${DISTRIB_CODENAME}" != "" ] ; then
       codeNameText=" (${DISTRIB_CODENAME})"
    fi
-   os_label="${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText}"
+   # shellcheck disable=SC2034
+   local os_label="${DISTRIB_ID} ${DISTRIB_RELEASE}${codeNameText}"
 
 
    # ====== Print system information ========================================
    echo -en "${colorBasic}"
+   begin-table
 
    # ------ Hostname -------------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext "Host:")"
-   echo "${hostname_long}"
+   add-table-row \
+      "$(gettext "Host:")" \
+      "${hostname_long}"
 
    # ------ Uptime ----------------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext "Uptime:")"
+   # xgettext: c-format
+   uptimeFormat="$(gettext "%s, %s, %s, and %s")"
+   # xgettext: c-format
+   formatUptimeDays="$(ngettext "%s day" "%s days" "${uptime_days}")"
+   # xgettext: c-format
+   formatUptimeHours="$(ngettext "%d hour" "%d hours" "${uptime_hours}")"
+   # xgettext: c-format
+   formatUptimeMinutes="$(ngettext "%d minute" "%d minutes" "${uptime_mins}")"
+   # xgettext: c-format
+   formatUptimeSeconds="$(ngettext "%d second" "%d seconds" "${uptime_secs}")"
+
    # shellcheck disable=SC2059
-   printf "$(gettext "%s, %s, %s, and %s")\n" \
-      "$(printf "$(ngettext "%'d day" "%'d days" "${uptime_days}")" "${uptime_days}")" \
-      "$(printf "$(ngettext "%'d hour" "%'d hours" "${uptime_hours}")" "${uptime_hours}")" \
-      "$(printf "$(ngettext "%'d minute" "%'d minutes" "${uptime_mins}")" "${uptime_mins}")" \
-      "$(printf "$(ngettext "%'d second" "%'d seconds" "${uptime_secs}")" "${uptime_secs}")"
+   add-table-row \
+      "$(gettext "Uptime:")" \
+      "$(printf "${uptimeFormat}\n" \
+         "$(printf "${formatUptimeDays}"    "$(printf "%'d" "${uptime_days}")")" \
+         "$(printf "${formatUptimeHours}"   "${uptime_hours}")"                  \
+         "$(printf "${formatUptimeMinutes}" "${uptime_mins}")"                   \
+         "$(printf "${formatUptimeSeconds}" "${uptime_secs}")"
+      )"
 
    # ------ Operating System ------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext "Operating System:")"
-   printf "%s $(gettext "with kernel") %s\n" \
-      "${os_label}" \
-      "${system_release}"
+   add-table-row \
+      "$(gettext "Operating System:")" \
+      "$(eval_gettext "\${os_label} with kernel \${system_release}")"
 
    # ------ Processor -------------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext "Processor:")"
-   processesString="$(gettext "%'d processes")"
-   usersString="$(ngettext "%'d user" "%'d users" "${system_users}")"
-   # shellcheck disable=SC2059
-   printf "$(gettext "%d × %s; ${processesString}; ${usersString}")\n" \
-      "${system_cores}" \
-      "${system_machine}" \
-      "${system_procs}" \
-      "${system_users}"
+   # xgettext: c-format
+   processesFormat="$(gettext "%s processes")"
+   # shellcheck disable=SC2034,SC2059
+   processesString="$(printf "${processesFormat}" "${system_procs}")"
+   # xgettext: c-format
+   usersFormat="$(ngettext "%s user" "%s users" "${system_users}")"
+   # shellcheck disable=SC2034,SC2059
+   usersString="$(printf "${usersFormat}" "$(printf "%'d" "${system_users}")")"
+   # shellcheck disable=SC2034
+   systemCoresString="$(printf "%'d" "${system_cores}")"
+   # shellcheck disable=SC2034
+   systemMachineString="${system_machine}"
+
+   # shellcheck disable=SC2034,SC2059
+   add-table-row \
+      "$(gettext "Processor:")" \
+      "$(eval_gettext \
+         "\${systemCoresString} × \${systemMachineString}; \${processesString}; \${usersString}"
+       )"
 
    # ------ Load ------------------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext "Load (1/5/15 min):")"
+   # xgettext: c-format
+   loadFormat="$(gettext "%1.1f %% / %1.1f %% / %1.1f %%")"
+
    # shellcheck disable=SC2059
-   printf "$(gettext "%1.1f %% / %1.1f %% / %1.1f %%")\n" \
-      "${system_load_avg1min}" \
-      "${system_load_avg5min}" \
-      "${system_load_avg15min}"
+   add-table-row \
+      "$(gettext "Load (1/5/15 min):")" \
+      "$(printf "${loadFormat}\n" \
+         "${system_load_avg1min}" \
+         "${system_load_avg5min}" \
+         "${system_load_avg15min}"
+       )"
 
    # ------ Battery ---------------------------------------------------------
    if [ "${battery_list}" != "" ] ; then
-      print-utf8 -i "${indent}" "$(gettext "Battery:")"
+      local batterySummary=( )
       local battery
-      local statusVariable
-      local capacityVariable
-      local status
+      local batteryNumber=0
+      local batteryStatusVariable
+      local batteryCapacityVariable
+      local batteryStatus
+      local batteryCapacity
       local colorBattery
-      local capacity
-      local number=0
+      local separator=""
       for battery in ${battery_list} ; do
-         number=$((number+1))
-         if [ ${number} -gt 1 ] ; then
-            echo -n " / "
+         batteryNumber=$((batteryNumber+1))
+         if [ ${batteryNumber} -gt 1 ] ; then
+            separator=" |  "
          fi
-         statusVariable="battery_${battery}_status"
-         capacityVariable="battery_${battery}_capacity"
-         status="$(gettext "unknown")"
+         batteryStatusVariable="battery_${battery}_status"
+         batteryCapacityVariable="battery_${battery}_capacity"
+         batteryStatus="$(gettext "unknown")"
          colorBattery="${colorInactive}"
-         if [[ "${!statusVariable}" =~ ^[0-9]+$ ]] ; then
-            if [ "${!statusVariable}" -eq 1 ] ; then
-               status="$(gettext "not charging")"
+         if [[ "${!batteryStatusVariable}" =~ ^[0-9]+$ ]] ; then
+            if [ "${!batteryStatusVariable}" -eq 1 ] ; then
+               batteryStatus="$(gettext "not charging")"
                colorBattery="${colorBatteryNotCharging}"
-            elif [ "${!statusVariable}" -eq 2 ] ; then
-               status="$(gettext "charging")"
+            elif [ "${!batteryStatusVariable}" -eq 2 ] ; then
+               batteryStatus="$(gettext "charging")"
                colorBattery="${colorBatteryCharging}"
-            elif [ "${!statusVariable}" -eq 3 ] ; then
-               status="$(gettext "full")"
+            elif [ "${!batteryStatusVariable}" -eq 3 ] ; then
+               batteryStatus="$(gettext "full")"
                colorBattery="${colorBatteryFull}"
-            elif [ "${!statusVariable}" -eq 4 ] ; then
-               status="$(gettext "discharging")"
+            elif [ "${!batteryStatusVariable}" -eq 4 ] ; then
+               # shellcheck disable=SC2034
+               batteryStatus="$(gettext "discharging")"
                colorBattery="${colorBatteryDischarging}"
             fi
          fi
-         capacity="${!capacityVariable}"
-         # shellcheck disable=SC2059
-         printf "${colorBattery}$(gettext "#%u %s, %u %%")${colorBasic}" \
-            "${number}" \
-            "${status}" \
-            "${capacity}"
+         # shellcheck disable=SC2034
+         batteryCapacity="${!batteryCapacityVariable}"
+
+         batterySummary+=( "${separator}${colorBattery}$(eval_gettext \
+            "#\${batteryNumber} \${batteryStatus}, \${batteryCapacity} %")${colorBasic}" )
       done
-      echo
+
+      add-table-row \
+         "$(gettext "Battery:")" \
+         "${batterySummary[*]}"
    fi
 
    # ------ Memory ---------------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext "Used Memory:")"
+   # NOTE: Using strings (%s) for formatting, since this is easier to handle
+   #       by translation AI. Patterns like %'5.1f often fail to translate.
+
+   # xgettext: c-format
+   memoryFormat=$(gettext "%s MiB of %s MiB (%s MiB available: %s %%)")
+
    # shellcheck disable=SC2059
-   printf "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
-      "$((system_mem_used  / 1048576))" \
-      "$((system_mem_total / 1048576))" \
-      "$((system_mem_free  / 1048576))" \
-      "${system_mem_freepct}"
+   add-table-row \
+      "$(gettext "Used Memory:")" \
+      "$(printf "${memoryFormat}\n" \
+         "$(printf "%'6.0f" "$((system_mem_used  / 1048576))")" \
+         "$(printf "%'6.0f" "$((system_mem_total / 1048576))")" \
+         "$(printf "%'6.0f" "$((system_mem_free  / 1048576))")" \
+         "$(printf "%'5.1f" "${system_mem_freepct}")"
+       )"
    if [ "${system_swap_total}" != "" ] && [ "${system_swap_total}" -gt 0 ] ; then
-      print-utf8 -i "${indent}" "$(gettext "Used Swap:")"
+      # xgettext: c-format
+      swapFormat="$(gettext "%s MiB of %s MiB (%s MiB available: %s %%)")"
+
       # shellcheck disable=SC2059
-      printf "$(gettext "%'6.0f MiB of %'6.0f MiB (%'6.0f MiB available: %'5.1f %%)")\n" \
-      "$((system_swap_used  / 1048576))" \
-      "$((system_swap_total / 1048576))" \
-      "$((system_swap_free  / 1048576))" \
-      "${system_swap_freepct}"
+      add-table-row \
+         "$(gettext "Used Swap:")" \
+         "$(printf "${swapFormat}\n" \
+            "$(printf "%'6.0f" "$((system_swap_used  / 1048576))")" \
+            "$(printf "%'6.0f" "$((system_swap_total / 1048576))")" \
+            "$(printf "%'6.0f" "$((system_swap_free  / 1048576))")" \
+            "$(printf "%'5.1f" "${system_swap_freepct}")"
+          )"
    else
-      print-utf8 -i "${indent}" "$(gettext "Used Swap:")"
-      echo -e "${colorInactive}$(gettext "no swap available!")${colorBasic}"
+      add-table-row \
+         "$(gettext "Used Swap:")" \
+         "${colorInactive}$(gettext "no swap available!")${colorBasic}"
    fi
 
    # ------ Storage ---------------------------------------------------------
-   print-utf8 -i "${indent}" "$(gettext "Used Diskspace:")"
+   local diskSummary=( )
    local mountPointVariable
    local mountPointName
    local mountPoint
    local percentage
    local colorDisk
+   local separator
    for mountPointName in ${disk_list} ; do
       if [ "${mountPointName}" == "root" ] ; then
          mountPoint="/"
+         separator=""
       else
          mountPoint="/${mountPointName}"
-         echo -n ", "
+         separator=" |  "
       fi
       mountPointVariable="disk_${mountPointName}_pct"
       if [ -v "${mountPointVariable}" ] && [[ "${!mountPointVariable}" =~ ^([0-9]+) ]]; then
@@ -288,22 +408,25 @@ function print-system-information ()
          else
             colorDisk="${colorDiskNormal}"
          fi
+
+         # xgettext: c-format
          # shellcheck disable=SC2059
-         printf "${colorDisk}$(gettext "%1.0f %% on %s")${colorBasic}" \
+         diskSummary+=( "${separator}${colorDisk}$(printf "$(gettext "%1.0f %% on %s")" \
             "${!mountPointVariable}" \
-            "${mountPoint}"
+            "${lrm}${mountPoint}${rlm}")${colorBasic}" )
       fi
    done
-   echo
+   add-table-row \
+      "$(gettext "Used Diskspace:")" \
+      "${diskSummary[*]}"
 
    # ------ SSH Key Fingerprints --------------------------------------------
    print-ssh-key-fingerprints
 
    # ------ Network ---------------------------------------------------------
-   echo -en "${colorBasic}"
-   print-utf8 -n -i "${indent}" "$(gettext "Network:")"
-   local indentString
-   indentString="$(print-utf8 -i "${indent}" "")"
+   add-table-row \
+      "$(gettext "Network:")" ""
+
    for interface in ${netif_list} ; do
       local nameVariable="netif_${interface}_name"
       local flagsVariable="netif_${interface}_flags"
@@ -321,9 +444,7 @@ function print-system-information ()
             colorA="${colorInactive}"
             colorP="${colorInactive}"
          fi
-
          local ipv4
-         local ipv6
          if [ -v "${ipv4Variable}" ] ; then
             ipv4="${!ipv4Variable}"
             ipv4="${ipv4// /${colorA} }"
@@ -333,25 +454,27 @@ function print-system-information ()
          else
             ipv4="$(gettext "(No IPv4)")"
          fi
+         add-table-row "   ${rlm}${colorA}${!nameVariable}:" "${lrm}${ipv4}${colorA}"
+
          if [ -v "${ipv6Variable}" ] ; then
-            ipv6="${!ipv6Variable}"
-            ipv6="${ipv6// /${colorA} }"
-            ipv6="${ipv6//\//${colorP}\/}"
-            ipv6="${ipv6// /\\n${indentString}}"
-            ipv6="${ipv6//\// \/ }"
-            ipv6="${ipv6//%/%%}"
-            ipv6="\n${indentString}${ipv6}"
-         else
-            ipv6=""
+            local v6addrList=( "${!ipv6Variable}" )
+            local ipv6
+            # shellcheck disable=SC2068
+            for ipv6 in ${v6addrList[@]} ; do
+               ipv6="${ipv6// /${colorA} }"
+               ipv6="${ipv6//\//${colorP}\/}"
+               ipv6="${ipv6//\// \/ }"
+               ipv6="${ipv6//%/%%}"
+               add-table-row "" "${ipv6}${colorA}"
+            done
          fi
 
-         print-utf8 -i "${indent}" "   ${colorA}${!nameVariable}:"
-         echo -e "${ipv4}${colorA}${ipv6}${colorA}"
-
       fi
-
    done
 
+   # ------ Print the system information table ------------------------------
+   echo -en "${colorBasic}"
+   finish-table
    echo -en "${colorNone}"
 }
 
@@ -360,29 +483,28 @@ function print-system-information ()
 function print-ssh-key-fingerprints ()
 {
    if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
-      echo -en "${colorBasic}"
-      local number=1
-      local label
+      local keyNumber=1
       local keyInfo
-      find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print0 | sort -z | while IFS= read -r -d "" key ; do
+      local key
+      local label
+      while IFS= read -r -d "" key ; do
          if [[ ! "${key}" =~ _dsa_key.pub$ ]] ; then
             keyInfo="$(ssh-keygen -lf "$key" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g")"
             if [[ "${keyInfo}" =~ ^[A-Z]+ ]] ; then
-               if [ ${number} -eq 1 ] ; then
-                  label="$(gettext "SSH Keys:")"
+               if [ ${keyNumber} -eq 1 ] ; then
+                  label="$(gettext --context="The label of the field containing information about the SSH keys of the computer" "SSH Keys:")"
                else
                   label=""
                fi
-               print-utf8 -i "${indent}" "${label}"
-               # shellcheck disable=SC2059
-               printf "$(gettext "#%u %s")\n" \
-                  "${number}" \
-                  "${keyInfo}"
-               number=$((number+1))
+               add-table-row \
+                  "${label}" \
+                  "$(eval_pgettext "Combination of SSH key number (in variable \${keyNumber}) and SSH key information (in variable \${keyInfo}), e.g. '#3 SHA256:mcAJ7V/RbRzk89lkMx1rnA1qgiRWkMttHEiKvWJOBqU (RSA 16384)')" \
+                     "#\${keyNumber} \${keyInfo}"
+                  )"
+               keyNumber=$((keyNumber+1))
             fi
          fi
-      done
-      echo -en "${colorNone}"
+      done < <(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print0 | sort -z)
    fi
 }
 
@@ -422,6 +544,7 @@ if [[ $? -ne 0 ]]; then
 fi
 eval set -- "${options}"
 
+# shellcheck disable=SC2034
 now="$(date)"
 testSystemInfoInput=""
 scriptDirectories=( "/etc/system-info.d" "/usr/local/etc/system-info.d" )
