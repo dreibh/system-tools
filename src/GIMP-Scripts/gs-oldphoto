@@ -176,7 +176,7 @@ else
 fi
 
 # This script does not use fonts, or gradients/palettes/brushes:
-GIMP_OPTIONS="${GIMP_OPTIONS} --no-fonts --no-data"
+GIMP_OPTIONS="${GIMP_OPTIONS} --no-fonts"
 
 
 # ====== Call GIMP ==========================================================
