@@ -48,12 +48,12 @@ PREVIEW_WIDTH=768
 # ====== Generate input images ==============================================
 echo "Generating input images ..."
 if [ ! -e "figures/${INPUT1}.png" ] ; then
-   ./gs-resize-with-cropping "examples/${INPUT1}.jpeg" "figures/${INPUT1}.png" \
+   ./gs-resize-with-cropping "examples/${INPUT1}.webp" "figures/${INPUT1}.png" \
       --aspect 16:9 --width "${WIDTH}"
 fi
 gm identify "figures/${INPUT1}.png"
 if [ ! -e "figures/${INPUT2}.png" ] ; then
-   ./gs-resize-with-cropping "examples/${INPUT2}.jpeg" "figures/${INPUT2}.png" \
+   ./gs-resize-with-cropping "examples/${INPUT2}.webp" "figures/${INPUT2}.png" \
       --aspect keep --width "${WIDTH}"
 fi
 gm identify "figures/${INPUT2}.png"

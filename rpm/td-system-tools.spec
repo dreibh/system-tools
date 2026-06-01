@@ -402,9 +402,9 @@ This package contains some example input files for the testing the
 GIMP scripts.
 
 %files gimp-scripts-examples
-%{_datadir}/system-tools/gimp-scripts-examples/Bergen.jpeg
+%{_datadir}/system-tools/gimp-scripts-examples/Bergen.webp
 %{_datadir}/system-tools/gimp-scripts-examples/Fractal.fsf
-%{_datadir}/system-tools/gimp-scripts-examples/Portobello.jpeg
+%{_datadir}/system-tools/gimp-scripts-examples/Portobello.webp
 
 
 %package basic
