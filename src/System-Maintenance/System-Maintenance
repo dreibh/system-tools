@@ -125,13 +125,6 @@ trap 'rm -f "${installOutputFile}" "${fullPackageList}" "${packageVersionsFile}"
 
 installOutputFile="$(mktemp -t SystemMaintenance.install.XXXXXXXXXX.log)"
 
-# ====== dpkg package fixes =================================================
-if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Applying package fixes, if necessary ...")\x1b[0m"
-   sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a | sudo tee "${installOutputFile}"
-   cat "${installOutputFile}"
-fi
-
 # ====== Update package repositories ========================================
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating package repositories ...")\x1b[0m"
@@ -148,8 +141,14 @@ elif [ "${ID}" == "freebsd" ] ; then
    fi
 fi
 
-# ====== apt-get package fixes ==============================================
+# ====== Try to fix issues ==================================================
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
+   # ====== dpkg package fixes ==============================================
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Applying package fixes, if necessary ...")\x1b[0m"
+   sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a | sudo tee "${installOutputFile}" || true
+   cat "${installOutputFile}"
+
+   # ====== apt-get package fixes ===========================================
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing missing dependencies, if necessary ...")\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee "${installOutputFile}"

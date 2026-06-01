@@ -32,8 +32,8 @@
 set -euo pipefail
 
 
-INPUT1="examples/Bergen.jpeg"
-INPUT2="examples/Portobello.jpeg"
+INPUT1="examples/Bergen.webp"
+INPUT2="examples/Portobello.webp"
 INPUT3="examples/Fractal.png"
 
 
