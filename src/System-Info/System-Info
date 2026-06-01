@@ -352,7 +352,7 @@ function print-system-information ()
    #       by translation AI. Patterns like %'5.1f often fail to translate.
 
    # xgettext: c-format
-   memoryFormat=$(gettext --context="The printf format string to print the details about the system's memory (RAM) in MiB: used size, total size, available size and available size in percent. Example: '9969 MiB of  31941 MiB ( 21972 MiB available:  68.8 %)'" "%s MiB of %s MiB (%s MiB available: %s %%)")
+   memoryFormat=$(gettext --context="The printf format string to print the details about the memory (RAM or swap) in MiB: used size, total size, available size and available size in percent. Example: '9969 MiB of  31941 MiB ( 21972 MiB available:  68.8 %)'" "%s MiB of %s MiB (%s MiB available: %s %%)")
 
    # shellcheck disable=SC2059
    add-table-row \
@@ -364,13 +364,10 @@ function print-system-information ()
          "$(printf "%'5.1f" "${system_mem_freepct}")"
        )"
    if [ "${system_swap_total}" != "" ] && [ "${system_swap_total}" -gt 0 ] ; then
-      # xgettext: c-format
-      swapFormat="$(gettext --context="The printf format string to print the details about the system's swap space in MiB: used size, total size, available size and available size in percent. Example: '1317 MiB of   8191 MiB (  6874 MiB available:  83.9 %)'" "%s MiB of %s MiB (%s MiB available: %s %%)")"
-
       # shellcheck disable=SC2059
       add-table-row \
-         "$(gettext --context="The label of the field containing information about the used swap space of the computer" "Used Swap:")" \
-         "$(printf "${swapFormat}\n" \
+         "$(gettext "Used Swap:")" \
+         "$(printf "${memoryFormat}\n" \
             "$(printf "%'6.0f" "$((system_swap_used  / 1048576))")" \
             "$(printf "%'6.0f" "$((system_swap_total / 1048576))")" \
             "$(printf "%'6.0f" "$((system_swap_free  / 1048576))")" \
