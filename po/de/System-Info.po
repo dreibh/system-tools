@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-09 15:53+0200\n"
+"POT-Creation-Date: 2026-06-01 21:45+0200\n"
 "PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -177,24 +177,24 @@ msgstr "Netzwerk:"
 msgid "(No IPv4)"
 msgstr "(Kein IPv4)"
 
-#: src/System-Info/System-Info:371
+#: src/System-Info/System-Info:372
 msgid "SSH Keys:"
 msgstr "SSH-Schlüssel:"
 
-#: src/System-Info/System-Info:377
+#: src/System-Info/System-Info:378
 msgid "#%u %s"
 msgstr "%u. %s"
 
-#: src/System-Info/System-Info:391
+#: src/System-Info/System-Info:393
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/System-Info/System-Info:440
+#: src/System-Info/System-Info:442
 #, sh-format
 msgid "ERROR: Unable to find input file ${testSystemInfoInput}!"
 msgstr "FEHLER: Eingabedatei ${testSystemInfoInput} wurde nicht gefunden!"
 
-#: src/System-Info/System-Info:471
+#: src/System-Info/System-Info:473
 #, sh-format
 msgid "System information on ${now}"
 msgstr "Systeminformation am ${now}"
