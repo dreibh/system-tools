@@ -175,7 +175,7 @@ else
 fi
 
 # This script does not use gradients/palettes/brushes:
-GIMP_OPTIONS="${GIMP_OPTIONS} --no-data"
+GIMP_OPTIONS="${GIMP_OPTIONS}"
 
 
 # ====== Call GIMP ==========================================================
