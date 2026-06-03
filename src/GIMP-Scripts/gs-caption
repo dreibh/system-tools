@@ -174,9 +174,6 @@ else
    GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 fi
 
-# This script does not use gradients/palettes/brushes:
-GIMP_OPTIONS="${GIMP_OPTIONS}"
-
 
 # ====== Call GIMP ==========================================================
 rm -f "${OUTPUT_FILENAME}"
