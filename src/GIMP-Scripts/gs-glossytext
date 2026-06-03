@@ -733,7 +733,7 @@ rm -f "${OUTPUT_FILENAME}"
       (set! font "${FONT_NAME}"))
    ; (newline) (display "font=") (display font) (newline)
    (if (and (not (defined? 'gimp-image-get-active-layer)) (= font -1)) (
-      (gimp-message "ERROR: Font \"${FONT_NAME}\" is not available! Check installed fonts using fc-list!")
+      (gimp-message "ERROR: Font \"${FONT_NAME}\" is not available! Check installed fonts with gs-list-fonts!")
       (quit FALSE)
    ))
 
