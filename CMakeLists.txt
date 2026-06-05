@@ -92,22 +92,12 @@ ENDIF()
 
 IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
-
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
-   # LIST(APPEND CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include")
-   # LIST(APPEND CMAKE_LIBRARY_PATH "/usr/local/lib")
-   # INCLUDE_DIRECTORIES("/usr/local/include")
-
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
-   # LIST(APPEND CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include" "/usr/local/opt/openssl/include")
-   # LIST(APPEND CMAKE_LIBRARY_PATH "/usr/local/lib")
-   # INCLUDE_DIRECTORIES("/usr/local/include" "/usr/local/opt/openssl/include")
-
 ELSE()
    MESSAGE(FATAL_ERROR "${CMAKE_SYSTEM_NAME} not supported (yet?)")
-
 ENDIF()
 
 
@@ -160,13 +150,6 @@ ENDIF()
 IF (WITH_GIMP_SCRIPTS_EXAMPLES AND NOT WITH_GIMP_SCRIPTS)
    MESSAGE(FATAL_ERROR "WITH_GIMP_SCRIPTS_EXAMPLES requires WITH_GIMP_SCRIPTS!")
 ENDIF()
-
-
-#############################################################################
-#### COMPILER OPTIONS                                                    ####
-#############################################################################
-
-ADD_COMPILE_OPTIONS(-Wall -Wextra -Wpedantic -Wsign-conversion)
 
 
 #############################################################################

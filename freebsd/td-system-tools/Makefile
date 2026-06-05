@@ -17,8 +17,6 @@ USES=		cmake gettext shebangfix tar:xz
 
 SHEBANG_FILES=	src/X509/generate-test-certificates
 
-CMAKE_ARGS=	-DCMAKE_INSTALL_MANDIR=${PREFIX}/share/man
-
 CFLAGS+=	-std=c23
 
 OPTIONS_DEFINE=				CONFIGURE_GRUB \
@@ -26,13 +24,14 @@ OPTIONS_DEFINE=				CONFIGURE_GRUB \
 					GET_SYSTEM_INFO \
 					GIMP_SCRIPTS \
 					GIMP_SCRIPTS_EXAMPLES \
-					I18N PRINT_\
-					UTF8 RANDOM_SLEEP \
+					NLS \
+					PRINT_UTF8 \
+					RANDOM_SLEEP \
 					RESET_MACHINE_ID \
 					SYSTEM_INFO \
 					SYSTEM_INFO_DEFAULT_BANNER \
+					SYSTEM_INFO_EXAMPLES \
 					SYSTEM_INFO_IN_PROFILES \
-					SYSTEM_INFO_EXAMPLES\
 					SYSTEM_MAINTENANCE \
 					TEXT_BLOCK \
 					TRY_HARD \
@@ -45,14 +44,14 @@ OPTIONS_SUB=				yes
 CONFIGURE_GRUB_DESC=			Include Configure-GRUB
 FINGERPRINT_SSH_KEYS_DESC=		Include Fingerprint-SSH-Keys
 GET_SYSTEM_INFO_DESC=			Include get-system-info
-I18N_DESC=				Build with Internationalization (i18n) support
+NLS_DESC=				Build with Internationalization (i18n) support
 PRINT_UTF8_DESC=			Include Print-UTF8
 RANDOM_SLEEP_DESC=			Include Random-Sleep
 RESET_MACHINE_ID_DESC=			Include Reset-Machine-ID
 SYSTEM_INFO_DESC=			Include System-Info
-SYSTEM_INFO_DEFAULT_BANNER=		Include System-Info Default Banner
-SYSTEM_INFO_IN_PROFILES=		Include System-Info in Profiles
-SYSTEM_INFO_EXAMPLES=			Include System-Info Examples
+SYSTEM_INFO_DEFAULT_BANNER_DESC=	Include System-Info Default Banner
+SYSTEM_INFO_IN_PROFILES_DESC=		Include System-Info in Profiles
+SYSTEM_INFO_EXAMPLES_DESC=		Include System-Info Examples
 SYSTEM_MAINTENANCE_DESC=		Include System-Maintenance
 TEXT_BLOCK_DESC=			Include Text-Block
 TRY_HARD_DESC=				Include Try-Hard
@@ -89,6 +88,7 @@ SYSTEM_INFO_IN_PROFILES_CMAKE_BOOL=	WITH_SYSTEM_INFO_IN_PROFILES
 SYSTEM_INFO_IN_PROFILES_IMPLIES=	SYSTEM_INFO
 
 SYSTEM_INFO_EXAMPLES_CMAKE_BOOL=	WITH_SYSTEM_INFO_EXAMPLES
+SYSTEM_INFO_EXAMPLES_IMPLIES=		SYSTEM_INFO
 
 SYSTEM_MAINTENANCE_CMAKE_BOOL=		WITH_SYSTEM_MAINTENANCE
 SYSTEM_MAINTENANCE_USES=		sudo
@@ -114,5 +114,6 @@ GIMP_SCRIPTS_RUN_DEPENDS=		fc-list:x11-fonts/fontconfig \
 					opensans-ttf>0:x11-fonts/opensans-ttf
 
 GIMP_SCRIPTS_EXAMPLES_CMAKE_BOOL=	WITH_GIMP_SCRIPTS_EXAMPLES
+GIMP_SCRIPTS_EXAMPLES_IMPLIES=		GIMP_SCRIPTS
 
 .include <bsd.port.mk>
