@@ -90,23 +90,23 @@ ENDIF()
 #### OS DEPENDENT                                                        ####
 #############################################################################
 
-IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-   MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
+IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
+   MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
 
-ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
-   MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
-   SET(CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include")
-   SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+   MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
+   LIST(APPEND CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include")
+   LIST(APPEND CMAKE_LIBRARY_PATH "/usr/local/lib")
    INCLUDE_DIRECTORIES("/usr/local/include")
 
-ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-   MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
-   SET(CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include" "/usr/local/opt/openssl/include")
-   SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+   MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
+   LIST(APPEND CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include" "/usr/local/opt/openssl/include")
+   LIST(APPEND CMAKE_LIBRARY_PATH "/usr/local/lib")
    INCLUDE_DIRECTORIES("/usr/local/include" "/usr/local/opt/openssl/include")
 
 ELSE()
-   MESSAGE(FATAL_ERROR ${CMAKE_SYSTEM_NAME} " not supported (yet?)")
+   MESSAGE(FATAL_ERROR "${CMAKE_SYSTEM_NAME} not supported (yet?)")
 
 ENDIF()
 
@@ -140,21 +140,30 @@ IF (WITH_SYSTEM_INFO AND NOT (WITH_GET_SYSTEM_INFO AND WITH_PRINT_UTF8))
    MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO requires WITH_GET_SYSTEM_INFO and WITH_PRINT_UTF8!")
 ENDIF()
 IF (WITH_SYSTEM_INFO_IN_PROFILES AND NOT WITH_SYSTEM_INFO)
-   MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO_IN_PROFILES requires WITH_SYSTEM_INFO")
+   MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO_IN_PROFILES requires WITH_SYSTEM_INFO!")
 ENDIF()
 IF (WITH_SYSTEM_INFO_DEFAULT_BANNER AND NOT WITH_SYSTEM_INFO)
-   MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO_DEFAULT_BANNER requires WITH_SYSTEM_INFO")
+   MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO_DEFAULT_BANNER requires WITH_SYSTEM_INFO!")
 ENDIF()
-IF (WITH_X509_TOOLS_INFO AND NOT (WITH_PRINT_UTF8 AND WITH_TEXT_BLOCK))
-   MESSAGE(FATAL_ERROR "WITH_X509_TOOLS requires WITH_PRINT_UTF8 and WITH_TEXT_BLOCK!")
+IF (WITH_SYSTEM_INFO_EXAMPLES AND NOT WITH_SYSTEM_INFO)
+   MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO_EXAMPLES requires WITH_SYSTEM_INFO!")
 ENDIF()
+
 IF (WITH_TRY_HARD AND NOT WITH_RANDOM_SLEEP)
    MESSAGE(FATAL_ERROR "WITH_TRY_HARD requires WITH_RANDOM_SLEEP!")
 ENDIF()
 
+IF (WITH_X509_TOOLS AND NOT (WITH_PRINT_UTF8 AND WITH_TEXT_BLOCK))
+   MESSAGE(FATAL_ERROR "WITH_X509_TOOLS requires WITH_PRINT_UTF8 and WITH_TEXT_BLOCK!")
+ENDIF()
+
+IF (WITH_GIMP_SCRIPTS_EXAMPLES AND NOT WITH_GIMP_SCRIPTS)
+   MESSAGE(FATAL_ERROR "WITH_GIMP_SCRIPTS_EXAMPLES requires WITH_GIMP_SCRIPTS!")
+ENDIF()
+
 
 #############################################################################
-#### INTERNATIONALISATION (I18N)                                         ####
+#### COMPILER OPTIONS                                                    ####
 #############################################################################
 
 ADD_COMPILE_OPTIONS(-Wall -Wextra -Wpedantic -Wsign-conversion)
@@ -169,11 +178,9 @@ IF (WITH_I18N)
    FIND_PACKAGE(Intl)
    IF (Intl_FOUND)
       MESSAGE(STATUS "Internationalization (i18n) support found:")
-      MESSAGE(STATUS " INTL_INCLUDE_DIRS: ${Intl_INCLUDE_DIRS}")
-      MESSAGE(STATUS " INTL_LIBRARIES: ${Intl_LIBRARIES}")
-      MESSAGE(STATUS " Version: ${Intl_VERSION}")
-      INCLUDE_DIRECTORIES(${Intl_INCLUDE_DIRS})
-      LINK_DIRECTORIES(${Intl_LIBRARY_DIRS})
+      MESSAGE(STATUS " Intl_INCLUDE_DIRS: ${Intl_INCLUDE_DIRS}")
+      MESSAGE(STATUS " Intl_LIBRARIES:    ${Intl_LIBRARIES}")
+      MESSAGE(STATUS " Version:           ${Intl_VERSION}")
    ELSE()
       MESSAGE(FATAL_ERROR
             " Cannot find Internationalization (i18n) support! Try:\n"

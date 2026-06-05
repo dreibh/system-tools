@@ -44,7 +44,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 #### SUBDIRECTORIES                                                      ####
 #############################################################################
 
-IF (WITH_SYSTEM_INFO OR WITH_SYSTEM_INFO_EXAMPLES OR WITH_GET_SYSTEM_INFO)
+IF (WITH_SYSTEM_INFO OR WITH_GET_SYSTEM_INFO)
    ADD_SUBDIRECTORY(System-Info)
 ENDIF()
 
