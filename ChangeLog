@@ -1,3 +1,76 @@
+commit b763d51e1abe8d923dd2d1b4446fec15e87fe1ac
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 17:54:00 2026 +0200
+
+    Minor clean-ups of the FreeBSD port Makefile.
+
+commit 780ab09165ea0d2063b2466df2012a75cd1b9faa
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 17:44:12 2026 +0200
+
+    Improved FreeBSD port.
+
+commit 540628593c814e878693a7488ddb8ac72ac1454d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 17:23:14 2026 +0200
+
+    Further CMakeLists.txt clean-ups.
+
+commit 297b039fdfb4a78a5e6388da7529ec26ef0e951e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 17:18:22 2026 +0200
+
+    Improved CMakeLists.txt.
+
+commit 1a62a062b2e2cc5a125c38225bb378a39cbb37af
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 16:46:58 2026 +0200
+
+    Improved CMakeLists.txt.
+
+commit a77707f953551878d2e28fdab2b0d87c7fefc3d6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 16:40:47 2026 +0200
+
+    Improved FreeBSD port.
+
+commit 792eef10a87146d7b60ef3452b5cbe764d01229a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 16:35:07 2026 +0200
+
+    Improved build configuration options.
+
+commit 1db48e02290abd3ea54ce501b4e6914a9c1ae188
+Merge: 23239b2 4410ee2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 3 22:07:30 2026 +0200
+
+    Merge branch 'master' of github.com:dreibh/system-tools
+
+commit 23239b27099e76fe880881334408296cbef546c6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 3 22:07:06 2026 +0200
+
+    Improved error message.
+
+commit 4410ee2ffd4c63c0ec0434dd40b3beec9e171d22
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 2 18:34:50 2026 +0200
+
+    Minor clean-up.
+
+commit e01d44c702b4f28fb2039e3e898ea9bcab9be61b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 2 18:33:30 2026 +0200
+
+    Bugfix: GS-Test-GIMP needs to fully initialise a new directory, including fonts cache.
+
+commit 329ba21a4ecff98c31d6a6a00136aea5d0c6ff27
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 23:55:18 2026 +0200
+
+    New release td-system-tools-2.7.2.
+
 commit 994fb97f99e44cc2ac7311595b8701e73420d862
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon Jun 1 23:29:13 2026 +0200
