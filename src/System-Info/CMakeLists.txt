@@ -61,11 +61,16 @@ ENDIF()
 #############################################################################
 
 IF (WITH_SYSTEM_INFO)
-   INSTALL(PROGRAMS system-info.d/01-example    DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-info.d)
    INSTALL(PROGRAMS system-info.d/banner-helper DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-info.d)
 
-   INSTALL(FILES profile.d/system-info.sh  DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/profile.d)
-   INSTALL(FILES profile.d/system-info.csh DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/profile.d)
+   IF (WITH_SYSTEM_INFO_DEFAULT_BANNER)
+      INSTALL(PROGRAMS system-info.d/01-example DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-info.d)
+   ENDIF()
+
+   IF (WITH_SYSTEM_INFO_IN_PROFILES)
+      INSTALL(FILES profile.d/system-info.sh    DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/profile.d)
+      INSTALL(FILES profile.d/system-info.csh   DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/profile.d)
+   ENDIF()
 ENDIF()
 
 
@@ -73,7 +78,7 @@ ENDIF()
 #### EXAMPLES                                                            ####
 #############################################################################
 
-IF (WITH_SYSTEM_INFO)
+IF (WITH_SYSTEM_INFO_EXAMPLES)
    INSTALL(PROGRAMS system-info.d/01-example              DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
    INSTALL(PROGRAMS system-info.d/09-hostname-example     DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
    INSTALL(PROGRAMS system-info.d/10-company-logo-example DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
