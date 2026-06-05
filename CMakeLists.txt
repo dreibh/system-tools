@@ -95,15 +95,15 @@ IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
 
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
-   LIST(APPEND CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include")
-   LIST(APPEND CMAKE_LIBRARY_PATH "/usr/local/lib")
-   INCLUDE_DIRECTORIES("/usr/local/include")
+   # LIST(APPEND CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include")
+   # LIST(APPEND CMAKE_LIBRARY_PATH "/usr/local/lib")
+   # INCLUDE_DIRECTORIES("/usr/local/include")
 
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
-   LIST(APPEND CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include" "/usr/local/opt/openssl/include")
-   LIST(APPEND CMAKE_LIBRARY_PATH "/usr/local/lib")
-   INCLUDE_DIRECTORIES("/usr/local/include" "/usr/local/opt/openssl/include")
+   # LIST(APPEND CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include" "/usr/local/opt/openssl/include")
+   # LIST(APPEND CMAKE_LIBRARY_PATH "/usr/local/lib")
+   # INCLUDE_DIRECTORIES("/usr/local/include" "/usr/local/opt/openssl/include")
 
 ELSE()
    MESSAGE(FATAL_ERROR "${CMAKE_SYSTEM_NAME} not supported (yet?)")
@@ -167,7 +167,6 @@ ENDIF()
 #############################################################################
 
 ADD_COMPILE_OPTIONS(-Wall -Wextra -Wpedantic -Wsign-conversion)
-ADD_DEFINITIONS(-D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64)
 
 
 #############################################################################
