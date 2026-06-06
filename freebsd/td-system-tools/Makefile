@@ -1,5 +1,5 @@
 PORTNAME=	td-system-tools
-DISTVERSION=	2.7.1
+DISTVERSION=	2.7.3
 CATEGORIES=	net
 MASTER_SITES=	https://www.nntb.no/~dreibh/system-tools/download/
 
@@ -15,10 +15,6 @@ RUN_DEPENDS=	bash:shells/bash \
 
 USES=		cmake gettext shebangfix tar:xz
 
-SHEBANG_FILES=	src/X509/generate-test-certificates
-
-CMAKE_ARGS=	-DCMAKE_INSTALL_MANDIR=${PREFIX}/share/man
-
 CFLAGS+=	-std=c23
 
 OPTIONS_DEFINE=				CONFIGURE_GRUB \
@@ -26,10 +22,14 @@ OPTIONS_DEFINE=				CONFIGURE_GRUB \
 					GET_SYSTEM_INFO \
 					GIMP_SCRIPTS \
 					GIMP_SCRIPTS_EXAMPLES \
-					I18N PRINT_\
-					UTF8 RANDOM_SLEEP \
+					NLS \
+					PRINT_UTF8 \
+					RANDOM_SLEEP \
 					RESET_MACHINE_ID \
 					SYSTEM_INFO \
+					SYSTEM_INFO_DEFAULT_BANNER \
+					SYSTEM_INFO_EXAMPLES \
+					SYSTEM_INFO_IN_PROFILES \
 					SYSTEM_MAINTENANCE \
 					TEXT_BLOCK \
 					TRY_HARD \
@@ -42,24 +42,37 @@ OPTIONS_SUB=				yes
 CONFIGURE_GRUB_DESC=			Include Configure-GRUB
 FINGERPRINT_SSH_KEYS_DESC=		Include Fingerprint-SSH-Keys
 GET_SYSTEM_INFO_DESC=			Include get-system-info
-I18N_DESC=				Build with Internationalization (i18n) support
+GIMP_SCRIPTS_DESC=			Include GIMP-Scripts
+GIMP_SCRIPTS_EXAMPLES_DESC=		Include GIMP-Scripts example files
+NLS_DESC=				Build with Internationalization (i18n) support
 PRINT_UTF8_DESC=			Include Print-UTF8
 RANDOM_SLEEP_DESC=			Include Random-Sleep
 RESET_MACHINE_ID_DESC=			Include Reset-Machine-ID
 SYSTEM_INFO_DESC=			Include System-Info
+SYSTEM_INFO_DEFAULT_BANNER_DESC=	Include System-Info Default Banner
+SYSTEM_INFO_EXAMPLES_DESC=		Include System-Info Examples
+SYSTEM_INFO_IN_PROFILES_DESC=		Include System-Info in Profiles
 SYSTEM_MAINTENANCE_DESC=		Include System-Maintenance
 TEXT_BLOCK_DESC=			Include Text-Block
 TRY_HARD_DESC=				Include Try-Hard
 UNIX_TIMESTAMP_TOOLS_DESC=		Include Unix-Timestamp Tools
 X509_TOOLS_DESC=			Include X.509 Tools
-GIMP_SCRIPTS_DESC=			Include GIMP-Scripts
-GIMP_SCRIPTS_EXAMPLES_DESC=		Include GIMP-Scripts example files
 
 CONFIGURE_GRUB_CMAKE_BOOL=		WITH_CONFIGURE_GRUB
 
 FINGERPRINT_SSH_KEYS_CMAKE_BOOL=	WITH_FINGERPRINT_SSH_KEYS
 
 GET_SYSTEM_INFO_CMAKE_BOOL=		WITH_GET_SYSTEM_INFO
+
+GIMP_SCRIPTS_CMAKE_BOOL=		WITH_GIMP_SCRIPTS
+GIMP_SCRIPTS_RUN_DEPENDS=		fc-list:x11-fonts/fontconfig \
+					gimp:graphics/gimp3-app \
+					gm:graphics/GraphicsMagick \
+					noto-basic>0:x11-fonts/noto-basic \
+					opensans-ttf>0:x11-fonts/opensans-ttf
+
+GIMP_SCRIPTS_EXAMPLES_CMAKE_BOOL=	WITH_GIMP_SCRIPTS_EXAMPLES
+GIMP_SCRIPTS_EXAMPLES_IMPLIES=		GIMP_SCRIPTS
 
 NLS_CMAKE_BOOL=				WITH_I18N
 
@@ -76,6 +89,15 @@ SYSTEM_INFO_RUN_DEPENDS=		figlet:misc/figlet \
 SYSTEM_INFO_IMPLIES=			GET_SYSTEM_INFO \
 					PRINT_UTF8
 
+SYSTEM_INFO_DEFAULT_BANNER_CMAKE_BOOL=	WITH_SYSTEM_INFO_DEFAULT_BANNER
+SYSTEM_INFO_DEFAULT_BANNER_IMPLIES=	SYSTEM_INFO
+
+SYSTEM_INFO_EXAMPLES_CMAKE_BOOL=	WITH_SYSTEM_INFO_EXAMPLES
+SYSTEM_INFO_EXAMPLES_IMPLIES=		SYSTEM_INFO
+
+SYSTEM_INFO_IN_PROFILES_CMAKE_BOOL=	WITH_SYSTEM_INFO_IN_PROFILES
+SYSTEM_INFO_IN_PROFILES_IMPLIES=	SYSTEM_INFO
+
 SYSTEM_MAINTENANCE_CMAKE_BOOL=		WITH_SYSTEM_MAINTENANCE
 SYSTEM_MAINTENANCE_USES=		sudo
 
@@ -91,14 +113,6 @@ X509_TOOLS_RUN_DEPENDS=			mbuffer:misc/mbuffer
 X509_TOOLS_USES=			python ssl:run
 X509_TOOLS_IMPLIES=			PRINT_UTF8 \
 					TEXT_BLOCK
-
-GIMP_SCRIPTS_CMAKE_BOOL=		WITH_GIMP_SCRIPTS
-GIMP_SCRIPTS_RUN_DEPENDS=		fc-list:x11-fonts/fontconfig \
-					gimp:graphics/gimp3-app \
-					gm:graphics/GraphicsMagick \
-					noto-basic>0:x11-fonts/noto-basic \
-					opensans-ttf>0:x11-fonts/opensans-ttf
-
-GIMP_SCRIPTS_EXAMPLES_CMAKE_BOOL=	WITH_GIMP_SCRIPTS_EXAMPLES
+X509_TOOLS_VARS=			SHEBANG_FILES+=src/X509/generate-test-certificates
 
 .include <bsd.port.mk>

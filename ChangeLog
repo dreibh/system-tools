@@ -1,3 +1,230 @@
+commit b763d51e1abe8d923dd2d1b4446fec15e87fe1ac
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 17:54:00 2026 +0200
+
+    Minor clean-ups of the FreeBSD port Makefile.
+
+commit 780ab09165ea0d2063b2466df2012a75cd1b9faa
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 17:44:12 2026 +0200
+
+    Improved FreeBSD port.
+
+commit 540628593c814e878693a7488ddb8ac72ac1454d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 17:23:14 2026 +0200
+
+    Further CMakeLists.txt clean-ups.
+
+commit 297b039fdfb4a78a5e6388da7529ec26ef0e951e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 17:18:22 2026 +0200
+
+    Improved CMakeLists.txt.
+
+commit 1a62a062b2e2cc5a125c38225bb378a39cbb37af
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 16:46:58 2026 +0200
+
+    Improved CMakeLists.txt.
+
+commit a77707f953551878d2e28fdab2b0d87c7fefc3d6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 16:40:47 2026 +0200
+
+    Improved FreeBSD port.
+
+commit 792eef10a87146d7b60ef3452b5cbe764d01229a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 16:35:07 2026 +0200
+
+    Improved build configuration options.
+
+commit 1db48e02290abd3ea54ce501b4e6914a9c1ae188
+Merge: 23239b2 4410ee2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 3 22:07:30 2026 +0200
+
+    Merge branch 'master' of github.com:dreibh/system-tools
+
+commit 23239b27099e76fe880881334408296cbef546c6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 3 22:07:06 2026 +0200
+
+    Improved error message.
+
+commit 4410ee2ffd4c63c0ec0434dd40b3beec9e171d22
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 2 18:34:50 2026 +0200
+
+    Minor clean-up.
+
+commit e01d44c702b4f28fb2039e3e898ea9bcab9be61b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 2 18:33:30 2026 +0200
+
+    Bugfix: GS-Test-GIMP needs to fully initialise a new directory, including fonts cache.
+
+commit 329ba21a4ecff98c31d6a6a00136aea5d0c6ff27
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 23:55:18 2026 +0200
+
+    New release td-system-tools-2.7.2.
+
+commit 994fb97f99e44cc2ac7311595b8701e73420d862
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 23:29:13 2026 +0200
+
+    Debian test now working again with latest scripts and examples.
+
+commit 65dd892f0164e72200aed223c10ca28d411e1b31
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 23:27:58 2026 +0200
+
+    Bugfix: removed --no-data option from GIMP call, since data is needed (Debian unstable).
+
+commit d902ba5bd0146d069bb35a7f9a95de8f1b2c574d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 22:59:44 2026 +0200
+
+    Yet another PO file update.
+
+commit 84718b1d1c13bfdcf2efeda85588b3d894ec835e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 22:54:37 2026 +0200
+
+    A gettext fix.
+
+commit 42162543e30c20562db61ba0eec74909a5b5fa99
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 22:48:01 2026 +0200
+
+    Updated Debian test script.
+
+commit 995596d433e05313a3c27ee65d057c75c294441b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 22:45:58 2026 +0200
+
+    Updated PO files.
+
+commit cd6f136802cfe7da7bb4d50b60d9b70ce4e4bc8b
+Merge: 1cbc7ed 39cc85d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 22:44:22 2026 +0200
+
+    Merge branch 'master' into dreibh/c23
+
+commit 1cbc7ed0383a04e7623ae8189d4bda95c0d32ff8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 22:43:21 2026 +0200
+
+    Further clean-ups.
+
+commit 3c3dbef43b3c57b9a9aa6f85cb4921120f3365c1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 22:30:40 2026 +0200
+
+    Improved System-Info's table formatting. RTL output should also work now.
+
+commit 39cc85dd82e730abb404454ea3c57ce508715073
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 21:45:30 2026 +0200
+
+    Updated PO files.
+
+commit 6477bc7bdd59c402745e8f5a2795cec4c8936cef
+Merge: 7659acc 2d4acb4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 21:02:19 2026 +0200
+
+    Merge branch 'dreibh/c23'
+
+commit 7659acce65ad66a2a2655c57d58f9d8e168903a1
+Merge: 4332ed7 f332a2d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 21:02:12 2026 +0200
+
+    Merge branch 'dreibh/gimp-scripts'
+
+commit f332a2d000306942c189fb9f6e7ae2bad0fc6bbf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 21:00:34 2026 +0200
+
+    Updated GIMP-Scripts examples. Now using WebP to reduce the size.
+
+commit 2d4acb424f301d229d4a2480c81a3218bc69895c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 19:11:05 2026 +0200
+
+    APT handling improvements.
+
+commit 3fdaf13ffb97dc993d64c430357955b0768f5e6e
+Merge: d32a3ac e703665
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 18:56:22 2026 +0200
+
+    Merge branch 'master' into dreibh/c23
+
+commit e703665c044e90dbaebd52e100c0ecf87dd1760e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 18:54:33 2026 +0200
+
+    Improved FreeBSD port.
+
+commit d32a3acd25bf8d4607b8b499425812afadaa19b2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 18:54:02 2026 +0200
+
+    Improved CMakeFiles.
+
+commit ed57b01db0bf6a82ad298b969ddf50348ecfc983
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 18:39:12 2026 +0200
+
+    Bugfix: Do not try to print deprecated DSA keys.
+
+commit bc2abf3b1230794cac36fa13d3f3c4c16f9ed30f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 18:28:56 2026 +0200
+
+    Added fallback for LC_CTYPE issues on Ubuntu and Debian when /etc/default/locale is not defined.
+
+commit a78beab0411d62d8e5798ecbd51574e172924ae7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 1 18:13:13 2026 +0200
+
+    Improved FreeBSD port.
+
+commit 2c4274541a5f890066aaef5ddcdc0df313f13258
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 22:51:01 2026 +0200
+
+    Some more testing with Clang and GCC C23.
+
+commit e8e18b38f2c63dddb0f744fbe1be164764630e56
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 22:42:52 2026 +0200
+
+    Some code clean-ups for building properly with C23 compiler.
+
+commit 4332ed73d4e966a5b4d35794f0ba975f1eb14024
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 21:55:20 2026 +0200
+
+    Dependency fix.
+
+commit 7f58cff69ed21c7fea77c2833ed772b2a88a6325
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 18:10:59 2026 +0200
+
+    Updated FreeBSD port.
+
+commit 3e6154e1d28b5afc80ac4f4d11d02ee446700a92
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun May 31 17:44:09 2026 +0200
+
+    New release td-system-tools-2.7.1.
+
 commit 4d3d1915a8df0fd7f79febdd7e101491a57723c5
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sun May 31 17:39:02 2026 +0200

@@ -106,7 +106,7 @@ function finish-table()
          indent="${width}"
       fi
    done
-   indent=-$((indent + 2))
+   indent=-$((indent + 1))
 
    # ====== Print table rows ================================================
    for ((i=0; i < ${#tableColumnLabels[@]}; i++)) ; do

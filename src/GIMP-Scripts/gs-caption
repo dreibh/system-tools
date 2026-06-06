@@ -174,9 +174,6 @@ else
    GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 fi
 
-# This script does not use gradients/palettes/brushes:
-GIMP_OPTIONS="${GIMP_OPTIONS}"
-
 
 # ====== Call GIMP ==========================================================
 rm -f "${OUTPUT_FILENAME}"
@@ -221,7 +218,7 @@ rm -f "${OUTPUT_FILENAME}"
       (set! captionFont "${FONT_NAME}"))
    ; (newline) (display "captionFont=") (display captionFont) (newline)
    (if (and (not (defined? 'gimp-image-get-active-layer)) (= captionFont -1)) (
-      (gimp-message "ERROR: Font \"${FONT_NAME}\" is not available! Check installed fonts with fc-list!")
+      (gimp-message "ERROR: Font \"${FONT_NAME}\" is not available! Check installed fonts with gs-list-fonts!")
       (quit FALSE)
    ))
 

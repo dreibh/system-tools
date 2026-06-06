@@ -28,13 +28,13 @@
 # Contact: dreibh@simula.no
 
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 PROJECT(td-system-tools)
 ENABLE_LANGUAGE(C)
 
 SET(BUILD_MAJOR "2")
 SET(BUILD_MINOR "7")
-SET(BUILD_PATCH "1")
+SET(BUILD_PATCH "3")
 SET(BUILD_VERSION ${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH})
 
 
@@ -90,24 +90,14 @@ ENDIF()
 #### OS DEPENDENT                                                        ####
 #############################################################################
 
-IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-   MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
-
-ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
-   MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
-   SET(CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include")
-   SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
-   INCLUDE_DIRECTORIES("/usr/local/include")
-
-ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-   MESSAGE(STATUS ${CMAKE_SYSTEM_NAME} " supported")
-   SET(CMAKE_REQUIRED_INCLUDES "/usr/local/include" "/usr/include" "/usr/local/opt/openssl/include")
-   SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
-   INCLUDE_DIRECTORIES("/usr/local/include" "/usr/local/opt/openssl/include")
-
+IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
+   MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+   MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+   MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
 ELSE()
-   MESSAGE(FATAL_ERROR ${CMAKE_SYSTEM_NAME} " not supported (yet?)")
-
+   MESSAGE(FATAL_ERROR "${CMAKE_SYSTEM_NAME} not supported (yet?)")
 ENDIF()
 
 
@@ -115,40 +105,51 @@ ENDIF()
 #### OPTIONS                                                             ####
 #############################################################################
 
-OPTION(WITH_I18N "Build with Internationalization (i18n) support" 1)
+OPTION(WITH_I18N "Build with Internationalization (i18n) support"           ON)
 
-OPTION(WITH_SYSTEM_INFO           "Include System-Info"          1)
-OPTION(WITH_GET_SYSTEM_INFO       "Include get-system-info"      1)
-OPTION(WITH_SYSTEM_MAINTENANCE    "Include System-Maintenance"   1)
-OPTION(WITH_PRINT_UTF8            "Include Print-UTF8"           1)
-OPTION(WITH_TEXT_BLOCK            "Include Text-Block"           1)
-OPTION(WITH_FINGERPRINT_SSH_KEYS  "Include Fingerprint-SSH-Keys" 1)
-OPTION(WITH_CONFIGURE_GRUB        "Include Configure-GRUB"       1)
-OPTION(WITH_RESET_MACHINE_ID      "Include Reset-Machine-ID"     1)
-OPTION(WITH_TRY_HARD              "Include Try-Hard"             1)
-OPTION(WITH_RANDOM_SLEEP          "Include Random-Sleep"         1)
-OPTION(WITH_UNIX_TIMESTAMP_TOOLS  "Include Unix-Timestamp Tools" 1)
-OPTION(WITH_X509_TOOLS            "Include X.509 Tools"          1)
-OPTION(WITH_GIMP_SCRIPTS          "Include GIMP-Scripts"         1)
-OPTION(WITH_GIMP_SCRIPTS_EXAMPLES "Include GIMP-Scripts"         1)
+OPTION(WITH_SYSTEM_INFO                "Include System-Info"                ON)
+OPTION(WITH_SYSTEM_INFO_DEFAULT_BANNER "Include System-Info Default Banner" ON)
+OPTION(WITH_SYSTEM_INFO_IN_PROFILES    "Include System-Info in Profiles"    ON)
+OPTION(WITH_SYSTEM_INFO_EXAMPLES       "Include System-Info Examples"       ON)
+
+OPTION(WITH_GET_SYSTEM_INFO            "Include get-system-info"            ON)
+OPTION(WITH_SYSTEM_MAINTENANCE         "Include System-Maintenance"         ON)
+OPTION(WITH_PRINT_UTF8                 "Include Print-UTF8"                 ON)
+OPTION(WITH_TEXT_BLOCK                 "Include Text-Block"                 ON)
+OPTION(WITH_FINGERPRINT_SSH_KEYS       "Include Fingerprint-SSH-Keys"       ON)
+OPTION(WITH_CONFIGURE_GRUB             "Include Configure-GRUB"             ON)
+OPTION(WITH_RESET_MACHINE_ID           "Include Reset-Machine-ID"           ON)
+OPTION(WITH_TRY_HARD                   "Include Try-Hard"                   ON)
+OPTION(WITH_RANDOM_SLEEP               "Include Random-Sleep"               ON)
+OPTION(WITH_UNIX_TIMESTAMP_TOOLS       "Include Unix-Timestamp Tools"       ON)
+OPTION(WITH_X509_TOOLS                 "Include X.509 Tools"                ON)
+OPTION(WITH_GIMP_SCRIPTS               "Include GIMP-Scripts"               ON)
+OPTION(WITH_GIMP_SCRIPTS_EXAMPLES      "Include GIMP-Scripts Examples"      ON)
 
 IF (WITH_SYSTEM_INFO AND NOT (WITH_GET_SYSTEM_INFO AND WITH_PRINT_UTF8))
    MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO requires WITH_GET_SYSTEM_INFO and WITH_PRINT_UTF8!")
 ENDIF()
-IF (WITH_X509_TOOLS_INFO AND NOT (WITH_PRINT_UTF8 AND WITH_TEXT_BLOCK))
-   MESSAGE(FATAL_ERROR "WITH_X509_TOOLS requires WITH_PRINT_UTF8 and WITH_TEXT_BLOCK!")
+IF (WITH_SYSTEM_INFO_IN_PROFILES AND NOT WITH_SYSTEM_INFO)
+   MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO_IN_PROFILES requires WITH_SYSTEM_INFO!")
 ENDIF()
+IF (WITH_SYSTEM_INFO_DEFAULT_BANNER AND NOT WITH_SYSTEM_INFO)
+   MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO_DEFAULT_BANNER requires WITH_SYSTEM_INFO!")
+ENDIF()
+IF (WITH_SYSTEM_INFO_EXAMPLES AND NOT WITH_SYSTEM_INFO)
+   MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO_EXAMPLES requires WITH_SYSTEM_INFO!")
+ENDIF()
+
 IF (WITH_TRY_HARD AND NOT WITH_RANDOM_SLEEP)
    MESSAGE(FATAL_ERROR "WITH_TRY_HARD requires WITH_RANDOM_SLEEP!")
 ENDIF()
 
+IF (WITH_X509_TOOLS AND NOT (WITH_PRINT_UTF8 AND WITH_TEXT_BLOCK))
+   MESSAGE(FATAL_ERROR "WITH_X509_TOOLS requires WITH_PRINT_UTF8 and WITH_TEXT_BLOCK!")
+ENDIF()
 
-#############################################################################
-#### INTERNATIONALISATION (I18N)                                         ####
-#############################################################################
-
-ADD_COMPILE_OPTIONS(-Wall -Wextra -Wpedantic -Wsign-conversion)
-ADD_COMPILE_DEFINITIONS(_FILE_OFFSET_BITS=64 _TIME_BITS=64)
+IF (WITH_GIMP_SCRIPTS_EXAMPLES AND NOT WITH_GIMP_SCRIPTS)
+   MESSAGE(FATAL_ERROR "WITH_GIMP_SCRIPTS_EXAMPLES requires WITH_GIMP_SCRIPTS!")
+ENDIF()
 
 
 #############################################################################
@@ -159,11 +160,9 @@ IF (WITH_I18N)
    FIND_PACKAGE(Intl)
    IF (Intl_FOUND)
       MESSAGE(STATUS "Internationalization (i18n) support found:")
-      MESSAGE(STATUS " INTL_INCLUDE_DIRS: ${Intl_INCLUDE_DIRS}")
-      MESSAGE(STATUS " INTL_LIBRARIES: ${Intl_LIBRARIES}")
-      MESSAGE(STATUS " Version: ${Intl_VERSION}")
-      INCLUDE_DIRECTORIES(${Intl_INCLUDE_DIRS})
-      LINK_DIRECTORIES(${Intl_LIBRARY_DIRS})
+      MESSAGE(STATUS " Intl_INCLUDE_DIRS: ${Intl_INCLUDE_DIRS}")
+      MESSAGE(STATUS " Intl_LIBRARIES:    ${Intl_LIBRARIES}")
+      MESSAGE(STATUS " Version:           ${Intl_VERSION}")
    ELSE()
       MESSAGE(FATAL_ERROR
             " Cannot find Internationalization (i18n) support! Try:\n"

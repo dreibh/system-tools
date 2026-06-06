@@ -140,9 +140,6 @@ else
    GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 fi
 
-# This script does not use fonts, or gradients/palettes/brushes:
-GIMP_OPTIONS="${GIMP_OPTIONS} --no-fonts --no-data"
-
 
 # ====== Try to start GIMP ==================================================
 # shellcheck disable=SC2086
