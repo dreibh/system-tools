@@ -41,9 +41,9 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
-#include <utmpx.h>
 #include <arpa/inet.h>
 #include <net/if.h>
+#include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/statvfs.h>
 #include <sys/types.h>
@@ -53,24 +53,29 @@
 #include <linux/if.h>
 #include <netpacket/packet.h>
 #include <sys/sysinfo.h>
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
-#if defined(__FreeBSD__)
+#include <utmpx.h>
+#elif defined(__FreeBSD__)
 #include <dev/acpica/acpiio.h>
-#endif
 #include <net/if_dl.h>
-#if defined(__FreeBSD__)
 #include <netlink/route/interface.h>
-#endif
 #include <sys/ioctl.h>
 #include <sys/sysctl.h>
-#if defined(__FreeBSD__)
 #include <sys/user.h>
+#include <utmpx.h>
 #include <vm/vm_param.h>
-#endif
-#if defined(__NetBSD__) || defined(__OpenBSD__)
+#elif defined(__NetBSD__)
+#include <net/if_dl.h>
+#include <sys/ioctl.h>
+#include <sys/sysctl.h>
+#include <utmpx.h>
 #include <uvm/uvm_extern.h>
 #include <sys/swap.h>
-#endif
+#elif defined(__OpenBSD__)
+#include <net/if_dl.h>
+#include <sys/ioctl.h>
+#include <sys/sysctl.h>
+#include <uvm/uvm_extern.h>
+#include <sys/swap.h>
 #elif defined(__APPLE__)
 #include <libproc.h>
 #include <mach/mach.h>
@@ -78,10 +83,10 @@
 #include <mach/mach_time.h>
 #include <net/if_dl.h>
 #include <sys/sysctl.h>
+#include <utmpx.h>
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
-
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #else
@@ -432,6 +437,8 @@ static unsigned int obtainUserCount(void)
 {
    unsigned int count = 0;
 
+#if !defined(__OpenBSD__)
+   // ====== Use getutxent() to obtain and count the number of users ========
    // Count the number of user sessions, the same as "who | wc -l":
    setutxent();
    struct utmpx* utx;
@@ -441,6 +448,16 @@ static unsigned int obtainUserCount(void)
       }
    }
    endutxent();
+#else
+   // ====== Fallback =======================================================
+#warning Using fallback solution for obtaining the user count!
+   char         buffer[64];
+   unsigned int value;
+   if( (queryPipe("who | wc -l", buffer, sizeof(buffer))) &&
+       (sscanf(buffer, "%u", &value) == 1) ) {
+      count = value;
+   }
+#endif
 
    return count;
 }
@@ -727,9 +744,9 @@ static void showMemoryInformation(void)
       perror("sysctl({CTL_VM,VM_UVMEXP})");
       return;
    }
-   vInactiveCount = (unsigned int)uvm.rm_inactive;
+   vInactiveCount = (unsigned int)uvm.inactive;
    vCacheCount    = (unsigned int)uvm.vnodepages;
-   vFreeCount     = (unsigned int)uvm.rm_free;
+   vFreeCount     = (unsigned int)uvm.free;
 #endif
 #endif
 
@@ -743,7 +760,7 @@ static void showMemoryInformation(void)
    memoryUsed      = memoryTotal - memoryAvailable;
 
    // ------ Get information about swap -------------------------------------
-#if defined(__FreeBSD__) 
+#if defined(__FreeBSD__)
    // Based on: https://cgit.freebsd.org/src/tree/sbin/swapon/swapon.c
    int mib[16];
    size_t mibsize = 16;
