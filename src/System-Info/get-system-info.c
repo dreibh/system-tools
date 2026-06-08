@@ -748,7 +748,6 @@ static void showMemoryInformation(void)
    vCacheCount    = (unsigned int)uvm.vnodepages;
    vFreeCount     = (unsigned int)uvm.free;
 #endif
-#endif
 
    // ------ Calculations ---------------------------------------------------
    const unsigned long long vmstatInactive = (unsigned long long)vInactiveCount * pageSize;
@@ -758,6 +757,7 @@ static void showMemoryInformation(void)
    memoryTotal     = physMem;
    memoryAvailable = vmstatInactive + vmstatCache + vmstatFree;
    memoryUsed      = memoryTotal - memoryAvailable;
+#endif
 
    // ------ Get information about swap -------------------------------------
 #if defined(__FreeBSD__)
