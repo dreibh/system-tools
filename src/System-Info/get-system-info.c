@@ -372,16 +372,17 @@ static unsigned int obtainProcessCount(void)
 #elif defined(__FreeBSD__)
    // ====== FreeBSD: use sysctl to query the number of processes ===========
    // ------  Get memory size necessary to obtain the process list ----------
-   const int mib[3] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC};
-   size_t length = 0;
-   if(sysctl((const int*)&mib, 3, nullptr, &length, nullptr, 0) == 0) {
+   const int          mib[3] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC };
+   const unsigned int mibs   = sizeof(mib) / sizeof(mib[0]);
+   size_t             length = 0;
+   if(sysctl((const int*)&mib, mibs, nullptr, &length, nullptr, 0) == 0) {
       // The memory size is more than necessary for the process list, since
       // the list may change. To obtain the process count, it is necessary
       // to actually fetch the process list:
       void* processList = malloc(length);
       if(processList != nullptr) {
          // ------ Obtain the process list ----------------------------------
-         if(sysctl(mib, 3, processList, &length, nullptr, 0) == 0) {
+         if(sysctl(mib, mibs, processList, &length, nullptr, 0) == 0) {
             // The current process count is the number of entries fetched:
             count = length / sizeof(struct kinfo_proc);
          }
