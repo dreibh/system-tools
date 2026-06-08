@@ -53,11 +53,11 @@ center "${color1}-- ${color2}$(gettext "Welcome on the System") ${color1}--"
 (
    maxWidth="$(consolewidth)"   # Console width in characters
    # Try the FQDN hostname as banner first. But it may be too long.
-   if ! make-banner "$(hostname -f)" "${maxWidth}" ; then
+   if ! make-banner "$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")" "${maxWidth}" ; then
       # Try the hostname only, if the FQDN is too long.
-      if ! make-banner "$(hostname -s)" "${maxWidth}" ; then
+      if ! make-banner "$(hostname -s 2>/dev/null || echo "localhost")" "${maxWidth}" ; then
          # Something went wrong. Just print the hostname as non-banner string.
-         hostname -f
+         hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost"
       fi
    fi
 ) | while IFS= read -r line ; do

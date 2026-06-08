@@ -68,7 +68,7 @@ _test_tls_connection()
       # ====== Suggest hostname:port ========================================
       if [ "${real_cword}" -eq 1 ] ; then
          local hostname
-         hostname="$(hostname -f 2>/dev/null || echo "localhost")"
+         hostname="$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")"
          mapfile -t COMPREPLY < <(compgen -W "${hostname}:443 www.heise.de:443 www.ietf.org:443 www.nntb.no:443 www.simula.no:443" -- "${cur}")
          # NOTE: Block before colon may be duplicated -> need to truncate:
          if [[ ${cur} == *:* ]] ; then

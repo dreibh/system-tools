@@ -129,7 +129,7 @@ fi
 
 # ====== Print SSH key fingerprints =========================================
 if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
-   hostname="$(hostname -f 2>/dev/null || echo "localhost")"
+   hostname="$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")"
 
    for format in ${FORMATS} ; do
 

@@ -190,7 +190,7 @@ YES_TO_ALL=0
 SKIP_MACHINE_ID=0
 SKIP_SSH_CONFIGURATION=0
 SKIP_SSH_KEY_REPLACEMENT=0
-OLD_HOSTNAME_FQDN="$(hostname -f)"
+OLD_HOSTNAME_FQDN="$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")"
 OLD_HOSTNAME="${OLD_HOSTNAME_FQDN//.*/}"
 NEW_HOSTNAME_FQDN="${OLD_HOSTNAME_FQDN}"
 ZABBIX_SERVER=""
@@ -394,7 +394,7 @@ if [ "${ZABBIX_SERVER}" != "" ] ; then
    fi
    zabbixOptions="$(grep -E "^(LogFile|PidFile=)" "${zabbixConfig}" || true)"
    cat >"${zabbixConfig}.new" <<EOF
-# Hostname=$(hostname -f)
+# Hostname=$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")
 HostnameItem=system.hostname
 Server=${ZABBIX_SERVER}
 ServerActive=${ZABBIX_SERVER}
