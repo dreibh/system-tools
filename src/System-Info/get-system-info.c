@@ -197,7 +197,7 @@ static void printaddress(const struct sockaddr* address,
          printf("%s%02x", (i > 0) ? ":" : "", macAddress->sll_addr[i]);
       }
    }
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
    else if(address->sa_family == AF_LINK) {
       const uint8_t* macAddress = (unsigned char *)LLADDR((const struct sockaddr_dl*)address);
       for(unsigned int i = 0; i < 6; i++) {
@@ -270,7 +270,11 @@ static void showKernelInformation(void)
 static bool obtainUptime(struct timespec* ts)
 {
 #if !defined(__APPLE__)
+#if defined(CLOCK_BOOTTIME)
    return clock_gettime(CLOCK_BOOTTIME, ts) == 0;
+#else
+   return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
+#endif
 #else
    const uint64_t uptime = mach_absolute_time();
    ts->tv_sec  = uptime / 1000000;
@@ -300,7 +304,7 @@ static void showUptimeInformation(void)
 }
 
 
-#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__))
+#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)|| defined(__APPLE__))
 // ###### Query information via shell #######################################
 static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 {
@@ -369,7 +373,7 @@ static unsigned int obtainProcessCount(void)
    }
    closedir(dir);
 
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
    // ====== FreeBSD: use sysctl to query the number of processes ===========
    // ------  Get memory size necessary to obtain the process list ----------
    const int mib[3] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC};
