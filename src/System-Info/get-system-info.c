@@ -372,17 +372,17 @@ static unsigned int obtainProcessCount(void)
 #elif defined(__FreeBSD__)
    // ====== FreeBSD: use sysctl to query the number of processes ===========
    // ------  Get memory size necessary to obtain the process list ----------
-   const int          mib[3] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC };
-   const unsigned int mibs   = sizeof(mib) / sizeof(mib[0]);
+   const int          mibKernProcProc[3]  = { CTL_KERN, KERN_PROC, KERN_PROC_PROC };
+   const unsigned int mibKernProcProcSize = sizeof(mibKernProcProc) / sizeof(mibKernProcProc[0]);
    size_t             length = 0;
-   if(sysctl((const int*)&mib, mibs, nullptr, &length, nullptr, 0) == 0) {
+   if(sysctl(mibKernProcProc, mibKernProcProcSize, nullptr, &length, nullptr, 0) == 0) {
       // The memory size is more than necessary for the process list, since
       // the list may change. To obtain the process count, it is necessary
       // to actually fetch the process list:
       void* processList = malloc(length);
       if(processList != nullptr) {
          // ------ Obtain the process list ----------------------------------
-         if(sysctl(mib, mibs, processList, &length, nullptr, 0) == 0) {
+         if(sysctl(mibKernProcProc, mibKernProcProcSize, processList, &length, nullptr, 0) == 0) {
             // The current process count is the number of entries fetched:
             count = length / sizeof(struct kinfo_proc);
          }
@@ -632,42 +632,48 @@ static void showMemoryInformation(void)
    // ====== Query system information via sysctl ============================
    // Documentation: https://man.freebsd.org/cgi/man.cgi?query=sysctl&sektion=3
 
+   size_t length;
+
    // ------ Query hw.pagesize ----------------------------------------------
+   const int    mibHwPageSize[2]  = { CTL_HW, HW_PAGESIZE };
+   const int    mibHwPageSizeSize = sizeof(mibHwPageSize) / sizeof(mibHwPageSize[0]);
    unsigned int pageSize;
-   size_t len = sizeof(pageSize);
-   if(sysctlbyname("hw.pagesize", &pageSize, &len, nullptr, 0) != 0) {
+   length = sizeof(pageSize);
+   if(sysctl(mibHwPageSize, mibHwPageSizeSize, &pageSize, &length, nullptr, 0) != 0) {
       perror("sysctl(hw.pagesize)");
       return;
    }
 
    // ------ Query hw.physmem -----------------------------------------------
+   const int     mibHwPhysMem[2]     = { CTL_HW, HW_PHYSMEM };
+   const int     mibmibHwPhysMemSize = sizeof(mibHwPhysMem) / sizeof(mibHwPhysMem[0]);
    unsigned long physMem;
-   len = sizeof(physMem);
-   if(sysctlbyname("hw.physmem", &physMem, &len, nullptr, 0) != 0) {
+   length = sizeof(physMem);
+   if(sysctl(mibHwPhysMem, mibmibHwPhysMemSize, &physMem, &length, nullptr, 0) != 0) {
       perror("sysctl(hw.physmem)");
       return;
    }
 
    // ------ Query vm.stats.vm.v_inactive_count -----------------------------
    unsigned int vInactiveCount;
-   len = sizeof(vInactiveCount);
-   if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &len, nullptr, 0) != 0) {
+   length = sizeof(vInactiveCount);
+   if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &length, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_inactive_count)");
       return;
    }
 
    // ------ Query vm.stats.vm.v_cache_count -----------------------------
    unsigned int vCacheCount;
-   len = sizeof(vCacheCount);
-   if(sysctlbyname("vm.stats.vm.v_cache_count", &vCacheCount, &len, nullptr, 0) != 0) {
+   length = sizeof(vCacheCount);
+   if(sysctlbyname("vm.stats.vm.v_cache_count", &vCacheCount, &length, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_cache_count)");
       return;
    }
 
    // ------ Query vm.stats.vm.v_free_count -----------------------------
    unsigned int vFreeCount;
-   len = sizeof(vFreeCount);
-   if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &len, nullptr, 0) != 0) {
+   length = sizeof(vFreeCount);
+   if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &length, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_free_count)");
       return;
    }
