@@ -540,8 +540,11 @@ case "${UNAME}" in
    OpenBSD)
       GETOPT="$(command -v gnugetopt)"
       ;;
+   Darwin)
+      GETOPT="$(PATH="/opt/homebrew/opt/gnu-getopt:${PATH}" command -v getopt)"
+      ;;
    *)
-      GETOPT="$(PATH="/usr/local/bin:/usr/pkg/bin:${PATH}" command -v getopt)"
+      GETOPT="$(command -v getopt)"
       ;;
 esac
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
