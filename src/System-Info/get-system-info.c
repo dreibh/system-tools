@@ -542,7 +542,7 @@ static void showBatteryInformation(void)
    }
 
    // ====== FreeBSD: Obtain battery status via ACPI device ioctls ==========
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+#elif defined(__FreeBSD__)
    int acpiFD = open("/dev/acpi", O_RDONLY);
    if(acpiFD >= 0) {
       unsigned int batteryUnits = 0;
@@ -587,6 +587,14 @@ static void showBatteryInformation(void)
       }
       close(acpiFD);
    }
+
+   // ====== NetBSD: Obtain battery status via TBD ==========================
+#elif defined(__NetBSD__)
+#warning FIXME! NetBSD battery status!
+
+   // ====== OpenBSD: Obtain battery status via TBD =========================
+#elif defined(__OpenBSD__)
+#warning FIXME! OpenBSD battery status!
 
 #else
 #warning Missing case!
