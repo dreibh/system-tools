@@ -53,14 +53,23 @@
 #include <linux/if.h>
 #include <netpacket/packet.h>
 #include <sys/sysinfo.h>
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+#if defined(__FreeBSD__)
 #include <dev/acpica/acpiio.h>
+#endif
 #include <net/if_dl.h>
+#if defined(__FreeBSD__)
 #include <netlink/route/interface.h>
+#endif
 #include <sys/ioctl.h>
 #include <sys/sysctl.h>
+#if defined(__FreeBSD__)
 #include <sys/user.h>
 #include <vm/vm_param.h>
+#endif
+#if defined(__NetBSD__) || defined(__OpenBSD__)
+#include <uvm/uvm_extern.h>
+#endif
 #elif defined(__APPLE__)
 #include <libproc.h>
 #include <mach/mach.h>
@@ -304,7 +313,7 @@ static void showUptimeInformation(void)
 }
 
 
-#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)|| defined(__APPLE__))
+#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__))
 // ###### Query information via shell #######################################
 static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 {
@@ -373,7 +382,7 @@ static unsigned int obtainProcessCount(void)
    }
    closedir(dir);
 
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+#elif defined(__FreeBSD__)
    // ====== FreeBSD: use sysctl to query the number of processes ===========
    // ------  Get memory size necessary to obtain the process list ----------
    const int mib[3] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC};
@@ -531,7 +540,7 @@ static void showBatteryInformation(void)
    }
 
    // ====== FreeBSD: Obtain battery status via ACPI device ioctls ==========
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+#elif defined(__FreeBSD__)
    int acpiFD = open("/dev/acpi", O_RDONLY);
    if(acpiFD >= 0) {
       unsigned int batteryUnits = 0;
@@ -578,7 +587,7 @@ static void showBatteryInformation(void)
    }
 
 #else
-// #error Missing case!
+#warning Missing case!
 #endif
 
    fputs("battery_list=\"", stdout);
@@ -650,9 +659,14 @@ static void showMemoryInformation(void)
       perror("sysctl(hw.physmem)");
       return;
    }
+   fprintf(stderr, "P=%llu\n", physMem);
 
-   // ------ Query vm.stats.vm.v_inactive_count -----------------------------
+   // ------ Virtual mmemory ------------------------------------------------
    unsigned int vInactiveCount;
+   unsigned int vCacheCount;
+   unsigned int vFreeCount;
+#if defined(__FreeBSD__)
+   // ------ Query vm.stats.vm.v_inactive_count -----------------------------
    len = sizeof(vInactiveCount);
    if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &len, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_inactive_count)");
@@ -660,7 +674,6 @@ static void showMemoryInformation(void)
    }
 
    // ------ Query vm.stats.vm.v_cache_count -----------------------------
-   unsigned int vCacheCount;
    len = sizeof(vCacheCount);
    if(sysctlbyname("vm.stats.vm.v_cache_count", &vCacheCount, &len, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_cache_count)");
@@ -668,12 +681,39 @@ static void showMemoryInformation(void)
    }
 
    // ------ Query vm.stats.vm.v_free_count -----------------------------
-   unsigned int vFreeCount;
    len = sizeof(vFreeCount);
    if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &len, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_free_count)");
       return;
    }
+
+#elif defined(__NetBSD__)
+   struct uvmexp_sysctl uvm;
+   const int            mibUvmExp[2]  = { CTL_VM, VM_UVMEXP2 };
+   const unsigned int   mibUvmExpSize = sizeof(mibUvmExp) / sizeof(mibUvmExp[0]);
+   size_t length = sizeof(uvm);
+   if(sysctl(mibUvmExp, mibUvmExpSize, &uvm, &length, nullptr, 0) != 0) {
+      perror("sysctl({CTL_VM,VM_UVMEXP2})");
+      return;
+   }
+   vInactiveCount = (unsigned int)uvm.inactive;
+   vCacheCount    = (unsigned int)uvm.filepages;
+   vFreeCount     = (unsigned int)uvm.free;
+
+#elif defined(__OpenBSD__)
+   struct uvmexp        uvm;
+   const int            mibUvmExp[2]  = { CTL_VM, VM_UVMEXP };
+   const unsigned int   mibUvmExpSize = sizeof(mibUvmExp) / sizeof(mibUvmExp[0]);
+   size_t length = sizeof(uvm);
+   if(sysctl(mibUvmExp, mibUvmExpSize, &uvm, &length, nullptr, 0) != 0) {
+      perror("sysctl({CTL_VM,VM_UVMEXP})");
+      return;
+   }
+   vInactiveCount = (unsigned int)uvm.rm_inactive;
+   vCacheCount    = (unsigned int)uvm.vnodepages;
+   vFreeCount     = (unsigned int)uvm.rm_free;
+#endif
+#endif
 
    // ------ Calculations ---------------------------------------------------
    const unsigned long long vmstatInactive = (unsigned long long)vInactiveCount * pageSize;
@@ -685,6 +725,7 @@ static void showMemoryInformation(void)
    memoryUsed      = memoryTotal - memoryAvailable;
 
    // ------ Get information about swap -------------------------------------
+#if defined(__FreeBSD__)
    // Based on: https://cgit.freebsd.org/src/tree/sbin/swapon/swapon.c
    int mib[16];
    size_t mibsize = 16;
@@ -716,7 +757,7 @@ static void showMemoryInformation(void)
    // ------ Query hw.memsize -----------------------------------------------
    int64_t memSize;
    size_t len = sizeof(memSize);
-   if(sysctlbyname("hw.memsize", &memSize, &len, NULL, 0) == 0) {
+   if(sysctlbyname("hw.memsize", &memSize, &len, nullptr, 0) == 0) {
       memoryTotal = (unsigned long long)memSize;
    }
 
@@ -745,7 +786,7 @@ static void showMemoryInformation(void)
    }
 
 #else
-#error Missing case!
+#warning Missing case!
 #endif
 
    printf("system_mem_total=%llu\n", memoryTotal);
