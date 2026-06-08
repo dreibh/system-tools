@@ -137,7 +137,7 @@ static int compareInterfaceAddresses(const void* a, const void* b)
             }
             return memcmp(mac1->sll_addr, mac2->sll_addr, mac1->sll_halen);
          }
-#elif defined(__FreeBSD__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
          else if(ifa1->address->sa_family == AF_LINK) {
             const struct sockaddr_dl* mac1 = (const struct sockaddr_dl*)ifa1->address;
             const struct sockaddr_dl* mac2 = (const struct sockaddr_dl*)ifa2->address;
@@ -461,7 +461,7 @@ static void showLoadInformation(void)
       printf("system_load_avg15minpct=%1.4f\n", (double)systemInfo.loads[2] * fPercent);
    }
 
-#elif defined(__FreeBSD__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
    double loadavg[3];
    if(getloadavg(loadavg, 3) == 3) {
       printf("system_load_avg1min=%1.6f\n",  loadavg[0]);
@@ -527,7 +527,7 @@ static void showBatteryInformation(void)
    }
 
    // ====== FreeBSD: Obtain battery status via ACPI device ioctls ==========
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
    int acpiFD = open("/dev/acpi", O_RDONLY);
    if(acpiFD >= 0) {
       unsigned int batteryUnits = 0;
@@ -627,7 +627,7 @@ static void showMemoryInformation(void)
    swapAvailable   *= 1024;
    swapUsed = swapTotal - swapAvailable;
 
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
    // ====== Query system information via sysctl ============================
    // Documentation: https://man.freebsd.org/cgi/man.cgi?query=sysctl&sektion=3
 
@@ -867,7 +867,7 @@ static void showNetworkInformation(const bool filterLocalScope)
          // ====== MAC address ==============================================
 #if defined(__linux__)
          else if(ifa->ifa_addr->sa_family == AF_PACKET) {
-#elif defined(__FreeBSD__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
          else if(ifa->ifa_addr->sa_family == AF_LINK) {
 #else
 #error Missing case!
@@ -912,7 +912,7 @@ static void showNetworkInformation(const bool filterLocalScope)
              break;
 #if defined(__linux__)
             case AF_PACKET:
-#elif defined(__FreeBSD__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
             case AF_LINK:
 #else
 #error Missing case!
