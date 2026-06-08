@@ -96,6 +96,10 @@ ELSEIF (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "NetBSD")
+   MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "OpenBSD")
+   MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
 ELSE()
    MESSAGE(FATAL_ERROR "${CMAKE_SYSTEM_NAME} not supported (yet?)")
 ENDIF()
@@ -171,12 +175,54 @@ IF (WITH_I18N)
             " * SuSE:          sudo zypper install -y gettext-devel\n"
             " * Alpine:        sudo apk add gettext-dev\n"
             " * FreeBSD:       sudo pkg install -y gettext\n"
+            " * NetBSD:        sudo pkgin -y install gettext\n"
+            " * OpenBSD:       sudo pkg_add gettext-runtime gettext-tools\n"
             " * Apple:         brew install gettext")
    ENDIF()
 
-   FIND_PROGRAM(XGETTEXT xgettext REQUIRED)
-   FIND_PROGRAM(MSGMERGE msgmerge REQUIRED)
-   FIND_PROGRAM(MSGFMT   msgfmt   REQUIRED)
+   FIND_PROGRAM(XGETTEXT xgettext HINTS /usr/pkg/bin /opt/homebrew/opt/gettext/bin /usr/local/opt/gettext/bin)
+   FIND_PROGRAM(MSGMERGE msgmerge HINTS /usr/pkg/bin /opt/homebrew/opt/gettext/bin /usr/local/opt/gettext/bin)
+   FIND_PROGRAM(MSGFMT   msgfmt   HINTS /usr/pkg/bin /opt/homebrew/opt/gettext/bin /usr/local/opt/gettext/bin)
+
+   IF (XGETTEXT AND MSGMERGE AND MSGFMT)
+      MESSAGE(STATUS "GNU gettext support found:")
+
+      EXECUTE_PROCESS(COMMAND ${XGETTEXT} --version
+                      OUTPUT_VARIABLE XGETTEXT_OUTPUT
+                      ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+      STRING(REGEX MATCH "([0-9]+\\.[0-9]+\\.[0-9]+|[0-9]+\\.[0-9]+)" XGETTEXT_VERSION "${XGETTEXT_OUTPUT}")
+
+      EXECUTE_PROCESS(COMMAND ${MSGMERGE} --version
+                      OUTPUT_VARIABLE MSGMERGE_OUTPUT
+                      ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+      STRING(REGEX MATCH "([0-9]+\\.[0-9]+\\.[0-9]+|[0-9]+\\.[0-9]+)" MSGMERGE_VERSION "${MSGMERGE_OUTPUT}")
+
+      EXECUTE_PROCESS(COMMAND ${MSGFMT} --version
+                      OUTPUT_VARIABLE MSGFMT_OUTPUT
+                      ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+      STRING(REGEX MATCH "([0-9]+\\.[0-9]+\\.[0-9]+|[0-9]+\\.[0-9]+)" MSGFMT_VERSION "${MSGFMT_OUTPUT}")
+
+      MESSAGE(STATUS " xgettext: ${XGETTEXT} (version ${XGETTEXT_VERSION})")
+      MESSAGE(STATUS " msgmerge: ${MSGMERGE} (version ${MSGMERGE_VERSION})")
+      MESSAGE(STATUS " msgfmt:   ${MSGFMT} (version ${MSGFMT_VERSION})")
+   ENDIF()
+
+   SET(GETTEXT_MIN_VERSION 0.19)
+   IF ((NOT XGETTEXT) OR (NOT MSGMERGE) OR (NOT MSGFMT)       OR
+       (XGETTEXT_VERSION VERSION_LESS ${GETTEXT_MIN_VERSION}) OR
+       (MSGMERGE_VERSION VERSION_LESS ${GETTEXT_MIN_VERSION}) OR
+       (MSGFMT_VERSION   VERSION_LESS ${GETTEXT_MIN_VERSION}))
+      MESSAGE(FATAL_ERROR
+              "Cannot find gettext tools >= ${GETTEXT_MIN_VERSION}! Try:\n"
+              " * Ubuntu/Debian: sudo apt install -y gettext\n"
+              " * Fedora:        sudo dnf install -y gettext\n"
+              " * SuSE:          sudo zypper install -y gettext\n"
+              " * Alpine:        sudo apk add gettext-dev\n"
+              " * FreeBSD:       sudo pkg install -y gettext-tools\n"
+              " * NetBSD:        sudo pkgin -y install gettext-tools\n"
+              " * OpenBSD:       sudo pkg_add gettext-tools\n"
+              " * Apple:         brew install gettext")
+   ENDIF()
 
    ADD_DEFINITIONS(-DENABLE_NLS)
 ENDIF()
