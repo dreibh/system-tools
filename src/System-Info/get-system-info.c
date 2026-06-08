@@ -69,6 +69,7 @@
 #endif
 #if defined(__NetBSD__) || defined(__OpenBSD__)
 #include <uvm/uvm_extern.h>
+#include <sys/swap.h>
 #endif
 #elif defined(__APPLE__)
 #include <libproc.h>
@@ -385,16 +386,17 @@ static unsigned int obtainProcessCount(void)
 #elif defined(__FreeBSD__)
    // ====== FreeBSD: use sysctl to query the number of processes ===========
    // ------  Get memory size necessary to obtain the process list ----------
-   const int mib[3] = {CTL_KERN, KERN_PROC, KERN_PROC_PROC};
-   size_t length = 0;
-   if(sysctl((const int*)&mib, 3, nullptr, &length, nullptr, 0) == 0) {
+   const int          mibKernProcProc[3]  = { CTL_KERN, KERN_PROC, KERN_PROC_PROC };
+   const unsigned int mibKernProcProcSize = sizeof(mibKernProcProc) / sizeof(mibKernProcProc[0]);
+   size_t             length = 0;
+   if(sysctl(mibKernProcProc, mibKernProcProcSize, nullptr, &length, nullptr, 0) == 0) {
       // The memory size is more than necessary for the process list, since
       // the list may change. To obtain the process count, it is necessary
       // to actually fetch the process list:
       void* processList = malloc(length);
       if(processList != nullptr) {
          // ------ Obtain the process list ----------------------------------
-         if(sysctl(mib, 3, processList, &length, nullptr, 0) == 0) {
+         if(sysctl(mibKernProcProc, mibKernProcProcSize, processList, &length, nullptr, 0) == 0) {
             // The current process count is the number of entries fetched:
             count = length / sizeof(struct kinfo_proc);
          }
@@ -540,7 +542,7 @@ static void showBatteryInformation(void)
    }
 
    // ====== FreeBSD: Obtain battery status via ACPI device ioctls ==========
-#elif defined(__FreeBSD__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
    int acpiFD = open("/dev/acpi", O_RDONLY);
    if(acpiFD >= 0) {
       unsigned int batteryUnits = 0;
@@ -644,22 +646,27 @@ static void showMemoryInformation(void)
    // ====== Query system information via sysctl ============================
    // Documentation: https://man.freebsd.org/cgi/man.cgi?query=sysctl&sektion=3
 
+   size_t length;
+
    // ------ Query hw.pagesize ----------------------------------------------
-   unsigned int pageSize;
-   size_t len = sizeof(pageSize);
-   if(sysctlbyname("hw.pagesize", &pageSize, &len, nullptr, 0) != 0) {
+   const int          mibHwPageSize[2]  = { CTL_HW, HW_PAGESIZE };
+   const unsigned int mibHwPageSizeSize = sizeof(mibHwPageSize) / sizeof(mibHwPageSize[0]);
+   unsigned int       pageSize;
+   length = sizeof(pageSize);
+   if(sysctl(mibHwPageSize, mibHwPageSizeSize, &pageSize, &length, nullptr, 0) != 0) {
       perror("sysctl(hw.pagesize)");
       return;
    }
 
    // ------ Query hw.physmem -----------------------------------------------
-   unsigned long physMem;
-   len = sizeof(physMem);
-   if(sysctlbyname("hw.physmem", &physMem, &len, nullptr, 0) != 0) {
+   const int          mibHwPhysMem[2]  = { CTL_HW, HW_PHYSMEM };
+   const unsigned int mibHwPhysMemSize = sizeof(mibHwPhysMem) / sizeof(mibHwPhysMem[0]);
+   unsigned long      physMem;
+   length = sizeof(physMem);
+   if(sysctl(mibHwPhysMem, mibHwPhysMemSize, &physMem, &length, nullptr, 0) != 0) {
       perror("sysctl(hw.physmem)");
       return;
    }
-   fprintf(stderr, "P=%llu\n", physMem);
 
    // ------ Virtual mmemory ------------------------------------------------
    unsigned int vInactiveCount;
@@ -667,22 +674,25 @@ static void showMemoryInformation(void)
    unsigned int vFreeCount;
 #if defined(__FreeBSD__)
    // ------ Query vm.stats.vm.v_inactive_count -----------------------------
-   len = sizeof(vInactiveCount);
-   if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &len, nullptr, 0) != 0) {
+   unsigned int vInactiveCount;
+   length = sizeof(vInactiveCount);
+   if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &length, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_inactive_count)");
       return;
    }
 
    // ------ Query vm.stats.vm.v_cache_count -----------------------------
-   len = sizeof(vCacheCount);
-   if(sysctlbyname("vm.stats.vm.v_cache_count", &vCacheCount, &len, nullptr, 0) != 0) {
+   unsigned int vCacheCount;
+   length = sizeof(vCacheCount);
+   if(sysctlbyname("vm.stats.vm.v_cache_count", &vCacheCount, &length, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_cache_count)");
       return;
    }
 
    // ------ Query vm.stats.vm.v_free_count -----------------------------
-   len = sizeof(vFreeCount);
-   if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &len, nullptr, 0) != 0) {
+   unsigned int vFreeCount;
+   length = sizeof(vFreeCount);
+   if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &length, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_free_count)");
       return;
    }
@@ -691,7 +701,7 @@ static void showMemoryInformation(void)
    struct uvmexp_sysctl uvm;
    const int            mibUvmExp[2]  = { CTL_VM, VM_UVMEXP2 };
    const unsigned int   mibUvmExpSize = sizeof(mibUvmExp) / sizeof(mibUvmExp[0]);
-   size_t length = sizeof(uvm);
+   length = sizeof(uvm);
    if(sysctl(mibUvmExp, mibUvmExpSize, &uvm, &length, nullptr, 0) != 0) {
       perror("sysctl({CTL_VM,VM_UVMEXP2})");
       return;
@@ -704,7 +714,7 @@ static void showMemoryInformation(void)
    struct uvmexp        uvm;
    const int            mibUvmExp[2]  = { CTL_VM, VM_UVMEXP };
    const unsigned int   mibUvmExpSize = sizeof(mibUvmExp) / sizeof(mibUvmExp[0]);
-   size_t length = sizeof(uvm);
+   length = sizeof(uvm);
    if(sysctl(mibUvmExp, mibUvmExpSize, &uvm, &length, nullptr, 0) != 0) {
       perror("sysctl({CTL_VM,VM_UVMEXP})");
       return;
@@ -725,7 +735,7 @@ static void showMemoryInformation(void)
    memoryUsed      = memoryTotal - memoryAvailable;
 
    // ------ Get information about swap -------------------------------------
-#if defined(__FreeBSD__)
+#if defined(__FreeBSD__) 
    // Based on: https://cgit.freebsd.org/src/tree/sbin/swapon/swapon.c
    int mib[16];
    size_t mibsize = 16;
@@ -749,6 +759,32 @@ static void showMemoryInformation(void)
       swapTotal      += total;
       swapAvailable  += available;
       swapUsed       += used;
+   }
+
+#elif defined(__NetBSD__) || defined(__OpenBSD__)
+   const int       numberOfSwapDevices = swapctl(SWAP_NSWAP, NULL, 0);
+   struct swapent* swapDeviceArray     = malloc((unsigned int)numberOfSwapDevices * sizeof(struct swapent));
+   if(swapDeviceArray) {
+      int swapRecords = swapctl(SWAP_STATS, swapDeviceArray, numberOfSwapDevices);
+      if(swapRecords < 0) {
+         perror("swapctl(SWAP_STATS) failed");
+         free(swapDeviceArray);
+         return;
+      }
+      for (unsigned int i = 0; i < (unsigned int)swapRecords; i++) {
+         if(swapDeviceArray[i].se_flags & SWF_INUSE) {
+            const unsigned long long totalBytes = (unsigned long long)swapDeviceArray[i].se_nblks * DEV_BSIZE;
+            const unsigned long long usedBytes  = (unsigned long long)swapDeviceArray[i].se_inuse * DEV_BSIZE;
+            swapTotal     += totalBytes;
+            swapUsed      += usedBytes;
+            swapAvailable += (totalBytes - usedBytes);
+         }
+      }
+      free(swapDeviceArray);
+   }
+   else {
+      perror("malloc");
+      return;
    }
 
 #elif defined(__APPLE__)
