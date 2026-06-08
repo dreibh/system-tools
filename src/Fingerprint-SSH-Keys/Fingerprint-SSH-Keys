@@ -61,7 +61,12 @@ if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1]
    echo "ERROR: Bash 4.4 or higher is required, but Bash ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]} is installed!"
    exit 1
 fi
-GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
+UNAME="$(uname)"
+if [ "${UNAME}" != "OpenBSD" ] ; then
+   GETOPT="$(PATH="/usr/local/bin:/usr/pkg/bin:${PATH}" command -v getopt)"
+else
+   GETOPT="$(command -v gnugetopt)"
+fi
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
    echo >&2 "ERROR: Enhanced/GNU getopt is required!"
    exit 1
@@ -124,7 +129,7 @@ if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
             if [ ${INCLUDE_RAW} -eq 2 ] ; then
                echo "'public-keys': {"
             fi
-            find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print0 | sort -z | while IFS= read -r -d "" key ; do
+            while IFS= read -r key ; do
                if [ ${INCLUDE_RAW} -eq 1 ] ; then
                   echo -n "#${keyNumber}: "
                   cut -d' ' -f1,2 <"${key}"
@@ -137,7 +142,7 @@ if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
                   echo -n "   '${type}': '${key}'"
                fi
                keyNumber=$((keyNumber+1))
-            done
+            done < <(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
             if [ ${INCLUDE_RAW} -eq 2 ] ; then
                echo -e "\n}"
             fi
@@ -148,17 +153,17 @@ if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
       elif [ "${format}" == "ssh" ] ; then
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in SSH format:")\x1b[0m"
          keyNumber=1
-         find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print0 | sort -z | while IFS= read -r -d "" key ; do
+         while IFS= read -r key ; do
             echo -n "#${keyNumber}: "
             ssh-keygen -lf "${key}" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
             keyNumber=$((keyNumber+1))
-         done
+         done < <(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
          echo
 
       # ====== Print fingerprints in DNS format =============================
       elif [ "${format}" == "dns" ] ; then
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in DNS RR format:")\x1b[0m"
-         find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print0 | sort -z | while IFS= read -r -d "" key ; do
+         while IFS= read -r key ; do
             if [ ${INCLUDE_DEPRECATED} -eq 1 ] ; then
                ssh-keygen -r "${hostname}" -f "${key}" | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [1-9] [1-9]' || true
             else
@@ -167,7 +172,7 @@ if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
             fi | while read -r in rrType algorithmID hashID fingerprint ; do
                echo -e "${hostname}\t${in}\t${rrType}\t${algorithmID}\t${hashID}\t${fingerprint}"
             done
-         done
+         done < <(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
          echo
       fi
 
