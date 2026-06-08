@@ -699,7 +699,6 @@ static void showMemoryInformation(void)
    unsigned int vFreeCount;
 #if defined(__FreeBSD__)
    // ------ Query vm.stats.vm.v_inactive_count -----------------------------
-   unsigned int vInactiveCount;
    length = sizeof(vInactiveCount);
    if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &length, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_inactive_count)");
@@ -707,7 +706,6 @@ static void showMemoryInformation(void)
    }
 
    // ------ Query vm.stats.vm.v_cache_count -----------------------------
-   unsigned int vCacheCount;
    length = sizeof(vCacheCount);
    if(sysctlbyname("vm.stats.vm.v_cache_count", &vCacheCount, &length, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_cache_count)");
@@ -715,7 +713,6 @@ static void showMemoryInformation(void)
    }
 
    // ------ Query vm.stats.vm.v_free_count -----------------------------
-   unsigned int vFreeCount;
    length = sizeof(vFreeCount);
    if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &length, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_free_count)");
