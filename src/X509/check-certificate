@@ -130,9 +130,11 @@ shift
 case "${UNAME}" in
    Darwin)
       OPENSSL="$(env PATH="/opt/homebrew/opt/openssl/bin:$PATH" command -v openssl || true)"
+      CERTTOOL="$(env PATH="/opt/homebrew/bin/gnutls-certtool:$PATH" command -v gnutls-certtool || true)"
       ;;
    *)
       OPENSSL="$(command -v openssl || true)"
+      CERTTOOL="$(command -v certtool || true)"
       ;;
 esac
 if [ "${OPENSSL}" == "" ] ; then
@@ -140,7 +142,6 @@ if [ "${OPENSSL}" == "" ] ; then
    echo >&2
    exit 1
 fi
-CERTTOOL="$(command -v certtool || true)"
 CERTUTIL="$(command -v certutil || true)"
 CRLUTIL="$(command -v crlutil || true)"
 
