@@ -58,8 +58,15 @@ if [ ! -e "figures/${INPUT2}.png" ] ; then
 fi
 gm identify "figures/${INPUT2}.png"
 if [ ! -e "figures/${INPUT3}.png" ] ; then
-   clifractgen "examples/Fractal.fsf" "figures/${INPUT3}.png" \
-      --width "${WIDTH}" --height "${HEIGHT}" --max-iterations 2048
+   if command -v clifractgen ; then
+      clifractgen "examples/Fractal.fsf" "figures/${INPUT3}.png" \
+         --width "${WIDTH}" --height "${HEIGHT}" --max-iterations 2048
+   else
+      wget -O /tmp/Fractal.webp \
+         "https://www.nntb.no/~dreibh/system-tools/GIMP-Scripts/figures/Fractal.webp"
+      gm convert /tmp/Fractal.webp "${INPUT3}"
+      rm -f /tmp/Fractal.webp
+   fi
 fi
 gm identify "figures/${INPUT3}.png"
 
@@ -105,9 +112,14 @@ if [ ! -e figures/Caption2.png ] ; then
 fi
 gm identify figures/Caption2.png
 if [ ! -e figures/Caption3.png ] ; then
+   if ./gs-list-fonts | grep -q "URW Gothic L Book" ; then
+      fontName="URW Gothic L Book"
+   else
+      fontName="URW Gothic Book"
+   fi
    ./gs-caption figures/Caption3.png 1024 42 \
       "Yet Another Test on $(LC_ALL=C.UTF-8 date)" \
-      --font-name "URW Gothic Book" \
+      --font-name "${fontName}" \
       --font-size 70 \
       --foreground "#02266b" --background "#777777" --transparency 40
 fi
