@@ -240,25 +240,22 @@ function print-system-information ()
 
    # ------ Uptime ----------------------------------------------------------
    # xgettext: c-format
-   uptimeFormat="$(gettext "%s, %s, %s, and %s")"
-   # xgettext: c-format
    formatUptimeDays="$(ngettext "%s day" "%s days" "${uptime_days}")"
+   uptimeInDays="$(printf "${formatUptimeDays}" "$(printf "%'d" "${uptime_days}")")"
    # xgettext: c-format
    formatUptimeHours="$(ngettext "%d hour" "%d hours" "${uptime_hours}")"
+   uptimeInHours="$(printf "${formatUptimeHours}" "${uptime_hours}")"
    # xgettext: c-format
    formatUptimeMinutes="$(ngettext "%d minute" "%d minutes" "${uptime_mins}")"
+   uptimeInMinutes="$(printf "${formatUptimeMinutes}" "${uptime_mins}")"
    # xgettext: c-format
    formatUptimeSeconds="$(ngettext "%d second" "%d seconds" "${uptime_secs}")"
+   uptimeInSeconds="$(printf "${formatUptimeSeconds}" "${uptime_secs}")"
 
    # shellcheck disable=SC2059
    add-table-row \
       "$(gettext "Uptime:")" \
-      "$(printf "${uptimeFormat}\n" \
-         "$(printf "${formatUptimeDays}"    "$(printf "%'d" "${uptime_days}")")" \
-         "$(printf "${formatUptimeHours}"   "${uptime_hours}")"                  \
-         "$(printf "${formatUptimeMinutes}" "${uptime_mins}")"                   \
-         "$(printf "${formatUptimeSeconds}" "${uptime_secs}")"
-      )"
+      "$(eval_gettext "\${uptimeInDays}, \${uptimeInHours}, \${uptimeInMinutes}, and \${uptimeInSeconds}")"
 
    # ------ Operating System ------------------------------------------------
    add-table-row \
