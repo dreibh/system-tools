@@ -139,6 +139,22 @@ if [ ! -e "${CA_FILE}" ] ; then
    exit 1
 fi
 
+# ====== Check availability of tools ========================================
+case "${UNAME}" in
+   Darwin)
+      OPENSSL="$(env PATH="/opt/homebrew/opt/openssl/bin:$PATH" command -v getopt)"
+      ;;
+   *)
+      OPENSSL="$(command -v openssl || true)"
+      ;;
+esac
+OPENSSL="$(command -v openssl || true)"
+if [ "${OPENSSL}" == "" ] ; then
+   gettext >&2 "ERROR: OpenSSL is not installed!"
+   echo >&2
+   exit 1
+fi
+
 # ====== Connect to endpoint ================================================
 echo -e "\e[34m$(eval_gettext "Connecting to \${ENDPOINT} ...")\e[0m"
 tempCertFile=""
@@ -148,7 +164,7 @@ if [ "${CERTIFICATE_FILE}" == "" ] ; then
    CERTIFICATE_FILE="${tempCertFile}"
 fi
 
-echo "" | openssl s_client -showcerts -connect "${ENDPOINT}" -no-CApath -no-CAstore -CAfile "${CA_FILE}" "$@" | \
+echo "" | "${OPENSSL}" s_client -showcerts -connect "${ENDPOINT}" -no-CApath -no-CAstore -CAfile "${CA_FILE}" "$@" | \
    text-block \
       --extract \
       --begin-tag '-----BEGIN CERTIFICATE-----'  \
