@@ -140,12 +140,15 @@ fi
 # ====== Detect GIMP, and determine version-specific call options ===========
 GIMP_CONSOLE="$(command -v gimp-console || true)"
 if [ "${GIMP_CONSOLE}" == "" ] ; then
-   echo >&2 "ERROR: GIMP is not installed!"
-   echo >&2 "* Ubuntu:  sudo apt install -y gimp"
-   echo >&2 "* Fedora:  sudo dnf install -y gimp"
-   echo >&2 "* SuSE     sudo zypper install -y gimp"
-   echo >&2 "* Alpine:  sudo apk add gimp"
-   echo >&2 "* FreeBSD: sudo pkg install -y gimp3-app"
+   echo >&2 "ERROR: GIMP is not installed! Try:"
+   echo >&2 "* Ubuntu/Debian: sudo apt install -y gimp"
+   echo >&2 "* Fedora:        sudo dnf install -y gimp"
+   echo >&2 "* SuSE           sudo zypper install -y gimp"
+   echo >&2 "* Alpine:        sudo apk add gimp"
+   echo >&2 "* FreeBSD:       sudo pkg install -y gimp3-app"
+   echo >&2 "* NetBSD:        sudo pkgin -y install gimp"
+   echo >&2 "* OpenBSD:       sudo pkg_add gimp"
+   echo >&2 "* Apple:         brew install gimp"
    exit 1
 fi
 GIMP_VERSION="$(LC_ALL=C.UTF-8 "${GIMP_CONSOLE}" --version | sed -e 's/GNU Image Manipulation Program version //')"

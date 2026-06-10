@@ -175,6 +175,9 @@ if [ "${GM}" == "" ] ; then
    echo >&2 " * SuSE:          sudo zypper install -y GraphicsMagick"
    echo >&2 " * Alpine:        sudo apk add graphicsmagick"
    echo >&2 " * FreeBSD:       sudo pkg install -y GraphicsMagick"
+   echo >&2 " * NetBSD:        sudo pkgin -y install GraphicsMagick"
+   echo >&2 " * OpenBSD:       sudo pkg_add GraphicsMagick"
+   echo >&2 " * Apple:         brew install GraphicsMagick"
    exit 1
 fi
 
