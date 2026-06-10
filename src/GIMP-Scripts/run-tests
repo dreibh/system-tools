@@ -149,13 +149,8 @@ show-script "gs-glossytext"
    --outline-size 16                         \
    --blend-gradient-text "Brushed Aluminium" \
    --blend-gradient-outline "Golden" || exit-failed
-if ./gs-list-fonts | grep -q "URW Gothic L Book Oblique" ; then
-   fontName="URW Gothic L Book Oblique"
-else
-   fontName="URW Gothic Book Oblique"
-fi
 ./gs-glossytext NorNet3.png "NorNet Testbed" \
-   -F "${fontName}"                          \
+   -F "Noto Sans Bold"                       \
    -S 128                                    \
    -O 5                                      \
    -G "Brushed Aluminium"                    \
