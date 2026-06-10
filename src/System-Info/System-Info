@@ -239,17 +239,22 @@ function print-system-information ()
       "${hostname_long}"
 
    # ------ Uptime ----------------------------------------------------------
-   # xgettext: c-format
+   # xgettext: c-format,sh-printf-format
    formatUptimeDays="$(ngettext "%s day" "%s days" "${uptime_days}")"
-   uptimeInDays="$(printf "${formatUptimeDays}" "$(printf "%'d" "${uptime_days}")")"
-   # xgettext: c-format
+   # xgettext: c-format,sh-printf-format
    formatUptimeHours="$(ngettext "%d hour" "%d hours" "${uptime_hours}")"
-   uptimeInHours="$(printf "${formatUptimeHours}" "${uptime_hours}")"
-   # xgettext: c-format
+   # xgettext: c-format,sh-printf-format
    formatUptimeMinutes="$(ngettext "%d minute" "%d minutes" "${uptime_mins}")"
-   uptimeInMinutes="$(printf "${formatUptimeMinutes}" "${uptime_mins}")"
-   # xgettext: c-format
+   # xgettext: c-format,sh-printf-format
    formatUptimeSeconds="$(ngettext "%d second" "%d seconds" "${uptime_secs}")"
+
+   # shellcheck disable=SC2059,SC2034
+   uptimeInDays="$(printf "${formatUptimeDays}" "$(printf "%'d" "${uptime_days}")")"
+   # shellcheck disable=SC2059,SC2034
+   uptimeInHours="$(printf "${formatUptimeHours}" "${uptime_hours}")"
+   # shellcheck disable=SC2059,SC2034
+   uptimeInMinutes="$(printf "${formatUptimeMinutes}" "${uptime_mins}")"
+   # shellcheck disable=SC2059,SC2034
    uptimeInSeconds="$(printf "${formatUptimeSeconds}" "${uptime_secs}")"
 
    # shellcheck disable=SC2059
@@ -263,11 +268,11 @@ function print-system-information ()
       "$(eval_gettext "\${os_label} with kernel \${system_release}")"
 
    # ------ Processor -------------------------------------------------------
-   # xgettext: c-format
+   # xgettext: c-format,sh-printf-format
    processesFormat="$(gettext "%s processes")"
    # shellcheck disable=SC2034,SC2059
    processesString="$(printf "${processesFormat}" "${system_procs}")"
-   # xgettext: c-format
+   # xgettext: c-format,sh-printf-format
    usersFormat="$(ngettext "%s user" "%s users" "${system_users}")"
    # shellcheck disable=SC2034,SC2059
    usersString="$(printf "${usersFormat}" "$(printf "%'d" "${system_users}")")"
@@ -284,7 +289,7 @@ function print-system-information ()
        )"
 
    # ------ Load ------------------------------------------------------------
-   # xgettext: c-format
+   # xgettext: c-format,sh-printf-format
    loadFormat="$(gettext "%1.1f %% / %1.1f %% / %1.1f %%")"
 
    # shellcheck disable=SC2059
@@ -348,7 +353,7 @@ function print-system-information ()
    # NOTE: Using strings (%s) for formatting, since this is easier to handle
    #       by translation AI. Patterns like %'5.1f often fail to translate.
 
-   # xgettext: c-format
+   # xgettext: c-format,sh-printf-format
    memoryFormat=$(gettext "%s MiB of %s MiB (%s MiB available: %s %%)")
 
    # shellcheck disable=SC2059
@@ -403,7 +408,7 @@ function print-system-information ()
             colorDisk="${colorDiskNormal}"
          fi
 
-         # xgettext: c-format
+         # xgettext: c-format,sh-printf-format
          # shellcheck disable=SC2059
          diskSummary+=( "${separator}${colorDisk}$(printf "$(gettext "%1.0f %% on %s")" \
             "${!mountPointVariable}" \

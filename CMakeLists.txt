@@ -169,7 +169,7 @@ IF (WITH_I18N)
       MESSAGE(STATUS " Version:           ${Intl_VERSION}")
    ELSE()
       MESSAGE(FATAL_ERROR
-            " Cannot find Internationalization (i18n) support! Try:\n"
+            "Cannot find Internationalization (i18n) support! Try:\n"
             " * Ubuntu/Debian: sudo apt install -y libc6-dev\n"
             " * Fedora:        sudo dnf install -y gettext-devel\n"
             " * SuSE:          sudo zypper install -y gettext-devel\n"

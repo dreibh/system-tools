@@ -129,7 +129,7 @@ shift
 # ====== Check availability of tools ========================================
 case "${UNAME}" in
    Darwin)
-      OPENSSL="$(env PATH=/opt/homebrew/opt/openssl/bin:$PATH command -v getopt)"
+      OPENSSL="$(env PATH="/opt/homebrew/opt/openssl/bin:$PATH" command -v getopt)"
       ;;
    *)
       OPENSSL="$(command -v openssl || true)"
