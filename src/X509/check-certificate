@@ -135,7 +135,6 @@ case "${UNAME}" in
       OPENSSL="$(command -v openssl || true)"
       ;;
 esac
-OPENSSL="$(command -v openssl || true)"
 if [ "${OPENSSL}" == "" ] ; then
    gettext >&2 "ERROR: OpenSSL is not installed!"
    echo >&2

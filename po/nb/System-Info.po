@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-06-09 08:53+0200\n"
+"POT-Creation-Date: 2026-06-10 15:54+0200\n"
 "PO-Revision-Date: 2026-01-06 22:58+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -61,17 +61,12 @@ msgstr "Vert:"
 
 #: src/System-Info/System-Info:243
 #, c-format
-msgid "%s, %s, %s, and %s"
-msgstr "%s, %s, %s og %s"
-
-#: src/System-Info/System-Info:245
-#, c-format
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] "%s dag"
 msgstr[1] "%s dager"
 
-#: src/System-Info/System-Info:247
+#: src/System-Info/System-Info:246
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -85,138 +80,143 @@ msgid_plural "%d minutes"
 msgstr[0] "%d minutt"
 msgstr[1] "%d minutter"
 
-#: src/System-Info/System-Info:251
+#: src/System-Info/System-Info:252
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d sekund"
 msgstr[1] "%d sekunder"
 
-#: src/System-Info/System-Info:255
+#: src/System-Info/System-Info:257
 msgid "Uptime:"
 msgstr "Oppetid:"
 
-#: src/System-Info/System-Info:265
+#: src/System-Info/System-Info:258
+#, sh-format
+msgid "${uptimeInDays}, ${uptimeInHours}, ${uptimeInMinutes}, and ${uptimeInSeconds}"
+msgstr ""
+
+#: src/System-Info/System-Info:262
 msgid "Operating System:"
 msgstr "Operativsystem:"
 
-#: src/System-Info/System-Info:266
+#: src/System-Info/System-Info:263
 #, sh-format
 msgid "${os_label} with kernel ${system_release}"
 msgstr "${os_label} med kjerne ${system_release}"
 
-#: src/System-Info/System-Info:270
+#: src/System-Info/System-Info:267
 #, c-format
 msgid "%s processes"
 msgstr "%s prosesser"
 
-#: src/System-Info/System-Info:274
+#: src/System-Info/System-Info:271
 #, c-format
 msgid "%s user"
 msgid_plural "%s users"
 msgstr[0] "%s bruker"
 msgstr[1] "%s brukere"
 
-#: src/System-Info/System-Info:284
+#: src/System-Info/System-Info:281
 msgid "Processor:"
 msgstr "Prosessor:"
 
-#: src/System-Info/System-Info:286
+#: src/System-Info/System-Info:283
 #, sh-format
 msgid "${systemCoresString} × ${systemMachineString}; ${processesString}; ${usersString}"
 msgstr "${systemCoresString} × ${systemMachineString}; ${processesString}; ${usersString}"
 
-#: src/System-Info/System-Info:291
+#: src/System-Info/System-Info:288
 #, c-format
 msgid "%1.1f %% / %1.1f %% / %1.1f %%"
 msgstr "%1.1f %% / %1.1f %% / %1.1f %%"
 
-#: src/System-Info/System-Info:295
+#: src/System-Info/System-Info:292
 msgid "Load (1/5/15 min):"
 msgstr "Last (1/5/15 min.):"
 
-#: src/System-Info/System-Info:320
+#: src/System-Info/System-Info:317
 msgid "unknown"
 msgstr "ukjent"
 
-#: src/System-Info/System-Info:324
+#: src/System-Info/System-Info:321
 msgid "not charging"
 msgstr "lades ikke"
 
-#: src/System-Info/System-Info:327
+#: src/System-Info/System-Info:324
 msgid "charging"
 msgstr "lades"
 
-#: src/System-Info/System-Info:330
+#: src/System-Info/System-Info:327
 msgid "full"
 msgstr "fulladet"
 
-#: src/System-Info/System-Info:334
+#: src/System-Info/System-Info:331
 msgid "discharging"
 msgstr "lades ut"
 
-#: src/System-Info/System-Info:342
+#: src/System-Info/System-Info:339
 #, sh-format
 msgid "#${batteryNumber} ${batteryStatus}, ${batteryCapacity} %"
 msgstr "№${batteryNumber} ${batteryStatus}, ${batteryCapacity} %"
 
-#: src/System-Info/System-Info:346
+#: src/System-Info/System-Info:343
 msgid "Battery:"
 msgstr "Batteri:"
 
-#: src/System-Info/System-Info:355
+#: src/System-Info/System-Info:352
 #, c-format
 msgid "%s MiB of %s MiB (%s MiB available: %s %%)"
 msgstr "%s MiB av %s MiB (%s MiB tilgjengelig: %s %%)"
 
-#: src/System-Info/System-Info:359
+#: src/System-Info/System-Info:356
 msgid "Used Memory:"
 msgstr "Brukt minne:"
 
-#: src/System-Info/System-Info:369 src/System-Info/System-Info:378
+#: src/System-Info/System-Info:366 src/System-Info/System-Info:375
 msgid "Used Swap:"
 msgstr "Brukt bytteplass:"
 
-#: src/System-Info/System-Info:379
+#: src/System-Info/System-Info:376
 msgid "no swap available!"
 msgstr "bytteplass ikke tilgjengelig!"
 
-#: src/System-Info/System-Info:411
+#: src/System-Info/System-Info:408
 #, c-format
 msgid "%1.0f %% on %s"
 msgstr "%1.0f %% på %s"
 
-#: src/System-Info/System-Info:417
+#: src/System-Info/System-Info:414
 msgid "Used Diskspace:"
 msgstr "Brukt diskplass:"
 
-#: src/System-Info/System-Info:425
+#: src/System-Info/System-Info:422
 msgid "Network:"
 msgstr "Nettverk:"
 
-#: src/System-Info/System-Info:452
+#: src/System-Info/System-Info:449
 msgid "(No IPv4)"
 msgstr "(Ingen IPv4)"
 
-#: src/System-Info/System-Info:492
+#: src/System-Info/System-Info:489
 msgid "SSH Keys:"
 msgstr "SSH-nøkler:"
 
-#: src/System-Info/System-Info:499
+#: src/System-Info/System-Info:496
 #, sh-format
 msgid "#${keyNumber} ${keyInfo}"
 msgstr "№${keyNumber} ${keyInfo}"
 
-#: src/System-Info/System-Info:512
+#: src/System-Info/System-Info:509
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/System-Info/System-Info:579
+#: src/System-Info/System-Info:576
 #, sh-format
 msgid "ERROR: Unable to find input file ${testSystemInfoInput}!"
 msgstr "FEIL: Inndatafil ${testSystemInfoInput} finnes ikke!"
 
-#: src/System-Info/System-Info:610
+#: src/System-Info/System-Info:607
 #, sh-format
 msgid "System information on ${now}"
 msgstr "Systeminformasjon på ${now}"
@@ -233,3 +233,7 @@ msgstr "Velkommen på systemet"
 #: src/System-Info/system-info.d/10-company-logo-example:53
 msgid "Welcome to"
 msgstr "Velkommen til"
+
+#, c-format
+#~ msgid "%s, %s, %s, and %s"
+#~ msgstr "%s, %s, %s og %s"
