@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-09 14:47+0200\n"
+"POT-Creation-Date: 2026-06-10 14:08+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -47,52 +47,52 @@ msgstr ""
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/X509/check-certificate:120
+#: src/X509/check-certificate:137
 #, sh-format
 msgid "ERROR: Unable to find CA certificate file ${CA_FILE}!"
 msgstr "FEIL: Finner ikke CA-sertifikatfilen ${CA_FILE}!"
 
-#: src/X509/check-certificate:127
+#: src/X509/check-certificate:144
 #, sh-format
 msgid "ERROR: Unable to find CRL file ${CRL}!"
 msgstr "FEIL: Finner ikke CRL-filen ${CRL}!"
 
-#: src/X509/check-certificate:141
+#: src/X509/check-certificate:158
 #, sh-format
 msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
 msgstr "FEIL: Finner ikke sertifikatfilen ${CERTIFICATE_FILE}!"
 
-#: src/X509/check-certificate:153
+#: src/X509/check-certificate:170
 #, sh-format
 msgid "Verifying ${CERTIFICATE_FILE} with CA ${CA_FILE} ..."
 msgstr "Verifiserer ${CERTIFICATE_FILE} med CA ${CA_FILE} ..."
 
-#: src/X509/check-certificate:155
+#: src/X509/check-certificate:172
 msgid "WARNING: Only checking self-signature!"
 msgstr "ADVARSEL: Kontrollerer bare selvsignatur!"
 
-#: src/X509/check-certificate:168 src/X509/check-certificate:192
-#: src/X509/check-certificate:275
+#: src/X509/check-certificate:185 src/X509/check-certificate:209
+#: src/X509/check-certificate:292
 msgid "✓OKAY"
 msgstr "✓OKAY"
 
-#: src/X509/check-certificate:171 src/X509/check-certificate:198
-#: src/X509/check-certificate:281
+#: src/X509/check-certificate:188 src/X509/check-certificate:215
+#: src/X509/check-certificate:298
 msgid "❌FAILED!"
 msgstr "❌MISLYKKET!"
 
-#: src/X509/check-certificate:175
+#: src/X509/check-certificate:192
 msgid "(OpenSSL is not installed)"
 msgstr "(OpenSSL er ikke installert)"
 
-#: src/X509/check-certificate:202
+#: src/X509/check-certificate:219
 msgid "(GnuTLS CertTool is not installed)"
 msgstr "(GnuTLS CertTool er ikke installert)"
 
-#: src/X509/check-certificate:287
+#: src/X509/check-certificate:304
 msgid "(NSS CertUtil is not installed)"
 msgstr "(NSS CertUtil er ikke installert)"
 
-#: src/X509/check-certificate:295
+#: src/X509/check-certificate:312
 msgid "CERTIFICATE VERIFICATIONS FAILED!"
 msgstr "SERTIFIKATVERIFIKASJONENE MISLYKKET!"

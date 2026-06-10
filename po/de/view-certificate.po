@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-05-16 12:58+0200\n"
+"POT-Creation-Date: 2026-06-10 14:08+0200\n"
 "PO-Revision-Date: 2026-16-05 14:36+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -47,66 +47,66 @@ msgstr ""
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/X509/view-certificate:121
+#: src/X509/view-certificate:138
 msgid "ERROR: OpenSSL is not installed!"
 msgstr "FEHLER: OpenSSL ist nicht installiert!"
 
-#: src/X509/view-certificate:128
+#: src/X509/view-certificate:145
 msgid "Subject:"
 msgstr "Inhaber:"
 
-#: src/X509/view-certificate:129
+#: src/X509/view-certificate:146
 msgid "Subject Alternative Name:"
 msgstr "Alternativer Inhabername:"
 
-#: src/X509/view-certificate:130
+#: src/X509/view-certificate:147
 msgid "Public Key Algorithm:"
 msgstr "Algorithmus für öffentlichen Schlüssel:"
 
-#: src/X509/view-certificate:131
+#: src/X509/view-certificate:148
 msgid "Signature Algorithm:"
 msgstr "Signaturalgorithmus:"
 
-#: src/X509/view-certificate:132
+#: src/X509/view-certificate:149
 msgid "Validity:"
 msgstr "Gültigkeit:"
 
-#: src/X509/view-certificate:133
+#: src/X509/view-certificate:150
 msgid "Basic Constraints:"
 msgstr "Basiseinschränkungen:"
 
-#: src/X509/view-certificate:134
+#: src/X509/view-certificate:151
 msgid "Key Usage:"
 msgstr "Schlüsselverwendung:"
 
-#: src/X509/view-certificate:135
+#: src/X509/view-certificate:152
 msgid "Extended Key Usage:"
 msgstr "Erweiterte Schlüsselverwendung:"
 
-#: src/X509/view-certificate:136
+#: src/X509/view-certificate:153
 msgid "Subject Key Identifier:"
 msgstr "Inhaber-Schlüsselidentifikator:"
 
-#: src/X509/view-certificate:137
+#: src/X509/view-certificate:154
 msgid "Authority Key Identifier:"
 msgstr "Herausgeber-Schlüsselidentifikator:"
 
-#: src/X509/view-certificate:159
+#: src/X509/view-certificate:176
 #, sh-format
 msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
 msgstr "FEHLER: Zertifikatsdatei ${CERTIFICATE_FILE} wurde nicht gefunden!"
 
-#: src/X509/view-certificate:164
+#: src/X509/view-certificate:181
 #, sh-format
 msgid "Certificate in ${CERTIFICATE_FILE}:"
 msgstr "Zertifikat in ${CERTIFICATE_FILE}:"
 
-#: src/X509/view-certificate:242
+#: src/X509/view-certificate:259
 #, sh-format
 msgid "Hierarchy in ${CERTIFICATE_FILE}:"
 msgstr "Hierarchie in ${CERTIFICATE_FILE}:"
 
-#: src/X509/view-certificate:253
+#: src/X509/view-certificate:270
 #, sh-format
 msgid "#${entry}."
 msgstr "${entry}."

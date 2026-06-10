@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-06-01 22:54+0200\n"
+"POT-Creation-Date: 2026-06-09 08:53+0200\n"
 "PO-Revision-Date: 2026-01-06 22:58+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -123,12 +123,8 @@ msgstr "Prozessor:"
 
 #: src/System-Info/System-Info:286
 #, sh-format
-msgid ""
-"${systemCoresString} × ${systemMachineString}; ${processesString}; "
-"${usersString}"
-msgstr ""
-"${systemCoresString} × ${systemMachineString}; ${processesString}; "
-"${usersString}"
+msgid "${systemCoresString} × ${systemMachineString}; ${processesString}; ${usersString}"
+msgstr "${systemCoresString} × ${systemMachineString}; ${processesString}; ${usersString}"
 
 #: src/System-Info/System-Info:291
 #, c-format
@@ -215,12 +211,12 @@ msgstr "${keyNumber}. ${keyInfo}"
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/System-Info/System-Info:562
+#: src/System-Info/System-Info:579
 #, sh-format
 msgid "ERROR: Unable to find input file ${testSystemInfoInput}!"
 msgstr "FEHLER: Eingabedatei ${testSystemInfoInput} wurde nicht gefunden!"
 
-#: src/System-Info/System-Info:593
+#: src/System-Info/System-Info:610
 #, sh-format
 msgid "System information on ${now}"
 msgstr "Systeminformation am ${now}"
