@@ -293,7 +293,7 @@ fi
 
 
 # ====== Detect GIMP, and determine version-specific call options ===========
-GIMP_CONSOLE="$(command -v gimp-console || true)"
+GIMP_CONSOLE="$(command -v gimp-console || command -v /Applications/GIMP.app/Contents/MacOS/gimp-console-3 || true)"
 if [ "${GIMP_CONSOLE}" == "" ] ; then
    echo >&2 "ERROR: GIMP is not installed! Try:"
    echo >&2 " * Ubuntu/Debian: sudo apt install -y gimp"
