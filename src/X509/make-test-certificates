@@ -34,7 +34,11 @@ set -euo pipefail
 
 DIRNAME="$(dirname "$0")"
 HOSTNAME="$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")"
-UNAME="$(UNAME)"
+if [ "${#HOSTNAME}" -gt 64 ] ; then
+   echo >&2 "ERROR: The FQDN hostname ${HOSTNAME} is too long (> 64 bytes) for a CN!"
+   exit 1
+fi
+UNAME="$(uname)"
 if [ "${UNAME}" == "Darwin" ] ; then
    PATH="/opt/homebrew/opt/openssl/bin:$PATH"
 fi
