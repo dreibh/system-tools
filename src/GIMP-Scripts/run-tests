@@ -103,7 +103,14 @@ trap 'if [ -d "${GIMP3_DIRECTORY}" ] ; then rm -rf "${GIMP3_DIRECTORY}" ; fi ; e
 # ====== Use FractGen to generate the example image =========================
 # Requires: clifractgen
 if [ ! -e "${INPUT3}"  ] ; then
-   clifractgen examples/Fractal.fsf "${INPUT3}" -W 1920 -H 1080 -M 2048
+   if command -v clifractgen ; then
+      clifractgen examples/Fractal.fsf "${INPUT3}" -W 1920 -H 1080 -M 2048
+   else
+      wget -O /tmp/Fractal.webp \
+         "https://www.nntb.no/~dreibh/system-tools/GIMP-Scripts/figures/Fractal.webp"
+      gm convert /tmp/Fractal.webp "${INPUT3}"
+      rm -f /tmp/Fractal.webp
+   fi
 fi
 
 
