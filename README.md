@@ -195,7 +195,7 @@ man configure-grub
 
 # 📚 Print-UTF8
 
-Print-UTF8 is a simple program to print UTF-8 strings in the console with options for indentation, centering, separator as well as size/length/width information. It can e.g.&nbsp;be utilised for printing System-Info banners, or for displaying error messages like this classic Amiga [Guru Meditation](https://en.wikipedia.org/wiki/Guru_Meditation) example:
+Print-UTF8 is a simple program to print UTF-8 strings in the console with options for indentation, centering, separator as well as size/length/width information. It can e.g.&nbsp;be utilised for printing System-Info banners, or for displaying error messages like this classic Amiga [Guru Meditation](https://www.computerhope.com/jargon/g/gurumedi.htm) example:
 
 ```bash
 print-utf8 -n -s "\e[1;31;40;5m█" "▀" "█\e[0m"
@@ -269,7 +269,7 @@ For example, the publications list in [`index.html`](https://www.nntb.no/~dreibh
 
 # 📚 Unix-Timestamp-Tools
 
-The Unix-Timestamp-Tools are utilities for converting Unix timestamps (time since the [Unix Epoch](https://en.wikipedia.org/wiki/Unix_time), i.e.&nbsp;1970-01-01 00:00:00.000000000 UTC) to/from human-readable date and time strings. The tools support Unix timestamps in seconds, milliseconds, microseconds, as well as nanoseconds.
+The Unix-Timestamp-Tools are utilities for converting Unix timestamps (time since the [Unix Epoch](https://medium.com/@boutnaru/the-linux-concept-journey-unix-time-f1cdd7cd57b1), i.e.&nbsp;1970-01-01 00:00:00.000000000 UTC) to/from human-readable date and time strings. The tools support Unix timestamps in seconds, milliseconds, microseconds, as well as nanoseconds.
 
 
 ## Time2UnixTS
@@ -424,11 +424,11 @@ man random-sleep
 
 # 📚 X.509-Tools
 
-The X.509-Tools are a set of utilities for viewing, verifying and testing [X.509](https://en.wikipedia.org/wiki/X.509) certificates:
+The X.509-Tools are a set of utilities for viewing, verifying and testing [X.509](https://www.geeksforgeeks.org/computer-networks/public-key-infrastructure/) certificates:
 
 ## View-Certificate
 
-View-Certificate displays basic details of given certificates in [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) or [Distinguished Encoding Rules&nbsp;(DER)](https://en.wikipedia.org/wiki/X.690#DER_encoding) format, like subject, common name, etc. Examples:
+View-Certificate displays basic details of given certificates in [Privacy-Enhanced Mail&nbsp;(PEM)](https://www.geeksforgeeks.org/cybersecurity/privacy-enhanced-mail-pem/) or [Distinguished Encoding Rules&nbsp;(DER)](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-X.690-202102-I!!PDF-E&type=items) format, like subject, common name, etc. Examples:
 
 * Display the Root CA certificate used by [Let's Encrypt](https://letsencrypt.org/), which is usually installed under `/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt` (Debian/Ubuntu), `/etc/pki/ca-trust/extracted/pem/directory-hash/ISRG_Root_X1.pem` (Fedora), or `/usr/share/certs/trusted/ISRG_Root_X1.pem` (FreeBSD):
 
@@ -451,7 +451,7 @@ man view-certificate
 
 ## View-CRL
 
-View-CRL displays details of given [X.509](https://en.wikipedia.org/wiki/X.509) Certificate Revocation Lists&nbsp;(CRL) in [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) or [Distinguished Encoding Rules&nbsp;(DER)](https://en.wikipedia.org/wiki/X.690#DER_encoding) format, particularly the revoked certificates. Examples:
+View-CRL displays details of given [X.509](https://www.geeksforgeeks.org/computer-networks/public-key-infrastructure/) Certificate Revocation Lists&nbsp;(CRL) in [Privacy-Enhanced Mail&nbsp;(PEM)](https://www.geeksforgeeks.org/cybersecurity/privacy-enhanced-mail-pem/) or [Distinguished Encoding Rules&nbsp;(DER)](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-X.690-202102-I!!PDF-E&type=items) format, particularly the revoked certificates. Examples:
 
 * Display the CRL in file `TestGlobal.crl`:
 
@@ -507,7 +507,7 @@ man check-certificate
 
 ## Extract-PEM
 
-Extract-PEM extracts an X.509 certificate bundle from a [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) file into separate files for each entry. The output files are named using a given prefix, with extension according to the entry type (i.e.&nbsp;`.crt` for a certificate, `.key` for a key, `.crl` for a CRL). The first entry (usually: the server, client or user certificate) and/or last entry (usually: the Root CA) may be skipped. Examples:
+Extract-PEM extracts an X.509 certificate bundle from a [Privacy-Enhanced Mail&nbsp;(PEM)](https://www.geeksforgeeks.org/cybersecurity/privacy-enhanced-mail-pem/) file into separate files for each entry. The output files are named using a given prefix, with extension according to the entry type (i.e.&nbsp;`.crt` for a certificate, `.key` for a key, `.crl` for a CRL). The first entry (usually: the server, client or user certificate) and/or last entry (usually: the Root CA) may be skipped. Examples:
 
 * Extract the PEM file `My-Server-Certificate.crt`, into files `Certificate-<NUMBER>.<EXTENSION>`. The number is starting from&nbsp;1, and provides the position of an entry within the input file:
 
@@ -531,7 +531,7 @@ man extract-pem
 
 ## DER2PEM and PEM2DER
 
-DER2PEM and PEM2DER are simple scripts to convert between ASCII-encoded [Privacy-Enhanced Mail&nbsp;(PEM)](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) and binary-encoded [Distinguished Encoding Rules&nbsp;(DER)](https://en.wikipedia.org/wiki/X.690#DER_encoding) certificates or CRLs. Examples:
+DER2PEM and PEM2DER are simple scripts to convert between ASCII-encoded [Privacy-Enhanced Mail&nbsp;(PEM)](https://www.geeksforgeeks.org/cybersecurity/privacy-enhanced-mail-pem/) and binary-encoded [Distinguished Encoding Rules&nbsp;(DER)](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-X.690-202102-I!!PDF-E&type=items) certificates or CRLs. Examples:
 
 * Download the Google CRL (in DER format, from [http://c.pki.goog/wr2/GSyT1N4PBrg.crl](http://c.pki.goog/wr2/GSyT1N4PBrg.crl)) and convert it to PEM:
 

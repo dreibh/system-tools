@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # 24-bit XTerm color test:
-# See: https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit
+# See: https://jakob-bagterp.github.io/colorist-for-python/ansi-escape-codes/introduction/
 
 # i=0
 # while [ $i -lt 255 ] ; do
