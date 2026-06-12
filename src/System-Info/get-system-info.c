@@ -326,7 +326,7 @@ static void showUptimeInformation(void)
 }
 
 
-#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__APPLE__))
+#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__APPLE__))
 // ###### Query information via shell #######################################
 static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 {
@@ -412,6 +412,25 @@ static unsigned int obtainProcessCount(void)
          if(sysctl(mibKernProcProc, mibKernProcProcSize, processList, &length, nullptr, 0) == 0) {
             // The current process count is the number of entries fetched:
             count = length / sizeof(struct kinfo_proc);
+         }
+         free(processList);
+      }
+   }
+
+#elif defined(__NetBSD__)
+   // ====== NetBSD: use sysctl to query the number of processes ============
+   int                mibKernProcProc[6]  = { CTL_KERN, KERN_PROC2, KERN_PROC_ALL, 0, sizeof(struct kinfo_proc2), 0 };
+   const unsigned int mibKernProcProcSize = sizeof(mibKernProcProc) / sizeof(mibKernProcProc[0]);
+   size_t             length = 0;
+   if(sysctl(mibKernProcProc, mibKernProcProcSize, nullptr, &length, nullptr, 0) == 0) {
+      length = (length * 5) / 4;   // Add some extra space
+      void* processList = malloc(length);
+      if(processList != nullptr) {
+         mibKernProcProc[5] = (int)(length / sizeof(struct kinfo_proc2));
+         // ------ Obtain the process list ----------------------------------
+         if(sysctl(mibKernProcProc, mibKernProcProcSize, processList, &length, nullptr, 0) == 0) {
+            // The current process count is the number of entries fetched:
+            count = length / sizeof(struct kinfo_proc2);
          }
          free(processList);
       }
