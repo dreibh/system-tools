@@ -417,6 +417,25 @@ static unsigned int obtainProcessCount(void)
       }
    }
 
+#elif defined(__OpenBSD__)
+   // ====== OpenBSD: use sysctl to query the number of processes ===========
+   int                mibKernProcProc[6]  = { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0, sizeof(struct kinfo_proc), 0 };
+   const unsigned int mibKernProcProcSize = sizeof(mibKernProcProc) / sizeof(mibKernProcProc[0]);
+   size_t             length = 0;
+   if(sysctl(mibKernProcProc, mibKernProcProcSize, nullptr, &length, nullptr, 0) == 0) {
+      length = (length * 5) / 4;   // Add some extra space
+      void* processList = malloc(length);
+      if(processList != nullptr) {
+         mibKernProcProc[5] = (int)(length / sizeof(struct kinfo_proc));
+         // ------ Obtain the process list ----------------------------------
+         if(sysctl(mibKernProcProc, mibKernProcProcSize, processList, &length, nullptr, 0) == 0) {
+            // The current process count is the number of entries fetched:
+            count = length / sizeof(struct kinfo_proc);
+         }
+         free(processList);
+      }
+   }
+
 #elif defined(__APPLE__)
    // ====== Apple: use libproc to query the number of processes ============
    // proc_listpids() with nullptr buffer returns the required buffer size:
