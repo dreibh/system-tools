@@ -288,18 +288,20 @@ static void showKernelInformation(void)
 // ###### Obtain the system uptime ##########################################
 static bool obtainUptime(struct timespec* ts)
 {
-#if !defined(__APPLE__)
-#if defined(CLOCK_BOOTTIME)
+#if defined(__linux__)
    return clock_gettime(CLOCK_BOOTTIME, ts) == 0;
-#else
+#elif defined(__FreeBSD__)
+   return clock_gettime(CLOCK_UPTIME_PRECISE, ts) == 0;
+#elif defined(__NetBSD__)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
-#endif
+#elif defined(__OpenBSD__)
+   return clock_gettime(CLOCK_BOOTTIME, ts) == 0;
+#elif defined(__APPLE__)
+   return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
 #else
-   const uint64_t uptime = mach_absolute_time();
-   ts->tv_sec  = uptime / 1000000;
-   ts->tv_nsec = (uptime % 1000000) * 1000;
-   return true;
+#error Missing case!
 #endif
+   return false;
 }
 
 
