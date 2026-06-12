@@ -402,6 +402,7 @@ static unsigned int obtainProcessCount(void)
    const unsigned int mibKernProcProcSize = sizeof(mibKernProcProc) / sizeof(mibKernProcProc[0]);
    size_t             length = 0;
    if(sysctl(mibKernProcProc, mibKernProcProcSize, nullptr, &length, nullptr, 0) == 0) {
+      length = (length * 5) / 4;   // Add some extra space
       // The memory size is more than necessary for the process list, since
       // the list may change. To obtain the process count, it is necessary
       // to actually fetch the process list:
