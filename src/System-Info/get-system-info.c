@@ -254,10 +254,12 @@ static void printflags(const unsigned int flags)
 static void showHostnameInformation(void)
 {
    char hostname[256];
-   if(gethostname(hostname, sizeof(hostname)) != 0) {
-      strcpy(hostname, "localhost");
+   if(gethostname(hostname, sizeof(hostname)) == 0) {
+      hostname[sizeof(hostname) - 1] = 0x00;
    }
-   hostname[sizeof(hostname) - 1] = 0x00;
+   else {
+      strlcpy(hostname, "localhost", sizeof(hostname));
+   }
 
    char* domainname = strchr(hostname, '.');
    if(domainname != nullptr) {
