@@ -65,6 +65,7 @@
 #include <vm/vm_param.h>
 #elif defined(__NetBSD__)
 #include <net/if_dl.h>
+#include <sys/envsys.h>
 #include <sys/ioctl.h>
 #include <sys/sysctl.h>
 #include <utmpx.h>
@@ -667,9 +668,93 @@ static void showBatteryInformation(void)
       close(acpiFD);
    }
 
-   // ====== NetBSD: Obtain battery status via TBD ==========================
+   // ====== NetBSD: Obtain battery status via envsys =======================
 #elif defined(__NetBSD__)
-#warning FIXME! NetBSD battery status!
+   int sysmonFD = open("/dev/sysmon", O_RDONLY);
+   if(sysmonFD >= 0) {
+      bool                foundBattery  = false;
+      bool                isPresent     = false;
+      bool                isCharging    = false;
+      bool                isDischarging = false;
+      unsigned int        capacity      = 0;
+      int                 status        = 0;   // Unknown
+      envsys_basic_info_t info;
+      envsys_tre_data_t   data;
+
+      // ------ Iterate over all sensor slots -------------------------------
+      for(unsigned int i = 0; i < 256; i++) {
+         memset(&info, 0, sizeof(info));
+         info.sensor = i;
+         if(ioctl(sysmonFD, ENVSYS_GTREINFO, &info) == -1) {
+            continue;
+         }
+         if(!(info.validflags & ENVSYS_FVALID)) {
+            continue;
+         }
+
+         memset(&data, 0, sizeof(data));
+         data.sensor = i;
+         if(ioctl(sysmonFD, ENVSYS_GTREDATA, &data) == -1) {
+            continue;
+         }
+         if(!(data.validflags & ENVSYS_FCURVALID)) {
+            continue;
+         }
+
+         // ------ Obtain information about battery -------------------------
+         if(strstr(info.desc, "acpibat0") != nullptr) {
+            foundBattery = true;
+            if(strstr(info.desc, "present") != nullptr) {
+               if(data.cur.data_us > 0) {
+                  isPresent = true;
+               }
+            }
+            else if( (strstr(info.desc, "charge") != nullptr) &&
+                     (strstr(info.desc, "rate") == nullptr) ) {
+               if(data.max.data_us > 0) {
+                  capacity  = (unsigned int)(((unsigned long long)data.cur.data_us * 100) / data.max.data_us);
+                  isPresent = true;
+               }
+            }
+            else if(strstr(info.desc, "charging") != nullptr) {
+               if(data.cur.data_us > 0) {
+                  isCharging = true;
+               }
+            }
+            else if(strstr(info.desc, "discharge rate") != nullptr) {
+               if(data.cur.data_us > 0) {
+                  isDischarging = true;
+               }
+            }
+         }
+      }
+      close(sysmonFD);
+
+      if(foundBattery && isPresent) {
+         if(capacity > 100) {
+            capacity = 100;
+         }
+
+         // ------ Extract status as status code ----------------------------
+         if(capacity == 100) {
+            status = 3;   // Full
+         }
+         else if(isCharging) {
+            status = 2;   // Charging
+         }
+         else if(isDischarging) {
+            status = 4;   // Discharging
+         }
+         else {
+            status = 1;   // Not charging
+         }
+
+         // ------ Print battery status and capacity ------------------------
+         printf("battery_0_status=%u\n",   status);
+         printf("battery_0_capacity=%u\n", capacity);
+         batteryIDs[batteries++] = 0;
+      }
+   }
 
    // ====== OpenBSD: Obtain battery status via APM =========================
 #elif defined(__OpenBSD__)
