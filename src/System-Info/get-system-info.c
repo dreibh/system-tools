@@ -634,7 +634,7 @@ static void showBatteryInformation(void)
 #elif defined(__NetBSD__)
 #warning FIXME! NetBSD battery status!
 
-   // ====== OpenBSD: Obtain battery status via TBD =========================
+   // ====== OpenBSD: Obtain battery status via APM =========================
 #elif defined(__OpenBSD__)
    int apmFD = open("/dev/apm", O_RDONLY);
    if(apmFD >= 0) {
