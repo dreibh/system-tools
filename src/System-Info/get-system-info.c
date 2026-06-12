@@ -790,6 +790,11 @@ static void showBatteryInformation(void)
       close(apmFD);
    }
 
+   // ====== Apple: Obtain battery status via TBD ===========================
+#elif defined(__APPLE__)
+
+#warning FIXME! Battery status for Apple
+
 #else
 #warning Missing case!
 #endif
