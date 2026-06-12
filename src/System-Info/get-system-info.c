@@ -498,8 +498,8 @@ static unsigned int obtainUserCount(void)
    }
    endutxent();
 
-   // ====== OpenBSD: read /var/run/utmp to obtain the number of users ======
 #elif defined(__OpenBSD__)
+   // ====== OpenBSD: read /var/run/utmp to obtain the number of users ======
    FILE* fh = fopen("/var/run/utmp", "r");
    if(fh != nullptr) {
       struct utmp ut;
@@ -511,8 +511,8 @@ static unsigned int obtainUserCount(void)
       fclose(fh);
    }
 
-   // ====== Fallback =======================================================
 #else
+   // ====== Fallback =======================================================
 #warning Using fallback solution for obtaining the user count!
    char         buffer[64];
    unsigned int value;
