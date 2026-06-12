@@ -402,18 +402,18 @@ static unsigned int obtainProcessCount(void)
    // ------  Get memory size necessary to obtain the process list ----------
    const int          mibKernProcProc[3]  = { CTL_KERN, KERN_PROC, KERN_PROC_PROC };
    const unsigned int mibKernProcProcSize = sizeof(mibKernProcProc) / sizeof(mibKernProcProc[0]);
-   size_t             length = 0;
-   if(sysctl(mibKernProcProc, mibKernProcProcSize, nullptr, &length, nullptr, 0) == 0) {
-      length = (length * 5) / 4;   // Add some extra space
+   size_t             parameterLength = 0;
+   if(sysctl(mibKernProcProc, mibKernProcProcSize, nullptr, &parameterLength, nullptr, 0) == 0) {
+      parameterLength = (parameterLength * 5) / 4;   // Add some extra space
       // The memory size is more than necessary for the process list, since
       // the list may change. To obtain the process count, it is necessary
       // to actually fetch the process list:
-      void* processList = malloc(length);
+      void* processList = malloc(parameterLength);
       if(processList != nullptr) {
          // ------ Obtain the process list ----------------------------------
-         if(sysctl(mibKernProcProc, mibKernProcProcSize, processList, &length, nullptr, 0) == 0) {
+         if(sysctl(mibKernProcProc, mibKernProcProcSize, processList, &parameterLength, nullptr, 0) == 0) {
             // The current process count is the number of entries fetched:
-            count = length / sizeof(struct kinfo_proc);
+            count = parameterLength / sizeof(struct kinfo_proc);
          }
          free(processList);
       }
@@ -423,16 +423,16 @@ static unsigned int obtainProcessCount(void)
    // ====== NetBSD: use sysctl to query the number of processes ============
    int                mibKernProcProc[6]  = { CTL_KERN, KERN_PROC2, KERN_PROC_ALL, 0, sizeof(struct kinfo_proc2), 0 };
    const unsigned int mibKernProcProcSize = sizeof(mibKernProcProc) / sizeof(mibKernProcProc[0]);
-   size_t             length = 0;
-   if(sysctl(mibKernProcProc, mibKernProcProcSize, nullptr, &length, nullptr, 0) == 0) {
-      length = (length * 5) / 4;   // Add some extra space
-      void* processList = malloc(length);
+   size_t             parameterLength = 0;
+   if(sysctl(mibKernProcProc, mibKernProcProcSize, nullptr, &parameterLength, nullptr, 0) == 0) {
+      parameterLength = (parameterLength * 5) / 4;   // Add some extra space
+      void* processList = malloc(parameterLength);
       if(processList != nullptr) {
-         mibKernProcProc[5] = (int)(length / sizeof(struct kinfo_proc2));
+         mibKernProcProc[5] = (int)(parameterLength / sizeof(struct kinfo_proc2));
          // ------ Obtain the process list ----------------------------------
-         if(sysctl(mibKernProcProc, mibKernProcProcSize, processList, &length, nullptr, 0) == 0) {
+         if(sysctl(mibKernProcProc, mibKernProcProcSize, processList, &parameterLength, nullptr, 0) == 0) {
             // The current process count is the number of entries fetched:
-            count = length / sizeof(struct kinfo_proc2);
+            count = parameterLength / sizeof(struct kinfo_proc2);
          }
          free(processList);
       }
@@ -442,16 +442,16 @@ static unsigned int obtainProcessCount(void)
    // ====== OpenBSD: use sysctl to query the number of processes ===========
    int                mibKernProcProc[6]  = { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0, sizeof(struct kinfo_proc), 0 };
    const unsigned int mibKernProcProcSize = sizeof(mibKernProcProc) / sizeof(mibKernProcProc[0]);
-   size_t             length = 0;
-   if(sysctl(mibKernProcProc, mibKernProcProcSize, nullptr, &length, nullptr, 0) == 0) {
-      length = (length * 5) / 4;   // Add some extra space
-      void* processList = malloc(length);
+   size_t             parameterLength = 0;
+   if(sysctl(mibKernProcProc, mibKernProcProcSize, nullptr, &parameterLength, nullptr, 0) == 0) {
+      parameterLength = (parameterLength * 5) / 4;   // Add some extra space
+      void* processList = malloc(parameterLength);
       if(processList != nullptr) {
-         mibKernProcProc[5] = (int)(length / sizeof(struct kinfo_proc));
+         mibKernProcProc[5] = (int)(parameterLength / sizeof(struct kinfo_proc));
          // ------ Obtain the process list ----------------------------------
-         if(sysctl(mibKernProcProc, mibKernProcProcSize, processList, &length, nullptr, 0) == 0) {
+         if(sysctl(mibKernProcProc, mibKernProcProcSize, processList, &parameterLength, nullptr, 0) == 0) {
             // The current process count is the number of entries fetched:
-            count = length / sizeof(struct kinfo_proc);
+            count = parameterLength / sizeof(struct kinfo_proc);
          }
          free(processList);
       }
