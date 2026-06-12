@@ -77,6 +77,7 @@
 #include <sys/sysctl.h>
 #include <uvm/uvm_extern.h>
 #include <sys/swap.h>
+#include <utmp.h>
 #elif defined(__APPLE__)
 #include <libproc.h>
 #include <mach/mach.h>
@@ -328,7 +329,7 @@ static void showUptimeInformation(void)
 }
 
 
-#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__APPLE__))
+#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__))
 // ###### Query information via shell #######################################
 static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 {
@@ -483,11 +484,11 @@ static unsigned int obtainProcessCount(void)
 // ###### Obtain the number of users on the system ##########################
 static unsigned int obtainUserCount(void)
 {
+   // Count the number of user sessions, the same as "who | wc -l":
    unsigned int count = 0;
 
-#if !defined(__OpenBSD__)
    // ====== Use getutxent() to obtain and count the number of users ========
-   // Count the number of user sessions, the same as "who | wc -l":
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__APPLE__)
    setutxent();
    struct utmpx* utx;
    while( (utx = getutxent()) != nullptr ) {
@@ -496,8 +497,22 @@ static unsigned int obtainUserCount(void)
       }
    }
    endutxent();
-#else
+
+   // ====== OpenBSD: read /var/run/utmp to obtain the number of users ======
+#elif defined(__OpenBSD__)
+   FILE* fh = fopen("/var/run/utmp", "r");
+   if(fh != nullptr) {
+      struct utmp ut;
+      while(fread(&ut, sizeof(struct utmp), 1, fh) == 1) {
+         if(ut.ut_name[0] != '\0') {
+            count++;
+         }
+      }
+      fclose(fh);
+   }
+
    // ====== Fallback =======================================================
+#else
 #warning Using fallback solution for obtaining the user count!
    char         buffer[64];
    unsigned int value;
