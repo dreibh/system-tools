@@ -768,49 +768,47 @@ static void showMemoryInformation(void)
    // Based on: https://cgit.freebsd.org/src/tree/sbin/swapon/swapon.c
    int    mib[16];
    size_t mibsize = 16;
-   if(sysctlnametomib("vm.swap_info", mib, &mibsize) != 0) {
-      perror("sysctlnametomib(vm.swap_info)");
-      return;
-   }
-   for(int n = 0; ; n++) {
-      mib[mibsize] = n;
-      struct xswdev xsw;
-      size_t        size  = sizeof(xsw);
-      if(sysctl(mib, mibsize + 1, &xsw, &size, nullptr, 0) == -1) {
-         break;
+   if(sysctlnametomib("vm.swap_info", mib, &mibsize) == 0) {
+      for(int n = 0; ; n++) {
+         mib[mibsize] = n;
+         struct xswdev xsw;
+         size_t        size  = sizeof(xsw);
+         if(sysctl(mib, mibsize + 1, &xsw, &size, nullptr, 0) == -1) {
+            break;
+         }
+         if(xsw.xsw_version != XSWDEV_VERSION) {
+            break;
+         }
+         const unsigned long long total      = (unsigned long long)xsw.xsw_nblks * pageSize;
+         const unsigned long long used       = (unsigned long long)xsw.xsw_used * pageSize;
+         const unsigned long long available  = total - used;
+         swapTotal      += total;
+         swapAvailable  += available;
+         swapUsed       += used;
       }
-      if(xsw.xsw_version != XSWDEV_VERSION) {
-         break;
-      }
-      const unsigned long long total      = (unsigned long long)xsw.xsw_nblks * pageSize;
-      const unsigned long long used       = (unsigned long long)xsw.xsw_used * pageSize;
-      const unsigned long long available  = total - used;
-      swapTotal      += total;
-      swapAvailable  += available;
-      swapUsed       += used;
    }
 
 #elif defined(__NetBSD__) || defined(__OpenBSD__)
-   const int       numberOfSwapDevices = swapctl(SWAP_NSWAP, NULL, 0);
-   struct swapent* swapDeviceArray     = malloc((unsigned int)numberOfSwapDevices * sizeof(struct swapent));
-   if(swapDeviceArray) {
-      int swapRecords = swapctl(SWAP_STATS, swapDeviceArray, numberOfSwapDevices);
-      if(swapRecords > 0) {
-         for (unsigned int i = 0; i < (unsigned int)swapRecords; i++) {
-            if(swapDeviceArray[i].se_flags & SWF_INUSE) {
-               const unsigned long long totalBytes = (unsigned long long)swapDeviceArray[i].se_nblks * DEV_BSIZE;
-               const unsigned long long usedBytes  = (unsigned long long)swapDeviceArray[i].se_inuse * DEV_BSIZE;
-               swapTotal     += totalBytes;
-               swapUsed      += usedBytes;
-               swapAvailable += (totalBytes - usedBytes);
+   const int numberOfSwapDevices = swapctl(SWAP_NSWAP, nullptr, 0);
+   if(numberOfSwapDevices > 0) {
+      struct swapent* swapDeviceArray = malloc((unsigned int)numberOfSwapDevices * sizeof(struct swapent));
+      if(swapDeviceArray) {
+         int swapRecords = swapctl(SWAP_STATS, swapDeviceArray, numberOfSwapDevices);
+         if(swapRecords > 0) {
+            for (unsigned int i = 0; i < (unsigned int)swapRecords; i++) {
+               if(swapDeviceArray[i].se_flags & SWF_INUSE) {
+                  const unsigned long long totalBytes =
+                     (unsigned long long)swapDeviceArray[i].se_nblks * DEV_BSIZE;
+                  const unsigned long long usedBytes =
+                     (unsigned long long)swapDeviceArray[i].se_inuse * DEV_BSIZE;
+                  swapTotal     += totalBytes;
+                  swapUsed      += usedBytes;
+                  swapAvailable += (totalBytes - usedBytes);
+               }
             }
          }
+         free(swapDeviceArray);
       }
-      free(swapDeviceArray);
-   }
-   else {
-      perror("malloc");
-      return;
    }
 
 #elif defined(__APPLE__)
@@ -830,9 +828,12 @@ static void showMemoryInformation(void)
    host_page_size(mach_host_self(), &pageSize);
    if(host_statistics64(mach_host_self(), HOST_VM_INFO64,
                         (host_info64_t)&memoryStatistics, &count) == KERN_SUCCESS) {
-      const unsigned long long free        = (unsigned long long)memoryStatistics.free_count * pageSize;
-      const unsigned long long inactive    = (unsigned long long)memoryStatistics.inactive_count * pageSize;
-      const unsigned long long speculative = (unsigned long long)memoryStatistics.speculative_count * pageSize;
+      const unsigned long long free =
+         (unsigned long long)memoryStatistics.free_count * pageSize;
+      const unsigned long long inactive =
+         (unsigned long long)memoryStatistics.inactive_count * pageSize;
+      const unsigned long long speculative =
+         (unsigned long long)memoryStatistics.speculative_count * pageSize;
 
       memoryAvailable = free + inactive + speculative;
       memoryUsed      = memoryTotal - memoryAvailable;
@@ -995,51 +996,53 @@ static void showNetworkInformation(const bool filterLocalScope)
    int          lastFamily  = AF_UNSPEC;
    for(unsigned int i = 0; i < n; i++) {
       const unsigned int ifIndex = if_nametoindex(ifaArray[i].ifname);
-      if( (lastIfIndex == 0) || (lastIfIndex != ifIndex) ) {
-         if(lastIfIndex != 0) {
+      if(ifIndex != 0) {
+         if( (lastIfIndex == 0) || (lastIfIndex != ifIndex) ) {
+            if(lastIfIndex != 0) {
+               puts("\"");
+            }
+            printf("netif_%u_name=\"%s\"\n", ifIndex, ifaArray[i].ifname);
+            printf("netif_%u_flags=\"", ifIndex);
+            printflags(ifaArray[i].flags);
             puts("\"");
+            lastFamily = AF_UNSPEC;
          }
-         printf("netif_%u_name=\"%s\"\n", ifIndex, ifaArray[i].ifname);
-         printf("netif_%u_flags=\"", ifIndex);
-         printflags(ifaArray[i].flags);
-         puts("\"");
-         lastFamily = AF_UNSPEC;
-      }
 
-      if(lastFamily != ifaArray[i].address->sa_family) {
-         if(lastFamily != AF_UNSPEC) {
-            puts("\"");
-         }
-         switch(ifaArray[i].address->sa_family) {
-            case AF_INET6:
-               printf("netif_%u_ipv6=\"", ifIndex);
-             break;
-            case AF_INET:
-               printf("netif_%u_ipv4=\"", ifIndex);
-             break;
+         if(lastFamily != ifaArray[i].address->sa_family) {
+            if(lastFamily != AF_UNSPEC) {
+               puts("\"");
+            }
+            switch(ifaArray[i].address->sa_family) {
+               case AF_INET6:
+                  printf("netif_%u_ipv6=\"", ifIndex);
+               break;
+               case AF_INET:
+                  printf("netif_%u_ipv4=\"", ifIndex);
+               break;
 #if defined(__linux__)
-            case AF_PACKET:
+               case AF_PACKET:
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
-            case AF_LINK:
+               case AF_LINK:
 #else
 #error Missing case!
 #endif
-               printf("netif_%u_mac=\"", ifIndex);
-             break;
-            default:
-             break;
+                  printf("netif_%u_mac=\"", ifIndex);
+               break;
+               default:
+               break;
+            }
          }
-      }
-      else {
-         fputs(" ", stdout);
-      }
+         else {
+            fputs(" ", stdout);
+         }
 
-      printaddress(ifaArray[i].address, ifaArray[i].prefixlen);
+         printaddress(ifaArray[i].address, ifaArray[i].prefixlen);
 
-      lastIfIndex = ifIndex;
-      lastFamily  = ifaArray[i].address->sa_family;
+         lastIfIndex = ifIndex;
+         lastFamily  = ifaArray[i].address->sa_family;
+      }
    }
-   if(n > 0) {
+   if(lastIfIndex != 0) {
       puts("\"");
    }
 
