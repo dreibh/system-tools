@@ -921,8 +921,8 @@ static void showNetworkInformation(const bool filterLocalScope)
 
    // ====== Build list of interfaces and their addresses ===================
    struct interfaceaddress ifaArray[1024];
-   int                     ifIndices[1024];
-   unsigned int n = 0;
+   unsigned int            ifIndices[1024];
+   unsigned int            n = 0;
    for(struct ifaddrs* ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
       if(ifa->ifa_addr != nullptr) {
          if(n >= (sizeof(ifaArray) / sizeof(ifaArray[0]))) {
