@@ -534,13 +534,11 @@ static void showBatteryInformation(void)
       snprintf(capacityFileName, sizeof(capacityFileName), "/sys/class/power_supply/BAT%u/capacity", i);
       if( (queryFile(capacityFileName, capacityBuffer, sizeof(capacityBuffer))) &&
           (sscanf(capacityBuffer, "%u", &capacity) == 1) ) {
-         char  statusFileName[64];
-         char  statusBuffer[64];
-         char* statusEnd;
+         char statusFileName[64];
+         char statusBuffer[64];
          snprintf(statusFileName, sizeof(statusFileName), "/sys/class/power_supply/BAT%u/status", i);
-         if( (queryFile(statusFileName, statusBuffer, sizeof(statusBuffer))) &&
-             (statusEnd = strchr(statusBuffer, '\n')) ) {
-            *statusEnd = 0x00;
+         if(queryFile(statusFileName, statusBuffer, sizeof(statusBuffer))) {
+            statusBuffer[strcspn(statusBuffer, "\r\n")] = 0x00;
 
             // ------ Extract status as status code -------------------------
             int status = 0;   // Unknown
@@ -923,6 +921,7 @@ static void showNetworkInformation(const bool filterLocalScope)
 
    // ====== Build list of interfaces and their addresses ===================
    struct interfaceaddress ifaArray[1024];
+   int                     ifIndices[1024];
    unsigned int n = 0;
    for(struct ifaddrs* ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
       if(ifa->ifa_addr != nullptr) {
@@ -995,14 +994,14 @@ static void showNetworkInformation(const bool filterLocalScope)
    unsigned int lastIfIndex = 0;
    int          lastFamily  = AF_UNSPEC;
    for(unsigned int i = 0; i < n; i++) {
-      const unsigned int ifIndex = if_nametoindex(ifaArray[i].ifname);
-      if(ifIndex != 0) {
-         if( (lastIfIndex == 0) || (lastIfIndex != ifIndex) ) {
+      ifIndices[i] = if_nametoindex(ifaArray[i].ifname);
+      if(ifIndices[i] != 0) {
+         if( (lastIfIndex == 0) || (lastIfIndex != ifIndices[i]) ) {
             if(lastIfIndex != 0) {
                puts("\"");
             }
-            printf("netif_%u_name=\"%s\"\n", ifIndex, ifaArray[i].ifname);
-            printf("netif_%u_flags=\"", ifIndex);
+            printf("netif_%u_name=\"%s\"\n", ifIndices[i], ifaArray[i].ifname);
+            printf("netif_%u_flags=\"", ifIndices[i]);
             printflags(ifaArray[i].flags);
             puts("\"");
             lastFamily = AF_UNSPEC;
@@ -1014,10 +1013,10 @@ static void showNetworkInformation(const bool filterLocalScope)
             }
             switch(ifaArray[i].address->sa_family) {
                case AF_INET6:
-                  printf("netif_%u_ipv6=\"", ifIndex);
+                  printf("netif_%u_ipv6=\"", ifIndices[i]);
                break;
                case AF_INET:
-                  printf("netif_%u_ipv4=\"", ifIndex);
+                  printf("netif_%u_ipv4=\"", ifIndices[i]);
                break;
 #if defined(__linux__)
                case AF_PACKET:
@@ -1026,7 +1025,7 @@ static void showNetworkInformation(const bool filterLocalScope)
 #else
 #error Missing case!
 #endif
-                  printf("netif_%u_mac=\"", ifIndex);
+                  printf("netif_%u_mac=\"", ifIndices[i]);
                break;
                default:
                break;
@@ -1038,7 +1037,7 @@ static void showNetworkInformation(const bool filterLocalScope)
 
          printaddress(ifaArray[i].address, ifaArray[i].prefixlen);
 
-         lastIfIndex = ifIndex;
+         lastIfIndex = ifIndices[i];
          lastFamily  = ifaArray[i].address->sa_family;
       }
    }
@@ -1050,14 +1049,15 @@ static void showNetworkInformation(const bool filterLocalScope)
    lastIfIndex = 0;
    printf("netif_list=\"");
    for(unsigned int i = 0; i < n; i++) {
-      const unsigned int ifIndex = if_nametoindex(ifaArray[i].ifname);
-      if( (lastIfIndex == 0) || (lastIfIndex != ifIndex) ) {
-         if(lastIfIndex != 0) {
-            fputs(" ", stdout);
+      if(ifIndices[i] != 0) {
+         if( (lastIfIndex == 0) || (lastIfIndex != ifIndices[i]) ) {
+            if(lastIfIndex != 0) {
+               fputs(" ", stdout);
+            }
+            printf("%u", ifIndices[i]);
          }
-         printf("%u", if_nametoindex(ifaArray[i].ifname));
+         lastIfIndex = ifIndices[i];
       }
-      lastIfIndex = ifIndex;
    }
    puts("\"");
 
