@@ -783,7 +783,14 @@ static void showMemoryInformation(void)
 
    memoryTotal     = physMem;
    memoryAvailable = vmstatInactive + vmstatFree;
-   memoryUsed      = memoryTotal - memoryAvailable;
+   if(memoryTotal >= memoryAvailable) {
+      memoryUsed = memoryTotal - memoryAvailable;
+   }
+   else {
+      // The sysctl calls are asynchronous. Protect against underflows:
+      memoryAvailable = memoryTotal;
+      memoryUsed      = 0;
+   }
 #endif
 
    // ------ Get information about swap -------------------------------------
