@@ -71,6 +71,7 @@
 #include <uvm/uvm_extern.h>
 #include <sys/swap.h>
 #elif defined(__OpenBSD__)
+#include <machine/apmvar.h>
 #include <net/if_dl.h>
 #include <sys/ioctl.h>
 #include <sys/sysctl.h>
@@ -616,7 +617,37 @@ static void showBatteryInformation(void)
 
    // ====== OpenBSD: Obtain battery status via TBD =========================
 #elif defined(__OpenBSD__)
-#warning FIXME! OpenBSD battery status!
+   int apmFD = open("/dev/apm", O_RDONLY);
+   if(apmFD >= 0) {
+      struct apm_power_info powerInfo;
+      memset(&powerInfo, 0, sizeof(powerInfo));
+      if(ioctl(apmFD, APM_IOC_GETPOWER, &powerInfo) == 0) {
+         if( (powerInfo.battery_life <= 100) &&
+             (powerInfo.battery_state != APM_BATT_UNKNOWN) &&
+             (powerInfo.battery_state != APM_BATTERY_ABSENT) ) {
+            const unsigned int capacity = powerInfo.battery_life;
+            int status = 0;   // Unknown
+            if(powerInfo.battery_state == APM_BATT_CHARGING) {
+               status = 2;    // Charging
+            }
+            else if(capacity == 100) {
+               status = 3;    // Full
+            }
+            else if(powerInfo.ac_state == APM_AC_ON) {
+               status = 1;    // Not charging
+            }
+            else if(powerInfo.ac_state == APM_AC_OFF) {
+               status = 4;    // Discharging
+            }
+
+            // ------ Print battery status and capacity ---------------------
+            printf("battery_0_status=%u\n",   status);
+            printf("battery_0_capacity=%u\n", capacity);
+            batteryIDs[batteries++] = 0;
+         }
+      }
+      close(apmFD);
+   }
 
 #else
 #warning Missing case!
