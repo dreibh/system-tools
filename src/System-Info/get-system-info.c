@@ -256,6 +256,7 @@ static void showHostnameInformation(void)
    if(gethostname(hostname, sizeof(hostname)) != 0) {
       strcpy(hostname, "localhost");
    }
+   hostname[sizeof(hostname) - 1] = 0x00;
 
    char* domainname = strchr(hostname, '.');
    if(domainname != nullptr) {
