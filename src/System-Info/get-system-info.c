@@ -763,7 +763,7 @@ static void showMemoryInformation(void)
    // ------ Get information about swap -------------------------------------
 #if defined(__FreeBSD__)
    // Based on: https://cgit.freebsd.org/src/tree/sbin/swapon/swapon.c
-   int mib[16];
+   int    mib[16];
    size_t mibsize = 16;
    if(sysctlnametomib("vm.swap_info", mib, &mibsize) != 0) {
       perror("sysctlnametomib(vm.swap_info)");
@@ -792,18 +792,15 @@ static void showMemoryInformation(void)
    struct swapent* swapDeviceArray     = malloc((unsigned int)numberOfSwapDevices * sizeof(struct swapent));
    if(swapDeviceArray) {
       int swapRecords = swapctl(SWAP_STATS, swapDeviceArray, numberOfSwapDevices);
-      if(swapRecords < 0) {
-         perror("swapctl(SWAP_STATS) failed");
-         free(swapDeviceArray);
-         return;
-      }
-      for (unsigned int i = 0; i < (unsigned int)swapRecords; i++) {
-         if(swapDeviceArray[i].se_flags & SWF_INUSE) {
-            const unsigned long long totalBytes = (unsigned long long)swapDeviceArray[i].se_nblks * DEV_BSIZE;
-            const unsigned long long usedBytes  = (unsigned long long)swapDeviceArray[i].se_inuse * DEV_BSIZE;
-            swapTotal     += totalBytes;
-            swapUsed      += usedBytes;
-            swapAvailable += (totalBytes - usedBytes);
+      if(swapRecords > 0) {
+         for (unsigned int i = 0; i < (unsigned int)swapRecords; i++) {
+            if(swapDeviceArray[i].se_flags & SWF_INUSE) {
+               const unsigned long long totalBytes = (unsigned long long)swapDeviceArray[i].se_nblks * DEV_BSIZE;
+               const unsigned long long usedBytes  = (unsigned long long)swapDeviceArray[i].se_inuse * DEV_BSIZE;
+               swapTotal     += totalBytes;
+               swapUsed      += usedBytes;
+               swapAvailable += (totalBytes - usedBytes);
+            }
          }
       }
       free(swapDeviceArray);
