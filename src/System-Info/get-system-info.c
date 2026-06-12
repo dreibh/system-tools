@@ -208,7 +208,7 @@ static void printaddress(const struct sockaddr* address,
 #if defined(__linux__)
    else if(address->sa_family == AF_PACKET) {
       const struct sockaddr_ll* macAddress = (const struct sockaddr_ll*)address;
-      for(unsigned int i = 0; i < 6; i++) {
+      for(unsigned int i = 0; i < macAddress->sll_halen; i++) {
          printf("%s%02x", (i > 0) ? ":" : "", macAddress->sll_addr[i]);
       }
    }
@@ -924,6 +924,10 @@ static void showNetworkInformation(const bool filterLocalScope)
    unsigned int n = 0;
    for(struct ifaddrs* ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
       if(ifa->ifa_addr != nullptr) {
+         if(n >= (sizeof(ifaArray) / sizeof(ifaArray[0]))) {
+            fprintf(stderr, "WARNING: Truncated list of interface addresses!\n");
+            break;
+         }
 
          // ====== IP address ===============================================
          switch(ifa->ifa_addr->sa_family) {
