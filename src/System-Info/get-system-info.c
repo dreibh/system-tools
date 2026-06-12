@@ -722,7 +722,7 @@ static void showMemoryInformation(void)
    // ------ Query hw.physmem -----------------------------------------------
    const int          mibHwPhysMem[2]  = { CTL_HW, HW_PHYSMEM };
    const unsigned int mibHwPhysMemSize = sizeof(mibHwPhysMem) / sizeof(mibHwPhysMem[0]);
-   unsigned long      physMem;
+   size_t             physMem;
    length = sizeof(physMem);
    if(sysctl(mibHwPhysMem, mibHwPhysMemSize, &physMem, &length, nullptr, 0) != 0) {
       perror("sysctl(hw.physmem)");
@@ -731,20 +731,12 @@ static void showMemoryInformation(void)
 
    // ------ Virtual mmemory ------------------------------------------------
    unsigned int vInactiveCount;
-   unsigned int vCacheCount;
    unsigned int vFreeCount;
 #if defined(__FreeBSD__)
    // ------ Query vm.stats.vm.v_inactive_count -----------------------------
    length = sizeof(vInactiveCount);
    if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &length, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_inactive_count)");
-      return;
-   }
-
-   // ------ Query vm.stats.vm.v_cache_count -----------------------------
-   length = sizeof(vCacheCount);
-   if(sysctlbyname("vm.stats.vm.v_cache_count", &vCacheCount, &length, nullptr, 0) != 0) {
-      perror("sysctl(vm.stats.vm.v_cache_count)");
       return;
    }
 
@@ -765,7 +757,6 @@ static void showMemoryInformation(void)
       return;
    }
    vInactiveCount = (unsigned int)uvm.inactive;
-   vCacheCount    = (unsigned int)uvm.filepages;
    vFreeCount     = (unsigned int)uvm.free;
 
 #elif defined(__OpenBSD__)
@@ -778,17 +769,15 @@ static void showMemoryInformation(void)
       return;
    }
    vInactiveCount = (unsigned int)uvm.inactive;
-   vCacheCount    = (unsigned int)uvm.vnodepages;
    vFreeCount     = (unsigned int)uvm.free;
 #endif
 
    // ------ Calculations ---------------------------------------------------
    const unsigned long long vmstatInactive = (unsigned long long)vInactiveCount * pageSize;
-   const unsigned long long vmstatCache    = (unsigned long long)vCacheCount * pageSize;
    const unsigned long long vmstatFree     = (unsigned long long)vFreeCount *  pageSize;
 
    memoryTotal     = physMem;
-   memoryAvailable = vmstatInactive + vmstatCache + vmstatFree;
+   memoryAvailable = vmstatInactive + vmstatFree;
    memoryUsed      = memoryTotal - memoryAvailable;
 #endif
 
