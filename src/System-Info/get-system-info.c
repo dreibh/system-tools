@@ -707,24 +707,29 @@ static void showMemoryInformation(void)
    // ====== Query system information via sysctl ============================
    // Documentation: https://man.freebsd.org/cgi/man.cgi?query=sysctl&sektion=3
 
-   size_t length;
+   size_t parameterLength;
 
    // ------ Query hw.pagesize ----------------------------------------------
    const int          mibHwPageSize[2]  = { CTL_HW, HW_PAGESIZE };
    const unsigned int mibHwPageSizeSize = sizeof(mibHwPageSize) / sizeof(mibHwPageSize[0]);
    unsigned int       pageSize;
-   length = sizeof(pageSize);
-   if(sysctl(mibHwPageSize, mibHwPageSizeSize, &pageSize, &length, nullptr, 0) != 0) {
+   parameterLength = sizeof(pageSize);
+   if(sysctl(mibHwPageSize, mibHwPageSizeSize, &pageSize, &parameterLength, nullptr, 0) != 0) {
       perror("sysctl(hw.pagesize)");
       return;
    }
 
    // ------ Query hw.physmem -----------------------------------------------
-   const int          mibHwPhysMem[2]  = { CTL_HW, HW_PHYSMEM };
-   const unsigned int mibHwPhysMemSize = sizeof(mibHwPhysMem) / sizeof(mibHwPhysMem[0]);
+#if defined(__FreeBSD__)
    size_t             physMem;
-   length = sizeof(physMem);
-   if(sysctl(mibHwPhysMem, mibHwPhysMemSize, &physMem, &length, nullptr, 0) != 0) {
+   const int          mibHwPhysMem[2]  = { CTL_HW, HW_PHYSMEM };
+#else
+   uint64_t           physMem;
+   const int          mibHwPhysMem[2]  = { CTL_HW, HW_PHYSMEM64 };
+#endif
+   const unsigned int mibHwPhysMemSize = sizeof(mibHwPhysMem) / sizeof(mibHwPhysMem[0]);
+   parameterLength = sizeof(physMem);
+   if(sysctl(mibHwPhysMem, mibHwPhysMemSize, &physMem, &parameterLength, nullptr, 0) != 0) {
       perror("sysctl(hw.physmem)");
       return;
    }
@@ -734,15 +739,15 @@ static void showMemoryInformation(void)
    unsigned int vFreeCount;
 #if defined(__FreeBSD__)
    // ------ Query vm.stats.vm.v_inactive_count -----------------------------
-   length = sizeof(vInactiveCount);
-   if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &length, nullptr, 0) != 0) {
+   parameterLength = sizeof(vInactiveCount);
+   if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &parameterLength, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_inactive_count)");
       return;
    }
 
    // ------ Query vm.stats.vm.v_free_count -----------------------------
-   length = sizeof(vFreeCount);
-   if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &length, nullptr, 0) != 0) {
+   parameterLength = sizeof(vFreeCount);
+   if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &parameterLength, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_free_count)");
       return;
    }
@@ -751,8 +756,8 @@ static void showMemoryInformation(void)
    struct uvmexp_sysctl uvm;
    const int            mibUvmExp[2]  = { CTL_VM, VM_UVMEXP2 };
    const unsigned int   mibUvmExpSize = sizeof(mibUvmExp) / sizeof(mibUvmExp[0]);
-   length = sizeof(uvm);
-   if(sysctl(mibUvmExp, mibUvmExpSize, &uvm, &length, nullptr, 0) != 0) {
+   parameterLength = sizeof(uvm);
+   if(sysctl(mibUvmExp, mibUvmExpSize, &uvm, &parameterLength, nullptr, 0) != 0) {
       perror("sysctl({CTL_VM,VM_UVMEXP2})");
       return;
    }
@@ -763,8 +768,8 @@ static void showMemoryInformation(void)
    struct uvmexp        uvm;
    const int            mibUvmExp[2]  = { CTL_VM, VM_UVMEXP };
    const unsigned int   mibUvmExpSize = sizeof(mibUvmExp) / sizeof(mibUvmExp[0]);
-   length = sizeof(uvm);
-   if(sysctl(mibUvmExp, mibUvmExpSize, &uvm, &length, nullptr, 0) != 0) {
+   parameterLength = sizeof(uvm);
+   if(sysctl(mibUvmExp, mibUvmExpSize, &uvm, &parameterLength, nullptr, 0) != 0) {
       perror("sysctl({CTL_VM,VM_UVMEXP})");
       return;
    }
