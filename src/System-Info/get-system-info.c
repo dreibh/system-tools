@@ -301,7 +301,7 @@ static bool obtainUptime(struct timespec* ts)
 #else
 #error Missing case!
 #endif
-   return false;
+   // return false;
 }
 
 
@@ -502,12 +502,13 @@ static void showLoadInformation(void)
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
    double loadavg[3];
    if(getloadavg(loadavg, 3) == 3) {
+      const double fPercent = 100.0 / (double)cores;
       printf("system_load_avg1min=%1.6f\n",  loadavg[0]);
       printf("system_load_avg5min=%1.6f\n",  loadavg[1]);
       printf("system_load_avg15min=%1.6f\n", loadavg[2]);
-      printf("system_load_avg1minpct=%1.4f\n",  100.0 * loadavg[0]);
-      printf("system_load_avg5minpct=%1.4f\n",  100.0 * loadavg[1]);
-      printf("system_load_avg15minpct=%1.4f\n", 100.0 * loadavg[2]);
+      printf("system_load_avg1minpct=%1.4f\n",  loadavg[0] * fPercent);
+      printf("system_load_avg5minpct=%1.4f\n",  loadavg[1] * fPercent);
+      printf("system_load_avg15minpct=%1.4f\n", loadavg[2] * fPercent);
    }
 
 #else
@@ -986,7 +987,7 @@ static void showNetworkInformation(const bool filterLocalScope)
          }
       }
    }
-   qsort(&ifaArray, n, sizeof(struct interfaceaddress),
+   qsort(ifaArray, n, sizeof(struct interfaceaddress),
          compareInterfaceAddresses);
 
    // ====== Print interfaces and their addresses ===========================
