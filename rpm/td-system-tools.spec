@@ -408,6 +408,7 @@ This package contains some example input files for the testing the
 GIMP scripts.
 
 %files gimp-scripts-examples
+%dir %attr(0755, root, root) %{_datadir}/system-tools/gimp-scripts-examples
 %{_datadir}/system-tools/gimp-scripts-examples/Bergen.webp
 %{_datadir}/system-tools/gimp-scripts-examples/Fractal.fsf
 %{_datadir}/system-tools/gimp-scripts-examples/Portobello.webp
