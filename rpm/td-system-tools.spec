@@ -416,6 +416,7 @@ GIMP scripts.
 
 %package basic
 Summary: Metapackage for basic system tools sub-packages
+BuildArch: noarch
 Requires: %{name}-fingerprint-ssh-keys = %{version}-%{release}
 Requires: %{name}-random-sleep = %{version}-%{release}
 Requires: %{name}-reset-machine-id = %{version}-%{release}
@@ -438,6 +439,7 @@ Note that td-system-configure-grub is only added as weak dependency
 
 %package complete
 Summary: Metapackage for complete system tools sub-packages
+BuildArch: noarch
 Requires: %{name}-basic = %{version}-%{release}
 Requires: %{name}-gimp-scripts = %{version}-%{release}
 Requires: %{name}-gimp-scripts-examples = %{version}-%{release}
