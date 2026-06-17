@@ -79,6 +79,7 @@ in, providing the user an up-to-date overview of the system.
 %{_bindir}/System-Info
 %{_datadir}/bash-completion/completions/System-Info
 %{_datadir}/locale/*/LC_MESSAGES/System-Info.mo
+%dir %attr(0755, root, root) %{_datadir}/System-Info
 %{_datadir}/System-Info/01-example
 %{_datadir}/System-Info/09-hostname-example
 %{_datadir}/System-Info/10-company-logo-example
@@ -86,6 +87,7 @@ in, providing the user an up-to-date overview of the system.
 %{_mandir}/man1/System-Info.1.gz
 %{_sysconfdir}/profile.d/system-info.sh
 %{_sysconfdir}/profile.d/system-info.csh
+%dir %attr(0755, root, root) %{_sysconfdir}/system-info.d
 %{_sysconfdir}/system-info.d/banner-helper
 %{_sysconfdir}/system-info.d/01-example
 
@@ -124,6 +126,7 @@ unused storage.
 %{_datadir}/bash-completion/completions/System-Maintenance
 %{_datadir}/locale/*/LC_MESSAGES/System-Maintenance.mo
 %{_mandir}/man1/System-Maintenance.1.gz
+%dir %attr(0755, root, root) %{_sysconfdir}/system-maintenance.d
 %{_sysconfdir}/system-maintenance.d/XX-example
 
 
@@ -184,6 +187,7 @@ a rescue medium to fix a broken configuration!
 %files configure-grub
 %{_bindir}/configure-grub
 %{_datadir}/bash-completion/completions/configure-grub
+%dir %attr(0755, root, root) %{_datadir}/configure-grub
 %{_datadir}/configure-grub/grub-defaults-nornet
 %{_datadir}/configure-grub/grub-defaults-standard
 %{_mandir}/man1/configure-grub.1.gz
@@ -217,6 +221,7 @@ be applied to the text depending on the operation mode.
 %{_mandir}/man1/text-block.1.gz
 %{_datadir}/bash-completion/completions/text-block
 %{_datadir}/locale/*/LC_MESSAGES/text-block.mo
+%dir %attr(0755, root, root) %{_datadir}/text-block
 %{_datadir}/text-block/example1.txt
 %{_datadir}/text-block/example2.txt
 %{_datadir}/text-block/insert.txt
@@ -323,6 +328,7 @@ This package contains X.509 certificate handling tools:
 %{_datadir}/locale/*/LC_MESSAGES/test-tls-connection.mo
 %{_datadir}/locale/*/LC_MESSAGES/view-certificate.mo
 %{_datadir}/locale/*/LC_MESSAGES/view-crl.mo
+%dir %attr(0755, root, root) %{_datadir}/system-tools
 %{_datadir}/system-tools/CertificateHelper.py
 %{_datadir}/system-tools/generate-test-certificates
 %{_datadir}/system-tools/make-test-certificates
