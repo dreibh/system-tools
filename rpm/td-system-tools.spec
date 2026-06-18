@@ -52,7 +52,21 @@ feature native internationalization support via GNU gettext.
 
 %install
 %cmake_install
-%find_lang %{name} --all-name
+%find_lang Fingerprint-SSH-Keys
+%find_lang Reset-Machine-ID
+%find_lang System-Info
+%find_lang System-Maintenance
+%find_lang check-certificate
+%find_lang extract-pem
+%find_lang print-utf8
+%find_lang random-sleep
+%find_lang test-tls-connection
+%find_lang text-block
+%find_lang time2unixts
+%find_lang try-hard
+%find_lang unixts2time
+%find_lang view-certificate
+%find_lang view-crl
 
 # Apply shebang fix for Bash and Rscript:
 for directory in %{_bindir} \
@@ -68,7 +82,7 @@ for directory in %{_bindir} \
       {} +
 done
 
-%files -f %{name}.lang
+%files
 
 
 %package system-info
@@ -90,7 +104,7 @@ a project name).
 System-Info can be configured to be automatically run when logging
 in, providing the user an up-to-date overview of the system.
 
-%files system-info
+%files system-info -f System-Info.lang
 %{_bindir}/System-Info
 %{_datadir}/bash-completion/completions/System-Info
 %dir %attr(0755, root, root) %{_datadir}/System-Info
@@ -139,7 +153,7 @@ management databases, installing all available updates, checking
 for old kernels and removing them, trimming SSDs, or unmapping
 unused storage.
 
-%files system-maintenance
+%files system-maintenance -f System-Maintenance.lang
 %{_bindir}/System-Maintenance
 %{_datadir}/bash-completion/completions/System-Maintenance
 %{_mandir}/man1/System-Maintenance.1.gz
@@ -161,7 +175,7 @@ This program helps to reset the machine identity state: resetting the
 machine ID, changing the hostname, replacing SSH keys, and suggesting
 hardened SSH client and server settings.
 
-%files reset-machine-id
+%files reset-machine-id -f Reset-Machine-ID.lang
 %{_bindir}/Reset-Machine-ID
 %{_datadir}/bash-completion/completions/Reset-Machine-ID
 %{_mandir}/man1/Reset-Machine-ID.1.gz
@@ -177,7 +191,7 @@ Recommends: %{name}-system-info
 This program prints the SSH key fingerprints of the local machine
 in different formats: SSH hash, DNS SSHFP RR.
 
-%files fingerprint-ssh-keys
+%files fingerprint-ssh-keys -f Fingerprint-SSH-Keys.lang
 %{_bindir}/Fingerprint-SSH-Keys
 %{_datadir}/bash-completion/completions/Fingerprint-SSH-Keys
 %{_mandir}/man1/Fingerprint-SSH-Keys.1.gz
@@ -216,7 +230,7 @@ The print-utf8 tool is a simple program to print UTF-8 strings in the
 console with options for indentation, centering, and separators, as well
 as size/length/width information.
 
-%files print-utf8
+%files print-utf8 -f print-utf8.lang
 %{_bindir}/print-utf8
 %{_mandir}/man1/print-utf8.1.gz
 %{_datadir}/bash-completion/completions/print-utf8
@@ -230,7 +244,7 @@ The text-block tool reads text from standard input or given file, and
 writes it to standard output or a given file. Various modifications can
 be applied to the text depending on the operation mode.
 
-%files text-block
+%files text-block -f text-block.lang
 %{_bindir}/text-block
 %{_mandir}/man1/text-block.1.gz
 %{_datadir}/bash-completion/completions/text-block
@@ -253,7 +267,7 @@ These tools support Unix timestamps (i.e. the time since
 January 1, 1970, 00:00:00.000000000 UTC) in seconds,
 milliseconds, microseconds, and nanoseconds.
 
-%files unixtimestamp-tools
+%files unixtimestamp-tools -f unixts2time.lang -f time2unixts.lang
 %{_bindir}/time2unixts
 %{_bindir}/unixts2time
 %{_datadir}/bash-completion/completions/time2unixts
@@ -272,7 +286,7 @@ Requires: gettext-runtime
 Try-hard runs a command and retries for a given number of times in case
 of error, with a delay between the trials.
 
-%files try-hard
+%files try-hard -f try-hard.lang
 %{_bindir}/try-hard
 %{_datadir}/bash-completion/completions/try-hard
 %{_mandir}/man1/try-hard.1.gz
@@ -286,7 +300,7 @@ Conflicts: %{name}-misc
 Random-sleep waits for a random time span, selected from a given
 interval, with support for fractional seconds.
 
-%files random-sleep
+%files random-sleep -f random-sleep.lang
 %{_bindir}/random-sleep
 %{_datadir}/bash-completion/completions/random-sleep
 %{_mandir}/man1/random-sleep.1.gz
@@ -317,7 +331,7 @@ This package contains X.509 certificate handling tools:
 * The pem2der tool converts a certificate or CRL in PEM format to DER format.
 * The test-tls-connection tool tests a TCP TLS connection to a remote endpoint.
 
-%files x509-tools
+%files x509-tools -f check-certificate.lang -f extract-pem.lang -f test-tls-connection.lang -f view-certificate.lang -f view-crl.lang
 %{_bindir}/check-certificate
 %{_bindir}/der2pem
 %{_bindir}/extract-pem
