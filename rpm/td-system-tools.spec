@@ -52,8 +52,18 @@ feature native internationalization support via GNU gettext.
 
 %install
 %cmake_install
+%find_lang %{name} --all-name
 
-%files
+# Apply shebang fix for Bash and Rscript:
+for directory in %{_bindir} ; do
+   find "%{buildroot}/$directory" -type f -exec sed -i \
+      -e 's|^#!/usr/bin/env bash|#!/usr/bin/bash|' \
+      -e 's|^#!/usr/bin/env python3|#!/usr/bin/python3|' \
+      -e 's|^#!/usr/bin/env Rscript|#!/usr/bin/Rscript|' \
+      {} +
+done
+
+%files -f %{name}.lang
 
 
 %package system-info
@@ -78,7 +88,6 @@ in, providing the user an up-to-date overview of the system.
 %files system-info
 %{_bindir}/System-Info
 %{_datadir}/bash-completion/completions/System-Info
-%{_datadir}/locale/*/LC_MESSAGES/System-Info.mo
 %dir %attr(0755, root, root) %{_datadir}/System-Info
 %{_datadir}/System-Info/01-example
 %{_datadir}/System-Info/09-hostname-example
@@ -124,7 +133,6 @@ unused storage.
 %files system-maintenance
 %{_bindir}/System-Maintenance
 %{_datadir}/bash-completion/completions/System-Maintenance
-%{_datadir}/locale/*/LC_MESSAGES/System-Maintenance.mo
 %{_mandir}/man1/System-Maintenance.1.gz
 %dir %attr(0755, root, root) %{_sysconfdir}/system-maintenance.d
 %{_sysconfdir}/system-maintenance.d/XX-example
@@ -147,7 +155,6 @@ hardened SSH client and server settings.
 %files reset-machine-id
 %{_bindir}/Reset-Machine-ID
 %{_datadir}/bash-completion/completions/Reset-Machine-ID
-%{_datadir}/locale/*/LC_MESSAGES/Reset-Machine-ID.mo
 %{_mandir}/man1/Reset-Machine-ID.1.gz
 
 
@@ -164,7 +171,6 @@ in different formats: SSH hash, DNS SSHFP RR.
 %files fingerprint-ssh-keys
 %{_bindir}/Fingerprint-SSH-Keys
 %{_datadir}/bash-completion/completions/Fingerprint-SSH-Keys
-%{_datadir}/locale/*/LC_MESSAGES/Fingerprint-SSH-Keys.mo
 %{_mandir}/man1/Fingerprint-SSH-Keys.1.gz
 
 
@@ -205,7 +211,6 @@ as size/length/width information.
 %{_bindir}/print-utf8
 %{_mandir}/man1/print-utf8.1.gz
 %{_datadir}/bash-completion/completions/print-utf8
-%{_datadir}/locale/*/LC_MESSAGES/print-utf8.mo
 
 
 %package text-block
@@ -220,7 +225,6 @@ be applied to the text depending on the operation mode.
 %{_bindir}/text-block
 %{_mandir}/man1/text-block.1.gz
 %{_datadir}/bash-completion/completions/text-block
-%{_datadir}/locale/*/LC_MESSAGES/text-block.mo
 %dir %attr(0755, root, root) %{_datadir}/text-block
 %{_datadir}/text-block/example1.txt
 %{_datadir}/text-block/example2.txt
@@ -245,8 +249,6 @@ milliseconds, microseconds, and nanoseconds.
 %{_bindir}/unixts2time
 %{_datadir}/bash-completion/completions/time2unixts
 %{_datadir}/bash-completion/completions/unixts2time
-%{_datadir}/locale/*/LC_MESSAGES/time2unixts.mo
-%{_datadir}/locale/*/LC_MESSAGES/unixts2time.mo
 %{_mandir}/man1/time2unixts.1.gz
 %{_mandir}/man1/unixts2time.1.gz
 
@@ -264,7 +266,6 @@ of error, with a delay between the trials.
 %files try-hard
 %{_bindir}/try-hard
 %{_datadir}/bash-completion/completions/try-hard
-%{_datadir}/locale/*/LC_MESSAGES/try-hard.mo
 %{_mandir}/man1/try-hard.1.gz
 
 
@@ -279,7 +280,6 @@ interval, with support for fractional seconds.
 %files random-sleep
 %{_bindir}/random-sleep
 %{_datadir}/bash-completion/completions/random-sleep
-%{_datadir}/locale/*/LC_MESSAGES/random-sleep.mo
 %{_mandir}/man1/random-sleep.1.gz
 
 
@@ -323,11 +323,6 @@ This package contains X.509 certificate handling tools:
 %{_datadir}/bash-completion/completions/test-tls-connection
 %{_datadir}/bash-completion/completions/view-certificate
 %{_datadir}/bash-completion/completions/view-crl
-%{_datadir}/locale/*/LC_MESSAGES/check-certificate.mo
-%{_datadir}/locale/*/LC_MESSAGES/extract-pem.mo
-%{_datadir}/locale/*/LC_MESSAGES/test-tls-connection.mo
-%{_datadir}/locale/*/LC_MESSAGES/view-certificate.mo
-%{_datadir}/locale/*/LC_MESSAGES/view-crl.mo
 %dir %attr(0755, root, root) %{_datadir}/system-tools
 %{_datadir}/system-tools/CertificateHelper.py
 %{_datadir}/system-tools/generate-test-certificates
