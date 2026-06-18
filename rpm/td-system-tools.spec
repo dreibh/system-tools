@@ -144,6 +144,7 @@ unused storage.
 %{_datadir}/bash-completion/completions/System-Maintenance
 %{_mandir}/man1/System-Maintenance.1.gz
 %dir %attr(0755, root, root) %{_sysconfdir}/system-maintenance.d
+%config(noreplace) %{_sysconfdir}/system-maintenance.d/XX-example
 %{_sysconfdir}/system-maintenance.d/XX-example
 
 
