@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.7.4
+Version: 2.7.5~rc0
 Release: 1
 Summary: Tools for basic system management
 License: GPL-3.0-or-later
@@ -55,7 +55,12 @@ feature native internationalization support via GNU gettext.
 %find_lang %{name} --all-name
 
 # Apply shebang fix for Bash and Rscript:
-for directory in %{_bindir} ; do
+for directory in %{_bindir} \
+                 %{_datadir}/System-Info/ \
+                 %{_datadir}/system-tools/ \
+                 %{_sysconfdir}/system-info.d/ \
+                 %{_sysconfdir}/system-maintenance.d/ \
+                 ; do
    find "%{buildroot}/$directory" -type f -exec sed -i \
       -e 's|^#!/usr/bin/env bash|#!/usr/bin/bash|' \
       -e 's|^#!/usr/bin/env python3|#!/usr/bin/python3|' \
@@ -94,10 +99,14 @@ in, providing the user an up-to-date overview of the system.
 %{_datadir}/System-Info/10-company-logo-example
 %{_datadir}/System-Info/banner-helper
 %{_mandir}/man1/System-Info.1.gz
+%config(noreplace) %{_sysconfdir}/profile.d/system-info.sh
 %{_sysconfdir}/profile.d/system-info.sh
+%config(noreplace) %{_sysconfdir}/profile.d/system-info.csh
 %{_sysconfdir}/profile.d/system-info.csh
 %dir %attr(0755, root, root) %{_sysconfdir}/system-info.d
+%config(noreplace) %{_sysconfdir}/system-info.d/banner-helper
 %{_sysconfdir}/system-info.d/banner-helper
+%config(noreplace) %{_sysconfdir}/system-info.d/01-example
 %{_sysconfdir}/system-info.d/01-example
 
 
