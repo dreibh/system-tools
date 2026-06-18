@@ -47,7 +47,7 @@ feature native internationalization support via GNU gettext.
 %setup -q
 
 %build
-%cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc .
+%cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc
 %cmake_build
 
 %install
