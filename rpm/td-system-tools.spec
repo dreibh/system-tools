@@ -68,7 +68,7 @@ feature native internationalization support via GNU gettext.
 %find_lang view-certificate
 %find_lang view-crl
 
-# Apply shebang fix for Bash and Rscript:
+# ====== Apply shebang fix for scripts ======================================
 for directory in %{_bindir} \
                  %{_datadir}/System-Info/ \
                  %{_datadir}/system-tools/ \
@@ -81,6 +81,7 @@ for directory in %{_bindir} \
       -e 's|^#!/usr/bin/env Rscript|#!/usr/bin/Rscript|' \
       {} +
 done
+# ===========================================================================
 
 %files
 
