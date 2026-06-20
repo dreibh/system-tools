@@ -47,6 +47,7 @@ INCLUDE(CheckCSourceCompiles)
 INCLUDE(CheckCSourceRuns)
 INCLUDE(CheckIncludeFile)
 INCLUDE(CheckStructHasMember)
+INCLUDE(CheckSymbolExists)
 INCLUDE(GNUInstallDirs)
 
 
@@ -158,6 +159,16 @@ ENDIF()
 
 IF (WITH_GIMP_SCRIPTS_EXAMPLES AND NOT WITH_GIMP_SCRIPTS)
    MESSAGE(FATAL_ERROR "WITH_GIMP_SCRIPTS_EXAMPLES requires WITH_GIMP_SCRIPTS!")
+ENDIF()
+
+
+#############################################################################
+#### CHECKS                                                              ####
+#############################################################################
+
+CHECK_SYMBOL_EXISTS(strlcpy "string.h" HAVE_STRLCPY)
+IF (HAVE_STRLCPY)
+   ADD_DEFINITIONS(-DHAVE_STRLCPY)
 ENDIF()
 
 
