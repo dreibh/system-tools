@@ -260,7 +260,11 @@ static void showHostnameInformation(void)
       hostname[sizeof(hostname) - 1] = 0x00;
    }
    else {
+#if defined(HAVE_STRLCPY)
       strlcpy(hostname, "localhost", sizeof(hostname));
+#else
+      strcpy(hostname, "localhost");
+#endif
    }
 
    char* domainname = strchr(hostname, '.');
