@@ -12,20 +12,21 @@ makedepends="
 	gcc
 	g++
 	gettext-dev
+	linux-headers
 	ninja
 "
 subpackages="
 	$pkgname-system-info:_system_info:noarch
-	$pkgname-get-system-info:_get_system_info:noarch
+	$pkgname-get-system-info:_get_system_info
 	$pkgname-system-maintenance:_system_maintenance:noarch
 	$pkgname-reset-machine-id:_reset_machine_id:noarch
 	$pkgname-fingerprint-ssh-keys:_fingerprint_ssh_keys:noarch
 	$pkgname-configure-grub:_configure_grub:noarch
-	$pkgname-print-utf8:_print_utf8:noarch
-	$pkgname-text-block:_text_block:noarch
-	$pkgname-unixtimestamp-tools:_unixtimestamp_tools:noarch
+	$pkgname-print-utf8:_print_utf8
+	$pkgname-text-block:_text_block
+	$pkgname-unixtimestamp-tools:_unixtimestamp_tools
 	$pkgname-try-hard:_try_hard:noarch
-	$pkgname-random-sleep:_random_sleep:noarch
+	$pkgname-random-sleep:_random_sleep
 	$pkgname-x509-tools:_x509_tools:noarch
 	$pkgname-gimp-scripts:_gimp_scripts:noarch
 	$pkgname-gimp-scripts-examples:_gimp_scripts_examples:noarch
@@ -35,18 +36,20 @@ subpackages="
 	lang
 	doc
 "
-source="https://www.nntb.no/~dreibh/system-tools/download/$pkgname.tar.xz"
-builddir="$srcdir/$pkgname"
+source="https://www.nntb.no/~dreibh/system-tools/download/$pkgname-$pkgver.tar.xz"
+builddir="$srcdir/$pkgname-$pkgver"
 
 build() {
+	cd "$builddir"
 	cmake -B build -G Ninja \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_INSTALL_SYSCONFDIR=/etc \
-		-DCMAKE_BUILD_TYPE=None
+		-DCMAKE_BUILD_TYPE=None .
 	cmake --build build
 }
 
 package() {
+	cd "$builddir"
 	DESTDIR="$pkgdir" cmake --install build
 
 	# Apply shebang fix for scripts matching Alpine's environment paths
