@@ -32,8 +32,8 @@ subpackages="
 	$pkgname-basic:_basic:noarch
 	$pkgname-complete:_complete:noarch
 	$pkgname-bash-completion
-	lang
-	doc
+	$pkgname-doc
+	$pkgname-lang
 "
 source="https://www.nntb.no/~dreibh/system-tools/download/$pkgname-$pkgver.tar.xz"
 builddir="$srcdir/$pkgname-$pkgver"
