@@ -6,11 +6,10 @@ pkgdesc="Tools for basic system management"
 url="https://www.nntb.no/~dreibh/system-tools/"
 arch="all"
 license="GPL-3.0-or-later"
-depends="$pkgname-basic=$pkgver-r$pkgrel"
+depends=""
 makedepends="
 	cmake
 	gcc
-	g++
 	gettext-dev
 	linux-headers
 	ninja
