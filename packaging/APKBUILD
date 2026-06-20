@@ -1,0 +1,219 @@
+# Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
+pkgname=td-system-tools
+pkgver=2.7.4
+pkgrel=1
+pkgdesc="Tools for basic system management"
+url="https://www.nntb.no/~dreibh/system-tools/"
+arch="all"
+license="GPL-3.0-or-later"
+depends="$pkgname-basic=$pkgver-r$pkgrel"
+makedepends="
+	cmake
+	gcc
+	g++
+	gettext-dev
+	ninja
+"
+subpackages="
+	$pkgname-system-info:_system_info:noarch
+	$pkgname-get-system-info:_get_system_info:noarch
+	$pkgname-system-maintenance:_system_maintenance:noarch
+	$pkgname-reset-machine-id:_reset_machine_id:noarch
+	$pkgname-fingerprint-ssh-keys:_fingerprint_ssh_keys:noarch
+	$pkgname-configure-grub:_configure_grub:noarch
+	$pkgname-print-utf8:_print_utf8:noarch
+	$pkgname-text-block:_text_block:noarch
+	$pkgname-unixtimestamp-tools:_unixtimestamp_tools:noarch
+	$pkgname-try-hard:_try_hard:noarch
+	$pkgname-random-sleep:_random_sleep:noarch
+	$pkgname-x509-tools:_x509_tools:noarch
+	$pkgname-gimp-scripts:_gimp_scripts:noarch
+	$pkgname-gimp-scripts-examples:_gimp_scripts_examples:noarch
+	$pkgname-basic:_basic:noarch
+	$pkgname-complete:_complete:noarch
+	$pkgname-bash-completion
+	lang
+	doc
+"
+source="https://www.nntb.no/~dreibh/system-tools/download/$pkgname.tar.xz"
+builddir="$srcdir/$pkgname"
+
+build() {
+	cmake -B build -G Ninja \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_SYSCONFDIR=/etc \
+		-DCMAKE_BUILD_TYPE=None
+	cmake --build build
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --install build
+
+	# Apply shebang fix for scripts matching Alpine's environment paths
+	for directory in usr/bin \
+	                 usr/share/System-Info \
+	                 usr/share/system-tools \
+	                 etc/system-info.d \
+	                 etc/system-maintenance.d ; do
+		if [ -d "$pkgdir/$directory" ]; then
+			find "$pkgdir/$directory" -type f -exec sed -i \
+				-e 's|^#!/usr/bin/env bash|#!/bin/bash|' \
+				-e 's|^#!/usr/bin/env python3|#!/bin/python3|' \
+				-e 's|^#!/usr/bin/env Rscript|#!/usr/bin/Rscript|' \
+				{} +
+		fi
+	done
+}
+
+_system_info() {
+	pkgdesc="Print basic system information and banners"
+	depends="$pkgname-get-system-info=$pkgver-r$pkgrel $pkgname-print-utf8=$pkgver-r$pkgrel figlet gettext mbuffer"
+
+	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share "$subpkgdir"/etc
+	mv "$pkgdir"/usr/bin/System-Info "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/share/System-Info "$subpkgdir"/usr/share/
+	mv "$pkgdir"/etc/profile.d "$subpkgdir"/etc/
+	mv "$pkgdir"/etc/system-info.d "$subpkgdir"/etc/
+}
+
+_get_system_info() {
+	pkgdesc="Obtain basic system information"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/get-system-info "$subpkgdir"/usr/bin/
+}
+
+_system_maintenance() {
+	pkgdesc="Perform basic system maintenance"
+	depends="gettext sudo"
+
+	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/etc
+	mv "$pkgdir"/usr/bin/System-Maintenance "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/etc/system-maintenance.d "$subpkgdir"/etc/
+}
+
+_reset_machine_id() {
+	pkgdesc="Reset machine identity state"
+	depends="gettext sudo util-linux"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/Reset-Machine-ID "$subpkgdir"/usr/bin/
+}
+
+_fingerprint_ssh_keys() {
+	pkgdesc="Print SSH key fingerprints"
+	depends="gettext"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/Fingerprint-SSH-Keys "$subpkgdir"/usr/bin/
+}
+
+_configure_grub() {
+	pkgdesc="Helper tool to adjust GRUB configuration"
+	depends="gettext"
+
+	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/bin/configure-grub "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/share/configure-grub "$subpkgdir"/usr/share/
+}
+
+_print_utf8() {
+	pkgdesc="Print UTF-8 strings and obtain size/length/width information"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/print-utf8 "$subpkgdir"/usr/bin/
+}
+
+_text_block() {
+	pkgdesc="Apply modifications to text"
+
+	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/bin/text-block "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/share/text-block "$subpkgdir"/usr/share/
+}
+
+_unixtimestamp_tools() {
+	pkgdesc="Unix timestamp handling tools"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/time2unixts "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/bin/unixts2time "$subpkgdir"/usr/bin/
+}
+
+_try_hard() {
+	pkgdesc="Make multiple trials to successfully run a command"
+	depends="gettext"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/try-hard "$subpkgdir"/usr/bin/
+}
+
+_random_sleep() {
+	pkgdesc="Wait for a random time span"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/random-sleep "$subpkgdir"/usr/bin/
+}
+
+_x509_tools() {
+	pkgdesc="X.509 certificate handling tools"
+	depends="$pkgname-print-utf8=$pkgver-r$pkgrel $pkgname-text-block=$pkgver-r$pkgrel gettext mbuffer openssl"
+
+	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share/system-tools
+	mv "$pkgdir"/usr/bin/check-certificate "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/bin/der2pem "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/bin/extract-pem "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/bin/pem2der "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/bin/test-tls-connection "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/bin/view-certificate "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/bin/view-crl "$subpkgdir"/usr/bin/
+
+	mv "$pkgdir"/usr/share/system-tools/CertificateHelper.py "$subpkgdir"/usr/share/system-tools/
+	mv "$pkgdir"/usr/share/system-tools/generate-test-certificates "$subpkgdir"/usr/share/system-tools/
+	mv "$pkgdir"/usr/share/system-tools/make-test-certificates "$subpkgdir"/usr/share/system-tools/
+}
+
+_gimp_scripts() {
+	pkgdesc="GIMP image processing scripts"
+	depends="fontconfig gimp graphicsmagick util-linux"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/gs-* "$subpkgdir"/usr/bin/
+}
+
+_gimp_scripts_examples() {
+	pkgdesc="Example files for the GIMP image processing scripts"
+
+	mkdir -p "$subpkgdir"/usr/share/system-tools
+	mv "$pkgdir"/usr/share/system-tools/gimp-scripts-examples "$subpkgdir"/usr/share/system-tools/
+}
+
+_basic() {
+	pkgdesc="Metapackage for basic system tools sub-packages"
+	depends="
+		$pkgname-fingerprint-ssh-keys=$pkgver-r$pkgrel
+		$pkgname-random-sleep=$pkgver-r$pkgrel
+		$pkgname-reset-machine-id=$pkgver-r$pkgrel
+		$pkgname-system-info=$pkgver-r$pkgrel
+		$pkgname-system-maintenance=$pkgver-r$pkgrel
+		$pkgname-text-block=$pkgver-r$pkgrel
+		$pkgname-try-hard=$pkgver-r$pkgrel
+		$pkgname-unixtimestamp-tools=$pkgver-r$pkgrel
+		$pkgname-x509-tools=$pkgver-r$pkgrel
+	"
+	mkdir -p "$subpkgdir"
+}
+
+_complete() {
+	pkgdesc="Metapackage for complete system tools sub-packages"
+	depends="
+		$pkgname-basic=$pkgver-r$pkgrel
+		$pkgname-gimp-scripts=$pkgver-r$pkgrel
+		$pkgname-gimp-scripts-examples=$pkgver-r$pkgrel
+	"
+	mkdir -p "$subpkgdir"
+}
+
+sha512sums="
+13da3b35f8d51581798003890d389c9f12a7952cfa9df74452e128001bf1eb576274a33945f9f4543370ffe760ab7aa23427c6167a0a7467470cdc3bf8822ae5  td-system-tools-2.7.4.tar.xz
+"
