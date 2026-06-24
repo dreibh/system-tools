@@ -119,13 +119,16 @@ if [ $# -ne 0 ] ; then
    usage 1
 fi
 
-# ====== Find distribution variant ==========================================
-if [ ! -e /etc/os-release ] ; then
-   gettext >&2 "ERROR: /etc/os-release not found!"
-   echo >&2
-   exit 1
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+# NAME="${UNAME}"
+ID="${UNAME,,}"
+# VERSION="$(uname -r)"
+# VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   # shellcheck disable=SC1091
+   . /etc/os-release
 fi
-. /etc/os-release
 
 # ====== Stop AutoFS ========================================================
 if [ -e /etc/init.d/autofs ] ; then
@@ -210,9 +213,11 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
       -o APT::Get::Always-Include-Phased-Updates=true \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee "${installOutputFile}"
    cat "${installOutputFile}"
+
 elif [ "${ID}" == "fedora" ] ; then
    ( sudo dnf clean all && sudo dnf upgrade -y ) | sudo tee "${installOutputFile}"
    cat "${installOutputFile}"
+
 elif [ "${ID}" == "freebsd" ] ; then
    ( sudo freebsd-update install ; sudo env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y
      if [ -x /usr/sbin/portsnap ] ; then
@@ -220,6 +225,15 @@ elif [ "${ID}" == "freebsd" ] ; then
      fi
    ) | sudo tee "${installOutputFile}"
    cat "${installOutputFile}"
+
+elif [ "${ID}" == "netbsd" ] ; then
+   :
+
+elif [ "${ID}" == "openbsd" ] ; then
+
+   sudo syspatch || true
+   sudo pkg_add -u
+
 fi
 
 # ====== Auto-remove ========================================================
@@ -242,10 +256,12 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    if [ -d /var/crash/ ] ; then
       find /var/crash/ -name "*.crash" -exec sudo rm -f {} \;
    fi
+
 elif [ "${ID}" == "fedora" ] ; then
    sudo DEBIAN_FRONTEND=noninteractive nohup dnf autoremove -y 2>&1 | sudo tee "${installOutputFile}"
    cat "${installOutputFile}"
    sudo dnf clean all
+
 elif [ "${ID}" == "freebsd" ] ; then
    sudo env ASSUME_ALWAYS_YES=yes pkg-static autoremove -y
    sudo env ASSUME_ALWAYS_YES=yes pkg-static clean all -y
@@ -379,20 +395,28 @@ fi
 
 # ====== apt-file cache update ==============================================
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating caches ...")\x1b[0m"
+
+# ------ locate -------------------------------------------------------------
+if command -v updatedb >/dev/null ; then
+   sudo updatedb
+elif [ -x /usr/libexec/locate.updatedb ] ; then
+   sudo /usr/libexec/locate.updatedb
+elif [ -x /etc/periodic/weekly/310.locate ] ; then
+   sudo /etc/periodic/weekly/310.locate
+fi
+
+# ------ geoipupdate --------------------------------------------------------
+if command -v geoipupdate >/dev/null ; then
+   sudo geoipupdate
+elif [ -x /usr/local/bin/geoipupdate.sh ] ; then
+   sudo /usr/local/bin/geoipupdate.sh
+fi
+
+# ------ apt-show-versions --------------------------------------------------
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    if command -v apt-file >/dev/null ; then
       sudo apt-file update >/dev/null
       sudo apt-show-versions -i
-   fi
-fi
-if [ "${ID}" != "freebsd" ] ; then
-   if command -v updatedb >/dev/null ; then
-      sudo updatedb
-   fi
-else
-   sudo /etc/periodic/weekly/310.locate
-   if [ -x /usr/local/bin/geoipupdate.sh ] ; then
-      sudo /usr/local/bin/geoipupdate.sh
    fi
 fi
 
