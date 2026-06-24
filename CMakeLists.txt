@@ -34,7 +34,7 @@ ENABLE_LANGUAGE(C)
 
 SET(BUILD_MAJOR "2")
 SET(BUILD_MINOR "7")
-SET(BUILD_PATCH "3")
+SET(BUILD_PATCH "5~rc0")
 SET(BUILD_VERSION ${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH})
 
 
@@ -188,7 +188,7 @@ IF (WITH_I18N)
             "Cannot find Internationalization (i18n) support! Try:\n"
             " * Ubuntu/Debian: sudo apt install -y libc6-dev\n"
             " * Fedora:        sudo dnf install -y gettext-devel\n"
-            " * SuSE:          sudo zypper install -y gettext-devel\n"
+            " * OpenSUSE:      sudo zypper install -y gettext-devel\n"
             " * Alpine:        sudo apk add gettext-dev\n"
             " * FreeBSD:       sudo pkg install -y gettext\n"
             " * NetBSD:        sudo pkgin -y install gettext\n"
@@ -232,7 +232,7 @@ IF (WITH_I18N)
               "Cannot find gettext tools >= ${GETTEXT_MIN_VERSION}! Try:\n"
               " * Ubuntu/Debian: sudo apt install -y gettext\n"
               " * Fedora:        sudo dnf install -y gettext\n"
-              " * SuSE:          sudo zypper install -y gettext\n"
+              " * OpenSUSE:      sudo zypper install -y gettext\n"
               " * Alpine:        sudo apk add gettext-dev\n"
               " * FreeBSD:       sudo pkg install -y gettext-tools\n"
               " * NetBSD:        sudo pkgin -y install gettext-tools\n"

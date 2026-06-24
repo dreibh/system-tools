@@ -1,3 +1,533 @@
+commit 38b7cff67626a73d7c8b704e39a1d95d29119dce
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 15:04:10 2026 +0200
+
+    Added placeholder for Apple battery status code.
+
+commit ca98191fd1b6994201107fe5808beb6a809660a8
+Merge: 625771e 30fd1c1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 14:40:10 2026 +0200
+
+    Merge branch 'dreibh/netbsd' of github.com:dreibh/system-tools into dreibh/netbsd
+
+commit 625771efde36db5c43b63d4c0e018a8f23443591
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 14:40:00 2026 +0200
+
+    Minor clean-up.
+
+commit 30fd1c17cfd530e5ed27439a57f22d93d90fc63e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 14:20:43 2026 +0200
+
+    Added missing NetBSD battery status part.
+
+commit ec23d1740805c95e29093d9a76ffb1dd58d4a21d
+Merge: 2a5ad9c 4cd6f31
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 13:46:08 2026 +0200
+
+    Merge branch 'dreibh/netbsd' of https://github.com/dreibh/system-tools into dreibh/netbsd
+
+commit 4cd6f3162b79d69cfffb5e1a971f26c94ba00d5c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 14:03:49 2026 +0200
+
+    Added proper handling of user session counting for OpenBSD as well.
+
+commit 68fb8437508905ae7aebb6950fb15fee1eddac19
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 13:48:26 2026 +0200
+
+    Replaced strcpy() by strlcpy().
+
+commit 2a5ad9c43801fd9d3be9d19358e8a74664908e70
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 13:45:57 2026 +0200
+
+    Minor clean-ups.
+
+commit 70fffcb399d615f7effb845a947665b935b59d8a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 13:27:02 2026 +0200
+
+    Added process count calculation for NetBSD.
+
+commit a0010e474e6041b1c76104a966cab62e2bcf4f38
+Merge: 5e989ba 1009ba4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 13:25:49 2026 +0200
+
+    Merge branch 'dreibh/netbsd' of https://github.com/dreibh/system-tools into dreibh/netbsd
+
+commit 1009ba4282d664f0ce6919338bef70e8d775ccbb
+Merge: dee9adf c5b2a20
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 13:41:57 2026 +0200
+
+    Merge branch 'dreibh/netbsd' of https://github.com/dreibh/system-tools into dreibh/netbsd
+
+commit dee9adf6113597cde26a80f0c96cfec2f18c9cb4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 13:41:35 2026 +0200
+
+    Added process count calculation for OpenBSD.
+
+commit 5e989baa2e1ef3551b8d80485c779565dc83b79b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 13:25:42 2026 +0200
+
+    Minor improvement.
+
+commit c5b2a20156c14748121ed1dda04daf05f3c1fcf6
+Merge: 55f812c 11832b2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 13:01:55 2026 +0200
+
+    Merge branch 'dreibh/netbsd' of github.com:dreibh/system-tools into dreibh/netbsd
+
+commit 55f812cdcee36eda4a445bb84d75f9edd35ac50a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 13:01:48 2026 +0200
+
+    Updated comment.
+
+commit 11832b2a1797b867c43b2da7558b8e7bc7fdf95d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 13:01:19 2026 +0200
+
+    Minor clean-up.
+
+commit 80138709492cb4e2c4650ceb3029fce42b53e1be
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 12:50:04 2026 +0200
+
+    Improved memory static handling for OpenBSD.
+
+commit 1a24d22ed3a5c158e059a6036112c20b0a35ece6
+Merge: 1278f3e b2ff224
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 12:41:53 2026 +0200
+
+    Merge branch 'dreibh/netbsd' of https://github.com/dreibh/system-tools into dreibh/netbsd
+
+commit b2ff224fc37dc0506bd72222ff8030de87d116cb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 12:40:46 2026 +0200
+
+    Memory status handling clean-ups for BSD variants.
+
+commit 1278f3efa1359df9b3f18a9230b14979e586b98f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 12:05:01 2026 +0200
+
+    Added missing OpenBSD battery status part.
+
+commit 4657909442784d8506698075c6ef7a26647f9cfd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 11:51:56 2026 +0200
+
+    Type fix.
+
+commit b4df05f43605d6904ad0aed373dde3af79d883e7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 11:45:59 2026 +0200
+
+    Another set of clean-ups.
+
+commit 6e3d8913a87c9f67ab2f46e1003b284f9f1a1e99
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 11:16:03 2026 +0200
+
+    Further code clean-ups.
+
+commit a2a102da2a92d84fde2c3be828a42d26ac1a4b52
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 10:43:55 2026 +0200
+
+    Improved load statistics handling.
+
+commit a1c3ec9007a58d9c8a8ab8d8d657c9fe42c6b509
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 10:38:01 2026 +0200
+
+    Improved network address handling.
+
+commit c28cdd43e38a227952ff0294f25a01329e01e57f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 10:32:40 2026 +0200
+
+    Improved uptime handling code.
+
+commit 0ed393428e8b9acd98dd1875d4e5e71bd1661107
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 09:45:42 2026 +0200
+
+    Small clean-ups.
+
+commit 6c666c217f88a238df4fc1d1b5543ea5f06b9987
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 09:38:13 2026 +0200
+
+    Improved network address handling.
+
+commit 9fd4e461a62c430d8c9ecf40b06b0946ecb5bc55
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 09:10:27 2026 +0200
+
+    Ensure that hostname returned by gethostname() is terminated by null byte in any case.
+
+commit cfe1e5e89f2c64ba8f6d2c55218c47aaedbc6b6a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 09:08:30 2026 +0200
+
+    Network details improvement. Also added missing MacOS case for printing the MAC addresses.
+
+commit 4b683a28676797bc83bf93b101366b7cc497df95
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 11 13:19:05 2026 +0200
+
+    Improved documentation.
+
+commit 74302e9fe59b0df36f3a0a320963adbeb433d47c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 11 11:32:12 2026 +0200
+
+    Improved CMakeLists.txt.
+
+commit 27367b0eb9cce585ef234974e3553ebea3ed95c3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 18:35:03 2026 +0200
+
+    Improved search for GIMP console program.
+
+commit b03464c86f982c65c889b4dabd6f5d42ad474248
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 18:19:04 2026 +0200
+
+    MacOS compatibility fix.
+
+commit b789e349c99223650ca8f69a45f154db7844243c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 17:43:32 2026 +0200
+
+    Further output clean-ups.
+
+commit c1290c9748d1e2c0443cbd0114d8ec2731f439f6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 17:35:59 2026 +0200
+
+    Yet another fix.
+
+commit ccd795394d28cb59ca505c193f909142f1e93f8a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 17:34:19 2026 +0200
+
+    A fix.
+
+commit e4305ffea4ee099174ee2b30d9d8858bd9f39cbe
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 17:28:12 2026 +0200
+
+    Improved compatibility.
+
+commit 811fcfc8e3576b40a06b0c33b5579cb446e1c133
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 17:21:25 2026 +0200
+
+    Added check for a too-long hostname in the test script.
+
+commit 63b87f3aeb08b8b8e15387a4944096be251d65e0
+Merge: 9e12a3d abd0af3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 17:15:32 2026 +0200
+
+    Merge branch 'dreibh/netbsd' of github.com:dreibh/system-tools into dreibh/netbsd
+
+commit 9e12a3dc5ebf87b648837a6144781589e442b986
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 17:15:07 2026 +0200
+
+    Small clean-ups.
+
+commit abd0af358e701155f65023d31e364c0b20d17e3a
+Merge: 2eda24c 6d21e82
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 16:53:04 2026 +0200
+
+    Merge branch 'dreibh/netbsd' of https://github.com/dreibh/system-tools into dreibh/netbsd
+
+commit 2eda24c4b03606cb27e99bb41c002727397b0e20
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 16:52:50 2026 +0200
+
+    Updated test script.
+
+commit 6d21e82e601057f4eb8f58a9b7c1b53fa67574fa
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 16:42:25 2026 +0200
+
+    Improved error message.
+
+commit 31d6f2506c297ff7209938fa8dda191b61e080fb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 16:42:09 2026 +0200
+
+    Added check for dependency.
+
+commit 9e75f39232899e686dbb6b85e3a4bc012ba07f7a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 16:24:37 2026 +0200
+
+    Further improvements for GIMP message filtering in non-verbose mode.
+
+commit 944c258bdf37c296bccc18a976d60ddc55dfd297
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 16:19:29 2026 +0200
+
+    Filtering GIMP messages.
+
+commit b994927d78a0a665ec0ca91bc49bf6b76c523a10
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 16:16:06 2026 +0200
+
+    Improved path handling.
+
+commit 09dc46ff551da03b29bc4d70ada444769667c58c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 15:54:39 2026 +0200
+
+    Formatting clean-ups.
+
+commit a5576194068a8131cf33ebfb49c2a6e280b7bf3b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 15:22:32 2026 +0200
+
+    Further clean-ups.
+
+commit ba45b4e61bdbbd48202ea6503bf4a4d89e2d2158
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 15:15:44 2026 +0200
+
+    Improved scripts.
+
+commit f15e3f3fb2fc7153406f19b6356e51cef3e211b6
+Merge: c46ef57 0d220a7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 15:01:59 2026 +0200
+
+    Merge branch 'dreibh/netbsd' of github.com:dreibh/system-tools into dreibh/netbsd
+
+commit 0d220a7511a53c90ad5551b6855a6d4dae7078a1
+Merge: 575f2b6 1b32b51
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 15:01:46 2026 +0200
+
+    Merge branch 'dreibh/netbsd' of https://github.com/dreibh/system-tools into dreibh/netbsd
+
+commit 575f2b6c2106c937d7eea6f760ee25a9910925e8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 15:01:12 2026 +0200
+
+    Added fallback for unavailable clifractgen in test script.
+
+commit c46ef573158ecde47daff58d51b61bfde16673f3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 15:00:57 2026 +0200
+
+    Improved error messages.
+
+commit 1b32b51723163969254e260fcf015a2694442352
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 14:16:21 2026 +0200
+
+    Improved build script.
+
+commit 6182526c2f974f1320932a5586ae5839b4e19787
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 10 13:53:15 2026 +0200
+
+    Improved lookup for getopt command.
+
+commit 72ac396495431968c71e52907d764abcd8ed6caf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 9 07:40:08 2026 +0000
+
+    Added missing cast.
+
+commit 43872c87d4631fdb3250192fa0a4b1d62f2c6d43
+Merge: 3981285 fe8b5bb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 9 08:51:32 2026 +0200
+
+    Merge branch 'dreibh/netbsd' of github.com:dreibh/system-tools into dreibh/netbsd
+
+commit 39812851c06e1c96161d22296fdcffa961b23bd7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 9 08:45:49 2026 +0200
+
+    Minor CMakeLists.txt clean-ups.
+
+commit fe8b5bbf12bc27d74cacca01b9ff0e430cfa4a33
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 17:38:33 2026 +0000
+
+    Improved hostname handling, to also work for NetBSD and OpenBSD.
+
+commit 973452e547a9398f0f5d0f1dd6de02f98b604743
+Merge: 23061b3 1a53ecc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 19:08:29 2026 +0200
+
+    Merge branch 'dreibh/netbsd' of github.com:dreibh/system-tools into dreibh/netbsd
+
+commit 23061b3f9de53dca45a766568432d431582d22f8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 19:08:07 2026 +0200
+
+    Improved getopt detection in more of the scripts.
+
+commit 1a53ecc296898df3547cb1df7a2883e74ea422a1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 19:01:27 2026 +0200
+
+    FreeBSD build fix.
+
+commit b256009e2024bf479f0b8df38c5377505ff3b392
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 18:58:43 2026 +0200
+
+    Darwin getopt detection fix.
+
+commit fe820e66aec4243d770759fac46ba743e52852a2
+Merge: 619e8b5 f80b2e4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 16:58:15 2026 +0000
+
+    Merge branch 'dreibh/netbsd' of https://github.com/dreibh/system-tools into dreibh/netbsd
+
+commit 619e8b5fb5605c4e3bb5651b9415cffff48da13a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 16:57:49 2026 +0000
+
+    Further replacements of "sort -z".
+
+commit f80b2e4796a0b84ac8545e92600a061e080c1c4e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 18:51:55 2026 +0200
+
+    Further getopt detection improvements.
+
+commit 69f9e0597221b54816c5b4fab282a85584be2fcf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 18:44:37 2026 +0200
+
+    Getopt handling improvement.
+
+commit 29cbc45f4fd78945da5344d0480b32696f0af3c1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 16:23:38 2026 +0000
+
+    Compatibility improvement: replaced usage of "sort -z".
+
+commit b82ed23eb0e1b4b1d015e31bf0dabef5734b01bc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 18:01:32 2026 +0200
+
+    Linux build fix.
+
+commit 894f13a8b06b3ae9b3ebbfb22ba8b1067cbf9bc0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 17:54:04 2026 +0200
+
+    System-Info working under OpenBSD as well.
+
+commit 69a2795fc0d9c60392bf21c716a2def5a7142832
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 15:36:18 2026 +0000
+
+    Added blocks for NetBSD and OpenBSD battery status.
+
+commit 0a8e2e47cb6ff79c1b793bec5f58c4a0072a0468
+Merge: 454c7eb d91cb58
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 15:26:26 2026 +0000
+
+    Merge remote-tracking branch 'origin/master' into dreibh/netbsd
+
+commit 454c7ebae16837903cc601a1dcf765b99f9703a6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 15:01:36 2026 +0000
+
+    Some work on NetBSD support.
+
+commit d91cb58f4c062c27b32a99d582f2fff95eb6c658
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 16:49:01 2026 +0200
+
+    Further clean-ups.
+
+commit a6777fe69597945f9e5741fd17a15e01b0b261f3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 16:06:47 2026 +0200
+
+    Replaced constants to make code block better readable.
+
+commit b736ae87d6e135b7d0724adf6acb063f8f0447ea
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 15:50:52 2026 +0200
+
+    Further testing.
+
+commit bb3ce099d7094095228a3ae579ecee9bc58889c2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 15:28:55 2026 +0200
+
+    NetBSD and OpenBSD testing.
+
+commit 2dc40f090c75b84042acf9a95a213df45a9d6322
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 15:17:21 2026 +0200
+
+    Improved gettext detection, and some clean-ups, in CMakeLists.txt.
+
+commit 9fc65810e106ee6993ca5f1753161baf3ed57842
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 15:17:13 2026 +0200
+
+    Improved build script.
+
+commit df2fe31028b4366d96943fb1ffd9a29a2a905abf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 8 15:16:04 2026 +0200
+
+    Updated CI scripts
+
+commit ddf19000f55e9aff6ad50e821f7ece003a32f5fe
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 18:39:39 2026 +0200
+
+    Updated sorting order in pkg-plist.
+
+commit 0d3236f72688773efe08d315c1c6efb5e678c65f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 18:33:21 2026 +0200
+
+    Sorted pkg-plist.
+
+commit e0ff58e8108c46d27301082836a830e79241cf8e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 18:32:57 2026 +0200
+
+    Updated pkg-plist.
+
+commit 8c63c18737ab61cc517394abce2bfc768bd5620c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 5 17:54:23 2026 +0200
+
+    New release td-system-tools-2.7.3.
+
 commit b763d51e1abe8d923dd2d1b4446fec15e87fe1ac
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Jun 5 17:54:00 2026 +0200
