@@ -219,7 +219,9 @@ elif [ "${ID}" == "fedora" ] ; then
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "freebsd" ] ; then
-   ( sudo freebsd-update install ; sudo env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y
+   (
+     sudo freebsd-update install || true
+     sudo env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y
      if [ -x /usr/sbin/portsnap ] ; then
         sudo /usr/sbin/portsnap -I update
      fi
