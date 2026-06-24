@@ -159,7 +159,7 @@ _random_sleep() {
 
 _x509_tools() {
 	pkgdesc="X.509 certificate handling tools"
-	depends="$pkgname-print-utf8=$pkgver-r$pkgrel $pkgname-text-block=$pkgver-r$pkgrel gettext mbuffer openssl"
+	depends="$pkgname-print-utf8=$pkgver-r$pkgrel $pkgname-text-block=$pkgver-r$pkgrel coreutils gettext mbuffer openssl"
 
 	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share/system-tools
 	mv "$pkgdir"/usr/bin/check-certificate "$subpkgdir"/usr/bin/
