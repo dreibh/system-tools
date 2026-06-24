@@ -227,7 +227,9 @@ elif [ "${ID}" == "freebsd" ] ; then
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "netbsd" ] ; then
-   :
+
+   sudo pkgin update
+   sudo pkgin -y upgrade
 
 elif [ "${ID}" == "openbsd" ] ; then
 
@@ -397,12 +399,12 @@ fi
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating caches ...")\x1b[0m"
 
 # ------ locate -------------------------------------------------------------
-if command -v updatedb >/dev/null ; then
-   sudo updatedb
+if [ -x /etc/periodic/weekly/310.locate ] ; then
+   sudo /etc/periodic/weekly/310.locate
 elif [ -x /usr/libexec/locate.updatedb ] ; then
    sudo /usr/libexec/locate.updatedb
-elif [ -x /etc/periodic/weekly/310.locate ] ; then
-   sudo /etc/periodic/weekly/310.locate
+elif command -v updatedb >/dev/null ; then
+   sudo updatedb
 fi
 
 # ------ geoipupdate --------------------------------------------------------
