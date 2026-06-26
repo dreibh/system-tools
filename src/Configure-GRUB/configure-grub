@@ -31,6 +31,19 @@
 set -euo pipefail
 
 
+# ###### Diff with colourised output, if possible ###########################
+colordiff ()
+{
+   if diff --color /dev/null /dev/null >/dev/null 2>&1 ; then
+      # GNU diff:
+      diff --color=always "$@"
+   else
+      # Diff without --color option (e.g. BusyBox):
+      diff "$@"
+   fi
+}
+
+
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
@@ -253,5 +266,5 @@ awk \
 ' <"${TEMPLATE_CONFIGURATION}" >"${OUTPUT_CONFIGURATION}.new"
 
 echo "Differences between ${INPUT_CONFIGURATION} and ${OUTPUT_CONFIGURATION}:"
-diff --color "${INPUT_CONFIGURATION}" "${OUTPUT_CONFIGURATION}.new" || true
+colordiff "${INPUT_CONFIGURATION}" "${OUTPUT_CONFIGURATION}.new" || true
 mv "${OUTPUT_CONFIGURATION}.new" "${OUTPUT_CONFIGURATION}"

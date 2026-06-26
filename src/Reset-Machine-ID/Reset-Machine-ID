@@ -79,6 +79,19 @@ select-ssh-options ()
 }
 
 
+# ###### Diff with colourised output, if possible ###########################
+colordiff ()
+{
+   if diff --color /dev/null /dev/null >/dev/null 2>&1 ; then
+      # GNU diff:
+      diff --color=always "$@"
+   else
+      # Diff without --color option (e.g. BusyBox):
+      diff "$@"
+   fi
+}
+
+
 # ###### Install Zabbix Agent ###############################################
 install-zabbix-agent()
 {
@@ -286,19 +299,19 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
 
    done </etc/hosts >/etc/hosts.updated
    echo "/etc/hosts:"
-   diff --color=always /etc/hosts /etc/hosts.updated || differences=$((differences + 1))
+   colordiff /etc/hosts /etc/hosts.updated || differences=$((differences + 1))
 
 
    # ====== Update /etc/hostname or /etc/rc.conf =========================
    if [ -e /etc/hostname ] ; then
       echo "${NEW_HOSTNAME_FQDN}" >/etc/hostname.updated
       echo "/etc/hostname:"
-      diff --color=always /etc/hostname /etc/hostname.updated || differences=$((differences + 1))
+      colordiff /etc/hostname /etc/hostname.updated || differences=$((differences + 1))
    elif [ -e /etc/rc.conf ] ; then
       echo "/etc/rc.conf:"
       sed -e "s/^hostname=.*$/hostname=\"${NEW_HOSTNAME_FQDN}\"/g" \
          </etc/rc.conf >/etc/rc.conf.updated
-      diff --color=always /etc/rc.conf /etc/rc.conf.updated || differences=$((differences + 1))
+      colordiff /etc/rc.conf /etc/rc.conf.updated || differences=$((differences + 1))
    fi
 
    # ====== Apply changes ================================================
@@ -403,7 +416,7 @@ ${zabbixOptions}
 EOF
 
    # ------ Apply configuration ---------------------------------------------
-   if ! diff --color "${zabbixConfig}" "${zabbixConfig}.new" ; then
+   if ! colordiff "${zabbixConfig}" "${zabbixConfig}.new" ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
          echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Apply suggested Zabbix Agent changes in \${zabbixConfig}?") [yes/no]\x1b[0m "
          read -er applyChanges
@@ -480,7 +493,7 @@ EOF
    if [ -e ssh_config ] ; then
       gettext "Suggested ssh_config changes:"
       echo
-      if ! diff --color=always ssh_config ssh_config.suggested ; then
+      if ! colordiff ssh_config ssh_config.suggested ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
             echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested ssh_config changes?") [yes/no]\x1b[0m "
             read -er applyChanges
@@ -561,7 +574,7 @@ EOF
       # ====== Apply sshd_config updates ====================================
       gettext "Suggested sshd_config changes:"
       echo
-      diff --color=always sshd_config sshd_config.suggested || differences=$((differences + 1))
+      colordiff sshd_config sshd_config.suggested || differences=$((differences + 1))
       if [ ${differences} -gt 0 ] ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
             echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested sshd_config changes?") [yes/no]\x1b[0m "
