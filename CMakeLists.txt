@@ -230,13 +230,13 @@ IF (WITH_I18N)
        (MSGFMT_VERSION   VERSION_LESS ${GETTEXT_MIN_VERSION}))
       MESSAGE(FATAL_ERROR
               "Cannot find gettext tools >= ${GETTEXT_MIN_VERSION}! Try:\n"
-              " * Ubuntu/Debian: sudo apt install -y gettext\n"
-              " * Fedora:        sudo dnf install -y gettext\n"
-              " * OpenSUSE:      sudo zypper install -y gettext\n"
+              " * Ubuntu/Debian: sudo apt install -y libc6-dev\n"
+              " * Fedora:        sudo dnf install -y gettext-devel\n"
+              " * OpenSUSE:      sudo zypper install -y gettext-devel\n"
               " * Alpine:        sudo apk add gettext-dev\n"
-              " * FreeBSD:       sudo pkg install -y gettext-tools\n"
-              " * NetBSD:        sudo pkgin -y install gettext-tools\n"
-              " * OpenBSD:       sudo pkg_add gettext-tools\n"
+              " * FreeBSD:       sudo pkg install -y gettext\n"
+              " * NetBSD:        sudo pkgin -y install gettext\n"
+              " * OpenBSD:       sudo pkg_add gettext-runtime gettext-tools\n"
               " * Apple:         brew install gettext")
    ENDIF()
 
