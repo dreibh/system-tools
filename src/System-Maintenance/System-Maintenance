@@ -196,7 +196,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ====== apt-get package fixes ===========================================
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing missing dependencies, if necessary ...")\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | tee "${installOutputFile}"
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 fi
 
@@ -207,7 +207,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ------ Download --------------------------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -yd -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | tee "${installOutputFile}"
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
 
    # ------ Update special packages -----------------------------------------
    # NOTE: This block is likely obsolete, and therefore commented out!
@@ -225,7 +225,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    #          sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
    #             -o APT::Get::Always-Include-Phased-Updates=true \
    #             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-   #            ${package} -y -q 2>&1 | tee "${installOutputFile}"
+   #            ${package} -y -q </dev/null 2>&1 | tee "${installOutputFile}"
    #          echo "Updated ${package} package."
    #       fi
    #    fi
@@ -237,7 +237,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ------ Update the rest -------------------------------------------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -y -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | tee "${installOutputFile}"
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "fedora" ] ; then
@@ -246,14 +246,14 @@ elif [ "${ID}" == "fedora" ] ; then
 
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
    if [[ "${PRETTY_NAME}" =~ "Tumbleweed" ]]; then
-      sudo nohup zypper --non-interactive dist-upgrade -y 2>&1 | tee "${installOutputFile}"
+      sudo nohup zypper --non-interactive dist-upgrade -y </dev/null 2>&1 | tee "${installOutputFile}"
    else
-      sudo nohup zypper --non-interactive update -y 2>&1 | tee "${installOutputFile}"
+      sudo nohup zypper --non-interactive update -y </dev/null 2>&1 | tee "${installOutputFile}"
    fi
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "alpine" ] ; then
-   sudo nohup apk upgrade 2>&1 | tee "${installOutputFile}"
+   sudo nohup apk upgrade </dev/null 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "freebsd" ] ; then
@@ -267,7 +267,7 @@ elif [ "${ID}" == "freebsd" ] ; then
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "netbsd" ] ; then
-   sudo nohup pkgin -y upgrade 2>&1 | tee "${installOutputFile}"
+   sudo nohup pkgin -y upgrade </dev/null 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "openbsd" ] ; then
@@ -288,7 +288,7 @@ echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Cleaning up ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ------ Remove unnecessary dependencies ---------------
    sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -q \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | tee "${installOutputFile}"
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
    # ------ Purge all previously-removed packages ---------
@@ -305,7 +305,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    fi
 
 elif [ "${ID}" == "fedora" ] ; then
-   sudo nohup dnf autoremove -y 2>&1 | tee "${installOutputFile}"
+   sudo nohup dnf autoremove -y </dev/null 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
    sudo dnf clean all
 
@@ -428,7 +428,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
          # shellcheck disable=SC2086
          sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -qq --purge \
             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-            ${toBeRemoved} 2>&1 | tee "${installOutputFile}"
+            ${toBeRemoved} </dev/null 2>&1 | tee "${installOutputFile}"
          cat "${installOutputFile}"
       else
          # shellcheck disable=SC2086
