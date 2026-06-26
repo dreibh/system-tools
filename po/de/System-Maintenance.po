@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-06-09 08:53+0200\n"
+"POT-Creation-Date: 2026-06-26 11:54+0200\n"
 "PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -47,87 +47,86 @@ msgstr ""
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/System-Maintenance/System-Maintenance:124
-msgid "ERROR: /etc/os-release not found!"
-msgstr "FEHLER: /etc/os-release nicht gefunden!"
-
-#: src/System-Maintenance/System-Maintenance:132
+#: src/System-Maintenance/System-Maintenance:136
 msgid "Stopping AutoFS service ..."
 msgstr "Stoppe AutoFS-Dienst ..."
 
-#: src/System-Maintenance/System-Maintenance:147
-#: src/System-Maintenance/System-Maintenance:150
+#: src/System-Maintenance/System-Maintenance:152
+#: src/System-Maintenance/System-Maintenance:166
 msgid "Updating package repositories ..."
 msgstr "Aktualisiere Paketquellen ..."
 
-#: src/System-Maintenance/System-Maintenance:164
+#: src/System-Maintenance/System-Maintenance:192
 msgid "Applying package fixes, if necessary ..."
 msgstr "Repariere Pakete, falls notwendig ..."
 
-#: src/System-Maintenance/System-Maintenance:169
+#: src/System-Maintenance/System-Maintenance:197
 msgid "Installing missing dependencies, if necessary ..."
 msgstr "Installiere fehlende Abhängigkeiten, falls notwendig ..."
 
-#: src/System-Maintenance/System-Maintenance:176
+#: src/System-Maintenance/System-Maintenance:205
 msgid "Installing updates ..."
 msgstr "Installiere Aktualisierungen ..."
 
-#: src/System-Maintenance/System-Maintenance:226
+#: src/System-Maintenance/System-Maintenance:287
 msgid "Cleaning up ..."
 msgstr "Räume auf ..."
 
-#: src/System-Maintenance/System-Maintenance:256
+#: src/System-Maintenance/System-Maintenance:336
 msgid "Removing obsolete kernels ..."
 msgstr "Entferne obsolete Kernel ..."
 
-#: src/System-Maintenance/System-Maintenance:262
+#: src/System-Maintenance/System-Maintenance:342
 msgid "Kernel Type:        "
 msgstr "Kernel-Typ:          "
 
-#: src/System-Maintenance/System-Maintenance:263
+#: src/System-Maintenance/System-Maintenance:343
 msgid "Kernel Boot Version:"
 msgstr "Kernel Boot-Version: "
 
-#: src/System-Maintenance/System-Maintenance:264
+#: src/System-Maintenance/System-Maintenance:344
 msgid "Kernel Disk Version:"
 msgstr "Kernel Disk-Version: "
 
-#: src/System-Maintenance/System-Maintenance:340
+#: src/System-Maintenance/System-Maintenance:420
 msgid "To be removed:"
 msgstr "Zu entfernen:"
 
-#: src/System-Maintenance/System-Maintenance:343
+#: src/System-Maintenance/System-Maintenance:423
 msgid "To be kept:"
 msgstr "Zu behalten:"
 
-#: src/System-Maintenance/System-Maintenance:369
+#: src/System-Maintenance/System-Maintenance:450
 msgid "Refreshing snaps ..."
 msgstr "Aktualisiere Snaps ..."
 
-#: src/System-Maintenance/System-Maintenance:375
+#: src/System-Maintenance/System-Maintenance:457
 msgid "Checking for firmware updates ..."
 msgstr "Prüfe auf Firmwareaktualisierungen ..."
 
-#: src/System-Maintenance/System-Maintenance:381
+#: src/System-Maintenance/System-Maintenance:464
 msgid "Updating caches ..."
 msgstr "Aktualisiere Caches ..."
 
-#: src/System-Maintenance/System-Maintenance:401
+#: src/System-Maintenance/System-Maintenance:493
 msgid "Starting AutoFS service ..."
 msgstr "Starte AutoFS-Dienst ..."
 
-#: src/System-Maintenance/System-Maintenance:406
+#: src/System-Maintenance/System-Maintenance:499
 msgid "Synchronising system time ..."
 msgstr "Synchronisiere Systemzeit ..."
 
-#: src/System-Maintenance/System-Maintenance:466
+#: src/System-Maintenance/System-Maintenance:558
 msgid "Running fstrim ..."
 msgstr "Führe Trimming durch ..."
 
-#: src/System-Maintenance/System-Maintenance:470
+#: src/System-Maintenance/System-Maintenance:562
 msgid "Running zpool trim ..."
 msgstr "Führe ZFS-Trimming durch ..."
 
-#: src/System-Maintenance/System-Maintenance:479
+#: src/System-Maintenance/System-Maintenance:572
 msgid "Done!"
 msgstr "Erledigt!"
+
+#~ msgid "ERROR: /etc/os-release not found!"
+#~ msgstr "FEHLER: /etc/os-release nicht gefunden!"

@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-06-09 08:53+0200\n"
+"POT-Creation-Date: 2026-06-26 13:07+0200\n"
 "PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,95 +43,95 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:140
+#: src/Reset-Machine-ID/Reset-Machine-ID:187
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:206
+#: src/Reset-Machine-ID/Reset-Machine-ID:253
 #, sh-format
 msgid "ERROR: Invalid hostname ${hostname}!"
 msgstr "FEHLER: Ungültiger Hostname ${hostname}!"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:307
+#: src/Reset-Machine-ID/Reset-Machine-ID:354
 msgid "Update hostname?"
 msgstr "Hostname aktualisieren?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:331
+#: src/Reset-Machine-ID/Reset-Machine-ID:378
 #, sh-format
 msgid "The current machine ID is ${machineID}. Reset it?"
 msgstr "Die aktuelle Maschinen-ID ist ${machineID}. Zurücksetzen?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:350
+#: src/Reset-Machine-ID/Reset-Machine-ID:397
 #, sh-format
 msgid "The new machine ID is ${machineID}."
 msgstr "Die neue Maschinen-ID ist ${machineID}."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:376
+#: src/Reset-Machine-ID/Reset-Machine-ID:428
 msgid "Install Zabbix agent?"
 msgstr "Zabbix-Agent installieren?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:408
+#: src/Reset-Machine-ID/Reset-Machine-ID:460
 #, sh-format
 msgid "Apply suggested Zabbix Agent changes in ${zabbixConfig}?"
 msgstr "Vorgeschlagene Änderungen für Zabbix-Agent in ${zabbixConfig} durchführen?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:419
-#: src/Reset-Machine-ID/Reset-Machine-ID:492
-#: src/Reset-Machine-ID/Reset-Machine-ID:580
-#: src/Reset-Machine-ID/Reset-Machine-ID:633
+#: src/Reset-Machine-ID/Reset-Machine-ID:473
+#: src/Reset-Machine-ID/Reset-Machine-ID:546
+#: src/Reset-Machine-ID/Reset-Machine-ID:634
+#: src/Reset-Machine-ID/Reset-Machine-ID:689
 msgid "Skipped!"
 msgstr "Übersprungen!"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:455
+#: src/Reset-Machine-ID/Reset-Machine-ID:509
 msgid "Checking SSH configuration ..."
 msgstr "Untersuche SSH-Konfiguration ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:481
+#: src/Reset-Machine-ID/Reset-Machine-ID:535
 msgid "Suggested ssh_config changes:"
 msgstr "Vorgeschlagene Änderungen in ssh_config:"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:485
+#: src/Reset-Machine-ID/Reset-Machine-ID:539
 msgid "Apply suggested ssh_config changes?"
 msgstr "Vorgeschlagene Änderungen in ssh_config durchführen?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:554
+#: src/Reset-Machine-ID/Reset-Machine-ID:608
 msgid "Suggested removal of sshd_config.d/50-cloud-init.conf:"
 msgstr "Vorgeschlagene Entfernung von sshd_config.d/50-cloud-init.conf:"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:562
+#: src/Reset-Machine-ID/Reset-Machine-ID:616
 msgid "Suggested sshd_config changes:"
 msgstr "Vorgeschlagene Änderungen in sshd_config:"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:567
+#: src/Reset-Machine-ID/Reset-Machine-ID:621
 msgid "Apply suggested sshd_config changes?"
 msgstr "Vorgeschlagene Änderungen in sshd_config durchführen?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:575
-#: src/Reset-Machine-ID/Reset-Machine-ID:627
+#: src/Reset-Machine-ID/Reset-Machine-ID:629
+#: src/Reset-Machine-ID/Reset-Machine-ID:682
 msgid "Trying to restart SSH daemon ..."
 msgstr "Versuche Neustart des SSH-Daemons ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:594
+#: src/Reset-Machine-ID/Reset-Machine-ID:648
 msgid "Remove existing SSH host keys and generate new ones?"
 msgstr "Existierende SSH-Schlüssel entfernen und neue Schlüssel erstellen?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:600
+#: src/Reset-Machine-ID/Reset-Machine-ID:654
 #, sh-format
 msgid "Making backup of current keys in ${backupDirectory} ..."
 msgstr "Erstelle Backup der gegenwärtigen Schlüssel in ${backupDirectory} ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:618
+#: src/Reset-Machine-ID/Reset-Machine-ID:672
 msgid "Generating new ED25519 key ..."
 msgstr "Erstelle neuen ED25519-Schlüssel ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:620
+#: src/Reset-Machine-ID/Reset-Machine-ID:674
 msgid "Generating new ECDSA key ..."
 msgstr "Erstelle neuen ECDSA-Schlüssel ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:622
+#: src/Reset-Machine-ID/Reset-Machine-ID:676
 msgid "Generating new RSA key; this may take some time ..."
 msgstr "Erstelle neuen RSA-Schlüssel; dies kann einen Moment dauern ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:625
+#: src/Reset-Machine-ID/Reset-Machine-ID:679
 msgid "Done!"
 msgstr "Erledigt!"

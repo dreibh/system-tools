@@ -1,3 +1,242 @@
+commit 9e37da633b983b4e63eaca565829f9e6f93530e7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 12:40:11 2026 +0200
+
+    Syntax fix.
+
+commit 9660e743e5e534d0c67975f47b543514219b098a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 12:36:04 2026 +0200
+
+    Some improvements and clean-ups.
+
+commit dbafe5364661cdf32345c596465960c7f6c01a69
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 12:04:14 2026 +0200
+
+    Alpine compatibility improvements: check for "diff --color" support before using it.
+
+commit 8a202928eb668473dc467b9618a4f269221d024e
+Merge: dfd01b8 2e61e1d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 10:54:37 2026 +0200
+
+    Merge branch 'master' of github.com:dreibh/system-tools
+
+commit dfd01b828025a135e5e54431423bd6e5693da641
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 10:54:25 2026 +0200
+
+    Minor clean-ups.
+
+commit 2e61e1d250208768edea4766e7f42a8d95dbf109
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 10:48:29 2026 +0200
+
+    OpenSUSE update.
+
+commit d077dc84f5598f9871ad06270600f67fa3ef817e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 10:41:59 2026 +0200
+
+    Further improvements.
+
+commit 9b708d47810d79f8954a04316ab7cf2fc03c9523
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 10:32:49 2026 +0200
+
+    Removed unnecessary "sudo".
+
+commit 39c62e423fb503fc681b566995986f272ff91f68
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 10:31:07 2026 +0200
+
+    Added missing OpenBSD case.
+
+commit 8466f06d1e103d1c4862420cb2093836e8e0bd51
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 10:24:36 2026 +0200
+
+    System support improvements for Alpine, OpenSUSE, NetBSD, and OpenBSD.
+
+commit 722e48c13b2c3499d7e0c8a80b413183195b7701
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 09:44:07 2026 +0200
+
+    CMakeLists.txt improvements for OpenSUSE support.
+
+commit 1f365f0c4a810c4d095c1b00dbdc04fafbb74b06
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 24 09:04:25 2026 +0000
+
+    Alpine dependency fix.
+
+commit 08fe0e4188958a523d131d8d492050972dc039a9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 24 08:45:27 2026 +0000
+
+    Alpine Linux mktemp syntax fix.
+
+commit 67655054095c8c827a8ab8310fe2f112716f23c1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 24 10:37:46 2026 +0200
+
+    FreeBSD improvements.
+
+commit 3af10511325fce8bdebc87193171479d2c010c8e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 24 10:16:34 2026 +0200
+
+    Added initial NetBSD support.
+
+commit e302b01963c715a7d03f3bf775522bcfaba46427
+Merge: 95ed605 fd3718e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 24 10:07:39 2026 +0200
+
+    Merge branch 'master' into dreibh/netbsd
+
+commit 95ed605c1b77c20d091bf32e00e132d594fbe835
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 24 10:05:10 2026 +0200
+
+    Some improvements, including initial OpenBSD support.
+
+commit fd3718e3684cca8874bd7f71a21b8660fde7fda3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jun 20 21:39:44 2026 +0200
+
+    Minor CMakeLists.txt update.
+
+commit 937babf0f5bceddf29f08812455158ee23d75f5f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jun 20 21:18:13 2026 +0200
+
+    APKBUILD update.
+
+commit 91da54df66c95d132f571be7323aa7f75b9ee3ac
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jun 20 19:16:41 2026 +0200
+
+    Minor ARPBUILD update.
+
+commit 5a4ab9291b0419e62945d9bbe6e66d51bb04ef78
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jun 20 17:08:47 2026 +0000
+
+    Improved APKBUILD.
+
+commit c377bd6319c07da28a0e6db6fd5ba6db8564390d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jun 20 18:56:34 2026 +0200
+
+    Created initial APKBUILD file.
+
+commit 2de2260c8913ea38127a5bda02b41e15f8cfa225
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jun 20 10:34:12 2026 +0200
+
+    Debian 12 does not have strlcpy(). Letting CMakeLists.txt check whether it is supported.
+
+commit aa614f45ad90d7c39976125a8d17b393fa29f009
+Merge: 515c039 34e2053
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jun 20 10:35:02 2026 +0200
+
+    Merge branch 'dreibh/netbsd' of github.com:dreibh/system-tools into dreibh/netbsd
+
+commit 515c0393c4c31f981f318851be4ac0372af81ca8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jun 20 10:34:12 2026 +0200
+
+    Debian 12 does not have strlcpy(). Letting CMakeLists.txt check whether it is supported.
+
+commit 180821f32f3b4061ddf4f9e5c9c9de3a6ec81e66
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 19 14:34:13 2026 +0200
+
+    Minor RPM spec clean-up.
+
+commit d0702028c7a5495bb76f79e1a2466eccb02ceca9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 18 17:51:54 2026 +0200
+
+    Yet another RPM spec update.
+
+commit a0ca78729b070078f12dcc0fced7acac176dd9d7
+Merge: 78ba9dc e774e36
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 18 15:12:42 2026 +0200
+
+    Merge branch 'master' of github.com:dreibh/system-tools
+
+commit 78ba9dcb0665f8a0066492227b878bdc609908c9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 18 15:12:31 2026 +0200
+
+    RPM spec fix.
+
+commit e774e36908a86b547afd471a18b31054b3df3323
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 18 15:11:35 2026 +0200
+
+    Further RPM spec clean-ups.
+
+commit 11febbc54a62ce7d9ecaa5f2425eb77e7224d1b3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 18 13:09:43 2026 +0200
+
+    Yet another RPM spec update.
+
+commit 79fd68a0d36a672630fbba648d5a72cbe5db62d0
+Merge: 56bc04c 5efa6cf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 18 12:40:24 2026 +0200
+
+    Merge branch 'master' of github.com:dreibh/system-tools
+
+commit 5efa6cfc5345836958481f7bcf1049c0ea1031fb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 18 12:39:59 2026 +0200
+
+    Further RPM spec improvements.
+
+commit 56bc04c9f06ff1291c2cd0c546fde4183a483cfa
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 18 11:06:43 2026 +0200
+
+    Removed Python shebang from CertificateHelper.py, since this is a library and not an executable.
+
+commit 363b0f656f181e03d4dbcc1dbc3352ec394298ec
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 17 13:26:31 2026 +0200
+
+    RPM spec fix: meta-packages should be noarch.
+
+commit 870b5a30dbf9a51d03183c573d13e4bb5e66b1dd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 17 13:06:45 2026 +0200
+
+    Another RPM spec update. OpenSUSE builds should work now.
+
+commit 56836a720006502d48b831404552f1e471f91f6d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 17 11:28:48 2026 +0200
+
+    Improved RPM spec.
+
+commit 34e205369bcb697065ff39492bb041bfbaf87f63
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 17 11:28:48 2026 +0200
+
+    Improved RPM spec.
+
+commit dce850d952407ed1616a30f84dacb8c4cfece69f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 12 18:15:57 2026 +0200
+
+    New release td-system-tools-2.7.4.
+
 commit 38b7cff67626a73d7c8b704e39a1d95d29119dce
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Jun 12 15:04:10 2026 +0200
