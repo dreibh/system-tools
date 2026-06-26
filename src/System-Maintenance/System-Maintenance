@@ -157,7 +157,7 @@ elif [ "${ID}" == "fedora" ] ; then
    sudo dnf makecache
 
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
-   sudo zypper refresh --non-interactive
+   sudo zypper --non-interactive refresh
 
 elif [ "${ID}" == "alpine" ] ; then
    sudo apk update
