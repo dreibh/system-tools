@@ -309,9 +309,6 @@ elif [ "${ID}" == "fedora" ] ; then
    cat "${installOutputFile}"
    sudo dnf clean all
 
-elif [ "${ID}" == "netbsd" ] ; then
-   sudo pkgin clean
-
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
    sudo zypper clean -p
 
@@ -321,6 +318,12 @@ elif [ "${ID}" == "alpine" ] ; then
 elif [ "${ID}" == "freebsd" ] ; then
    sudo env ASSUME_ALWAYS_YES=yes pkg-static autoremove -y
    sudo env ASSUME_ALWAYS_YES=yes pkg-static clean all -y
+
+elif [ "${ID}" == "netbsd" ] ; then
+   sudo pkgin clean
+
+elif [ "${ID}" == "openbsd" ] ; then
+   sudo pkg_delete -a
 
 else
    echo >&2 "ERROR: Missing clean-up case for ${ID}!"
@@ -542,11 +545,9 @@ fi
 
 # ------ Write updated time to hardware clock -------------------------------
 if [ ${updatedTime} -eq 1 ] ; then
-   if [ "${ID}" != "freebsd" ] ; then
-      if [ -x /usr/sbin/hwclock ] ; then
-         sudo hwclock -w
-      fi
-   else
+   if command -v hwclock >/dev/null ; then
+      sudo hwclock -w
+   elif [ "${ID}" == "freebsd" ] ; then
       sudo date -v +0S
    fi
 fi
