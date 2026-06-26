@@ -95,14 +95,17 @@ colordiff ()
 # ###### Install Zabbix Agent ###############################################
 install-zabbix-agent()
 {
-   if [ ! -e /etc/os-release ] ; then
-      echo >&2 "ERROR: /etc/os-release does not exist!"
-      exit 1
+   UNAME="$(uname)"
+   NAME="${UNAME}"
+   ID="${UNAME,,}"
+   VERSION="$(uname -r)"
+   VERSION_ID="${VERSION/_*/}"
+   if [ -f /etc/os-release ] ; then
+      . /etc/os-release
    fi
-   . /etc/os-release
    if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-      # ------ Add Zabbix Official Repository ----------------------------------
+      # ------ Add Zabbix Official Repository -------------------------------
       local zabbixVersion="7.0"
       cat >/etc/apt/sources.list.d/zabbix.list <<EOF
 deb https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${VERSION_CODENAME} main
@@ -111,37 +114,68 @@ EOF
       rm -f /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
       curl -fsSL https://repo.zabbix.com/zabbix-official-repo.key | \
          gpg --batch --dearmor -o /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
-      /usr/bin/apt-get update
+      apt-get update
 
-      # ------ Install ---------------------------------------------------------
-      packages="zabbix-agent"
-
-      # shellcheck disable=SC2086
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+      # ------ Install ------------------------------------------------------
+      packages=( "zabbix-agent" )
+      env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+         "${packages[@]}"
 
       systemctl enable zabbix-agent
       systemctl start  zabbix-agent
 
-   # ------ Fedora -------------------------------------------------------------
+   # ------ Fedora ----------------------------------------------------------
    elif [ "${ID}" == "fedora" ] ; then
 
-      packages="zabbix-agent"
-
-      # shellcheck disable=SC2086
-      /usr/bin/dnf install -y ${packages}
+      packages=( "zabbix-agent" )
+      dnf install -y "${packages[@]}"
 
       systemctl enable zabbix-agent
       systemctl start  zabbix-agent
 
-   # ------ FreeBSD ------------------------------------------------------------
+   # ------ OpenSUSE --------------------------------------------------------
+   elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+      packages=( "zabbix-agent" )
+      zypper --non-interactive install -y "${packages[@]}"
+      systemctl enable zabbix-agent
+      systemctl start  zabbix-agent
+
+   # ------ Alpine ----------------------------------------------------------
+   elif [ "${ID}" == "alpine" ] ; then
+
+      packages=( "zabbix-agent" "zabbix-agent-openrc" )
+      apk add "${packages[@]}"
+      rc-update add zabbix-agentd default
+      rc-service zabbix-agentd start
+
+   # ------ FreeBSD ---------------------------------------------------------
    elif [ "${ID}" == "freebsd" ] ; then
 
-      packages="zabbix7-agent"
-      # shellcheck disable=SC2086
-      /usr/sbin/pkg install -y ${packages}
+      packages=( "zabbix-agent" )
+      pkg install -y "${packages[@]}"
 
       sysrc zabbix_agentd_enable="YES"
       service zabbix_agentd start
+
+   # ------ NetBSD -------------------------------------------------------------
+   elif [ "${ID}" == "netbsd" ] ; then
+
+      packages=( "zabbix-agent" )
+      pkgin install -y "${packages[@]}"
+      if [ -e /usr/pkg/share/examples/rc.d/zabbix_agentd ] ; then
+         cp /usr/pkg/share/examples/rc.d/zabbix_agentd /etc/rc.d/
+      fi
+      echo 'zabbix_agentd=YES' >>/etc/rc.conf
+      /etc/rc.d/zabbix_agentd start
+
+   # ------ OpenBSD ------------------------------------------------------------
+   elif [ "${ID}" == "openbsd" ] ; then
+
+      packages=( "zabbix-agent" )
+      pkg_add "${packages[@]}"
+      rcctl enable zabbix_agentd
+      rcctl start zabbix_agentd
 
    fi
 }
@@ -377,7 +411,12 @@ fi
 if [ "${ZABBIX_SERVER}" != "" ] ; then
    # ------ Prepare configuration -------------------------------------------
    for stage in 1 2 ; do
-      for zabbixConfig in /etc/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf /usr/local/etc/zabbix7/zabbix_agentd.conf ; do
+      for zabbixConfig in for zabbixConfig in      \
+         /etc/zabbix_agentd.conf                   \
+         /etc/zabbix/zabbix_agentd.conf            \
+         /usr/local/etc/zabbix7/zabbix_agentd.conf \
+         /usr/pkg/etc/zabbix_agentd.conf           \
+         ; do
          if [ -e "${zabbixConfig}" ] ; then
             break
          fi
@@ -424,10 +463,12 @@ EOF
       if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
          cp "${zabbixConfig}" "${zabbixConfig}.old"
          mv "${zabbixConfig}.new" "${zabbixConfig}"
-         for mode in enable restart start ; do
-            sudo service zabbix-agent  ${mode} 2>/dev/null || true
-            sudo service zabbix_agentd ${mode} 2>/dev/null || true
-         done
+         if command -v service >/dev/null ; then
+            for mode in enable restart start ; do
+               service zabbix-agent  ${mode} 2>/dev/null || true
+               service zabbix_agentd ${mode} 2>/dev/null || true
+            done
+         fi
       else
          gettext "Skipped!"
          echo
@@ -637,10 +678,12 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && command -v ssh-ke
 
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Done!")\x1b[0m"
 
-      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
-      # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
-      service sshd restart 2>/dev/null || \
-         service ssh restart 2>/dev/null || true
+      if command -v service >/dev/null ; then
+         echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
+         # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
+         service sshd restart 2>/dev/null || \
+            service ssh restart 2>/dev/null || true
+      fi
 
    else
       gettext "Skipped!"
