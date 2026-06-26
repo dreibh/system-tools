@@ -130,11 +130,13 @@ if [ -f /etc/os-release ] ; then
    . /etc/os-release
 fi
 
+
 # ====== Stop AutoFS ========================================================
 if [ -e /etc/init.d/autofs ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Stopping AutoFS service ...")\x1b[0m"
    sudo service autofs stop >/dev/null 2>&1 || true
 fi
+
 
 # ====== Temporary file handling ============================================
 fullPackageList=""
@@ -145,10 +147,21 @@ trap 'rm -f "${installOutputFile}" "${fullPackageList}" "${packageVersionsFile}"
 
 installOutputFile="$(mktemp -t SystemMaintenance.install.XXXXXXXXXX)"
 
+
 # ====== Update package repositories ========================================
+echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating package repositories ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating package repositories ...")\x1b[0m"
    sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
+
+elif [ "${ID}" == "fedora" ] ; then
+   sudo dnf makecache
+
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+   sudo zypper refresh
+
+elif [ "${ID}" == "alpine" ] ; then
+   sudo apk update
+
 elif [ "${ID}" == "freebsd" ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating package repositories ...")\x1b[0m"
    sudo env PAGER=cat freebsd-update fetch || true
@@ -159,7 +172,19 @@ elif [ "${ID}" == "freebsd" ] ; then
       git pull
       popd >/dev/null
    fi
+
+elif [ "${ID}" == "netbsd" ] ; then
+   sudo pkgin update
+
+elif [ "${ID}" == "openbsd" ] ; then
+   sudo syspatch -c || true
+
+else
+   echo >&2 "ERROR: Missing repository update case for ${ID}!"
+   exit 1
 fi
+
+
 
 # ====== Try to fix issues ==================================================
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
@@ -174,6 +199,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee "${installOutputFile}"
    cat "${installOutputFile}"
 fi
+
 
 # ====== Install updates ====================================================
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing updates ...")\x1b[0m"
@@ -215,7 +241,19 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "fedora" ] ; then
-   ( sudo dnf clean all && sudo dnf upgrade -y ) | sudo tee "${installOutputFile}"
+   sudo dnf upgrade -y 2>&1 | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
+
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+   if [[ "${PRETTY_NAME}" =~ "Tumbleweed" ]]; then
+      sudo nohup zypper --non-interactive dist-upgrade -y 2>&1 | sudo tee "${installOutputFile}"
+   else
+      sudo nohup zypper --non-interactive update -y 2>&1 | sudo tee "${installOutputFile}"
+   fi
+   cat "${installOutputFile}"
+
+elif [ "${ID}" == "alpine" ] ; then
+   sudo nohup apk upgrade 2>&1 | sudo tee "${installOutputFile}"
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "freebsd" ] ; then
@@ -225,20 +263,25 @@ elif [ "${ID}" == "freebsd" ] ; then
      if [ -x /usr/sbin/portsnap ] ; then
         sudo /usr/sbin/portsnap -I update
      fi
-   ) | sudo tee "${installOutputFile}"
+   ) 2>&1 | sudo tee "${installOutputFile}"
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "netbsd" ] ; then
-
-   sudo pkgin update
-   sudo pkgin -y upgrade
+   sudo nohup pkgin -y upgrade 2>&1 | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 
 elif [ "${ID}" == "openbsd" ] ; then
+   (
+      sudo syspatch || true
+      sudo pkg_add -u
+   ) 2>&1 | sudo tee "${installOutputFile}"
+   cat "${installOutputFile}"
 
-   sudo syspatch || true
-   sudo pkg_add -u
-
+else
+   echo >&2 "ERROR: Missing package update case for ${ID}!"
+   exit 1
 fi
+
 
 # ====== Auto-remove ========================================================
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Cleaning up ...")\x1b[0m"
@@ -250,7 +293,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
 
    # ------ Purge all previously-removed packages ---------
    dpkg --get-selections | awk '$2=="deinstall" { print $1 }' | xargs --no-run-if-empty sudo DEBIAN_FRONTEND=noninteractive apt-get purge -y \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" | sudo tee "${installOutputFile}"
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | sudo tee "${installOutputFile}"
    cat "${installOutputFile}"
 
    # ------ Clean up the package cache --------------------
@@ -262,14 +305,28 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    fi
 
 elif [ "${ID}" == "fedora" ] ; then
-   sudo DEBIAN_FRONTEND=noninteractive nohup dnf autoremove -y 2>&1 | sudo tee "${installOutputFile}"
+   sudo nohup dnf autoremove -y 2>&1 | sudo tee "${installOutputFile}"
    cat "${installOutputFile}"
    sudo dnf clean all
+
+elif [ "${ID}" == "netbsd" ] ; then
+   sudo pkgin clean
+
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+   sudo zypper clean -p
+
+elif [ "${ID}" == "alpine" ] ; then
+   sudo apk cache clean
 
 elif [ "${ID}" == "freebsd" ] ; then
    sudo env ASSUME_ALWAYS_YES=yes pkg-static autoremove -y
    sudo env ASSUME_ALWAYS_YES=yes pkg-static clean all -y
+
+else
+   echo >&2 "ERROR: Missing clean-up case for ${ID}!"
+   exit 1
 fi
+
 
 # ====== Remove obsolete kernel packages ====================================
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
@@ -384,11 +441,13 @@ fi
 
 rm -f "${installOutputFile}"
 
+
 # ====== Refresh snaps ======================================================
 if command -v snap >/dev/null ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Refreshing snaps ...")\x1b[0m"
    sudo snap refresh || true
 fi
+
 
 # ====== Firmware updates ===================================================
 if command -v fwupdmgr >/dev/null ; then
@@ -396,6 +455,7 @@ if command -v fwupdmgr >/dev/null ; then
    sudo fwupdmgr refresh || true
    sudo fwupdmgr update  || true
 fi
+
 
 # ====== apt-file cache update ==============================================
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating caches ...")\x1b[0m"
@@ -424,11 +484,13 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    fi
 fi
 
+
 # ====== Start AutoFS =======================================================
 if [ -e /etc/init.d/autofs ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Starting AutoFS service ...")\x1b[0m"
    sudo service autofs start >/dev/null 2>&1 || true
 fi
+
 
 # ====== Fix time ===========================================================
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Synchronising system time ...")\x1b[0m"
@@ -479,7 +541,7 @@ if [ ${updatedTime} -eq 0 ] && command -v ntpdate >/dev/null ; then
 fi
 
 # ------ Write updated time to hardware clock -------------------------------
-if [ ${updatedTime} -eq 0 ] ; then
+if [ ${updatedTime} -eq 1 ] ; then
    if [ "${ID}" != "freebsd" ] ; then
       if [ -x /usr/sbin/hwclock ] ; then
          sudo hwclock -w
@@ -488,6 +550,7 @@ if [ ${updatedTime} -eq 0 ] ; then
       sudo date -v +0S
    fi
 fi
+
 
 # ====== SSD trimming =======================================================
 if command -v fstrim >/dev/null ; then
@@ -503,8 +566,10 @@ if command -v zpool >/dev/null ; then
    done
 fi
 
+
 # ====== Done! ==============================================================
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Done!")\x1b[0m"
+
 
 # ====== Finally, show project package versions =============================
 filterScripts=()
@@ -523,10 +588,17 @@ if [ ${#filterScripts[@]} -gt 0 ] ; then
       if command -v apt-show-versions >/dev/null ; then
          apt-show-versions | grep -v "not installed$" >"${fullPackageList}" || true
       fi
-   elif [ "${ID}" == "fedora" ] ; then
+   elif [ "${ID}" == "fedora" ] || [[ "${ID}" =~ ^opensuse- ]] ; then
       rpm -qa | sort >"${fullPackageList}" || true
+   elif [ "${ID}" == "alpine" ] ; then
+      apk info -v | sort >"${fullPackageList}" || true
    elif [ "${ID}" == "freebsd" ] ; then
-      pkg info --all | sort  >"${fullPackageList}"|| true
+      pkg info --all | sort  >"${fullPackageList}" || true
+   elif [ "${ID}" == "netbsd" ] || [ "${ID}" == "openbsd" ] ; then
+      pkg_info | awk '{ print $1 }' | sort >"${fullPackageList}" || true
+   else
+      echo >&2 "ERROR: Missing project package versions case for ${ID}!"
+      exit 1
    fi
 
    if [ -e "${fullPackageList}" ] ; then
