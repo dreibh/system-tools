@@ -1,6 +1,6 @@
 # Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 pkgname=td-system-tools
-pkgver=2.7.4
+pkgver=2.7.5
 pkgrel=1
 pkgdesc="Tools for basic system management"
 url="https://www.nntb.no/~dreibh/system-tools/"
@@ -159,6 +159,7 @@ _random_sleep() {
 
 _x509_tools() {
 	pkgdesc="X.509 certificate handling tools"
+	# NOTE: GNU date from coreutils is needed.
 	depends="$pkgname-print-utf8=$pkgver-r$pkgrel $pkgname-text-block=$pkgver-r$pkgrel coreutils gettext mbuffer openssl"
 
 	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share/system-tools
@@ -217,5 +218,5 @@ _complete() {
 }
 
 sha512sums="
-13da3b35f8d51581798003890d389c9f12a7952cfa9df74452e128001bf1eb576274a33945f9f4543370ffe760ab7aa23427c6167a0a7467470cdc3bf8822ae5  td-system-tools-2.7.4.tar.xz
+9afb994d3baf3c06ecbb1c6070818a3c563e56648fcdaf7163bd728448aa2a755ab0db80a96ee62d0dc140ae77a29ad205485301b5b1df16b9c4ce067a42665a  td-system-tools-2.7.5.tar.xz
 "
