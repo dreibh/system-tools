@@ -411,7 +411,7 @@ fi
 if [ "${ZABBIX_SERVER}" != "" ] ; then
    # ------ Prepare configuration -------------------------------------------
    for stage in 1 2 ; do
-      for zabbixConfig in for zabbixConfig in      \
+      for zabbixConfig in                          \
          /etc/zabbix_agentd.conf                   \
          /etc/zabbix/zabbix_agentd.conf            \
          /usr/local/etc/zabbix7/zabbix_agentd.conf \
