@@ -157,7 +157,7 @@ elif [ "${ID}" == "fedora" ] ; then
    sudo dnf makecache
 
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
-   sudo zypper refresh
+   sudo zypper refresh --non-interactive
 
 elif [ "${ID}" == "alpine" ] ; then
    sudo apk update
@@ -220,7 +220,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    #          (
    #             echo "#!/bin/sh"
    #             echo "exit 101"
-   #          ) | tee /usr/sbin/policy-rc.d >/dev/null
+   #          ) | sudo tee /usr/sbin/policy-rc.d >/dev/null
    #          sudo chmod +x /usr/sbin/policy-rc.d
    #          sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
    #             -o APT::Get::Always-Include-Phased-Updates=true \
@@ -273,7 +273,7 @@ elif [ "${ID}" == "netbsd" ] ; then
 elif [ "${ID}" == "openbsd" ] ; then
    (
       sudo syspatch || true
-      sudo pkg_add -u
+      sudo pkg_add -u -I
    ) 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
@@ -310,7 +310,7 @@ elif [ "${ID}" == "fedora" ] ; then
    sudo dnf clean all
 
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
-   sudo zypper clean -p
+   sudo zypper clean
 
 elif [ "${ID}" == "alpine" ] ; then
    sudo apk cache clean
@@ -323,7 +323,7 @@ elif [ "${ID}" == "netbsd" ] ; then
    sudo pkgin clean
 
 elif [ "${ID}" == "openbsd" ] ; then
-   sudo pkg_delete -a
+   sudo pkg_delete -a -I
 
 else
    echo >&2 "ERROR: Missing clean-up case for ${ID}!"
