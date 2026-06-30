@@ -188,12 +188,13 @@ fi
 
 OPTION_ENABLE_CRYPTODISK=$(grep "^GRUB_ENABLE_CRYPTODISK=" "${INPUT_CONFIGURATION}" || true)
 if [ "${REPLACE_GRUB_GFXMODE}" == "" ] ; then
-   OPTION_GFXMODE=$(grep -E "^[#[:space:]]*GRUB_GFXMODE=" "${INPUT_CONFIGURATION}" | sed -e "s/#[ ]*GRUB/# GRUB/g" || true)
+   OPTION_GFXMODE=$(grep -E "^[#[:space:]]*GRUB_GFXMODE=" "${INPUT_CONFIGURATION}" | sed -e "s/#[ ]*GRUB/# GRUB/g" || echo '# GRUB_GFXMODE=""')
 else
    OPTION_GFXMODE="GRUB_GFXMODE=\"${REPLACE_GRUB_GFXMODE}\""
 fi
 if [ "${REPLACE_GRUB_INIT_TUNE}" == "" ] ; then
-   OPTION_INIT_TUNE=$(grep -E "^[#[:space:]]*GRUB_INIT_TUNE=" "${INPUT_CONFIGURATION}" | sed -e "s/#[ ]*GRUB/# GRUB/g" || true)
+   OPTION_INIT_TUNE=$(grep -E "^[#[:space:]]*GRUB_INIT_TUNE=" "${INPUT_CONFIGURATION}" | sed -e "s/#[ ]*GRUB/# GRUB/g" || echo '# GRUB_INIT_TUNE=""')
+   echo >&2 "X-2"
 else
    OPTION_INIT_TUNE="GRUB_INIT_TUNE=\"${REPLACE_GRUB_INIT_TUNE}\""
 fi
