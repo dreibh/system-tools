@@ -187,17 +187,27 @@ fi
 
 
 # ====== Try to fix issues ==================================================
-if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
-   # ====== dpkg package fixes ==============================================
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Applying package fixes, if necessary ...")\x1b[0m"
-   sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a | tee "${installOutputFile}" || true
-   cat "${installOutputFile}"
+if [ "${ID}" == "debian" ] || \
+   [ "${ID}" == "ubuntu" ] || \
+   [ "${ID}" == "alpine" ] ; then
 
-   # ====== apt-get package fixes ===========================================
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing missing dependencies, if necessary ...")\x1b[0m"
-   sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
-   cat "${installOutputFile}"
+   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Applying package fixes, if necessary ...")\x1b[0m"
+
+   if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
+      # ====== dpkg package fixes ==============================================
+      sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a | tee "${installOutputFile}" || true
+      cat "${installOutputFile}"
+
+      # ====== apt-get package fixes ===========================================
+      echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing missing dependencies, if necessary ...")\x1b[0m"
+      sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
+         -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
+      cat "${installOutputFile}"
+
+   elif [ "${ID}" == "alpine" ] ; then
+      sudo nohup apk fix </dev/null 2>&1 | tee "${installOutputFile}"
+      cat "${installOutputFile}"
+   fi
 fi
 
 
