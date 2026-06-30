@@ -95,14 +95,6 @@ colordiff ()
 # ###### Install Zabbix Agent ###############################################
 install-zabbix-agent()
 {
-   UNAME="$(uname)"
-   NAME="${UNAME}"
-   ID="${UNAME,,}"
-   VERSION="$(uname -r)"
-   VERSION_ID="${VERSION/_*/}"
-   if [ -f /etc/os-release ] ; then
-      . /etc/os-release
-   fi
    if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
       # ------ Add Zabbix Official Repository -------------------------------
@@ -296,6 +288,17 @@ while [ $# -gt 0 ] ; do
 done
 if [ $# -ne 0 ] ; then
    usage 1
+fi
+
+
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
 fi
 
 
@@ -564,6 +567,11 @@ EOF
       if [ "${p2}" != "yes" ] && [ "${p2}" != "no" ]  ; then
          p2="yes"
       fi
+      if [ "${ID}" == "alpine" ] ; then
+         usePAM="# "   # Disable "UsePAM" line.
+      else
+         usePAM=""     # Enable "UsePAM" line.
+      fi
       cat >sshd_config.suggested <<EOF
 Protocol 2
 
@@ -578,7 +586,7 @@ ${newSSH}PubkeyAcceptedKeyTypes       ${sshPubkeyAcceptedKeyTypes}
 ${newSSH}HostbasedAcceptedKeyTypes    ${sshHostbasedAcceptedKeyTypes}
 ${newSSH}HostKeyAlgorithms            ${sshHostKeyAlgorithms}
 
-UsePAM                       yes
+${usePAM}UsePAM                       yes
 X11Forwarding                yes
 TCPKeepAlive                 yes
 ClientAliveInterval          60
