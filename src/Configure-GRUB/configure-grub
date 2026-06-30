@@ -172,13 +172,18 @@ if grep -q "net.ifnames=0" /proc/cmdline ; then
    OPTION_DISABLE_NETIFNAMES=1
 fi
 OPTION_CMDLINE=$(grep "^GRUB_CMDLINE_LINUX=" "${INPUT_CONFIGURATION}" | sed -e "s/biosdevname=0[ ]*//g" -e "s/net.ifnames=0[ ]*//g" || echo 'GRUB_CMDLINE_LINUX=""')
+OPTION_CMDLINE_DEFAULT=$(grep "^GRUB_CMDLINE_LINUX_DEFAULT=" "${INPUT_CONFIGURATION}" | sed -e "s/biosdevname=0[ ]*//g" -e "s/net.ifnames=0[ ]*//g" || echo 'GRUB_CMDLINE_LINUX_DEFAULT=""')
 if [ ${OPTION_DISABLE_BIOSDEVNAME} -eq 1 ] ; then
    # shellcheck disable=SC2001
    OPTION_CMDLINE=$(echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"biosdevname=0 /g")
+   # shellcheck disable=SC2001
+   OPTION_CMDLINE_DEFAULT=$(echo "${OPTION_CMDLINE_DEFAULT}" | sed -e "s/^GRUB_CMDLINE_LINUX_DEFAULT=\"/GRUB_CMDLINE_LINUX_DEFAULT=\"biosdevname=0 /g")
 fi
 if [ ${OPTION_DISABLE_NETIFNAMES} -eq 1 ] ; then
    # shellcheck disable=SC2001
    OPTION_CMDLINE=$(echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"net.ifnames=0 /g")
+   # shellcheck disable=SC2001
+   OPTION_CMDLINE_DEFAULT=$(echo "${OPTION_CMDLINE_DEFAULT}" | sed -e "s/^GRUB_CMDLINE_LINUX_DEFAULT=\"/GRUB_CMDLINE_LINUX_DEFAULT=\"net.ifnames=0 /g")
 fi
 
 OPTION_ENABLE_CRYPTODISK=$(grep "^GRUB_ENABLE_CRYPTODISK=" "${INPUT_CONFIGURATION}" || true)
@@ -202,6 +207,7 @@ echo "* Output file:                ${OUTPUT_CONFIGURATION}"
 echo "* OPTION_DISABLE_BIOSDEVNAME: ${OPTION_DISABLE_BIOSDEVNAME}"
 echo "* OPTION_DISABLE_NETIFNAMES:  ${OPTION_DISABLE_NETIFNAMES}"
 echo "* OPTION_CMDLINE:             ${OPTION_CMDLINE}"
+echo "* OPTION_CMDLINE_DEFAULT:     ${OPTION_CMDLINE_DEFAULT}"
 echo "* OPTION_ENABLE_CRYPTODISK:   ${OPTION_ENABLE_CRYPTODISK}"
 echo "* OPTION_INIT_TUNE:           ${OPTION_INIT_TUNE}"
 echo "* OPTION_GFXMODE:             ${OPTION_GFXMODE}"
@@ -209,13 +215,15 @@ echo "* OPTION_GFXMODE:             ${OPTION_GFXMODE}"
 
 # ====== Set configuration ==================================================
 awk \
-   -v OPTION_CMDLINE="${OPTION_CMDLINE}" \
-   -v OPTION_GFXMODE="${OPTION_GFXMODE}" \
-   -v OPTION_INIT_TUNE="${OPTION_INIT_TUNE}" \
+   -v OPTION_CMDLINE="${OPTION_CMDLINE}"                     \
+   -v OPTION_CMDLINE_DEFAULT="${OPTION_CMDLINE_DEFAULT}"     \
+   -v OPTION_GFXMODE="${OPTION_GFXMODE}"                     \
+   -v OPTION_INIT_TUNE="${OPTION_INIT_TUNE}"                 \
    -v OPTION_ENABLE_CRYPTODISK="${OPTION_ENABLE_CRYPTODISK}" \
 '
    BEGIN {
       wroteCmdlineOption=0;
+      wroteCmdlineDefaultOption=0;
       wroteGfxModeOption=0;
       wroteInitTuneOption=0;
       wroteCryptodiskOption=0;
@@ -224,6 +232,12 @@ awk \
    /^GRUB_CMDLINE_LINUX=/ {
       print OPTION_CMDLINE;
       wroteCmdlineOption=1;
+      next;
+   }
+
+   /^GRUB_CMDLINE_LINUX_DEFAULT=/ {
+      print OPTION_CMDLINE_DEFAULT;
+      wroteCmdlineDefaultOption=1;
       next;
    }
 
@@ -252,6 +266,9 @@ awk \
    END {
       if( (!wroteCmdlineOption) && (OPTION_CMDLINE != "")) {
          print OPTION_CMDLINE;
+      }
+      if( (!wroteCmdlineDefaultOption) && (OPTION_CMDLINE_DEFAULT != "")) {
+         print OPTION_CMDLINE_DEFAULT;
       }
       if( (!wroteGfxModeOption) && (OPTION_GFXMODE != "")) {
          print OPTION_GFXMODE;
