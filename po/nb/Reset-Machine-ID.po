@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-06-26 13:07+0200\n"
+"POT-Creation-Date: 2026-06-30 13:22+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,95 +43,95 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:187
+#: src/Reset-Machine-ID/Reset-Machine-ID:179
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:253
+#: src/Reset-Machine-ID/Reset-Machine-ID:245
 #, sh-format
 msgid "ERROR: Invalid hostname ${hostname}!"
 msgstr "FEIL: Ugyldig vertsnavn ${hostname}!"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:354
+#: src/Reset-Machine-ID/Reset-Machine-ID:357
 msgid "Update hostname?"
 msgstr "Oppdatere vertsnavn?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:378
+#: src/Reset-Machine-ID/Reset-Machine-ID:381
 #, sh-format
 msgid "The current machine ID is ${machineID}. Reset it?"
 msgstr "Den gjeldende maskin-ID-en er ${machineID}. Tilbakestille den?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:397
+#: src/Reset-Machine-ID/Reset-Machine-ID:400
 #, sh-format
 msgid "The new machine ID is ${machineID}."
 msgstr "Den nye maskin-ID-en er ${machineID}."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:428
+#: src/Reset-Machine-ID/Reset-Machine-ID:431
 msgid "Install Zabbix agent?"
 msgstr "Installere Zabbix-agenten?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:460
+#: src/Reset-Machine-ID/Reset-Machine-ID:463
 #, sh-format
 msgid "Apply suggested Zabbix Agent changes in ${zabbixConfig}?"
 msgstr "Bruk foreslåtte Zabbix Agent-endringer i ${zabbixConfig}?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:473
-#: src/Reset-Machine-ID/Reset-Machine-ID:546
-#: src/Reset-Machine-ID/Reset-Machine-ID:634
-#: src/Reset-Machine-ID/Reset-Machine-ID:689
+#: src/Reset-Machine-ID/Reset-Machine-ID:476
+#: src/Reset-Machine-ID/Reset-Machine-ID:549
+#: src/Reset-Machine-ID/Reset-Machine-ID:642
+#: src/Reset-Machine-ID/Reset-Machine-ID:697
 msgid "Skipped!"
 msgstr "Hoppet over!"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:509
+#: src/Reset-Machine-ID/Reset-Machine-ID:512
 msgid "Checking SSH configuration ..."
 msgstr "Sjekker SSH-konfigurasjon ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:535
+#: src/Reset-Machine-ID/Reset-Machine-ID:538
 msgid "Suggested ssh_config changes:"
 msgstr "Foreslåtte ssh_config endringer:"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:539
+#: src/Reset-Machine-ID/Reset-Machine-ID:542
 msgid "Apply suggested ssh_config changes?"
 msgstr "Vil du bruke foreslåtte ssh_config-endringer?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:608
+#: src/Reset-Machine-ID/Reset-Machine-ID:616
 msgid "Suggested removal of sshd_config.d/50-cloud-init.conf:"
 msgstr "Foreslått fjerning av sshd_config.d/50-cloud-init.conf:"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:616
+#: src/Reset-Machine-ID/Reset-Machine-ID:624
 msgid "Suggested sshd_config changes:"
 msgstr "Foreslåtte sshd_config endringer:"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:621
+#: src/Reset-Machine-ID/Reset-Machine-ID:629
 msgid "Apply suggested sshd_config changes?"
 msgstr "Vil du bruke foreslåtte sshd_config-endringer?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:629
-#: src/Reset-Machine-ID/Reset-Machine-ID:682
+#: src/Reset-Machine-ID/Reset-Machine-ID:637
+#: src/Reset-Machine-ID/Reset-Machine-ID:690
 msgid "Trying to restart SSH daemon ..."
 msgstr "Prøver å starte SSH-demonen på nytt ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:648
+#: src/Reset-Machine-ID/Reset-Machine-ID:656
 msgid "Remove existing SSH host keys and generate new ones?"
 msgstr "Vil du fjerne eksisterende SSH-vertsnøkler og generere nye?"
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:654
+#: src/Reset-Machine-ID/Reset-Machine-ID:662
 #, sh-format
 msgid "Making backup of current keys in ${backupDirectory} ..."
 msgstr "Ta sikkerhetskopi av gjeldende nøkler i ${backupDirectory} ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:672
+#: src/Reset-Machine-ID/Reset-Machine-ID:680
 msgid "Generating new ED25519 key ..."
 msgstr "Genererer ny ED25519 nøkkel ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:674
+#: src/Reset-Machine-ID/Reset-Machine-ID:682
 msgid "Generating new ECDSA key ..."
 msgstr "Genererer ny ECDSA nøkkel ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:676
+#: src/Reset-Machine-ID/Reset-Machine-ID:684
 msgid "Generating new RSA key; this may take some time ..."
 msgstr "Genererer ny RSA-nøkkel; dette kan ta litt tid ..."
 
-#: src/Reset-Machine-ID/Reset-Machine-ID:679
+#: src/Reset-Machine-ID/Reset-Machine-ID:687
 msgid "Done!"
 msgstr "Ferdig!"
