@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-06-10 18:18+0200\n"
+"POT-Creation-Date: 2026-07-01 15:26+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -75,28 +75,28 @@ msgstr "Verifiserer ${CERTIFICATE_FILE} med CA ${CA_FILE} ..."
 msgid "WARNING: Only checking self-signature!"
 msgstr "ADVARSEL: Kontrollerer bare selvsignatur!"
 
-#: src/X509/check-certificate:198 src/X509/check-certificate:222
-#: src/X509/check-certificate:305
+#: src/X509/check-certificate:202 src/X509/check-certificate:226
+#: src/X509/check-certificate:309
 msgid "✓OKAY"
 msgstr "✓OKAY"
 
-#: src/X509/check-certificate:201 src/X509/check-certificate:228
-#: src/X509/check-certificate:311
+#: src/X509/check-certificate:205 src/X509/check-certificate:232
+#: src/X509/check-certificate:315
 msgid "❌FAILED!"
 msgstr "❌MISLYKKET!"
 
-#: src/X509/check-certificate:205
+#: src/X509/check-certificate:209
 msgid "(OpenSSL is not installed)"
 msgstr "(OpenSSL er ikke installert)"
 
-#: src/X509/check-certificate:232
+#: src/X509/check-certificate:236
 msgid "(GnuTLS CertTool is not installed)"
 msgstr "(GnuTLS CertTool er ikke installert)"
 
-#: src/X509/check-certificate:317
+#: src/X509/check-certificate:321
 msgid "(NSS CertUtil is not installed)"
 msgstr "(NSS CertUtil er ikke installert)"
 
-#: src/X509/check-certificate:325
+#: src/X509/check-certificate:329
 msgid "CERTIFICATE VERIFICATIONS FAILED!"
 msgstr "SERTIFIKATVERIFIKASJONENE MISLYKKET!"
