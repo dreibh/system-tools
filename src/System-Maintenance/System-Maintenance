@@ -521,20 +521,30 @@ NTP_SERVERS=(
    "clock.isc.org"
    "time.windows.com"
 )
-
-# ------ Try chronyd (Fedora, RHEL, newer Debian/Ubuntu) --------------------
 updatedTime=0
-if command -v chronyc >/dev/null ; then
-   if sudo chronyc makestep >/dev/null 2>&1 ; then
-      updatedTime=1
-   fi
-fi
 
 # ------ Try systemd-timesyncd (modern Debian/Ubuntu) -----------------------
 if [ ${updatedTime} -eq 0 ] && command -v timedatectl >/dev/null ; then
    if sudo timedatectl set-ntp false && sudo timedatectl set-ntp true >/dev/null 2>&1 ; then
       updatedTime=1
    fi
+fi
+
+# ------ Try chronyd (Fedora, RHEL, newer Debian/Ubuntu) --------------------
+if [ ${updatedTime} -eq 0 ] && command -v chronyc >/dev/null ; then
+   if sudo chronyc makestep >/dev/null 2>&1 ; then
+      updatedTime=1
+   fi
+fi
+
+# ------ Try BusyBox ntpd (Alpine) ------------------------------------------
+if [ ${updatedTime} -eq 0 ] && command -v busybox >/dev/null ; then
+   for server in "${NTP_SERVERS[@]}" ; do
+      if sudo busybox ntpd -q -n -p "${server}" ; then
+         updatedTime=1
+         break
+      fi
+   done
 fi
 
 # ------ Try ntpdate (FreeBSD) ----------------------------------------------
@@ -555,11 +565,18 @@ fi
 
 # ------ Write updated time to hardware clock -------------------------------
 if [ ${updatedTime} -eq 1 ] ; then
+   # shellcheck disable=SC2034
+   now="$(date)"
+   eval_gettext "Updated system time to \${now}."
+   echo
    if command -v hwclock >/dev/null ; then
       sudo hwclock -w
    elif [ "${ID}" == "freebsd" ] ; then
       sudo date -v +0S
    fi
+else
+   gettext "No system time update possible."
+   echo
 fi
 
 
