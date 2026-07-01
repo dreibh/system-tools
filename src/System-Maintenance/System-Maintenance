@@ -351,7 +351,7 @@ elif [ "${ID}" == "netbsd" ] ; then
 elif [ "${ID}" == "openbsd" ] ; then
    pkg_delete -a -I
 
-elif [ "${ID}" == "openbsd" ] ; then
+elif [ "${ID}" == "darwin" ] ; then
    sudo -u "${SUDO_USER}" brew cleanup
 
 else
