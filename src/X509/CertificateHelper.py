@@ -326,7 +326,7 @@ email_in_dn                     = yes
 
 name_opt                        = ca_default   # Subject name display option
 cert_opt                        = ca_default   # Certificate display option
-copy_extensions                 = none         # Don't copy extensions from request
+copy_extensions                 = copy         # Copy extensions from request
 
 [ policy_any ]
 countryName                     = optional
@@ -410,7 +410,6 @@ basicConstraints       = CA:FALSE
 subjectKeyIdentifier   = hash
 keyUsage               = critical, digitalSignature, keyEncipherment
 extendedKeyUsage       = critical, serverAuth
-subjectAltName         = ${ENV::SAN}
 
 # ====== Settings for a client certificate ==================================
 [ client_cert ]
@@ -419,7 +418,6 @@ basicConstraints       = CA:FALSE
 subjectKeyIdentifier   = hash
 keyUsage               = critical, digitalSignature, keyEncipherment
 extendedKeyUsage       = critical, clientAuth
-subjectAltName         = ${ENV::SAN}
 
 # ====== Settings for a user certificate ====================================
 [ user_cert ]
@@ -428,7 +426,6 @@ basicConstraints       = CA:FALSE
 subjectKeyIdentifier   = hash
 keyUsage               = critical, nonRepudiation, digitalSignature, keyEncipherment
 extendedKeyUsage       = critical, clientAuth, emailProtection, codeSigning
-subjectAltName         = ${ENV::SAN}
 """)
          configFile.close()
 
@@ -482,8 +479,8 @@ mv {shlex.quote(self.KeyFileName + '.tmp')} {shlex.quote(self.KeyFileName)}""")
          if not os.path.isfile(self.CertFileName):
             sys.stdout.write('\x1b[33mGenerating self-signed root CA certificate ' + self.CertFileName + ' ...\x1b[0m\n')
             execute(f"""\
-SAN="" openssl req \
-   -x509 \
+openssl req \
+   -x509 -new \
    -config {shlex.quote(self.ConfigFileName)} \
    -extensions v3_ca \
    -utf8 -subj {shlex.quote(self.Subject)} \
@@ -513,7 +510,7 @@ mv {shlex.quote(self.CertFileName + '.tmp')} {shlex.quote(self.CertFileName)}"""
             csrFileName : Final[str] = self.CertFileName + '.csr'
             sys.stdout.write('\x1b[33mGenerating CSR ' + csrFileName + ' ...\x1b[0m\n')
             execute(f"""\
-SAN="" openssl req \
+openssl req \
    -new \
    -config {shlex.quote(self.ConfigFileName)} \
    -extensions v3_ca \
@@ -529,7 +526,7 @@ mv {shlex.quote(csrFileName + '.tmp')} {shlex.quote(csrFileName)}""")
 
             tmpCertFileName = self.CertFileName + '.tmp'
             execute(f"""\
-SAN="" openssl ca \
+openssl ca \
    -batch \
    -notext \
    -config {shlex.quote(parentCA.ConfigFileName)} \
@@ -560,10 +557,7 @@ SAN="" openssl ca \
             #       -> https://stackoverflow.com/questions/25482199/verify-a-certificate-chain-using-openssl-verify
             command : str = f"""\
 openssl verify \
- -show_chain \
  -verbose \
- -no-CApath \
- -no-CAstore \
  -CAfile {shlex.quote(self.RootCA.CertFileName)}"""
             if self.ParentCA:
                command += f' -untrusted {self.ParentCA.CertFileName}'
@@ -581,7 +575,7 @@ openssl verify \
          execute(f"""\
 openssl x509 \
  -noout \
- -subject -ext subjectAltName \
+ -subject \
  -in {shlex.quote(self.CertFileName)}""")
 
 
@@ -596,7 +590,7 @@ openssl x509 \
 
       tmpCertFileName = certificate.CertFileName + '.tmp'
       execute(f"""\
-SAN={shlex.quote(certificate.SubjectAltName)} openssl ca \
+openssl ca \
  -batch \
  -notext \
  -config {shlex.quote(self.ConfigFileName)} \
@@ -622,11 +616,8 @@ SAN={shlex.quote(certificate.SubjectAltName)} openssl ca \
       assert self.RootCA is not None
       result = execute(f"""\
 openssl verify \
- -show_chain \
  -verbose \
  -crl_check \
- -no-CApath \
- -no-CAstore \
  -CAfile {shlex.quote(self.RootCA.CertFileName)} \
  -untrusted {shlex.quote(self.CertFileName)} \
  -CRLfile {shlex.quote(self.CRLFileName)} \
@@ -655,7 +646,7 @@ openssl ca \
       sys.stdout.write('\x1b[33mRevoking certificate ' + certificate.CertFileName + ' ...\x1b[0m\n')
       assert os.path.isfile(self.CertFileName)
       result = execute(f"""\
-SAN="" openssl ca \
+openssl ca \
  -revoke {shlex.quote(certificate.CertFileName)} \
  -config {shlex.quote(certificate.CA.ConfigFileName)} \
  -passin file:{shlex.quote(certificate.CA.PasswordFileName)}""")
@@ -670,7 +661,7 @@ SAN="" openssl ca \
    def generateCRL(self) -> None:
       sys.stdout.write('\x1b[33mGenerating CRL ' + self.CRLFileName + ' ...\x1b[0m\n')
       execute(f"""\
-SAN="" openssl ca \
+openssl ca \
  -gencrl \
  -config {shlex.quote(self.ConfigFileName)} \
  -passin file:{shlex.quote(self.PasswordFileName)} \
@@ -786,11 +777,12 @@ mv {shlex.quote(keyFileName + '.tmp')} {shlex.quote(keyFileName)}""")
          csrFileName : Final[str] = os.path.join(self.Directory, safeName + '.csr')
          sys.stdout.write('\x1b[33mGenerating CSR ' + csrFileName + ' ...\x1b[0m\n')
          execute(f"""\
-SAN={shlex.quote(self.SubjectAltName)} openssl req \
+openssl req \
  -new \
  -config {shlex.quote(self.CA.ConfigFileName)} \
  -extensions {shlex.quote(self.Extension)} \
  -utf8 -subj {shlex.quote(self.Subject)} \
+ -addext {shlex.quote('subjectAltName = ' + self.SubjectAltName)} \
  -key {shlex.quote(self.KeyFileName)} \
  -out {shlex.quote(csrFileName + '.tmp')} && \
 mv {shlex.quote(csrFileName + '.tmp')} {shlex.quote(csrFileName)}""")
@@ -812,7 +804,7 @@ mv {shlex.quote(csrFileName + '.tmp')} {shlex.quote(csrFileName)}""")
       execute(f"""\
 openssl x509 \
  -noout \
- -subject -ext subjectAltName \
+ -subject \
  -in {shlex.quote(self.CertFileName)}""")
 
 
