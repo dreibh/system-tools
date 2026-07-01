@@ -130,10 +130,18 @@ if [ "${GIMP3_DIRECTORY}" != "" ] ; then
       mkdir -p "${GIMP3_DIRECTORY}/${subdir}"
    done
 
-   # FIXME!
-   # GIMP 3.0 wastes a lot of CPU, for whatever reason. Just
-   # using 1 core seems to provide the best performance:
-   echo "(num-processors 1)" >>"${GIMP3_DIRECTORY}/gimprc"
+   # ====== Create gimprc ===================================================
+   (
+      # FIXME!
+      # GIMP 3.0 fix: GIMP wastes a lot of CPU, for whatever reason. Just
+      # using 1 core seems to provide the best performance:
+      echo "(num-processors 1)"
+
+      # Darwin fix: add global fonts directory to gimprc
+      if [ "${UNAME}" == "Darwin" ] ; then
+         echo "(font-path \"\${gimp_dir}/fonts:\${gimp_data_dir}/fonts:/Users/runner/Library/Fonts\")"
+      fi
+   ) >"${GIMP3_DIRECTORY}/gimprc"
 fi
 
 
