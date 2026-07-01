@@ -188,7 +188,7 @@ elif [ "${ID}" == "openbsd" ] ; then
    syspatch -c || true
 
 elif [ "${ID}" == "darwin" ] ; then
-   brew update
+   sudo -u "${SUDO_USER}" brew update
 
 else
    echo >&2 "ERROR: Missing repository update case for ${ID}!"
@@ -299,7 +299,7 @@ elif [ "${ID}" == "openbsd" ] ; then
 
 elif [ "${ID}" == "darwin" ] ; then
    (
-      brew upgrade
+      sudo -u "${SUDO_USER}" brew upgrade
    ) 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
@@ -352,7 +352,7 @@ elif [ "${ID}" == "openbsd" ] ; then
    pkg_delete -a -I
 
 elif [ "${ID}" == "openbsd" ] ; then
-   brew cleanup
+   sudo -u "${SUDO_USER}" brew cleanup
 
 else
    echo >&2 "ERROR: Missing clean-up case for ${ID}!"
@@ -654,7 +654,7 @@ if [ ${#filterScripts[@]} -gt 0 ] ; then
    elif [ "${ID}" == "netbsd" ] || [ "${ID}" == "openbsd" ] ; then
       pkg_info | awk '{ print $1 }' | sort >"${fullPackageList}" || true
    elif [ "${ID}" == "darwin" ] ; then
-      brew list
+      sudo -u "${SUDO_USER}" brew list
    else
       echo >&2 "ERROR: Missing project package versions case for ${ID}!"
       exit 1
