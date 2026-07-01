@@ -119,6 +119,14 @@ if [ $# -ne 0 ] ; then
    usage 1
 fi
 
+
+# ====== Check permissions ==================================================
+if [ "${EUID}" -ne 0 ] ; then
+   gettext >&2 "ERROR: System-Maintenance requires superuser permissions!"
+   echo >&2
+   exit 1
+fi
+
 # ====== Obtain system details ==============================================
 UNAME="$(uname)"
 # NAME="${UNAME}"
@@ -134,7 +142,7 @@ fi
 # ====== Stop AutoFS ========================================================
 if [ -e /etc/init.d/autofs ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Stopping AutoFS service ...")\x1b[0m"
-   sudo service autofs stop >/dev/null 2>&1 || true
+   service autofs stop >/dev/null 2>&1 || true
 fi
 
 
@@ -151,21 +159,21 @@ installOutputFile="$(mktemp -t SystemMaintenance.install.XXXXXXXXXX)"
 # ====== Update package repositories ========================================
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating package repositories ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
-   sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
+   DEBIAN_FRONTEND=noninteractive apt-get update -qq
 
 elif [ "${ID}" == "fedora" ] ; then
-   sudo dnf makecache
+   dnf makecache
 
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
-   sudo zypper --non-interactive refresh
+   zypper --non-interactive refresh
 
 elif [ "${ID}" == "alpine" ] ; then
-   sudo apk update
+   apk update
 
 elif [ "${ID}" == "freebsd" ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating package repositories ...")\x1b[0m"
-   sudo env PAGER=cat freebsd-update fetch || true
-   sudo env ASSUME_ALWAYS_YES=yes pkg-static update
+   env PAGER=cat freebsd-update fetch || true
+   env ASSUME_ALWAYS_YES=yes pkg-static update
    if [ -x /usr/ports/.git ] ; then
       pushd /usr/ports >/dev/null
       git fetch --all
@@ -174,10 +182,10 @@ elif [ "${ID}" == "freebsd" ] ; then
    fi
 
 elif [ "${ID}" == "netbsd" ] ; then
-   sudo pkgin update
+   pkgin update
 
 elif [ "${ID}" == "openbsd" ] ; then
-   sudo syspatch -c || true
+   syspatch -c || true
 
 elif [ "${ID}" == "darwin" ] ; then
    brew update
@@ -197,17 +205,17 @@ if [ "${ID}" == "debian" ] || \
 
    if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
       # ====== dpkg package fixes ==============================================
-      sudo DEBIAN_FRONTEND=noninteractive dpkg --configure -a | tee "${installOutputFile}" || true
+      DEBIAN_FRONTEND=noninteractive dpkg --configure -a | tee "${installOutputFile}" || true
       cat "${installOutputFile}"
 
       # ====== apt-get package fixes ===========================================
       echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing missing dependencies, if necessary ...")\x1b[0m"
-      sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
+      DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
          -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
       cat "${installOutputFile}"
 
    elif [ "${ID}" == "alpine" ] ; then
-      sudo nohup apk fix </dev/null 2>&1 | tee "${installOutputFile}"
+      nohup apk fix </dev/null 2>&1 | tee "${installOutputFile}"
       cat "${installOutputFile}"
    fi
 fi
@@ -217,7 +225,7 @@ fi
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing updates ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ------ Download --------------------------------------------------------
-   sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -yd -q \
+   DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -yd -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
 
@@ -232,9 +240,9 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    #          (
    #             echo "#!/bin/sh"
    #             echo "exit 101"
-   #          ) | sudo tee /usr/sbin/policy-rc.d >/dev/null
-   #          sudo chmod +x /usr/sbin/policy-rc.d
-   #          sudo DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
+   #          ) | tee /usr/sbin/policy-rc.d >/dev/null
+   #          chmod +x /usr/sbin/policy-rc.d
+   #          DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
    #             -o APT::Get::Always-Include-Phased-Updates=true \
    #             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
    #            ${package} -y -q </dev/null 2>&1 | tee "${installOutputFile}"
@@ -244,48 +252,48 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # done
    #
    # # Ensure to remove modified policy-rc.d!
-   # sudo rm -f /usr/sbin/policy-rc.d
+   # rm -f /usr/sbin/policy-rc.d
 
    # ------ Update the rest -------------------------------------------------
-   sudo DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -y -q \
+   DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -y -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "fedora" ] ; then
-   sudo dnf upgrade -y 2>&1 | tee "${installOutputFile}"
+   dnf upgrade -y 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
    if [[ "${PRETTY_NAME}" =~ "Tumbleweed" ]]; then
-      sudo nohup zypper --non-interactive dist-upgrade -y </dev/null 2>&1 | tee "${installOutputFile}"
+      nohup zypper --non-interactive dist-upgrade -y </dev/null 2>&1 | tee "${installOutputFile}"
    else
-      sudo nohup zypper --non-interactive update -y </dev/null 2>&1 | tee "${installOutputFile}"
+      nohup zypper --non-interactive update -y </dev/null 2>&1 | tee "${installOutputFile}"
    fi
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "alpine" ] ; then
-   sudo nohup apk upgrade </dev/null 2>&1 | tee "${installOutputFile}"
+   nohup apk upgrade </dev/null 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "freebsd" ] ; then
    (
-     sudo freebsd-update install || true
-     sudo env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y
+     freebsd-update install || true
+     env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y
      if [ -x /usr/sbin/portsnap ] ; then
-        sudo /usr/sbin/portsnap -I update
+        /usr/sbin/portsnap -I update
      fi
    ) 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "netbsd" ] ; then
-   sudo nohup pkgin -y upgrade </dev/null 2>&1 | tee "${installOutputFile}"
+   nohup pkgin -y upgrade </dev/null 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
 elif [ "${ID}" == "openbsd" ] ; then
    (
-      sudo syspatch || true
-      sudo pkg_add -u -I
+      syspatch || true
+      pkg_add -u -I
    ) 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
@@ -305,43 +313,43 @@ fi
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Cleaning up ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ------ Remove unnecessary dependencies ---------------
-   sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -q \
+   DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -q \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
    # ------ Purge all previously-removed packages ---------
-   dpkg --get-selections | awk '$2=="deinstall" { print $1 }' | xargs --no-run-if-empty sudo DEBIAN_FRONTEND=noninteractive apt-get purge -y \
+   dpkg --get-selections | awk '$2=="deinstall" { print $1 }' | xargs --no-run-if-empty DEBIAN_FRONTEND=noninteractive apt-get purge -y \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
    # ------ Clean up the package cache --------------------
-   sudo DEBIAN_FRONTEND=noninteractive apt-get clean
+   DEBIAN_FRONTEND=noninteractive apt-get clean
 
    # ------ Clean up /var/crash ---------------------------
    if [ -d /var/crash/ ] ; then
-      find /var/crash/ -name "*.crash" -exec sudo rm -f {} \;
+      find /var/crash/ -name "*.crash" -exec rm -f {} \;
    fi
 
 elif [ "${ID}" == "fedora" ] ; then
-   sudo nohup dnf autoremove -y </dev/null 2>&1 | tee "${installOutputFile}"
+   nohup dnf autoremove -y </dev/null 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
-   sudo dnf clean all
+   dnf clean all
 
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
-   sudo zypper clean
+   zypper clean
 
 elif [ "${ID}" == "alpine" ] ; then
-   sudo apk cache clean
+   apk cache clean
 
 elif [ "${ID}" == "freebsd" ] ; then
-   sudo env ASSUME_ALWAYS_YES=yes pkg-static autoremove -y
-   sudo env ASSUME_ALWAYS_YES=yes pkg-static clean all -y
+   env ASSUME_ALWAYS_YES=yes pkg-static autoremove -y
+   env ASSUME_ALWAYS_YES=yes pkg-static clean all -y
 
 elif [ "${ID}" == "netbsd" ] ; then
-   sudo pkgin clean
+   pkgin clean
 
 elif [ "${ID}" == "openbsd" ] ; then
-   sudo pkg_delete -a -I
+   pkg_delete -a -I
 
 elif [ "${ID}" == "openbsd" ] ; then
    brew cleanup
@@ -447,13 +455,13 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
 
       if [ $INTERACTIVE_KERNEL_REMOVAL -eq 0 ] ; then
          # shellcheck disable=SC2086
-         sudo DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -qq --purge \
+         DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -qq --purge \
             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
             ${toBeRemoved} </dev/null 2>&1 | tee "${installOutputFile}"
          cat "${installOutputFile}"
       else
          # shellcheck disable=SC2086
-         sudo apt-get autoremove --purge \
+         apt-get autoremove --purge \
             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
             ${toBeRemoved}
       fi
@@ -469,15 +477,15 @@ rm -f "${installOutputFile}"
 # ====== Refresh snaps ======================================================
 if command -v snap >/dev/null ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Refreshing snaps ...")\x1b[0m"
-   sudo snap refresh || true
+   snap refresh || true
 fi
 
 
 # ====== Firmware updates ===================================================
 if command -v fwupdmgr >/dev/null ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Checking for firmware updates ...")\x1b[0m"
-   sudo fwupdmgr refresh || true
-   sudo fwupdmgr update  || true
+   fwupdmgr refresh || true
+   fwupdmgr update  || true
 fi
 
 
@@ -486,25 +494,25 @@ echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating caches ...")\x1b[0m"
 
 # ------ locate -------------------------------------------------------------
 if [ -x /etc/periodic/weekly/310.locate ] ; then
-   sudo /etc/periodic/weekly/310.locate
+   /etc/periodic/weekly/310.locate
 elif [ -x /usr/libexec/locate.updatedb ] ; then
-   sudo /usr/libexec/locate.updatedb
+   /usr/libexec/locate.updatedb
 elif command -v updatedb >/dev/null ; then
-   sudo updatedb
+   updatedb
 fi
 
 # ------ geoipupdate --------------------------------------------------------
 if command -v geoipupdate >/dev/null ; then
-   sudo geoipupdate
+   geoipupdate
 elif [ -x /usr/local/bin/geoipupdate.sh ] ; then
-   sudo /usr/local/bin/geoipupdate.sh
+   /usr/local/bin/geoipupdate.sh
 fi
 
 # ------ apt-show-versions --------------------------------------------------
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    if command -v apt-file >/dev/null ; then
-      sudo apt-file update >/dev/null
-      sudo apt-show-versions -i
+      apt-file update >/dev/null
+      apt-show-versions -i
    fi
 fi
 
@@ -512,7 +520,7 @@ fi
 # ====== Start AutoFS =======================================================
 if [ -e /etc/init.d/autofs ] ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Starting AutoFS service ...")\x1b[0m"
-   sudo service autofs start >/dev/null 2>&1 || true
+   service autofs start >/dev/null 2>&1 || true
 fi
 
 
@@ -536,14 +544,14 @@ updatedTime=0
 
 # ------ Try systemd-timesyncd (modern Debian/Ubuntu) -----------------------
 if [ ${updatedTime} -eq 0 ] && command -v timedatectl >/dev/null ; then
-   if sudo timedatectl set-ntp false && sudo timedatectl set-ntp true >/dev/null 2>&1 ; then
+   if timedatectl set-ntp false && timedatectl set-ntp true >/dev/null 2>&1 ; then
       updatedTime=1
    fi
 fi
 
 # ------ Try chronyd (Fedora, RHEL, newer Debian/Ubuntu) --------------------
 if [ ${updatedTime} -eq 0 ] && command -v chronyc >/dev/null ; then
-   if sudo chronyc makestep >/dev/null 2>&1 ; then
+   if chronyc makestep >/dev/null 2>&1 ; then
       updatedTime=1
    fi
 fi
@@ -551,7 +559,7 @@ fi
 # ------ Try BusyBox ntpd (Alpine) ------------------------------------------
 if [ ${updatedTime} -eq 0 ] && command -v busybox >/dev/null ; then
    for server in "${NTP_SERVERS[@]}" ; do
-      if sudo busybox ntpd -q -n -p "${server}" ; then
+      if busybox ntpd -q -n -p "${server}" ; then
          updatedTime=1
          break
       fi
@@ -561,24 +569,24 @@ fi
 # ------ Try ntpdate (FreeBSD) ----------------------------------------------
 if [ ${updatedTime} -eq 0 ] && command -v ntpdate >/dev/null ; then
    for ntpServiceName in ntpd ntp ; do
-      sudo service ${ntpServiceName} stop >/dev/null 2>&1 || true
+      service ${ntpServiceName} stop >/dev/null 2>&1 || true
    done
    for server in "${NTP_SERVERS[@]}" ; do
-      if sudo ntpdate "${server}" ; then
+      if ntpdate "${server}" ; then
          updatedTime=1
          break
       fi
    done
    for ntpServiceName in ntpd ntp ; do
-      sudo service ${ntpServiceName} start >/dev/null 2>&1 || true
+      service ${ntpServiceName} start >/dev/null 2>&1 || true
    done
 fi
 
 # ------ Try OpenNTPD (OpenBSD) ---------------------------------------------
 if [ ${updatedTime} -eq 0 ] && command -v rcctl >/dev/null ; then
-   sudo rcctl stop ntpd || true
-   sudo rcctl set ntpd flags -s
-   sudo rcctl start ntpd || true
+   rcctl stop ntpd || true
+   rcctl set ntpd flags -s
+   rcctl start ntpd || true
    updatedTime=1
 fi
 
@@ -589,9 +597,9 @@ if [ ${updatedTime} -eq 1 ] ; then
    eval_gettext "Updated system time to \${now}."
    echo
    if command -v hwclock >/dev/null ; then
-      sudo hwclock -w
+      hwclock -w
    elif [ "${ID}" == "freebsd" ] ; then
-      sudo date -v +0S
+      date -v +0S
    fi
 else
    gettext "No system time update possible."
@@ -602,7 +610,7 @@ fi
 # ====== SSD trimming =======================================================
 if command -v fstrim >/dev/null ; then
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Running fstrim ...")\x1b[0m"
-   sudo fstrim -a -v 2>/dev/null || ( sudo fstrim -v / && sudo fstrim -v /home ) || true
+   fstrim -a -v 2>/dev/null || ( fstrim -v / && fstrim -v /home ) || true
 fi
 if command -v zpool >/dev/null ; then
    zpools="$(zpool list -H 2>/dev/null | cut -f1 || true)"
@@ -610,7 +618,7 @@ if command -v zpool >/dev/null ; then
       echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Running zpool trim ...")\x1b[0m"
       for zpool in ${zpools} ; do
          echo "${zpool}"
-         sudo zpool trim "${zpool}" || true
+         zpool trim "${zpool}" || true
       done
    fi
 fi
