@@ -1,3 +1,136 @@
+commit 36b2dff3d6781f37bb8047ef0c0de4b1367e1c01
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 15:39:25 2026 +0200
+
+    Updated PO files.
+
+commit 5f9134f4b511980061075c1f853fd5b805900c59
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 15:24:32 2026 +0200
+
+    Improved GIMP log output filter rules.
+
+commit 48e6dc063de894eb4179af0187aac894dade29d2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 15:08:59 2026 +0200
+
+    Improved script.
+
+commit 5bb919c9f4c8173ebda5786577a6c71033ebf575
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 14:13:18 2026 +0200
+
+    Updated manpages.
+
+commit d0de67b58c5003c2b8888c1fca8ec713e1483bf0
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 14:07:30 2026 +0200
+
+    Improved scripts with LibreSSL support.
+
+commit b8f78b8d923a6ee55f259df2751e352b01574302
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 14:04:46 2026 +0200
+
+    Some work to support LibreSSL (default in OpenBSD).
+
+commit 3679a5ef4395980bb92b353c02bf6b1feb4af31b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 12:46:13 2026 +0200
+
+    Improved example CA configuration.
+
+commit 2bc16008499dc5a8bfd86d80a0daeee80289358a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 12:24:06 2026 +0200
+
+    Fixed typo.
+
+commit 1f9709f12a621778d7480d6f7007af66434dda1b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 12:22:41 2026 +0200
+
+    Darwin fix: brew needs to run as non-root user.
+
+commit 81885f5087e360ff88c2613dc36658cbac8da4c8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 12:19:36 2026 +0200
+
+    Updated translations.
+
+commit e5dbd7766eb100ef1099ecd45ba2b18dfbb9a33a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 12:15:36 2026 +0200
+
+    Removed redundant sudo calls => System-Maintenance now has to run with sudo/doas, or as root.
+
+commit c0e1f71237fdab0c8269d3a2f8422928eb3fb7fd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 12:15:21 2026 +0200
+
+    Added permissions check.
+
+commit cebc0c897e956c54571356597a178ae898b72ba8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 12:05:25 2026 +0200
+
+    Added missing Darwin cases.
+
+commit e61844e27aaad1d04bd7ebeaac21fd9b2f43ec8d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 11:32:49 2026 +0200
+
+    Improved detection of GNU getopt, to provide a useful error message when it is missing.
+
+commit 5afde7742aec0c91f29c3d7e1e45ed62f97d5a85
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 11:21:46 2026 +0200
+
+    Added time synchronisation handling for OpenBSD.
+
+commit 062807f88ff3292d93a5e41a243f6afa08d62cf7
+Merge: dd305a2 c908f24
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 08:51:09 2026 +0000
+
+    Merge branch 'master' into dreibh/alpine
+
+commit dd305a28b8a1bfa43153bb3305f6d0902c142d11
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 08:49:45 2026 +0000
+
+    Added time synchronisation handling for Alpine.
+
+commit c908f2467bff87a7ac8b9b71ad062b746fd27c2d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 10:37:30 2026 +0200
+
+    Minor clean-up.
+
+commit c56ba3983852a49db39b5d34bff90373aaaa1607
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 10:31:39 2026 +0200
+
+    Improved NetBSD support of System-Maintenance.
+
+commit 715bf6c20e1f07b562d8c7a7cbcb13b2bc9b8083
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 1 10:18:47 2026 +0200
+
+    OpenBSD improvements for Reset-Machine-ID.
+
+commit a13e579d3f293557b802b4168e97db1acc1ec5a7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 30 13:40:29 2026 +0200
+
+    Updated APKBUILD file.
+
+commit e2f50e69e2382ea93638b23e1b0f7973ca06f443
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 30 13:24:18 2026 +0200
+
+    New release td-system-tools-2.7.6.
+
 commit 4df3b0162cffcf4ea8c3db2eb5d5f1fd97a68444
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Jun 30 13:23:02 2026 +0200
