@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 9, 2026
+.Dd July 1, 2026
 .Dt test\-tls\-connection 1
 .Os test\-tls\-connection
 .\" ###### Name #############################################################
@@ -94,7 +94,7 @@ tool exits with 0 on success, and >0 in case of an error.
 .It test\-tls\-connection www.heise.de:443 /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt \-n \-c \-s www.heise.de.crt
 .It test\-tls\-connection www.ietf.org:443 /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt \-s www.ietf.org.crt
 .It test\-tls\-connection www.simula.no /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt \-n \-c \-s www.simula.no.crt
-.It test\-tls\-connection www.dnb.no /etc/ssl/certs/DigiCert\_Global\_Root\_G2.pem \-s www.dnb.no
+.It test\-tls\-connection www.dnb.no /etc/ssl/certs/DigiCert\_Global\_Root\_G2.pem \-s www.dnb.no.crt
 .It test\-tls\-connection \-\-help
 .It test\-tls\-connection \-h
 .It test\-tls\-connection \-\-version

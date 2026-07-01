@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 9, 2026
+.Dd July 1, 2026
 .Dt check\-certificate 1
 .Os check\-certificate
 .\" ###### Name #############################################################
@@ -83,6 +83,7 @@ tool exits with 0 on success, and >0 in case of an error.
 .It check\-certificate My\-CA\-Certificate.crt My\-Server\-Certificate.crt
 .It check\-certificate \-\-crl CRL.crl My\-CA\-Certificate.crt My\-Server\-Certificate.crt
 .It check\-certificate /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt www.nntb.no.crt
+.It check\-certificate /etc/ssl/certs/DigiCert_Global_Root_G2.pem www.dnb.no.crt
 .It check\-certificate \-\-help
 .It check\-certificate \-h
 .It check\-certificate \-\-version
