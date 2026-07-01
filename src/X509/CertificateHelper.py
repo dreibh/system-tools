@@ -399,7 +399,10 @@ subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid:always,issuer
 basicConstraints       = critical, CA:true, pathlen:0   # <<-- CA, but no sub-CAs
 keyUsage               = critical, cRLSign, keyCertSign
+""")
 
+         if self.CertType == CertificateType.LeafCA:
+            configFile.write("""
 # ====== Settings for a server certificate ==================================
 [ server_cert ]
 # Extensions for server certificates (`man x509v3_config`).
