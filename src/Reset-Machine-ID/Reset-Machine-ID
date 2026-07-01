@@ -130,6 +130,7 @@ EOF
 
       packages=( "zabbix-agent" )
       zypper --non-interactive install -y "${packages[@]}"
+
       systemctl enable zabbix-agent
       systemctl start  zabbix-agent
 
@@ -138,6 +139,7 @@ EOF
 
       packages=( "zabbix-agent" "zabbix-agent-openrc" )
       apk add "${packages[@]}"
+
       rc-update add zabbix-agentd default
       rc-service zabbix-agentd start
 
@@ -155,6 +157,7 @@ EOF
 
       packages=( "zabbix-agent" )
       pkgin install -y "${packages[@]}"
+
       if [ -e /usr/pkg/share/examples/rc.d/zabbix_agentd ] ; then
          cp /usr/pkg/share/examples/rc.d/zabbix_agentd /etc/rc.d/
       fi
@@ -166,6 +169,7 @@ EOF
 
       packages=( "zabbix-agent" )
       pkg_add "${packages[@]}"
+
       rcctl enable zabbix_agentd
       rcctl start zabbix_agentd
 
@@ -567,7 +571,7 @@ EOF
       if [ "${p2}" != "yes" ] && [ "${p2}" != "no" ]  ; then
          p2="yes"
       fi
-      if [ "${ID}" == "alpine" ] ; then
+      if [ "${ID}" == "alpine" ] || [ "${ID}" == "openbsd" ] ; then
          usePAM="# "   # Disable "UsePAM" line.
       else
          usePAM=""     # Enable "UsePAM" line.
@@ -624,6 +628,8 @@ EOF
       gettext "Suggested sshd_config changes:"
       echo
       colordiff sshd_config sshd_config.suggested || differences=$((differences + 1))
+      # Check the configuration file, to ensure it is valid:
+      sshd -f sshd_config.suggested -T >/dev/null
       if [ ${differences} -gt 0 ] ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
             echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested sshd_config changes?") [yes/no]\x1b[0m "
@@ -635,9 +641,13 @@ EOF
             mv sshd_config.suggested sshd_config
 
             echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
-            # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
-            service sshd restart 2>/dev/null || \
-               service ssh restart 2>/dev/null
+            if command -v service >/dev/null ; then
+               # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
+               service sshd restart 2>/dev/null || \
+                  service ssh restart 2>/dev/null
+            elif command -v rcctl >/dev/null ; then
+               rcctl restart sshd
+            fi
          else
             gettext "Skipped!"
             echo

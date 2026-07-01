@@ -1,3 +1,69 @@
+commit 4df3b0162cffcf4ea8c3db2eb5d5f1fd97a68444
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 30 13:23:02 2026 +0200
+
+    Updated PO files.
+
+commit 805b1ce9856cebfdfc2ad0c81a79bbd70c01ea5d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 30 10:25:40 2026 +0000
+
+    Alpine's SSHD does not support the "UsePAM" option => comment out the "UsePAM" configuration line to avoid warning.
+
+commit c504170260375e0c6ea04285cc67fa24e404118e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 30 10:12:59 2026 +0000
+
+    Configuration improvements.
+
+commit fa6421bc41e0f4dd3fc0ba377b4ee7999519ad65
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 30 11:44:29 2026 +0200
+
+    Updated example configurations.
+
+commit e5f2cf81d1774ef4ab30ea638e186c3bbb392f97
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 30 11:32:25 2026 +0200
+
+    Improvements for run under Alpine Linux.
+
+commit d9d2eef0224f7e4241a70ab4e1ec030e894c38bb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jun 30 10:52:07 2026 +0200
+
+    Alpine Linux improvements.
+
+commit f37df8f01ac7d952d544f72ce0f392e190970839
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 29 15:43:16 2026 +0200
+
+    Updated CI configuration
+
+commit 915d3e7b1a437f48b9a72888abeee043040d5b32
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 29 15:43:10 2026 +0200
+
+    Updated CI scripts
+
+commit 5bb9b1a91ae0d37df971b21ad6a17d731b03f56d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 29 15:41:43 2026 +0200
+
+    Updated FreeBSD workflow.
+
+commit 20b8fe782d152cc371510b7810e7f700b698184d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 13:14:10 2026 +0200
+
+    Improved APKBUILD file.
+
+commit 3907ffb7e614317b46f79cea416b60570661ad1a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 13:08:07 2026 +0200
+
+    New release td-system-tools-2.7.5.
+
 commit 9e37da633b983b4e63eaca565829f9e6f93530e7
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Jun 26 12:40:11 2026 +0200

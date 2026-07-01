@@ -586,12 +586,14 @@ if command -v fstrim >/dev/null ; then
    sudo fstrim -a -v 2>/dev/null || ( sudo fstrim -v / && sudo fstrim -v /home ) || true
 fi
 if command -v zpool >/dev/null ; then
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Running zpool trim ...")\x1b[0m"
-   zpools=$(zpool list -H | cut -f1)
-   for zpool in ${zpools} ; do
-      echo "${zpool}"
-      sudo zpool trim "${zpool}" || true
-   done
+   zpools="$(zpool list -H 2>/dev/null | cut -f1 || true)"
+   if [ -n "${zpools}" ] ; then
+      echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Running zpool trim ...")\x1b[0m"
+      for zpool in ${zpools} ; do
+         echo "${zpool}"
+         sudo zpool trim "${zpool}" || true
+      done
+   fi
 fi
 
 
@@ -603,9 +605,9 @@ echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Done!")\x1b[0m"
 filterScripts=()
 for directory in /etc/system-maintenance.d /usr/local/etc/system-maintenance.d ; do
    if [ -d "${directory}" ] ; then
-      while IFS= read -r -d "" scriptPath ; do
+      while IFS= read -r scriptPath ; do
          filterScripts+=( "${scriptPath}" )
-      done < <(find "${directory}" -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" -print0 | sort -z)
+      done < <(find "${directory}" -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" -print | sort -r)
    fi
 done
 
