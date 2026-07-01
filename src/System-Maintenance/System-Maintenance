@@ -563,6 +563,14 @@ if [ ${updatedTime} -eq 0 ] && command -v ntpdate >/dev/null ; then
    done
 fi
 
+# ------ Try OpenNTPD (OpenBSD) ---------------------------------------------
+if [ ${updatedTime} -eq 0 ] && command -v rcctl >/dev/null ; then
+   sudo rcctl stop ntpd || true
+   sudo rcctl set ntpd flags -s
+   sudo rcctl start ntpd || true
+   updatedTime=1
+fi
+
 # ------ Write updated time to hardware clock -------------------------------
 if [ ${updatedTime} -eq 1 ] ; then
    # shellcheck disable=SC2034
