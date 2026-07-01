@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-06-30 13:22+0200\n"
+"POT-Creation-Date: 2026-07-01 12:16+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -47,86 +47,96 @@ msgstr ""
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/System-Maintenance/System-Maintenance:136
+#: src/System-Maintenance/System-Maintenance:125
+msgid "ERROR: System-Maintenance requires superuser permissions!"
+msgstr "FEIL: System-Maintenance krever superbrukerrettigheter!"
+
+#: src/System-Maintenance/System-Maintenance:144
 msgid "Stopping AutoFS service ..."
 msgstr "Stopper AutoFS-tjenesten ..."
 
-#: src/System-Maintenance/System-Maintenance:152
-#: src/System-Maintenance/System-Maintenance:166
+#: src/System-Maintenance/System-Maintenance:160
+#: src/System-Maintenance/System-Maintenance:174
 msgid "Updating package repositories ..."
 msgstr "Oppdaterer pakkelager ..."
 
-#: src/System-Maintenance/System-Maintenance:194
+#: src/System-Maintenance/System-Maintenance:204
 msgid "Applying package fixes, if necessary ..."
 msgstr "Reparerer pakker, om nødvendig ..."
 
-#: src/System-Maintenance/System-Maintenance:202
+#: src/System-Maintenance/System-Maintenance:212
 msgid "Installing missing dependencies, if necessary ..."
 msgstr "Installerer manglende avhengigheter, om nødvendig ..."
 
-#: src/System-Maintenance/System-Maintenance:215
+#: src/System-Maintenance/System-Maintenance:225
 msgid "Installing updates ..."
 msgstr "Installerer oppdateringer ..."
 
-#: src/System-Maintenance/System-Maintenance:297
+#: src/System-Maintenance/System-Maintenance:313
 msgid "Cleaning up ..."
 msgstr "Rydder opp ..."
 
-#: src/System-Maintenance/System-Maintenance:346
+#: src/System-Maintenance/System-Maintenance:365
 msgid "Removing obsolete kernels ..."
 msgstr "Fjerner utdaterte kjerner ..."
 
-#: src/System-Maintenance/System-Maintenance:352
+#: src/System-Maintenance/System-Maintenance:371
 msgid "Kernel Type:        "
 msgstr "Kjernetype:                 "
 
-#: src/System-Maintenance/System-Maintenance:353
+#: src/System-Maintenance/System-Maintenance:372
 msgid "Kernel Boot Version:"
 msgstr "Oppstartsversjon av kjernen:"
 
-#: src/System-Maintenance/System-Maintenance:354
+#: src/System-Maintenance/System-Maintenance:373
 msgid "Kernel Disk Version:"
 msgstr "Kjerneversjon på disken:    "
 
-#: src/System-Maintenance/System-Maintenance:430
+#: src/System-Maintenance/System-Maintenance:449
 msgid "To be removed:"
 msgstr "Å bli fjernet:"
 
-#: src/System-Maintenance/System-Maintenance:433
+#: src/System-Maintenance/System-Maintenance:452
 msgid "To be kept:"
 msgstr "Skal beholdes:"
 
-#: src/System-Maintenance/System-Maintenance:460
+#: src/System-Maintenance/System-Maintenance:479
 msgid "Refreshing snaps ..."
 msgstr "Oppdaterer snap-pakker ..."
 
-#: src/System-Maintenance/System-Maintenance:467
+#: src/System-Maintenance/System-Maintenance:486
 msgid "Checking for firmware updates ..."
 msgstr "Ser etter fastvareoppdateringer ..."
 
-#: src/System-Maintenance/System-Maintenance:474
+#: src/System-Maintenance/System-Maintenance:493
 msgid "Updating caches ..."
 msgstr "Oppdaterer cacher ..."
 
-#: src/System-Maintenance/System-Maintenance:503
+#: src/System-Maintenance/System-Maintenance:522
 msgid "Starting AutoFS service ..."
 msgstr "Starter AutoFS-tjenesten ..."
 
-#: src/System-Maintenance/System-Maintenance:509
+#: src/System-Maintenance/System-Maintenance:528
 msgid "Synchronising system time ..."
 msgstr "Synkroniserer systemtid ..."
 
-#: src/System-Maintenance/System-Maintenance:568
+#: src/System-Maintenance/System-Maintenance:597
+#, sh-format
+msgid "Updated system time to ${now}."
+msgstr "Oppdaterte systemtiden til ${now}."
+
+#: src/System-Maintenance/System-Maintenance:605
+msgid "No system time update possible."
+msgstr "Ingen systemtidsoppdatering mulig."
+
+#: src/System-Maintenance/System-Maintenance:612
 msgid "Running fstrim ..."
 msgstr "Kjører fstrim ..."
 
-#: src/System-Maintenance/System-Maintenance:572
+#: src/System-Maintenance/System-Maintenance:618
 msgid "Running zpool trim ..."
 msgstr "Kjører zpool trim ..."
 
-#: src/System-Maintenance/System-Maintenance:582
+#: src/System-Maintenance/System-Maintenance:628
 msgid "Done!"
 msgstr "Ferdig!"
-
-#~ msgid "ERROR: /etc/os-release not found!"
-#~ msgstr "FEIL: /etc/os-release ikke funnet!"
