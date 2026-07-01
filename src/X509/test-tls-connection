@@ -163,7 +163,7 @@ if [ "${CERTIFICATE_FILE}" == "" ] ; then
    CERTIFICATE_FILE="${tempCertFile}"
 fi
 
-echo "" | "${OPENSSL}" s_client -showcerts -connect "${ENDPOINT}" -no-CApath -no-CAstore -CAfile "${CA_FILE}" "$@" | \
+echo "" | "${OPENSSL}" s_client -showcerts -connect "${ENDPOINT}" -CAfile "${CA_FILE}" "$@" | \
    text-block \
       --extract \
       --begin-tag '-----BEGIN CERTIFICATE-----'  \

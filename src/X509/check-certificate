@@ -193,7 +193,11 @@ while [ $# -gt 0 ] ; do
       if [ "${CRL}" != "" ] ; then
          crlOption="-crl_check -CRLfile \"${CRL}\""
       fi
-      command="\"${OPENSSL}\" verify -no-CApath -no-CAstore -CAfile \"${CA_FILE}\" ${crlOption} -untrusted \"${CERTIFICATE_FILE}\" \"${CERTIFICATE_FILE}\""
+      if openssl verify -help 2>&1 | grep -q -- "-no-CApath"; then
+         command="\"${OPENSSL}\" verify -no-CApath -no-CAstore -no-CAfile -CAfile \"${CA_FILE}\" ${crlOption} -untrusted \"${CERTIFICATE_FILE}\" \"${CERTIFICATE_FILE}\""
+      else
+         command="\"${OPENSSL}\" verify -CAfile \"${CA_FILE}\" ${crlOption} -untrusted \"${CERTIFICATE_FILE}\" \"${CERTIFICATE_FILE}\""
+      fi
       if sh -c "${command}" >/dev/null 2>&1 ; then
          echo -e "\e[32;1m$(gettext "✓OKAY")\e[0m"
       else
