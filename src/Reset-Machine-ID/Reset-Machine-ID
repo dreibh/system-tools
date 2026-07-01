@@ -295,6 +295,13 @@ if [ $# -ne 0 ] ; then
 fi
 
 
+# ====== Check permissions ==================================================
+if [ "${EUID}" -ne 0 ] ; then
+   gettext >&2 "ERROR: Reset-Machine-ID requires superuser permissions!"
+   echo >&2
+   exit 1
+fi
+
 # ====== Obtain system details ==============================================
 UNAME="$(uname)"
 NAME="${UNAME}"
