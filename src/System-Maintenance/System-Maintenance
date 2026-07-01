@@ -179,11 +179,13 @@ elif [ "${ID}" == "netbsd" ] ; then
 elif [ "${ID}" == "openbsd" ] ; then
    sudo syspatch -c || true
 
+elif [ "${ID}" == "darwin" ] ; then
+   brew update
+
 else
    echo >&2 "ERROR: Missing repository update case for ${ID}!"
    exit 1
 fi
-
 
 
 # ====== Try to fix issues ==================================================
@@ -287,6 +289,12 @@ elif [ "${ID}" == "openbsd" ] ; then
    ) 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
+elif [ "${ID}" == "darwin" ] ; then
+   (
+      brew upgrade
+   ) 2>&1 | tee "${installOutputFile}"
+   cat "${installOutputFile}"
+
 else
    echo >&2 "ERROR: Missing package update case for ${ID}!"
    exit 1
@@ -334,6 +342,9 @@ elif [ "${ID}" == "netbsd" ] ; then
 
 elif [ "${ID}" == "openbsd" ] ; then
    sudo pkg_delete -a -I
+
+elif [ "${ID}" == "openbsd" ] ; then
+   brew cleanup
 
 else
    echo >&2 "ERROR: Missing clean-up case for ${ID}!"
@@ -634,6 +645,8 @@ if [ ${#filterScripts[@]} -gt 0 ] ; then
       pkg info --all | sort  >"${fullPackageList}" || true
    elif [ "${ID}" == "netbsd" ] || [ "${ID}" == "openbsd" ] ; then
       pkg_info | awk '{ print $1 }' | sort >"${fullPackageList}" || true
+   elif [ "${ID}" == "darwin" ] ; then
+      brew list
    else
       echo >&2 "ERROR: Missing project package versions case for ${ID}!"
       exit 1
