@@ -13,7 +13,7 @@ LICENSE_FILE=	${WRKSRC}/COPYING
 RUN_DEPENDS=	bash:shells/bash \
 		getopt>=0:misc/getopt
 
-USES=		cmake gettext shebangfix tar:xz
+USES=		cmake gettext-runtime shebangfix tar:xz
 
 CFLAGS+=	-std=c23
 
@@ -74,6 +74,7 @@ GIMP_SCRIPTS_CMAKE_BOOL=		WITH_GIMP_SCRIPTS
 GIMP_SCRIPTS_EXAMPLES_IMPLIES=		GIMP_SCRIPTS
 GIMP_SCRIPTS_EXAMPLES_CMAKE_BOOL=	WITH_GIMP_SCRIPTS_EXAMPLES
 
+NLS_USES=				gettext
 NLS_CMAKE_BOOL=				WITH_I18N
 
 PRINT_UTF8_CMAKE_BOOL=			WITH_PRINT_UTF8
