@@ -318,7 +318,7 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    cat "${installOutputFile}"
 
    # ------ Purge all previously-removed packages ---------
-   dpkg --get-selections | awk '$2=="deinstall" { print $1 }' | xargs --no-run-if-empty DEBIAN_FRONTEND=noninteractive apt-get purge -y \
+   dpkg --get-selections | awk '$2=="deinstall" { print $1 }' | DEBIAN_FRONTEND=noninteractive xargs --no-run-if-empty apt-get purge -y \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
