@@ -800,6 +800,11 @@ static void showBatteryInformation(void)
       close(apmFD);
    }
 
+   // ====== SunOS: Obtain battery status via TBD ===========================
+#elif defined(__sun__)
+
+#warning FIXME! Battery status for SunOS
+
    // ====== Apple: Obtain battery status via TBD ===========================
 #elif defined(__APPLE__)
 
