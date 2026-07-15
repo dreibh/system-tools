@@ -81,6 +81,7 @@
 #include <utmp.h>
 #elif defined(__sun__)
 #include <sys/loadavg.h>
+#include <sys/swap.h>
 #include <utmpx.h>
 #elif defined(__APPLE__)
 #include <libproc.h>
@@ -945,6 +946,24 @@ static void showMemoryInformation(void)
       // The sysctl calls are asynchronous. Protect against underflows:
       memoryAvailable = memoryTotal;
       memoryUsed      = 0;
+   }
+
+#elif defined(__sun__)
+   // ====== Query physical memory via sysconf ==============================
+   const long pageSize = sysconf(_SC_PAGESIZE);
+   if (pageSize > 0) {
+      const long physPages   = sysconf(_SC_PHYS_PAGES);
+      const long avphysPages = sysconf(_SC_AVPHYS_PAGES);
+
+      if(physPages >= 0) {
+         memoryTotal = (unsigned long long)physPages * pageSize;
+      }
+      if(avphysPages >= 0) {
+         memoryAvailable = (unsigned long long)avphysPages * pageSize;
+      }
+      if(memoryTotal >= memoryAvailable) {
+         memoryUsed = memoryTotal - memoryAvailable;
+      }
    }
 #endif
 
