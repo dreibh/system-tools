@@ -87,22 +87,22 @@ VerboseMode : bool = True
 
 # ###### Find OpenSSL #######################################################
 system      : Final[str] = platform.system()
-currentPath : Final[str] = os.environ.get("PATH", "")
+currentPath : Final[str] = os.environ.get('PATH', '')
 
-if system == "Darwin":
-   searchPath = f"/opt/homebrew/opt/openssl/bin{os.pathsep}{currentPath}"
-   opensslExecutable = shutil.which("openssl", path = searchPath)
-elif system == "SunOS":
-   searchPath = f"/usr/openssl/3/bin{os.pathsep}{currentPath}"
-   opensslExecutable = shutil.which("openssl", path = searchPath)
+if system == 'Darwin':
+   searchPath = f'/opt/homebrew/opt/openssl/bin{os.pathsep}{currentPath}'
+   opensslExecutable = shutil.which('openssl', path = searchPath)
+elif system == 'SunOS':
+   searchPath = f'/usr/openssl/3/bin{os.pathsep}{currentPath}'
+   opensslExecutable = shutil.which('openssl', path = searchPath)
 else:
-   opensslExecutable = shutil.which("openssl")
+   opensslExecutable = shutil.which('openssl')
 
 if not opensslExecutable:
-   print("ERROR: OpenSSL is not installed!", file = sys.stderr)
+   print('ERROR: OpenSSL is not installed!', file = sys.stderr)
    sys.exit(1)
 
-print(f"OpenSSL found at: {opensslExecutable}")
+# print(f'Using OpenSSL executable {opensslExecutable}!')
 
 
 # ###### Execute command ####################################################
