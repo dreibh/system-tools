@@ -287,7 +287,7 @@ static void showHostnameInformation(void)
 static void showKernelInformation(void)
 {
    struct utsname kernelInfo;
-   if(uname(&kernelInfo) == 0) {
+   if(uname(&kernelInfo) >= 0) {
       printf("system_sysname=\"%s\"\n",  kernelInfo.sysname);
       printf("system_nodename=\"%s\"\n", kernelInfo.nodename);
       printf("system_release=\"%s\"\n",  kernelInfo.release);
