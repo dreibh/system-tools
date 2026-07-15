@@ -40,6 +40,8 @@
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm unixts2time
+.Op Fl T Ar time\_format\_template | Fl Fl template Ar time\_format\_template
+.br
 .Op Fl H | Fl Fl human\-readable
 .br
 .Op Fl s | Fl Fl seconds
@@ -85,6 +87,10 @@ The following options are available:
 .Bl -tag -width indent
 .It unix\_timestamp ...
 The Unix timestamps to be converted. If no Unix timestamp is provided, the current system time is used. The timestamp may be provided as float or integer. For integers, the numbers can have a prefix 0x for hexadecimal (base 16), or 0 for octal (base 8). Otherwise, the number is interpreted as decimal (base 10).
+.It Fl T Ar time\_format\_template | Fl Fl template Ar time\_format\_template
+Sets the template for printing the date/time strings. Default is \(dq"%Y-%m-%d %H:%M:%S\(dq. The formatting is according to strftime(). See
+.Xr strftime 3
+for details.
 .It Fl H | Fl Fl human\-readable
 Provide the output in human\-readable form. Default: off.
 .It Fl s | Fl Fl seconds
@@ -121,11 +127,14 @@ tool exits with 0 on success, and >0 in case of an error.
 .It unixts2time 0x179cb2ae8af3dd89
 .It unixts2time \-H 0x179cb2ae8af3dd89
 .It unixts2time \-s 212847123.123
+.It unixts2time -T \(dq%x %X\(dq -s 2096218885000000000
+.It unixts2time -T \(dq%b %d %H:%M:%S %Y %Z\(dq 1773736279
 .It unixts2time \-\-version
 .It unixts2time \-\-help
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
+.Xr strftime 3
 .Xr time2unixts 1
 .\" ###### Notes ############################################################
 .Sh NOTES

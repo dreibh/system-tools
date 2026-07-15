@@ -103,6 +103,7 @@ int main(int argc, char** argv)
 
    // ====== Handle arguments ===============================================
    static const struct option long_options[] = {
+      { "template",               required_argument, 0, 'T' },
       { "float",                  no_argument,       0, 'F' },
       { "integer-decimal",        no_argument,       0, 'I' },
       { "integer-hexadecimal",    no_argument,       0, 'X' },
@@ -112,7 +113,6 @@ int main(int argc, char** argv)
       { "milliseconds",           no_argument,       0, 'm' },
       { "microseconds",           no_argument,       0, 'u' },
       { "nanoseconds",            no_argument,       0, 'n' },
-      { "template",               required_argument, 0, 'T' },
       { "help",                   no_argument,       0, 'h' },
       { "version",                no_argument,       0, 'v' },
       {  nullptr,                 0,                 0, 0   }
@@ -125,7 +125,7 @@ int main(int argc, char** argv)
    unsigned int divideBy           = 1;
    const char*  unit               = "ns";
    const char*  timeFormatTemplate = "%Y-%m-%d %H:%M:%S";
-   while( (option = getopt_long(argc, argv, "FIX0HsmunT:vh", long_options, &longIndex)) != -1 ) {
+   while( (option = getopt_long(argc, argv, "T:FIX0Hsmunvh", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'T':
             timeFormatTemplate = optarg;

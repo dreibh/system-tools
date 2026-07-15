@@ -74,6 +74,7 @@ static void version(void)
 static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "%s %s unix_timestamp [...]"
+           " [-T|--template time_format_template]"
            " [-H|--human-readable]"
            " [-s|--seconds]"
            " [-m|--milliseconds]"
@@ -100,23 +101,28 @@ int main(int argc, char** argv)
 
    // ====== Handle arguments ===============================================
    static const struct option long_options[] = {
-      { "human-readable", no_argument, 0, 'H' },
-      { "seconds",        no_argument, 0, 's' },
-      { "milliseconds",   no_argument, 0, 'm' },
-      { "microseconds",   no_argument, 0, 'u' },
-      { "nanoseconds",    no_argument, 0, 'n' },
-      { "help",           no_argument, 0, 'h' },
-      { "version",        no_argument, 0, 'v' },
-      {  nullptr,         0,           0, 0   }
+      { "template",       required_argument, 0, 'T' },
+      { "human-readable", no_argument,       0, 'H' },
+      { "seconds",        no_argument,       0, 's' },
+      { "milliseconds",   no_argument,       0, 'm' },
+      { "microseconds",   no_argument,       0, 'u' },
+      { "nanoseconds",    no_argument,       0, 'n' },
+      { "help",           no_argument,       0, 'h' },
+      { "version",        no_argument,       0, 'v' },
+      {  nullptr,         0,                 0, 0   }
    };
 
    int          option;
    int          longIndex;
-   bool         humanReadable   = false;
-   unsigned int initialDivideBy = 0;         // auto-detect later
-   const char*  unit            = nullptr;   // auto-detect later
-   while( (option = getopt_long(argc, argv, "Hsmunvh", long_options, &longIndex)) != -1 ) {
+   bool         humanReadable      = false;
+   unsigned int initialDivideBy    = 0;         // auto-detect later
+   const char*  unit               = nullptr;   // auto-detect later
+   const char*  timeFormatTemplate = "%Y-%m-%d %H:%M:%S";
+   while( (option = getopt_long(argc, argv, "T:Hsmunvh", long_options, &longIndex)) != -1 ) {
       switch(option) {
+         case 'T':
+            timeFormatTemplate = optarg;
+          break;
          case 'H':
             humanReadable = true;
           break;
@@ -257,7 +263,7 @@ int main(int argc, char** argv)
       }
 
       char tstring[96];
-      if(strftime(tstring, sizeof(tstring), "%Y-%m-%d %H:%M:%S", t) == 0) {
+      if(strftime(tstring, sizeof(tstring), timeFormatTemplate, t) == 0) {
          fputs(gettext("ERROR: strftime() failed!"), stderr);
          fputs("\n", stderr);
          exit(1);
