@@ -581,7 +581,7 @@ EOF
       if [ "${p2}" != "yes" ] && [ "${p2}" != "no" ]  ; then
          p2="yes"
       fi
-      if [ "${ID}" == "alpine" ] || [ "${ID}" == "openbsd" ] ; then
+      if [ "${ID}" == "alpine" ] || [ "${ID}" == "openbsd" ] || [ "${ID}" == "sunos" ] ; then
          usePAM="# "   # Disable "UsePAM" line.
       else
          usePAM=""     # Enable "UsePAM" line.
@@ -681,9 +681,9 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && command -v ssh-ke
 
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Making backup of current keys in \${backupDirectory} ...")\x1b[0m"
       mkdir "${backupDirectory}/"
-      find . -maxdepth 1 -name "ssh_host_*_key*" -print0 | xargs -0 -I § -r mv § "${backupDirectory}/"
-      find . -maxdepth 1 -name "ssh_host_key*"   -print0 | xargs -0 -I § -r mv § "${backupDirectory}/"
-      find . -maxdepth 1 -name "moduli*"         -print0 | xargs -0 -I § -r cp § "${backupDirectory}/"
+      find . -maxdepth 1 -name "ssh_host_*_key*" -exec mv {} "${backupDirectory}/" \;
+      find . -maxdepth 1 -name "ssh_host_key*" -exec mv {} "${backupDirectory}/" \;
+      find . -maxdepth 1 -name "moduli*" -exec mv {} "${backupDirectory}/" \;
       if [ -e ssh_config ] ; then
          cp ssh_config "${backupDirectory}/"
       fi
