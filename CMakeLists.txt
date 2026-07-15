@@ -104,6 +104,8 @@ ELSEIF (CMAKE_SYSTEM_NAME MATCHES "NetBSD")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "OpenBSD")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "SunOS")
+   MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
 ELSE()
@@ -193,12 +195,13 @@ IF (WITH_I18N)
             " * FreeBSD:       sudo pkg install -y gettext\n"
             " * NetBSD:        sudo pkgin -y install gettext\n"
             " * OpenBSD:       sudo pkg_add gettext-runtime gettext-tools\n"
+            " * OpenIndiana:   sudo pkg install gnu-gettext\n"
             " * Apple:         brew install gettext")
    ENDIF()
 
-   FIND_PROGRAM(XGETTEXT xgettext HINTS /usr/pkg/bin /opt/homebrew/opt/gettext/bin /usr/local/opt/gettext/bin)
-   FIND_PROGRAM(MSGMERGE msgmerge HINTS /usr/pkg/bin /opt/homebrew/opt/gettext/bin /usr/local/opt/gettext/bin)
-   FIND_PROGRAM(MSGFMT   msgfmt   HINTS /usr/pkg/bin /opt/homebrew/opt/gettext/bin /usr/local/opt/gettext/bin)
+   FIND_PROGRAM(XGETTEXT xgettext HINTS /usr/pkg/bin /usr/gnu/bin /opt/homebrew/opt/gettext/bin /usr/local/opt/gettext/bin)
+   FIND_PROGRAM(MSGMERGE msgmerge HINTS /usr/pkg/bin /usr/gnu/bin /opt/homebrew/opt/gettext/bin /usr/local/opt/gettext/bin)
+   FIND_PROGRAM(MSGFMT   msgfmt   HINTS /usr/pkg/bin /usr/gnu/bin /opt/homebrew/opt/gettext/bin /usr/local/opt/gettext/bin)
 
    IF (XGETTEXT AND MSGMERGE AND MSGFMT)
       MESSAGE(STATUS "GNU gettext support found:")
