@@ -29,6 +29,7 @@
 
 import ipaddress
 import os
+import psutil
 import re
 import shlex
 import shutil
@@ -40,12 +41,6 @@ import sys
 MIN_PYTHON = (3, 10)
 if sys.version_info < MIN_PYTHON:
    sys.exit('Python %s.%s or later is required!' % MIN_PYTHON)
-
-# This library also requires the netifaces package:
-try:
-   import netifaces
-except ImportError:
-   sys.exit('The Python netifaces package is required!')
 
 from typing import Final
 from enum   import Enum
@@ -122,15 +117,15 @@ def prepareSubjectAltName(certType : CertificateType,
             subjectAltName = subjectAltName + ',DNS:' + fqdn
 
          # ------ Add all IP addresses --------------------------------------
-         interfaces = netifaces.interfaces()
-         for family in [ netifaces.AF_INET, netifaces.AF_INET6 ]:
-            for interface in interfaces:
-               interfaceAddresses = netifaces.ifaddresses(interface).get(family)
-               if interfaceAddresses:
-                  for interfaceAddress in interfaceAddresses:
-                     address = ipaddress.ip_address(interfaceAddress['addr'])
-                     if (not address.is_link_local) and (not address.is_loopback):
-                        addresses.add(address)
+         interfaces = psutil.net_if_addrs()
+         for interface in interfaces:
+            interfaceAddresses = interfaces[interface]
+            for interfaceAddress in interfaceAddresses:
+               if ( (interfaceAddress.family == socket.AF_INET) or
+                  (interfaceAddress.family == socket.AF_INET6) ):
+                  address = ipaddress.ip_address(interfaceAddress.address)
+                  if (not address.is_link_local) and (not address.is_loopback):
+                     addresses.add(address)
 
       # ====== Look up addresses ============================================
       elif hint == 'LOOKUP':

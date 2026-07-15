@@ -320,7 +320,7 @@ Recommends: gnutls-utils
 Recommends: nss-tools
 Suggests: pwgen
 Suggests: python3
-Suggests: python3-netifaces
+Suggests: python3-psutil
 
 %description x509-tools
 This package contains X.509 certificate handling tools:
