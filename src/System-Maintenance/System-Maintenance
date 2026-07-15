@@ -190,6 +190,9 @@ elif [ "${ID}" == "netbsd" ] ; then
 elif [ "${ID}" == "openbsd" ] ; then
    syspatch -c || true
 
+elif [ "${ID}" == "sunos" ] ; then
+    pkg refresh
+
 elif [ "${ID}" == "darwin" ] ; then
    sudo -u "${SUDO_USER}" brew update
 
@@ -300,6 +303,12 @@ elif [ "${ID}" == "openbsd" ] ; then
    ) 2>&1 | tee "${installOutputFile}"
    cat "${installOutputFile}"
 
+elif [ "${ID}" == "sunos" ] ; then
+   (
+      pkg update || true
+   ) 2>&1 | tee "${installOutputFile}"
+   cat "${installOutputFile}"
+
 elif [ "${ID}" == "darwin" ] ; then
    (
       sudo -u "${SUDO_USER}" brew upgrade
@@ -353,6 +362,9 @@ elif [ "${ID}" == "netbsd" ] ; then
 
 elif [ "${ID}" == "openbsd" ] ; then
    pkg_delete -a -I
+
+elif [ "${ID}" == "sunos" ] ; then
+   true
 
 elif [ "${ID}" == "darwin" ] ; then
    sudo -u "${SUDO_USER}" brew cleanup
