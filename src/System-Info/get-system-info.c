@@ -79,6 +79,9 @@
 #include <uvm/uvm_extern.h>
 #include <sys/swap.h>
 #include <utmp.h>
+#elif defined(__sun__)
+#include <sys/loadavg.h>
+#include <utmpx.h>
 #elif defined(__APPLE__)
 #include <libproc.h>
 #include <mach/mach.h>
@@ -215,7 +218,7 @@ static void printaddress(const struct sockaddr* address,
          printf("%s%02x", (i > 0) ? ":" : "", macAddress->sll_addr[i]);
       }
    }
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
    else if(address->sa_family == AF_LINK) {
       const struct sockaddr_dl* macAddress = (const struct sockaddr_dl*)address;
       const uint8_t*            lladdr     = (const uint8_t*)LLADDR(macAddress);
@@ -305,6 +308,8 @@ static bool obtainUptime(struct timespec* ts)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
 #elif defined(__OpenBSD__)
    return clock_gettime(CLOCK_BOOTTIME, ts) == 0;
+#elif defined(__sun__)
+   return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
 #elif defined(__APPLE__)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
 #else
@@ -493,7 +498,7 @@ static unsigned int obtainUserCount(void)
    unsigned int count = 0;
 
    // ====== Use getutxent() to obtain and count the number of users ========
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__sun__) || defined(__APPLE__)
    setutxent();
    struct utmpx* utx;
    while( (utx = getutxent()) != nullptr ) {
@@ -561,7 +566,7 @@ static void showLoadInformation(void)
       printf("system_load_avg15minpct=%1.4f\n", (double)systemInfo.loads[2] * fPercent);
    }
 
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
    double loadavg[3];
    if(getloadavg(loadavg, 3) == 3) {
       const double fPercent = 100.0 / (double)cores;
@@ -1155,7 +1160,7 @@ static void showNetworkInformation(const bool filterLocalScope)
          // ====== MAC address ==============================================
 #if defined(__linux__)
          case AF_PACKET:
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
          case AF_LINK:
 #else
 #error Missing case!
@@ -1202,7 +1207,7 @@ static void showNetworkInformation(const bool filterLocalScope)
                break;
 #if defined(__linux__)
                case AF_PACKET:
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
                case AF_LINK:
 #else
 #error Missing case!
