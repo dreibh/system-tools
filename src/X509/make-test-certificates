@@ -40,10 +40,11 @@ if [ "${#HOSTNAME}" -gt 64 ] ; then
 fi
 UNAME="$(uname)"
 if [ "${UNAME}" == "Darwin" ] ; then
-   PATH="/opt/homebrew/opt/openssl/bin:$PATH"
+   PATH="/opt/homebrew/opt/openssl/bin:${PATH}"
 fi
 
-parameters=( "--key-algorithm" "RSA" "--keylen-ca" "16384" "--keylen-cert" "16384" )
+parameters=( "--key-algorithm" "RSA" "--keylen-ca" "1024" "--keylen-cert" "1024" )
+# parameters=( "--key-algorithm" "RSA" "--keylen-ca" "16384" "--keylen-cert" "16384" )
 # parameters=( "--key-algorithm" "EC" "--ec-curve" "brainpoolP512r1" )
 # parameters=( "--key-algorithm" "ED25519" )
 # parameters=( "--key-algorithm" "ED448" )

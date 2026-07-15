@@ -145,7 +145,10 @@ fi
 # ====== Check availability of tools ========================================
 case "${UNAME}" in
    Darwin)
-      OPENSSL="$(env PATH="/opt/homebrew/opt/openssl/bin:$PATH" command -v openssl || true)"
+      OPENSSL="$(env PATH="/opt/homebrew/opt/openssl/bin:${PATH}" command -v openssl || true)"
+      ;;
+   SunOS)
+      OPENSSL="$(env PATH="/usr/openssl/3/bin:${PATH}" command -v openssl || true)"
       ;;
    *)
       OPENSSL="$(command -v openssl || true)"
