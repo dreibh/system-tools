@@ -28,6 +28,9 @@
 // Contact: thomas.dreibholz@gmail.com
 
 #define _XOPEN_SOURCE 700
+#if defined(__sun__)
+#define __EXTENSIONS__ 1
+#endif
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -40,6 +43,7 @@
 #include <unistd.h>
 #include <wchar.h>
 #include <sys/ioctl.h>
+#include <sys/termios.h>
 
 #ifdef ENABLE_NLS
 #include <libintl.h>
