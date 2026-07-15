@@ -205,7 +205,7 @@ IF (WITH_I18N)
             " * FreeBSD:       sudo pkg install -y gettext\n"
             " * NetBSD:        sudo pkgin -y install gettext\n"
             " * OpenBSD:       sudo pkg_add gettext-runtime gettext-tools\n"
-            " * OpenIndiana:   sudo pkg install gnu-gettext\n"
+            " * Solaris:       sudo pkg install gnu-gettext\n"
             " * Apple:         brew install gettext")
    ENDIF()
 
@@ -250,6 +250,7 @@ IF (WITH_I18N)
               " * FreeBSD:       sudo pkg install -y gettext\n"
               " * NetBSD:        sudo pkgin -y install gettext\n"
               " * OpenBSD:       sudo pkg_add gettext-runtime gettext-tools\n"
+              " * Solaris:       sudo pkg install gnu-gettext\n"
               " * Apple:         brew install gettext")
    ENDIF()
 
