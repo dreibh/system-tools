@@ -80,6 +80,7 @@
 #include <sys/swap.h>
 #include <utmp.h>
 #elif defined(__sun__)
+#include <dirent.h>
 #include <sys/loadavg.h>
 #include <sys/swap.h>
 #include <utmpx.h>
@@ -340,7 +341,7 @@ static void showUptimeInformation(void)
 }
 
 
-#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__))
+#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__))
 // ###### Query information via shell #######################################
 static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 {
@@ -395,7 +396,7 @@ static unsigned int obtainProcessCount(void)
 {
    unsigned int count = 0;
 
-#if defined(__linux__)
+#if defined(__linux__) || defined(__sun__)
    // ====== Linux: count processes in /proc ================================
    struct dirent* dirEntry;
    DIR*           dir = opendir("/proc");
@@ -406,8 +407,8 @@ static unsigned int obtainProcessCount(void)
             count++;
          }
       }
+      closedir(dir);
    }
-   closedir(dir);
 
 #elif defined(__FreeBSD__)
    // ====== FreeBSD: use sysctl to query the number of processes ===========
