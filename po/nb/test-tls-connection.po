@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-06-10 17:38+0200\n"
+"POT-Creation-Date: 2026-07-15 17:50+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -47,16 +47,16 @@ msgstr ""
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/X509/test-tls-connection:137
+#: src/X509/test-tls-connection:140
 #, sh-format
 msgid "ERROR: Unable to find CA certificate file ${CA_FILE}!"
 msgstr "FEIL: Finner ikke CA-sertifikatfilen ${CA_FILE}!"
 
-#: src/X509/test-tls-connection:152
+#: src/X509/test-tls-connection:158
 msgid "ERROR: OpenSSL is not installed!"
 msgstr "FEIL: OpenSSL er ikke installert!"
 
-#: src/X509/test-tls-connection:158
+#: src/X509/test-tls-connection:164
 #, sh-format
 msgid "Connecting to ${ENDPOINT} ..."
 msgstr "Kobler til ${ENDPOINT} ..."

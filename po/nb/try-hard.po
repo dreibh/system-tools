@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-06-09 08:53+0200\n"
+"POT-Creation-Date: 2026-07-15 17:50+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -47,33 +47,33 @@ msgstr ""
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Try-Hard/try-hard:106 src/Try-Hard/try-hard:116
-#: src/Try-Hard/try-hard:126 src/Try-Hard/try-hard:136
-#: src/Try-Hard/try-hard:181
+#: src/Try-Hard/try-hard:109 src/Try-Hard/try-hard:119
+#: src/Try-Hard/try-hard:129 src/Try-Hard/try-hard:139
+#: src/Try-Hard/try-hard:184
 #, sh-format
 msgid "ERROR: Invalid delay value ${delayValue}!"
 msgstr "FEIL: Ugyldig forsinkelse ${delayValue}!"
 
-#: src/Try-Hard/try-hard:175
+#: src/Try-Hard/try-hard:178
 #, sh-format
 msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
 msgstr "FEIL: Ugyldig maksimalt antall forsøk ${MAX_TRIALS}!"
 
-#: src/Try-Hard/try-hard:186
+#: src/Try-Hard/try-hard:189
 msgid "ERROR: Cannot find random-sleep in the search path!"
 msgstr "FEIL: Finner ikke random-sleep i søkestien!"
 
-#: src/Try-Hard/try-hard:224
+#: src/Try-Hard/try-hard:227
 #, sh-format
 msgid "Tried ${MAX_TRIALS} times -> giving up now!"
 msgstr "Prøvde ${MAX_TRIALS} ganger -> gir opp nå!"
 
-#: src/Try-Hard/try-hard:255
+#: src/Try-Hard/try-hard:258
 #, sh-format
 msgid "Trial ${trial}/${MAX_TRIALS} failed (exit code ${exitStatus}) -> waiting random time from [${minDelay}, ${maxDelay}] s ..."
 msgstr "Forsøk ${trial}/${MAX_TRIALS} feilet (avslutningskode ${exitStatus}) -> venter en tilfeldig tidsperiode mellom [${minDelay}, ${maxDelay}] s før nytt forsøk ..."
 
-#: src/Try-Hard/try-hard:262
+#: src/Try-Hard/try-hard:265
 #, sh-format
 msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting for ${maxDelay} s ..."
 msgstr "Forsøk ${trial}/${MAX_TRIALS} feilet -> venter ${maxDelay} s før nytt forsøk ..."
