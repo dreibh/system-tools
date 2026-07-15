@@ -481,7 +481,7 @@ static unsigned int obtainProcessCount(void)
    // ====== Fallback =======================================================
    char         buffer[64];
    unsigned int value;
-   if( (queryPipe("ps -aex -o pid= | wc -l", buffer, sizeof(buffer))) &&
+   if( (queryPipe("ps -ae -o pid= | wc -l", buffer, sizeof(buffer))) &&
        (sscanf(buffer, "%u", &value) == 1) ) {
       count = value;
    }
