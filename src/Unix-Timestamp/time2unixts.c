@@ -74,6 +74,7 @@ static void version(void)
 static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "%s %s time_string [...]"
+           " [-T|--template time_format_template]"
            " [-F|--float]"
            " [-I|--integer]"
            " [-H|--human-readable]"
@@ -102,28 +103,33 @@ int main(int argc, char** argv)
 
    // ====== Handle arguments ===============================================
    static const struct option long_options[] = {
-      { "float",                  no_argument, 0, 'F' },
-      { "integer-decimal",        no_argument, 0, 'I' },
-      { "integer-hexadecimal",    no_argument, 0, 'X' },
-      { "integer-0x-hexadecimal", no_argument, 0, '0' },
-      { "human-readable",         no_argument, 0, 'H' },
-      { "seconds",                no_argument, 0, 's' },
-      { "milliseconds",           no_argument, 0, 'm' },
-      { "microseconds",           no_argument, 0, 'u' },
-      { "nanoseconds",            no_argument, 0, 'n' },
-      { "help",                   no_argument, 0, 'h' },
-      { "version",                no_argument, 0, 'v' },
-      {  nullptr,                 0,           0, 0   }
+      { "float",                  no_argument,       0, 'F' },
+      { "integer-decimal",        no_argument,       0, 'I' },
+      { "integer-hexadecimal",    no_argument,       0, 'X' },
+      { "integer-0x-hexadecimal", no_argument,       0, '0' },
+      { "human-readable",         no_argument,       0, 'H' },
+      { "seconds",                no_argument,       0, 's' },
+      { "milliseconds",           no_argument,       0, 'm' },
+      { "microseconds",           no_argument,       0, 'u' },
+      { "nanoseconds",            no_argument,       0, 'n' },
+      { "template",               required_argument, 0, 'T' },
+      { "help",                   no_argument,       0, 'h' },
+      { "version",                no_argument,       0, 'v' },
+      {  nullptr,                 0,                 0, 0   }
    };
 
    int          option;
    int          longIndex;
-   int          useInteger    = 10;
-   bool         humanReadable = false;
-   unsigned int divideBy      = 1;
-   const char*  unit          = "ns";
-   while( (option = getopt_long(argc, argv, "FIX0Hsmunvh", long_options, &longIndex)) != -1 ) {
+   int          useInteger         = 10;
+   bool         humanReadable      = false;
+   unsigned int divideBy           = 1;
+   const char*  unit               = "ns";
+   const char*  timeFormatTemplate = "%Y-%m-%d %H:%M:%S";
+   while( (option = getopt_long(argc, argv, "FIX0HsmunT:vh", long_options, &longIndex)) != -1 ) {
       switch(option) {
+         case 'T':
+            timeFormatTemplate = optarg;
+          break;
          case 'F':
             useInteger = 0;
           break;
@@ -193,7 +199,7 @@ int main(int argc, char** argv)
       // ====== Parse the next date/time string =============================
       else {
          struct tm tm = { 0 };
-         const char* remainder = strptime(argv[i], "%Y-%m-%d %H:%M:%S", &tm);
+         const char* remainder = strptime(argv[i], timeFormatTemplate, &tm);
          if(remainder != nullptr) {
             ts.tv_sec = timegm(&tm);
             if(remainder[0] != 0x00) {
