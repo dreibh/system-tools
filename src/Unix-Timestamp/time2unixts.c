@@ -29,6 +29,7 @@
 
 #define _GNU_SOURCE
 #include <ctype.h>
+#include <errno.h>
 #include <getopt.h>
 #include <locale.h>
 #include <stdbool.h>
@@ -54,6 +55,27 @@
 #define nullptr ((void*)0)
 #endif
 #endif
+
+
+// ###### Find %S placeholder for seconds in time format string #############
+const char* findSecondsPlaceholder(const char* formatString)
+{
+   const char* ptr = formatString;
+   while(*ptr) {
+      if(*ptr == '%') {
+         if(*(ptr + 1) == '%') { // Skip the escaped percent symbol "%%"
+            ptr += 2;
+         } else if(*(ptr + 1) == 'S') {
+            return ptr;
+         } else {
+            ptr += 2;
+         }
+      } else {
+         ptr++;
+      }
+   }
+   return nullptr;
+}
 
 
 // ###### Version ###########################################################
@@ -198,26 +220,56 @@ int main(int argc, char** argv)
 
       // ====== Parse the next date/time string =============================
       else {
-         struct tm tm = { 0 };
-         const char* remainder = strptime(argv[i], timeFormatTemplate, &tm);
-         if(remainder != nullptr) {
-            ts.tv_sec = timegm(&tm);
-            if(remainder[0] != 0x00) {
-               char*        endptr;
-               const double fraction = strtod(remainder, &endptr);
-               if( (endptr == nullptr) || (*endptr != 0x00) || (fraction < 0.0) ) {
-                  remainder = nullptr;   // parse error
-               }
-               else {
-                  ts.tv_nsec = (long long)(fraction * 1e9);
+         struct tm   tm                 = { 0 };
+         const char* timeString         = argv[i];
+         const char* remainder          = nullptr;
+         const char* secondsPlaceholder = findSecondsPlaceholder(timeFormatTemplate);
+         if(secondsPlaceholder != nullptr) {
+            long long nanoseconds = 0;
+
+            // ------ Parse front part (before seconds) ---------------------
+            const size_t frontLength = (size_t)(secondsPlaceholder - timeFormatTemplate);
+            char* frontFormatString  = malloc(frontLength + 1);
+            if(frontFormatString == nullptr) {
+               fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
+               exit(1);
+            }
+            memcpy(frontFormatString, timeFormatTemplate, frontLength);
+            frontFormatString[frontLength] = 0x00;
+            const char* remainder1 = strptime(timeString, frontFormatString, &tm);
+            free(frontFormatString);   // Free prefix buffer immediately
+
+            // ------ Parse the middle part (seconds) -----------------------
+            if(remainder1 != nullptr) {
+               char*  remainder2    = nullptr;
+               double total_seconds = strtod(remainder1, &remainder2);
+               if( (remainder2 != remainder1) && (total_seconds >= 0.0) ) {
+                  // Split seconds into integer seconds and nanoseconds:
+                  tm.tm_sec = (int)total_seconds;
+                  double fraction = total_seconds - tm.tm_sec;
+                  nanoseconds = (long long)(fraction * 1e9 + 0.5);   // +0.5 for rounding safety
+
+                  // ------ Parse the back part (after seconds) -------------
+                  const char* backFormatString = secondsPlaceholder + 2;
+                  if(backFormatString[0] != 0x00) {
+                     remainder = strptime(remainder2, backFormatString, &tm);
+                  } else {
+                     remainder = remainder2;
+                  }
                }
             }
-            else {
-               ts.tv_nsec = 0;
-            }
+            ts.tv_sec  = timegm(&tm);
+            ts.tv_nsec = nanoseconds;
          }
-         if(remainder == nullptr) {
-            fputs(gettext("ERROR: Invalid time string!"), stderr);
+         else {
+            remainder  = strptime(argv[i], timeFormatTemplate, &tm);
+            ts.tv_sec  = timegm(&tm);
+            ts.tv_nsec = 0;
+         }
+
+         if( (remainder == nullptr) || (remainder[0] != 0x00) ) {
+            fprintf(stderr, gettext("ERROR: Unable to parse time string \"%s\" with format template \"%s\"!"),
+                    timeString, timeFormatTemplate);
             fputs("\n", stderr);
             exit(1);
          }
