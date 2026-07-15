@@ -1015,6 +1015,21 @@ static void showMemoryInformation(void)
       }
    }
 
+#elif defined(__sun__)
+   // ====== Query swap space via swapctl ===================================
+   if(pageSize > 0) {
+      struct anoninfo ainfo;
+      if(swapctl(SC_AINFO, &ainfo) >= 0) {
+         swapTotal = (unsigned long long)ainfo.ani_max * pageSize;
+         swapUsed  = (unsigned long long)ainfo.ani_resv * pageSize;
+         if(swapTotal >= swapUsed) {
+            swapAvailable = swapTotal - swapUsed;
+         } else {
+            swapAvailable = 0;
+         }
+      }
+   }
+
 #elif defined(__APPLE__)
    // ====== Query system information via sysctl ============================
 
