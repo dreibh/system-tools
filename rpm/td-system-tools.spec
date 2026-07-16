@@ -317,8 +317,12 @@ Requires: %{name}-unixtimestamp-tools = %{version}-%{release}
 Requires: gettext-runtime
 Requires: (mbuffer or buffer)
 Requires: openssl
+# Fedora has the GnuTLS tools in a separate package:
 Recommends: gnutls-utils
-Recommends: nss-tools
+# OpenSUSE has the GnuTLS tools in one package:
+Recommends: gnutls
+# Fedora and OpenSuSE use different package names:
+Recommends: (nss-tools or mozilla-nss-tools)
 Suggests: pwgen
 Suggests: python3
 Suggests: python3-psutil
