@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.2.5\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-06-01 21:45+0200\n"
+"POT-Creation-Date: 2026-07-16 11:41+0200\n"
 "PO-Revision-Date: 2026-07-05 17:57+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -41,27 +41,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/Unix-Timestamp/unixts2time.c:84
+#: src/Unix-Timestamp/unixts2time.c:111
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Unix-Timestamp/unixts2time.c:168
+#: src/Unix-Timestamp/unixts2time.c:205
 msgid "clock_gettime() failed"
 msgstr "clock_gettime() mislyktes"
 
-#: src/Unix-Timestamp/unixts2time.c:234
+#: src/Unix-Timestamp/unixts2time.c:275
 msgid "ERROR: Invalid Unix timestamp!"
 msgstr "FEIL: Ugyldig Unix-tidsstempel!"
 
-#: src/Unix-Timestamp/unixts2time.c:254
+#: src/Unix-Timestamp/unixts2time.c:295
 msgid "ERROR: gmtime() failed!"
 msgstr "FEIL: gmtime() mislyktes!"
 
-#: src/Unix-Timestamp/unixts2time.c:261
-msgid "ERROR: strftime() failed!"
+#: src/Unix-Timestamp/unixts2time.c:312
+#, fuzzy, c-format
+msgid "ERROR: malloc() failed: %s!"
+msgstr "FEIL: gmtime() mislyktes!"
+
+#: src/Unix-Timestamp/unixts2time.c:318 src/Unix-Timestamp/unixts2time.c:328
+#: src/Unix-Timestamp/unixts2time.c:354 src/Unix-Timestamp/unixts2time.c:363
+#, fuzzy, c-format
+msgid "ERROR: strftime() with format template \"%s\" failed!"
 msgstr "FEIL: strftime() mislyktes!"
 
-#: src/Unix-Timestamp/unixts2time.c:293
-#, c-format
-msgid "%s%s is %lld (0x%llx) %s since the Unix Epoch"
+#: src/Unix-Timestamp/unixts2time.c:380
+#, fuzzy, c-format
+msgid "%s%s%s%s is %lld (0x%llx) %s since the Unix Epoch"
 msgstr "%s%s er %lld (0x%llx) %s siden Unix-epoken"

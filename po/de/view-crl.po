@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.2.5\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-15 17:50+0200\n"
+"POT-Creation-Date: 2026-07-16 11:50+0200\n"
 "PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -47,34 +47,34 @@ msgstr ""
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/X509/view-crl:151
+#: src/X509/view-crl:144
 msgid "ERROR: OpenSSL is not installed!"
 msgstr "FEHLER: OpenSSL ist nicht installiert!"
 
-#: src/X509/view-crl:158
+#: src/X509/view-crl:151
 msgid "Issuer:"
 msgstr "Aussteller:"
 
-#: src/X509/view-crl:159
+#: src/X509/view-crl:152
 msgid "Validity:"
 msgstr "Gültigkeit:"
 
-#: src/X509/view-crl:181
+#: src/X509/view-crl:174
 #, sh-format
 msgid "ERROR: Unable to find CRL file ${CRL_FILE}!"
 msgstr "FEHLER: CRL-Datei ${CRL_FILE} wurde nicht gefunden!"
 
-#: src/X509/view-crl:187
+#: src/X509/view-crl:180
 #, sh-format
 msgid "CRL in ${CRL_FILE}:"
 msgstr "CRL in ${CRL_FILE}:"
 
-#: src/X509/view-crl:240
+#: src/X509/view-crl:233
 #, sh-format
 msgid "#${entry}."
 msgstr "${entry}."
 
-#: src/X509/view-crl:241
+#: src/X509/view-crl:234
 #, sh-format
 msgid "Certificate ${serialNumber} revoked on ${revocationDate}"
 msgstr "Zertifikat ${serialNumber} zurückgezogen am ${revocationDate}"
