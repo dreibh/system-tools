@@ -63,12 +63,16 @@ static const char* findSecondsPlaceholder(const char* formatString)
    const char* ptr = formatString;
    while(*ptr) {
       if(*ptr == '%') {
-         if(*(ptr + 1) == '%') { // Skip the escaped percent symbol "%%"
-            ptr += 2;
-         } else if(*(ptr + 1) == 'S') {
-            return ptr;
-         } else {
-            ptr += 2;
+         switch(*(ptr + 1)) {
+            case 0x00:
+               ptr++;
+             break;
+            case 'S':
+               return ptr;
+             break;
+            default:
+               ptr += 2;
+             break;
          }
       } else {
          ptr++;
