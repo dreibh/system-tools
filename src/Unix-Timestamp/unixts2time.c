@@ -29,6 +29,7 @@
 
 #define _GNU_SOURCE
 #include <ctype.h>
+#include <errno.h>
 #include <getopt.h>
 #include <locale.h>
 #include <stdbool.h>
@@ -54,6 +55,27 @@
 #define nullptr ((void*)0)
 #endif
 #endif
+
+
+// ###### Find %S placeholder for seconds in time format string #############
+static const char* findSecondsPlaceholder(const char* formatString)
+{
+   const char* ptr = formatString;
+   while(*ptr) {
+      if(*ptr == '%') {
+         if(*(ptr + 1) == '%') { // Skip the escaped percent symbol "%%"
+            ptr += 2;
+         } else if(*(ptr + 1) == 'S') {
+            return ptr;
+         } else {
+            ptr += 2;
+         }
+      } else {
+         ptr++;
+      }
+   }
+   return nullptr;
+}
 
 
 // ###### Version ###########################################################
@@ -262,42 +284,91 @@ int main(int argc, char** argv)
          exit(1);
       }
 
-      char tstring[96];
-      if(strftime(tstring, sizeof(tstring), timeFormatTemplate, t) == 0) {
-         fputs(gettext("ERROR: strftime() failed!"), stderr);
-         fputs("\n", stderr);
-         exit(1);
-      }
+      // ====== Prepare date/time string ====================================
+      char frontTimeString[1024]        = { 0 };
+      char secondsString[128]           = { 0 };
+      char fractionalSecondsString[128] = { 0 };
+      char backTimeString[1024]         = { 0 };
 
-      // ------ Fractional seconds ------------------------------------------
-      char fstring[16];
-      const char* format;
-      if(divideBy == 1) {
-         format = "%1.9f";
-      }
-      else if(divideBy == 1000) {
-         format = "%1.6f";
-      }
-      else if(divideBy == 1000000) {
-         format = "%1.3f";
+      const char* secondsPlaceholder = findSecondsPlaceholder(timeFormatTemplate);
+      if(secondsPlaceholder != nullptr) {
+         // ------ Prepare front part (before seconds) ----------------------
+         const size_t frontLength = (size_t)(secondsPlaceholder - timeFormatTemplate);
+         char* frontFormatString  = malloc(frontLength + 1);
+         if(frontFormatString == nullptr) {
+            fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
+            exit(1);
+         }
+         memcpy(frontFormatString, timeFormatTemplate, frontLength);
+         frontFormatString[frontLength] = 0x00;
+         if(strftime(frontTimeString, sizeof(frontTimeString), frontFormatString, t) == 0) {
+            fprintf(stderr, gettext("ERROR: strftime() with format template \"%s\" failed!"),
+                    frontFormatString);
+            fputs("\n", stderr);
+            free(frontFormatString);
+            exit(1);
+         }
+         free(frontFormatString);
+
+         // ------ Parse the middle part (seconds) --------------------------
+         if(strftime(secondsString, sizeof(secondsString), "%S", t) == 0) {
+            fprintf(stderr, gettext("ERROR: strftime() with format template \"%s\" failed!"),
+                    "%S");
+            fputs("\n", stderr);
+            exit(1);
+         }
+
+         const char* fractionalSecondsFormatString;
+         if(divideBy == 1) {
+            fractionalSecondsFormatString = "%1.9f";
+         }
+         else if(divideBy == 1000) {
+            fractionalSecondsFormatString = "%1.6f";
+         }
+         else if(divideBy == 1000000) {
+            fractionalSecondsFormatString = "%1.3f";
+         }
+         else {
+            fractionalSecondsFormatString = "%1.0f";
+         }
+         snprintf(fractionalSecondsString, sizeof(fractionalSecondsString), fractionalSecondsFormatString,
+                  (double)ts.tv_nsec / 1000000000.0);
+
+         // ------ Prepare the back part (after seconds) --------------------
+         const char* backFormatString = secondsPlaceholder + 2;
+         if(backFormatString[0] != 0x00) {
+            if(strftime(backTimeString, sizeof(backTimeString), backFormatString, t) == 0) {
+               fprintf(stderr, gettext("ERROR: strftime() with format template \"%s\" failed!"),
+                       backFormatString);
+               fputs("\n", stderr);
+               exit(1);
+            }
+         }
       }
       else {
-         format = "%1.0f";
+         if(strftime(frontTimeString, sizeof(frontTimeString), timeFormatTemplate, t) == 0) {
+            fprintf(stderr, gettext("ERROR: strftime() with format template \"%s\" failed!"),
+                    timeFormatTemplate);
+            fputs("\n", stderr);
+            exit(1);
+         }
       }
-      snprintf(fstring, sizeof(fstring), format,
-               (double)ts.tv_nsec / 1000000000.0);
 
       // ====== Print result ================================================
       if(!humanReadable) {
-         fputs(tstring, stdout);
-         fputs(&fstring[1], stdout);   // Omit "0" before comma
+         fputs(frontTimeString, stdout);
+         fputs(secondsString, stdout);
+         if(fractionalSecondsString[0] != 0x00) {
+            fputs(&fractionalSecondsString[1], stdout);
+         }
+         fputs(backTimeString, stdout);
       }
       else {
-         char ustring[64];
-         snprintf(ustring, sizeof(ustring), format,
-                  unixTS / (double)divideBy);
-         fprintf(stdout, gettext("%s%s is %lld (0x%llx) %s since the Unix Epoch"),
-               tstring, &fstring[1], unixTS /divideBy, unixTS /divideBy, unit);
+         fprintf(stdout, gettext("%s%s%s%s is %lld (0x%llx) %s since the Unix Epoch"),
+                 frontTimeString,
+                 secondsString, (fractionalSecondsString[0] != 0x00) ? fractionalSecondsString + 1 : "",
+                 backTimeString,
+                 unixTS /divideBy, unixTS /divideBy, unit);
       }
       fputs("\n", stdout);
    }
