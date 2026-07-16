@@ -87,7 +87,7 @@ if [[ $? -ne 0 ]]; then
 fi
 eval set -- "${options}"
 
-TILE_TYPE=6
+TILE_TYPE=1
 TILE_TYPESTRING="hexagons"
 TILE_SIZE=15.0
 TILE_HEIGHT=4.0
