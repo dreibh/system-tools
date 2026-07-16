@@ -58,7 +58,7 @@
 
 
 // ###### Find %S placeholder for seconds in time format string #############
-const char* findSecondsPlaceholder(const char* formatString)
+static const char* findSecondsPlaceholder(const char* formatString)
 {
    const char* ptr = formatString;
    while(*ptr) {
