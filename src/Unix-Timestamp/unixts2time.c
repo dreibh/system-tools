@@ -381,7 +381,9 @@ int main(int argc, char** argv)
                  frontTimeString,
                  secondsString, (fractionalSecondsString[0] != 0x00) ? fractionalSecondsString + 1 : "",
                  backTimeString,
-                 unixTS / divideBy, unixTS / divideBy, unit);
+                 (long long)(unixTS / divideBy),
+                 (unsigned long long)(unixTS / divideBy),
+                 unit);
       }
       fputs("\n", stdout);
    }
