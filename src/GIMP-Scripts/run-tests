@@ -108,7 +108,7 @@ if [ ! -e "${INPUT3}"  ] ; then
    if command -v clifractgen ; then
       clifractgen examples/Fractal.fsf "${INPUT3}" -W 1920 -H 1080 -M 2048
    else
-      wget -O /tmp/Fractal.webp \
+      curl --output /tmp/Fractal.webp \
          "https://www.nntb.no/~dreibh/system-tools/GIMP-Scripts/figures/Fractal.webp"
       gm convert /tmp/Fractal.webp "${INPUT3}"
       rm -f /tmp/Fractal.webp
