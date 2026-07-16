@@ -237,7 +237,7 @@ int main(int argc, char** argv)
             memcpy(frontFormatString, timeFormatTemplate, frontLength);
             frontFormatString[frontLength] = 0x00;
             const char* remainder1 = strptime(timeString, frontFormatString, &tm);
-            free(frontFormatString);   // Free prefix buffer immediately
+            free(frontFormatString);
 
             // ------ Parse the middle part (seconds) -----------------------
             if(remainder1 != nullptr) {
