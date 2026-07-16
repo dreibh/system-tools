@@ -280,18 +280,23 @@ int main(int argc, char** argv)
       }
 
       // ====== Convert timespec to Unix timestamp =============================
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202311L)
+      const _BitInt(128) unixTS =
+#else
+      // NOTE: 64-bit signed long long will overflow on April 11, 2262!
       const long long unixTS =
+#endif
          (1000000000LL * ts.tv_sec) + ts.tv_nsec;
 
       if(useInteger != 0) {
          if(useInteger == 16) {
-            printf("%llx", unixTS / divideBy);
+            printf("%llx", (long long)(unixTS / divideBy));
          }
          else if(useInteger == -16) {
-            printf("0x%llx", unixTS / divideBy);
+            printf("0x%llx", (long long)(unixTS / divideBy));
          }
          else {
-            printf("%lld", unixTS / divideBy);
+            printf("%lld", (long long)(unixTS / divideBy));
          }
       }
       else {
