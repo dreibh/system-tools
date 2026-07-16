@@ -57,17 +57,10 @@ version () {
 # ###### Print date in current locale and current time zone #################
 print-date ()
 {
-   local input="$1"
-   local unixTS
-   local datetime
-   if date --version >/dev/null 2>&1; then
-      unixTS="$(date -d "${input}" +"%s")"
-      datetime="$(date -d "@${unixTS}" +"%c %Z")"
-   else
-      unixTS="$(LC_ALL=C.UTF-8 date -j -f "%b %d %T %Y %Z" "${input}" +"%s")"
-      datetime="$(date -r "${unixTS}" +"%c %Z")"
-   fi
-   echo "${datetime}"
+   local inputDateTime="$1"
+   local unixTimestamp
+   unixTimestamp="$(time2unixts -T "%b %d %T %Y %Z" "${inputDateTime}")"
+   unixts2time -T "%c %Z" "${unixTimestamp}"
 }
 
 
