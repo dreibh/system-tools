@@ -73,8 +73,16 @@ _time2unixts()
       return
    fi
 
+   case "${prev}" in
+      -T | --template)
+         return
+         ;;
+   esac
+
    # ====== All options =====================================================
    local opts="
+-T
+--template
 -F
 --float
 -I
