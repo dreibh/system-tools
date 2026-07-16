@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.2.5\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-16 11:50+0200\n"
+"POT-Creation-Date: 2026-07-16 14:38+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -59,22 +59,22 @@ msgstr "Utsteder:"
 msgid "Validity:"
 msgstr "Gyldighet:"
 
-#: src/X509/view-crl:174
+#: src/X509/view-crl:179
 #, sh-format
 msgid "ERROR: Unable to find CRL file ${CRL_FILE}!"
 msgstr "FEIL: Finner ikke CRL-filen ${CRL_FILE}!"
 
-#: src/X509/view-crl:180
+#: src/X509/view-crl:185
 #, sh-format
 msgid "CRL in ${CRL_FILE}:"
 msgstr "CRL i ${CRL_FILE}:"
 
-#: src/X509/view-crl:233
+#: src/X509/view-crl:238
 #, sh-format
 msgid "#${entry}."
 msgstr "№${entry}"
 
-#: src/X509/view-crl:234
+#: src/X509/view-crl:239
 #, sh-format
 msgid "Certificate ${serialNumber} revoked on ${revocationDate}"
 msgstr "Sertifikat ${serialNumber} ble tilbakekalt ${revocationDate}"
