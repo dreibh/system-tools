@@ -52,17 +52,14 @@ msgstr "clock_gettime() mislyktes"
 #: src/Unix-Timestamp/time2unixts.c:279
 #, c-format
 msgid "ERROR: malloc() failed: %s!"
-msgstr ""
+msgstr "FEIL: malloc() mislyktes: %s!"
 
 #: src/Unix-Timestamp/time2unixts.c:320
 #, c-format
 msgid "ERROR: Unable to parse time string \"%s\" with format template \"%s\"!"
-msgstr ""
+msgstr "FEIL: Kan ikke analysere tidsstrengen «%s» med formatmalen «%s»!"
 
 #: src/Unix-Timestamp/time2unixts.c:362
 #, c-format
 msgid " %s since the Unix Epoch"
 msgstr " %s siden Unix-epoken"
-
-#~ msgid "ERROR: Invalid time string!"
-#~ msgstr "FEIL: Ugyldig tidsstreng!"
