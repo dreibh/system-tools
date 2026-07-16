@@ -59,7 +59,7 @@ print-date ()
 {
    local inputDateTime="$1"
    local unixTimestamp
-   unixTimestamp="$(time2unixts -T "%b %d %T %Y %Z" "${inputDateTime}")"
+   unixTimestamp="$(LC_ALL=C time2unixts -T "%b %d %T %Y %Z" "${inputDateTime}")"
    unixts2time -T "%c %Z" "${unixTimestamp}"
 }
 
