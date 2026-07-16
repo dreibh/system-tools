@@ -188,7 +188,12 @@ int main(int argc, char** argv)
    }
 
    // ====== Obtain Unix timestamp in ns ====================================
-   long long unixTS;
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202311L)
+   _BitInt(128) unixTS;
+#else
+   // NOTE: A 64-bit signed long long will overflow on April 11, 2262!
+   long long    unixTS;
+#endif
    for(int i = optind; i <= argc; i++) {
       unsigned int divideBy = initialDivideBy;
 
@@ -200,7 +205,11 @@ int main(int argc, char** argv)
                perror(gettext("clock_gettime() failed"));
                exit(1);
             }
-            unixTS = (1000000000LL * ts.tv_sec) + ts.tv_nsec;   // already in ns
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202311L)
+            unixTS = ((_BitInt(128))1000000000LL * ts.tv_sec) + ts.tv_nsec;
+#else
+            unixTS = (1000000000LL * ts.tv_sec) + ts.tv_nsec;
+#endif
             if(divideBy == 0) {
                divideBy = 1;
                unit     = "ns";
@@ -372,7 +381,7 @@ int main(int argc, char** argv)
                  frontTimeString,
                  secondsString, (fractionalSecondsString[0] != 0x00) ? fractionalSecondsString + 1 : "",
                  backTimeString,
-                 unixTS /divideBy, unixTS /divideBy, unit);
+                 unixTS / divideBy, unixTS / divideBy, unit);
       }
       fputs("\n", stdout);
    }
