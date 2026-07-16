@@ -313,6 +313,7 @@ Summary: X.509 certificate handling tools
 BuildArch: noarch
 Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
+Requires: %{name}-unixtimestamp-tools = %{version}-%{release}
 Requires: gettext-runtime
 Requires: (mbuffer or buffer)
 Requires: openssl
