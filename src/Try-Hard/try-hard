@@ -215,7 +215,7 @@ while true ; do
    # ====== Start next trial ================================================
    trial=$(( trial+1 ))
    if [ "${VERBOSE}" -eq 1 ] ; then
-      echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS}: \x1b[37m$*")\x1b[0m"
+      echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS}:") \x1b[37m$*\x1b[0m"
    fi
 
    # ====== Run the command =================================================
