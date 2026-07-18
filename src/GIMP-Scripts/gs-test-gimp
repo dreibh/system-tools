@@ -149,7 +149,6 @@ fi
 
 
 # ====== Detect GIMP, and determine version-specific call options ===========
-UNAME="$(uname)"
 case "${UNAME}" in
    OpenBSD)
       for version in 3.6 3.4 3.2 3.0 2.8 2.6 ; do
@@ -165,7 +164,7 @@ case "${UNAME}" in
    *)
       GIMP_CONSOLE="$(command -v gimp-console || true)"
 esac
-if [ "${GIMP_CONSOLE}" == "" ] ; then
+if [ "${GIMP_CONSOLE}" = "" ] ; then
    echo >&2 "ERROR: GIMP is not installed! Try:"
    echo >&2 " * Ubuntu/Debian: sudo apt install -y gimp"
    echo >&2 " * Fedora:        sudo dnf install -y gimp"
