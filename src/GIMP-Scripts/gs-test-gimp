@@ -140,8 +140,10 @@ if [ "${GIMP3_DIRECTORY}" != "" ] ; then
       # using 1 core seems to provide the best performance:
       echo "(num-processors 1)"
 
-      # Darwin fix: add global fonts directory to gimprc
-      if [ "${UNAME}" == "Darwin" ] ; then
+      # Add global fonts directory to gimprc:
+      if [ "${UNAME}" == "NetBSD" ] ; then
+         echo "(font-path \"\${gimp_dir}/fonts:\${gimp_data_dir}/fonts:/usr/pkg/share/fonts/X11/TTF\")"
+      elif [ "${UNAME}" == "Darwin" ] ; then
          echo "(font-path \"\${gimp_dir}/fonts:\${gimp_data_dir}/fonts:/Users/runner/Library/Fonts\")"
       fi
    ) >"${GIMP3_DIRECTORY}/gimprc"
