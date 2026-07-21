@@ -57,17 +57,10 @@ version () {
 # ###### Print date in current locale and current time zone #################
 print-date ()
 {
-   local input="$1"
-   local unixTS
-   local datetime
-   if date --version >/dev/null 2>&1; then
-      unixTS="$(date -d "${input}" +"%s")"
-      datetime="$(date -d "@${unixTS}" +"%c %Z")"
-   else
-      unixTS="$(LC_ALL=C.UTF-8 date -j -f "%b %d %T %Y %Z" "${input}" +"%s")"
-      datetime="$(date -r "${unixTS}" +"%c %Z")"
-   fi
-   echo "${datetime}"
+   local inputDateTime="$1"
+   local unixTimestamp
+   unixTimestamp="$(LC_ALL=C time2unixts -T "%b %d %T %Y %Z" "${inputDateTime}")"
+   unixts2time -T "%c %Z" "${unixTimestamp}"
 }
 
 
@@ -174,8 +167,13 @@ while [ $# -gt 0 ] ; do
    # ====== Look for CRL ====================================================
    CRL_FILE="$1"
    shift
+   tempCrlFile=""
    if [ "${CRL_FILE}" == "-" ] ; then
-      CRL_FILE="/dev/stdin"
+      tempCrlFile=""
+      trap 'rm -f "${tempCrlFile}"' EXIT INT TERM HUP
+      tempCrlFile="$(mktemp -t view-crl.XXXXXXXXXX)"
+      cat >"${tempCrlFile}"
+      CRL_FILE="${tempCrlFile}"
    fi
    if [ ! -e "${CRL_FILE}" ] ; then
       eval_gettext >&2 "ERROR: Unable to find CRL file \${CRL_FILE}!"
@@ -186,7 +184,7 @@ while [ $# -gt 0 ] ; do
    # ====== Display CRL details =============================================
    echo -e "\e[34m$(eval_gettext "CRL in \${CRL_FILE}:")\e[0m"
    if [ "${CRL_FILE}" == "/dev/stdin" ] || [ "$(file -b "${CRL_FILE}")" == "data" ] ; then
-      openssl crl -in "${CRL_FILE}"
+      openssl crl -in "${CRL_FILE}" -inform PEM 2>/dev/null || openssl crl -in "${CRL_FILE}" -inform DER
    else
       cat "${CRL_FILE}"
    fi | \
@@ -259,4 +257,7 @@ while [ $# -gt 0 ] ; do
 
    echo -en "\e[0m"
 
+   if [ -n "${tempCrlFile}" ] ; then
+      rm -f "${tempCrlFile}"
+   fi
 done

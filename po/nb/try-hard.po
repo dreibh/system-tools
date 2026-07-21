@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-15 17:50+0200\n"
+"POT-Creation-Date: 2026-07-16 14:38+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -62,6 +62,11 @@ msgstr "FEIL: Ugyldig maksimalt antall forsøk ${MAX_TRIALS}!"
 #: src/Try-Hard/try-hard:189
 msgid "ERROR: Cannot find random-sleep in the search path!"
 msgstr "FEIL: Finner ikke random-sleep i søkestien!"
+
+#: src/Try-Hard/try-hard:218
+#, sh-format
+msgid "Trial ${trial}/${MAX_TRIALS}:"
+msgstr "Forsøk ${trial}/${MAX_TRIALS}:"
 
 #: src/Try-Hard/try-hard:227
 #, sh-format

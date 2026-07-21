@@ -29,6 +29,7 @@
 
 #define _GNU_SOURCE
 #include <ctype.h>
+#include <errno.h>
 #include <getopt.h>
 #include <locale.h>
 #include <stdbool.h>
@@ -56,6 +57,72 @@
 #endif
 
 
+// ###### Find %S placeholder for seconds in time format string #############
+static const char* findSecondsPlaceholder(const char* formatString)
+{
+   const char* ptr = formatString;
+   while(*ptr) {
+      if(*ptr == '%') {
+         switch(*(ptr + 1)) {
+            case 0x00:
+               ptr++;
+             break;
+            case 'S':
+               return ptr;
+             break;
+            default:
+               ptr += 2;
+             break;
+         }
+      } else {
+         ptr++;
+      }
+   }
+   return nullptr;
+}
+
+
+// ###### Print integer value ###############################################
+static void printBigInteger(
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202311L)
+   _BitInt(128)  value,
+#else
+   long long     value,
+#endif
+   const int     base,
+   const bool    withPrefix)
+{
+   if(value < 0) {
+      putchar('-');
+   }
+   if( (withPrefix) && (base == 16)) {
+      fputs("0x", stdout);
+   }
+
+   char buffer[64];
+   int  idx = 0;
+   if(value < 0) {   // Negative value
+      do {
+         int remainder = (int)(value % base);
+         if(remainder < 0) remainder = -remainder;
+         buffer[idx++] = (remainder < 10) ? (remainder + '0') : (remainder - 10 + 'a');
+         value /= base;
+      } while (value < 0);
+   }
+   else {            // Non-negative value
+      do {
+         int remainder = (int)(value % base);
+         buffer[idx++] = (remainder < 10) ? (remainder + '0') : (remainder - 10 + 'a');
+         value /= base;
+      } while (value > 0);
+   }
+
+   while (idx > 0) {
+      putchar(buffer[--idx]);
+   }
+}
+
+
 // ###### Version ###########################################################
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
@@ -74,6 +141,7 @@ static void version(void)
 static void usage(const char* program, const int exitCode)
 {
    fprintf(stderr, "%s %s time_string [...]"
+           " [-T|--template time_format_template]"
            " [-F|--float]"
            " [-I|--integer]"
            " [-H|--human-readable]"
@@ -96,34 +164,39 @@ int main(int argc, char** argv)
    if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
-   setlocale(LC_NUMERIC, "C.UTF-8");   // Use "." for fractional numbers!
+   setlocale(LC_NUMERIC, "C");   // Use "." for fractional numbers!
    bindtextdomain("time2unixts", nullptr);
    textdomain("time2unixts");
 
    // ====== Handle arguments ===============================================
    static const struct option long_options[] = {
-      { "float",                  no_argument, 0, 'F' },
-      { "integer-decimal",        no_argument, 0, 'I' },
-      { "integer-hexadecimal",    no_argument, 0, 'X' },
-      { "integer-0x-hexadecimal", no_argument, 0, '0' },
-      { "human-readable",         no_argument, 0, 'H' },
-      { "seconds",                no_argument, 0, 's' },
-      { "milliseconds",           no_argument, 0, 'm' },
-      { "microseconds",           no_argument, 0, 'u' },
-      { "nanoseconds",            no_argument, 0, 'n' },
-      { "help",                   no_argument, 0, 'h' },
-      { "version",                no_argument, 0, 'v' },
-      {  nullptr,                 0,           0, 0   }
+      { "template",               required_argument, 0, 'T' },
+      { "float",                  no_argument,       0, 'F' },
+      { "integer-decimal",        no_argument,       0, 'I' },
+      { "integer-hexadecimal",    no_argument,       0, 'X' },
+      { "integer-0x-hexadecimal", no_argument,       0, '0' },
+      { "human-readable",         no_argument,       0, 'H' },
+      { "seconds",                no_argument,       0, 's' },
+      { "milliseconds",           no_argument,       0, 'm' },
+      { "microseconds",           no_argument,       0, 'u' },
+      { "nanoseconds",            no_argument,       0, 'n' },
+      { "help",                   no_argument,       0, 'h' },
+      { "version",                no_argument,       0, 'v' },
+      {  nullptr,                 0,                 0, 0   }
    };
 
    int          option;
    int          longIndex;
-   int          useInteger    = 10;
-   bool         humanReadable = false;
-   unsigned int divideBy      = 1;
-   const char*  unit          = "ns";
-   while( (option = getopt_long(argc, argv, "FIX0Hsmunvh", long_options, &longIndex)) != -1 ) {
+   int          useInteger         = 10;
+   bool         humanReadable      = false;
+   unsigned int divideBy           = 1;
+   const char*  unit               = "ns";
+   const char*  timeFormatTemplate = "%Y-%m-%d %H:%M:%S";
+   while( (option = getopt_long(argc, argv, "T:FIX0Hsmunvh", long_options, &longIndex)) != -1 ) {
       switch(option) {
+         case 'T':
+            timeFormatTemplate = optarg;
+          break;
          case 'F':
             useInteger = 0;
           break;
@@ -192,44 +265,81 @@ int main(int argc, char** argv)
 
       // ====== Parse the next date/time string =============================
       else {
-         struct tm tm = { 0 };
-         const char* remainder = strptime(argv[i], "%Y-%m-%d %H:%M:%S", &tm);
-         if(remainder != nullptr) {
-            ts.tv_sec = timegm(&tm);
-            if(remainder[0] != 0x00) {
-               char*        endptr;
-               const double fraction = strtod(remainder, &endptr);
-               if( (endptr == nullptr) || (*endptr != 0x00) || (fraction < 0.0) ) {
-                  remainder = nullptr;   // parse error
-               }
-               else {
-                  ts.tv_nsec = (long long)(fraction * 1e9);
+         struct tm   t                  = { 0 };
+         const char* timeString         = argv[i];
+         const char* remainder          = nullptr;
+         const char* secondsPlaceholder = findSecondsPlaceholder(timeFormatTemplate);
+         if(secondsPlaceholder != nullptr) {
+            long long nanoseconds = 0;
+
+            // ------ Parse front part (before seconds) ---------------------
+            const size_t frontLength = (size_t)(secondsPlaceholder - timeFormatTemplate);
+            char* frontFormatString  = malloc(frontLength + 1);
+            if(frontFormatString == nullptr) {
+               fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
+               exit(1);
+            }
+            memcpy(frontFormatString, timeFormatTemplate, frontLength);
+            frontFormatString[frontLength] = 0x00;
+            const char* remainder1 = strptime(timeString, frontFormatString, &t);
+            free(frontFormatString);
+
+            // ------ Parse the middle part (seconds) -----------------------
+            if(remainder1 != nullptr) {
+               char*  remainder2    = nullptr;
+               double total_seconds = strtod(remainder1, &remainder2);
+               if( (remainder2 != remainder1) && (total_seconds >= 0.0) ) {
+                  // Split seconds into integer seconds and nanoseconds:
+                  t.tm_sec = (int)total_seconds;
+                  double fraction = total_seconds - t.tm_sec;
+                  nanoseconds = (long long)(fraction * 1e9 + 0.5);   // +0.5 for rounding safety
+                  if(nanoseconds >= 1000000000LL) {
+                     t.tm_sec += 1;
+                     nanoseconds -= 1000000000LL;
+                  }
+
+                  // ------ Parse the back part (after seconds) -------------
+                  const char* backFormatString = secondsPlaceholder + 2;
+                  if(backFormatString[0] != 0x00) {
+                     remainder = strptime(remainder2, backFormatString, &t);
+                  } else {
+                     remainder = remainder2;
+                  }
                }
             }
-            else {
-               ts.tv_nsec = 0;
-            }
+            ts.tv_sec  = timegm(&t);
+            ts.tv_nsec = nanoseconds;
          }
-         if(remainder == nullptr) {
-            fputs(gettext("ERROR: Invalid time string!"), stderr);
+         else {
+            remainder  = strptime(argv[i], timeFormatTemplate, &t);
+            ts.tv_sec  = timegm(&t);
+            ts.tv_nsec = 0;
+         }
+
+         if( (remainder == nullptr) || (remainder[0] != 0x00) ) {
+            fprintf(stderr, gettext("ERROR: Unable to parse time string \"%s\" with format template \"%s\"!"),
+                    timeString, timeFormatTemplate);
             fputs("\n", stderr);
             exit(1);
          }
       }
 
-      // ====== Convert timespec to Unix timestamp =============================
-      const long long unixTS =
-         (1000000000LL * ts.tv_sec) + ts.tv_nsec;
-
+      // ====== Convert timespec to Unix timestamp ==========================
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202311L)
+      const _BitInt(128) unixTS = ((_BitInt(128))1000000000LL * ts.tv_sec) + ts.tv_nsec;
+#else
+      // NOTE: A 64-bit signed long long will overflow on April 11, 2262!
+      const long long unixTS = (1000000000LL * ts.tv_sec) + ts.tv_nsec;
+#endif
       if(useInteger != 0) {
          if(useInteger == 16) {
-            printf("%llx", unixTS / divideBy);
+            printBigInteger(unixTS / divideBy, 16, false);
          }
          else if(useInteger == -16) {
-            printf("0x%llx", unixTS / divideBy);
+            printBigInteger(unixTS / divideBy, 16, true);
          }
          else {
-            printf("%lld", unixTS / divideBy);
+            printBigInteger(unixTS / divideBy, 10, false);
          }
       }
       else {

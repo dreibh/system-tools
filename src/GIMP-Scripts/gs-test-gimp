@@ -140,8 +140,10 @@ if [ "${GIMP3_DIRECTORY}" != "" ] ; then
       # using 1 core seems to provide the best performance:
       echo "(num-processors 1)"
 
-      # Darwin fix: add global fonts directory to gimprc
-      if [ "${UNAME}" == "Darwin" ] ; then
+      # Add global fonts directory to gimprc:
+      if [ "${UNAME}" == "NetBSD" ] ; then
+         echo "(font-path \"\${gimp_dir}/fonts:\${gimp_data_dir}/fonts:/usr/pkg/share/fonts/X11/TTF\")"
+      elif [ "${UNAME}" == "Darwin" ] ; then
          echo "(font-path \"\${gimp_dir}/fonts:\${gimp_data_dir}/fonts:/Users/runner/Library/Fonts\")"
       fi
    ) >"${GIMP3_DIRECTORY}/gimprc"
@@ -149,8 +151,22 @@ fi
 
 
 # ====== Detect GIMP, and determine version-specific call options ===========
-GIMP_CONSOLE="$(command -v gimp-console || command -v /Applications/GIMP.app/Contents/MacOS/gimp-console-3 || true)"
-if [ "${GIMP_CONSOLE}" == "" ] ; then
+case "${UNAME}" in
+   OpenBSD)
+      for version in 3.6 3.4 3.2 3.0 2.8 2.6 ; do
+         if command -v "gimp-console-${version}" >/dev/null ; then
+            GIMP_CONSOLE="$(command -v "gimp-console-${version}")"
+            break
+         fi
+      done
+      ;;
+   Darwin)
+      GIMP_CONSOLE="$(command -v gimp-console || command -v /Applications/GIMP.app/Contents/MacOS/gimp-console-3 || true)"
+      ;;
+   *)
+      GIMP_CONSOLE="$(command -v gimp-console || true)"
+esac
+if [ "${GIMP_CONSOLE}" = "" ] ; then
    echo >&2 "ERROR: GIMP is not installed! Try:"
    echo >&2 " * Ubuntu/Debian: sudo apt install -y gimp"
    echo >&2 " * Fedora:        sudo dnf install -y gimp"
@@ -158,7 +174,7 @@ if [ "${GIMP_CONSOLE}" == "" ] ; then
    echo >&2 " * Alpine:        sudo apk add gimp"
    echo >&2 " * FreeBSD:       sudo pkg install -y gimp3-app"
    echo >&2 " * NetBSD:        sudo pkgin -y install gimp"
-   echo >&2 " * OpenBSD:       sudo pkg_add gimp"
+   echo >&2 " * OpenBSD:       sudo pkg_add \"\$(pkg_info -z \"gimp->=3\")\""
    echo >&2 " * Apple:         brew install gimp"
    exit 1
 fi

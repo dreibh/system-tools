@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-15 17:50+0200\n"
+"POT-Creation-Date: 2026-07-15 12:18+0200\n"
 "PO-Revision-Date: 2026-01-06 22:58+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -60,28 +60,28 @@ msgid "Host:"
 msgstr "Vert:"
 
 #: src/System-Info/System-Info:243
-#, c-format
+#, c-format, sh-printf-format
 msgid "%s day"
 msgid_plural "%s days"
 msgstr[0] "%s dag"
 msgstr[1] "%s dager"
 
 #: src/System-Info/System-Info:245
-#, c-format
+#, c-format, sh-printf-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d time"
 msgstr[1] "%d timer"
 
 #: src/System-Info/System-Info:247
-#, c-format
+#, c-format, sh-printf-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minutt"
 msgstr[1] "%d minutter"
 
 #: src/System-Info/System-Info:249
-#, c-format
+#, c-format, sh-printf-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d sekund"
@@ -106,12 +106,12 @@ msgid "${os_label} with kernel ${system_release}"
 msgstr "${os_label} med kjerne ${system_release}"
 
 #: src/System-Info/System-Info:272
-#, c-format
+#, c-format, sh-printf-format
 msgid "%s processes"
 msgstr "%s prosesser"
 
 #: src/System-Info/System-Info:276
-#, c-format
+#, c-format, sh-printf-format
 msgid "%s user"
 msgid_plural "%s users"
 msgstr[0] "%s bruker"
@@ -127,7 +127,7 @@ msgid "${systemCoresString} × ${systemMachineString}; ${processesString}; ${use
 msgstr "${systemCoresString} × ${systemMachineString}; ${processesString}; ${usersString}"
 
 #: src/System-Info/System-Info:293
-#, c-format
+#, c-format, sh-printf-format
 msgid "%1.1f %% / %1.1f %% / %1.1f %%"
 msgstr "%1.1f %% / %1.1f %% / %1.1f %%"
 
@@ -165,7 +165,7 @@ msgid "Battery:"
 msgstr "Batteri:"
 
 #: src/System-Info/System-Info:357
-#, c-format
+#, c-format, sh-printf-format
 msgid "%s MiB of %s MiB (%s MiB available: %s %%)"
 msgstr "%s MiB av %s MiB (%s MiB tilgjengelig: %s %%)"
 
@@ -182,7 +182,7 @@ msgid "no swap available!"
 msgstr "bytteplass ikke tilgjengelig!"
 
 #: src/System-Info/System-Info:413
-#, c-format
+#, c-format, sh-printf-format
 msgid "%1.0f %% on %s"
 msgstr "%1.0f %% på %s"
 

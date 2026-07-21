@@ -34,7 +34,7 @@ ENABLE_LANGUAGE(C)
 
 SET(BUILD_MAJOR "2")
 SET(BUILD_MINOR "7")
-SET(BUILD_PATCH "9")
+SET(BUILD_PATCH "10")
 SET(BUILD_VERSION ${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH})
 
 
@@ -93,7 +93,7 @@ ENDIF()
 
 
 #############################################################################
-#### OS DEPENDENT                                                        ####
+#### OS-DEPENDENT                                                        ####
 #############################################################################
 
 IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
@@ -102,6 +102,10 @@ ELSEIF (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "NetBSD")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
+   IF(NOT DEFINED CMAKE_INSTALL_RPATH_USE_LINK_PATH)
+      SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH ON)
+   ENDIF()
+   # SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_FULL_LIBDIR}")
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "OpenBSD")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "SunOS")

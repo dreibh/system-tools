@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.7.9
+Version: 2.7.10
 Release: 1
 Summary: Tools for basic system management
 License: GPL-3.0-or-later
@@ -313,11 +313,16 @@ Summary: X.509 certificate handling tools
 BuildArch: noarch
 Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
+Requires: %{name}-unixtimestamp-tools = %{version}-%{release}
 Requires: gettext-runtime
 Requires: (mbuffer or buffer)
 Requires: openssl
+# Fedora has the GnuTLS tools in a separate package:
 Recommends: gnutls-utils
-Recommends: nss-tools
+# OpenSUSE has the GnuTLS tools in one package:
+Recommends: gnutls
+# Fedora and OpenSuSE use different package names:
+Recommends: (nss-tools or mozilla-nss-tools)
 Suggests: pwgen
 Suggests: python3
 Suggests: python3-psutil
@@ -472,6 +477,8 @@ tools. It installs all sub-packages.
 
 
 %changelog
+* Thu Jul 16 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.7.10-1
+- New upstream release.
 * Wed Jul 15 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.7.9-1
 - New upstream release.
 * Sat Jul 11 2026 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 2.7.8-1

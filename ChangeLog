@@ -1,3 +1,198 @@
+commit b943f1c0cdca9d7ac9732e6c1ae9611ab0ce01a2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 16:16:47 2026 +0200
+
+    Bugfix: Fixed invalid default parameter for tile type.
+
+commit f2d8d7aa7f7f9fac3162ef42e0e4e2324251bf07
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 13:56:36 2026 +0000
+
+    Minor test script update.
+
+commit 2632b9d9878fb02aceb5aef9a0a4eb6d81610ed2
+Merge: 4de5d41 a0b129d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 15:06:34 2026 +0200
+
+    Merge branch 'dreibh/unix-timestamp' of https://github.com/dreibh/system-tools into dreibh/unix-timestamp
+
+commit 4de5d4178cc1ee67c9a2054c79957250c8e0bb33
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 15:06:14 2026 +0200
+
+    RPM spec improvements.
+
+commit a0b129dbc852cf48adb3ac84c6af8073b333c931
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 14:51:32 2026 +0200
+
+    Translation improvements.
+
+commit dc44e2c1f92b2c379d64c66ebdd97419a0c69dcd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 14:42:55 2026 +0200
+
+    Updated translations.
+
+commit 5a1662f0fadd87bb840c8a116314b895d8649b18
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 14:37:19 2026 +0200
+
+    Bugfix: Fixed wrong colouring sequence in log output.
+
+commit 41cd3ab08f02118031401ba6372a0b741ba1ee84
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 14:24:11 2026 +0200
+
+    CRL format detection improvement.
+
+commit 1c3fa8594a3aeacd53e722096d4c2699576d577f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 14:03:41 2026 +0200
+
+    Locale handling fix.
+
+commit 0b379b3509e3328abcc0ea7fa254d243db9b6739
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 13:24:46 2026 +0200
+
+    Added work-around for Solaris (OpenIndiana) parameter handling problem in GnuTLS certtool (https://gitlab.com/gnutls/gnutls/-/work_items/1916).
+
+commit 877b593d2c79c1ce203c40e09262cd0229bfeb24
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 11:52:53 2026 +0200
+
+    Dependency update for using UNIX Timestamp Tools in X.509 Tools.
+
+commit f51ec34fbf9007c75c505a92cc641206101bee32
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 11:50:12 2026 +0200
+
+    Using Unix-Timestamp Tools for date printing, to provide platform-independent handling.
+
+commit 7078880c7a7fe5eccac11b4ebc600a07fecf5f26
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 11:41:28 2026 +0200
+
+    Minor clean-ups.
+
+commit 04ac504b966f2a3a6ca7d3fc9ddb8347804eb97b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 11:36:19 2026 +0200
+
+    Minor clean-ups.
+
+commit a4f9eac76554b84b8ab43c9137b6aa6ac9bde520
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 11:06:27 2026 +0200
+
+    C23 output improvements.
+
+commit 4c8d4ed64b666b8ec0161187c3067c5acc471c61
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 10:39:08 2026 +0200
+
+    C23 improvement.
+
+commit 0151ddfc5728db5dfaa338aee1e2dfb49819a73e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 10:31:49 2026 +0200
+
+    Further clean-ups.
+
+commit 7cba79b66b856fbfead262f9ca402668e171be49
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 10:10:52 2026 +0200
+
+    Minor clean-up.
+
+commit a94aebcb3187149faaef1aaad587dff8da1f2e09
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 10:10:38 2026 +0200
+
+    Improved format template handling for printing of fractional seconds.
+
+commit f24c055d40c3538e6dd6740659e11d1e9d077fb1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 09:37:59 2026 +0200
+
+    Minor clean-up.
+
+commit 7f3665b9f8242376db48872d340a20e1ceeaaa71
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 09:37:44 2026 +0200
+
+    Updated manpages.
+
+commit cc2d43760579a276855c9beb5aa478a739888757
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 09:26:44 2026 +0200
+
+    Updated shell completions.
+
+commit 9716ce3168f291cbb3989637728331443f5bc4e5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 00:28:15 2026 +0200
+
+    Improved format template handling for parsing of fractional seconds.
+
+commit d9974d5c8b645c2e8ee95bb253fa191b3ed5eb51
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 15 22:58:44 2026 +0200
+
+    Added option to set the strftime() format string for printing the date/time strings.
+
+commit 9c1c052103ad87397866f13396e49672db99c77a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 15 22:48:54 2026 +0200
+
+    Added option to set the strptime() format string for parsing the date/time strings.
+
+commit bd000673671451608d9c8054e21ce1f4cf309cfc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 15 17:55:07 2026 +0200
+
+    Some code clean-ups.
+
+commit 2531b0233075a95422bd1ce5e1b42c61cd4f7b1d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 15 17:53:56 2026 +0200
+
+    Removed debug code.
+
+commit f86ff527a5cc3890c37684b8d7b9634342a67b16
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 15 17:51:07 2026 +0200
+
+    Updated PO files.
+
+commit c7f5ae4032ca386afd5914b5aea6f886b3aa2e87
+Merge: aa1132c 193e1a1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 15 17:50:44 2026 +0200
+
+    Merge branch 'dreibh/solaris'
+
+commit 193e1a1ab2dbddcae51d9b65940de42a29ec4e28
+Merge: 51843f8 83d83fb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 15 17:50:02 2026 +0200
+
+    Merge branch 'dreibh/solaris' of https://github.com/dreibh/system-tools into dreibh/solaris
+
+commit 51843f883489ebb51e28d428faa7df8230485687
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 15 17:49:42 2026 +0200
+
+    Improved path handling.
+
+commit aa1132c98502a62b91e3ef27691362152868a4d3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 15 17:08:36 2026 +0200
+
+    New release td-system-tools-2.7.9.
+
 commit 83d83fbbf44f979407eed11c8c9b291a361eea0e
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Jul 15 17:05:21 2026 +0200

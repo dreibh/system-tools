@@ -40,6 +40,8 @@
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm time2unixts
+.Op Fl T Ar time\_format\_template | Fl Fl template Ar time\_format\_template
+.br
 .Op Fl F | Fl Fl float
 .Op Fl I | Fl Fl integer\-decimal
 .Op Fl X | Fl Fl integer\-hexadecimal
@@ -69,6 +71,10 @@ The following options are available:
 .Bl -tag -width indent
 .It time\_string ...
 The date/time strings to be converted, as %Y\-%m\-%d %H:%M:%S[.SSSSSSSSS]. The seconds part may be fractional; the fraction is optional. If no date/time string is provided, the current system time is used.
+.It Fl T Ar time\_format\_template | Fl Fl template Ar time\_format\_template
+Sets the template for parsing the date/time strings. Default is \(dq"%Y-%m-%d %H:%M:%S\(dq. The formatting is according to strptime(). See
+.Xr strptime 3
+for details.
 .It Fl F | Fl Fl float
 Print the Unix timestamp as a floating-point number.
 .It Fl I | Fl Fl integer\-decimal
@@ -109,11 +115,14 @@ tool exits with 0 on success, and >0 in case of an error.
 .It time2unixts \(dq2026\-03\-17 08:31:19\(dq \-\-human\-readable \-\-seconds
 .It time2unixts \(dq2026\-03\-17 08:31:19\(dq \-s
 .It time2unixts \(dq1976\-09\-29 12:12:03.123\(dq \-m
+.It time2unixts -T \(dq%b %d %H:%M:%S %Y %Z\(dq \(dqJun  4 19:01:25 2036 GMT\(dq
+.It time2unixts -T \(dq%b %d %H:%M:%S %Y %Z\(dq \(dqSep 29 13:10:12.567890123 1976 CET\(dq
 .It time2unixts \-\-version
 .It time2unixts \-\-help
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
+.Xr strptime 3
 .Xr unixts2time 1
 .\" ###### Notes ############################################################
 .Sh NOTES

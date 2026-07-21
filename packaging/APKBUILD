@@ -1,6 +1,6 @@
 # Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 pkgname=td-system-tools
-pkgver=2.7.7
+pkgver=2.7.10
 pkgrel=1
 pkgdesc="Tools for basic system management"
 url="https://www.nntb.no/~dreibh/system-tools/"
@@ -160,7 +160,7 @@ _random_sleep() {
 _x509_tools() {
 	pkgdesc="X.509 certificate handling tools"
 	# NOTE: GNU date from coreutils is needed.
-	depends="$pkgname-print-utf8=$pkgver-r$pkgrel $pkgname-text-block=$pkgver-r$pkgrel coreutils gettext mbuffer openssl"
+	depends="$pkgname-print-utf8=$pkgver-r$pkgrel $pkgname-text-block=$pkgver-r$pkgrel $pkgname-unixtimestamp-tools=$pkgver-r$pkgrel coreutils gettext mbuffer openssl"
 
 	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share/system-tools
 	mv "$pkgdir"/usr/bin/check-certificate "$subpkgdir"/usr/bin/
@@ -193,6 +193,9 @@ _gimp_scripts_examples() {
 
 _basic() {
 	pkgdesc="Metapackage for basic system tools sub-packages"
+
+	install_if="$pkgname=$pkgver-r$pkgrel"
+
 	depends="
 		$pkgname-fingerprint-ssh-keys=$pkgver-r$pkgrel
 		$pkgname-random-sleep=$pkgver-r$pkgrel
@@ -218,5 +221,5 @@ _complete() {
 }
 
 sha512sums="
-133719a3ae6e3619f84e64c154c2fde624fed7e4341d9562548acdf83e13bfc20fa0867c7965b4881e8fb5f00813562c17e45a6db68c5d0f6aeda049a9e4f527  td-system-tools-2.7.7.tar.xz
+de73e8b9601f8fdcbb90c9cb76dcb07210f3e10d6267750a4fefb5b71e779da5d5b3691b3dc98a9cef01bbcdda553a3372c9aee632755ed337e324138cb15d8f  td-system-tools-2.7.10.tar.xz
 "
