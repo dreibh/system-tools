@@ -38,8 +38,8 @@ set -euo pipefail
 
 
 # ====== Print banner =======================================================
-sysconfdir="@CMAKE_INSTALL_FULL_SYSCONFDIR"
-sysconfdir="${sysconfdir/@*/\/etc/\/system-info.d}"
+configdir="@CMAKE_INSTALL_FULL_SYSCONFDIR@"
+configdir="${configdir/@*//etc}/system-info.d"
 
 # NOTE:
 # You can produce ASCII text banners with "sysvbanner".
@@ -57,7 +57,7 @@ center "#  #  #  #       #       #    #  #    #  #    #  #        ###"
 center " ## ##   ######  ######   ####    ####   #    #  ######   ###"
 echo -en "\x1b[1;34m"
 center ""
-center "$(eval_gettext "You can change this banner in \${sysconfdir}")"
+center "$(eval_gettext "You can change this banner in \${configdir}!")"
 separator " <😀" "=" "😀> "
 echo -e "\x1b[0m"
 

@@ -33,6 +33,9 @@ set -euo pipefail
 # gettext options:
 export TEXTDOMAIN="System-Info"
 
+# shellcheck disable=SC1091
+. gettext.sh
+
 
 # ###### Get current width of the console ###################################
 consolewidth()
