@@ -188,7 +188,7 @@ int main(int argc, char** argv)
    }
 
    // ====== Obtain Unix timestamp in ns ====================================
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202311L)
+#if (defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
    _BitInt(128) unixTS;
 #else
    // NOTE: A 64-bit signed long long will overflow on April 11, 2262!
@@ -205,7 +205,7 @@ int main(int argc, char** argv)
                perror(gettext("clock_gettime() failed"));
                exit(1);
             }
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202311L)
+#if (defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
             unixTS = ((_BitInt(128))1000000000LL * ts.tv_sec) + ts.tv_nsec;
 #else
             unixTS = (1000000000LL * ts.tv_sec) + ts.tv_nsec;
