@@ -67,7 +67,10 @@ IF (WITH_SYSTEM_INFO)
    INSTALL(PROGRAMS system-info.d/banner-helper DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-info.d)
 
    IF (WITH_SYSTEM_INFO_DEFAULT_BANNER)
-      INSTALL(PROGRAMS system-info.d/01-example DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-info.d)
+      CONFIGURE_FILE(system-info.d/01-example system-info.d/01-example.adapted @ONLY)
+      INSTALL(PROGRAMS    system-info.d/01-example.adapted
+              DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info
+              RENAME      01-example)
    ENDIF()
 
    IF (WITH_SYSTEM_INFO_IN_PROFILES)
