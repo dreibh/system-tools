@@ -189,15 +189,23 @@ ENDIF()
 IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
    FIND_LIBRARY(SYSTEMD_LIBRARY systemd)
    FIND_PATH(SYSTEMD_INCLUDE_DIR NAMES systemd/sd-login.h)
-   IF (SYSTEMD_LIBRARY AND SYSTEMD_INCLUDE_DIR)
-      MESSAGE(STATUS "SystemD library found:")
-      MESSAGE(STATUS " SYSTEMD_LIBRARY:     ${SYSTEMD_LIBRARY}")
-      MESSAGE(STATUS " SYSTEMD_INCLUDE_DIR: ${SYSTEMD_INCLUDE_DIR}")
-      ADD_DEFINITIONS(-DENABLE_SYSTEMD)
-   ELSE()
+   IF (NOT SYSTEMD_LIBRARY AND NOT SYSTEMD_INCLUDE_DIR)
       MESSAGE(STATUS "No SystemD library found -> building without SystemD support!")
       SET(SYSTEMD_LIBRARY     "")
       SET(SYSTEMD_INCLUDE_DIR "")
+   ELSE()
+      IF (SYSTEMD_LIBRARY AND SYSTEMD_INCLUDE_DIR)
+         MESSAGE(STATUS "SystemD library found:")
+         MESSAGE(STATUS " SYSTEMD_LIBRARY:     ${SYSTEMD_LIBRARY}")
+         MESSAGE(STATUS " SYSTEMD_INCLUDE_DIR: ${SYSTEMD_INCLUDE_DIR}")
+         ADD_DEFINITIONS(-DENABLE_SYSTEMD)
+      ELSE()
+         MESSAGE(FATAL_ERROR
+                 "Cannot find SystemD library! Try:\n"
+                 " * Ubuntu/Debian: sudo apt install -y systemd-dev\n"
+                 " * Fedora:        sudo dnf install -y systemd-devel\n"
+                 " * OpenSUSE:      sudo zypper install -y systemd-devel\n")
+      ENDIF()
    ENDIF()
 ENDIF()
 
@@ -216,7 +224,7 @@ IF (WITH_I18N)
    ELSE()
       MESSAGE(FATAL_ERROR
             "Cannot find Internationalization (i18n) support! Try:\n"
-            " * Ubuntu/Debian: sudo apt install -y libc6-dev\n"
+            " * Ubuntu/Debian: sudo apt install -y gettext libc6-dev\n"
             " * Fedora:        sudo dnf install -y gettext-devel\n"
             " * OpenSUSE:      sudo zypper install -y gettext-devel\n"
             " * Alpine:        sudo apk add gettext-dev\n"
@@ -261,7 +269,7 @@ IF (WITH_I18N)
        (MSGFMT_VERSION   VERSION_LESS ${GETTEXT_MIN_VERSION}))
       MESSAGE(FATAL_ERROR
               "Cannot find gettext tools >= ${GETTEXT_MIN_VERSION}! Try:\n"
-              " * Ubuntu/Debian: sudo apt install -y libc6-dev\n"
+              " * Ubuntu/Debian: sudo apt install -y gettext libc6-dev\n"
               " * Fedora:        sudo dnf install -y gettext-devel\n"
               " * OpenSUSE:      sudo zypper install -y gettext-devel\n"
               " * Alpine:        sudo apk add gettext-dev\n"
