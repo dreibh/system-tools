@@ -196,6 +196,8 @@ IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
       ADD_DEFINITIONS(-DENABLE_SYSTEMD)
    ELSE()
       MESSAGE(STATUS "No SystemD library found -> building without SystemD support!")
+      SET(SYSTEMD_LIBRARY     "")
+      SET(SYSTEMD_INCLUDE_DIR "")
    ENDIF()
 ENDIF()
 

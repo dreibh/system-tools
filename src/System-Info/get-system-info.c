@@ -53,7 +53,6 @@
 #include <linux/if.h>
 #include <netpacket/packet.h>
 #include <sys/sysinfo.h>
-#define ENABLE_SYSTEMD
 #if defined(ENABLE_SYSTEMD)
 #include <systemd/sd-login.h>
 #else
