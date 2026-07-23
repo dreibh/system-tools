@@ -34,12 +34,11 @@ set -euo pipefail
 # Helper function library -> just return when it is not available.
 # Exit code 0 will let System-Info continue with the next script!
 # shellcheck disable=SC1091
-. "$(dirname "$0")/banner-helper" || exit 0
+configdir="$(dirname "$0")"
+. "${configdir}/banner-helper" || exit 0
 
 
 # ====== Print banner =======================================================
-configdir="@CMAKE_INSTALL_FULL_SYSCONFDIR@"
-configdir="${configdir/@*//etc}/system-info.d"
 
 # NOTE:
 # You can produce ASCII text banners with "sysvbanner".
