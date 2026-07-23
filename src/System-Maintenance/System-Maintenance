@@ -645,7 +645,7 @@ echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Done!")\x1b[0m"
 
 # ====== Finally, show project package versions =============================
 filterScripts=()
-for directory in /etc/system-maintenance.d /usr/local/etc/system-maintenance.d ; do
+for directory in /etc/system-maintenance.d /usr/local/etc/system-maintenance.d /usr/pkg/etc/system-maintenance.d ; do
    if [ -d "${directory}" ] ; then
       while IFS= read -r scriptPath ; do
          filterScripts+=( "${scriptPath}" )

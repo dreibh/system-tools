@@ -183,8 +183,8 @@ ENDIF()
 #############################################################################
 
 IF (CMAKE_SYSTEM_NAME MATCHES "SunOS")
-   FIND_LIBRARY(SOCKET_LIBRARY socket)
-   FIND_LIBRARY(NSL_LIBRARY    nsl)
+   FIND_LIBRARY(SOCKET_LIBRARY socket REQUIRED)
+   FIND_LIBRARY(NSL_LIBRARY    nsl    REQUIRED)
 ENDIF()
 
 
