@@ -43,7 +43,7 @@
 #include <unistd.h>
 #include <wchar.h>
 #include <sys/ioctl.h>
-#include <sys/termios.h>
+#include <termios.h>
 
 #ifdef ENABLE_NLS
 #include <libintl.h>
