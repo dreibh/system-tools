@@ -566,7 +566,7 @@ eval set -- "${options}"
 # shellcheck disable=SC2034
 now="$(date)"
 testSystemInfoInput=""
-scriptDirectories=( "/etc/system-info.d" "/usr/local/etc/system-info.d" )
+scriptDirectories=( "/etc/system-info.d" "/usr/local/etc/system-info.d" "/usr/pkg/etc/system-info.d" )
 while [ $# -gt 0 ] ; do
    case "$1" in
       -S | --scripts)
