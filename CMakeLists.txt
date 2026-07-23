@@ -186,6 +186,18 @@ IF (CMAKE_SYSTEM_NAME MATCHES "SunOS")
    FIND_LIBRARY(SOCKET_LIBRARY socket REQUIRED)
    FIND_LIBRARY(NSL_LIBRARY    nsl    REQUIRED)
 ENDIF()
+IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
+   FIND_LIBRARY(SYSTEMD_LIBRARY systemd)
+   FIND_PATH(SYSTEMD_INCLUDE_DIR NAMES systemd/sd-login.h)
+   IF (SYSTEMD_LIBRARY AND SYSTEMD_INCLUDE_DIR)
+      MESSAGE(STATUS "SystemD library found:")
+      MESSAGE(STATUS " SYSTEMD_LIBRARY:     ${SYSTEMD_LIBRARY}")
+      MESSAGE(STATUS " SYSTEMD_INCLUDE_DIR: ${SYSTEMD_INCLUDE_DIR}")
+      ADD_DEFINITIONS(-DENABLE_SYSTEMD)
+   ELSE()
+      MESSAGE(STATUS "No SystemD library found -> building without SystemD support!")
+   ENDIF()
+ENDIF()
 
 
 #############################################################################

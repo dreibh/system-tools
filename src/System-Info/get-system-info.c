@@ -53,7 +53,12 @@
 #include <linux/if.h>
 #include <netpacket/packet.h>
 #include <sys/sysinfo.h>
+#define ENABLE_SYSTEMD
+#if defined(ENABLE_SYSTEMD)
+#include <systemd/sd-login.h>
+#else
 #include <utmpx.h>
+#endif
 #elif defined(__FreeBSD__)
 #include <dev/acpica/acpiio.h>
 #include <net/if_dl.h>
@@ -501,6 +506,28 @@ static unsigned int obtainUserCount(void)
 
    // ====== Use getutxent() to obtain and count the number of users ========
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__sun__) || defined(__APPLE__)
+#if defined(ENABLE_SYSTEMD)
+   char** sessions = nullptr;
+   int totalSessions = sd_get_sessions(&sessions);
+   if(totalSessions < 0) {
+      return 0;
+   }
+
+   // Query the session class (e.g., "user", "greeter", "background"), and
+   // only count interactive user logins:
+   for(int i = 0; i < totalSessions; i++) {
+      char* className = nullptr;
+      if(sd_session_get_class(sessions[i], &className) >= 0) {
+         // Equivalent to USER_PROCESS: only count interactive user logins
+         if(className && strcmp(className, "user") == 0) {
+            count++;
+         }
+         free(className);
+      }
+      free(sessions[i]);
+   }
+   free(sessions);
+#else
    setutxent();
    struct utmpx* utx;
    while( (utx = getutxent()) != nullptr ) {
@@ -509,7 +536,7 @@ static unsigned int obtainUserCount(void)
       }
    }
    endutxent();
-
+#endif
 #elif defined(__OpenBSD__)
    // ====== OpenBSD: read /var/run/utmp to obtain the number of users ======
    FILE* fh = fopen("/var/run/utmp", "r");
