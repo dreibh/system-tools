@@ -10,6 +10,7 @@ BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: gettext
+BuildRequires: systemd-devel
 
 Requires: %{name}-basic = %{version}-%{release}
 
