@@ -363,6 +363,12 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
       sed -e "s/^hostname=.*$/hostname=\"${NEW_HOSTNAME_FQDN}\"/g" \
          </etc/rc.conf >/etc/rc.conf.updated
       colordiff /etc/rc.conf /etc/rc.conf.updated || differences=$((differences + 1))
+   elif [ -e /etc/nodename ] ; then
+      echo "${NEW_HOSTNAME_FQDN}" >/etc/nodename.updated
+      echo "/etc/nodename:"
+      colordiff /etc/nodename /etc/nodename.updated || differences=$((differences + 1))
+   else
+      echo >&2 "ERROR: Missing case!"
    fi
 
    # ====== Apply changes ================================================
