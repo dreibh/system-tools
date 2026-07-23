@@ -375,7 +375,7 @@ static bool queryFile(const char* file, char* result, size_t resultMaxSize)
       size_t resultSize = 0;
       char*  resultPtr;
       do {
-         resultPtr = fgets(&result[resultSize], resultMaxSize - resultSize, fh);
+         resultPtr = fgets(&result[resultSize], (int)(resultMaxSize - resultSize), fh);
          if(resultPtr == nullptr) {
             break;
          }
@@ -542,9 +542,9 @@ static unsigned int obtainUserCount(void)
 static void showLoadInformation(void)
 {
    // ====== Cores and page size ============================================
-   const unsigned int cores = sysconf(_SC_NPROCESSORS_ONLN);
+   const unsigned int cores = (unsigned int)sysconf(_SC_NPROCESSORS_ONLN);
    printf("system_cores=%u\n", cores);
-   const unsigned int pageSize = sysconf(_SC_PAGESIZE);
+   const unsigned int pageSize = (unsigned int)sysconf(_SC_PAGESIZE);
    printf("system_pagesize=%u\n", pageSize);
 
    // ====== Number of running processes and number of users ================
