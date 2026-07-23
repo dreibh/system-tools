@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-23 16:08+0200\n"
+"POT-Creation-Date: 2026-07-23 16:29+0200\n"
 "PO-Revision-Date: 2026-01-06 22:58+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -223,8 +223,8 @@ msgstr "Systeminformation am ${now}"
 
 #: src/System-Info/system-info.d/01-example:60
 #, sh-format
-msgid "You can change this banner in ${sysconfdir}"
-msgstr "Dieses Banner kann in ${sysconfdir} geändert werden!"
+msgid "You can change this banner in ${configdir}!"
+msgstr "Dieses Banner kann in ${configdir} geändert werden!"
 
 #: src/System-Info/system-info.d/09-hostname-example:50
 msgid "Welcome on the System"
