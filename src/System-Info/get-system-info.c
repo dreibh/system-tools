@@ -988,10 +988,10 @@ static void showMemoryInformation(void)
       const long avphysPages = sysconf(_SC_AVPHYS_PAGES);
 
       if(physPages >= 0) {
-         memoryTotal = (unsigned long long)physPages * pageSize;
+         memoryTotal = (unsigned long long)physPages * (unsigned long)pageSize;
       }
       if(avphysPages >= 0) {
-         memoryAvailable = (unsigned long long)avphysPages * pageSize;
+         memoryAvailable = (unsigned long long)avphysPages * (unsigned long)pageSize;
       }
       if(memoryTotal >= memoryAvailable) {
          memoryUsed = memoryTotal - memoryAvailable;
@@ -1052,8 +1052,8 @@ static void showMemoryInformation(void)
    if(pageSize > 0) {
       struct anoninfo ainfo;
       if(swapctl(SC_AINFO, &ainfo) >= 0) {
-         swapTotal = (unsigned long long)ainfo.ani_max * pageSize;
-         swapUsed  = (unsigned long long)ainfo.ani_resv * pageSize;
+         swapTotal = (unsigned long long)ainfo.ani_max * (unsigned long)pageSize;
+         swapUsed  = (unsigned long long)ainfo.ani_resv * (unsigned long)pageSize;
          if(swapTotal >= swapUsed) {
             swapAvailable = swapTotal - swapUsed;
          } else {
