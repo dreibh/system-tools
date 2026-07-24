@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-23 16:29+0200\n"
+"POT-Creation-Date: 2026-07-24 11:12+0200\n"
 "PO-Revision-Date: 2026-01-06 22:58+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -221,19 +221,16 @@ msgstr "FEIL: Inndatafil ${testSystemInfoInput} finnes ikke!"
 msgid "System information on ${now}"
 msgstr "Systeminformasjon på ${now}"
 
-#: src/System-Info/system-info.d/01-example:60
+#: src/System-Info/system-info.d/01-example:70
+#: src/System-Info/system-info.d/10-company-logo-example:82
 #, sh-format
 msgid "You can change this banner in ${configdir}!"
 msgstr "Du kan endre dette banneret i ${configdir}!"
 
-#: src/System-Info/system-info.d/09-hostname-example:50
+#: src/System-Info/system-info.d/09-hostname-example:69
 msgid "Welcome on the System"
 msgstr "Velkommen på systemet"
 
-#: src/System-Info/system-info.d/10-company-logo-example:53
+#: src/System-Info/system-info.d/10-company-logo-example:62
 msgid "Welcome to"
 msgstr "Velkommen til"
-
-#: src/System-Info/system-info.d/10-company-logo-example:73
-msgid "You can change this banner in /etc/system-info.d!"
-msgstr "Du kan endre dette banneret i /etc/system-info.d!"
