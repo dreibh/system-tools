@@ -41,12 +41,18 @@ configdir="$(dirname "$0")"
 
 # ====== Print banner =======================================================
 
+icon="😀"
+if [ "$(print-utf8 -w "${icon}")" -lt 1 ] ; then
+   # The console cannot print multi-byte characters like 😀 -> no icon.
+   icon=""
+fi
+
 # NOTE:
 # You can produce ASCII text banners with "sysvbanner".
 # More advanced, UTF-8-capable tools are e.g. figlet and toilet.
 
 echo -en "\x1b[1;34m"
-separator " <😀" "=" "😀> "
+separator " <${icon}" "=" "${icon}> "
 echo -en "\x1b[1;31m"
 center "#     #                                                   ###"
 center "#  #  #  ######  #        ####    ####   #    #  ######   ###"
@@ -58,7 +64,7 @@ center " ## ##   ######  ######   ####    ####   #    #  ######   ###"
 echo -en "\x1b[1;34m"
 center ""
 center "$(eval_gettext "You can change this banner in \${configdir}!")"
-separator " <😀" "=" "😀> "
+separator " <${icon}" "=" "${icon}> "
 echo -e "\x1b[0m"
 
 
