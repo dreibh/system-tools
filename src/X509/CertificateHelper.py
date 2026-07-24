@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
@@ -30,6 +29,7 @@
 
 import ipaddress
 import os
+import platform
 import re
 import shlex
 import shutil
@@ -42,11 +42,11 @@ MIN_PYTHON = (3, 10)
 if sys.version_info < MIN_PYTHON:
    sys.exit('Python %s.%s or later is required!' % MIN_PYTHON)
 
-# This library also requires the netifaces package:
+# This library also requires the psutil package:
 try:
-   import netifaces
+   import psutil
 except ImportError:
-   sys.exit('The Python netifaces package is required!')
+   sys.exit('The Python psutil package is required!')
 
 from typing import Final
 from enum   import Enum
@@ -84,6 +84,25 @@ DefaultECCurve       : Final[str] = 'brainpoolP512r1'   # EC only!
 # Enable verbose logging for debugging here:
 VerboseMode : bool = True
 
+
+# ###### Find OpenSSL #######################################################
+system      : Final[str] = platform.system()
+currentPath : Final[str] = os.environ.get('PATH', '')
+
+if system == 'Darwin':
+   searchPath = f'/opt/homebrew/opt/openssl/bin{os.pathsep}{currentPath}'
+   opensslExecutable = shutil.which('openssl', path = searchPath)
+elif system == 'SunOS':
+   searchPath = f'/usr/openssl/3/bin{os.pathsep}{currentPath}'
+   opensslExecutable = shutil.which('openssl', path = searchPath)
+else:
+   opensslExecutable = shutil.which('openssl')
+
+if not opensslExecutable:
+   print('ERROR: OpenSSL is not installed!', file = sys.stderr)
+   sys.exit(1)
+
+# print(f'Using OpenSSL executable {opensslExecutable}!')
 
 
 # ###### Execute command ####################################################
@@ -123,15 +142,15 @@ def prepareSubjectAltName(certType : CertificateType,
             subjectAltName = subjectAltName + ',DNS:' + fqdn
 
          # ------ Add all IP addresses --------------------------------------
-         interfaces = netifaces.interfaces()
-         for family in [ netifaces.AF_INET, netifaces.AF_INET6 ]:
-            for interface in interfaces:
-               interfaceAddresses = netifaces.ifaddresses(interface).get(family)
-               if interfaceAddresses:
-                  for interfaceAddress in interfaceAddresses:
-                     address = ipaddress.ip_address(interfaceAddress['addr'])
-                     if (not address.is_link_local) and (not address.is_loopback):
-                        addresses.add(address)
+         interfaces = psutil.net_if_addrs()
+         for interface in interfaces:
+            interfaceAddresses = interfaces[interface]
+            for interfaceAddress in interfaceAddresses:
+               if ( (interfaceAddress.family == socket.AF_INET) or
+                  (interfaceAddress.family == socket.AF_INET6) ):
+                  address = ipaddress.ip_address(interfaceAddress.address)
+                  if (not address.is_link_local) and (not address.is_loopback):
+                     addresses.add(address)
 
       # ====== Look up addresses ============================================
       elif hint == 'LOOKUP':
@@ -327,7 +346,7 @@ email_in_dn                     = yes
 
 name_opt                        = ca_default   # Subject name display option
 cert_opt                        = ca_default   # Certificate display option
-copy_extensions                 = none         # Don't copy extensions from request
+copy_extensions                 = copy         # Copy extensions from request
 
 [ policy_any ]
 countryName                     = optional
@@ -400,7 +419,10 @@ subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid:always,issuer
 basicConstraints       = critical, CA:true, pathlen:0   # <<-- CA, but no sub-CAs
 keyUsage               = critical, cRLSign, keyCertSign
+""")
 
+         if self.CertType == CertificateType.LeafCA:
+            configFile.write("""
 # ====== Settings for a server certificate ==================================
 [ server_cert ]
 # Extensions for server certificates (`man x509v3_config`).
@@ -408,7 +430,6 @@ basicConstraints       = CA:FALSE
 subjectKeyIdentifier   = hash
 keyUsage               = critical, digitalSignature, keyEncipherment
 extendedKeyUsage       = critical, serverAuth
-subjectAltName         = ${ENV::SAN}
 
 # ====== Settings for a client certificate ==================================
 [ client_cert ]
@@ -417,7 +438,6 @@ basicConstraints       = CA:FALSE
 subjectKeyIdentifier   = hash
 keyUsage               = critical, digitalSignature, keyEncipherment
 extendedKeyUsage       = critical, clientAuth
-subjectAltName         = ${ENV::SAN}
 
 # ====== Settings for a user certificate ====================================
 [ user_cert ]
@@ -426,7 +446,6 @@ basicConstraints       = CA:FALSE
 subjectKeyIdentifier   = hash
 keyUsage               = critical, nonRepudiation, digitalSignature, keyEncipherment
 extendedKeyUsage       = critical, clientAuth, emailProtection, codeSigning
-subjectAltName         = ${ENV::SAN}
 """)
          configFile.close()
 
@@ -457,7 +476,7 @@ mv {shlex.quote(self.PasswordFileName + '.tmp')} {shlex.quote(self.PasswordFileN
             raise Exception('Unsupported key algorithm!')
 
          execute(f"""\
-openssl genpkey \
+{opensslExecutable} genpkey \
    {algorithmOptions} \
    -aes256 \
    -out {shlex.quote(self.KeyFileName + '.tmp')} \
@@ -480,8 +499,8 @@ mv {shlex.quote(self.KeyFileName + '.tmp')} {shlex.quote(self.KeyFileName)}""")
          if not os.path.isfile(self.CertFileName):
             sys.stdout.write('\x1b[33mGenerating self-signed root CA certificate ' + self.CertFileName + ' ...\x1b[0m\n')
             execute(f"""\
-SAN="" openssl req \
-   -x509 \
+{opensslExecutable} req \
+   -x509 -new \
    -config {shlex.quote(self.ConfigFileName)} \
    -extensions v3_ca \
    -utf8 -subj {shlex.quote(self.Subject)} \
@@ -511,7 +530,7 @@ mv {shlex.quote(self.CertFileName + '.tmp')} {shlex.quote(self.CertFileName)}"""
             csrFileName : Final[str] = self.CertFileName + '.csr'
             sys.stdout.write('\x1b[33mGenerating CSR ' + csrFileName + ' ...\x1b[0m\n')
             execute(f"""\
-SAN="" openssl req \
+{opensslExecutable} req \
    -new \
    -config {shlex.quote(self.ConfigFileName)} \
    -extensions v3_ca \
@@ -527,7 +546,7 @@ mv {shlex.quote(csrFileName + '.tmp')} {shlex.quote(csrFileName)}""")
 
             tmpCertFileName = self.CertFileName + '.tmp'
             execute(f"""\
-SAN="" openssl ca \
+{opensslExecutable} ca \
    -batch \
    -notext \
    -config {shlex.quote(parentCA.ConfigFileName)} \
@@ -557,11 +576,8 @@ SAN="" openssl ca \
             #       all certificates of the chain.
             #       -> https://stackoverflow.com/questions/25482199/verify-a-certificate-chain-using-openssl-verify
             command : str = f"""\
-openssl verify \
- -show_chain \
+{opensslExecutable} verify \
  -verbose \
- -no-CApath \
- -no-CAstore \
  -CAfile {shlex.quote(self.RootCA.CertFileName)}"""
             if self.ParentCA:
                command += f' -untrusted {self.ParentCA.CertFileName}'
@@ -577,9 +593,9 @@ openssl verify \
       # ====== Print certificate ============================================
       if VerboseMode:
          execute(f"""\
-openssl x509 \
+{opensslExecutable} x509 \
  -noout \
- -subject -ext subjectAltName \
+ -subject \
  -in {shlex.quote(self.CertFileName)}""")
 
 
@@ -594,7 +610,7 @@ openssl x509 \
 
       tmpCertFileName = certificate.CertFileName + '.tmp'
       execute(f"""\
-SAN={shlex.quote(certificate.SubjectAltName)} openssl ca \
+{opensslExecutable} ca \
  -batch \
  -notext \
  -config {shlex.quote(self.ConfigFileName)} \
@@ -619,12 +635,9 @@ SAN={shlex.quote(certificate.SubjectAltName)} openssl ca \
       sys.stdout.write('\x1b[33mVerifying certificate ' + certificate.CertFileName + ' ...\x1b[0m\n')
       assert self.RootCA is not None
       result = execute(f"""\
-openssl verify \
- -show_chain \
+{opensslExecutable} verify \
  -verbose \
  -crl_check \
- -no-CApath \
- -no-CAstore \
  -CAfile {shlex.quote(self.RootCA.CertFileName)} \
  -untrusted {shlex.quote(self.CertFileName)} \
  -CRLfile {shlex.quote(self.CRLFileName)} \
@@ -637,7 +650,7 @@ openssl verify \
       sys.stdout.write('\x1b[33mRevoking CA ' + ca.CertFileName + ' ...\x1b[0m\n')
       assert os.path.isfile(ca.CertFileName)
       result = execute(f"""\
-openssl ca \
+{opensslExecutable} ca \
  -revoke {shlex.quote(ca.CertFileName)} \
  -config {shlex.quote(self.ConfigFileName)} \
  -passin file:{shlex.quote(self.PasswordFileName)}""")
@@ -653,7 +666,7 @@ openssl ca \
       sys.stdout.write('\x1b[33mRevoking certificate ' + certificate.CertFileName + ' ...\x1b[0m\n')
       assert os.path.isfile(self.CertFileName)
       result = execute(f"""\
-SAN="" openssl ca \
+{opensslExecutable} ca \
  -revoke {shlex.quote(certificate.CertFileName)} \
  -config {shlex.quote(certificate.CA.ConfigFileName)} \
  -passin file:{shlex.quote(certificate.CA.PasswordFileName)}""")
@@ -668,7 +681,7 @@ SAN="" openssl ca \
    def generateCRL(self) -> None:
       sys.stdout.write('\x1b[33mGenerating CRL ' + self.CRLFileName + ' ...\x1b[0m\n')
       execute(f"""\
-SAN="" openssl ca \
+{opensslExecutable} ca \
  -gencrl \
  -config {shlex.quote(self.ConfigFileName)} \
  -passin file:{shlex.quote(self.PasswordFileName)} \
@@ -768,7 +781,7 @@ class Certificate:
             raise Exception('Unsupported key algorithm!')
 
          execute(f"""\
-openssl genpkey \
+{opensslExecutable} genpkey \
  {algorithmOptions} \
  -out {shlex.quote(keyFileName + '.tmp')} && \
 mv {shlex.quote(keyFileName + '.tmp')} {shlex.quote(keyFileName)}""")
@@ -784,11 +797,12 @@ mv {shlex.quote(keyFileName + '.tmp')} {shlex.quote(keyFileName)}""")
          csrFileName : Final[str] = os.path.join(self.Directory, safeName + '.csr')
          sys.stdout.write('\x1b[33mGenerating CSR ' + csrFileName + ' ...\x1b[0m\n')
          execute(f"""\
-SAN={shlex.quote(self.SubjectAltName)} openssl req \
+{opensslExecutable} req \
  -new \
  -config {shlex.quote(self.CA.ConfigFileName)} \
  -extensions {shlex.quote(self.Extension)} \
  -utf8 -subj {shlex.quote(self.Subject)} \
+ -addext {shlex.quote('subjectAltName = ' + self.SubjectAltName)} \
  -key {shlex.quote(self.KeyFileName)} \
  -out {shlex.quote(csrFileName + '.tmp')} && \
 mv {shlex.quote(csrFileName + '.tmp')} {shlex.quote(csrFileName)}""")
@@ -808,9 +822,9 @@ mv {shlex.quote(csrFileName + '.tmp')} {shlex.quote(csrFileName)}""")
       # ====== Verify certificate ===========================================
       # Print certificate:
       execute(f"""\
-openssl x509 \
+{opensslExecutable} x509 \
  -noout \
- -subject -ext subjectAltName \
+ -subject \
  -in {shlex.quote(self.CertFileName)}""")
 
 

@@ -6,7 +6,8 @@ Homepage: https://www.nntb.no/~dreibh/system-tools/
 Vcs-Git: https://github.com/dreibh/system-tools.git
 Vcs-Browser: https://github.com/dreibh/system-tools
 Build-Depends: cmake,
-               debhelper-compat (= 13)
+               debhelper-compat (= 13),
+               libsystemd-dev
 Standards-Version: 4.7.4
 Rules-Requires-Root: no
 
@@ -150,6 +151,7 @@ Depends: gettext-base,
          openssl,
          td-print-utf8,
          td-text-block,
+         td-unixtimestamp-tools,
          ${misc:Depends}
 Provides: td-x509
 Replaces: td-x509 (<< 2.2.0)
@@ -158,7 +160,7 @@ Recommends: gnutls-bin,
             libnss3-tools
 Suggests: pwgen,
           python3,
-          python3-netifaces
+          python3-psutil
 Description: X.509 certificate handling tools
  This package contains X.509 certificate handling tools:
   * The view-certificate tool displays an X.509 certificate and its hierarchy.
@@ -248,7 +250,8 @@ Description: Metapackage for basic system tools sub-packages
 
 Package: td-system-tools-complete
 Architecture: all
-Depends: td-gimp-scripts (>= ${source:Version}),
+Depends: td-gimp-scripts  (>= ${source:Version}),
+         td-gimp-scripts-examples  (>= ${source:Version}),
          td-system-tools-basic (>= ${source:Version}),
          ${misc:Depends}
 Description: Metapackage for complete system tools sub-packages
@@ -285,9 +288,7 @@ Description: Metapackage for complete system tools sub-packages
 Package: td-system-tools
 Section: oldlibs
 Architecture: all
-Depends: td-gimp-scripts  (>= ${source:Version}),
-         td-gimp-scripts-examples  (>= ${source:Version}),
-         td-system-tools-basic (>= ${source:Version}),
+Depends: td-system-tools-basic (>= ${source:Version}),
          ${misc:Depends}
 Description: Transitional package td-system-tools -> td-system-tools-basic
  This is a transitional dummy package. It can safely be removed.

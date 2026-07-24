@@ -57,17 +57,10 @@ version () {
 # ###### Print date in current locale and current time zone #################
 print-date ()
 {
-   local input="$1"
-   local unixTS
-   local datetime
-   if date --version >/dev/null 2>&1; then
-      unixTS="$(date -d "${input}" +"%s")"
-      datetime="$(date -d "@${unixTS}" +"%c %Z")"
-   else
-      unixTS="$(LC_ALL=C.UTF-8 date -j -f "%b %d %T %Y %Z" "${input}" +"%s")"
-      datetime="$(date -r "${unixTS}" +"%c %Z")"
-   fi
-   echo "${datetime}"
+   local inputDateTime="$1"
+   local unixTimestamp
+   unixTimestamp="$(LC_ALL=C time2unixts -T "%b %d %T %Y %Z" "${inputDateTime}")"
+   unixts2time -T "%c %Z" "${unixTimestamp}"
 }
 
 
@@ -79,7 +72,27 @@ if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1]
    echo "ERROR: Bash 4.4 or higher is required, but Bash ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]} is installed!"
    exit 1
 fi
-GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
+UNAME="$(uname)"
+case "${UNAME}" in
+   FreeBSD)
+      GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt || true)"
+      ;;
+   NetBSD)
+      GETOPT="$(PATH="/usr/pkg/bin:${PATH}" command -v getopt || true)"
+      ;;
+   OpenBSD)
+      GETOPT="$(command -v gnugetopt || true)"
+      ;;
+   SunOS)
+      GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
+      ;;
+   Darwin)
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      ;;
+   *)
+      GETOPT="$(command -v getopt || true)"
+      ;;
+esac
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
    echo >&2 "ERROR: Enhanced/GNU getopt is required!"
    exit 1
@@ -116,7 +129,17 @@ if [ $# -lt 1 ] ; then
 fi
 
 # ====== Check availability of tools ========================================
-OPENSSL="$(command -v openssl || true)"
+case "${UNAME}" in
+   Darwin)
+      OPENSSL="$(env PATH="/opt/homebrew/opt/openssl/bin:${PATH}" command -v openssl || true)"
+      ;;
+   SunOS)
+      OPENSSL="$(env PATH="/usr/openssl/3/bin:${PATH}" command -v openssl || true)"
+      ;;
+   *)
+      OPENSSL="$(command -v openssl || true)"
+      ;;
+esac
 if [ "${OPENSSL}" == "" ] ; then
    gettext >&2 "ERROR: OpenSSL is not installed!"
    echo >&2

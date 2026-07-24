@@ -1,4 +1,4 @@
-GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+GRUB_DISTRIBUTOR="$(if [ -f /etc/os-release ] ; then . /etc/os-release && echo ${NAME} ; else echo "System" ; fi)"
 
 # ====== Image selection and automatic timeout ==============================
 GRUB_DEFAULT=0

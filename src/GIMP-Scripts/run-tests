@@ -32,8 +32,8 @@
 set -euo pipefail
 
 
-INPUT1="examples/Bergen.jpeg"
-INPUT2="examples/Portobello.jpeg"
+INPUT1="examples/Bergen.webp"
+INPUT2="examples/Portobello.webp"
 INPUT3="examples/Fractal.png"
 
 
@@ -74,21 +74,23 @@ show-script ()
 # ###### Main program #######################################################
 
 # ====== Find tools =========================================================
-if ! command -v print-utf8 2>/dev/null ; then
-   echo >&2 "ERROR: Print-UTF8 (from System-Tools) is not installed!"
-   echo >&2 "Try this:"
-   echo >&2 "* Ubuntu:  sudo apt-add-repository -sy ppa:dreibh/ppa"
-   echo >&2 "           sudo apt install -y td-system-tools"
-   echo >&2 "* Fedora:  sudo dnf copr enable -y dreibh/ppa"
-   echo >&2 "           sudo dnf install -y td-system-tools"
-   echo >&2 "* FreeBSD: sudo pkg install -y td-system-tools"
+if ! command -v print-utf8 >/dev/null ; then
+   echo >&2 "ERROR: Print-UTF8 (from System-Tools) is not installed! Try:"
+   echo >&2 "* Ubuntu/Debian: sudo apt-add-repository -sy ppa:dreibh/ppa"
+   echo >&2 "                 sudo apt install -y td-system-tools"
+   echo >&2 "* Fedora:        sudo dnf copr enable -y dreibh/ppa"
+   echo >&2 "                 sudo dnf install -y td-system-tools"
+   echo >&2 "* FreeBSD:       sudo pkg install -y td-system-tools"
    exit 1
 fi
-if ! command -v figlet 2>/dev/null ; then
+if ! command -v figlet >/dev/null ; then
    echo >&2 "ERROR: Figlet is not installed!"
-   echo >&2 "* Ubuntu:  sudo apt install -y figlet"
-   echo >&2 "* Fedora:  sudo dnf install -y figlet"
-   echo >&2 "* FreeBSD: sudo pkg install -y figlet"
+   echo >&2 "* Ubuntu/Debian: sudo apt install -y figlet"
+   echo >&2 "* Fedora:        sudo dnf install -y figlet"
+   echo >&2 "* FreeBSD:       sudo pkg install -y figlet"
+   echo >&2 "* NetBSD:        sudo pkgin -y install figlet"
+   echo >&2 "* OpenBSD:       sudo pkg_add figlet"
+   echo >&2 "* Apple:         brew install figlet"
    exit 1
 fi
 
@@ -103,7 +105,14 @@ trap 'if [ -d "${GIMP3_DIRECTORY}" ] ; then rm -rf "${GIMP3_DIRECTORY}" ; fi ; e
 # ====== Use FractGen to generate the example image =========================
 # Requires: clifractgen
 if [ ! -e "${INPUT3}"  ] ; then
-   clifractgen examples/Fractal.fsf "${INPUT3}" -W 1920 -H 1080 -M 2048
+   if command -v clifractgen ; then
+      clifractgen examples/Fractal.fsf "${INPUT3}" -W 1920 -H 1080 -M 2048
+   else
+      curl --output /tmp/Fractal.webp \
+         "https://www.nntb.no/~dreibh/system-tools/GIMP-Scripts/figures/Fractal.webp"
+      gm convert /tmp/Fractal.webp "${INPUT3}"
+      rm -f /tmp/Fractal.webp
+   fi
 fi
 
 
@@ -141,7 +150,7 @@ show-script "gs-glossytext"
    --blend-gradient-text "Brushed Aluminium" \
    --blend-gradient-outline "Golden" || exit-failed
 ./gs-glossytext NorNet3.png "NorNet Testbed" \
-   -F "URW Gothic Book Oblique"              \
+   -F "Noto Sans Bold"                       \
    -S 128                                    \
    -O 5                                      \
    -G "Brushed Aluminium"                    \

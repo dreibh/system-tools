@@ -33,6 +33,20 @@ set -euo pipefail
 RUN="./print-utf8"
 # RUN="valgrind ./print-utf8 "
 
+
+# ###### Diff with colourised output, if possible ###########################
+colordiff ()
+{
+   if diff --color /dev/null /dev/null >/dev/null 2>&1 ; then
+      # GNU diff:
+      diff --color=always "$@"
+   else
+      # Diff without --color option (e.g. BusyBox):
+      diff "$@"
+   fi
+}
+
+
 make ./print-utf8
 
 failures=0
@@ -235,7 +249,7 @@ for test in 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22
             cat "${outputFile}"
             echo
             "${RUN}" -x 78 -n -s  "\x1b[31m------ Differences: " "-" "-\x1b[0m"
-            diff --color "${goodFile}" "${outputFile}" || true
+            colordiff "${goodFile}" "${outputFile}" || true
             echo
             cp "${outputFile}" "${badFile}"
          ) >&2

@@ -68,8 +68,16 @@ _unixts2time()
       return
    fi
 
+   case "${prev}" in
+      -T | --template)
+         return
+         ;;
+   esac
+
    # ====== All options =====================================================
    local opts="
+-T
+--template
 -H
 --human-readable
 -s
