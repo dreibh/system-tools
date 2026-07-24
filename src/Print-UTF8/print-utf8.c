@@ -44,6 +44,9 @@
 #include <wchar.h>
 #include <sys/ioctl.h>
 #include <termios.h>
+#if defined(__sun__)
+#include <unicode/uchar.h>
+#endif
 
 #ifdef ENABLE_NLS
 #include <libintl.h>
@@ -343,6 +346,42 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
    free(utf8String);
    return wide_string;
 }
+
+
+#if defined(__sun__)
+#define wcswidth(str, len) icu_wcswidth(str, len)
+// ###### wcswidth() replacement based on libicu ############################
+static int icu_wcswidth(const wchar_t* str, size_t len) {
+   int width = 0;
+   for(size_t i = 0; (i < len) && (str[i] != 0x00); i++) {
+      const UChar32 c = (UChar32)str[i];
+
+      // Skip non-printable or zero-width control/combining characters:
+      const int8_t cc = u_charType(c);
+      if( (cc == U_CONTROL_CHAR)     ||
+          (cc == U_FORMAT_CHAR)      ||
+          (cc == U_NON_SPACING_MARK) ||
+          (cc == U_ENCLOSING_MARK) ) {
+         continue;
+      }
+
+      // Query East Asian width (wide/fullwidth):
+      const UEastAsianWidth eaw =
+         (UEastAsianWidth)u_getIntPropertyValue(c, UCHAR_EAST_ASIAN_WIDTH);
+      if( (eaw == U_EA_FULLWIDTH) || (eaw == U_EA_WIDE) ) {
+         width += 2;
+      }
+      // Handle Emoji characters:
+      else if(u_hasBinaryProperty(c, UCHAR_EMOJI_PRESENTATION)) {
+         width += 2;
+      }
+      else {
+         width += 1;
+      }
+   }
+   return width;
+}
+#endif
 
 
 // ###### Obtain console printing width of UTF-8 string ######################
