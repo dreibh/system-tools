@@ -248,7 +248,7 @@ int main(int argc, char** argv)
 
             // ------ Try to parse fractional part --------------------------
             if(*endptr != 0x00) {
-               const double fractionalUnixTS = strtold(endptr, &endptr);
+               const double fractionalUnixTS = strtod(endptr, &endptr);
                if(endptr != nullptr) {
                   const unsigned int additionalNS =
                      (unsigned int)(fractionalUnixTS * divideBy);
