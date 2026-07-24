@@ -79,17 +79,25 @@ select-ssh-options ()
 }
 
 
+# ###### Diff with colourised output, if possible ###########################
+colordiff ()
+{
+   if diff --color /dev/null /dev/null >/dev/null 2>&1 ; then
+      # GNU diff:
+      diff --color=always "$@"
+   else
+      # Diff without --color option (e.g. BusyBox):
+      diff "$@"
+   fi
+}
+
+
 # ###### Install Zabbix Agent ###############################################
 install-zabbix-agent()
 {
-   if [ ! -e /etc/os-release ] ; then
-      echo >&2 "ERROR: /etc/os-release does not exist!"
-      exit 1
-   fi
-   . /etc/os-release
    if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-      # ------ Add Zabbix Official Repository ----------------------------------
+      # ------ Add Zabbix Official Repository -------------------------------
       local zabbixVersion="7.0"
       cat >/etc/apt/sources.list.d/zabbix.list <<EOF
 deb https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${VERSION_CODENAME} main
@@ -98,37 +106,72 @@ EOF
       rm -f /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
       curl -fsSL https://repo.zabbix.com/zabbix-official-repo.key | \
          gpg --batch --dearmor -o /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
-      /usr/bin/apt-get update
+      apt-get update
 
-      # ------ Install ---------------------------------------------------------
-      packages="zabbix-agent"
-
-      # shellcheck disable=SC2086
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+      # ------ Install ------------------------------------------------------
+      packages=( "zabbix-agent" )
+      env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+         "${packages[@]}"
 
       systemctl enable zabbix-agent
       systemctl start  zabbix-agent
 
-   # ------ Fedora -------------------------------------------------------------
+   # ------ Fedora ----------------------------------------------------------
    elif [ "${ID}" == "fedora" ] ; then
 
-      packages="zabbix-agent"
-
-      # shellcheck disable=SC2086
-      /usr/bin/dnf install -y ${packages}
+      packages=( "zabbix-agent" )
+      dnf install -y "${packages[@]}"
 
       systemctl enable zabbix-agent
       systemctl start  zabbix-agent
 
-   # ------ FreeBSD ------------------------------------------------------------
+   # ------ OpenSUSE --------------------------------------------------------
+   elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+      packages=( "zabbix-agent" )
+      zypper --non-interactive install -y "${packages[@]}"
+
+      systemctl enable zabbix-agent
+      systemctl start  zabbix-agent
+
+   # ------ Alpine ----------------------------------------------------------
+   elif [ "${ID}" == "alpine" ] ; then
+
+      packages=( "zabbix-agent" "zabbix-agent-openrc" )
+      apk add "${packages[@]}"
+
+      rc-update add zabbix-agentd default
+      rc-service zabbix-agentd start
+
+   # ------ FreeBSD ---------------------------------------------------------
    elif [ "${ID}" == "freebsd" ] ; then
 
-      packages="zabbix7-agent"
-      # shellcheck disable=SC2086
-      /usr/sbin/pkg install -y ${packages}
+      packages=( "zabbix-agent" )
+      pkg install -y "${packages[@]}"
 
       sysrc zabbix_agentd_enable="YES"
       service zabbix_agentd start
+
+   # ------ NetBSD -------------------------------------------------------------
+   elif [ "${ID}" == "netbsd" ] ; then
+
+      packages=( "zabbix-agent" )
+      pkgin install -y "${packages[@]}"
+
+      if [ -e /usr/pkg/share/examples/rc.d/zabbix_agentd ] ; then
+         cp /usr/pkg/share/examples/rc.d/zabbix_agentd /etc/rc.d/
+      fi
+      echo 'zabbix_agentd=YES' >>/etc/rc.conf
+      /etc/rc.d/zabbix_agentd start
+
+   # ------ OpenBSD ------------------------------------------------------------
+   elif [ "${ID}" == "openbsd" ] ; then
+
+      packages=( "zabbix-agent" )
+      pkg_add "${packages[@]}"
+
+      rcctl enable zabbix_agentd
+      rcctl start zabbix_agentd
 
    fi
 }
@@ -157,7 +200,27 @@ if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1]
    echo "ERROR: Bash 4.4 or higher is required, but Bash ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]} is installed!"
    exit 1
 fi
-GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
+UNAME="$(uname)"
+case "${UNAME}" in
+   FreeBSD)
+      GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt || true)"
+      ;;
+   NetBSD)
+      GETOPT="$(PATH="/usr/pkg/bin:${PATH}" command -v getopt || true)"
+      ;;
+   OpenBSD)
+      GETOPT="$(command -v gnugetopt || true)"
+      ;;
+   SunOS)
+      GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
+      ;;
+   Darwin)
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      ;;
+   *)
+      GETOPT="$(command -v getopt || true)"
+      ;;
+esac
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
    echo >&2 "ERROR: Enhanced/GNU getopt is required!"
    exit 1
@@ -173,7 +236,7 @@ YES_TO_ALL=0
 SKIP_MACHINE_ID=0
 SKIP_SSH_CONFIGURATION=0
 SKIP_SSH_KEY_REPLACEMENT=0
-OLD_HOSTNAME_FQDN="$(hostname -f)"
+OLD_HOSTNAME_FQDN="$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")"
 OLD_HOSTNAME="${OLD_HOSTNAME_FQDN//.*/}"
 NEW_HOSTNAME_FQDN="${OLD_HOSTNAME_FQDN}"
 ZABBIX_SERVER=""
@@ -235,6 +298,24 @@ if [ $# -ne 0 ] ; then
 fi
 
 
+# ====== Check permissions ==================================================
+if [ "${EUID}" -ne 0 ] ; then
+   gettext >&2 "ERROR: Reset-Machine-ID requires superuser permissions!"
+   echo >&2
+   exit 1
+fi
+
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
+fi
+
+
 # ====== Change hostname ====================================================
 if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
 
@@ -269,19 +350,25 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
 
    done </etc/hosts >/etc/hosts.updated
    echo "/etc/hosts:"
-   diff --color=always /etc/hosts /etc/hosts.updated || differences=$((differences + 1))
+   colordiff /etc/hosts /etc/hosts.updated || differences=$((differences + 1))
 
 
    # ====== Update /etc/hostname or /etc/rc.conf =========================
    if [ -e /etc/hostname ] ; then
       echo "${NEW_HOSTNAME_FQDN}" >/etc/hostname.updated
       echo "/etc/hostname:"
-      diff --color=always /etc/hostname /etc/hostname.updated || differences=$((differences + 1))
+      colordiff /etc/hostname /etc/hostname.updated || differences=$((differences + 1))
    elif [ -e /etc/rc.conf ] ; then
       echo "/etc/rc.conf:"
       sed -e "s/^hostname=.*$/hostname=\"${NEW_HOSTNAME_FQDN}\"/g" \
          </etc/rc.conf >/etc/rc.conf.updated
-      diff --color=always /etc/rc.conf /etc/rc.conf.updated || differences=$((differences + 1))
+      colordiff /etc/rc.conf /etc/rc.conf.updated || differences=$((differences + 1))
+   elif [ -e /etc/nodename ] ; then
+      echo "${NEW_HOSTNAME_FQDN}" >/etc/nodename.updated
+      echo "/etc/nodename:"
+      colordiff /etc/nodename /etc/nodename.updated || differences=$((differences + 1))
+   else
+      echo >&2 "ERROR: Missing case!"
    fi
 
    # ====== Apply changes ================================================
@@ -296,6 +383,8 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
             mv /etc/hostname.updated /etc/hostname
          elif [ -e /etc/rc.conf ] ; then
             mv /etc/rc.conf.updated /etc/rc.conf
+         elif [ -e /etc/nodename ] ; then
+            mv /etc/nodename.updated /etc/nodename
          fi
          if [ -x /usr/bin/hostnamectl ] ; then
             /usr/bin/hostnamectl hostname "${NEW_HOSTNAME_FQDN}"
@@ -347,7 +436,12 @@ fi
 if [ "${ZABBIX_SERVER}" != "" ] ; then
    # ------ Prepare configuration -------------------------------------------
    for stage in 1 2 ; do
-      for zabbixConfig in /etc/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf /usr/local/etc/zabbix7/zabbix_agentd.conf ; do
+      for zabbixConfig in                          \
+         /etc/zabbix_agentd.conf                   \
+         /etc/zabbix/zabbix_agentd.conf            \
+         /usr/local/etc/zabbix7/zabbix_agentd.conf \
+         /usr/pkg/etc/zabbix_agentd.conf           \
+         ; do
          if [ -e "${zabbixConfig}" ] ; then
             break
          fi
@@ -377,7 +471,7 @@ if [ "${ZABBIX_SERVER}" != "" ] ; then
    fi
    zabbixOptions="$(grep -E "^(LogFile|PidFile=)" "${zabbixConfig}" || true)"
    cat >"${zabbixConfig}.new" <<EOF
-# Hostname=$(hostname -f)
+# Hostname=$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")
 HostnameItem=system.hostname
 Server=${ZABBIX_SERVER}
 ServerActive=${ZABBIX_SERVER}
@@ -386,7 +480,7 @@ ${zabbixOptions}
 EOF
 
    # ------ Apply configuration ---------------------------------------------
-   if ! diff --color "${zabbixConfig}" "${zabbixConfig}.new" ; then
+   if ! colordiff "${zabbixConfig}" "${zabbixConfig}.new" ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
          echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Apply suggested Zabbix Agent changes in \${zabbixConfig}?") [yes/no]\x1b[0m "
          read -er applyChanges
@@ -394,10 +488,12 @@ EOF
       if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
          cp "${zabbixConfig}" "${zabbixConfig}.old"
          mv "${zabbixConfig}.new" "${zabbixConfig}"
-         for mode in enable restart start ; do
-            sudo service zabbix-agent  ${mode} 2>/dev/null || true
-            sudo service zabbix_agentd ${mode} 2>/dev/null || true
-         done
+         if command -v service >/dev/null ; then
+            for mode in enable restart start ; do
+               service zabbix-agent  ${mode} 2>/dev/null || true
+               service zabbix_agentd ${mode} 2>/dev/null || true
+            done
+         fi
       else
          gettext "Skipped!"
          echo
@@ -463,7 +559,7 @@ EOF
    if [ -e ssh_config ] ; then
       gettext "Suggested ssh_config changes:"
       echo
-      if ! diff --color=always ssh_config ssh_config.suggested ; then
+      if ! colordiff ssh_config ssh_config.suggested ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
             echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested ssh_config changes?") [yes/no]\x1b[0m "
             read -er applyChanges
@@ -493,6 +589,11 @@ EOF
       if [ "${p2}" != "yes" ] && [ "${p2}" != "no" ]  ; then
          p2="yes"
       fi
+      if [ "${ID}" == "alpine" ] || [ "${ID}" == "openbsd" ] || [ "${ID}" == "sunos" ] ; then
+         usePAM="# "   # Disable "UsePAM" line.
+      else
+         usePAM=""     # Enable "UsePAM" line.
+      fi
       cat >sshd_config.suggested <<EOF
 Protocol 2
 
@@ -507,7 +608,7 @@ ${newSSH}PubkeyAcceptedKeyTypes       ${sshPubkeyAcceptedKeyTypes}
 ${newSSH}HostbasedAcceptedKeyTypes    ${sshHostbasedAcceptedKeyTypes}
 ${newSSH}HostKeyAlgorithms            ${sshHostKeyAlgorithms}
 
-UsePAM                       yes
+${usePAM}UsePAM                       yes
 X11Forwarding                yes
 TCPKeepAlive                 yes
 ClientAliveInterval          60
@@ -544,7 +645,9 @@ EOF
       # ====== Apply sshd_config updates ====================================
       gettext "Suggested sshd_config changes:"
       echo
-      diff --color=always sshd_config sshd_config.suggested || differences=$((differences + 1))
+      colordiff sshd_config sshd_config.suggested || differences=$((differences + 1))
+      # Check the configuration file, to ensure it is valid:
+      sshd -f sshd_config.suggested -T >/dev/null
       if [ ${differences} -gt 0 ] ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
             echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested sshd_config changes?") [yes/no]\x1b[0m "
@@ -556,9 +659,13 @@ EOF
             mv sshd_config.suggested sshd_config
 
             echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
-            # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
-            service sshd restart 2>/dev/null || \
-               service ssh restart 2>/dev/null
+            if command -v service >/dev/null ; then
+               # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
+               service sshd restart 2>/dev/null || \
+                  service ssh restart 2>/dev/null
+            elif command -v rcctl >/dev/null ; then
+               rcctl restart sshd
+            fi
          else
             gettext "Skipped!"
             echo
@@ -582,9 +689,9 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && command -v ssh-ke
 
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Making backup of current keys in \${backupDirectory} ...")\x1b[0m"
       mkdir "${backupDirectory}/"
-      find . -maxdepth 1 -name "ssh_host_*_key*" -print0 | xargs -0 -I § -r mv § "${backupDirectory}/"
-      find . -maxdepth 1 -name "ssh_host_key*"   -print0 | xargs -0 -I § -r mv § "${backupDirectory}/"
-      find . -maxdepth 1 -name "moduli*"         -print0 | xargs -0 -I § -r cp § "${backupDirectory}/"
+      find . -maxdepth 1 -name "ssh_host_*_key*" -exec mv {} "${backupDirectory}/" \;
+      find . -maxdepth 1 -name "ssh_host_key*" -exec mv {} "${backupDirectory}/" \;
+      find . -maxdepth 1 -name "moduli*" -exec mv {} "${backupDirectory}/" \;
       if [ -e ssh_config ] ; then
          cp ssh_config "${backupDirectory}/"
       fi
@@ -607,10 +714,12 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && command -v ssh-ke
 
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Done!")\x1b[0m"
 
-      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
-      # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
-      service sshd restart 2>/dev/null || \
-         service ssh restart 2>/dev/null || true
+      if command -v service >/dev/null ; then
+         echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
+         # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
+         service sshd restart 2>/dev/null || \
+            service ssh restart 2>/dev/null || true
+      fi
 
    else
       gettext "Skipped!"

@@ -31,6 +31,19 @@
 set -euo pipefail
 
 
+# ###### Diff with colourised output, if possible ###########################
+colordiff ()
+{
+   if diff --color /dev/null /dev/null >/dev/null 2>&1 ; then
+      # GNU diff:
+      diff --color=always "$@"
+   else
+      # Diff without --color option (e.g. BusyBox):
+      diff "$@"
+   fi
+}
+
+
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
@@ -53,7 +66,27 @@ if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1]
    echo "ERROR: Bash 4.4 or higher is required, but Bash ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]} is installed!"
    exit 1
 fi
-GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
+UNAME="$(uname)"
+case "${UNAME}" in
+   FreeBSD)
+      GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt || true)"
+      ;;
+   NetBSD)
+      GETOPT="$(PATH="/usr/pkg/bin:${PATH}" command -v getopt || true)"
+      ;;
+   OpenBSD)
+      GETOPT="$(command -v gnugetopt || true)"
+      ;;
+   SunOS)
+      GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
+      ;;
+   Darwin)
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      ;;
+   *)
+      GETOPT="$(command -v getopt || true)"
+      ;;
+esac
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
    echo >&2 "ERROR: Enhanced/GNU getopt is required!"
    exit 1
@@ -142,23 +175,29 @@ if grep -q "net.ifnames=0" /proc/cmdline ; then
    OPTION_DISABLE_NETIFNAMES=1
 fi
 OPTION_CMDLINE=$(grep "^GRUB_CMDLINE_LINUX=" "${INPUT_CONFIGURATION}" | sed -e "s/biosdevname=0[ ]*//g" -e "s/net.ifnames=0[ ]*//g" || echo 'GRUB_CMDLINE_LINUX=""')
+OPTION_CMDLINE_DEFAULT=$(grep "^GRUB_CMDLINE_LINUX_DEFAULT=" "${INPUT_CONFIGURATION}" | sed -e "s/biosdevname=0[ ]*//g" -e "s/net.ifnames=0[ ]*//g" || echo 'GRUB_CMDLINE_LINUX_DEFAULT=""')
 if [ ${OPTION_DISABLE_BIOSDEVNAME} -eq 1 ] ; then
    # shellcheck disable=SC2001
    OPTION_CMDLINE=$(echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"biosdevname=0 /g")
+   # shellcheck disable=SC2001
+   OPTION_CMDLINE_DEFAULT=$(echo "${OPTION_CMDLINE_DEFAULT}" | sed -e "s/^GRUB_CMDLINE_LINUX_DEFAULT=\"/GRUB_CMDLINE_LINUX_DEFAULT=\"biosdevname=0 /g")
 fi
 if [ ${OPTION_DISABLE_NETIFNAMES} -eq 1 ] ; then
    # shellcheck disable=SC2001
    OPTION_CMDLINE=$(echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"net.ifnames=0 /g")
+   # shellcheck disable=SC2001
+   OPTION_CMDLINE_DEFAULT=$(echo "${OPTION_CMDLINE_DEFAULT}" | sed -e "s/^GRUB_CMDLINE_LINUX_DEFAULT=\"/GRUB_CMDLINE_LINUX_DEFAULT=\"net.ifnames=0 /g")
 fi
 
 OPTION_ENABLE_CRYPTODISK=$(grep "^GRUB_ENABLE_CRYPTODISK=" "${INPUT_CONFIGURATION}" || true)
 if [ "${REPLACE_GRUB_GFXMODE}" == "" ] ; then
-   OPTION_GFXMODE=$(grep -E "^[#[:space:]]*GRUB_GFXMODE=" "${INPUT_CONFIGURATION}" | sed -e "s/#[ ]*GRUB/# GRUB/g" || true)
+   OPTION_GFXMODE=$(grep -E "^[#[:space:]]*GRUB_GFXMODE=" "${INPUT_CONFIGURATION}" | sed -e "s/#[ ]*GRUB/# GRUB/g" || echo '# GRUB_GFXMODE=""')
 else
    OPTION_GFXMODE="GRUB_GFXMODE=\"${REPLACE_GRUB_GFXMODE}\""
 fi
 if [ "${REPLACE_GRUB_INIT_TUNE}" == "" ] ; then
-   OPTION_INIT_TUNE=$(grep -E "^[#[:space:]]*GRUB_INIT_TUNE=" "${INPUT_CONFIGURATION}" | sed -e "s/#[ ]*GRUB/# GRUB/g" || true)
+   OPTION_INIT_TUNE=$(grep -E "^[#[:space:]]*GRUB_INIT_TUNE=" "${INPUT_CONFIGURATION}" | sed -e "s/#[ ]*GRUB/# GRUB/g" || echo '# GRUB_INIT_TUNE=""')
+   echo >&2 "X-2"
 else
    OPTION_INIT_TUNE="GRUB_INIT_TUNE=\"${REPLACE_GRUB_INIT_TUNE}\""
 fi
@@ -172,6 +211,7 @@ echo "* Output file:                ${OUTPUT_CONFIGURATION}"
 echo "* OPTION_DISABLE_BIOSDEVNAME: ${OPTION_DISABLE_BIOSDEVNAME}"
 echo "* OPTION_DISABLE_NETIFNAMES:  ${OPTION_DISABLE_NETIFNAMES}"
 echo "* OPTION_CMDLINE:             ${OPTION_CMDLINE}"
+echo "* OPTION_CMDLINE_DEFAULT:     ${OPTION_CMDLINE_DEFAULT}"
 echo "* OPTION_ENABLE_CRYPTODISK:   ${OPTION_ENABLE_CRYPTODISK}"
 echo "* OPTION_INIT_TUNE:           ${OPTION_INIT_TUNE}"
 echo "* OPTION_GFXMODE:             ${OPTION_GFXMODE}"
@@ -179,13 +219,15 @@ echo "* OPTION_GFXMODE:             ${OPTION_GFXMODE}"
 
 # ====== Set configuration ==================================================
 awk \
-   -v OPTION_CMDLINE="${OPTION_CMDLINE}" \
-   -v OPTION_GFXMODE="${OPTION_GFXMODE}" \
-   -v OPTION_INIT_TUNE="${OPTION_INIT_TUNE}" \
+   -v OPTION_CMDLINE="${OPTION_CMDLINE}"                     \
+   -v OPTION_CMDLINE_DEFAULT="${OPTION_CMDLINE_DEFAULT}"     \
+   -v OPTION_GFXMODE="${OPTION_GFXMODE}"                     \
+   -v OPTION_INIT_TUNE="${OPTION_INIT_TUNE}"                 \
    -v OPTION_ENABLE_CRYPTODISK="${OPTION_ENABLE_CRYPTODISK}" \
 '
    BEGIN {
       wroteCmdlineOption=0;
+      wroteCmdlineDefaultOption=0;
       wroteGfxModeOption=0;
       wroteInitTuneOption=0;
       wroteCryptodiskOption=0;
@@ -194,6 +236,12 @@ awk \
    /^GRUB_CMDLINE_LINUX=/ {
       print OPTION_CMDLINE;
       wroteCmdlineOption=1;
+      next;
+   }
+
+   /^GRUB_CMDLINE_LINUX_DEFAULT=/ {
+      print OPTION_CMDLINE_DEFAULT;
+      wroteCmdlineDefaultOption=1;
       next;
    }
 
@@ -223,6 +271,9 @@ awk \
       if( (!wroteCmdlineOption) && (OPTION_CMDLINE != "")) {
          print OPTION_CMDLINE;
       }
+      if( (!wroteCmdlineDefaultOption) && (OPTION_CMDLINE_DEFAULT != "")) {
+         print OPTION_CMDLINE_DEFAULT;
+      }
       if( (!wroteGfxModeOption) && (OPTION_GFXMODE != "")) {
          print OPTION_GFXMODE;
       }
@@ -236,5 +287,5 @@ awk \
 ' <"${TEMPLATE_CONFIGURATION}" >"${OUTPUT_CONFIGURATION}.new"
 
 echo "Differences between ${INPUT_CONFIGURATION} and ${OUTPUT_CONFIGURATION}:"
-diff --color "${INPUT_CONFIGURATION}" "${OUTPUT_CONFIGURATION}.new" || true
+colordiff "${INPUT_CONFIGURATION}" "${OUTPUT_CONFIGURATION}.new" || true
 mv "${OUTPUT_CONFIGURATION}.new" "${OUTPUT_CONFIGURATION}"

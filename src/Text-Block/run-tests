@@ -51,6 +51,19 @@ exit-success ()
 }
 
 
+# ###### Diff with colourised output, if possible ###########################
+colordiff ()
+{
+   if diff --color /dev/null /dev/null >/dev/null 2>&1 ; then
+      # GNU diff:
+      diff --color=always "$@"
+   else
+      # Diff without --color option (e.g. BusyBox):
+      diff "$@"
+   fi
+}
+
+
 
 # ###### Main program #######################################################
 
@@ -146,7 +159,7 @@ for test in simple markers advanced1 advanced2 example1 example2 ; do
                      cat "${outputFile}"
                      echo
                      print-utf8 -x 78 -n -s  "\x1b[31m------ Differences: " "-" "-\x1b[0m"
-                     diff --color "${goodFile}" "${outputFile}" || true
+                     colordiff "${goodFile}" "${outputFile}" || true
                      echo
                      cp "${outputFile}" "${badFile}"
                   ) >&2

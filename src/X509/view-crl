@@ -57,17 +57,10 @@ version () {
 # ###### Print date in current locale and current time zone #################
 print-date ()
 {
-   local input="$1"
-   local unixTS
-   local datetime
-   if date --version >/dev/null 2>&1; then
-      unixTS="$(date -d "${input}" +"%s")"
-      datetime="$(date -d "@${unixTS}" +"%c %Z")"
-   else
-      unixTS="$(LC_ALL=C.UTF-8 date -j -f "%b %d %T %Y %Z" "${input}" +"%s")"
-      datetime="$(date -r "${unixTS}" +"%c %Z")"
-   fi
-   echo "${datetime}"
+   local inputDateTime="$1"
+   local unixTimestamp
+   unixTimestamp="$(LC_ALL=C time2unixts -T "%b %d %T %Y %Z" "${inputDateTime}")"
+   unixts2time -T "%c %Z" "${unixTimestamp}"
 }
 
 
@@ -79,7 +72,27 @@ if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1]
    echo "ERROR: Bash 4.4 or higher is required, but Bash ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]} is installed!"
    exit 1
 fi
-GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
+UNAME="$(uname)"
+case "${UNAME}" in
+   FreeBSD)
+      GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt || true)"
+      ;;
+   NetBSD)
+      GETOPT="$(PATH="/usr/pkg/bin:${PATH}" command -v getopt || true)"
+      ;;
+   OpenBSD)
+      GETOPT="$(command -v gnugetopt || true)"
+      ;;
+   SunOS)
+      GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
+      ;;
+   Darwin)
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      ;;
+   *)
+      GETOPT="$(command -v getopt || true)"
+      ;;
+esac
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
    echo >&2 "ERROR: Enhanced/GNU getopt is required!"
    exit 1
@@ -116,7 +129,17 @@ if [ $# -lt 1 ] ; then
 fi
 
 # ====== Check availability of tools ========================================
-OPENSSL="$(command -v openssl || true)"
+case "${UNAME}" in
+   Darwin)
+      OPENSSL="$(env PATH="/opt/homebrew/opt/openssl/bin:${PATH}" command -v openssl || true)"
+      ;;
+   SunOS)
+      OPENSSL="$(env PATH="/usr/openssl/3/bin:${PATH}" command -v openssl || true)"
+      ;;
+   *)
+      OPENSSL="$(command -v openssl || true)"
+      ;;
+esac
 if [ "${OPENSSL}" == "" ] ; then
    gettext >&2 "ERROR: OpenSSL is not installed!"
    echo >&2
@@ -144,8 +167,13 @@ while [ $# -gt 0 ] ; do
    # ====== Look for CRL ====================================================
    CRL_FILE="$1"
    shift
+   tempCrlFile=""
    if [ "${CRL_FILE}" == "-" ] ; then
-      CRL_FILE="/dev/stdin"
+      tempCrlFile=""
+      trap 'rm -f "${tempCrlFile}"' EXIT INT TERM HUP
+      tempCrlFile="$(mktemp -t view-crl.XXXXXXXXXX)"
+      cat >"${tempCrlFile}"
+      CRL_FILE="${tempCrlFile}"
    fi
    if [ ! -e "${CRL_FILE}" ] ; then
       eval_gettext >&2 "ERROR: Unable to find CRL file \${CRL_FILE}!"
@@ -156,7 +184,7 @@ while [ $# -gt 0 ] ; do
    # ====== Display CRL details =============================================
    echo -e "\e[34m$(eval_gettext "CRL in \${CRL_FILE}:")\e[0m"
    if [ "${CRL_FILE}" == "/dev/stdin" ] || [ "$(file -b "${CRL_FILE}")" == "data" ] ; then
-      openssl crl -in "${CRL_FILE}"
+      openssl crl -in "${CRL_FILE}" -inform PEM 2>/dev/null || openssl crl -in "${CRL_FILE}" -inform DER
    else
       cat "${CRL_FILE}"
    fi | \
@@ -216,8 +244,8 @@ while [ $# -gt 0 ] ; do
                # Try output via mbuffer. This is faster for console printing, particularly
                # with complex banners and long interface lists. If unavailable, try buffer.
                # Just use cat as fallback, if neither mbuffer nor buffer are available.
-               if ! mbuffer -q -s 16k 2>/dev/null ; then
-                  if ! buffer -s 16k 2>/dev/null ; then
+               if ! mbuffer -q -s 64k 2>/dev/null ; then
+                  if ! buffer -s 64k 2>/dev/null ; then
                      cat
                   fi
                fi
@@ -229,4 +257,7 @@ while [ $# -gt 0 ] ; do
 
    echo -en "\e[0m"
 
+   if [ -n "${tempCrlFile}" ] ; then
+      rm -f "${tempCrlFile}"
+   fi
 done

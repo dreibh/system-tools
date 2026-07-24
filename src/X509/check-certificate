@@ -62,7 +62,27 @@ if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1]
    echo "ERROR: Bash 4.4 or higher is required, but Bash ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]} is installed!"
    exit 1
 fi
-GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt)"
+UNAME="$(uname)"
+case "${UNAME}" in
+   FreeBSD)
+      GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt || true)"
+      ;;
+   NetBSD)
+      GETOPT="$(PATH="/usr/pkg/bin:${PATH}" command -v getopt || true)"
+      ;;
+   OpenBSD)
+      GETOPT="$(command -v gnugetopt || true)"
+      ;;
+   SunOS)
+      GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
+      ;;
+   Darwin)
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      ;;
+   *)
+      GETOPT="$(command -v getopt || true)"
+      ;;
+esac
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
    echo >&2 "ERROR: Enhanced/GNU getopt is required!"
    exit 1
@@ -110,8 +130,25 @@ CA_FILE="$1"
 shift
 
 # ====== Check availability of tools ========================================
-OPENSSL="$(command -v openssl || true)"
-CCERTTOOL="$(command -v certtool || true)"
+case "${UNAME}" in
+   Darwin)
+      OPENSSL="$(env PATH="/opt/homebrew/opt/openssl/bin:${PATH}" command -v openssl || true)"
+      CERTTOOL="$(env PATH="/opt/homebrew/bin/gnutls-certtool:${PATH}" command -v gnutls-certtool || true)"
+      ;;
+   SunOS)
+      OPENSSL="$(env PATH="/usr/openssl/3/bin:${PATH}" command -v openssl || true)"
+      CERTTOOL="$(env PATH="/usr/gnu/bin:${PATH}" command -v certtool || true)"
+      ;;
+   *)
+      OPENSSL="$(command -v openssl || true)"
+      CERTTOOL="$(command -v certtool || true)"
+      ;;
+esac
+if [ "${OPENSSL}" == "" ] ; then
+   gettext >&2 "ERROR: OpenSSL is not installed!"
+   echo >&2
+   exit 1
+fi
 CERTUTIL="$(command -v certutil || true)"
 CRLUTIL="$(command -v crlutil || true)"
 
@@ -163,7 +200,11 @@ while [ $# -gt 0 ] ; do
       if [ "${CRL}" != "" ] ; then
          crlOption="-crl_check -CRLfile \"${CRL}\""
       fi
-      command="\"${OPENSSL}\" verify -no-CApath -no-CAstore -CAfile \"${CA_FILE}\" ${crlOption} -untrusted \"${CERTIFICATE_FILE}\" \"${CERTIFICATE_FILE}\""
+      if openssl verify -help 2>&1 | grep -q -- "-no-CApath"; then
+         command="\"${OPENSSL}\" verify -no-CApath -no-CAstore -no-CAfile -CAfile \"${CA_FILE}\" ${crlOption} -untrusted \"${CERTIFICATE_FILE}\" \"${CERTIFICATE_FILE}\""
+      else
+         command="\"${OPENSSL}\" verify -CAfile \"${CA_FILE}\" ${crlOption} -untrusted \"${CERTIFICATE_FILE}\" \"${CERTIFICATE_FILE}\""
+      fi
       if sh -c "${command}" >/dev/null 2>&1 ; then
          echo -e "\e[32;1m$(gettext "✓OKAY")\e[0m"
       else
@@ -179,15 +220,28 @@ while [ $# -gt 0 ] ; do
 
    # ====== GNU TLS =========================================================
    echo -en "\e[33mGNU TLS:\e[0m "
-   if [ "${CCERTTOOL}" != "" ] ; then
+   if [ "${CERTTOOL}" != "" ] ; then
       crlOption=""
       if [ "${CRL}" != "" ] ; then
          crlOption="--load-crl=\"${CRL}\""
       fi
+      if [ "${UNAME}" == "SunOS" ] ; then
+         tempCertFile=""
+         trap 'rm -f "${tempCertFile}"' EXIT INT TERM HUP
+         tempCertFile="$(mktemp -t check-certificate.XXXXXXXXXX)"
+         cat "${CERTIFICATE_FILE}" "${CA_FILE}" >"${tempCertFile}"
+      fi
       profiles="low medium high ultra future"
       good=0
       for profile in ${profiles} ; do
-         command="\"${CCERTTOOL}\" --verify --verify-profile=${profile} --load-ca-certificate=\"${CA_FILE}\" ${crlOption} --infile=\"${CERTIFICATE_FILE}\"" && sh -c "${command}" >/dev/null 2>&1 &&
+         if [ "${UNAME}" != "SunOS" ] ; then
+            command="\"${CERTTOOL}\" --verify --verify-profile=${profile} --load-ca-certificate=\"${CA_FILE}\" ${crlOption} --infile=\"${CERTIFICATE_FILE}\""
+         else
+            # GnuTLS Solaris issue work-around:
+            # https://gitlab.com/gnutls/gnutls/-/work_items/1916
+            command="\"${CERTTOOL}\" --verify-chain --verify-profile=${profile} ${crlOption} --infile=\"${tempCertFile}\""
+         fi && \
+         sh -c "${command}" >/dev/null 2>&1 && \
          good=$((good + 1)) && \
             if [ ${good} -eq 1 ] ; then echo -en "\e[32;1m$(gettext "✓OKAY")\e[0m" ; fi && \
             echo -en "   \e[32m${profile}\e[0m"
@@ -197,6 +251,9 @@ while [ $# -gt 0 ] ; do
          errors=$((errors + 1))
          echo -e "\e[31;1m$(gettext "❌FAILED!")\e[0m"
          sh -c "${command}" || true
+      fi
+      if [ "${UNAME}" == "SunOS" ] ; then
+         rm -f "${tempCertFile}"
       fi
    else
       gettext "(GnuTLS CertTool is not installed)"

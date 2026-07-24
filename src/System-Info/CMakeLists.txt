@@ -32,42 +32,60 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
-CONFIGURE_FILE(System-Info System-Info.versioned @ONLY)
-SET_PROPERTY(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES System-Info.versioned)
-INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/System-Info.versioned
-        DESTINATION ${CMAKE_INSTALL_BINDIR}
-        RENAME      System-Info)
-INSTALL(FILES System-Info.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       System-Info.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      System-Info)
+IF (WITH_SYSTEM_INFO)
+   CONFIGURE_FILE(System-Info System-Info.versioned @ONLY)
+   SET_PROPERTY(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES System-Info.versioned)
+   INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/System-Info.versioned
+           DESTINATION ${CMAKE_INSTALL_BINDIR}
+           RENAME      System-Info)
+   INSTALL(FILES System-Info.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+   INSTALL(FILES       System-Info.bash-completion
+           DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+           RENAME      System-Info)
+ENDIF()
 
-ADD_EXECUTABLE(get-system-info get-system-info.c)
-# SET_PROPERTY(TARGET get-system-info PROPERTY C_STANDARD 23)
-TARGET_LINK_LIBRARIES(get-system-info ${Intl_LIBRARIES})
-INSTALL(TARGETS get-system-info DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES get-system-info.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       get-system-info.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      get-system-info)
+IF (WITH_GET_SYSTEM_INFO)
+   ADD_EXECUTABLE(get-system-info get-system-info.c)
+   # SET_PROPERTY(TARGET get-system-info PROPERTY C_STANDARD 23)
+   TARGET_COMPILE_OPTIONS(get-system-info PRIVATE -Wall -Wextra -Wpedantic -Wsign-conversion)
+   TARGET_COMPILE_DEFINITIONS(get-system-info PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
+   TARGET_INCLUDE_DIRECTORIES(get-system-info PRIVATE ${SYSTEMD_INCLUDE_DIRS} ${Intl_INCLUDE_DIRS})
+   TARGET_LINK_LIBRARIES(get-system-info ${SYSTEMD_LIBRARY} ${Intl_LIBRARIES} ${SOCKET_LIBRARY} ${NSL_LIBRARY})
+   INSTALL(TARGETS get-system-info DESTINATION ${CMAKE_INSTALL_BINDIR})
+   INSTALL(FILES get-system-info.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+   INSTALL(FILES       get-system-info.bash-completion
+           DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+           RENAME      get-system-info)
+ENDIF()
 
 
 #############################################################################
 #### CONFIGURATION FILES                                                 ####
 #############################################################################
 
-INSTALL(PROGRAMS system-info.d/01-example    DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-info.d)
-INSTALL(PROGRAMS system-info.d/banner-helper DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-info.d)
+IF (WITH_SYSTEM_INFO)
+   INSTALL(PROGRAMS system-info.d/banner-helper DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-info.d)
 
-INSTALL(FILES profile.d/system-info.sh  DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/profile.d)
-INSTALL(FILES profile.d/system-info.csh DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/profile.d)
+   IF (WITH_SYSTEM_INFO_DEFAULT_BANNER)
+      INSTALL(PROGRAMS system-info.d/01-example DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-info.d)
+   ENDIF()
+
+   IF (WITH_SYSTEM_INFO_IN_PROFILES)
+      INSTALL(FILES profile.d/system-info.sh    DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/profile.d)
+      INSTALL(FILES profile.d/system-info.csh   DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/profile.d)
+   ENDIF()
+ENDIF()
 
 
 #############################################################################
 #### EXAMPLES                                                            ####
 #############################################################################
 
-INSTALL(PROGRAMS system-info.d/01-example              DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
-INSTALL(PROGRAMS system-info.d/09-hostname-example     DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
-INSTALL(PROGRAMS system-info.d/10-company-logo-example DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
-INSTALL(PROGRAMS system-info.d/banner-helper           DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
+IF (WITH_SYSTEM_INFO)
+   IF (WITH_SYSTEM_INFO_EXAMPLES)
+      INSTALL(PROGRAMS system-info.d/01-example              DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
+      INSTALL(PROGRAMS system-info.d/09-hostname-example     DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
+      INSTALL(PROGRAMS system-info.d/10-company-logo-example DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
+      INSTALL(PROGRAMS system-info.d/banner-helper           DESTINATION ${CMAKE_INSTALL_DATADIR}/System-Info)
+   ENDIF()
+ENDIF()

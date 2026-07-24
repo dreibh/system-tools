@@ -31,21 +31,33 @@
 # Bash options:
 set -euo pipefail
 
+configdir="$(dirname "$0")"
+
 # Helper function library -> just return when it is not available.
 # Exit code 0 will let System-Info continue with the next script!
 # shellcheck disable=SC1091
-. "$(dirname "$0")/banner-helper" || exit 0
+. "${configdir}/banner-helper" || exit 0
 
 
 # ====== Print banner =======================================================
 
+# ------ Get an UTF-8 icon --------------------------------------------------
+icon="😀"
+if [ "$(print-utf8 -w "${icon}")" -lt 1 ] ; then
+   # The console cannot print multi-byte characters like 😀 or 💻 -> no icon.
+   icon=""
+fi
+
+# ------ Print top separator ------------------------------------------------
+echo -en "\x1b[1;34m"
+separator " <${icon}" "=" "${icon}> "
+echo -en "\x1b[1;31m"
+
+# ------ Print welcome banner -----------------------------------------------
 # NOTE:
 # You can produce ASCII text banners with "sysvbanner".
 # More advanced, UTF-8-capable tools are e.g. figlet and toilet.
 
-echo -en "\x1b[1;34m"
-separator " <😀" "=" "😀> "
-echo -en "\x1b[1;31m"
 center "#     #                                                   ###"
 center "#  #  #  ######  #        ####    ####   #    #  ######   ###"
 center "#  #  #  #       #       #    #  #    #  ##  ##  #        ###"
@@ -55,8 +67,10 @@ center "#  #  #  #       #       #    #  #    #  #    #  #        ###"
 center " ## ##   ######  ######   ####    ####   #    #  ######   ###"
 echo -en "\x1b[1;34m"
 center ""
-center "$(gettext "You can change this banner in /etc/system-info.d!")"
-separator " <😀" "=" "😀> "
+center "$(eval_gettext "You can change this banner in \${configdir}!")"
+
+# ------ Print bottom separator ---------------------------------------------
+separator " <${icon}" "=" "${icon}> "
 echo -e "\x1b[0m"
 
 
