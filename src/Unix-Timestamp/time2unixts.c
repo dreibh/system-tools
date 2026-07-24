@@ -84,13 +84,13 @@ static const char* findSecondsPlaceholder(const char* formatString)
 
 // ###### Print integer value ###############################################
 static void printBigInteger(
-#if (defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
-   _BitInt(128)  value,
+#if (defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202311L) && defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
+   _BitInt(128) value,
 #else
-   long long     value,
+   long long    value,
 #endif
-   const int     base,
-   const bool    withPrefix)
+   const int    base,
+   const bool   withPrefix)
 {
    if(value < 0) {
       putchar('-');
@@ -325,7 +325,7 @@ int main(int argc, char** argv)
       }
 
       // ====== Convert timespec to Unix timestamp ==========================
-#if (defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
+#if (defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202311L) && defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
       const _BitInt(128) unixTS = ((_BitInt(128))1000000000LL * ts.tv_sec) + ts.tv_nsec;
 #else
       // NOTE: A 64-bit signed long long will overflow on April 11, 2262!
