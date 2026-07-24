@@ -45,9 +45,26 @@ reset="\x1b[0m"
 color1="\x1b[34m"
 color2="\x1b[31m"
 
+# ------ Get an UTF-8 icon representing the oeprating system ----------------
+if [ "$(print-utf8 -w "💻")" -lt 1 ] ; then
+   # The console cannot print multi-byte characters like 😀 or 💻 -> no icon.
+   icon=""
+else
+   case "$(uname)" in
+      Linux)   icon="🐧" ;;
+      FreeBSD) icon="😈" ;;
+      NetBSD)  icon="🚩" ;;
+      OpenBSD) icon="🐡" ;;
+      SunOS)   icon="☀️" ;;
+      Darwin)  icon="🍎" ;;
+      GNU)     icon="🦬" ;;
+      *)       icon="💻" ;;
+   esac
+fi
+
 # ------ Print top separator ------------------------------------------------
 echo -en "${color1}"
-separator " *💻" "=" "💻*"
+separator " *${icon}" "=" "${icon}*"
 echo
 center "${color1}-- ${color2}$(gettext "Welcome on the System") ${color1}--"
 
@@ -68,7 +85,7 @@ done
 
 # ------ Print bottom separator ---------------------------------------------
 echo -en "${reset}${color1}"
-separator " *💻" "=" "💻*"
+separator " *${icon}" "=" "${icon}*"
 echo -e "${reset}"
 
 
