@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+for uname in Linux FreeBSD NetBSD OpenBSD SunOS Darwin GNU Haiku CYGWIN MS-DOS AmigaOS AROS Unknown ; do
+   case "${uname}" in
+      Linux)                icon="🐧" ;;
+      FreeBSD)              icon="😈" ;;
+      NetBSD)               icon="🚩" ;;
+      OpenBSD)              icon="🐡" ;;
+      SunOS)                icon="🌞" ;;   # "☀️" width is returned as 1, should be 2?
+      Darwin)               icon="🍎" ;;
+      GNU|GNU/*)            icon="🦬" ;;
+      Haiku)                icon="🍂" ;;
+      CYGWIN*|MINGW*|MSYS*) icon="🪟" ;;
+      MS-DOS*|DOS*)         icon="💾" ;;
+      AmigaOS*)             icon="🔴" ;;
+      AROS*)                icon="🐱" ;;
+      *)                    icon="💻" ;;
+   esac
+   echo "icon=${icon}."
+   print-utf8 -a "${icon}"
+done
