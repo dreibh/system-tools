@@ -85,6 +85,7 @@
 #include <utmp.h>
 #elif defined(__sun__)
 #include <dirent.h>
+#include <kstat.h>
 #include <sys/loadavg.h>
 #include <sys/swap.h>
 #include <utmpx.h>
@@ -612,6 +613,29 @@ static void showLoadInformation(void)
 }
 
 
+#if defined(__sun__)
+static bool getKstatUint64(const kstat_named_t* kn, uint64_t* val)
+{
+   switch(kn->data_type) {
+      case KSTAT_DATA_UINT32:
+         *val = (uint64_t)kn->value.ui32;
+         return true;
+      case KSTAT_DATA_UINT64:
+         *val = kn->value.ui64;
+         return true;
+      case KSTAT_DATA_INT32:
+         *val = (kn->value.i32 >= 0) ? (uint64_t)kn->value.i32 : 0;
+         return true;
+      case KSTAT_DATA_INT64:
+         *val = (kn->value.i64 >= 0) ? (uint64_t)kn->value.i64 : 0;
+         return true;
+      default:
+         return false;
+   }
+}
+#endif
+
+
 // ###### Print battery information #########################################
 static void showBatteryInformation(void)
 {
@@ -829,8 +853,91 @@ static void showBatteryInformation(void)
 
    // ====== SunOS: Obtain battery status via TBD ===========================
 #elif defined(__sun__)
+   kstat_ctl_t* kc = kstat_open();
+   if(kc != nullptr) {
+      struct SolarisBatteryInfo {
+         uint64_t lastCap;
+         uint64_t remCap;
+         uint64_t state;
+         bool     foundLastCap;
+         bool     foundRemCap;
+         bool     foundState;
+      } batteryInfo[maxBatteries];
+      memset(batteryInfo, 0, sizeof(batteryInfo));
 
-#warning FIXME! Battery status for SunOS
+      for(kstat_t* ksp = kc->kc_chain; ksp != nullptr; ksp = ksp->ks_next) {
+         if(strcmp(ksp->ks_module, "acpi_drv") == 0) {
+            unsigned int batID = 0;
+            bool         isBIF = false;
+            bool         isBST = false;
+
+            if(sscanf(ksp->ks_name, "battery BIF%u", &batID) == 1) {
+               isBIF = true;
+            }
+            else if(strcmp(ksp->ks_name, "battery BIF") == 0) {
+               batID = 0;
+               isBIF = true;
+            }
+            else if(sscanf(ksp->ks_name, "battery BST%u", &batID) == 1) {
+               isBST = true;
+            }
+            else if(strcmp(ksp->ks_name, "battery BST") == 0) {
+               batID = 0;
+               isBST = true;
+            }
+
+            if((isBIF || isBST) && (batID < maxBatteries)) {
+               if(kstat_read(kc, ksp, nullptr) != -1) {
+                  const kstat_named_t* knArray = (kstat_named_t*)ksp->ks_data;
+                  for(size_t i = 0; i < ksp->ks_ndata; i++) {
+                     const char* name = knArray[i].name;
+                     if(isBIF && (strcmp(name, "bif_last_cap") == 0)) {
+                        batteryInfo[batID].foundLastCap = getKstatUint64(&knArray[i], &batteryInfo[batID].lastCap);
+                     }
+                     else if(isBST && (strcmp(name, "bst_rem_cap") == 0)) {
+                        batteryInfo[batID].foundRemCap = getKstatUint64(&knArray[i], &batteryInfo[batID].remCap);
+                     }
+                     else if(isBST && (strcmp(name, "bst_state") == 0)) {
+                        batteryInfo[batID].foundState = getKstatUint64(&knArray[i], &batteryInfo[batID].state);
+                     }
+                  }
+               }
+            }
+         }
+      }
+      kstat_close(kc);
+
+      for(unsigned int i = 0; i < maxBatteries; i++) {
+         if(batteryInfo[i].foundLastCap && batteryInfo[i].foundRemCap &&
+            batteryInfo[i].foundState && (batteryInfo[i].lastCap > 0)) {
+
+            unsigned int capacity = (unsigned int)((batteryInfo[i].remCap * 100) / batteryInfo[i].lastCap);
+            if(capacity > 100) {
+               capacity = 100;
+            }
+
+            // ------ Extract status as status code ------------------------
+            int status = 0;   // Unknown
+            if(batteryInfo[i].state & 0x02) {
+               status = 2;    // Charging
+            }
+            else if(batteryInfo[i].state & 0x01) {
+               status = 4;    // Discharging
+            }
+            else if(capacity == 100) {
+               status = 3;    // Full
+            }
+            else {
+               status = 1;    // Not charging
+            }
+
+            // ------ Print battery status and capacity --------------------
+            printf("battery_%u_status=%u\n",   i, status);
+            printf("battery_%u_capacity=%u\n", i, capacity);
+            batteryIDs[batteries++] = i;
+         }
+      }
+   }
 
    // ====== Apple: Obtain battery status via TBD ===========================
 #elif defined(__APPLE__)
