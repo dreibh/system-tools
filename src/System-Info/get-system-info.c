@@ -851,7 +851,7 @@ static void showBatteryInformation(void)
       close(apmFD);
    }
 
-   // ====== SunOS: Obtain battery status via TBD ===========================
+   // ====== Solaris: Obtain battery status via kstat =======================
 #elif defined(__sun__)
    kstat_ctl_t* kc = kstat_open();
    if(kc != nullptr) {
