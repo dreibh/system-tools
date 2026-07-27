@@ -84,13 +84,13 @@ static const char* findSecondsPlaceholder(const char* formatString)
 
 // ###### Print integer value ###############################################
 static void printBigInteger(
-#if (defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
-   _BitInt(128)  value,
+#if (defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202311L) && defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
+   _BitInt(128) value,
 #else
-   long long     value,
+   long long    value,
 #endif
-   const int     base,
-   const bool    withPrefix)
+   const int    base,
+   const bool   withPrefix)
 {
    if(value < 0) {
       putchar('-');
@@ -286,12 +286,12 @@ int main(int argc, char** argv)
 
             // ------ Parse the middle part (seconds) -----------------------
             if(remainder1 != nullptr) {
-               char*  remainder2    = nullptr;
-               double total_seconds = strtod(remainder1, &remainder2);
-               if( (remainder2 != remainder1) && (total_seconds >= 0.0) ) {
+               char*  remainder2 = nullptr;
+               double seconds    = strtod(remainder1, &remainder2);
+               if( (remainder2 != remainder1) && (seconds >= 0.0) ) {
                   // Split seconds into integer seconds and nanoseconds:
-                  t.tm_sec = (int)total_seconds;
-                  double fraction = total_seconds - t.tm_sec;
+                  t.tm_sec = (int)seconds;
+                  const double fraction = seconds - t.tm_sec;
                   nanoseconds = (long long)(fraction * 1e9 + 0.5);   // +0.5 for rounding safety
                   if(nanoseconds >= 1000000000LL) {
                      t.tm_sec += 1;
@@ -325,38 +325,38 @@ int main(int argc, char** argv)
       }
 
       // ====== Convert timespec to Unix timestamp ==========================
-#if (defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
+#if (defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202311L) && defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
       const _BitInt(128) unixTS = ((_BitInt(128))1000000000LL * ts.tv_sec) + ts.tv_nsec;
 #else
       // NOTE: A 64-bit signed long long will overflow on April 11, 2262!
       const long long unixTS = (1000000000LL * ts.tv_sec) + ts.tv_nsec;
 #endif
-      if(useInteger != 0) {
-         if(useInteger == 16) {
-            printBigInteger(unixTS / divideBy, 16, false);
-         }
-         else if(useInteger == -16) {
-            printBigInteger(unixTS / divideBy, 16, true);
-         }
-         else {
-            printBigInteger(unixTS / divideBy, 10, false);
-         }
+      if(useInteger == 16) {
+         printBigInteger(unixTS / divideBy, 16, false);
+      }
+      else if(useInteger == -16) {
+         printBigInteger(unixTS / divideBy, 16, true);
       }
       else {
-         const char* format;
-         if(divideBy == 1000000000) {
-            format = "%1.9Lf";
+         printBigInteger(unixTS / divideBy, 10, false);
+         if(useInteger == 0) {
+            const unsigned int fractionalUnixTS =
+               (double)(unixTS - (unixTS / divideBy) * divideBy);
+            const char* format;
+            if(divideBy == 1000000000) {
+               format = ".%09u";
+            }
+            else if(divideBy == 1000000) {
+               format = ".%06u";
+            }
+            else if(divideBy == 1000) {
+               format = ".%03u";
+            }
+            else {
+               format = ".%u";
+            }
+            printf(format, fractionalUnixTS);
          }
-         else if(divideBy == 1000000) {
-            format = "%1.6Lf";
-         }
-         else if(divideBy == 1000) {
-            format = "%1.3Lf";
-         }
-         else {
-            format = "%1.0Lf";
-         }
-         printf(format, (long double)unixTS / (long double)divideBy);
       }
       if(humanReadable) {
          printf(gettext(" %s since the Unix Epoch"), unit);

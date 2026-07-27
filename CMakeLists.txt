@@ -37,6 +37,8 @@ SET(BUILD_MINOR "7")
 SET(BUILD_PATCH "10")
 SET(BUILD_VERSION ${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH})
 
+SET(CMAKE_CXX_STANDARD 23)
+
 
 #############################################################################
 #### CMAKE INCLUDES                                                      ####

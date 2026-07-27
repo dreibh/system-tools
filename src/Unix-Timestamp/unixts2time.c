@@ -222,10 +222,10 @@ int main(int argc, char** argv)
 
       // ====== Parse the next Unix timestamp ===============================
       else {
-         // ------ Try to parse integer -------------------------------------
+         // ------ Try to parse integer part --------------------------------
          char* endptr;
          unixTS = strtoll(argv[i], &endptr, 0);
-         if( (endptr != nullptr) && (*endptr == 0x00) ) {
+         if(endptr != nullptr) {
             if(divideBy == 0) {
                if( (unixTS > -5000000000LL) && (unixTS < 5000000000LL) ) {
                   divideBy = 1000000000;
@@ -245,37 +245,22 @@ int main(int argc, char** argv)
                }
             }
             unixTS *= divideBy;   // convert to ns
-         }
 
-         // ------ Try to parse double --------------------------------------
-         else {
-            const long double unixTSasDouble = strtold(argv[i], &endptr);
-            if( (endptr != nullptr) && (*endptr == 0x00) ) {
-               if(divideBy == 0) {
-                  if( (unixTSasDouble > -5000000000.0) && (unixTSasDouble < 5000000000.0) ) {
-                     divideBy = 1000000000;
-                     unit     = "s";
-                  }
-                  else if( (unixTSasDouble > -5000000000000.0) && (unixTSasDouble < 5000000000000.0) ) {
-                     divideBy = 1000000;
-                     unit     = "ms";
-                  }
-                  else if( (unixTSasDouble > -5000000000000000.0) && (unixTSasDouble < 5000000000000000.0) ) {
-                     divideBy = 1000;
-                     unit     = "µs";
-                  }
-                  else {
-                     divideBy = 1;
-                     unit     = "ns";
-                  }
+            // ------ Try to parse fractional part --------------------------
+            if(*endptr != 0x00) {
+               const double fractionalUnixTS = strtod(endptr, &endptr);
+               if(endptr != nullptr) {
+                  const unsigned int additionalNS =
+                     (unsigned int)(fractionalUnixTS * divideBy);
+                  unixTS = (unixTS >= 0) ? (unixTS + additionalNS) :
+                                           (unixTS - additionalNS);
                }
-               unixTS = unixTSasDouble * divideBy;   // convert to ns
             }
-            else {
-               fputs(gettext("ERROR: Invalid Unix timestamp!"), stderr);
-               fputs("\n", stderr);
-               exit(1);
-            }
+         }
+         if( (endptr == nullptr) || (*endptr != 0x00) ) {
+            fputs(gettext("ERROR: Invalid Unix timestamp!"), stderr);
+            fputs("\n", stderr);
+            exit(1);
          }
       }
 
