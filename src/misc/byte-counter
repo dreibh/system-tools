@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+for interface in tun0 tun1 wlp4s0 ; do
+   rx="$(cat "/sys/class/net/${interface}/statistics/rx_packets" || true)"
+   tx="$(cat "/sys/class/net/${interface}/statistics/tx_packets" || true)"
+
+   counters="$(LC_ALL=de_DE.UTF-8 printf "TX: %'12u\nRX: %'12u" "${tx}" "${rx}")"
+   figlet -f smmono9 -w 128 "${counters}"
+done
