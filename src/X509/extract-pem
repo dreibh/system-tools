@@ -33,7 +33,7 @@ set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="extract-pem"
-# export TEXTDOMAINDIR="${PWD}/locale"   # Default: "/usr/share/locale"
+[[ ! "@CMAKE_INSTALL_FULL_DATADIR@" == @* ]] && export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
 
 # shellcheck disable=SC1091
 . gettext.sh
