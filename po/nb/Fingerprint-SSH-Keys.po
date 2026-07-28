@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-15 17:50+0200\n"
+"POT-Creation-Date: 2026-07-28 14:34+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -47,17 +47,25 @@ msgstr ""
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:142
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:61
+msgid "ERROR: Bash 4.4 or higher is required!"
+msgstr "FEIL: Bash 4.4 eller høyere er nødvendig!"
+
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:87
+msgid "ERROR: Enhanced/GNU getopt is required!"
+msgstr "FEIL: Enhanced/GNU getopt er nødvendig!"
+
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:144
 #, sh-format
 msgid "Fingerprints of ${hostname} in raw format:"
 msgstr "Fingeravtrykk av ${hostname} i råformat:"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:169
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:171
 #, sh-format
 msgid "Fingerprints of ${hostname} in SSH format:"
 msgstr "Fingeravtrykk av ${hostname} i SSH-format:"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:180
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:182
 #, sh-format
 msgid "Fingerprints of ${hostname} in DNS RR format:"
 msgstr "Fingeravtrykk av ${hostname} i DNS-RR-format:"

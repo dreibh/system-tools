@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-15 17:50+0200\n"
+"POT-Creation-Date: 2026-07-28 14:34+0200\n"
 "PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -47,96 +47,104 @@ msgstr ""
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/System-Maintenance/System-Maintenance:128
+#: src/System-Maintenance/System-Maintenance:62
+msgid "ERROR: Bash 4.4 or higher is required!"
+msgstr "FEHLER: Bash 4.4 oder höher ist erforderlich!"
+
+#: src/System-Maintenance/System-Maintenance:88
+msgid "ERROR: Enhanced/GNU getopt is required!"
+msgstr "FEHLER: Enhanced/GNU getopt ist erforderlich!"
+
+#: src/System-Maintenance/System-Maintenance:130
 msgid "ERROR: System-Maintenance requires superuser permissions!"
 msgstr "FEHLER: System-Maintenance erfordert Superuser-Berechtigungen!"
 
-#: src/System-Maintenance/System-Maintenance:147
+#: src/System-Maintenance/System-Maintenance:149
 msgid "Stopping AutoFS service ..."
 msgstr "Stoppe AutoFS-Dienst ..."
 
-#: src/System-Maintenance/System-Maintenance:163
-#: src/System-Maintenance/System-Maintenance:177
+#: src/System-Maintenance/System-Maintenance:165
+#: src/System-Maintenance/System-Maintenance:179
 msgid "Updating package repositories ..."
 msgstr "Aktualisiere Paketquellen ..."
 
-#: src/System-Maintenance/System-Maintenance:210
+#: src/System-Maintenance/System-Maintenance:212
 msgid "Applying package fixes, if necessary ..."
 msgstr "Repariere Pakete, falls notwendig ..."
 
-#: src/System-Maintenance/System-Maintenance:218
+#: src/System-Maintenance/System-Maintenance:220
 msgid "Installing missing dependencies, if necessary ..."
 msgstr "Installiere fehlende Abhängigkeiten, falls notwendig ..."
 
-#: src/System-Maintenance/System-Maintenance:231
+#: src/System-Maintenance/System-Maintenance:233
 msgid "Installing updates ..."
 msgstr "Installiere Aktualisierungen ..."
 
-#: src/System-Maintenance/System-Maintenance:325
+#: src/System-Maintenance/System-Maintenance:327
 msgid "Cleaning up ..."
 msgstr "Räume auf ..."
 
-#: src/System-Maintenance/System-Maintenance:380
+#: src/System-Maintenance/System-Maintenance:382
 msgid "Removing obsolete kernels ..."
 msgstr "Entferne obsolete Kernel ..."
 
-#: src/System-Maintenance/System-Maintenance:386
+#: src/System-Maintenance/System-Maintenance:388
 msgid "Kernel Type:        "
 msgstr "Kernel-Typ:          "
 
-#: src/System-Maintenance/System-Maintenance:387
+#: src/System-Maintenance/System-Maintenance:389
 msgid "Kernel Boot Version:"
 msgstr "Kernel Boot-Version: "
 
-#: src/System-Maintenance/System-Maintenance:388
+#: src/System-Maintenance/System-Maintenance:390
 msgid "Kernel Disk Version:"
 msgstr "Kernel Disk-Version: "
 
-#: src/System-Maintenance/System-Maintenance:464
+#: src/System-Maintenance/System-Maintenance:466
 msgid "To be removed:"
 msgstr "Zu entfernen:"
 
-#: src/System-Maintenance/System-Maintenance:467
+#: src/System-Maintenance/System-Maintenance:469
 msgid "To be kept:"
 msgstr "Zu behalten:"
 
-#: src/System-Maintenance/System-Maintenance:494
+#: src/System-Maintenance/System-Maintenance:496
 msgid "Refreshing snaps ..."
 msgstr "Aktualisiere Snaps ..."
 
-#: src/System-Maintenance/System-Maintenance:501
+#: src/System-Maintenance/System-Maintenance:503
 msgid "Checking for firmware updates ..."
 msgstr "Prüfe auf Firmwareaktualisierungen ..."
 
-#: src/System-Maintenance/System-Maintenance:508
+#: src/System-Maintenance/System-Maintenance:510
 msgid "Updating caches ..."
 msgstr "Aktualisiere Caches ..."
 
-#: src/System-Maintenance/System-Maintenance:537
+#: src/System-Maintenance/System-Maintenance:539
 msgid "Starting AutoFS service ..."
 msgstr "Starte AutoFS-Dienst ..."
 
-#: src/System-Maintenance/System-Maintenance:543
+#: src/System-Maintenance/System-Maintenance:545
 msgid "Synchronising system time ..."
 msgstr "Synchronisiere Systemzeit ..."
 
-#: src/System-Maintenance/System-Maintenance:612
+#: src/System-Maintenance/System-Maintenance:614
 #, sh-format
 msgid "Updated system time to ${now}."
 msgstr "Die Systemzeit wurde auf ${now} aktualisiert."
 
-#: src/System-Maintenance/System-Maintenance:620
+#: src/System-Maintenance/System-Maintenance:622
 msgid "No system time update possible."
 msgstr "Keine Aktualisierung der Systemzeit möglich."
 
-#: src/System-Maintenance/System-Maintenance:627
+#: src/System-Maintenance/System-Maintenance:629
 msgid "Running fstrim ..."
 msgstr "Führe Trimming durch ..."
 
-#: src/System-Maintenance/System-Maintenance:633
+#: src/System-Maintenance/System-Maintenance:635
 msgid "Running zpool trim ..."
 msgstr "Führe ZFS-Trimming durch ..."
 
-#: src/System-Maintenance/System-Maintenance:643
+#: src/System-Maintenance/System-Maintenance:645
 msgid "Done!"
 msgstr "Erledigt!"
