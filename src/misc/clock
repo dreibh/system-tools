@@ -33,11 +33,13 @@ set -euo pipefail
 
 while true ; do
    (
-      # Clear screen:
+      # ====== Clear screen =================================================
       echo -en "\x1b[H\x1b[2J"
 
-      # Print the clock:
-      cols=$((COLUMNS - 8))
+      # ====== Print the clock ==============================================
+      # shellcheck disable=SC2034
+      read -r columns rows < <(print-utf8 -t)
+      cols=$((columns - 8))
       print-utf8 -n -s "\e[1;34m╔" "═" "╗\e[0m"
       date +"%Y-%m-%d %H:%M:%S" | ( echo "" ; figlet -w ${cols} -f mono12 ) | \
          print-utf8 -n -C "\e[1;34m║\e[1;31m" "\e[1;34m║\e[0m"
