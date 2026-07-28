@@ -434,7 +434,7 @@ int main (int argc, char** argv)
    if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
-   bindtextdomain("text-block", nullptr);
+   bindtextdomain("text-block", SYSTEMTOOLS_LOCALEDIR);
    textdomain("text-block");
 
    // ====== Handle arguments ===============================================

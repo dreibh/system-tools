@@ -640,7 +640,7 @@ int main (int argc, char** argv)
          setlocale(LC_CTYPE, "C.UTF-8");
       }
    }
-   bindtextdomain("print-utf8", nullptr);
+   bindtextdomain("print-utf8", SYSTEMTOOLS_LOCALEDIR);
    textdomain("print-utf8");
 
    // ====== Handle arguments ===============================================
