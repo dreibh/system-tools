@@ -33,7 +33,7 @@ set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="Fingerprint-SSH-Keys"
-[[ ! "@CMAKE_INSTALL_FULL_DATADIR@" == @* ]] && export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
+[[ "@CMAKE_INSTALL_FULL_DATADIR@" != @* ]] && export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
 
 # shellcheck disable=SC1091
 . gettext.sh
@@ -58,7 +58,8 @@ version () {
 
 # ====== Handle arguments ===================================================
 if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
-   echo "ERROR: Bash 4.4 or higher is required, but Bash ${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]} is installed!"
+   gettext >&2 "ERROR: Bash 4.4 or higher is required!"
+   echo >&2
    exit 1
 fi
 UNAME="$(uname)"
@@ -83,7 +84,8 @@ case "${UNAME}" in
       ;;
 esac
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
-   echo >&2 "ERROR: Enhanced/GNU getopt is required!"
+   gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
+   echo >&2
    exit 1
 fi
 options="$(${GETOPT} -o drphv --long include-deprecated,include-raw,include-raw-python,help,version -a -- "$@")"
