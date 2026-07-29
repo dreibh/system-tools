@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-15 17:50+0200\n"
+"POT-Creation-Date: 2026-07-28 14:34+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -47,35 +47,43 @@ msgstr ""
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/X509/extract-pem:142
+#: src/X509/extract-pem:61
+msgid "ERROR: Bash 4.4 or higher is required!"
+msgstr "FEIL: Bash 4.4 eller høyere er nødvendig!"
+
+#: src/X509/extract-pem:87
+msgid "ERROR: Enhanced/GNU getopt is required!"
+msgstr "FEIL: Enhanced/GNU getopt er nødvendig!"
+
+#: src/X509/extract-pem:144
 msgid "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
 msgstr "FEIL: --only-first-entry og --skip-first-entry/--skip-last-entry utelukker hverandre!"
 
-#: src/X509/extract-pem:157
+#: src/X509/extract-pem:159
 #, sh-format
 msgid "ERROR: Unable to find PEM file ${PEM_FILE}!"
 msgstr "FEIL: Finner ikke PEM-filen ${PEM_FILE}!"
 
-#: src/X509/extract-pem:163
+#: src/X509/extract-pem:165
 #, sh-format
 msgid "Extracting ${PEM_FILE} ..."
 msgstr "Ekstraherer ${PEM_FILE} ..."
 
-#: src/X509/extract-pem:194
+#: src/X509/extract-pem:196
 #, sh-format
 msgid "ERROR: Unexpected type ${type} in ${PEM_FILE}!"
 msgstr "FEIL: Uventet type ${type} i ${PEM_FILE}!"
 
-#: src/X509/extract-pem:201
+#: src/X509/extract-pem:203
 #, sh-format
 msgid "ERROR: Unexpected data in ${PEM_FILE}!"
 msgstr "FEIL: Uventede data i ${PEM_FILE}!"
 
-#: src/X509/extract-pem:216 src/X509/extract-pem:231
+#: src/X509/extract-pem:218 src/X509/extract-pem:233
 msgid "SKIPPING"
 msgstr "HOPPES OVER"
 
-#: src/X509/extract-pem:242
+#: src/X509/extract-pem:244
 #, sh-format
 msgid "Done: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys"
 msgstr "Ferdig: ${certificate} sertifikater, ${csr} CSR-er, ${crl} CRL-er, ${key} nøkler"

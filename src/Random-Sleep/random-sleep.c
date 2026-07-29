@@ -108,7 +108,7 @@ int main(int argc, char** argv)
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
    setlocale(LC_NUMERIC, "C.UTF-8");  // Use "." for fractional numbers!
-   bindtextdomain("random-sleep", nullptr);
+   bindtextdomain("random-sleep", SYSTEMTOOLS_LOCALEDIR);
    textdomain("random-sleep");
 
    // ====== Handle arguments ===============================================

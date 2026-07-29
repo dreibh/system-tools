@@ -365,6 +365,15 @@ static int icu_wcswidth(const wchar_t* str, size_t len) {
          continue;
       }
 
+      // Handle country flags (e.g. 🇳🇴):
+      if( u_hasBinaryProperty(c, UCHAR_REGIONAL_INDICATOR) ) {
+         if( (i + 1 < len) && u_hasBinaryProperty((UChar32)str[i + 1], UCHAR_REGIONAL_INDICATOR) ) {
+            width += 2;
+            i++;   // Skip the second Regional Indicator character in the pair
+            continue;
+         }
+      }
+
       // Query East Asian width (wide/fullwidth):
       const UEastAsianWidth eaw =
          (UEastAsianWidth)u_getIntPropertyValue(c, UCHAR_EAST_ASIAN_WIDTH);
@@ -640,7 +649,7 @@ int main (int argc, char** argv)
          setlocale(LC_CTYPE, "C.UTF-8");
       }
    }
-   bindtextdomain("print-utf8", nullptr);
+   bindtextdomain("print-utf8", SYSTEMTOOLS_LOCALEDIR);
    textdomain("print-utf8");
 
    // ====== Handle arguments ===============================================

@@ -122,7 +122,7 @@ int main(int argc, char** argv)
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
    }
    setlocale(LC_NUMERIC, "C");   // Use "." for fractional numbers!
-   bindtextdomain("unixts2time", nullptr);
+   bindtextdomain("unixts2time", SYSTEMTOOLS_LOCALEDIR);
    textdomain("unixts2time");
 
    // ====== Handle arguments ===============================================

@@ -55,7 +55,7 @@ else
       FreeBSD) icon="😈" ;;
       NetBSD)  icon="🚩" ;;
       OpenBSD) icon="🐡" ;;
-      SunOS)   icon="☀️" ;;
+      SunOS)   icon="🌞" ;;
       Darwin)  icon="🍎" ;;
       GNU)     icon="🦬" ;;
       *)       icon="💻" ;;
