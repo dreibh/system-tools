@@ -143,7 +143,8 @@ OPTION(WITH_UNIX_TIMESTAMP_TOOLS       "Include Unix-Timestamp Tools"       ON)
 OPTION(WITH_X509_TOOLS                 "Include X.509 Tools"                ON)
 OPTION(WITH_GIMP_SCRIPTS               "Include GIMP-Scripts"               ON)
 OPTION(WITH_GIMP_SCRIPTS_EXAMPLES      "Include GIMP-Scripts Examples"      ON)
-OPTION(WITH_MISCELLANEOUS_TOOLS        "Include miscellaneous tools"  ON)
+
+OPTION(WITH_MISCELLANEOUS_TOOLS        "Include miscellaneous tools"        OFF)
 
 IF (WITH_SYSTEM_INFO AND NOT (WITH_GET_SYSTEM_INFO AND WITH_PRINT_UTF8))
    MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO requires WITH_GET_SYSTEM_INFO and WITH_PRINT_UTF8!")
