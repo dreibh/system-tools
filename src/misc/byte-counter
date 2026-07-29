@@ -31,8 +31,58 @@
 # Bash options:
 set -euo pipefail
 
-INTERFACES=( wlp4s0 tun0 tun1 )
 
+INTERFACES=( starlink oneweb viasat student )
+FONT="future"
+RX="Recv"
+TX="Send"
+UNAME="$(uname)"
+
+
+# ###### Get RX and TX counters #############################################
+get-counters ()
+{
+   local interface="$1"
+   local rx=""
+   local tx=""
+
+   case "${UNAME}" in
+      Linux)
+         if [ -f "/sys/class/net/${interface}/statistics/rx_bytes" ] ; then
+            rx="$(cat "/sys/class/net/${interface}/statistics/rx_bytes" || true)"
+            tx="$(cat "/sys/class/net/${interface}/statistics/tx_bytes" || true)"
+         fi
+         ;;
+
+      FreeBSD|NetBSD|OpenBSD|Darwin)
+         # BSD systems and macOS use netstat with -b (bytes) and -I <interface>
+         read -r rx tx <<< "$(netstat -b -n -I "${interface}" 2>/dev/null | awk '
+            NR==1 {
+               for (i=1; i<=NF; i++) {
+                  if (tolower($i) == "ibytes") rxcol=i
+                  if (tolower($i) == "obytes") txcol=i
+               }
+            }
+            NR>1 && rxcol && txcol {
+                print $rxcol, $txcol
+                exit
+            }')"
+         ;;
+
+      SunOS|Solaris)
+         # Solaris uses the kstat (kernel statistics) framework
+         rx="$(kstat -p "*:*:${interface}:rbytes*" "*:${interface}:*:rbytes*" "${interface}:*:*:rbytes*" 2>/dev/null | awk 'NR==1 {print $2}')"
+         tx="$(kstat -p "*:*:${interface}:obytes*" "*:${interface}:*:obytes*" "${interface}:*:*:obytes*" 2>/dev/null | awk 'NR==1 {print $2}')"
+         ;;
+      *)
+         ;;
+   esac
+   echo "${rx} ${tx}"
+}
+
+
+
+# ###### Main program #######################################################
 while true ; do
    (
       # ====== Clear screen =================================================
@@ -47,8 +97,8 @@ while true ; do
          elif [[ "${interface}" =~ ^(w) ]] ; then
             icon="🛜"
          fi
-         rx="$(cat "/sys/class/net/${interface}/statistics/rx_bytes" || true)"
-         tx="$(cat "/sys/class/net/${interface}/statistics/tx_bytes" || true)"
+
+         read -r rx tx < <(get-counters "${interface}")
 
          # shellcheck disable=SC2034
          read -r columns rows < <(print-utf8 -t)
@@ -60,8 +110,16 @@ while true ; do
             print-utf8 -n -s "\e[1;34m╠═ ${icon}${interface} " "═" "╣\e[0m"
          fi
          (
-            LC_ALL=en_US.UTF-8 printf "RX: %'16u" "${rx}" | figlet -w "${cols}" -f mono12
-            LC_ALL=en_US.UTF-8 printf "TX: %'16u" "${tx}" | figlet -w "${cols}" -f mono12
+            if [ "${rx}" != "" ] ; then
+               LC_ALL=en_US.UTF-8 printf "${RX}: %'16u B" "${rx}"
+            else
+               echo "${RX}: N/A"
+            fi | figlet -w "${cols}" -f "${FONT}"
+            if [ "${tx}" != "" ] ; then
+               LC_ALL=en_US.UTF-8 printf "${TX}: %'16u B" "${tx}"
+            else
+               echo "${TX}: N/A"
+            fi | figlet -w "${cols}" -f "${FONT}"
          ) | print-utf8 -n -C "\e[1;34m║\e[1;31m" "\e[1;34m║\e[0m"
 
          n=$((n + 1))
