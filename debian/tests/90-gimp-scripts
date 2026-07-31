@@ -40,7 +40,6 @@ INPUT3="Fractal"
 
 WIDTH=1980
 HEIGHT=1080
-PREVIEW_WIDTH=512
 
 
 # ###### Main program #######################################################
