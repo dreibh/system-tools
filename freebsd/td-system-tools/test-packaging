@@ -18,10 +18,10 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-PACKAGE=`cat Makefile | grep "^PORTNAME=" | sed -e "s/^PORTNAME=//g" | tr -d " \t"`
-UPSTREAM_VERSION=`cat Makefile | grep "^DISTVERSION=" | sed -e "s/^DISTVERSION=//g" | tr -d " \t"`
-PORTREVISION=`cat Makefile | grep "^PORTREVISION=" | sed -e "s/^PORTREVISION=//g" | tr -d " \t"`
-CATEGORY=`cat Makefile | grep "^CATEGORIES=" | sed -e "s/^CATEGORIES=//g" | tr -d " \t"`
+PACKAGE="$(cat Makefile | grep "^PORTNAME=" | sed -e "s/^PORTNAME=//g" | tr -d " \t")"
+UPSTREAM_VERSION="$(cat Makefile | grep "^DISTVERSION=" | sed -e "s/^DISTVERSION=//g" | tr -d " \t")"
+PORTREVISION="$(cat Makefile | grep "^PORTREVISION=" | sed -e "s/^PORTREVISION=//g" | tr -d " \t")"
+CATEGORY="$(cat Makefile | grep "^CATEGORIES=" | sed -e "s/^CATEGORIES=//g" | tr -d " \t")"
 
 PACKAGE_VERSION="${UPSTREAM_VERSION}"
 if [ "${PORTREVISION}" != "" ] ; then
@@ -40,9 +40,9 @@ echo "######################################################################"
 if [ -e work ] ; then
    rm -rf work
 fi
-rm -f ${PACKAGE}-${PACKAGE_VERSION}.txz
+rm -f "${PACKAGE}-${PACKAGE_VERSION}.txz"
 if [ -d work/pkg ] ; then
-   find work/pkg -name "${PACKAGE}*.txz" | xargs rm -f
+   find work/pkg -name "${PACKAGE}*.txz" -type f -exec rm -f {} +
 fi
 
 
@@ -59,7 +59,7 @@ if [ ! -e "work/pkg/${PACKAGE}-${PACKAGE_VERSION}.pkg" ] ; then
    echo >&2 "ERROR: Package work/pkg/${PACKAGE}-${PACKAGE_VERSION}.pkg not found!"
    exit 1
 fi && \
-pkg add work/pkg/${PACKAGE}-${PACKAGE_VERSION}.pkg && \
+pkg add work/pkg/"${PACKAGE}"-"${PACKAGE_VERSION}".pkg && \
 echo "6. ###### make deinstall ##############################################" && \
 make deinstall && \
 echo "7. ###### make reinstall ##############################################" && \
@@ -67,7 +67,7 @@ make reinstall && \
 echo "8. ###### make package ################################################" && \
 make package && \
 echo "9. ###### tar tzvf *.pkg ##############################################" && \
-tar tzvf work/pkg/${PACKAGE}-${PACKAGE_VERSION}.pkg && \
+tar tzvf "work/pkg/${PACKAGE}-${PACKAGE_VERSION}.pkg" && \
 echo "Running portlint ..." && \
 portlint && \
 echo "====== Successfully completed! ======"
