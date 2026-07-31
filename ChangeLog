@@ -1,3 +1,355 @@
+commit 38752f318e2dec60f918678400c8cb7755e042eb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 31 11:26:42 2026 +0200
+
+    Further clean-ups.
+
+commit 776e793eca014c49a661105c628b399fd203b235
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 31 11:24:23 2026 +0200
+
+    Further ShellCheck clean-ups.
+
+commit 660a4174809a25da69ad67ca390466e376cc1d53
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 31 11:19:56 2026 +0200
+
+    Minor clean-up.
+
+commit 96983e49205334ba499846d12cff8a7675d1ca92
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 31 11:19:06 2026 +0200
+
+    Improved compatibility of ShellCheck script.
+
+commit 4b779c0d543f127805a5cc7f95e7ffd21d6f78f9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 28 15:11:18 2026 +0200
+
+    Updated PO files.
+
+commit ef723836537074580f41524970d0c76358e18893
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 28 13:08:31 2026 +0000
+
+    Solaris UTF-8 character width computation fix.
+
+commit 5ba247e608aae3bbb0badde0866172f113a82da4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 28 14:34:46 2026 +0200
+
+    Updated translations.
+
+commit 23f14ac5698a53e8a330412b7a4a52739c259c7c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 28 14:28:12 2026 +0200
+
+    Improved checks for Bash version and enhanced getopt.
+
+commit 0e00b3fb1e1323fdeaac952cd9a5c522c1c109df
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 28 12:58:39 2026 +0200
+
+    Also need to set TEXTDOMAINDIR in scripts explicitly.
+
+commit 39a99cfe9e7669d92e62245a8a66629a64b8e567
+Merge: 727a9c6 d13052b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 28 12:42:43 2026 +0200
+
+    Merge branch 'master' of github.com:dreibh/system-tools
+
+commit 727a9c6306d6073b41242b26511e344754a0a62f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 28 12:41:57 2026 +0200
+
+    Explicitly set locale directory in bindtextdomain() call.
+
+commit d13052bb7adb6d57d5fc94a246932d0da8100f9c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 27 20:49:26 2026 +0000
+
+    Updated comment.
+
+commit 354674a0425a25975e2ccfb6dfa8e408dd705c98
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 27 20:46:58 2026 +0000
+
+    Added Solaris battery status block.
+
+commit 7394954f5f0000425372b73f736e9711fede8b04
+Merge: 8d67bd5 825fcf2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 27 15:45:14 2026 +0200
+
+    Merge branch 'master' of github.com:dreibh/system-tools
+
+commit 8d67bd5f749c54f04b5f2dddf6f2d8799f7a7565
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 27 15:45:00 2026 +0200
+
+    Improved example.
+
+commit c656075f9f9d427c81b2ef66648436c53ebd3361
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jul 27 15:44:22 2026 +0200
+
+    Added test script.
+
+commit 825fcf2551699165b552a0d873f8e1e797ff2d8a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 24 21:21:11 2026 +0000
+
+    Fixed Debian/armhf build issue.
+
+commit 3acd852be15d3d35f2e9971981e14ea106418e14
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 24 22:36:45 2026 +0200
+
+    CMakeLists.txt update to use C23.
+
+commit 99d67b708afe8e44a8edbf119aae5e2b46045aae
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 24 22:02:54 2026 +0200
+
+    Updated PO files.
+
+commit 617101234edd861a44d6bd7f2e74da3129e452a9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 24 22:02:17 2026 +0200
+
+    No need for "long double" type any more.
+
+commit e3dadb615f3fc7077a717e45a14c17d69f10a264
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 24 22:01:09 2026 +0200
+
+    Code clean-ups for the Unix timestamp printing code.
+
+commit 12a68785ef2c9372829969b9a3844b8ca35d7265
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 24 21:46:28 2026 +0200
+
+    Code clean-ups for the Unix timestamp parsing code.
+
+commit f376782383556f72cf82846589a215c6911f98f8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 24 11:13:27 2026 +0200
+
+    Updated PO files.
+
+commit 6b8ac5e4c35dabd8e33252229312ada7b61a3ebd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 24 09:10:11 2026 +0000
+
+    Solaris UTF-8 handling fix: Using libicuuc-based replacement for wcswidth() to properly compute UTF-8 string widths.
+
+commit 9cd13594b2cc4250bff254cc787dd629b683e9cc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 24 10:30:57 2026 +0200
+
+    Also improved the company logo example.
+
+commit 9c3b70f889fd7bb29027bf584d52ecb0381fc33e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 24 10:25:17 2026 +0200
+
+    Some improvements for the hostname example script.
+
+commit 3b595ec7a20bbe0a05b979440e77edf8a97b1bf3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 24 10:12:10 2026 +0200
+
+    Improved example scripts.
+
+commit abfa84040a77661d8decd7407906860add8924d5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 21:01:47 2026 +0000
+
+    Added explicit type casts to fix warnings under Solaris.
+
+commit a842b160ab588712c11470a3a03517e47ad5ac02
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 22:09:52 2026 +0200
+
+    Dependency update: Using libsystemd on SystemD-based systems.
+
+commit c83cc748cf458171e99ec0d125d2be4f94f557c2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 22:03:47 2026 +0200
+
+    Improved CMakeLists.txt.
+
+commit 639e678403be32b1807839a631fb37010d0c69fc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 21:46:48 2026 +0200
+
+    Some clean-ups.
+
+commit 24ca732b9cee4bb31bb7588e1b6733629938133d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 21:41:31 2026 +0200
+
+    Replaced deprecated sys/termios.h by termios.h.
+
+commit cea58e9d456f8053616ed2019502a2929155015c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 21:40:32 2026 +0200
+
+    Added SystemD support to obtain the number of user sessions, e.g. under Ubuntu 26.04.
+
+commit e7e857c83ba51f8b805f7dce9d5e9b7c4845df63
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 15:45:54 2026 +0000
+
+    Added type casts.
+
+commit 5c3765cf214a2902357d3b7ed14708ae6c9c9816
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 16:29:49 2026 +0200
+
+    Yet another update of the example.
+
+commit 118973a79647e5b1627f15c1b93ce5ccd0924b14
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 16:28:28 2026 +0200
+
+    Simplified CMakeLists.txt.
+
+commit 265f65a33c741955d608a188355c3c67a3ffe381
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 16:26:06 2026 +0200
+
+    Simplified example.
+
+commit 3c4a33e1de1f7d6edc531f795febd425f6f7fb5a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 16:21:15 2026 +0200
+
+    Further improvements of the banner example.
+
+commit e54b3fa3e2bf50e9ee523b55115991a89f6e57f3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 16:09:22 2026 +0200
+
+    Improved example.
+
+commit 179f6671d89aada6bf5652f180431a629169ef3b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 15:55:03 2026 +0200
+
+    C23 build fix.
+
+commit 06ef1fe184a50f1cf0d1616e3b42331e69ec8790
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 13:30:57 2026 +0000
+
+    Fixed Solaris hostname configuration.
+
+commit 114d97eaa54a29d4481117effb1056d00026c33c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 13:14:27 2026 +0000
+
+    Added missing solaris case for hostname update.
+
+commit 7156ad43889f5b823d238ae25282def31eaf480e
+Merge: 8c92e5c 881d26f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 15:00:53 2026 +0200
+
+    Merge branch 'master' of github.com:dreibh/system-tools
+
+commit 8c92e5c349f344f062c556e7a6248b29428fd047
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 14:59:58 2026 +0200
+
+    NetBSD fix: Using mbuffer "-s 64k" instead of "-s 16k", to avoid warning.
+
+commit 881d26f04baeaa187afe862b1e66138c4375c040
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 23 14:10:37 2026 +0200
+
+    NetBSD configuration directory lookup fix.
+
+commit a094ca89c582b43f1760efa599943b2474acecf7
+Merge: 064663e 3c58098
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 21 14:01:13 2026 +0200
+
+    Merge branch 'master' of https://github.com/dreibh/system-tools
+
+commit 064663e00ed13c690b5faa14c37b931bfd8aad96
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Jul 21 14:01:06 2026 +0200
+
+    CMakeLists.txt clean-ups.
+
+commit 3c5809817c094bf2a12ecd1fd02cc710f74800db
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Jul 19 13:10:45 2026 +0200
+
+    NetBSD fonts path fix.
+
+commit c6c8b735d43bb7d0bb872deca31c6db50d44f20f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jul 18 16:44:19 2026 +0200
+
+    Updated build helper script.
+
+commit b287addf39fd4ec7bb02222a71da77435dc8e681
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jul 18 15:26:53 2026 +0200
+
+    Further NetBSD improvements in CMakeLists.txt.
+
+commit 01fce603b9754e3d3119235cc05d4b4178324b3d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jul 18 15:10:59 2026 +0200
+
+    Improved build helper script.
+
+commit 36c70ed351b7427d82a2adf48ed55a938eb97680
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jul 18 15:00:38 2026 +0200
+
+    CMakeLists.txt fix for NetBSD: need to set CMAKE_INSTALL_RPATH_USE_LINK_PATH if necessary.
+
+commit c1f8da8e3ea626d96511e92cdedcf583f58acede
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jul 18 13:48:54 2026 +0200
+
+    Also updated the other GIMP scripts.
+
+commit c170390f638c54d89d73129510ddf86da6d86b31
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jul 18 13:45:44 2026 +0200
+
+    Minor update.
+
+commit 3e2f3048b578a3048473a1a2d43e230bc2cff749
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Jul 18 13:42:53 2026 +0200
+
+    Improved OpenBSD support.
+
+commit 4405b07341218d9f8afdff0daf9965e324e68502
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 17:16:25 2026 +0200
+
+    Improved APKBUILD file.
+
+commit 48d71683cd40b62192f133df063166d741ec0674
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 16:58:22 2026 +0200
+
+    Updated FreeBSD port.
+
+commit 7d7f06abc812974c85a7c4c9e2d9032c9ffeafa4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 16 16:35:37 2026 +0200
+
+    New release td-system-tools-2.7.10.
+
 commit b943f1c0cdca9d7ac9732e6c1ae9611ab0ce01a2
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Jul 16 16:16:47 2026 +0200
