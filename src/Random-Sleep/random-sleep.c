@@ -28,6 +28,7 @@
 // Contact: thomas.dreibholz@gmail.com
 
 #define _GNU_SOURCE
+#define __EXTENSIONS__
 #include <ctype.h>
 #include <getopt.h>
 #include <locale.h>

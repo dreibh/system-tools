@@ -1156,16 +1156,30 @@ static void showMemoryInformation(void)
    }
 
 #elif defined(__sun__)
-   // ====== Query swap space via swapctl ===================================
+   // ====== Query physical swap space via swapctl(SC_LIST) =================
    if(pageSize > 0) {
-      struct anoninfo ainfo;
-      if(swapctl(SC_AINFO, &ainfo) >= 0) {
-         swapTotal = (unsigned long long)ainfo.ani_max * (unsigned long)pageSize;
-         swapUsed  = (unsigned long long)ainfo.ani_resv * (unsigned long)pageSize;
-         if(swapTotal >= swapUsed) {
-            swapAvailable = swapTotal - swapUsed;
-         } else {
-            swapAvailable = 0;
+      const int numSwap = swapctl(SC_GETNSWP, nullptr);
+      if(numSwap > 0) {
+         struct swaptable* swapTable = (struct swaptable*)malloc(sizeof(int) + (size_t)numSwap * sizeof(struct swapent));
+         if(swapTable != nullptr) {
+            char pathBuffer[numSwap][MAXPATHLEN];
+            swapTable->swt_n = numSwap;
+            for(int i = 0; i < numSwap; i++) {
+               swapTable->swt_ent[i].ste_path = pathBuffer[i];
+            }
+            const int returned = swapctl(SC_LIST, swapTable);
+            if(returned > 0) {
+               for(int i = 0; i < returned; i++) {
+                  if(!(swapTable->swt_ent[i].ste_flags & ST_INDEL)) {
+                     swapTotal     += (unsigned long long)swapTable->swt_ent[i].ste_pages * (unsigned long)pageSize;
+                     swapAvailable += (unsigned long long)swapTable->swt_ent[i].ste_free  * (unsigned long)pageSize;
+                  }
+               }
+               if(swapTotal >= swapAvailable) {
+                  swapUsed = swapTotal - swapAvailable;
+               }
+            }
+            free(swapTable);
          }
       }
    }

@@ -28,6 +28,7 @@
 // Contact: thomas.dreibholz@gmail.com
 
 #define _GNU_SOURCE
+#define __EXTENSIONS__
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
