@@ -1,3 +1,40 @@
+commit 0b219ca51062396c85d114933be2e6d0361fe1f8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Aug 27 09:28:47 2026 +0000
+
+    Improved SSHFP RR output.
+
+commit c3c0f692061daee599598b41d1244e70f8890d06
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Aug 27 09:00:11 2026 +0000
+
+    Bugfix: Fixed querying the swap size under Solaris.
+
+commit 54d2dbba2c6d4f1ba16b8ddf21a76356750f719f
+Merge: 2e48c7d f7d36f8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 11 14:52:15 2026 +0000
+
+    WIP on master: 2e48c7d Updated FreeBSD port.
+
+commit 2e48c7d12ac602575a36ce4d19e53f700de8b92f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 31 13:49:50 2026 +0200
+
+    Updated FreeBSD port.
+
+commit 2d15c6435117cd7344777bb282d09f30481b08da
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 31 13:21:42 2026 +0200
+
+    Updated APKBUILD file.
+
+commit 7a87b24841deddc5c6d5c27f9718001667375054
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jul 31 12:49:30 2026 +0200
+
+    New release td-system-tools-2.7.11.
+
 commit 38752f318e2dec60f918678400c8cb7755e042eb
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Jul 31 11:26:42 2026 +0200
