@@ -1,3 +1,27 @@
+commit 8d79add36e806c3976b3860e870e3bec61681aae
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 18:09:04 2026 +0200
+
+    PO file updates.
+
+commit 700ba8a7c02336395182b8f2004a206dd990e29e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Sep 2 21:28:51 2026 +0200
+
+    Updated FreeBSD port.
+
+commit ab19df84aaf7d7e7a7f8a90faad8e7162ef0de11
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Sep 1 16:23:43 2026 +0200
+
+    Updated APKBUILD file.
+
+commit 46ec3f27549ea59e0a5ee86e3ded61ca8a367eb7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 31 16:27:43 2026 +0200
+
+    New release td-system-tools-2.7.12.
+
 commit 0b219ca51062396c85d114933be2e6d0361fe1f8
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Aug 27 09:28:47 2026 +0000
