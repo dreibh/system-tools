@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.2.5\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-16 11:06+0200\n"
+"POT-Creation-Date: 2026-09-04 18:08+0200\n"
 "PO-Revision-Date: 2026-07-05 17:56+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -41,25 +41,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/Unix-Timestamp/time2unixts.c:154
+#: src/Unix-Timestamp/time2unixts.c:155
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Unix-Timestamp/time2unixts.c:257
+#: src/Unix-Timestamp/time2unixts.c:258
 msgid "clock_gettime() failed"
 msgstr "clock_gettime() fehlgeschlagen"
 
-#: src/Unix-Timestamp/time2unixts.c:279
+#: src/Unix-Timestamp/time2unixts.c:280
 #, c-format
 msgid "ERROR: malloc() failed: %s!"
 msgstr "FEHLER: malloc() ist fehlgeschlagen: %s!"
 
-#: src/Unix-Timestamp/time2unixts.c:320
+#: src/Unix-Timestamp/time2unixts.c:321
 #, c-format
 msgid "ERROR: Unable to parse time string \"%s\" with format template \"%s\"!"
 msgstr "FEHLER: Zeitzeichenfolge \"%s\" konnte mit Formatvorlage \"%s\" nicht gelesen werden!"
 
-#: src/Unix-Timestamp/time2unixts.c:362
+#: src/Unix-Timestamp/time2unixts.c:363
 #, c-format
 msgid " %s since the Unix Epoch"
 msgstr " %s seit der Unix-Epoche"
