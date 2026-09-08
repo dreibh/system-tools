@@ -1,3 +1,41 @@
+commit 0273e844adfe18591857f25a700da1efafae3566
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Sep 8 17:05:08 2026 +0200
+
+    Updated PO files.
+
+commit 40d566574253e104ef1d8262409528e73e13f313
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Sep 8 17:03:38 2026 +0200
+
+    Bugfix: system-info.d and system-maintenance.d under Homebrew contain symlinks, not files.
+    
+    Also improved handling of script directories.
+
+commit 08003be7000f240929b940964708ab664964dc6f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Sep 8 16:08:34 2026 +0200
+
+    Updated FreeBSD port.
+
+commit 8afc7ab571b6d051f303bb02bdafd55c5e08a03c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Sep 8 12:25:01 2026 +0200
+
+    Updated APKBUILD file.
+
+commit 5d2eb9cc96252ebc46630d39f9e3fd6c4dff49ab
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 18:22:22 2026 +0200
+
+    Updated APKBUILD file.
+
+commit 587ce77acef704b83f6d1452451b0100f036da9b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 4 18:13:14 2026 +0200
+
+    New release td-system-tools-2.7.13.
+
 commit 8d79add36e806c3976b3860e870e3bec61681aae
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Fri Sep 4 18:09:04 2026 +0200
