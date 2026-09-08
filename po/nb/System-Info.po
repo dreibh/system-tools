@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-28 14:34+0200\n"
+"POT-Creation-Date: 2026-09-08 17:04+0200\n"
 "PO-Revision-Date: 2026-01-06 22:58+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -219,12 +219,12 @@ msgstr "FEIL: Bash 4.4 eller høyere er nødvendig!"
 msgid "ERROR: Enhanced/GNU getopt is required!"
 msgstr "FEIL: Enhanced/GNU getopt er nødvendig!"
 
-#: src/System-Info/System-Info:586
+#: src/System-Info/System-Info:601
 #, sh-format
 msgid "ERROR: Unable to find input file ${testSystemInfoInput}!"
 msgstr "FEIL: Inndatafil ${testSystemInfoInput} finnes ikke!"
 
-#: src/System-Info/System-Info:617
+#: src/System-Info/System-Info:632
 #, sh-format
 msgid "System information on ${now}"
 msgstr "Systeminformasjon på ${now}"
