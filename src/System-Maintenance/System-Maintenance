@@ -647,11 +647,27 @@ echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Done!")\x1b[0m"
 
 # ====== Finally, show project package versions =============================
 filterScripts=()
-for directory in /etc/system-maintenance.d /usr/local/etc/system-maintenance.d /usr/pkg/etc/system-maintenance.d ; do
+scriptDirectories=(
+   "/etc/system-maintenance.d"
+   "/usr/local/etc/system-maintenance.d"
+)
+case "${UNAME}" in
+   Linux)
+      scriptDirectories+=( "/home/linuxbrew/.linuxbrew/etc/system-maintenance.d" )
+      ;;
+   NetBSD)
+      scriptDirectories+=( "/usr/pkg/etc/system-maintenance.d" )
+      ;;
+   Darwin)
+      scriptDirectories+=( "/opt/homebrew/etc/system-maintenance.d" )
+      ;;
+esac
+
+for directory in "${scriptDirectories[@]}" ; do
    if [ -d "${directory}" ] ; then
       while IFS= read -r scriptPath ; do
          filterScripts+=( "${scriptPath}" )
-      done < <(find "${directory}" -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" -print | sort -r)
+      done < <(find -L "${directory}" -maxdepth 1 -type f -name "[0-9][0-9]*[^~]" -print | sort -r)
    fi
 done
 
