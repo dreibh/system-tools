@@ -176,7 +176,6 @@ elif [ "${ID}" == "alpine" ] ; then
    apk update
 
 elif [ "${ID}" == "freebsd" ] ; then
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating package repositories ...")\x1b[0m"
    env PAGER=cat freebsd-update fetch || true
    env ASSUME_ALWAYS_YES=yes pkg-static update
    if [ -x /usr/ports/.git ] ; then
