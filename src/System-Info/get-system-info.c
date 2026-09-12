@@ -92,6 +92,8 @@
 #include <utmpx.h>
 #elif defined(__gnu_hurd__)
 #include <dirent.h>
+#include <net/if_arp.h>
+#include <sys/ioctl.h>
 #include <utmpx.h>
 #elif defined(__APPLE__)
 #include <libproc.h>
@@ -948,6 +950,10 @@ static void showBatteryInformation(void)
       }
    }
 
+   // ====== GNU Hurd =======================================================
+#elif defined(__gnu_hurd__)
+   // GNU Hurd does not currently provide battery interface support.
+
    // ====== Apple: Obtain battery status via TBD ===========================
 #elif defined(__APPLE__)
 
@@ -1392,6 +1398,28 @@ static void showNetworkInformation(const bool filterLocalScope)
             printflags(ifaArray[i].flags);
             puts("\"");
             lastFamily = AF_UNSPEC;
+
+#if defined(__gnu_hurd__)
+            // GNU Hurd has to query link-layer addresses via ioctl:
+            int sd = socket(AF_INET, SOCK_DGRAM, 0);
+            if(sd >= 0) {
+               struct ifreq ifr;
+               memset(&ifr, 0, sizeof(ifr));
+               strncpy(ifr.ifr_name, ifaArray[i].ifname, IFNAMSIZ - 1);
+               if(ioctl(sd, SIOCGIFHWADDR, &ifr) == 0) {
+                  if(ifr.ifr_hwaddr.sa_family == ARPHRD_ETHER) {
+                     printf("netif_%u_mac=\"", ifIndices[i]);
+                     const uint8_t*     macAddress       = (const uint8_t*)ifr.ifr_hwaddr.sa_data;
+                     const unsigned int macAddressLength = 6;
+                     for(unsigned int i = 0; i < macAddressLength; i++) {
+                        printf("%s%02x", (i > 0) ? ":" : "", macAddress[i]);
+                     }
+                     puts("\"");
+                  }
+               }
+               close(sd);
+            }
+#endif
          }
 
          if(lastFamily != ifaArray[i].address->sa_family) {
