@@ -612,7 +612,10 @@ if [ ${updatedTime} -eq 1 ] ; then
    now="$(date)"
    eval_gettext "Updated system time to \${now}."
    echo
-   if command -v hwclock >/dev/null ; then
+   if [ "${UNAME}" == "GNU" ] ; then
+      # GNU Hurd currently does not support writing to /dev/rtc with hwclock!
+      true
+   elif command -v hwclock >/dev/null ; then
       hwclock -w
    elif [ "${ID}" == "freebsd" ] ; then
       date -v +0S
