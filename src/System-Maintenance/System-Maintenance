@@ -612,11 +612,14 @@ if [ ${updatedTime} -eq 1 ] ; then
    now="$(date)"
    eval_gettext "Updated system time to \${now}."
    echo
-   if [ "${UNAME}" == "GNU" ] ; then
-      # GNU Hurd currently does not support writing to /dev/rtc with hwclock!
-      true
-   elif command -v hwclock >/dev/null ; then
-      hwclock -w
+   if command -v hwclock >/dev/null ; then
+      if [ "${UNAME}" == "GNU" ] ; then
+         # The GNU Hurd translator does not support writing to the clock
+         # => use --directisa to write directly, bypassing the translator.
+         hwclock -w --directisa
+      else
+         hwclock -w
+      fi
    elif [ "${ID}" == "freebsd" ] ; then
       date -v +0S
    fi
