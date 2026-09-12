@@ -90,6 +90,8 @@
 #include <sys/loadavg.h>
 #include <sys/swap.h>
 #include <utmpx.h>
+#elif defined(__gnu_hurd__)
+#warning TBD
 #elif defined(__APPLE__)
 #include <libproc.h>
 #include <mach/mach.h>
@@ -234,6 +236,8 @@ static void printaddress(const struct sockaddr* address,
          printf("%s%02x", (i > 0) ? ":" : "", lladdr[i]);
       }
    }
+#elif defined(__gnu_hurd__)
+   // FIXME: GNU Hurd does not return link-layer (MAC) addresses in getifaddrs().
 #else
 #error Missing case!
 #endif
@@ -317,6 +321,8 @@ static bool obtainUptime(struct timespec* ts)
 #elif defined(__OpenBSD__)
    return clock_gettime(CLOCK_BOOTTIME, ts) == 0;
 #elif defined(__sun__)
+   return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
+#elif defined(__gnu_hurd__)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
 #elif defined(__APPLE__)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
@@ -596,7 +602,7 @@ static void showLoadInformation(void)
       printf("system_load_avg15minpct=%1.4f\n", (double)systemInfo.loads[2] * fPercent);
    }
 
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__) || defined(__gnu_hurd__)
    double loadavg[3];
    if(getloadavg(loadavg, 3) == 3) {
       const double fPercent = 100.0 / (double)cores;
@@ -1346,6 +1352,9 @@ static void showNetworkInformation(const bool filterLocalScope)
             break;
 
          // ====== MAC address ==============================================
+#if defined(__gnu_hurd__)
+         // GNU Hurd does not return link-layer addresses in getifaddrs().
+#else
 #if defined(__linux__)
          case AF_PACKET:
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
@@ -1359,6 +1368,7 @@ static void showNetworkInformation(const bool filterLocalScope)
             ifaArray[n].flags     = ifa->ifa_flags;
             n++;
             break;
+#endif
          }
       }
    }
@@ -1393,12 +1403,16 @@ static void showNetworkInformation(const bool filterLocalScope)
                case AF_INET:
                   printf("netif_%u_ipv4=\"", ifIndices[i]);
                break;
+#if defined(__gnu_hurd__)
+               // GNU Hurd does not return link-layer addresses in getifaddrs().
+#else
 #if defined(__linux__)
                case AF_PACKET:
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
                case AF_LINK:
 #else
 #error Missing case!
+#endif
 #endif
                   printf("netif_%u_mac=\"", ifIndices[i]);
                break;
