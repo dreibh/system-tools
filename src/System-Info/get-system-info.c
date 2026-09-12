@@ -991,9 +991,16 @@ static void showMemoryInformation(void)
             if(sscanf(line, "MemTotal: %llu", &memoryTotal) == 1) {
                continue;
             }
+#if defined(__linux__)
             else if(sscanf(line, "MemAvailable: %llu", &memoryAvailable) == 1) {
                continue;
             }
+#elif defined(__gnu_hurd__)
+            else if(sscanf(line, "MemFree: %llu", &memoryAvailable) == 1) {
+               // GNU Hurd has no MemAvailable entry in /proc/meminfo:
+               continue;
+            }
+#endif
          }
          if(strncmp(line, "Swap", 4) == 0) {
             if(sscanf(line, "SwapTotal: %llu", &swapTotal) == 1) {
