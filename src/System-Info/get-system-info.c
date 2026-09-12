@@ -91,7 +91,8 @@
 #include <sys/swap.h>
 #include <utmpx.h>
 #elif defined(__gnu_hurd__)
-#warning TBD
+#include <dirent.h>
+#include <utmpx.h>
 #elif defined(__APPLE__)
 #include <libproc.h>
 #include <mach/mach.h>
@@ -353,7 +354,7 @@ static void showUptimeInformation(void)
 }
 
 
-#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__))
+#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__))
 // ###### Query information via shell #######################################
 static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 {
@@ -408,7 +409,7 @@ static unsigned int obtainProcessCount(void)
 {
    unsigned int count = 0;
 
-#if defined(__linux__) || defined(__sun__)
+#if defined(__linux__) || defined(__sun__) || defined(__gnu_hurd__)
    // ====== Linux: count processes in /proc ================================
    struct dirent* dirEntry;
    DIR*           dir = opendir("/proc");
@@ -512,7 +513,7 @@ static unsigned int obtainUserCount(void)
    unsigned int count = 0;
 
    // ====== Use getutxent() to obtain and count the number of users ========
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__sun__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
 #if defined(ENABLE_SYSTEMD)
    char** sessions = nullptr;
    int totalSessions = sd_get_sessions(&sessions);
@@ -973,7 +974,7 @@ static void showMemoryInformation(void)
    unsigned long long swapAvailable   = 0;
    unsigned long long swapUsed        = 0;
 
-#if defined(__linux__)
+#if defined(__linux__) || defined(__gnu_hurd__)
    // ====== Query memory information via /proc =============================
    FILE* fh = fopen("/proc/meminfo", "r");
    if(fh != nullptr) {
