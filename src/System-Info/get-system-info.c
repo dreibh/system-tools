@@ -339,10 +339,11 @@ static void showUptimeInformation(void)
 {
    struct timespec ts;
    if(obtainUptime(&ts)) {
-      const unsigned int days  = ts.tv_sec / 86400;
-      const unsigned int hours = (ts.tv_sec / 3600) - (days * 24);
-      const unsigned int mins  = (ts.tv_sec / 60) - (days * 1440) - (hours * 60);
-      const unsigned int secs  = ts.tv_sec - (days * 86400) - (hours * 3600) - (mins * 60);
+      const uint64_t     totalSecs = (uint64_t)ts.tv_sec;
+      const unsigned int days      = (unsigned int)(totalSecs / 86400);
+      const unsigned int hours     = (unsigned int)((totalSecs / 3600) % 24);
+      const unsigned int mins      = (unsigned int)((totalSecs / 60) % 60);
+      const unsigned int secs      = (unsigned int)(totalSecs % 60);
       printf("uptime_total=%1.9f\n",
              (double)ts.tv_sec + ((double)ts.tv_nsec / 1000000000.0));
       printf("uptime_days=%u\n",   days);
