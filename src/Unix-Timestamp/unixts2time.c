@@ -255,6 +255,17 @@ int main(int argc, char** argv)
                      (unsigned int)(fractionalUnixTS * divideBy);
                   unixTS = (unixTS >= 0) ? (unixTS + additionalNS) :
                                            (unixTS - additionalNS);
+                  if(additionalNS != 0) {
+                     if((additionalNS % 1000000) == 0) {
+                        divideBy = 1000000;
+                     }
+                     else if((additionalNS % 1000) == 0) {
+                        divideBy = 1000;
+                     }
+                     else {
+                        divideBy = 1;
+                     }
+                  }
                }
             }
          }
