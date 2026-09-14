@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 9, 2026
+.Dd September 14, 2026
 .Dt unixts2time 1
 .Os unixts2time
 .\" ###### Name #############################################################
@@ -127,10 +127,11 @@ tool exits with 0 on success, and >0 in case of an error.
 .It unixts2time 0x179cb2ae8af3dd89
 .It unixts2time \-H 0x179cb2ae8af3dd89
 .It unixts2time \-s 212847123.123
-.It unixts2time -T \(dq%x %X\(dq -s 2096218885000000000
-.It unixts2time -T \(dq%b %d %H:%M:%S %Y %Z\(dq 1773736279
-.It unixts2time -T \(dq%b %d %H:%M:%S %Y %Z\(dq 1784186916836355733
-.It unixts2time -T \(dq%x %X\(dq 1784186916836355733
+.It unixts2time 1788550214.7787085
+.It unixts2time \-T \(dq%x %X\(dq \-s 2096218885000000000
+.It unixts2time \-T \(dq%b %d %H:%M:%S %Y %Z\(dq 1773736279
+.It unixts2time \-T \(dq%b %d %H:%M:%S %Y %Z\(dq 1784186916836355733
+.It unixts2time \-T \(dq%x %X\(dq 1784186916836355733
 .It unixts2time \-\-version
 .It unixts2time \-\-help
 .El
