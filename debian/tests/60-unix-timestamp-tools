@@ -23,7 +23,9 @@
 set -euo pipefail
 
 
-# ====== Test timestamp tool ================================================
+# ====== Test timestamp tools with integer input ============================
+
+echo "++++++ Integer input tests ++++++"
 
 ( cat << EOF
 Timestamp Value,Human-Readable Date (ISO),Time Unit
@@ -388,12 +390,16 @@ EOF
          # ====== Check float handling ======================================
          if [ "${unit}" == "nanoseconds" ] ; then
             unixTSasFloat="$(gawk --bignum "BEGIN { printf(\"%1.9f\", ${unixTS}); }")"
+            expectedDateTimeFromFloat="${dateTime}"
          elif [ "${unit}" == "microseconds" ] ; then
             unixTSasFloat="$(gawk --bignum "BEGIN { printf(\"%1.6f\", ${unixTS}); }")"
+            expectedDateTimeFromFloat="${dateTime}000"
          elif [ "${unit}" == "milliseconds" ] ; then
             unixTSasFloat="$(gawk --bignum "BEGIN { printf(\"%1.3f\", ${unixTS}); }")"
+            expectedDateTimeFromFloat="${dateTime}000"
          elif [ "${unit}" == "seconds" ] ; then
             unixTSasFloat="$(gawk --bignum "BEGIN { printf(\"%1.0f.0\", ${unixTS}); }")"
+            expectedDateTimeFromFloat="${dateTime}.0"
          else
             echo >&2 "ERROR: Unexpected unit ${unit}!"
             exit 1
@@ -409,11 +415,11 @@ EOF
          fi
 
          computedDateTimeFromFloat="$(unixts2time --"${unit}" -- "${unixTSasFloat}")"
-         if [ "${computedDateTimeFromFloat}" != "${dateTime}" ] ; then
+         if [ "${computedDateTimeFromFloat}" != "${expectedDateTimeFromFloat}" ] ; then
             echo "Test 2.B"
             echo "Input:      ${unixTSasFloat}"
             echo "Unit:       ${unit}"
-            echo "From table: ${dateTime}"
+            echo "From table: ${expectedDateTimeFromFloat}"
             echo "Computed:   ${computedDateTimeFromFloat}"
             exit 1
          fi
@@ -431,6 +437,91 @@ EOF
       fi
    done
 )
+
+
+# ====== Test timestamp tools with float input ==============================
+
+echo "++++++ Float input tests ++++++"
+
+check_float_unixts() {
+   local input="$1"
+   local expected="$2"
+   local unit="${3:-}"
+
+   echo "Checking ${input}"
+
+   local cmd=(unixts2time)
+   if [ -n "${unit}" ]; then
+      cmd+=("--${unit}")
+   fi
+   cmd+=(-- "${input}")
+
+   local computed
+   computed="$("${cmd[@]}")"
+   if [ "${computed}" != "${expected}" ]; then
+      echo "Float Test Failed!"
+      echo "Input:    ${input}"
+      echo "Expected: ${expected}"
+      echo "Computed: ${computed}"
+      exit 1
+   fi
+}
+
+# ------ 1. Multi-Unit Auto-Detection (Positive & Negative) ----------------
+check_float_unixts "1788550214.7787085"       "2026-09-04 19:30:14.7787085"
+check_float_unixts "1788550214778.7085"       "2026-09-04 19:30:14.7787085"
+check_float_unixts "1788550214778708.5"       "2026-09-04 19:30:14.7787085"
+check_float_unixts "1788550214778708500.0"   "2026-09-04 19:30:14.778708500"
+check_float_unixts "-1788550214.7787085"      "1913-04-29 04:29:45.2212915"
+check_float_unixts "-1788550214778.7085"      "1913-04-29 04:29:45.2212915"
+check_float_unixts "-1788550214778708.5"      "1913-04-29 04:29:45.2212915"
+check_float_unixts "-1788550214778708500.0"  "1913-04-29 04:29:45.221291500"
+
+# ------ 2. Explicit Zero Precision & Trailing Zero Retention ---------------
+check_float_unixts "0.0"                      "1970-01-01 00:00:00.0"
+check_float_unixts "0.000"                    "1970-01-01 00:00:00.000"
+check_float_unixts "0.000000000"              "1970-01-01 00:00:00.000000000"
+check_float_unixts "1788550214.0"             "2026-09-04 19:30:14.0"
+check_float_unixts "1788550214.7787000"       "2026-09-04 19:30:14.7787000"
+check_float_unixts "100.5000"                 "1970-01-01 00:01:40.5000"
+
+# ------ 3. Sub-Second Precision Graduation & Nanosecond Capping ------------
+check_float_unixts "1.5"                      "1970-01-01 00:00:01.5"
+check_float_unixts "1.25"                     "1970-01-01 00:00:01.25"
+check_float_unixts "1.123"                    "1970-01-01 00:00:01.123"
+check_float_unixts "1.12345"                  "1970-01-01 00:00:01.12345"
+check_float_unixts "1.12345678"               "1970-01-01 00:00:01.12345678"
+check_float_unixts "1.123456789"              "1970-01-01 00:00:01.123456789"
+check_float_unixts "1788550214.1234567890123" "2026-09-04 19:30:14.123456789" # > 9 digits capped
+
+# ------ 4. Leading Fractional Zeros & High Sub-Second Scale ----------------
+check_float_unixts "1.00001"                 "1970-01-01 00:00:01.00001"
+check_float_unixts "1.000000001"             "1970-01-01 00:00:01.000000001"
+check_float_unixts "0.999999999"             "1970-01-01 00:00:00.999999999"
+
+# ------ 5. Negative Epoch Boundaries & Complement Borrow Arithmetic --------
+check_float_unixts "-1.0"                     "1969-12-31 23:59:59.0"
+check_float_unixts "-1.5"                     "1969-12-31 23:59:58.5"
+check_float_unixts "-86400.123"               "1969-12-30 23:59:59.877"
+check_float_unixts "-31536000.1"              "1968-12-31 23:59:59.9"
+
+# ------ 6. Epoch & Calendar Edge Cases -------------------------------------
+check_float_unixts "2147483647.5"             "2038-01-19 03:14:07.5"         # Y2K38 limit
+check_float_unixts "1709208000.123456"        "2024-02-29 12:00:00.123456"    # Leap day
+check_float_unixts "4102444799.999"           "2099-12-31 23:59:59.999"       # Y2K99 limit
+
+# ------ 7. Auto-Detected Sub-Second Ranges ---------------------------------
+check_float_unixts "5000000000.12"            "1970-02-27 20:53:20.00012"     # ms range (3+2)
+check_float_unixts "5000000000000.5"          "1970-02-27 20:53:20.0000005"   # us range (6+1)
+
+# ------ 8. Explicit Unit Flag Overrides ------------------------------------
+check_float_unixts "5000000000.5"             "2128-06-11 08:53:20.5"           "seconds"
+check_float_unixts "1000.5"                   "1970-01-01 00:00:01.0005"        "milliseconds"
+check_float_unixts "10.1234"                  "1970-01-01 00:00:00.0101234"     "milliseconds"
+check_float_unixts "1.1"                      "1970-01-01 00:00:00.0011"        "milliseconds"
+check_float_unixts "1000000.12"               "1970-01-01 00:00:01.00000012"    "microseconds"
+check_float_unixts "10.1"                     "1970-01-01 00:00:00.0000101"     "microseconds"
+check_float_unixts "1000000000.123"           "1970-01-01 00:00:01.000000000"   "nanoseconds"
 
 
 echo "Test passed!"
