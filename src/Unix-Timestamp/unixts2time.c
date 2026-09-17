@@ -197,6 +197,8 @@ int main(int argc, char** argv)
 #endif
    for(int i = optind; i <= argc; i++) {
       unsigned int divideBy = initialDivideBy;
+      unsigned int inputFracDigits = 0;
+      unsigned int additionalNS     = 0;
 
       // ====== Use current time, if no timestamp is given ==================
       if(i == argc) {
@@ -249,23 +251,19 @@ int main(int argc, char** argv)
 
             // ------ Try to parse fractional part --------------------------
             if(*endptr != 0x00) {
+               if(*endptr == '.') {
+                  const char* p = endptr + 1;
+                  while((*p >= '0') && (*p <= '9')) {
+                     inputFracDigits++;
+                     p++;
+                  }
+               }
+
                const double fractionalUnixTS = strtod(endptr, &endptr);
                if(endptr != nullptr) {
-                  const unsigned int additionalNS =
-                     (unsigned int)(fractionalUnixTS * divideBy);
+                  additionalNS = (unsigned int)(fractionalUnixTS * divideBy);
                   unixTS = (unixTS >= 0) ? (unixTS + additionalNS) :
                                            (unixTS - additionalNS);
-                  if(additionalNS != 0) {
-                     if((additionalNS % 1000000) == 0) {
-                        divideBy = 1000000;
-                     }
-                     else if((additionalNS % 1000) == 0) {
-                        divideBy = 1000;
-                     }
-                     else {
-                        divideBy = 1;
-                     }
-                  }
                }
             }
          }
@@ -328,20 +326,29 @@ int main(int argc, char** argv)
             exit(1);
          }
 
-         const char* fractionalSecondsFormatString;
+         // ------ Prepare the fractional seconds string --------------------
+         unsigned int precision = 0;
          if(divideBy == 1) {
-            fractionalSecondsFormatString = "%1.9f";
+            precision = 9;
          }
          else if(divideBy == 1000) {
-            fractionalSecondsFormatString = "%1.6f";
+            precision = 6;
          }
          else if(divideBy == 1000000) {
-            fractionalSecondsFormatString = "%1.3f";
+           precision = 3;
          }
-         else {
-            fractionalSecondsFormatString = "%1.0f";
+         if(additionalNS != 0) {
+            precision += inputFracDigits;
+          }
+         if(precision > 9) {
+            precision = 9;
          }
-         snprintf(fractionalSecondsString, sizeof(fractionalSecondsString), fractionalSecondsFormatString,
+
+         char fractionalSecondsFormatString[32];
+         snprintf(fractionalSecondsFormatString, sizeof(fractionalSecondsFormatString),
+                  "%%1.%uf", precision);
+         snprintf(fractionalSecondsString, sizeof(fractionalSecondsString),
+                  fractionalSecondsFormatString,
                   (double)ts.tv_nsec / 1000000000.0);
 
          // ------ Prepare the back part (after seconds) --------------------
