@@ -99,6 +99,34 @@ echo "-----"
 ./unixts2time -- -5000000000000000
 ./unixts2time -- -4999999999999999999
 
+echo "++++++ Manual Float, positive ++++++"
+
+./unixts2time 1788550214.7787085 -s
+./unixts2time 1788550214778.7085 -m
+./unixts2time 1788550214778708.5 -u
+./unixts2time 1788550214778708500.0 -n
+
+echo "++++++ Automatic Float, positive ++++++"
+
+./unixts2time 1788550214.7787085
+./unixts2time 1788550214778.7085
+./unixts2time 1788550214778708.5
+./unixts2time 1788550214778708500.0
+
+echo "++++++ Manual Float, negative ++++++"
+
+./unixts2time -s -- -1788550214.7787085
+./unixts2time -m -- -1788550214778.7085
+./unixts2time -u -- -1788550214778708.5
+./unixts2time -n -- -1788550214778708500.0
+
+echo "++++++ Automatic Float, negative ++++++"
+
+./unixts2time -- -1788550214.7787085
+./unixts2time -- -1788550214778.7085
+./unixts2time -- -1788550214778708.5
+./unixts2time -- -1788550214778708500.0
+
 
 # ====== Find locations of tools ============================================
 if ! command -v print-utf8 2>/dev/null ; then
