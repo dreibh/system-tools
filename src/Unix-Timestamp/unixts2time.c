@@ -196,9 +196,8 @@ int main(int argc, char** argv)
    long long    unixTS;
 #endif
    for(int i = optind; i <= argc; i++) {
-      unsigned int divideBy = initialDivideBy;
-      unsigned int inputFracDigits = 0;
-      unsigned int additionalNS     = 0;
+      unsigned int divideBy              = initialDivideBy;
+      unsigned int inputFractionalDigits = 0;
 
       // ====== Use current time, if no timestamp is given ==================
       if(i == argc) {
@@ -254,14 +253,15 @@ int main(int argc, char** argv)
                if(*endptr == '.') {
                   const char* p = endptr + 1;
                   while((*p >= '0') && (*p <= '9')) {
-                     inputFracDigits++;
+                     inputFractionalDigits++;
                      p++;
                   }
                }
 
                const double fractionalUnixTS = strtod(endptr, &endptr);
                if(endptr != nullptr) {
-                  additionalNS = (unsigned int)(fractionalUnixTS * divideBy);
+                  const unsigned int additionalNS =
+                     (unsigned int)(fractionalUnixTS * divideBy);
                   unixTS = (unixTS >= 0) ? (unixTS + additionalNS) :
                                            (unixTS - additionalNS);
                }
@@ -337,9 +337,7 @@ int main(int argc, char** argv)
          else if(divideBy == 1000000) {
            precision = 3;
          }
-         if(additionalNS != 0) {
-            precision += inputFracDigits;
-          }
+         precision += inputFractionalDigits;
          if(precision > 9) {
             precision = 9;
          }
