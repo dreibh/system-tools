@@ -22,7 +22,7 @@ System-Tools is a collection of helpful tools for basic system management of Lin
 - [Unix-Timestamp-Tools](#-unix-timestamp-tools): Converts Unix timestamps (s, ms, us, ns) to and from date/time strings.
 - [Try-Hard](#-try-hard): Retries commands with a configurable backoff.
 - [Random-Sleep](#-random-sleep): Waits for a random time span, with support for fractional seconds.
-- [X.509-Tools](#-x.509-tools): Provide utilities for viewing, verifying, and converting X.509 certificates, and testing TLS connections.
+- [X.509-Tools](#-x.509-tools): Provides utilities for viewing, verifying, and converting X.509 certificates, and testing TLS connections.
 - [GIMP-Scripts](#-gimp-scripts): Contains a collection of scripts for graphics processing using GIMP and GraphicsMagick.
 
 System-Tools provides internationalisation&nbsp;(i18n) support using [GNU gettext](https://www.gnu.org/software/gettext/). That is, translation files for the output of the programs are supported. You can support the project by contributing translations for your language. See [Internationalisation&nbsp;(I18N)](#internationalisation) for details!
@@ -1442,7 +1442,7 @@ To provide a translation of one or more components of System-Tools into your lan
    git checkout my_username/translations_language_XX
    ```
 
-3. Take a look at the existing `.po` files (translations files) in [`po/de`](po/de) (German) and [`po/nb`](po/nb) (Bokmål) as examples, e.g.&nbsp;[`po/de/System-Info.po`](po/de/System-Info.po) or [`po/nb/System-Info.po`](po/nb/System-Info.po) for System-Info. Then, prepare a translation for program `PROGRAM` (e.g.&nbsp;System-Info; see the name of the  `.pot` translation template file) for your language `XX` under [`po`](po):
+3. Take a look at the existing `.po` files (translation files) in [`po/de`](po/de) (German) and [`po/nb`](po/nb) (Bokmål) as examples, e.g.&nbsp;[`po/de/System-Info.po`](po/de/System-Info.po) or [`po/nb/System-Info.po`](po/nb/System-Info.po) for System-Info. Then, prepare a translation for program `PROGRAM` (e.g.&nbsp;System-Info; see the name of the  `.pot` translation template file) for your language `XX` under [`po`](po):
 
    ```bash
    mkdir -p XX
