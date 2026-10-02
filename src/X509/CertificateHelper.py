@@ -454,7 +454,7 @@ extendedKeyUsage       = critical, clientAuth, emailProtection, codeSigning
       if not os.path.isfile(self.PasswordFileName):
          sys.stdout.write('\x1b[33mGenerating CA password ' + self.PasswordFileName + ' ...\x1b[0m\n')
          execute(f"""\
-pwgen -sy 128 >{shlex.quote(self.PasswordFileName + '.tmp')} && \
+LC_ALL=C dd if=/dev/random bs=1 count=512 2>/dev/null | LC_ALL=C tr -dc 'A-Za-z0-9' | fold -w 64 | head -n 1 >{shlex.quote(self.PasswordFileName + '.tmp')} && \
 mv {shlex.quote(self.PasswordFileName + '.tmp')} {shlex.quote(self.PasswordFileName)}""")
          assert os.path.isfile(self.PasswordFileName)
 
