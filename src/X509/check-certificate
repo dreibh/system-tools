@@ -349,15 +349,16 @@ while [ $# -gt 0 ] ; do
             if [ ${good} -eq 1 ] ; then echo -en "\e[32;1m$(gettext "✓OKAY")\e[0m" ; fi && \
             echo -en "   \e[36m${certUsageLabels["${certUsage}"]}\e[0m"
       done
-      echo
       if [ ${good} -eq 0 ] ; then
          errors=$((errors + 1))
          echo -e "\e[31;1m$(gettext "❌FAILED!")\e[0m"
          print-utf8 --separator "\e[31;1m══════ NSS " "═" "═\e[22m"
          sh -c "${command}" || true
-         "${CERTUTIL}" -L -d "${db}"
-         "${CRLUTIL}" -L -d "${db}"
+         # "${CERTUTIL}" -L -d "${db}"
+         # "${CRLUTIL}" -L -d "${db}"
          print-utf8 --separator "\e[31;1m═" "═" "═\e[0m"
+      else
+         echo
       fi
    else
       gettext "(NSS CertUtil is not installed)"
