@@ -283,6 +283,8 @@ while [ $# -gt 0 ] ; do
       mkdir -p "${db}/tmp"
       "${CERTUTIL}" --empty-password -N -d "${db}"
 
+      "${CERTUTIL}" -A -n "My Certificate" -t ",," -e -d "${db}" -a -i "${CERTIFICATE_FILE}"
+
       # ------ Extract and import all CAs from CA_FILE as trusted -----------
       "${DIRNAME}/extract-pem" "${CA_FILE}" \
          --quiet --output-prefix "${db}/tmp/ca-"
@@ -292,7 +294,6 @@ while [ $# -gt 0 ] ; do
             caCount=$((caCount + 1))
             "${CERTUTIL}" -A -n "Root CA ${caCount}" -t "CT,C,C" -e -d "${db}" -a -i "${name}" -u L
          done
-      "${CERTUTIL}" -A -n "My Certificate" -t ",," -e -d "${db}" -a -i "${CERTIFICATE_FILE}"
 
       # ------ Extract certificate and process each sub-CA individually -----
       "${DIRNAME}/extract-pem" "${CERTIFICATE_FILE}" --skip-first-entry \
@@ -300,12 +301,16 @@ while [ $# -gt 0 ] ; do
       subCA=0
       find "${db}/tmp" -name "certificate-[0-9]*.crt" | sort -r | \
          while read -r name ; do
-            subject="$("${OPENSSL}" x509 -in "${name}" -noout -subject 2>/dev/null || true)"
-            issuer="$("${OPENSSL}" x509 -in "${name}" -noout -issuer 2>/dev/null || true)"
-            if [ -n "${subject}" ] && [ "${subject}" != "${issuer}" ] ; then
-               subCA=$((subCA + 1))
-               "${CERTUTIL}" -A -n "My Sub CA ${subCA}" -t ",," -e -d "${db}" -a -i "${name}" -u L
-            fi
+            subCA=$((subCA + 1))
+            "${CERTUTIL}" -A -n "My Sub CA ${subCA}" -t ",," -e -d "${db}" -a -i "${name}" -u L
+         done
+
+      # Re-apply Root CA trust in case a duplicate root was imported above:
+      caCount=0
+      find "${db}/tmp" -name "ca-[0-9]*.crt" | sort | \
+         while read -r name ; do
+            caCount=$((caCount + 1))
+            "${CERTUTIL}" -A -n "Root CA ${caCount}" -t "CT,C,C" -d "${db}" -a -i "${name}"
          done
 
       # "${CERTUTIL}" -L -d "${db}"
@@ -336,10 +341,9 @@ while [ $# -gt 0 ] ; do
          ["L"]="CA"
          ["S"]="email_signer"
          ["R"]="email_recipient"
-         ["A"]="any"
       )
       good=0
-      for certUsage in V C L S R A ; do
+      for certUsage in V C L S R ; do
          command="\"${CERTUTIL}\" -V -e -u \"${certUsage}\" -n \"My Certificate\" -d \"${db}\"" && sh -c "${command}" >/dev/null 2>&1 && \
             good=$((good + 1)) && \
             if [ ${good} -eq 1 ] ; then echo -en "\e[32;1m$(gettext "✓OKAY")\e[0m" ; fi && \
