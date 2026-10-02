@@ -199,10 +199,6 @@ while [ $# -gt 0 ] ; do
             fi
             entry=$((entry + 1))
             echo "${line}" >>"${outputFile}.tmp"
-         else
-            eval_gettext >&2 "ERROR: Unexpected data in \${PEM_FILE}!"
-            echo >&2
-            exit 1
          fi
       else
          if [[ "${line}" =~ ^(-----END )([^-]*)(-----) ]] ; then
