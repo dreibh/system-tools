@@ -95,6 +95,7 @@ Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: (figlet or toilet)
 Requires: gettext-runtime
 Requires: (mbuffer or buffer)
+Requires: util-linux
 Recommends: subnetcalc
 
 %description system-info
@@ -146,6 +147,7 @@ Summary: Perform basic system maintenance
 BuildArch: noarch
 Requires: gettext-runtime
 Requires: sudo
+Requires: util-linux
 Recommends: %{name}-system-info
 
 %description system-maintenance
@@ -169,6 +171,7 @@ Summary: Reset machine identity state
 BuildArch: noarch
 Requires: gettext-runtime
 Requires: sudo
+Requires: util-linux
 Requires: uuid
 Recommends: %{name}-system-info
 Recommends: %{name}-system-maintenance
@@ -188,6 +191,7 @@ hardened SSH client and server settings.
 Summary: Print SSH key fingerprints
 BuildArch: noarch
 Requires: gettext-runtime
+Requires: util-linux
 Recommends: %{name}-system-info
 
 %description fingerprint-ssh-keys
@@ -204,6 +208,7 @@ in different formats: SSH hash, DNS SSHFP RR.
 Summary: Helper tool to adjust GRUB configuration
 BuildArch: noarch
 Requires: gettext-runtime
+Requires: util-linux
 Recommends: %{name}-system-maintenance
 
 %description configure-grub
@@ -284,6 +289,7 @@ Summary: Make multiple trials to successfully run a command
 BuildArch: noarch
 Conflicts: %{name}-misc
 Requires: gettext-runtime
+Requires: util-linux
 
 %description try-hard
 Try-hard runs a command and retries for a given number of times in case
@@ -318,6 +324,7 @@ Requires: %{name}-unixtimestamp-tools = %{version}-%{release}
 Requires: gettext-runtime
 Requires: (mbuffer or buffer)
 Requires: openssl
+Requires: util-linux
 # Fedora has the GnuTLS tools in a separate package:
 Recommends: gnutls-utils
 # OpenSUSE has the GnuTLS tools in one package:
