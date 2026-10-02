@@ -180,6 +180,7 @@ if [ "${GM}" == "" ] ; then
    echo >&2 " * FreeBSD:       sudo pkg install -y GraphicsMagick"
    echo >&2 " * NetBSD:        sudo pkgin -y install GraphicsMagick"
    echo >&2 " * OpenBSD:       sudo pkg_add GraphicsMagick"
+   echo >&2 " * Solaris:       sudo pkg install graphicsmagick"
    echo >&2 " * Apple:         brew install GraphicsMagick"
    exit 1
 fi
