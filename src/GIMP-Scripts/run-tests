@@ -110,6 +110,19 @@ if ! command -v gm >/dev/null ; then
    echo >&2 " * Apple:         brew install GraphicsMagick"
    exit 1
 fi
+if ! command -v curl >/dev/null ; then
+   echo >&2 "ERROR: cURL is not installed! Try:"
+   echo >&2 " * Ubuntu/Debian: sudo apt install -y curl"
+   echo >&2 " * Fedora:        sudo dnf install -y curl"
+   echo >&2 " * OpenSUSE:      sudo zypper install -y curl"
+   echo >&2 " * Alpine:        sudo apk add curl"
+   echo >&2 " * FreeBSD:       sudo pkg install -y curl"
+   echo >&2 " * NetBSD:        sudo pkgin -y install curl"
+   echo >&2 " * OpenBSD:       sudo pkg_add curl"
+   echo >&2 " * Solaris:       sudo pkg install curl"
+   echo >&2 " * Apple:         brew install curl"
+   exit 1
+fi
 
 
 # ====== gs-test-gimp ==========================================================
