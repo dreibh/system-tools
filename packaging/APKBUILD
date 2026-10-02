@@ -69,7 +69,7 @@ package() {
 
 _system_info() {
 	pkgdesc="Print basic system information and banners"
-	depends="$pkgname-get-system-info=$pkgver-r$pkgrel $pkgname-print-utf8=$pkgver-r$pkgrel figlet gettext mbuffer"
+	depends="$pkgname-get-system-info=$pkgver-r$pkgrel $pkgname-print-utf8=$pkgver-r$pkgrel bash figlet gettext mbuffer"
 
 	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share "$subpkgdir"/etc
 	mv "$pkgdir"/usr/bin/System-Info "$subpkgdir"/usr/bin/
@@ -87,7 +87,7 @@ _get_system_info() {
 
 _system_maintenance() {
 	pkgdesc="Perform basic system maintenance"
-	depends="gettext sudo"
+	depends="bash gettext sudo"
 
 	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/etc
 	mv "$pkgdir"/usr/bin/System-Maintenance "$subpkgdir"/usr/bin/
@@ -96,7 +96,7 @@ _system_maintenance() {
 
 _reset_machine_id() {
 	pkgdesc="Reset machine identity state"
-	depends="gettext sudo util-linux"
+	depends="bash gettext sudo util-linux"
 
 	mkdir -p "$subpkgdir"/usr/bin
 	mv "$pkgdir"/usr/bin/Reset-Machine-ID "$subpkgdir"/usr/bin/
@@ -104,7 +104,7 @@ _reset_machine_id() {
 
 _fingerprint_ssh_keys() {
 	pkgdesc="Print SSH key fingerprints"
-	depends="gettext"
+	depends="bash gettext"
 
 	mkdir -p "$subpkgdir"/usr/bin
 	mv "$pkgdir"/usr/bin/Fingerprint-SSH-Keys "$subpkgdir"/usr/bin/
@@ -112,7 +112,7 @@ _fingerprint_ssh_keys() {
 
 _configure_grub() {
 	pkgdesc="Helper tool to adjust GRUB configuration"
-	depends="gettext"
+	depends="bash gettext"
 
 	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share
 	mv "$pkgdir"/usr/bin/configure-grub "$subpkgdir"/usr/bin/
@@ -144,7 +144,7 @@ _unixtimestamp_tools() {
 
 _try_hard() {
 	pkgdesc="Make multiple trials to successfully run a command"
-	depends="gettext"
+	depends="bash gettext"
 
 	mkdir -p "$subpkgdir"/usr/bin
 	mv "$pkgdir"/usr/bin/try-hard "$subpkgdir"/usr/bin/
@@ -160,7 +160,7 @@ _random_sleep() {
 _x509_tools() {
 	pkgdesc="X.509 certificate handling tools"
 	# NOTE: GNU date from coreutils is needed.
-	depends="$pkgname-print-utf8=$pkgver-r$pkgrel $pkgname-text-block=$pkgver-r$pkgrel $pkgname-unixtimestamp-tools=$pkgver-r$pkgrel coreutils gettext mbuffer openssl"
+	depends="$pkgname-print-utf8=$pkgver-r$pkgrel $pkgname-text-block=$pkgver-r$pkgrel $pkgname-unixtimestamp-tools=$pkgver-r$pkgrel bash coreutils gettext mbuffer openssl"
 
 	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share/system-tools
 	mv "$pkgdir"/usr/bin/check-certificate "$subpkgdir"/usr/bin/
@@ -178,7 +178,7 @@ _x509_tools() {
 
 _gimp_scripts() {
 	pkgdesc="GIMP image processing scripts"
-	depends="fontconfig gimp graphicsmagick util-linux"
+	depends="bash fontconfig gimp graphicsmagick util-linux"
 
 	mkdir -p "$subpkgdir"/usr/bin
 	mv "$pkgdir"/usr/bin/gs-* "$subpkgdir"/usr/bin/
