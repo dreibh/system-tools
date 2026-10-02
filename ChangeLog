@@ -1,3 +1,268 @@
+commit bd17e0b06ac0aa2c02a3f3529029fb73c0e2136f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 17:16:56 2026 +0200
+
+    Improved test script.
+
+commit 9d951dfbcd625a7e79de548f7908a0a368db464d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 17:06:02 2026 +0200
+
+    RPM spec fix: util-linux is required for getopt.
+
+commit e7b3830be142c1e8b6e5121ce68a1fcbd39c4797
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 16:51:48 2026 +0200
+
+    Minor documentation updates.
+
+commit a70753b969a9f173d9b37c67ec1eb719fa34342f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 16:49:09 2026 +0200
+
+    Updated PO files.
+
+commit 4f0ce1ffa50a3b48a14404f62d2c02b4dd3d5882
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 16:47:48 2026 +0200
+
+    Further documentation improvements.
+
+commit 5b00db108f2719db6056399df113d92f451f4c52
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 16:44:06 2026 +0200
+
+    Minor information text updates.
+
+commit f84fcba020befcb77f82b7d6612a38716264057e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 16:34:02 2026 +0200
+
+    Improved README.md.
+
+commit 0cabd13a82dac6288fda68943cfb5d769e0dd3fc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 15:29:38 2026 +0200
+
+    Updated script.
+
+commit cf59c99033392d7157039dac2acc4cd931e94397
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 15:17:16 2026 +0200
+
+    Improved dependency installation hints.
+
+commit 169649b9e6675bd5a58285b6596a41b526162809
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 15:03:16 2026 +0200
+
+    Improved package installation hints.
+
+commit 7f3071073246ec14983ecf43f9f3a801e5aeabaa
+Merge: 8fda025 e0f902e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 14:44:24 2026 +0200
+
+    Merge branch 'master' of github.com:dreibh/system-tools
+
+commit 8fda0259cd6cd27e2807a7e39be47f75dc634d4f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 14:44:13 2026 +0200
+
+    Improved test scripts.
+
+commit e0f902ed5598a2ff906e36a5f9614ab9d37fdd29
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 12:42:58 2026 +0000
+
+    Minor NSS output improvements.
+
+commit d514a24fce278c5726a9c79c1411c5d3171952e4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 12:38:59 2026 +0000
+
+    Updated test: Solaris strptime() does not support year < 1900.
+
+commit 7156064311cf68fae3aab141aaaaf797940f9a58
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 14:10:27 2026 +0200
+
+    Improved test script.
+
+commit d482444db6dc1a60ff7e32b404c3d57d34b38b1f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 14:09:59 2026 +0200
+
+    Improved compatibility with Alpine Linux.
+
+commit 35739e1e8b4b896f830c52dfdb2e825084ee19dd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 13:37:52 2026 +0200
+
+    APKBUILD improvements.
+
+commit fb824473296815b388c847ec8b77b37d212036c1
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 13:37:34 2026 +0200
+
+    Further documentation improvements.
+
+commit 045196d90e81db15fbcde1f26a2c383db55a46ca
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 13:22:35 2026 +0200
+
+    Improved documentation.
+
+commit e2c6dc7687f5a7b7f552523de0f182f98f0d4d91
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 10:10:24 2026 +0000
+
+    Further NSS improvements and fixes.
+
+commit c90843a225fbe3f7bce33e7905e7e07bed3b81c8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 09:05:35 2026 +0000
+
+    NSS certificate processing fix: Handle all certificates in CA bundle.
+
+commit d8b5eaa343733c9575e9d06a97000f6041d0ab79
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 08:49:58 2026 +0000
+
+    Extract-PEM: Skip non-certificate data instead of failing, to allow extracting e.g. /etc/certs/ca-certificates.crt under Solaris (contains header and comments).
+
+commit 3dd33f527955214179cdf85b5d807381280870b5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 08:33:04 2026 +0000
+
+    Minor output improvement.
+
+commit 979347708c11e01c120b30b6c8f797e86fad7c36
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Oct 2 08:24:23 2026 +0000
+
+    Improved certificate error output readability.
+
+commit 594291d830afd55c2eb00b203fc02e0105401532
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Sep 17 16:56:33 2026 +0200
+
+    Updated Debian tests.
+
+commit 17527939bcf174c351fcc5b17ae4a2c098f5ec2a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Sep 17 16:53:43 2026 +0200
+
+    Added more tests.
+
+commit 166a9cfe9a6a4a4ee6a4f499cfbac4eea1383fef
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Sep 17 16:53:37 2026 +0200
+
+    Further improvements.
+
+commit b8fec8d65ea506ae7f76b8ddde08efa76a9d16ad
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Sep 17 16:16:33 2026 +0200
+
+    UnixTS2Time improvement for fractional input: using the input precision for output.
+
+commit ece97a90f66230cb6dff1b546c751f5d0281ef56
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Sep 17 16:08:35 2026 +0200
+
+    Added some additional tests.
+
+commit 5f32783d59aff8c93ac981a3b5b4cc11af6dda08
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Sep 14 11:05:37 2026 +0200
+
+    Improved manpages.
+
+commit e7fed289efca29cb06d8aab7ecb8e4f299000ea6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Sep 14 11:00:41 2026 +0200
+
+    UnixTS2Time fix: print fractional seconds when input is a floating-point number.
+
+commit ce7ef937d3d2701053abb77f5739a4458c215deb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 12 21:54:24 2026 +0200
+
+    Improved build helper script.
+
+commit 64b2efea0abe5b2241c8799e93ce24ea19d99742
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 12 18:48:07 2026 +0100
+
+    Further improvement.
+
+commit 7bfe0d58a373401f97deab53643ef4cda6afb4ce
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 12 18:40:01 2026 +0100
+
+    GNU Hurd support improvement.
+
+commit eb1bcca5b7dc86e9fa2881b9a03cc06906edee5a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 12 15:43:10 2026 +0100
+
+    Memory statistics is now also working for GNU Hurd.
+
+commit 62e3ae741430f2be5e3f52915eec60ee3bae1480
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 12 15:29:20 2026 +0100
+
+    Updated build helper script.
+
+commit 8ad5dc648cd0699d90e29f8b2899ea4105224168
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 12 13:32:52 2026 +0100
+
+    Added the MAC address part for GNU Hurd.
+
+commit 4c17d2a8e5a281022b5a1bd421a40db748b22a97
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 12 12:58:12 2026 +0100
+
+    Simplified uptime calculation.
+
+commit c271014387aa626e2e930633a1aec7ce48474113
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 12 12:55:13 2026 +0100
+
+    Further progress with GNU Hurd support.
+
+commit 2da970acdb8f4ca63d76f3ae1b96d7b834cf5f51
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Sep 12 12:11:52 2026 +0100
+
+    Added initial support for GNU Hurd.
+
+commit 874dc56672f0351733ff6725d56cfa6a6b2e01b3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Sep 11 12:13:09 2026 +0200
+
+    Minor FreeBSD fix: System-Maintenance printed "Updating package repositories ..." twice.
+
+commit 47b53c215997f078dc73aeb01ea2c96f95697edf
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Sep 8 17:14:04 2026 +0200
+
+    Updated APKBUILD file.
+
+commit e9a6a430fc6b0e55bef5f5ae6dfc86a90629a043
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Sep 8 17:12:34 2026 +0200
+
+    Updated FreeBSD port.
+
+commit 3d4352a0037d0da1bac1dd6e587c54c9d4529520
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Sep 8 17:05:48 2026 +0200
+
+    New release td-system-tools-2.7.14.
+
 commit 0273e844adfe18591857f25a700da1efafae3566
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Sep 8 17:05:08 2026 +0200
