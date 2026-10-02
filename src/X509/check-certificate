@@ -212,7 +212,9 @@ while [ $# -gt 0 ] ; do
       else
          errors=$((errors + 1))
          echo -e "\e[31;1m$(gettext "❌FAILED!")\e[0m"
+         print-utf8 --separator "\e[31;1m══════ OpenSSL " "═" "═"
          sh -c "${command}" || true
+         print-utf8 --separator "\e[31;1m═" "═" "═\e[0m"
       fi
    else
       gettext "(OpenSSL is not installed)"
@@ -220,8 +222,8 @@ while [ $# -gt 0 ] ; do
    fi
 
 
-   # ====== GNU TLS =========================================================
-   echo -en "\e[33mGNU TLS:\e[0m "
+   # ====== GnuTLS ==========================================================
+   echo -en "\e[33mGnuTLS:\e[0m  "
    if [ "${CERTTOOL}" != "" ] ; then
       crlOption=""
       if [ "${CRL}" != "" ] ; then
@@ -248,11 +250,14 @@ while [ $# -gt 0 ] ; do
             if [ ${good} -eq 1 ] ; then echo -en "\e[32;1m$(gettext "✓OKAY")\e[0m" ; fi && \
             echo -en "   \e[32m${profile}\e[0m"
       done
-      echo
       if [ ${good} -eq 0 ] ; then
          errors=$((errors + 1))
          echo -e "\e[31;1m$(gettext "❌FAILED!")\e[0m"
+         print-utf8 --separator "\e[31;1m══════ GnuTLS " "═" "═"
          sh -c "${command}" || true
+         print-utf8 --separator "\e[31;1m═" "═" "═\e0m"
+      else
+         echo
       fi
       if [ "${UNAME}" == "SunOS" ] ; then
          rm -f "${tempCertFile}"
@@ -295,7 +300,7 @@ while [ $# -gt 0 ] ; do
 
       # If the Root CA is in the certificate bundle, trust was reset to ",,"
       # => Set it as trusted again:
-         "${CERTUTIL}" -A -n "My Root CA" -t "CT,C,C" -e -d "${db}" -a -i "${CA_FILE}" -u L
+      "${CERTUTIL}" -A -n "My Root CA" -t "CT,C,C" -e -d "${db}" -a -i "${CA_FILE}" -u L
 
       # "${CERTUTIL}" -L -d "${db}"
 
@@ -338,9 +343,11 @@ while [ $# -gt 0 ] ; do
       if [ ${good} -eq 0 ] ; then
          errors=$((errors + 1))
          echo -e "\e[31;1m$(gettext "❌FAILED!")\e[0m"
+         print-utf8 --separator "\e[31;1m══════ NSS " "═" "═"
          sh -c "${command}" || true
          "${CERTUTIL}" -L -d "${db}"
          "${CRLUTIL}" -L -d "${db}"
+         print-utf8 --separator "\e[31;1m═" "═" "═\e0m"
       fi
    else
       gettext "(NSS CertUtil is not installed)"
