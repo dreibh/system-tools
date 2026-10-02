@@ -1234,7 +1234,7 @@ Please use the issue tracker at [https://github.com/dreibh/system-tools/issues](
 
 For ready-to-install [Ubuntu Linux](https://ubuntu.com/) packages of System-Tools, see [Launchpad PPA for Thomas Dreibholz](https://launchpad.net/~dreibh/+archive/ubuntu/ppa/+packages?field.name_filter=td-system-tools&field.status_filter=published&field.series_filter=)!
 
-Add the repository:
+Add the PPA repository:
 
 ```bash
 sudo apt-add-repository -sy ppa:dreibh/ppa
@@ -1257,7 +1257,7 @@ sudo apt-get install td-system-tools-complete
 
 For ready-to-install [Debian Linux](https://www.debian.org/) packages of System-Tools, see [Open Build Service PPA for Thomas Dreibholz](https://build.opensuse.org/project/show/home:dreibh)!
 
-Add the repository:
+Add the PPA repository:
 
 ```bash
 . /etc/os-release
@@ -1287,7 +1287,7 @@ sudo apt-get install td-system-tools-complete
 
 For ready-to-install [Fedora Linux](https://fedoraproject.org/) packages of System-Tools, see [COPR PPA for Thomas Dreibholz](https://copr.fedorainfracloud.org/coprs/dreibh/ppa/package/td-system-tools/)!
 
-Add the repository:
+Add the PPA repository:
 
 ```bash
 sudo dnf copr enable -y dreibh/ppa
@@ -1303,6 +1303,35 @@ For the complete System-Tools (including the GIMP-Scripts):
 
 ```bash
 sudo dnf install td-system-tools-complete
+```
+
+## Alpine Linux
+
+For ready-to-install [Alpine Linux](https://alpinelinux.org/) packages of System-Tools, see [Open Build Service PPA for Thomas Dreibholz](https://build.opensuse.org/project/show/home:dreibh)!
+
+Add the PPA repository:
+
+```bash
+DISTRIBUTION="Alpine_Latest_community"
+URL="https://download.opensuse.org/repositories/home:/dreibh/"
+wget -O \
+   /etc/apk/keys/home:dreibh@build.opensuse.org-527a4e72.rsa.pub \
+   "${URL}${DISTRIBUTION}/x86_64/home:dreibh%40build.opensuse.org-527a4e72.rsa.pub"
+if ! grep -q "^${URL}${DISTRIBUTION}" /etc/apk/repositories ; then
+   echo "${URL}${DISTRIBUTION}" | sudo tee -a /etc/apk/repositories
+fi
+```
+
+For the basic System-Tools (without the dependency-heavy GIMP-Scripts):
+
+```bash
+sudo apk add-system-tools-basic
+```
+
+For the complete System-Tools (including the GIMP-Scripts):
+
+```bash
+sudo apk add td-system-tools-complete
 ```
 
 ## FreeBSD
