@@ -212,7 +212,7 @@ while [ $# -gt 0 ] ; do
       else
          errors=$((errors + 1))
          echo -e "\e[31;1m$(gettext "❌FAILED!")\e[0m"
-         print-utf8 --separator "\e[31;1m══════ OpenSSL " "═" "═"
+         print-utf8 --separator "\e[31;1m══════ OpenSSL " "═" "═\e[22m"
          sh -c "${command}" || true
          print-utf8 --separator "\e[31;1m═" "═" "═\e[0m"
       fi
@@ -253,7 +253,7 @@ while [ $# -gt 0 ] ; do
       if [ ${good} -eq 0 ] ; then
          errors=$((errors + 1))
          echo -e "\e[31;1m$(gettext "❌FAILED!")\e[0m"
-         print-utf8 --separator "\e[31;1m══════ GnuTLS " "═" "═"
+         print-utf8 --separator "\e[31;1m══════ GnuTLS " "═" "═\e[22m"
          sh -c "${command}" || true
          print-utf8 --separator "\e[31;1m═" "═" "═\e0m"
       else
@@ -343,7 +343,7 @@ while [ $# -gt 0 ] ; do
       if [ ${good} -eq 0 ] ; then
          errors=$((errors + 1))
          echo -e "\e[31;1m$(gettext "❌FAILED!")\e[0m"
-         print-utf8 --separator "\e[31;1m══════ NSS " "═" "═"
+         print-utf8 --separator "\e[31;1m══════ NSS " "═" "═\e[22m"
          sh -c "${command}" || true
          "${CERTUTIL}" -L -d "${db}"
          "${CRLUTIL}" -L -d "${db}"
