@@ -255,7 +255,7 @@ while [ $# -gt 0 ] ; do
          echo -e "\e[31;1m$(gettext "❌FAILED!")\e[0m"
          print-utf8 --separator "\e[31;1m══════ GnuTLS " "═" "═\e[22m"
          sh -c "${command}" || true
-         print-utf8 --separator "\e[31;1m═" "═" "═\e0m"
+         print-utf8 --separator "\e[31;1m═" "═" "═\e[0m"
       else
          echo
       fi
@@ -281,11 +281,17 @@ while [ $# -gt 0 ] ; do
       trap 'rm -rf "${db}"' EXIT INT TERM HUP
       db="$(mktemp -d -t "check-certificate-nss.XXXXXXXXXX")"
       mkdir -p "${db}/tmp"
-
       "${CERTUTIL}" --empty-password -N -d "${db}"
-      if [ "${CA_FILE}" != "${CERTIFICATE_FILE}" ] ; then
-         "${CERTUTIL}" -A -n "My Root CA" -t "CT,C,C" -e -d "${db}" -a -i "${CA_FILE}" -u L
-      fi
+
+      # ------ Extract and import all CAs from CA_FILE as trusted -----------
+      "${DIRNAME}/extract-pem" "${CA_FILE}" \
+         --quiet --output-prefix "${db}/tmp/ca-"
+      caCount=0
+      find "${db}/tmp" -name "ca-[0-9]*.crt" | sort | \
+         while read -r name ; do
+            caCount=$((caCount + 1))
+            "${CERTUTIL}" -A -n "Root CA ${caCount}" -t "CT,C,C" -e -d "${db}" -a -i "${name}" -u L
+         done
       "${CERTUTIL}" -A -n "My Certificate" -t ",," -e -d "${db}" -a -i "${CERTIFICATE_FILE}"
 
       # ------ Extract certificate and process each sub-CA individually -----
@@ -294,13 +300,13 @@ while [ $# -gt 0 ] ; do
       subCA=0
       find "${db}/tmp" -name "certificate-[0-9]*.crt" | sort -r | \
          while read -r name ; do
-            subCA=$((subCA + 1))
-            "${CERTUTIL}" -A -n "My Sub CA ${subCA}" -t ",," -e -d "${db}" -a -i "${name}" -u L
+            subject="$("${OPENSSL}" x509 -in "${name}" -noout -subject 2>/dev/null || true)"
+            issuer="$("${OPENSSL}" x509 -in "${name}" -noout -issuer 2>/dev/null || true)"
+            if [ -n "${subject}" ] && [ "${subject}" != "${issuer}" ] ; then
+               subCA=$((subCA + 1))
+               "${CERTUTIL}" -A -n "My Sub CA ${subCA}" -t ",," -e -d "${db}" -a -i "${name}" -u L
+            fi
          done
-
-      # If the Root CA is in the certificate bundle, trust was reset to ",,"
-      # => Set it as trusted again:
-      "${CERTUTIL}" -A -n "My Root CA" -t "CT,C,C" -e -d "${db}" -a -i "${CA_FILE}" -u L
 
       # "${CERTUTIL}" -L -d "${db}"
 
@@ -347,7 +353,7 @@ while [ $# -gt 0 ] ; do
          sh -c "${command}" || true
          "${CERTUTIL}" -L -d "${db}"
          "${CRLUTIL}" -L -d "${db}"
-         print-utf8 --separator "\e[31;1m═" "═" "═\e0m"
+         print-utf8 --separator "\e[31;1m═" "═" "═\e[0m"
       fi
    else
       gettext "(NSS CertUtil is not installed)"
