@@ -101,7 +101,7 @@ if ! command -v gm >/dev/null ; then
    echo >&2 "ERROR: GraphicsMagick is not installed! Try:"
    echo >&2 " * Ubuntu/Debian: sudo apt install -y graphicsmagick"
    echo >&2 " * Fedora:        sudo dnf install -y GraphicsMagick"
-   echo >&2 " * SuSE:          sudo zypper install -y GraphicsMagick"
+   echo >&2 " * OpenSUSE:      sudo zypper install -y GraphicsMagick"
    echo >&2 " * Alpine:        sudo apk add graphicsmagick"
    echo >&2 " * FreeBSD:       sudo pkg install -y GraphicsMagick"
    echo >&2 " * NetBSD:        sudo pkgin -y install GraphicsMagick"
