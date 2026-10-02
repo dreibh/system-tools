@@ -1,6 +1,6 @@
 # Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 pkgname=td-system-tools
-pkgver=2.7.14
+pkgver=2.7.15
 pkgrel=1
 pkgdesc="Tools for basic system management"
 url="https://www.nntb.no/~dreibh/system-tools/"
@@ -221,5 +221,5 @@ _complete() {
 }
 
 sha512sums="
-6e7a2a0b9a476d2123df40fd9721113360d6eee534d8223432eb1561978ceec3dc0c4608857b74c485d15b2a1885e7d713db407d611cc44f98faebfcafe9334b  td-system-tools-2.7.14.tar.xz
+77ed158e7e18ca64ef8c5050b8668300338541fa25a2b18f19b49b52c8fd7074e9c161c533da4fb78ed08a23596177ceece932610961d37821a3fc6abeb78d1d  td-system-tools-2.7.15.tar.xz
 "
