@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-09-11 12:12+0200\n"
+"POT-Creation-Date: 2026-10-02 16:48+0200\n"
 "PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -132,18 +132,18 @@ msgstr "Synchronisiere Systemzeit ..."
 msgid "Updated system time to ${now}."
 msgstr "Die Systemzeit wurde auf ${now} aktualisiert."
 
-#: src/System-Maintenance/System-Maintenance:621
+#: src/System-Maintenance/System-Maintenance:627
 msgid "No system time update possible."
 msgstr "Keine Aktualisierung der Systemzeit möglich."
 
-#: src/System-Maintenance/System-Maintenance:628
+#: src/System-Maintenance/System-Maintenance:634
 msgid "Running fstrim ..."
 msgstr "Führe Trimming durch ..."
 
-#: src/System-Maintenance/System-Maintenance:634
+#: src/System-Maintenance/System-Maintenance:640
 msgid "Running zpool trim ..."
 msgstr "Führe ZFS-Trimming durch ..."
 
-#: src/System-Maintenance/System-Maintenance:644
+#: src/System-Maintenance/System-Maintenance:650
 msgid "Done!"
 msgstr "Erledigt!"

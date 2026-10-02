@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-28 14:34+0200\n"
+"POT-Creation-Date: 2026-10-02 16:48+0200\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -74,16 +74,11 @@ msgstr "Ekstraherer ${PEM_FILE} ..."
 msgid "ERROR: Unexpected type ${type} in ${PEM_FILE}!"
 msgstr "FEIL: Uventet type ${type} i ${PEM_FILE}!"
 
-#: src/X509/extract-pem:203
-#, sh-format
-msgid "ERROR: Unexpected data in ${PEM_FILE}!"
-msgstr "FEIL: Uventede data i ${PEM_FILE}!"
-
-#: src/X509/extract-pem:218 src/X509/extract-pem:233
+#: src/X509/extract-pem:214 src/X509/extract-pem:229
 msgid "SKIPPING"
 msgstr "HOPPES OVER"
 
-#: src/X509/extract-pem:244
+#: src/X509/extract-pem:240
 #, sh-format
 msgid "Done: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys"
 msgstr "Ferdig: ${certificate} sertifikater, ${csr} CSR-er, ${crl} CRL-er, ${key} nøkler"
