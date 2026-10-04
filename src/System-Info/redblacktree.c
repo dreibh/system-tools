@@ -46,7 +46,7 @@ static struct RedBlackTreeNode* redBlackTreeInternalFindNext(
                                     const struct RedBlackTreeNode* cmpNode);
 
 
-/* ###### Initialize ##################################################### */
+// ###### Initialize ########################################################
 void redBlackTreeNodeNew(struct RedBlackTreeNode* node)
 {
 #ifdef USE_LEAFLINKED
@@ -61,7 +61,7 @@ void redBlackTreeNodeNew(struct RedBlackTreeNode* node)
 }
 
 
-/* ###### Invalidate ##################################################### */
+// ###### Invalidate ########################################################
 void redBlackTreeNodeDelete(struct RedBlackTreeNode* node)
 {
    node->Parent       = NULL;
@@ -76,14 +76,14 @@ void redBlackTreeNodeDelete(struct RedBlackTreeNode* node)
 }
 
 
-/* ###### Is node linked? ################################################ */
+// ###### Is node linked? ###################################################
 int redBlackTreeNodeIsLinked(const struct RedBlackTreeNode* node)
 {
    return node->LeftSubtree != NULL;
 }
 
 
-/* ##### Initialize ###################################################### */
+// ##### Initialize #########################################################
 void redBlackTreeNew(
         struct RedBlackTree* rbt,
         void                 (*printFunction)(const void* node, FILE* fd),
@@ -104,7 +104,7 @@ void redBlackTreeNew(
 }
 
 
-/* ##### Invalidate ###################################################### */
+// ##### Invalidate #########################################################
 void redBlackTreeDelete(struct RedBlackTree* rbt)
 {
    rbt->Elements              = 0;
@@ -117,14 +117,14 @@ void redBlackTreeDelete(struct RedBlackTree* rbt)
 }
 
 
-/* ##### Update value sum ################################################ */
+// ##### Update value sum ###################################################
 inline static void redBlackTreeUpdateValueSum(struct RedBlackTreeNode* node)
 {
    node->ValueSum = node->LeftSubtree->ValueSum + node->Value + node->RightSubtree->ValueSum;
 }
 
 
-/* ##### Update value sum for node and all parents up to tree root ####### */
+// ##### Update value sum for node and all parents up to tree root ##########
 static void redBlackTreeUpdateValueSumsUpToRoot(
                struct RedBlackTree*     rbt,
                struct RedBlackTreeNode* node)
@@ -136,7 +136,7 @@ static void redBlackTreeUpdateValueSumsUpToRoot(
 }
 
 
-/* ###### Internal method for printing a node ############################# */
+// ###### Internal method for printing a node ################################
 static void redBlackTreePrintNode(
                const struct RedBlackTree*     rbt,
                const struct RedBlackTreeNode* node,
@@ -176,7 +176,7 @@ static void redBlackTreePrintNode(
 }
 
 
-/* ##### Internal printing function ###################################### */
+// ##### Internal printing function #########################################
 void redBlackTreeInternalPrint(const struct RedBlackTree*     rbt,
                                const struct RedBlackTreeNode* node,
                                FILE*                          fd)
@@ -189,7 +189,7 @@ void redBlackTreeInternalPrint(const struct RedBlackTree*     rbt,
 }
 
 
-/* ###### Print tree ##################################################### */
+// ###### Print tree ########################################################
 void redBlackTreePrint(const struct RedBlackTree* rbt,
                        FILE*                      fd)
 {
@@ -205,14 +205,14 @@ void redBlackTreePrint(const struct RedBlackTree* rbt,
 }
 
 
-/* ###### Is tree empty? ################################################# */
+// ###### Is tree empty? ####################################################
 int redBlackTreeIsEmpty(const struct RedBlackTree* rbt)
 {
    return rbt->NullNode.LeftSubtree == &rbt->NullNode;
 }
 
 
-/* ###### Get first node ################################################## */
+// ###### Get first node #####################################################
 struct RedBlackTreeNode* redBlackTreeGetFirst(const struct RedBlackTree* rbt)
 {
 #ifdef USE_LEAFLINKED
@@ -237,7 +237,7 @@ struct RedBlackTreeNode* redBlackTreeGetFirst(const struct RedBlackTree* rbt)
 }
 
 
-/* ###### Get last node ################################################### */
+// ###### Get last node ######################################################
 struct RedBlackTreeNode* redBlackTreeGetLast(const struct RedBlackTree* rbt)
 {
 #ifdef USE_LEAFLINKED
@@ -262,7 +262,7 @@ struct RedBlackTreeNode* redBlackTreeGetLast(const struct RedBlackTree* rbt)
 }
 
 
-/* ###### Get previous node ############################################### */
+// ###### Get previous node ##################################################
 struct RedBlackTreeNode* redBlackTreeGetPrev(
                             const struct RedBlackTree*     rbt,
                             const struct RedBlackTreeNode* node)
@@ -284,7 +284,7 @@ struct RedBlackTreeNode* redBlackTreeGetPrev(
 }
 
 
-/* ###### Get next node ################################################## */
+// ###### Get next node #####################################################
 struct RedBlackTreeNode* redBlackTreeGetNext(
                             const struct RedBlackTree*     rbt,
                             const struct RedBlackTreeNode* node)
@@ -306,7 +306,7 @@ struct RedBlackTreeNode* redBlackTreeGetNext(
 }
 
 
-/* ###### Find nearest previous node ##################################### */
+// ###### Find nearest previous node ########################################
 struct RedBlackTreeNode* redBlackTreeGetNearestPrev(
                             const struct RedBlackTree*     rbt,
                             const struct RedBlackTreeNode* cmpNode)
@@ -387,7 +387,7 @@ struct RedBlackTreeNode* redBlackTreeGetNearestPrev(
 }
 
 
-/* ###### Find nearest next node ######################################### */
+// ###### Find nearest next node ############################################
 struct RedBlackTreeNode* redBlackTreeGetNearestNext(
                             const struct RedBlackTree*     rbt,
                             const struct RedBlackTreeNode* cmpNode)
@@ -396,7 +396,7 @@ struct RedBlackTreeNode* redBlackTreeGetNearestNext(
    struct RedBlackTreeNode*const* parentPtr;
    const struct RedBlackTreeNode* node;
    const struct RedBlackTreeNode* parent;
-   int                                           cmpResult = 0;
+   int                            cmpResult = 0;
 
 #ifdef DEBUG
    printf("nearest next: ");
@@ -468,14 +468,14 @@ struct RedBlackTreeNode* redBlackTreeGetNearestNext(
 }
 
 
-/* ###### Get number of elements ########################################## */
+// ###### Get number of elements #############################################
 size_t redBlackTreeGetElements(const struct RedBlackTree* rbt)
 {
    return rbt->Elements;
 }
 
 
-/* ###### Get prev node by walking through the tree (does *not* use list!) */
+// ###### Get prev node by walking through the tree (does *not* use list!) */
 struct RedBlackTreeNode* redBlackTreeInternalFindPrev(
                             const struct RedBlackTree*     rbt,
                             const struct RedBlackTreeNode* cmpNode)
@@ -501,7 +501,7 @@ struct RedBlackTreeNode* redBlackTreeInternalFindPrev(
 }
 
 
-/* ###### Get next node by walking through the tree (does *not* use list!) */
+// ###### Get next node by walking through the tree (does *not* use list!) */
 struct RedBlackTreeNode* redBlackTreeInternalFindNext(
                             const struct RedBlackTree*     rbt,
                             const struct RedBlackTreeNode* cmpNode)
@@ -527,7 +527,7 @@ struct RedBlackTreeNode* redBlackTreeInternalFindNext(
 }
 
 
-/* ###### Find node ####################################################### */
+// ###### Find node ##########################################################
 struct RedBlackTreeNode* redBlackTreeFind(
                             const struct RedBlackTree*     rbt,
                             const struct RedBlackTreeNode* cmpNode)
@@ -555,7 +555,7 @@ struct RedBlackTreeNode* redBlackTreeFind(
 }
 
 
-/* ###### Get value sum from root node ################################### */
+// ###### Get value sum from root node ######################################
 RedBlackTreeNodeValueType redBlackTreeGetValueSum(
                              const struct RedBlackTree* rbt)
 {
@@ -563,7 +563,7 @@ RedBlackTreeNodeValueType redBlackTreeGetValueSum(
 }
 
 
-/* ##### Rotation with left subtree ###################################### */
+// ##### Rotation with left subtree #########################################
 static void redBlackTreeRotateLeft(
                struct RedBlackTreeNode* node)
 {
@@ -591,7 +591,7 @@ static void redBlackTreeRotateLeft(
 }
 
 
-/* ##### Rotation with ripht subtree ##################################### */
+// ##### Rotation with ripht subtree ########################################
 static void redBlackTreeRotateRight(
                struct RedBlackTreeNode* node)
 {
@@ -619,7 +619,7 @@ static void redBlackTreeRotateRight(
 }
 
 
-/* ###### Insert ######################################################### */
+// ###### Insert ############################################################
 struct RedBlackTreeNode* redBlackTreeInsert(struct RedBlackTree*     rbt,
                                             struct RedBlackTreeNode* node)
 {
@@ -639,7 +639,7 @@ struct RedBlackTreeNode* redBlackTreeInsert(struct RedBlackTree*     rbt,
 #endif
 
 
-   /* ====== Find location of new node =================================== */
+   // ====== Find location of new node ======================================
    while(where != &rbt->NullNode) {
       parent = where;
       cmpResult = rbt->ComparisonFunction(node, where);
@@ -665,7 +665,7 @@ struct RedBlackTreeNode* redBlackTreeInsert(struct RedBlackTree*     rbt,
    }
 
 
-   /* ====== Link node =================================================== */
+   // ====== Link node ======================================================
    node->Parent       = parent;
    node->LeftSubtree  = &rbt->NullNode;
    node->RightSubtree = &rbt->NullNode;
@@ -683,11 +683,11 @@ struct RedBlackTreeNode* redBlackTreeInsert(struct RedBlackTree*     rbt,
    result = node;
 
 
-   /* ====== Update parent's value sum =================================== */
+   // ====== Update parent's value sum ======================================
    redBlackTreeUpdateValueSumsUpToRoot(rbt, node->Parent);
 
 
-   /* ====== Ensure red-black tree properties ============================ */
+   // ====== Ensure red-black tree properties ===============================
    node->Color = Red;
    while (parent->Color == Red) {
       grandpa = parent->Parent;
@@ -745,7 +745,7 @@ finished:
 }
 
 
-/* ###### Remove ######################################################### */
+// ###### Remove ############################################################
 struct RedBlackTreeNode* redBlackTreeRemove(struct RedBlackTree*     rbt,
                                             struct RedBlackTreeNode* node)
 {
@@ -764,7 +764,7 @@ struct RedBlackTreeNode* redBlackTreeRemove(struct RedBlackTree*     rbt,
 
    assert(redBlackTreeNodeIsLinked(node));
 
-   /* ====== Unlink node ================================================= */
+   // ====== Unlink node ====================================================
    if((node->LeftSubtree != &rbt->NullNode) && (node->RightSubtree != &rbt->NullNode)) {
       next       = redBlackTreeGetNext(rbt, node);
       nextParent = next->Parent;
@@ -800,7 +800,7 @@ struct RedBlackTreeNode* redBlackTreeRemove(struct RedBlackTree*     rbt,
          delParent->RightSubtree = next;
       }
 
-      /* ====== Update parent's value sum ================================ */
+      // ====== Update parent's value sum ===================================
       redBlackTreeUpdateValueSumsUpToRoot(rbt, next);
       redBlackTreeUpdateValueSumsUpToRoot(rbt, nextParent);
    } else {
@@ -817,12 +817,12 @@ struct RedBlackTreeNode* redBlackTreeRemove(struct RedBlackTree*     rbt,
          delParent->RightSubtree = child;
       }
 
-      /* ====== Update parent's value sum ================================ */
+      // ====== Update parent's value sum ===================================
       redBlackTreeUpdateValueSumsUpToRoot(rbt, delParent);
    }
 
 
-   /* ====== Unlink node from list and invalidate pointers =============== */
+   // ====== Unlink node from list and invalidate pointers ==================
    node->Parent       = NULL;
    node->RightSubtree = NULL;
    node->LeftSubtree  = NULL;
@@ -835,7 +835,7 @@ struct RedBlackTreeNode* redBlackTreeRemove(struct RedBlackTree*     rbt,
    rbt->Elements--;
 
 
-   /* ====== Ensure red-black properties ================================= */
+   // ====== Ensure red-black properties ====================================
    if(node->Color == Black) {
       rbt->NullNode.LeftSubtree->Color = Red;
 
@@ -917,7 +917,7 @@ struct RedBlackTreeNode* redBlackTreeRemove(struct RedBlackTree*     rbt,
 }
 
 
-/* ##### Get node by value ############################################### */
+// ##### Get node by value ##################################################
 struct RedBlackTreeNode* redBlackTreeGetNodeByValue(
                             const struct RedBlackTree* rbt,
                             RedBlackTreeNodeValueType  value)
@@ -953,7 +953,7 @@ struct RedBlackTreeNode* redBlackTreeGetNodeByValue(
 }
 
 
-/* ##### Internal verification function ################################## */
+// ##### Internal verification function #####################################
 static size_t redBlackTreeInternalVerify(
                  struct RedBlackTree*              rbt,
                  struct RedBlackTreeNode*          parent,
@@ -972,17 +972,17 @@ static size_t redBlackTreeInternalVerify(
    size_t                   rightHeight;
 
    if(node != &rbt->NullNode) {
-      /* ====== Print node =============================================== */
+      // ====== Print node ==================================================
 #ifdef DEBUG
       printf("verifying ");
       redBlackTreePrintNode(rbt, node, stdout);
       puts("");
 #endif
 
-      /* ====== Correct parent? ========================================== */
+      // ====== Correct parent? =============================================
       assert(node->Parent == parent);
 
-      /* ====== Correct tree and heap properties? ======================== */
+      // ====== Correct tree and heap properties? ===========================
       if(node->LeftSubtree != &rbt->NullNode) {
          assert(rbt->ComparisonFunction(node, node->LeftSubtree) > 0);
       }
@@ -990,12 +990,12 @@ static size_t redBlackTreeInternalVerify(
          assert(rbt->ComparisonFunction(node, node->RightSubtree) < 0);
       }
 
-      /* ====== Is value sum okay? ======================================= */
+      // ====== Is value sum okay? ==========================================
       assert(node->ValueSum == node->LeftSubtree->ValueSum +
                               node->Value +
                               node->RightSubtree->ValueSum);
 
-      /* ====== Is left subtree okay? ==================================== */
+      // ====== Is left subtree okay? =======================================
       leftHeight = redBlackTreeInternalVerify(
                       rbt, node, node->LeftSubtree, lastRedBlackTreeNode,
 #ifdef USE_LEAFLINKED
@@ -1004,14 +1004,14 @@ static size_t redBlackTreeInternalVerify(
                       counter);
 
 #ifdef USE_LEAFLINKED
-      /* ====== Is ring list okay? ======================================= */
+      // ====== Is ring list okay? ==========================================
       assert((*lastListNode)->Next != rbt->List.Head);
       *lastListNode = (*lastListNode)->Next;
       assert(*lastListNode == &node->ListNode);
 #endif
 
 #ifdef USE_LEAFLINKED
-      /* ====== Is linking working correctly? ============================ */
+      // ====== Is linking working correctly? ===============================
       prev = redBlackTreeInternalFindPrev(rbt, node);
       if(prev != &rbt->NullNode) {
          assert((*lastListNode)->Prev == &prev->ListNode);
@@ -1029,10 +1029,10 @@ static size_t redBlackTreeInternalVerify(
       }
 #endif
 
-      /* ====== Count elements =========================================== */
+      // ====== Count elements ==============================================
       (*counter)++;
 
-      /* ====== Is right subtree okay? =================================== */
+      // ====== Is right subtree okay? ======================================
       rightHeight = redBlackTreeInternalVerify(
                        rbt, node, node->RightSubtree, lastRedBlackTreeNode,
 #ifdef USE_LEAFLINKED
@@ -1040,7 +1040,7 @@ static size_t redBlackTreeInternalVerify(
 #endif
                        counter);
 
-      /* ====== Verify red-black property ================================ */
+      // ====== Verify red-black property ===================================
       assert((leftHeight != 0) || (rightHeight != 0));
       assert(leftHeight == rightHeight);
       if(node->Color == Red) {
@@ -1055,7 +1055,7 @@ static size_t redBlackTreeInternalVerify(
 }
 
 
-/* ##### Verify structures ############################################### */
+// ##### Verify structures ##################################################
 void redBlackTreeVerify(struct RedBlackTree* rbt)
 {
    size_t                           counter              = 0;
