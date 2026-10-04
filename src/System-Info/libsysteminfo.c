@@ -61,12 +61,12 @@ typedef enum {
 } SystemInfoEntryValueType;
 
 typedef union {
-   const char* String;
-   uint32_t    UInt32;
-   uint64_t    UInt64;
-   int32_t     Int32;
-   int64_t     Int64;
-   double      Double;
+   char*    String;
+   uint32_t UInt32;
+   uint64_t UInt64;
+   int32_t  Int32;
+   int64_t  Int64;
+   double   Double;
 } SystemInfoEntryValue;
 
 struct SystemInfoEntry
@@ -76,6 +76,14 @@ struct SystemInfoEntry
    SystemInfoEntryValue     Value;
    SystemInfoEntryValueType ValueType;
 };
+
+
+
+struct SystemInfo* systemInfoObtain(unsigned int flags);
+void systemInfoRelease(struct SystemInfo* systemInfo);
+void systemInfoPrint(const struct SystemInfo* systemInfo, FILE* fd);
+
+
 
 
 static void systemInfoEntryPrint(const void* node, FILE* fd)
@@ -133,6 +141,16 @@ static struct SystemInfoEntry* systemInfoMakeEntry(struct SystemInfo* systemInfo
    }
    systemInfo->Error = 1;
    return nullptr;
+}
+
+
+static void systemInfoDisposeEntry(struct SystemInfoEntry* systemInfoEntry)
+{
+   if(systemInfoEntry->ValueType == SIET_STRING) {
+      free(systemInfoEntry->Value.String);
+   }
+   free(systemInfoEntry->Key);
+   free(systemInfoEntry);
 }
 
 
@@ -203,8 +221,6 @@ static void systemInfoAddDouble(struct SystemInfo* systemInfo, const char* key, 
 
 
 
-
-
 struct SystemInfo* systemInfoObtain(unsigned int flags)
 {
    struct SystemInfo* systemInfo = malloc(sizeof(struct SystemInfo));
@@ -220,7 +236,10 @@ struct SystemInfo* systemInfoObtain(unsigned int flags)
       systemInfoAddString(systemInfo, "block", "xxx");
       systemInfoAddDouble(systemInfo, "pi", 3.1415);
 
-
+      if(systemInfo->Error) {
+         systemInfoRelease(systemInfo);
+         systemInfo = nullptr;
+      }
    }
    return systemInfo;
 }
@@ -233,7 +252,7 @@ void systemInfoRelease(struct SystemInfo* systemInfo)
          (struct SystemInfoEntry*)redBlackTreeGetFirst(&systemInfo->Tree);
       while(systemInfoEntry) {
          redBlackTreeRemove(&systemInfo->Tree, &systemInfoEntry->Node);
-         free(systemInfoEntry);
+         systemInfoDisposeEntry(systemInfoEntry);
          systemInfoEntry = (struct SystemInfoEntry*)redBlackTreeGetFirst(&systemInfo->Tree);
       }
       redBlackTreeDelete(&systemInfo->Tree);
