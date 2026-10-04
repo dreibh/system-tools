@@ -52,7 +52,8 @@ typedef enum {
 } SystemInfoEntryValueType;
 
 
-struct SystemInfo* systemInfoObtain(unsigned int flags);
+struct SystemInfo* systemInfoObtain(const unsigned int compatibilityVersion,
+                                    const unsigned int flags);
 void systemInfoRelease(struct SystemInfo* systemInfo);
 void systemInfoPrint(const struct SystemInfo* systemInfo, FILE* fd);
 

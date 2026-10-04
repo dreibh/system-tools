@@ -147,10 +147,13 @@ typedef union {
    double   Double;
 } SystemInfoEntryValue;
 
+
+#define SIE_KEY_SIZE 32
+
 struct SystemInfoEntry
 {
    struct RedBlackTreeNode  Node;
-   char                     Key[32];
+   char                     Key[SIE_KEY_SIZE];
    SystemInfoEntryValue     Value;
    SystemInfoEntryValueType ValueType;
    int                      DisplayHint;
@@ -265,14 +268,14 @@ static void systemInfoRemoveEntry(struct SystemInfo*      systemInfo,
 // ###### Generate a key according to format string and arguments ###########
 char* systemInfoMakeKey(const char* format, ...)
 {
-    va_list     args;
-    static char key[32];
+   va_list     args;
+   static char key[SIE_KEY_SIZE];
 
-    va_start(args, format);
-    vsnprintf(key, sizeof(key), format, args);
-    va_end(args);
+   va_start(args, format);
+   vsnprintf(key, sizeof(key), format, args);
+   va_end(args);
 
-    return key;
+   return key;
 }
 
 
@@ -494,12 +497,36 @@ unsigned int countSetBits(const uint8_t* array, const unsigned int size)
 }
 
 
-// ###### Print address #####################################################
-static void printaddress(const struct sockaddr* address,
-                         const unsigned int     prefixlen)
+// ###### Concatenate strings, insert " " if necessary ######################
+char* strdup_concat(const char* s1, const char* s2)
 {
+   char* result;
+   if(s1 == nullptr) {
+      result = strdup(s2);
+   }
+   else {
+      const size_t len1 = strlen(s1);
+      const size_t len2 = strlen(s2);
+      result = (char*)malloc(len1 + len2 + 2);
+      if(result != nullptr) {
+         memcpy(result, s1, len1);
+         result[len1] = ' ';
+         memcpy(result + len1 + 1, s2, len2 + 1);   // Includes null-terminator!
+      }
+   }
+   return result;
+}
+
+
+// ###### Format address ####################################################
+static char* formatAddress(const struct sockaddr* address,
+                           const unsigned int     prefixlen)
+{
+   static char buffer[128];
+
+   buffer[0] = 0x00;
    if( (address->sa_family == AF_INET6) || (address->sa_family == AF_INET) ) {
-      char resolvedHost[1025];
+      char resolvedHost[64];
       int error = getnameinfo(address,
                               (address->sa_family == AF_INET6) ?
                                  sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in),
@@ -510,21 +537,31 @@ static void printaddress(const struct sockaddr* address,
          fprintf(stderr, "ERROR: getnameinfo() failed: %s\n", gai_strerror(error));
          exit(1);
       }
-      printf("%s/%u", resolvedHost, prefixlen);
+      snprintf(buffer, sizeof(buffer), "%s/%u", resolvedHost, prefixlen);
    }
 #if defined(__linux__)
    else if(address->sa_family == AF_PACKET) {
       const struct sockaddr_ll* macAddress = (const struct sockaddr_ll*)address;
+      int offset = 0;
       for(unsigned int i = 0; i < macAddress->sll_halen; i++) {
-         printf("%s%02x", (i > 0) ? ":" : "", macAddress->sll_addr[i]);
+         if((size_t)offset < sizeof(buffer)) {
+            int ret = snprintf(buffer + offset, sizeof(buffer) - offset,
+                               "%s%02x", (i > 0) ? ":" : "", macAddress->sll_addr[i]);
+            if(ret > 0) offset += ret;
+         }
       }
    }
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
    else if(address->sa_family == AF_LINK) {
       const struct sockaddr_dl* macAddress = (const struct sockaddr_dl*)address;
       const uint8_t*            lladdr     = (const uint8_t*)LLADDR(macAddress);
+      int offset = 0;
       for(unsigned int i = 0; i < macAddress->sdl_alen; i++) {
-         printf("%s%02x", (i > 0) ? ":" : "", lladdr[i]);
+         if((size_t)offset < sizeof(buffer)) {
+            int ret = snprintf(buffer + offset, sizeof(buffer) - offset,
+                               "%s%02x", (i > 0) ? ":" : "", lladdr[i]);
+            if(ret > 0) offset += ret;
+         }
       }
    }
 #elif defined(__gnu_hurd__)
@@ -532,29 +569,33 @@ static void printaddress(const struct sockaddr* address,
 #else
 #error Missing case!
 #endif
+
+   return buffer;
 }
 
 
-// ###### Print interface flags #############################################
-static void printflags(const unsigned int flags)
+// ###### Format interface flags ############################################
+static char* formatFlags(const unsigned int flags)
 {
-   printf("0x%x: <%s>", flags, (flags & IFF_UP) ? "UP" : "DOWN");
+   static char buffer[256];
+   int offset = snprintf(buffer, sizeof(buffer), "0x%x: <%s>", flags, (flags & IFF_UP) ? "UP" : "DOWN");
 #if defined(IFF_LOWER_UP)
-   if(flags & IFF_LOWER_UP) {
-      fputs(" <LOWER_UP>", stdout);
+   if((flags & IFF_LOWER_UP) && offset >= 0 && (size_t)offset < sizeof(buffer)) {
+      offset += snprintf(buffer + offset, sizeof(buffer) - offset, " <LOWER_UP>");
    }
 #endif
 #if defined(IFF_RUNNING)
-   if(flags & IFF_RUNNING) {
-      fputs(" <RUNNING>", stdout);
+   if((flags & IFF_RUNNING) && offset >= 0 && (size_t)offset < sizeof(buffer)) {
+      offset += snprintf(buffer + offset, sizeof(buffer) - offset, " <RUNNING>");
    }
 #endif
-   if(flags & IFF_LOOPBACK) {
-      fputs(" <LOOPBACK>", stdout);
+   if((flags & IFF_LOOPBACK) && offset >= 0 && (size_t)offset < sizeof(buffer)) {
+      offset += snprintf(buffer + offset, sizeof(buffer) - offset, " <LOOPBACK>");
    }
-   if(flags & IFF_POINTOPOINT) {
-      fputs(" <POINTOPOINT>", stdout);
+   if((flags & IFF_POINTOPOINT) && offset >= 0 && (size_t)offset < sizeof(buffer)) {
+      offset += snprintf(buffer + offset, sizeof(buffer) - offset, " <POINTOPOINT>");
    }
+   return buffer;
 }
 
 
@@ -579,6 +620,7 @@ static void obtainHostnameInformation(struct SystemInfo* systemInfo)
       domainname[0] = 0x00;
       domainname++;
    }
+   systemInfoAddString(systemInfo, "domainname", (domainname != nullptr) ? domainname : "");
    systemInfoAddString(systemInfo, "hostname_short", hostname);
 }
 
@@ -1591,7 +1633,7 @@ static void obtainDiskInformation(struct SystemInfo* systemInfo)
    obtainDiskUsage(systemInfo, "/home", "home");
    obtainDiskUsage(systemInfo, "/tmp",  "tmp");
    // obtainDiskUsage(systemInfo, "/boot/efi", "efi");
-   // systemInfoAddString(systemInfo, "disk_list", "root home tmp");
+   systemInfoAddString(systemInfo, "disk_list", "root home tmp");
 }
 
 
@@ -1624,7 +1666,7 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
                if(ifa->ifa_addr->sa_family == AF_INET6) {
 
                   if( filterLocalScope &&
-                     ( (IN6_IS_ADDR_LOOPBACK(&((const struct sockaddr_in6*)ifa->ifa_addr)->sin6_addr)) ||
+                      ( (IN6_IS_ADDR_LOOPBACK(&((const struct sockaddr_in6*)ifa->ifa_addr)->sin6_addr)) ||
                         (IN6_IS_ADDR_LINKLOCAL(&((const struct sockaddr_in6*)ifa->ifa_addr)->sin6_addr)) ) ) {
                      continue;
                   }
@@ -1639,7 +1681,7 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
                }
                else {
                   if( filterLocalScope &&
-                     (ntohl( ((const struct sockaddr_in*)ifa->ifa_addr)->sin_addr.s_addr) == INADDR_LOOPBACK) ) {
+                      (ntohl( ((const struct sockaddr_in*)ifa->ifa_addr)->sin_addr.s_addr) == INADDR_LOOPBACK) ) {
                      continue;
                   }
                   if(__builtin_expect(ifa->ifa_netmask != nullptr, 1)) {
@@ -1651,9 +1693,9 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
                      ifaArray[n].prefixlen = 32;
                   }
                }
-            ifaArray[n].ifname    = ifa->ifa_name;
-            ifaArray[n].address   = ifa->ifa_addr;
-            ifaArray[n].flags     = ifa->ifa_flags;
+            ifaArray[n].ifname  = ifa->ifa_name;
+            ifaArray[n].address = ifa->ifa_addr;
+            ifaArray[n].flags   = ifa->ifa_flags;
             n++;
             break;
 
@@ -1684,18 +1726,20 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
    // ====== Print interfaces and their addresses ===========================
    unsigned int lastIfIndex = 0;
    int          lastFamily  = AF_UNSPEC;
+   char*        addressList = nullptr;
+   char         addressKey[SIE_KEY_SIZE];
    for(unsigned int i = 0; i < n; i++) {
       ifIndices[i] = if_nametoindex(ifaArray[i].ifname);
       if(ifIndices[i] != 0) {
          if( (lastIfIndex == 0) || (lastIfIndex != ifIndices[i]) ) {
-            if(lastIfIndex != 0) {
-               puts("\"");
-            }
             systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_name", ifIndices[i]), ifaArray[i].ifname);
-            printf("netif_%u_flags=\"", ifIndices[i]);
-            printflags(ifaArray[i].flags);
-            puts("\"");
+            systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_flags", ifIndices[i]), formatFlags(ifaArray[i].flags));
             lastFamily = AF_UNSPEC;
+            if(addressList) {
+               systemInfoAddString(systemInfo, addressKey, addressList);
+               free(addressList);
+               addressList = nullptr;
+            }
 
 #if defined(__gnu_hurd__)
             // GNU Hurd has to query link-layer addresses via ioctl:
@@ -1722,14 +1766,18 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
 
          if(lastFamily != ifaArray[i].address->sa_family) {
             if(lastFamily != AF_UNSPEC) {
-               puts("\"");
+               if(addressList) {
+                  systemInfoAddString(systemInfo, addressKey, addressList);
+                  free(addressList);
+                  addressList = nullptr;
+               }
             }
             switch(ifaArray[i].address->sa_family) {
                case AF_INET6:
-                  printf("netif_%u_ipv6=\"", ifIndices[i]);
+                  strlcpy(addressKey, systemInfoMakeKey("netif_%u_ipv6", ifIndices[i]), sizeof(addressKey));
                   break;
                case AF_INET:
-                  printf("netif_%u_ipv4=\"", ifIndices[i]);
+                  strlcpy(addressKey, systemInfoMakeKey("netif_%u_ipv4", ifIndices[i]), sizeof(addressKey));
                   break;
 #if defined(__gnu_hurd__)
                // GNU Hurd does not return link-layer addresses in getifaddrs().
@@ -1742,24 +1790,23 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
 #error Missing case!
 #endif
 #endif
-                  printf("netif_%u_mac=\"", ifIndices[i]);
+                  strlcpy(addressKey, systemInfoMakeKey("netif_%u_mac", ifIndices[i]), sizeof(addressKey));
                   break;
                default:
                   break;
             }
          }
-         else {
-            fputs(" ", stdout);
-         }
-
-         printaddress(ifaArray[i].address, ifaArray[i].prefixlen);
+         const char* address = formatAddress(ifaArray[i].address, ifaArray[i].prefixlen);
+         addressList = strdup_concat(addressList, address);
 
          lastIfIndex = ifIndices[i];
          lastFamily  = ifaArray[i].address->sa_family;
       }
    }
-   if(lastIfIndex != 0) {
-      puts("\"");
+   if(addressList) {
+      systemInfoAddString(systemInfo, addressKey, addressList);
+      free(addressList);
+      addressList = nullptr;
    }
 
    // ====== Print interfaces list ==========================================
@@ -1785,7 +1832,8 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
 
 
 // ###### Obtain SystemInfo #################################################
-struct SystemInfo* systemInfoObtain(unsigned int flags)
+struct SystemInfo* systemInfoObtain(const unsigned int compatibilityVersion,
+                                    const unsigned int flags)
 {
    struct SystemInfo* systemInfo =
       (struct SystemInfo*)malloc(sizeof(struct SystemInfo));
@@ -1793,6 +1841,7 @@ struct SystemInfo* systemInfoObtain(unsigned int flags)
       redBlackTreeNew(&systemInfo->Tree, systemInfoEntryPrint, systemInfoEntryComparison);
       systemInfo->Error = 0;
 
+      systemInfoAddUInt32(systemInfo, "compatibility", compatibilityVersion);
       obtainHostnameInformation(systemInfo);
       obtainUptimeInformation(systemInfo);
       obtainKernelInformation(systemInfo);
@@ -1859,7 +1908,12 @@ void systemInfoPrint(const struct SystemInfo* systemInfo, FILE* fd)
 
 int main(int argc, char** argv)
 {
-   struct SystemInfo* systemInfo = systemInfoObtain(0);
+   // ====== Initialise locale support ======================================
+   if(setlocale(LC_ALL, "") == nullptr) {
+      setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
+   }
+
+   struct SystemInfo* systemInfo = systemInfoObtain(COMPATIBILITY_VERSION, 0xffffffff);
    if(systemInfo) {
       systemInfoPrint(systemInfo, stdout);
       systemInfoRelease(systemInfo);
