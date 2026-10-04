@@ -160,12 +160,6 @@ struct SystemInfoEntry
    int                      DisplayHint;
 };
 
-
-// Compatibility version of libsysteminfo, to allow for future changes:
-// Currently, there is just version 0.
-#define COMPATIBILITY_VERSION 0
-
-
 struct interfaceaddress {
    const char*            ifname;
    const struct sockaddr* address;
@@ -180,32 +174,32 @@ static void systemInfoEntryPrint(const void* node, FILE* fd)
    const struct SystemInfoEntry* systemInfoEntry = (const struct SystemInfoEntry*)node;
    switch(systemInfoEntry->ValueType) {
       case SIET_STRING:
-         printf("%s=\"%s\"\n", systemInfoEntry->Key, systemInfoEntry->Value.String);
+         fprintf(fd, "%s=\"%s\"\n", systemInfoEntry->Key, systemInfoEntry->Value.String);
        break;
       case SIET_INT32:
-         printf("%s=%d\n", systemInfoEntry->Key, (unsigned int)systemInfoEntry->Value.Int32);
+         fprintf(fd, "%s=%d\n", systemInfoEntry->Key, (unsigned int)systemInfoEntry->Value.Int32);
        break;
       case SIET_INT64:
-         printf("%s=%lld\n", systemInfoEntry->Key, (unsigned long long)systemInfoEntry->Value.Int64);
+         fprintf(fd, "%s=%lld\n", systemInfoEntry->Key, (unsigned long long)systemInfoEntry->Value.Int64);
        break;
       case SIET_UINT32:
-         printf("%s=%u\n", systemInfoEntry->Key, (unsigned int)systemInfoEntry->Value.UInt32);
+         fprintf(fd, "%s=%u\n", systemInfoEntry->Key, (unsigned int)systemInfoEntry->Value.UInt32);
        break;
       case SIET_UINT64:
-         printf("%s=%llu\n", systemInfoEntry->Key, (unsigned long long)systemInfoEntry->Value.UInt64);
+         fprintf(fd, "%s=%llu\n", systemInfoEntry->Key, (unsigned long long)systemInfoEntry->Value.UInt64);
        break;
       case SIET_DOUBLE:
          if(systemInfoEntry->DisplayHint >= 0) {
             char format[32];
             snprintf((char*)&format, sizeof(format), "%%s=%%1.%dlf\n", systemInfoEntry->DisplayHint);
-            printf(format, systemInfoEntry->Key, systemInfoEntry->Value.Double);
+            fprintf(fd, format, systemInfoEntry->Key, systemInfoEntry->Value.Double);
          }
          else {
-            printf("%s=%lf", systemInfoEntry->Key, systemInfoEntry->Value.Double);
+            fprintf(fd, "%s=%lf", systemInfoEntry->Key, systemInfoEntry->Value.Double);
          }
        break;
       default:
-         printf("%s=(INVALID!)\n", systemInfoEntry->Key);
+         fprintf(fd, "%s=(INVALID!)\n", systemInfoEntry->Key);
        break;
    }
 }
@@ -534,21 +528,22 @@ static char* formatAddress(const struct sockaddr* address,
                               resolvedHost, sizeof(resolvedHost),
                               nullptr, 0,
                               NI_NUMERICHOST);
-      if(error != 0) {
-         fprintf(stderr, "ERROR: getnameinfo() failed: %s\n", gai_strerror(error));
-         exit(1);
+      if(error == 0) {
+         snprintf(buffer, sizeof(buffer), "%s/%u", resolvedHost, prefixlen);
       }
-      snprintf(buffer, sizeof(buffer), "%s/%u", resolvedHost, prefixlen);
+      else {
+         fprintf(stderr, "ERROR: getnameinfo() failed: %s\n", gai_strerror(error));
+      }
    }
 #if defined(__linux__)
    else if(address->sa_family == AF_PACKET) {
       const struct sockaddr_ll* macAddress = (const struct sockaddr_ll*)address;
-      int                       offset     = 0;
+      unsigned int              offset     = 0;
       for(unsigned int i = 0; i < macAddress->sll_halen; i++) {
          if((size_t)offset < sizeof(buffer)) {
-            int ret = snprintf(buffer + offset, sizeof(buffer) - offset,
-                               "%s%02x", (i > 0) ? ":" : "", macAddress->sll_addr[i]);
-            if(ret > 0) offset += ret;
+            int result = snprintf(buffer + offset, sizeof(buffer) - offset,
+                                  "%s%02x", (i > 0) ? ":" : "", macAddress->sll_addr[i]);
+            if(result > 0) offset += (unsigned int)result;
          }
       }
    }
@@ -556,12 +551,12 @@ static char* formatAddress(const struct sockaddr* address,
    else if(address->sa_family == AF_LINK) {
       const struct sockaddr_dl* macAddress = (const struct sockaddr_dl*)address;
       const uint8_t*            lladdr     = (const uint8_t*)LLADDR(macAddress);
-      int                       offset     = 0;
+      unsigned int              offset     = 0;
       for(unsigned int i = 0; i < macAddress->sdl_alen; i++) {
          if((size_t)offset < sizeof(buffer)) {
-            int ret = snprintf(buffer + offset, sizeof(buffer) - offset,
-                               "%s%02x", (i > 0) ? ":" : "", lladdr[i]);
-            if(ret > 0) offset += ret;
+            int result = snprintf(buffer + offset, sizeof(buffer) - offset,
+                                  "%s%02x", (i > 0) ? ":" : "", lladdr[i]);
+            if(result > 0) offset += (unsigned int)result;
          }
       }
    }
@@ -569,11 +564,11 @@ static char* formatAddress(const struct sockaddr* address,
    else if(address->sa_family == ARPHRD_ETHER) {
       const uint8_t*     lladdr           = (const uint8_t*)&address->sa_data;
       const unsigned int macAddressLength = 6;
-      int                offset           = 0;
+      unsigned int       offset     = 0;
       for(unsigned int i = 0; i < macAddressLength; i++) {
-         int ret = snprintf(buffer + offset, sizeof(buffer) - offset,
-                            "%s%02x", (i > 0) ? ":" : "", lladdr[i]);
-         if(ret > 0) offset += ret;
+         int result = snprintf(buffer + offset, sizeof(buffer) - offset,
+                               "%s%02x", (i > 0) ? ":" : "", lladdr[i]);
+         if(result > 0) offset += (unsigned int)result;
       }
    }
 #else
@@ -587,29 +582,35 @@ static char* formatAddress(const struct sockaddr* address,
 // ###### Format interface flags ############################################
 static char* formatFlags(const unsigned int flags)
 {
-   static char buffer[256];
-   int offset = snprintf(buffer, sizeof(buffer), "0x%x: <%s>", flags, (flags & IFF_UP) ? "UP" : "DOWN");
+   static char  buffer[256];
+   unsigned int offset = 0;
+   int result = snprintf(buffer, sizeof(buffer), "0x%x: <%s>", flags, (flags & IFF_UP) ? "UP" : "DOWN");
+   if(result > 0) offset += (unsigned int)result;
 #if defined(IFF_LOWER_UP)
-   if((flags & IFF_LOWER_UP) && offset >= 0 && (size_t)offset < sizeof(buffer)) {
-      offset += snprintf(buffer + offset, sizeof(buffer) - offset, " <LOWER_UP>");
+   if((flags & IFF_LOWER_UP) && ((size_t)offset < sizeof(buffer))) {
+      result = snprintf(buffer + offset, sizeof(buffer) - offset, " <LOWER_UP>");
+      if(result > 0) offset += (unsigned int)result;
    }
 #endif
 #if defined(IFF_RUNNING)
-   if((flags & IFF_RUNNING) && offset >= 0 && (size_t)offset < sizeof(buffer)) {
-      offset += snprintf(buffer + offset, sizeof(buffer) - offset, " <RUNNING>");
+   if((flags & IFF_RUNNING)&& ((size_t)offset < sizeof(buffer))) {
+      result = snprintf(buffer + offset, sizeof(buffer) - offset, " <RUNNING>");
+      if(result > 0) offset += (unsigned int)result;
    }
 #endif
-   if((flags & IFF_LOOPBACK) && offset >= 0 && (size_t)offset < sizeof(buffer)) {
-      offset += snprintf(buffer + offset, sizeof(buffer) - offset, " <LOOPBACK>");
+   if((flags & IFF_LOOPBACK) && ((size_t)offset < sizeof(buffer))) {
+      result = snprintf(buffer + offset, sizeof(buffer) - offset, " <LOOPBACK>");
+      if(result > 0) offset += (unsigned int)result;
    }
-   if((flags & IFF_POINTOPOINT) && offset >= 0 && (size_t)offset < sizeof(buffer)) {
-      offset += snprintf(buffer + offset, sizeof(buffer) - offset, " <POINTOPOINT>");
+   if((flags & IFF_POINTOPOINT) && ((size_t)offset < sizeof(buffer))) {
+      result = snprintf(buffer + offset, sizeof(buffer) - offset, " <POINTOPOINT>");
+      if(result > 0) offset += (unsigned int)result;
    }
    return buffer;
 }
 
 
-// ###### Print hostname information ########################################
+// ##### Obtain hostname information ########################################
 static void obtainHostnameInformation(struct SystemInfo* systemInfo)
 {
    char hostname[256];
@@ -635,7 +636,7 @@ static void obtainHostnameInformation(struct SystemInfo* systemInfo)
 }
 
 
-// ###### Print kernel information ##########################################
+// ###### Obtain kernel information #########################################
 static void obtainKernelInformation(struct SystemInfo* systemInfo)
 {
    struct utsname kernelInfo;
@@ -673,7 +674,7 @@ static bool obtainUptime(struct timespec* ts)
 }
 
 
-// ###### Print uptime information ##########################################
+// ##### Obtain uptime information ##########################################
 static void obtainUptimeInformation(struct SystemInfo* systemInfo)
 {
    struct timespec ts;
@@ -913,7 +914,7 @@ static unsigned int obtainUserCount(void)
 }
 
 
-// ###### Print load information ############################################
+// ##### Obtain load information ############################################
 static void obtainLoadInformation(struct SystemInfo* systemInfo)
 {
    // ====== Cores and page size ============================================
@@ -984,7 +985,7 @@ static bool getKstatUint64(const kstat_named_t* kn, uint64_t* val)
 #endif
 
 
-// ###### Print battery information #########################################
+// ##### Obtain battery information #########################################
 static void obtainBatteryInformation(struct SystemInfo* systemInfo)
 {
    const unsigned int maxBatteries = 2;
@@ -1008,7 +1009,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
             statusBuffer[strcspn(statusBuffer, "\r\n")] = 0x00;
 
             // ------ Extract status as status code -------------------------
-            int status = 0;   // Unknown
+            unsigned int status = 0;   // Unknown
             if(strcmp(statusBuffer, "Not charging") == 0) {
                status = 1;    // Not charging
             }
@@ -1300,19 +1301,20 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
 #warning Missing case!
 #endif
 
-   int  offset = 0;
-   char buffer[8 * maxBatteries];
-   for (unsigned int i = 0; i < batteries; i++) {
-      if (offset < 0 || (size_t)offset >= sizeof(buffer)) {
+   char         buffer[8 * maxBatteries];
+   unsigned int offset = 0;
+   for(unsigned int i = 0; i < batteries; i++) {
+      if((size_t)offset >= sizeof(buffer)) {
          break;
       }
-      offset += snprintf(buffer + offset, sizeof(buffer) - offset, (i > 0) ? " %u" : "%u", batteryIDs[i]);
+      int result = snprintf(buffer + offset, sizeof(buffer) - offset, (i > 0) ? " %u" : "%u", batteryIDs[i]);
+      if(result > 0) offset += (unsigned int)result;
    }
    systemInfoAddString(systemInfo, "battery_list", buffer);
 }
 
 
-// ###### Print memory information ##########################################
+// ##### Obtain memory information ##########################################
 static void obtainMemoryInformation(struct SystemInfo* systemInfo)
 {
    unsigned long long memoryTotal     = 0;
@@ -1453,7 +1455,7 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
 #elif defined(__sun__)
    // ====== Query physical memory via sysconf ==============================
    const long pageSize = sysconf(_SC_PAGESIZE);
-   if (pageSize > 0) {
+   if(pageSize > 0) {
       const long physPages   = sysconf(_SC_PHYS_PAGES);
       const long avphysPages = sysconf(_SC_AVPHYS_PAGES);
 
@@ -1501,7 +1503,7 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
       if(swapDeviceArray) {
          int swapRecords = swapctl(SWAP_STATS, swapDeviceArray, numberOfSwapDevices);
          if(swapRecords > 0) {
-            for (unsigned int i = 0; i < (unsigned int)swapRecords; i++) {
+            for(unsigned int i = 0; i < (unsigned int)swapRecords; i++) {
                if(swapDeviceArray[i].se_flags & SWF_INUSE) {
                   const unsigned long long totalBytes =
                      (unsigned long long)swapDeviceArray[i].se_nblks * DEV_BSIZE;
@@ -1636,7 +1638,7 @@ static bool obtainDiskUsage(struct SystemInfo* systemInfo,
 }
 
 
-// ###### Print disk information ############################################
+// ##### Obtain disk information ############################################
 static void obtainDiskInformation(struct SystemInfo* systemInfo)
 {
    obtainDiskUsage(systemInfo, "/",     "root");
@@ -1647,7 +1649,7 @@ static void obtainDiskInformation(struct SystemInfo* systemInfo)
 }
 
 
-// ###### Print network information #########################################
+// ##### Obtain network information #########################################
 static void obtainNetworkInformation(struct SystemInfo* systemInfo,
                                      const bool         filterLocalScope)
 {
@@ -1817,15 +1819,16 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
    // ====== Print interfaces list ==========================================
    lastIfIndex = 0;
 
-   int  offset = 0;
-   char buffer[8 * n];
+   char         buffer[8 * n];
+   unsigned int offset = 0;
    for(unsigned int i = 0; i < n; i++) {
       if(ifIndices[i] != 0) {
          if( (lastIfIndex == 0) || (lastIfIndex != ifIndices[i]) ) {
-            if (offset < 0 || (size_t)offset >= sizeof(buffer)) {
+            if((size_t)offset >= sizeof(buffer)) {
                break;
             }
-            offset += snprintf(buffer + offset, sizeof(buffer) - offset, ((i > 0) || (lastIfIndex != 0)) ? " %u" : "%u", ifIndices[i]);
+            const int result = snprintf(buffer + offset, sizeof(buffer) - offset, ((i > 0) || (lastIfIndex != 0)) ? " %u" : "%u", ifIndices[i]);
+            if(result > 0) offset += (unsigned int)result;
          }
          lastIfIndex = ifIndices[i];
       }
@@ -1840,9 +1843,9 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
 struct SystemInfo* systemInfoObtain(const unsigned int compatibilityVersion,
                                     const unsigned int flags)
 {
-   if(compatibilityVersion > COMPATIBILITY_VERSION) {
+   if(compatibilityVersion > LSI_COMPATIBILITY_VERSION) {
       fprintf(stderr, "ERROR: Requested compatibility version %u > available version %u!\n",
-              compatibilityVersion, COMPATIBILITY_VERSION);
+              compatibilityVersion, LSI_COMPATIBILITY_VERSION);
       return nullptr;
    }
 
@@ -1854,9 +1857,15 @@ struct SystemInfo* systemInfoObtain(const unsigned int compatibilityVersion,
       systemInfo->Error         = 0;
 
       systemInfoAddUInt32(systemInfo, "compatibility", compatibilityVersion);
-      obtainHostnameInformation(systemInfo);
-      obtainUptimeInformation(systemInfo);
-      obtainKernelInformation(systemInfo);
+      if(flags & SIOF_HOSTNAME) {
+         obtainHostnameInformation(systemInfo);
+      }
+      if(flags & SIOF_UPTIME) {
+         obtainUptimeInformation(systemInfo);
+      }
+      if(flags & SIOF_KERNEL) {
+         obtainKernelInformation(systemInfo);
+      }
       obtainLoadInformation(systemInfo);
       obtainBatteryInformation(systemInfo);
       obtainMemoryInformation(systemInfo);
@@ -1888,7 +1897,7 @@ void systemInfoRelease(struct SystemInfo* systemInfo)
 }
 
 
-// ###### Print SystemInfo ##################################################
+// ##### Obtain SystemInfo ##################################################
 void systemInfoPrint(const struct SystemInfo* systemInfo, FILE* fd)
 {
    if(__builtin_expect(systemInfo != nullptr, 1)) {
@@ -1900,18 +1909,3 @@ void systemInfoPrint(const struct SystemInfo* systemInfo, FILE* fd)
 #ifdef __cplusplus
 }
 #endif
-
-
-int main(int argc, char** argv)
-{
-   // ====== Initialise locale support ======================================
-   if(setlocale(LC_ALL, "") == nullptr) {
-      setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
-   }
-
-   struct SystemInfo* systemInfo = systemInfoObtain(COMPATIBILITY_VERSION, 0xffffffff);
-   if(systemInfo) {
-      systemInfoPrint(systemInfo, stdout);
-      systemInfoRelease(systemInfo);
-   }
-}

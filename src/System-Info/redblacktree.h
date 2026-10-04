@@ -30,21 +30,20 @@
 #ifndef REDBLACKTREE_H
 #define REDBLACKTREE_H
 
+#define RBT_LEAFLINKED 1
+
 #include <stdio.h>
+
+#if defined(RBT_LEAFLINKED)
+#include <doublelinkedringlist.h>
+#endif
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define USE_LEAFLINKED 1
-
-#ifdef USE_LEAFLINKED
-#include <doublelinkedringlist.h>
-#endif
-
-
-typedef unsigned long long RedBlackTreeNodeValueType;
+   typedef unsigned long long RedBlackTreeNodeValueType;
 
 enum RedBlackTreeNodeColorType
 {
@@ -55,7 +54,7 @@ enum RedBlackTreeNodeColorType
 
 struct RedBlackTreeNode
 {
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
    struct DoubleLinkedRingListNode ListNode;
 #endif
    struct RedBlackTreeNode*        Parent;
@@ -69,7 +68,7 @@ struct RedBlackTreeNode
 struct RedBlackTree
 {
    struct RedBlackTreeNode     NullNode;
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
    struct DoubleLinkedRingList List;
 #endif
    size_t                      Elements;

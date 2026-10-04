@@ -27,10 +27,16 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-#include "redblacktree.h"
-
 #include <assert.h>
 #include <stdio.h>
+
+#include <redblacktree.h>
+
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ < 202311L)
+#ifndef nullptr
+#define nullptr ((void*)0)
+#endif
+#endif
 
 
 #ifdef __cplusplus
@@ -49,12 +55,12 @@ static struct RedBlackTreeNode* redBlackTreeInternalFindNext(
 // ###### Initialize ########################################################
 void redBlackTreeNodeNew(struct RedBlackTreeNode* node)
 {
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
    doubleLinkedRingListNodeNew(&node->ListNode);
 #endif
-   node->Parent       = NULL;
-   node->LeftSubtree  = NULL;
-   node->RightSubtree = NULL;
+   node->Parent       = nullptr;
+   node->LeftSubtree  = nullptr;
+   node->RightSubtree = nullptr;
    node->Color        = Black;
    node->Value        = 0;
    node->ValueSum     = 0;
@@ -64,13 +70,13 @@ void redBlackTreeNodeNew(struct RedBlackTreeNode* node)
 // ###### Invalidate ########################################################
 void redBlackTreeNodeDelete(struct RedBlackTreeNode* node)
 {
-   node->Parent       = NULL;
-   node->LeftSubtree  = NULL;
-   node->RightSubtree = NULL;
+   node->Parent       = nullptr;
+   node->LeftSubtree  = nullptr;
+   node->RightSubtree = nullptr;
    node->Color        = Black;
    node->Value        = 0;
    node->ValueSum     = 0;
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
    doubleLinkedRingListNodeDelete(&node->ListNode);
 #endif
 }
@@ -79,7 +85,7 @@ void redBlackTreeNodeDelete(struct RedBlackTreeNode* node)
 // ###### Is node linked? ###################################################
 int redBlackTreeNodeIsLinked(const struct RedBlackTreeNode* node)
 {
-   return node->LeftSubtree != NULL;
+   return node->LeftSubtree != nullptr;
 }
 
 
@@ -89,7 +95,7 @@ void redBlackTreeNew(
         void                 (*printFunction)(const void* node, FILE* fd),
         int                  (*comparisonFunction)(const void* node1, const void* node2))
 {
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
    doubleLinkedRingListNew(&rbt->List);
 #endif
    rbt->PrintFunction         = printFunction;
@@ -108,10 +114,10 @@ void redBlackTreeNew(
 void redBlackTreeDelete(struct RedBlackTree* rbt)
 {
    rbt->Elements              = 0;
-   rbt->NullNode.Parent       = NULL;
-   rbt->NullNode.LeftSubtree  = NULL;
-   rbt->NullNode.RightSubtree = NULL;
-#ifdef USE_LEAFLINKED
+   rbt->NullNode.Parent       = nullptr;
+   rbt->NullNode.LeftSubtree  = nullptr;
+   rbt->NullNode.RightSubtree = nullptr;
+#if defined(RBT_LEAFLINKED)
    doubleLinkedRingListDelete(&rbt->List);
 #endif
 }
@@ -201,7 +207,6 @@ void redBlackTreePrint(const struct RedBlackTree* rbt,
    fprintf(fd, "] null=%p   \n", &rbt->NullNode);
 #endif
    redBlackTreeInternalPrint(rbt, rbt->NullNode.LeftSubtree, fd);
-   fputs("\n", fd);
 }
 
 
@@ -215,12 +220,12 @@ int redBlackTreeIsEmpty(const struct RedBlackTree* rbt)
 // ###### Get first node #####################################################
 struct RedBlackTreeNode* redBlackTreeGetFirst(const struct RedBlackTree* rbt)
 {
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
    struct DoubleLinkedRingListNode* node = rbt->List.Node.Next;
    if(node != rbt->List.Head) {
       return (struct RedBlackTreeNode*)node;
    }
-   return NULL;
+   return nullptr;
 #else
    const struct RedBlackTreeNode* node = rbt->NullNode.LeftSubtree;
    if(node == &rbt->NullNode) {
@@ -232,7 +237,7 @@ struct RedBlackTreeNode* redBlackTreeGetFirst(const struct RedBlackTree* rbt)
    if(node != &rbt->NullNode) {
       return (struct RedBlackTreeNode*)node;
    }
-   return NULL;
+   return nullptr;
 #endif
 }
 
@@ -240,12 +245,12 @@ struct RedBlackTreeNode* redBlackTreeGetFirst(const struct RedBlackTree* rbt)
 // ###### Get last node ######################################################
 struct RedBlackTreeNode* redBlackTreeGetLast(const struct RedBlackTree* rbt)
 {
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
    struct DoubleLinkedRingListNode* node = rbt->List.Node.Prev;
    if(node != rbt->List.Head) {
       return (struct RedBlackTreeNode*)node;
    }
-   return NULL;
+   return nullptr;
 #else
    const struct RedBlackTreeNode* node = rbt->NullNode.RightSubtree;
    if(node == &rbt->NullNode) {
@@ -257,7 +262,7 @@ struct RedBlackTreeNode* redBlackTreeGetLast(const struct RedBlackTree* rbt)
    if(node != &rbt->NullNode) {
       return (struct RedBlackTreeNode*)node;
    }
-   return NULL;
+   return nullptr;
 #endif
 }
 
@@ -267,19 +272,19 @@ struct RedBlackTreeNode* redBlackTreeGetPrev(
                             const struct RedBlackTree*     rbt,
                             const struct RedBlackTreeNode* node)
 {
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
    struct DoubleLinkedRingListNode* prev = node->ListNode.Prev;
    if(prev != rbt->List.Head) {
       return (struct RedBlackTreeNode*)prev;
    }
-   return NULL;
+   return nullptr;
 #else
    struct RedBlackTreeNode* result;
    result = redBlackTreeInternalFindPrev(rbt, node);
    if(result != &rbt->NullNode) {
       return result;
    }
-   return NULL;
+   return nullptr;
 #endif
 }
 
@@ -289,19 +294,19 @@ struct RedBlackTreeNode* redBlackTreeGetNext(
                             const struct RedBlackTree*     rbt,
                             const struct RedBlackTreeNode* node)
 {
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
    struct DoubleLinkedRingListNode* next = node->ListNode.Next;
    if(next != rbt->List.Head) {
       return (struct RedBlackTreeNode*)next;
    }
-   return NULL;
+   return nullptr;
 #else
    struct RedBlackTreeNode* result;
    result = redBlackTreeInternalFindNext(rbt, node);
    if(result != &rbt->NullNode) {
       return result;
    }
-   return NULL;
+   return nullptr;
 #endif
 }
 
@@ -324,7 +329,7 @@ struct RedBlackTreeNode* redBlackTreeGetNearestPrev(
    redBlackTreePrint(rbt, stdout);
 #endif
 
-   parentPtr = NULL;
+   parentPtr = nullptr;
    nodePtr   = &rbt->NullNode.LeftSubtree;
    while(*nodePtr != &rbt->NullNode) {
       cmpResult = rbt->ComparisonFunction(cmpNode, *nodePtr);
@@ -341,11 +346,11 @@ struct RedBlackTreeNode* redBlackTreeGetNearestPrev(
       }
    }
 
-   if(parentPtr == NULL) {
+   if(parentPtr == nullptr) {
       if(cmpResult > 0) {
          return rbt->NullNode.LeftSubtree;
       }
-      return NULL;
+      return nullptr;
    }
    else {
       /* The new node would be the right child of its parent.
@@ -383,7 +388,7 @@ struct RedBlackTreeNode* redBlackTreeGetNearestPrev(
          }
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 
@@ -405,7 +410,7 @@ struct RedBlackTreeNode* redBlackTreeGetNearestNext(
    redBlackTreePrint(bt, stdout);
 #endif
 
-   parentPtr = NULL;
+   parentPtr = nullptr;
    nodePtr   = &rbt->NullNode.LeftSubtree;
    while(*nodePtr != &rbt->NullNode) {
       cmpResult = rbt->ComparisonFunction(cmpNode, *nodePtr);
@@ -422,11 +427,11 @@ struct RedBlackTreeNode* redBlackTreeGetNearestNext(
       }
    }
 
-   if(parentPtr == NULL) {
+   if(parentPtr == nullptr) {
       if(cmpResult < 0) {
          return rbt->NullNode.LeftSubtree;
       }
-      return NULL;
+      return nullptr;
    }
    else {
       /* The new node would be the left child of its parent.
@@ -464,7 +469,7 @@ struct RedBlackTreeNode* redBlackTreeGetNearestNext(
          }
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 
@@ -551,7 +556,7 @@ struct RedBlackTreeNode* redBlackTreeFind(
          node = node->RightSubtree;
       }
    }
-   return NULL;
+   return nullptr;
 }
 
 
@@ -629,7 +634,7 @@ struct RedBlackTreeNode* redBlackTreeInsert(struct RedBlackTree*     rbt,
    struct RedBlackTreeNode* result;
    struct RedBlackTreeNode* uncle;
    struct RedBlackTreeNode* grandpa;
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
    struct RedBlackTreeNode* prev;
 #endif
 #ifdef DEBUG
@@ -670,7 +675,7 @@ struct RedBlackTreeNode* redBlackTreeInsert(struct RedBlackTree*     rbt,
    node->LeftSubtree  = &rbt->NullNode;
    node->RightSubtree = &rbt->NullNode;
    node->ValueSum     = node->Value;
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
    prev = redBlackTreeInternalFindPrev(rbt, node);
    if(prev != &rbt->NullNode) {
       doubleLinkedRingListAddAfter(&prev->ListNode, &node->ListNode);
@@ -823,13 +828,13 @@ struct RedBlackTreeNode* redBlackTreeRemove(struct RedBlackTree*     rbt,
 
 
    // ====== Unlink node from list and invalidate pointers ==================
-   node->Parent       = NULL;
-   node->RightSubtree = NULL;
-   node->LeftSubtree  = NULL;
-#ifdef USE_LEAFLINKED
+   node->Parent       = nullptr;
+   node->RightSubtree = nullptr;
+   node->LeftSubtree  = nullptr;
+#if defined(RBT_LEAFLINKED)
    doubleLinkedRingListRemNode(&node->ListNode);
-   node->ListNode.Prev = NULL;
-   node->ListNode.Next = NULL;
+   node->ListNode.Prev = nullptr;
+   node->ListNode.Next = nullptr;
 #endif
    assert(rbt->Elements > 0);
    rbt->Elements--;
@@ -949,7 +954,7 @@ struct RedBlackTreeNode* redBlackTreeGetNodeByValue(
    if(node !=  &rbt->NullNode) {
       return (struct RedBlackTreeNode*)node;
    }
-   return NULL;
+   return nullptr;
 }
 
 
@@ -959,12 +964,12 @@ static size_t redBlackTreeInternalVerify(
                  struct RedBlackTreeNode*          parent,
                  struct RedBlackTreeNode*          node,
                  struct RedBlackTreeNode**         lastRedBlackTreeNode,
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
                  struct DoubleLinkedRingListNode** lastListNode,
 #endif
                  size_t*                           counter)
 {
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
    struct RedBlackTreeNode* prev;
    struct RedBlackTreeNode* next;
 #endif
@@ -998,19 +1003,19 @@ static size_t redBlackTreeInternalVerify(
       // ====== Is left subtree okay? =======================================
       leftHeight = redBlackTreeInternalVerify(
                       rbt, node, node->LeftSubtree, lastRedBlackTreeNode,
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
                       lastListNode,
 #endif
                       counter);
 
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
       // ====== Is ring list okay? ==========================================
       assert((*lastListNode)->Next != rbt->List.Head);
       *lastListNode = (*lastListNode)->Next;
       assert(*lastListNode == &node->ListNode);
 #endif
 
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
       // ====== Is linking working correctly? ===============================
       prev = redBlackTreeInternalFindPrev(rbt, node);
       if(prev != &rbt->NullNode) {
@@ -1035,7 +1040,7 @@ static size_t redBlackTreeInternalVerify(
       // ====== Is right subtree okay? ======================================
       rightHeight = redBlackTreeInternalVerify(
                        rbt, node, node->RightSubtree, lastRedBlackTreeNode,
-#ifdef USE_LEAFLINKED
+#if defined(RBT_LEAFLINKED)
                        lastListNode,
 #endif
                        counter);
@@ -1059,8 +1064,8 @@ static size_t redBlackTreeInternalVerify(
 void redBlackTreeVerify(struct RedBlackTree* rbt)
 {
    size_t                           counter              = 0;
-   struct RedBlackTreeNode*         lastRedBlackTreeNode = NULL;
-#ifdef USE_LEAFLINKED
+   struct RedBlackTreeNode*         lastRedBlackTreeNode = nullptr;
+#if defined(RBT_LEAFLINKED)
    struct DoubleLinkedRingListNode* lastListNode         = &rbt->List.Node;
 #endif
 
@@ -1068,13 +1073,18 @@ void redBlackTreeVerify(struct RedBlackTree* rbt)
    assert(rbt->NullNode.Value == 0);
    assert(rbt->NullNode.ValueSum == 0);
 
+#if defined(RBT_LEAFLINKED)
    assert(redBlackTreeInternalVerify(rbt, &rbt->NullNode,
                                      rbt->NullNode.LeftSubtree,
                                      &lastRedBlackTreeNode,
-#ifdef USE_LEAFLINKED
                                      &lastListNode,
-#endif
                                      &counter) != 0);
+#else
+   assert(redBlackTreeInternalVerify(rbt, &rbt->NullNode,
+                                     rbt->NullNode.LeftSubtree,
+                                     &lastRedBlackTreeNode,
+                                     &counter) != 0);
+#endif
    assert(counter == rbt->Elements);
 }
 

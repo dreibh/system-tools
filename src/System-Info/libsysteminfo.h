@@ -39,6 +39,11 @@ extern "C" {
 #endif
 
 
+// Compatibility version of libsysteminfo, to allow for future changes:
+// Currently, there is just version 0.
+#define LSI_COMPATIBILITY_VERSION 0
+
+
 struct SystemInfo;
 
 typedef enum {
@@ -51,6 +56,12 @@ typedef enum {
    SIET_DOUBLE  = 6
 } SystemInfoEntryValueType;
 
+typedef enum {
+   SIOF_HOSTNAME = (1UL << 0),
+   SIOF_CPU      = (1UL << 1),
+   SIOF_UPTIME   = (1UL << 2),
+   SIOF_KERNEL   = (1UL << 3),
+} SystemInfoObtainFlags;
 
 struct SystemInfo* systemInfoObtain(const unsigned int compatibilityVersion,
                                     const unsigned int flags);

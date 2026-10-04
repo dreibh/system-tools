@@ -27,6 +27,38 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#include <ctype.h>
+#include <fcntl.h>
+#include <getopt.h>
+#include <ifaddrs.h>
+#include <locale.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <net/if.h>
+#include <sys/param.h>
+#include <sys/socket.h>
+#include <sys/statvfs.h>
+#include <sys/types.h>
+#include <sys/utsname.h>
+
+#include <libsysteminfo.h>
+
+#include "package-version.h"
+
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ < 202311L)
+#ifndef nullptr
+#define nullptr ((void*)0)
+#endif
+#endif
+
+#if 0
 #define _GNU_SOURCE
 #define __EXTENSIONS__
 #include <ctype.h>
@@ -126,7 +158,7 @@
 
 // Compatibility version of get-system-info, to allow for future changes:
 // Currently, there is just version 0.
-#define COMPATIBILITY_VERSION 0
+#define LSI_COMPATIBILITY_VERSION 0
 
 
 struct interfaceaddress {
@@ -1489,6 +1521,7 @@ static void showNetworkInformation(const bool filterLocalScope)
 
    freeifaddrs(ifaddr);
 }
+#endif
 
 
 // ###### Version ###########################################################
@@ -1517,7 +1550,7 @@ static void usage(const char* program, const int exitCode)
 // ###### Main program ######################################################
 int main(int argc, char** argv)
 {
-   unsigned int compatibilityVersion = COMPATIBILITY_VERSION;
+   unsigned int compatibilityVersion = LSI_COMPATIBILITY_VERSION;
 
    // ====== Initialise locale support ======================================
    if(setlocale(LC_ALL, "") == nullptr) {
@@ -1538,9 +1571,9 @@ int main(int argc, char** argv)
       switch(option) {
          case 'c':
             compatibilityVersion = atoll(optarg);
-            if(compatibilityVersion > COMPATIBILITY_VERSION) {
+            if(compatibilityVersion > LSI_COMPATIBILITY_VERSION) {
                fprintf(stderr, "ERROR: Requested compatibility version %u > available version %u!\n",
-                       compatibilityVersion, COMPATIBILITY_VERSION);
+                       compatibilityVersion, LSI_COMPATIBILITY_VERSION);
                return 1;
             }
           break;
@@ -1567,14 +1600,10 @@ int main(int argc, char** argv)
    }
 
    // ====== Show system information in machine-readable form ===============
-   printf("compatibility=%u\n", compatibilityVersion);
-   showHostnameInformation();
-   showUptimeInformation();
-   showKernelInformation();
-   showLoadInformation();
-   showBatteryInformation();
-   showMemoryInformation();
-   showDiskInformation();
-   showNetworkInformation(true);
+   struct SystemInfo* systemInfo = systemInfoObtain(LSI_COMPATIBILITY_VERSION, 0xffffffff);
+   if(systemInfo) {
+      systemInfoPrint(systemInfo, stdout);
+      systemInfoRelease(systemInfo);
+   }
    return 0;
 }
