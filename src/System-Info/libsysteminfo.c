@@ -136,6 +136,7 @@ struct SystemInfo
 {
    struct RedBlackTree Tree;
    unsigned int        Error;
+   unsigned int        Compatibility;
 };
 
 typedef union {
@@ -1835,11 +1836,18 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
 struct SystemInfo* systemInfoObtain(const unsigned int compatibilityVersion,
                                     const unsigned int flags)
 {
+   if(compatibilityVersion > COMPATIBILITY_VERSION) {
+      fprintf(stderr, "ERROR: Requested compatibility version %u > available version %u!\n",
+              compatibilityVersion, COMPATIBILITY_VERSION);
+      return nullptr;
+   }
+
    struct SystemInfo* systemInfo =
       (struct SystemInfo*)malloc(sizeof(struct SystemInfo));
    if(__builtin_expect(systemInfo != nullptr, 1)) {
       redBlackTreeNew(&systemInfo->Tree, systemInfoEntryPrint, systemInfoEntryComparison);
-      systemInfo->Error = 0;
+      systemInfo->Compatibility = compatibilityVersion;
+      systemInfo->Error         = 0;
 
       systemInfoAddUInt32(systemInfo, "compatibility", compatibilityVersion);
       obtainHostnameInformation(systemInfo);
@@ -1850,22 +1858,6 @@ struct SystemInfo* systemInfoObtain(const unsigned int compatibilityVersion,
       obtainMemoryInformation(systemInfo);
       obtainDiskInformation(systemInfo);
       obtainNetworkInformation(systemInfo, true);
-
-
-      // systemInfoAddString(systemInfo, "name", "Test");
-      // systemInfoAddUInt32(systemInfo, "uint32", 32);
-      // systemInfoAddUInt64(systemInfo, "uint64", 64);
-      // systemInfoAddInt32(systemInfo,  "int32", -32);
-      // systemInfoAddInt64(systemInfo,  "int64", -64);
-      // systemInfoAddString(systemInfo, "block", "xxx");
-      // systemInfoAddDouble(systemInfo, "pi", 3.14159265358979323846, -1);
-      //
-      // printf("INT32=%d\n", systemInfoGetInt32(systemInfo, "int32", 0xffffffff));
-      // printf("INT64=%lld\n", (unsigned long long)systemInfoGetInt64(systemInfo, "int64", 0xffffffff));
-      // printf("UINT32=%u\n", systemInfoGetUInt32(systemInfo, "uint32", 0xffffffff));
-      // printf("UINT64=%llu\n", (unsigned long long)systemInfoGetUInt64(systemInfo, "uint64", 0xffffffff));
-      // printf("PI=%1.9lf\n", systemInfoGetDouble(systemInfo, "pi", 0.0));
-      // printf("NA=%1.9lf\n", systemInfoGetDouble(systemInfo, "na", 0.0));
 
       if(systemInfo->Error) {
          systemInfoRelease(systemInfo);
