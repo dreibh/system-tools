@@ -27,10 +27,97 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-#include <libsysteminfo.h>
-#include <redblacktree.h>
+#define _GNU_SOURCE
+#define __EXTENSIONS__
+#include <ctype.h>
+#include <fcntl.h>
+#include <getopt.h>
+#include <ifaddrs.h>
+#include <locale.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <math.h>
+#include <time.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <net/if.h>
+#include <sys/param.h>
+#include <sys/socket.h>
+#include <sys/statvfs.h>
+#include <sys/types.h>
+#include <sys/utsname.h>
+#if defined(__linux__)
+#include <dirent.h>
+#include <linux/if.h>
+#include <netpacket/packet.h>
+#include <sys/sysinfo.h>
+#if defined(ENABLE_SYSTEMD)
+#include <systemd/sd-login.h>
+#else
+#include <utmpx.h>
+#endif
+#elif defined(__FreeBSD__)
+#include <dev/acpica/acpiio.h>
+#include <net/if_dl.h>
+#include <netlink/route/interface.h>
+#include <sys/ioctl.h>
+#include <sys/sysctl.h>
+#include <sys/user.h>
+#include <utmpx.h>
+#include <vm/vm_param.h>
+#elif defined(__NetBSD__)
+#include <net/if_dl.h>
+#include <sys/envsys.h>
+#include <sys/ioctl.h>
+#include <sys/sysctl.h>
+#include <utmpx.h>
+#include <uvm/uvm_extern.h>
+#include <sys/swap.h>
+#elif defined(__OpenBSD__)
+#include <machine/apmvar.h>
+#include <net/if_dl.h>
+#include <sys/ioctl.h>
+#include <sys/sysctl.h>
+#include <uvm/uvm_extern.h>
+#include <sys/swap.h>
+#include <utmp.h>
+#elif defined(__sun__)
+#include <dirent.h>
+#include <kstat.h>
+#include <sys/loadavg.h>
+#include <sys/swap.h>
+#include <utmpx.h>
+#elif defined(__gnu_hurd__)
+#include <dirent.h>
+#include <net/if_arp.h>
+#include <sys/ioctl.h>
+#include <utmpx.h>
+#elif defined(__APPLE__)
+#include <libproc.h>
+#include <mach/mach.h>
+#include <mach/mach_host.h>
+#include <mach/mach_time.h>
+#include <net/if_dl.h>
+#include <sys/sysctl.h>
+#include <utmpx.h>
+#else
+#error Unknown system! The system-specific code parts need an update!
+#endif
+#ifdef ENABLE_NLS
+#include <libintl.h>
+#else
+#define bindtextdomain(domain, dirname) { }
+#define textdomain(domain) { }
+#define gettext(string) string
+#define ngettext(singular, plural, n) ((n) == 1 ? (singular) : (plural))
+#endif
+
+#include "libsysteminfo.h"
+#include "package-version.h"
+#include "redblacktree.h"
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ < 202311L)
 #ifndef nullptr
@@ -312,14 +399,14 @@ struct SystemInfo* systemInfoObtain(unsigned int flags)
       systemInfoAddInt32(systemInfo,  "int32", -32);
       systemInfoAddInt64(systemInfo,  "int64", -64);
       systemInfoAddString(systemInfo, "block", "xxx");
-      systemInfoAddDouble(systemInfo, "pi", M_PI);
+      systemInfoAddDouble(systemInfo, "pi", 3.14159265358979323846);
 
       printf("INT32=%d\n", systemInfoGetInt32(systemInfo, "int32", 0xffffffff));
       printf("INT64=%lld\n", (unsigned long long)systemInfoGetInt64(systemInfo, "int64", 0xffffffff));
       printf("UINT32=%u\n", systemInfoGetUInt32(systemInfo, "uint32", 0xffffffff));
       printf("UINT64=%llu\n", (unsigned long long)systemInfoGetUInt64(systemInfo, "uint64", 0xffffffff));
       printf("PI=%1.9lf\n", systemInfoGetDouble(systemInfo, "pi", 0.0));
-      printf("NA=%1.9lf\n", systemInfoGetDouble(systemInfo, "na", +INFINITY));
+      printf("NA=%1.9lf\n", systemInfoGetDouble(systemInfo, "na", 0.0));
 
       if(systemInfo->Error) {
          systemInfoRelease(systemInfo);
