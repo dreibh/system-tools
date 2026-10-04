@@ -59,8 +59,14 @@ typedef enum {
 typedef enum {
    SIOF_HOSTNAME = (1UL << 0),
    SIOF_CPU      = (1UL << 1),
-   SIOF_UPTIME   = (1UL << 2),
-   SIOF_KERNEL   = (1UL << 3),
+   // SIOF_GPU   = (1UL << 2),
+   SIOF_UPTIME   = (1UL << 3),
+   SIOF_KERNEL   = (1UL << 4),
+   SIOF_LOAD     = (1UL << 5),
+   SIOF_MEMORY   = (1UL << 6),
+   SIOF_STORAGE  = (1UL << 7),
+   SIOF_NETWORK  = (1UL << 8),
+   SIOF_BATTERY  = (1UL << 9)
 } SystemInfoObtainFlags;
 
 struct SystemInfo* systemInfoObtain(const unsigned int compatibilityVersion,

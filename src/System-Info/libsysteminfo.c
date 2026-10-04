@@ -1639,7 +1639,7 @@ static bool obtainDiskUsage(struct SystemInfo* systemInfo,
 
 
 // ##### Obtain disk information ############################################
-static void obtainDiskInformation(struct SystemInfo* systemInfo)
+static void obtainStorageInformation(struct SystemInfo* systemInfo)
 {
    obtainDiskUsage(systemInfo, "/",     "root");
    obtainDiskUsage(systemInfo, "/home", "home");
@@ -1866,11 +1866,21 @@ struct SystemInfo* systemInfoObtain(const unsigned int compatibilityVersion,
       if(flags & SIOF_KERNEL) {
          obtainKernelInformation(systemInfo);
       }
-      obtainLoadInformation(systemInfo);
-      obtainBatteryInformation(systemInfo);
-      obtainMemoryInformation(systemInfo);
-      obtainDiskInformation(systemInfo);
-      obtainNetworkInformation(systemInfo, true);
+      if(flags & SIOF_LOAD) {
+         obtainLoadInformation(systemInfo);
+      }
+      if(flags & SIOF_MEMORY) {
+         obtainMemoryInformation(systemInfo);
+      }
+      if(flags & SIOF_STORAGE) {
+         obtainStorageInformation(systemInfo);
+      }
+      if(flags & SIOF_NETWORK) {
+         obtainNetworkInformation(systemInfo, true);
+      }
+      if(flags & SIOF_BATTERY) {
+         obtainBatteryInformation(systemInfo);
+      }
 
       if(systemInfo->Error) {
          systemInfoRelease(systemInfo);
