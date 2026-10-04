@@ -27,10 +27,9 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-
-#include <stdint.h>
-#include <string.h>
+#include <libsysteminfo.h>
 #include <redblacktree.h>
+#include <string.h>
 #include <math.h>
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ < 202311L)
@@ -38,7 +37,6 @@
 #define nullptr ((void*)0)
 #endif
 #endif
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,16 +48,6 @@ struct SystemInfo
    struct RedBlackTree Tree;
    unsigned int        Error;
 };
-
-typedef enum {
-   SIET_INVALID = 0,
-   SIET_STRING  = 1,
-   SIET_UINT32  = 2,
-   SIET_UINT64  = 3,
-   SIET_INT32   = 4,
-   SIET_INT64   = 5,
-   SIET_DOUBLE  = 6
-} SystemInfoEntryValueType;
 
 typedef union {
    char*    String;
@@ -77,12 +65,6 @@ struct SystemInfoEntry
    SystemInfoEntryValue     Value;
    SystemInfoEntryValueType ValueType;
 };
-
-
-
-struct SystemInfo* systemInfoObtain(unsigned int flags);
-void systemInfoRelease(struct SystemInfo* systemInfo);
-void systemInfoPrint(const struct SystemInfo* systemInfo, FILE* fd);
 
 
 // ###### SystemInfoEntry print function ####################################
@@ -315,7 +297,7 @@ double systemInfoGetDouble(struct SystemInfo* systemInfo,
 }
 
 
-
+// ###### Obtain SystemInfo #################################################
 struct SystemInfo* systemInfoObtain(unsigned int flags)
 {
    struct SystemInfo* systemInfo =
@@ -348,6 +330,7 @@ struct SystemInfo* systemInfoObtain(unsigned int flags)
 }
 
 
+// ###### Release SystemInfo ################################################
 void systemInfoRelease(struct SystemInfo* systemInfo)
 {
    if(__builtin_expect(systemInfo != nullptr, 1)) {
@@ -363,6 +346,7 @@ void systemInfoRelease(struct SystemInfo* systemInfo)
 }
 
 
+// ###### Print SystemInfo ##################################################
 void systemInfoPrint(const struct SystemInfo* systemInfo, FILE* fd)
 {
    if(__builtin_expect(systemInfo != nullptr, 1)) {
