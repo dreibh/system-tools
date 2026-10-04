@@ -1056,8 +1056,7 @@ static size_t redBlackTreeInternalVerify(
 
 
 /* ##### Verify structures ############################################### */
-void redBlackTreeVerify(
-        struct RedBlackTree* rbt)
+void redBlackTreeVerify(struct RedBlackTree* rbt)
 {
    size_t                           counter              = 0;
    struct RedBlackTreeNode*         lastRedBlackTreeNode = NULL;
