@@ -31,6 +31,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <redblacktree.h>
+#include <math.h>
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ < 202311L)
 #ifndef nullptr
@@ -72,7 +73,7 @@ typedef union {
 struct SystemInfoEntry
 {
    struct RedBlackTreeNode  Node;
-   char*                    Key;
+   char                     Key[32];
    SystemInfoEntryValue     Value;
    SystemInfoEntryValueType ValueType;
 };
@@ -84,8 +85,7 @@ void systemInfoRelease(struct SystemInfo* systemInfo);
 void systemInfoPrint(const struct SystemInfo* systemInfo, FILE* fd);
 
 
-
-
+// ###### SystemInfoEntry print function ####################################
 static void systemInfoEntryPrint(const void* node, FILE* fd)
 {
    const struct SystemInfoEntry* systemInfoEntry = (const struct SystemInfoEntry*)node;
@@ -114,6 +114,8 @@ static void systemInfoEntryPrint(const void* node, FILE* fd)
    }
 }
 
+
+// ###### SystemInfoEntry comparison function ###############################
 static int systemInfoEntryComparison(const void* node1, const void* node2)
 {
    const struct SystemInfoEntry* systemInfoEntry1 = (const struct SystemInfoEntry*)node1;
@@ -122,45 +124,58 @@ static int systemInfoEntryComparison(const void* node1, const void* node2)
 }
 
 
-static struct SystemInfoEntry* systemInfoMakeEntry(struct SystemInfo* systemInfo,
-                                                   const char*        key)
+// ###### Add SystemInfoEntry to tree #######################################
+static struct SystemInfoEntry* systemInfoAddEntry(struct SystemInfo* systemInfo,
+                                                  const char*        key)
 {
    struct SystemInfoEntry* systemInfoEntry =
       (struct SystemInfoEntry*)malloc(sizeof(struct SystemInfoEntry));
    if(__builtin_expect(systemInfo != nullptr, 1)) {
       redBlackTreeNodeNew(&systemInfoEntry->Node);
-      systemInfoEntry->Key          = strdup(key);
-      systemInfoEntry->ValueType    = SIET_INVALID;
-      if(__builtin_expect(systemInfoEntry->Key != nullptr, 1)) {
-         if(__builtin_expect(redBlackTreeInsert(&systemInfo->Tree, &systemInfoEntry->Node) == &systemInfoEntry->Node, 1)) {
-            return systemInfoEntry;
-         }
-         fprintf(stderr, "INTERNAL ERROR: Tried to add duplicate key \"%s\"!\n", key);
+      strlcpy(systemInfoEntry->Key, key, sizeof(systemInfoEntry->Key));
+      systemInfoEntry->ValueType = SIET_INVALID;
+      if(__builtin_expect(redBlackTreeInsert(&systemInfo->Tree, &systemInfoEntry->Node) == &systemInfoEntry->Node, 1)) {
+         return systemInfoEntry;
       }
-      free(systemInfoEntry);
+      fprintf(stderr, "INTERNAL ERROR: Tried to add duplicate key \"%s\"!\n", key);
    }
    systemInfo->Error = 1;
    return nullptr;
 }
 
 
-static void systemInfoDisposeEntry(struct SystemInfoEntry* systemInfoEntry)
+// ###### Find SystemInfoEntry in tree ######################################
+static struct SystemInfoEntry* systemInfoFindEntry(struct SystemInfo* systemInfo,
+                                                   const char*        key)
 {
+   struct SystemInfoEntry comparisonNode;
+   strlcpy(comparisonNode.Key, key, sizeof(comparisonNode.Key));
+   struct SystemInfoEntry* found =
+      (struct SystemInfoEntry*)redBlackTreeFind(&systemInfo->Tree, &comparisonNode.Node);
+   return found;
+}
+
+
+// ###### Remove SystemInfoEntry from tree ##################################
+static void systemInfoRemoveEntry(struct SystemInfo*      systemInfo,
+                                  struct SystemInfoEntry* systemInfoEntry)
+{
+   redBlackTreeRemove(&systemInfo->Tree, &systemInfoEntry->Node);
    if(systemInfoEntry->ValueType == SIET_STRING) {
       free(systemInfoEntry->Value.String);
    }
-   free(systemInfoEntry->Key);
    free(systemInfoEntry);
 }
 
 
 
-static void systemInfoAddString(struct SystemInfo* systemInfo, const char* key, const char* value)
+// ###### Add key with string value #########################################
+void systemInfoAddString(struct SystemInfo* systemInfo, const char* key, const char* value)
 {
-   struct SystemInfoEntry* systemInfoEntry = systemInfoMakeEntry(systemInfo, key);
+   struct SystemInfoEntry* systemInfoEntry = systemInfoAddEntry(systemInfo, key);
    if(__builtin_expect(systemInfo != nullptr, 1)) {
       systemInfoEntry->Value.String = strdup(value);
-      if(systemInfoEntry->Value.String) {
+      if(__builtin_expect(systemInfoEntry->Value.String != nullptr, 1)) {
          systemInfoEntry->ValueType = SIET_STRING;
       }
       else {
@@ -170,9 +185,11 @@ static void systemInfoAddString(struct SystemInfo* systemInfo, const char* key, 
 }
 
 
-static void systemInfoAddInt32(struct SystemInfo* systemInfo, const char* key, const int32_t value)
+// ###### Add key with 32-bit integer value #################################
+void systemInfoAddInt32(struct SystemInfo* systemInfo,
+                               const char* key, const int32_t value)
 {
-   struct SystemInfoEntry* systemInfoEntry = systemInfoMakeEntry(systemInfo, key);
+   struct SystemInfoEntry* systemInfoEntry = systemInfoAddEntry(systemInfo, key);
    if(__builtin_expect(systemInfo != nullptr, 1)) {
       systemInfoEntry->Value.Int32 = value;
       systemInfoEntry->ValueType    = SIET_INT32;
@@ -180,9 +197,11 @@ static void systemInfoAddInt32(struct SystemInfo* systemInfo, const char* key, c
 }
 
 
-static void systemInfoAddInt64(struct SystemInfo* systemInfo, const char* key, const int64_t value)
+// ###### Add key with 64-bit integer value #################################
+void systemInfoAddInt64(struct SystemInfo* systemInfo,
+                               const char* key, const int64_t value)
 {
-   struct SystemInfoEntry* systemInfoEntry = systemInfoMakeEntry(systemInfo, key);
+   struct SystemInfoEntry* systemInfoEntry = systemInfoAddEntry(systemInfo, key);
    if(__builtin_expect(systemInfo != nullptr, 1)) {
       systemInfoEntry->Value.Int64 = value;
       systemInfoEntry->ValueType    = SIET_INT64;
@@ -190,9 +209,11 @@ static void systemInfoAddInt64(struct SystemInfo* systemInfo, const char* key, c
 }
 
 
-static void systemInfoAddUInt32(struct SystemInfo* systemInfo, const char* key, const uint32_t value)
+// ###### Add key with 32-bit unsigned integer value ########################
+void systemInfoAddUInt32(struct SystemInfo* systemInfo,
+                                const char* key, const uint32_t value)
 {
-   struct SystemInfoEntry* systemInfoEntry = systemInfoMakeEntry(systemInfo, key);
+   struct SystemInfoEntry* systemInfoEntry = systemInfoAddEntry(systemInfo, key);
    if(__builtin_expect(systemInfo != nullptr, 1)) {
       systemInfoEntry->Value.UInt32 = value;
       systemInfoEntry->ValueType    = SIET_UINT32;
@@ -200,9 +221,11 @@ static void systemInfoAddUInt32(struct SystemInfo* systemInfo, const char* key, 
 }
 
 
-static void systemInfoAddUInt64(struct SystemInfo* systemInfo, const char* key, const uint64_t value)
+// ###### Add key with 64-bit unsigned integer value ########################
+void systemInfoAddUInt64(struct SystemInfo* systemInfo,
+                                const char* key, const uint64_t value)
 {
-   struct SystemInfoEntry* systemInfoEntry = systemInfoMakeEntry(systemInfo, key);
+   struct SystemInfoEntry* systemInfoEntry = systemInfoAddEntry(systemInfo, key);
    if(__builtin_expect(systemInfo != nullptr, 1)) {
       systemInfoEntry->Value.UInt64 = value;
       systemInfoEntry->ValueType    = SIET_UINT64;
@@ -210,9 +233,10 @@ static void systemInfoAddUInt64(struct SystemInfo* systemInfo, const char* key, 
 }
 
 
-static void systemInfoAddDouble(struct SystemInfo* systemInfo, const char* key, const double value)
+// ###### Add key with double value #########################################
+void systemInfoAddDouble(struct SystemInfo* systemInfo, const char* key, const double value)
 {
-   struct SystemInfoEntry* systemInfoEntry = systemInfoMakeEntry(systemInfo, key);
+   struct SystemInfoEntry* systemInfoEntry = systemInfoAddEntry(systemInfo, key);
    if(__builtin_expect(systemInfo != nullptr, 1)) {
       systemInfoEntry->Value.Double = value;
       systemInfoEntry->ValueType    = SIET_DOUBLE;
@@ -220,10 +244,82 @@ static void systemInfoAddDouble(struct SystemInfo* systemInfo, const char* key, 
 }
 
 
+// ###### Check whether key exists (returns value type or SIET_INVALID) #####
+SystemInfoEntryValueType systemInfoExists(struct SystemInfo* systemInfo, const char* key)
+{
+   const struct SystemInfoEntry* systemInfoEntry = systemInfoFindEntry(systemInfo, key);
+   if(systemInfoEntry) {
+      return systemInfoEntry->ValueType;
+   }
+   return SIET_INVALID;
+}
+
+
+// ###### Get 32-bit integer value, or default if not found #################
+int32_t systemInfoGetInt32(struct SystemInfo* systemInfo,
+                           const char* key, const int32_t defaultValue)
+{
+   const struct SystemInfoEntry* systemInfoEntry = systemInfoFindEntry(systemInfo, key);
+   if( (systemInfoEntry != nullptr) && (systemInfoEntry->ValueType == SIET_INT32) ) {
+      return systemInfoEntry->Value.Int32;
+   }
+   return defaultValue;
+}
+
+
+// ###### Get 64-bit integer value, or default if not found #################
+int64_t systemInfoGetInt64(struct SystemInfo* systemInfo,
+                           const char* key, const int64_t defaultValue)
+{
+   const struct SystemInfoEntry* systemInfoEntry = systemInfoFindEntry(systemInfo, key);
+   if( (systemInfoEntry != nullptr) && (systemInfoEntry->ValueType == SIET_INT64) ) {
+      return systemInfoEntry->Value.Int64;
+   }
+   return defaultValue;
+}
+
+
+// ###### Get 32-bit unsigned integer value, or default if not found ########
+uint32_t systemInfoGetUInt32(struct SystemInfo* systemInfo,
+                             const char* key, const uint32_t defaultValue)
+{
+   const struct SystemInfoEntry* systemInfoEntry = systemInfoFindEntry(systemInfo, key);
+   if( (systemInfoEntry != nullptr) && (systemInfoEntry->ValueType == SIET_UINT32) ) {
+      return systemInfoEntry->Value.UInt32;
+   }
+   return defaultValue;
+}
+
+
+// ###### Get 64-bit unsigned integer value, or default if not found ########
+uint64_t systemInfoGetUInt64(struct SystemInfo* systemInfo,
+                             const char* key, const uint64_t defaultValue)
+{
+   const struct SystemInfoEntry* systemInfoEntry = systemInfoFindEntry(systemInfo, key);
+   if( (systemInfoEntry != nullptr) && (systemInfoEntry->ValueType == SIET_UINT64) ) {
+      return systemInfoEntry->Value.UInt64;
+   }
+   return defaultValue;
+}
+
+
+// ###### Get double value, or default if not found #########################
+double systemInfoGetDouble(struct SystemInfo* systemInfo,
+                           const char* key, const double defaultValue)
+{
+   const struct SystemInfoEntry* systemInfoEntry = systemInfoFindEntry(systemInfo, key);
+   if( (systemInfoEntry != nullptr) && (systemInfoEntry->ValueType == SIET_DOUBLE) ) {
+      return systemInfoEntry->Value.Double;
+   }
+   return defaultValue;
+}
+
+
 
 struct SystemInfo* systemInfoObtain(unsigned int flags)
 {
-   struct SystemInfo* systemInfo = malloc(sizeof(struct SystemInfo));
+   struct SystemInfo* systemInfo =
+      (struct SystemInfo*)malloc(sizeof(struct SystemInfo));
    if(__builtin_expect(systemInfo != nullptr, 1)) {
       redBlackTreeNew(&systemInfo->Tree, systemInfoEntryPrint, systemInfoEntryComparison);
       systemInfo->Error = 0;
@@ -234,7 +330,14 @@ struct SystemInfo* systemInfoObtain(unsigned int flags)
       systemInfoAddInt32(systemInfo,  "int32", -32);
       systemInfoAddInt64(systemInfo,  "int64", -64);
       systemInfoAddString(systemInfo, "block", "xxx");
-      systemInfoAddDouble(systemInfo, "pi", 3.1415);
+      systemInfoAddDouble(systemInfo, "pi", M_PI);
+
+      printf("INT32=%d\n", systemInfoGetInt32(systemInfo, "int32", 0xffffffff));
+      printf("INT64=%lld\n", (unsigned long long)systemInfoGetInt64(systemInfo, "int64", 0xffffffff));
+      printf("UINT32=%u\n", systemInfoGetUInt32(systemInfo, "uint32", 0xffffffff));
+      printf("UINT64=%llu\n", (unsigned long long)systemInfoGetUInt64(systemInfo, "uint64", 0xffffffff));
+      printf("PI=%1.9lf\n", systemInfoGetDouble(systemInfo, "pi", 0.0));
+      printf("NA=%1.9lf\n", systemInfoGetDouble(systemInfo, "na", +INFINITY));
 
       if(systemInfo->Error) {
          systemInfoRelease(systemInfo);
@@ -251,8 +354,7 @@ void systemInfoRelease(struct SystemInfo* systemInfo)
       struct SystemInfoEntry* systemInfoEntry =
          (struct SystemInfoEntry*)redBlackTreeGetFirst(&systemInfo->Tree);
       while(systemInfoEntry) {
-         redBlackTreeRemove(&systemInfo->Tree, &systemInfoEntry->Node);
-         systemInfoDisposeEntry(systemInfoEntry);
+         systemInfoRemoveEntry(systemInfo, systemInfoEntry);
          systemInfoEntry = (struct SystemInfoEntry*)redBlackTreeGetFirst(&systemInfo->Tree);
       }
       redBlackTreeDelete(&systemInfo->Tree);
