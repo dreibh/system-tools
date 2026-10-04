@@ -543,7 +543,7 @@ static char* formatAddress(const struct sockaddr* address,
 #if defined(__linux__)
    else if(address->sa_family == AF_PACKET) {
       const struct sockaddr_ll* macAddress = (const struct sockaddr_ll*)address;
-      int offset = 0;
+      int                       offset     = 0;
       for(unsigned int i = 0; i < macAddress->sll_halen; i++) {
          if((size_t)offset < sizeof(buffer)) {
             int ret = snprintf(buffer + offset, sizeof(buffer) - offset,
@@ -556,7 +556,7 @@ static char* formatAddress(const struct sockaddr* address,
    else if(address->sa_family == AF_LINK) {
       const struct sockaddr_dl* macAddress = (const struct sockaddr_dl*)address;
       const uint8_t*            lladdr     = (const uint8_t*)LLADDR(macAddress);
-      int offset = 0;
+      int                       offset     = 0;
       for(unsigned int i = 0; i < macAddress->sdl_alen; i++) {
          if((size_t)offset < sizeof(buffer)) {
             int ret = snprintf(buffer + offset, sizeof(buffer) - offset,
@@ -566,7 +566,16 @@ static char* formatAddress(const struct sockaddr* address,
       }
    }
 #elif defined(__gnu_hurd__)
-   // FIXME: GNU Hurd does not return link-layer (MAC) addresses in getifaddrs().
+   else if(address->sa_family == ARPHRD_ETHER) {
+      const uint8_t*     lladdr           = (const uint8_t*)&address->sa_data;
+      const unsigned int macAddressLength = 6;
+      int                offset           = 0;
+      for(unsigned int i = 0; i < macAddressLength; i++) {
+         int ret = snprintf(buffer + offset, sizeof(buffer) - offset,
+                            "%s%02x", (i > 0) ? ":" : "", lladdr[i]);
+         if(ret > 0) offset += ret;
+      }
+   }
 #else
 #error Missing case!
 #endif
@@ -1751,13 +1760,8 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
                strncpy(ifr.ifr_name, ifaArray[i].ifname, IFNAMSIZ - 1);
                if(ioctl(sd, SIOCGIFHWADDR, &ifr) == 0) {
                   if(ifr.ifr_hwaddr.sa_family == ARPHRD_ETHER) {
-                     printf("netif_%u_mac=\"", ifIndices[i]);
-                     const uint8_t*     macAddress       = (const uint8_t*)ifr.ifr_hwaddr.sa_data;
-                     const unsigned int macAddressLength = 6;
-                     for(unsigned int i = 0; i < macAddressLength; i++) {
-                        printf("%s%02x", (i > 0) ? ":" : "", macAddress[i]);
-                     }
-                     puts("\"");
+                     const char* address = formatAddress(&ifr.ifr_hwaddr, 48);
+                     systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_mac", ifIndices[i]), address);
                   }
                }
                close(sd);
