@@ -61,7 +61,8 @@ void systemInfoAddInt32(struct SystemInfo* systemInfo, const char* key, const in
 void systemInfoAddInt64(struct SystemInfo* systemInfo, const char* key, const int64_t value);
 void systemInfoAddUInt32(struct SystemInfo* systemInfo, const char* key, const uint32_t value);
 void systemInfoAddUInt64(struct SystemInfo* systemInfo, const char* key, const uint64_t value);
-void systemInfoAddDouble(struct SystemInfo* systemInfo, const char* key, const double value);
+void systemInfoAddDouble(struct SystemInfo* systemInfo, const char* key, const double value,
+                         const int displayHint);
 
 SystemInfoEntryValueType systemInfoExists(struct SystemInfo* systemInfo, const char* key);
 int32_t systemInfoGetInt32(struct SystemInfo* systemInfo, const char* key, const int32_t defaultValue);
