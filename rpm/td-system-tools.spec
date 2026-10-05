@@ -145,6 +145,7 @@ in shell scripts for further processing.
 %package system-maintenance
 Summary: Perform basic system maintenance
 BuildArch: noarch
+Requires: findutils
 Requires: gettext-runtime
 Requires: sudo
 Requires: util-linux
@@ -169,6 +170,7 @@ unused storage.
 %package reset-machine-id
 Summary: Reset machine identity state
 BuildArch: noarch
+Requires: findutils
 Requires: gettext-runtime
 Requires: sudo
 Requires: util-linux
@@ -190,6 +192,7 @@ hardened SSH client and server settings.
 %package fingerprint-ssh-keys
 Summary: Print SSH key fingerprints
 BuildArch: noarch
+Requires: findutils
 Requires: gettext-runtime
 Requires: util-linux
 Recommends: %{name}-system-info
@@ -321,6 +324,7 @@ BuildArch: noarch
 Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
 Requires: %{name}-unixtimestamp-tools = %{version}-%{release}
+Requires: findutils
 Requires: gettext-runtime
 Requires: (mbuffer or buffer)
 Requires: openssl
@@ -378,6 +382,7 @@ This package contains X.509 certificate handling tools:
 Summary: GIMP image processing scripts
 Group: Applications/System
 BuildArch: noarch
+Requires: findutils
 Requires: fontconfig
 Requires: gimp
 Requires: GraphicsMagick
