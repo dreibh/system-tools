@@ -32,7 +32,7 @@ System-Tools provides internationalisation&nbsp;(i18n) support using [GNU gettex
 
 System-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System-Info can be configured to be automatically run when logging in, providing the user with an up-to-date overview of the system.
 
-One main purpose of System-Info is to run on login, to particularly show a nice login banner (for example, a project or company logo) and then present the basic system information. For this purpose, System-Info can be configured with banner scripts (by default looked up in `/etc/system-info.d` or `/usr/local/etc/system-info.d`), which are processed in descending alphabetical order by filename, like:
+One main purpose of System-Info is to run on login, specifically to show a nice login banner (e.g., a project or company logo) and then present the basic system information. For this purpose, System-Info can be configured with banner scripts (by default looked up in `/etc/system-info.d` or `/usr/local/etc/system-info.d`), which are processed in descending alphabetical order by filename, like:
 
 * `95-application-logo`,
 * `90-project-logo`,
@@ -357,7 +357,7 @@ man unixts2time
 
 # 📚 Try-Hard
 
-Try-Hard runs a command and retries for a given number of times in case of error, with a random or deterministic delay between the trials and possibility to automatically increase the delay. Furthermore, it allows automatically increasing the delay before a new trial, e.g.&nbsp;using a truncated binary exponential backoff.
+Try-Hard runs a command and retries it a given number of times in case of error, using a random or deterministic delay between attempts. Furthermore, it supports automatically increasing the delay before each new trial (e.g., using a truncated binary exponential backoff).
 
 Examples:
 
@@ -1123,7 +1123,7 @@ Examples (click on image for full-size view):
     <td style="vertical-align: middle;">
      <pre id="GlossyText2"><code class="language-bash"><span class="ex">gs-glossytext</span> GlossyText2.webp "Simula" <span class="dt">\</span>
    <span class="at">--font-name</span> <span class="st">"Open Sans Bold"</span> <span class="dt">\</span>
-   <span class="at">--font-size 64</span> <span class="dt">\</span>
+   <span class="at">--font-size</span> 64 <span class="dt">\</span>
    <span class="at">--outline-size</span> 12 <span class="dt">\</span>
    <span class="at">--blend-gradient-text</span> <span class="st">"Golden"</span> <span class="dt">\</span>
    <span class="at">--blend-gradient-outline</span> <span class="st">"Golden"</span></code></pre>
@@ -1307,7 +1307,7 @@ sudo dnf install td-system-tools-complete
 
 ## OpenSUSE Linux
 
-For ready-to-install [OpenSUSE Linux](https://www.opensuse.org/) packages of SubNetCalc, see [Open Build Service PPA for Thomas Dreibholz](https://build.opensuse.org/project/show/home:dreibh)!
+For ready-to-install [OpenSUSE Linux](https://www.opensuse.org/) packages of System-Tools, see [Open Build Service PPA for Thomas Dreibholz](https://build.opensuse.org/project/show/home:dreibh)!
 
 Add the PPA repository:
 
@@ -1407,7 +1407,7 @@ brew tap dreibh/tap
 brew trust dreibh/tap
 ```
 
-Brew basic System-Tools (without the dependency-heavy GIMP-Scripts):
+Install basic System-Tools (without the dependency-heavy GIMP-Scripts):
 
 ```bash
 brew install td-system-tools
@@ -1438,7 +1438,13 @@ Optionally, for installation to the standard paths (usually under `/usr/local`):
 sudo make install
 ```
 
-Note: The script [`ci/get-dependencies`](https://github.com/dreibh/system-tools/blob/master/ci/get-dependencies) automatically installs the build dependencies under Debian/Ubuntu Linux, Fedora Linux, and FreeBSD. For manual handling of the build dependencies, see the packaging configuration in [`debian/control`](https://github.com/dreibh/system-tools/blob/master/debian/control) (Debian/Ubuntu Linux), [`td-system-tools.spec`](https://github.com/dreibh/system-tools/blob/master/rpm/td-system-tools.spec) (Fedora Linux), and [`Makefile`](https://github.com/dreibh/system-tools/blob/master/freebsd/td-system-tools/Makefile) for FreeBSD.
+Note: The script [`ci/get-dependencies`](https://github.com/dreibh/system-tools/blob/master/ci/get-dependencies) automatically installs the build dependencies under Debian/Ubuntu Linux, Fedora Linux, OpenSUSE Linux, Alpine Linux, FreeBSD, and Debian GNU/Hurd. For manual handling of the build dependencies, take a look at the packaging configuration files:
+
+* [`debian/control`](https://github.com/dreibh/system-tools/blob/master/debian/control) (Debian/Ubuntu Linux, Debian GNU/Hurd),
+* [`td-system-tools.spec`](https://github.com/dreibh/system-tools/blob/master/rpm/td-system-tools.spec) (Fedora Linux, OpenSUSE Linux),
+* [`APKBUILD`](https://github.com/dreibh/system-tools/blob/master/packaging/APKBUILD) (Alpine Linux),
+* [`Makefile`](https://github.com/dreibh/system-tools/blob/master/freebsd/td-system-tools/Makefile) (FreeBSD), and
+* [`td-system-tools.rb`](https://github.com/dreibh/system-tools/blob/master/packaging/td-system-tools.rb) (Homebrew).
 
 Contributions:
 
@@ -1468,7 +1474,7 @@ To provide a translation of one or more components of System-Tools into your lan
    git checkout my_username/translations_language_XX
    ```
 
-3. Take a look at the existing `.po` files (translation files) in [`po/de`](po/de) (German) and [`po/nb`](po/nb) (Bokmål) as examples, e.g.&nbsp;[`po/de/System-Info.po`](po/de/System-Info.po) or [`po/nb/System-Info.po`](po/nb/System-Info.po) for System-Info. Then, prepare a translation for program `PROGRAM` (e.g.&nbsp;System-Info; see the name of the  `.pot` translation template file) for your language `XX` under [`po`](po):
+3. Take a look at the existing `.po` files (translation files) in [`po/de`](po/de) (German) and [`po/nb`](po/nb) (Bokmål) as examples, e.g.&nbsp;[`po/de/System-Info.po`](po/de/System-Info.po) or [`po/nb/System-Info.po`](po/nb/System-Info.po) for System-Info. Then, prepare a translation for program `PROGRAM` (e.g.&nbsp;System-Info; see the name of the `.pot` translation template file) for your language `XX` under [`po`](po):
 
    ```bash
    mkdir -p XX
