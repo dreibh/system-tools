@@ -616,12 +616,12 @@ if [ ${updatedTime} -eq 1 ] ; then
       if [ "${UNAME}" == "GNU" ] ; then
          # The GNU Hurd translator does not support writing to the clock
          # => use --directisa to write directly, bypassing the translator.
-         hwclock -w --directisa
+         hwclock -w --directisa || true
       else
-         hwclock -w
+         hwclock -w || true
       fi
    elif [ "${ID}" == "freebsd" ] ; then
-      date -v +0S
+      date -v +0S || true
    fi
 else
    gettext "No system time update possible."
