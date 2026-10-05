@@ -1285,7 +1285,7 @@ sudo apt-get install td-system-tools-complete
 
 ## Fedora Linux
 
-For ready-to-install [Fedora Linux](https://fedoraproject.org/) packages of System-Tools, see [COPR PPA for Thomas Dreibholz](https://copr.fedorainfracloud.org/coprs/dreibh/ppa/package/td-system-tools/)!
+For ready-to-install [Fedora Linux](https://fedoraproject.org/) packages of System-Tools, see the [COPR PPA for Thomas Dreibholz](https://copr.fedorainfracloud.org/coprs/dreibh/ppa/package/td-system-tools/)!
 
 Add the PPA repository:
 
