@@ -1305,6 +1305,32 @@ For the complete System-Tools (including the GIMP-Scripts):
 sudo dnf install td-system-tools-complete
 ```
 
+## OpenSUSE Linux
+
+For ready-to-install [OpenSUSE Linux](https://www.opensuse.org/) packages of SubNetCalc, see [Open Build Service PPA for Thomas Dreibholz](https://build.opensuse.org/project/show/home:dreibh)!
+
+Add the PPA repository:
+
+```bash
+. /etc/os-release
+[[ $VERSION_ID =~ ^[0-9]+\.[0-9]+$ ]] && DISTRIBUTION="${VERSION_ID}" || DISTRIBUTION="${NAME// /_}"
+URL="https://download.opensuse.org/repositories/home:/dreibh/${DISTRIBUTION}"
+rpm --import "${URL}/repodata/repomd.xml.key"
+zypper addrepo -f "${URL}/" dreibh-obs
+```
+
+For the basic System-Tools (without the dependency-heavy GIMP-Scripts):
+
+```bash
+sudo zypper install td-system-tools-basic
+```
+
+For the complete System-Tools (including the GIMP-Scripts):
+
+```bash
+sudo zypper install td-system-tools-complete
+```
+
 ## Alpine Linux
 
 For ready-to-install [Alpine Linux](https://alpinelinux.org/) packages of System-Tools, see [Open Build Service PPA for Thomas Dreibholz](https://build.opensuse.org/project/show/home:dreibh)!
@@ -1313,12 +1339,12 @@ Add the PPA repository:
 
 ```bash
 DISTRIBUTION="Alpine_Latest_community"
-URL="https://download.opensuse.org/repositories/home:/dreibh/"
+URL="https://download.opensuse.org/repositories/home:/dreibh"
 wget -O \
    /etc/apk/keys/home:dreibh@build.opensuse.org-527a4e72.rsa.pub \
-   "${URL}${DISTRIBUTION}/x86_64/home:dreibh%40build.opensuse.org-527a4e72.rsa.pub"
-if ! grep -q "^${URL}${DISTRIBUTION}" /etc/apk/repositories ; then
-   echo "${URL}${DISTRIBUTION}" | sudo tee -a /etc/apk/repositories
+   "${URL}/${DISTRIBUTION}/x86_64/home:dreibh%40build.opensuse.org-527a4e72.rsa.pub"
+if ! grep -q "^${URL}/${DISTRIBUTION}" /etc/apk/repositories ; then
+   echo "${URL}/${DISTRIBUTION}" | sudo tee -a /etc/apk/repositories
 fi
 ```
 
@@ -1356,19 +1382,19 @@ Compiling from the port sources provides the optional installation of the GIMP-S
 
 ## NetBSD
 
-System-Tools supports [NetBSD](https://netbsd.org/). However, there is no NetBSD packaging, yet. Just build from sources!
+System-Tools supports [NetBSD](https://netbsd.org/). However, there is no NetBSD packaging yet. Just build from sources!
 
 ## OpenBSD
 
-System-Tools supports [OpenBSD](https://www.openbsd.org/). However, there is no OpenBSD packaging, yet. Just build from sources!
+System-Tools supports [OpenBSD](https://www.openbsd.org/). However, there is no OpenBSD packaging yet. Just build from sources!
 
 ## Solaris (OpenIndiana)
 
-System-Tools supports [Solaris (OpenIndiana)](https://www.openindiana.org/). However, there is no Solaris packaging, yet. Just build from sources!
+System-Tools supports [Solaris (OpenIndiana)](https://www.openindiana.org/). However, there is no Solaris packaging yet. Just build from sources!
 
 ## GNU Hurd
 
-System-Tools supports [GNU Hurd](https://www.gnu.org/software/hurd/) ([Debian GNU/Hurd](https://www.debian.org/ports/hurd/)). However, there is no Debian GNU/Hurd PPA on Open Build Service available, yet. Just build from sources!
+System-Tools supports [GNU Hurd](https://www.gnu.org/software/hurd/) ([Debian GNU/Hurd](https://www.debian.org/ports/hurd/)). However, there is no Debian GNU/Hurd PPA on Open Build Service available yet. Just build from sources!
 
 ## Homebrew (Apple, Linux)
 
@@ -1384,7 +1410,7 @@ brew trust dreibh/tap
 Brew basic System-Tools (without the dependency-heavy GIMP-Scripts):
 
 ```bash
-brew install -y td-system-tools
+brew install td-system-tools
 ```
 
 
@@ -1435,7 +1461,7 @@ To provide a translation of one or more components of System-Tools into your lan
 
 1. Build System-Tools from the Git sources (see [Development Version](#development-version)), i.e.&nbsp;use the "master" branch with the latest development version. The build will create `.pot` (translation template files) under [`po`](po).
 
-2. Create a new Git branch for your translations, e.g.&nbsp;`my_username/translations_language_XX` (with `XX` the language code for your language, e.g. `da` for Danish):
+2. Create a new Git branch for your translations, e.g.&nbsp;`my_username/translations_language_XX` (where `XX` is the language code for your language, e.g. `da` for Danish):
 
    ```bash
    git branch my_username/translations_language_XX
