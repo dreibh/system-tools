@@ -28,7 +28,7 @@
 // Contact: thomas.dreibholz@gmail.com
 
 #define _XOPEN_SOURCE 700
-#if defined(__sun__)
+#if defined(__sun)
 #define __EXTENSIONS__ 1
 #endif
 #include <ctype.h>
@@ -44,7 +44,7 @@
 #include <wchar.h>
 #include <sys/ioctl.h>
 #include <termios.h>
-#if defined(__sun__)
+#if defined(__sun)
 #include <unicode/uchar.h>
 #endif
 
@@ -348,7 +348,7 @@ wchar_t* convertToWideStringWithoutANSI(const char* originalString,
 }
 
 
-#if defined(__sun__)
+#if defined(__sun)
 #define wcswidth(str, len) icu_wcswidth(str, len)
 // ###### wcswidth() replacement based on libicu ############################
 static int icu_wcswidth(const wchar_t* str, size_t len) {

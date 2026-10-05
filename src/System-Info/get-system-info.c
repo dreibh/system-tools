@@ -84,13 +84,13 @@
 #include <uvm/uvm_extern.h>
 #include <sys/swap.h>
 #include <utmp.h>
-#elif defined(__sun__)
+#elif defined(__sun)
 #include <dirent.h>
 #include <kstat.h>
 #include <sys/loadavg.h>
 #include <sys/swap.h>
 #include <utmpx.h>
-#elif defined(__gnu_hurd__)
+#elif defined(__GNU__)
 #include <dirent.h>
 #include <net/if_arp.h>
 #include <sys/ioctl.h>
@@ -231,7 +231,7 @@ static void printaddress(const struct sockaddr* address,
          printf("%s%02x", (i > 0) ? ":" : "", macAddress->sll_addr[i]);
       }
    }
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__APPLE__)
    else if(address->sa_family == AF_LINK) {
       const struct sockaddr_dl* macAddress = (const struct sockaddr_dl*)address;
       const uint8_t*            lladdr     = (const uint8_t*)LLADDR(macAddress);
@@ -239,7 +239,7 @@ static void printaddress(const struct sockaddr* address,
          printf("%s%02x", (i > 0) ? ":" : "", lladdr[i]);
       }
    }
-#elif defined(__gnu_hurd__)
+#elif defined(__GNU__)
    // FIXME: GNU Hurd does not return link-layer (MAC) addresses in getifaddrs().
 #else
 #error Missing case!
@@ -323,9 +323,9 @@ static bool obtainUptime(struct timespec* ts)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
 #elif defined(__OpenBSD__)
    return clock_gettime(CLOCK_BOOTTIME, ts) == 0;
-#elif defined(__sun__)
+#elif defined(__sun)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
-#elif defined(__gnu_hurd__)
+#elif defined(__GNU__)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
 #elif defined(__APPLE__)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
@@ -357,7 +357,7 @@ static void showUptimeInformation(void)
 }
 
 
-#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__))
+#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__GNU__) || defined(__APPLE__))
 // ###### Query information via shell #######################################
 static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 {
@@ -412,7 +412,7 @@ static unsigned int obtainProcessCount(void)
 {
    unsigned int count = 0;
 
-#if defined(__linux__) || defined(__sun__) || defined(__gnu_hurd__)
+#if defined(__linux__) || defined(__sun) || defined(__GNU__)
    // ====== Linux: count processes in /proc ================================
    struct dirent* dirEntry;
    DIR*           dir = opendir("/proc");
@@ -516,7 +516,7 @@ static unsigned int obtainUserCount(void)
    unsigned int count = 0;
 
    // ====== Use getutxent() to obtain and count the number of users ========
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__sun) || defined(__GNU__) || defined(__APPLE__)
 #if defined(ENABLE_SYSTEMD)
    char** sessions = nullptr;
    int totalSessions = sd_get_sessions(&sessions);
@@ -606,7 +606,7 @@ static void showLoadInformation(void)
       printf("system_load_avg15minpct=%1.4f\n", (double)systemInfo.loads[2] * fPercent);
    }
 
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__) || defined(__gnu_hurd__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__APPLE__) || defined(__GNU__)
    double loadavg[3];
    if(getloadavg(loadavg, 3) == 3) {
       const double fPercent = 100.0 / (double)cores;
@@ -624,7 +624,7 @@ static void showLoadInformation(void)
 }
 
 
-#if defined(__sun__)
+#if defined(__sun)
 static bool getKstatUint64(const kstat_named_t* kn, uint64_t* val)
 {
    switch(kn->data_type) {
@@ -863,7 +863,7 @@ static void showBatteryInformation(void)
    }
 
    // ====== Solaris: Obtain battery status via kstat =======================
-#elif defined(__sun__)
+#elif defined(__sun)
    kstat_ctl_t* kc = kstat_open();
    if(kc != nullptr) {
       struct SolarisBatteryInfo {
@@ -951,7 +951,7 @@ static void showBatteryInformation(void)
    }
 
    // ====== GNU Hurd =======================================================
-#elif defined(__gnu_hurd__)
+#elif defined(__GNU__)
    // GNU Hurd does not currently provide battery interface support.
 
    // ====== Apple: Obtain battery status via TBD ===========================
@@ -981,7 +981,7 @@ static void showMemoryInformation(void)
    unsigned long long swapAvailable   = 0;
    unsigned long long swapUsed        = 0;
 
-#if defined(__linux__) || defined(__gnu_hurd__)
+#if defined(__linux__) || defined(__GNU__)
    // ====== Query memory information via /proc =============================
    FILE* fh = fopen("/proc/meminfo", "r");
    if(fh != nullptr) {
@@ -995,7 +995,7 @@ static void showMemoryInformation(void)
             else if(sscanf(line, "MemAvailable: %llu", &memoryAvailable) == 1) {
                continue;
             }
-#elif defined(__gnu_hurd__)
+#elif defined(__GNU__)
             else if(sscanf(line, "MemFree: %llu", &memoryAvailable) == 1) {
                // GNU Hurd has no MemAvailable entry in /proc/meminfo:
                continue;
@@ -1109,7 +1109,7 @@ static void showMemoryInformation(void)
       memoryUsed      = 0;
    }
 
-#elif defined(__sun__)
+#elif defined(__sun)
    // ====== Query physical memory via sysconf ==============================
    const long pageSize = sysconf(_SC_PAGESIZE);
    if (pageSize > 0) {
@@ -1176,7 +1176,7 @@ static void showMemoryInformation(void)
       }
    }
 
-#elif defined(__sun__)
+#elif defined(__sun)
    // ====== Query physical swap space via swapctl(SC_LIST) =================
    if(pageSize > 0) {
       const int numSwap = swapctl(SC_GETNSWP, nullptr);
@@ -1367,12 +1367,12 @@ static void showNetworkInformation(const bool filterLocalScope)
             break;
 
          // ====== MAC address ==============================================
-#if defined(__gnu_hurd__)
+#if defined(__GNU__)
          // GNU Hurd does not return link-layer addresses in getifaddrs().
 #else
 #if defined(__linux__)
          case AF_PACKET:
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__APPLE__)
          case AF_LINK:
 #else
 #error Missing case!
@@ -1406,7 +1406,7 @@ static void showNetworkInformation(const bool filterLocalScope)
             puts("\"");
             lastFamily = AF_UNSPEC;
 
-#if defined(__gnu_hurd__)
+#if defined(__GNU__)
             // GNU Hurd has to query link-layer addresses via ioctl:
             int sd = socket(AF_INET, SOCK_DGRAM, 0);
             if(sd >= 0) {
@@ -1440,12 +1440,12 @@ static void showNetworkInformation(const bool filterLocalScope)
                case AF_INET:
                   printf("netif_%u_ipv4=\"", ifIndices[i]);
                break;
-#if defined(__gnu_hurd__)
+#if defined(__GNU__)
                // GNU Hurd does not return link-layer addresses in getifaddrs().
 #else
 #if defined(__linux__)
                case AF_PACKET:
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__APPLE__)
                case AF_LINK:
 #else
 #error Missing case!
