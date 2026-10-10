@@ -31,6 +31,7 @@
 #if defined(__sun__)
 #define __EXTENSIONS__ 1
 #endif
+
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -41,10 +42,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <wchar.h>
+
+#if !defined(_WIN32)
+#include <unistd.h>
 #include <sys/ioctl.h>
 #include <termios.h>
+#else
+#include <windows.h>
+#include <io.h>
+#endif
 #if defined(__sun__)
 #include <unicode/uchar.h>
 #endif
@@ -106,6 +113,7 @@ static void cleanUp(int exitCode)
 }
 
 
+#if !defined(_WIN32)
 // ###### Obtain console size ###############################################
 static bool ioctlTIOCGWINSZ(struct winsize* w)
 {
@@ -119,15 +127,71 @@ static bool ioctlTIOCGWINSZ(struct winsize* w)
    }
    return false;
 }
+#endif
+
+
+#if defined(_WIN32)
+// ###### Obtain console size ###############################################
+static bool getWinConsoleSize(int* cols, int* rows)
+{
+   HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+   if(hConsole != INVALID_HANDLE_VALUE) {
+      CONSOLE_SCREEN_BUFFER_INFO csbi;
+      if(GetConsoleScreenBufferInfo(hConsole, &csbi)) {
+         if(cols) *cols = csbi.srWindow.Right  - csbi.srWindow.Left + 1;
+         if(rows) *rows = csbi.srWindow.Bottom - csbi.srWindow.Top  + 1;
+         return true;
+      }
+   }
+   return false;
+}
+#endif
+
+
+#if defined(_WIN32)
+// ###### wcswidth() implementation #########################################
+static int wcswidth(const wchar_t* pwcs, size_t n)
+{
+   int width = 0;
+   for(size_t i = 0; i < n && pwcs[i] != 0x00; i++) {
+      const wchar_t wc = pwcs[i];
+      if( (wc < 0x20) || (wc >= 0x7f && wc < 0xa0) ) {
+         continue;   // Skip non-printable control characters
+      }
+      if( (wc >= 0xd800) && (wc <= 0xdbff) ) { // High surrogate pair
+         width += 2;
+         i++;   // Skip low surrogate
+      } else if( (wc >= 0x1100 && wc <= 0x115f) ||
+                 (wc >= 0x2e80 && wc <= 0xa4cf) ||
+                 (wc >= 0xac00 && wc <= 0xd7a3) ||
+                 (wc >= 0xf900 && wc <= 0xfaff) ||
+                 (wc >= 0xfe10 && wc <= 0xfe19) ||
+                 (wc >= 0xff01 && wc <= 0xff60) ||
+                 (wc >= 0xffe0 && wc <= 0xffe6) ) {
+         width += 2;
+      } else {
+         width += 1;
+      }
+   }
+   return width;
+}
+#endif
 
 
 // ###### Obtain console width ##############################################
 static int getConsoleWidth(void)
 {
+#if !defined(_WIN32)
    struct winsize w;
    if(ioctlTIOCGWINSZ(&w)) {
       return w.ws_col;
    }
+#else
+   int cols, rows;
+   if(getWinConsoleSize(&cols, &rows)) {
+      return cols;
+   }
+#endif
    return 80;   // Use default!
 }
 
@@ -440,13 +504,18 @@ static void stringSizeLengthWidth(const char* originalString,
 // ###### Get terminal information ##########################################
 static void terminalInfo(void)
 {
+   int columns = 80;
+   int rows    = 24;
+#if !defined(_WIN32)
    struct winsize w;
-   if(!ioctlTIOCGWINSZ(&w)) {
-      // Use defaults!
-      w.ws_col = 80;
-      w.ws_row = 24;
+   if(ioctlTIOCGWINSZ(&w)) {
+      columns = w.ws_col;
+      rows = w.ws_row;
    }
-   printf("%u %u\n", (unsigned int)w.ws_col, (unsigned int)w.ws_row);
+#else
+   getWinConsoleSize(&columns, &rows);
+#endif
+   printf("%u %u\n", (unsigned int)columns, (unsigned int)rows);
 }
 
 
