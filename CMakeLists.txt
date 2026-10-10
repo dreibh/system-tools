@@ -238,6 +238,22 @@ IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
    ENDIF()
 ENDIF()
 
+# ====== Windows: libgetopt =================================================
+IF (WIN32)
+   FIND_PATH(GETOPT_INCLUDE_DIR NAMES getopt.h)
+   FIND_LIBRARY(GETOPT_LIBRARY NAMES getopt libgetopt)
+   IF ((GETOPT_LIBRARY) AND (GETOPT_INCLUDE_DIR))
+      ADD_DEFINITIONS(-DHAVE_LIBGETOPT)
+      MESSAGE(STATUS "Getopt library found:")
+      MESSAGE(STATUS " GETOPT_LIBRARY:     ${GETOPT_LIBRARY}")
+      MESSAGE(STATUS " GETOPT_INCLUDE_DIR: ${GETOPT_INCLUDE_DIR}")
+   ELSE()
+      MESSAGE(FATAL_ERROR
+              "Cannot find Getopt library! Try:\n"
+              " * Windows: vcpkg install getopt:x64-windows")
+   ENDIF()
+ENDIF()
+
 
 #############################################################################
 #### INTERNATIONALISATION (I18N)                                         ####
@@ -261,7 +277,8 @@ IF (WITH_I18N)
             " * NetBSD:        sudo pkgin -y install gettext\n"
             " * OpenBSD:       sudo pkg_add gettext-runtime gettext-tools\n"
             " * Solaris:       sudo pkg install gnu-gettext\n"
-            " * Apple:         brew install gettext")
+            " * Apple:         brew install gettext"
+            " * Windows:       vcpkg install gettext[core,tools]:x64-windows\n")
    ENDIF()
 
    FIND_PROGRAM(XGETTEXT xgettext HINTS /usr/pkg/bin /usr/gnu/bin /opt/homebrew/opt/gettext/bin /usr/local/opt/gettext/bin)
@@ -306,7 +323,8 @@ IF (WITH_I18N)
               " * NetBSD:        sudo pkgin -y install gettext\n"
               " * OpenBSD:       sudo pkg_add gettext-runtime gettext-tools\n"
               " * Solaris:       sudo pkg install gnu-gettext\n"
-              " * Apple:         brew install gettext")
+              " * Apple:         brew install gettext\n"
+              " * Windows:       vcpkg install gettext[core,tools]:x64-windows\n")
    ENDIF()
 
    ADD_DEFINITIONS(-DENABLE_NLS)
