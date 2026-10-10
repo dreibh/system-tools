@@ -50,9 +50,9 @@
 #include <sys/ioctl.h>
 #include <termios.h>
 #else
-#include <shellapi.h>
 #include <windows.h>
 #include <io.h>
+#include <shellapi.h>
 #endif
 #if defined(__sun__)
 #include <unicode/uchar.h>
