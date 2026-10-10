@@ -38,14 +38,22 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <sys/time.h>
 
 #if !defined(_WIN32)
+#include <sys/time.h>
 #include <unistd.h>
 #else
 #include <windows.h>
-#define usleep(us) Sleep((us) / 1000)
-#define sleep(s)   Sleep((s) * 1000)
+#include <process.h>
+
+#define getpid() _getpid()
+
+static inline int nanosleep(const struct timespec* req, struct timespec* rem) {
+   (void)rem;
+   DWORD ms = (DWORD)(req->tv_sec * 1000 + req->tv_nsec / 1000000);
+   Sleep(ms);
+   return 0;
+}
 #endif
 
 #ifdef ENABLE_NLS
@@ -173,9 +181,9 @@ int main(int argc, char** argv)
    }
 
    // ====== Initialise random number generator =============================
-   struct timeval tv;
-   if(gettimeofday(&tv, nullptr) == 0) {
-      srand(tv.tv_sec ^ tv.tv_usec ^ getpid());
+   struct timespec ts;
+   if(timespec_get(&ts, TIME_UTC) == TIME_UTC) {
+      srand((unsigned int)(ts.tv_sec ^ ts.tv_nsec ^ getpid()));
    }
 
    // ====== Random sleep ===================================================
