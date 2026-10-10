@@ -608,7 +608,7 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
    // ====== Read lines from stdin ==========================================
    char*        s;
    char         buffer[8192];
-   unsigned int maxLength = 0;
+   size_t       maxLength = 0;
    while( (s = fgets((char*)&buffer, sizeof(buffer), stdin)) != nullptr ) {
       buffer[strcspn(buffer, "\r\n")] = 0x00;   // Remove newline
       lineArray[lines] =
@@ -623,7 +623,7 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
       }
       lineLength[lines] = strlen(lineArray[lines]);
       if(lineLength[lines]  > maxLength) {
-         maxLength = lineLength[lines] ;
+         maxLength = lineLength[lines];
       }
       lines++;
       if(lines >= sizeof(lineArray) / sizeof(lineArray[0])) {
