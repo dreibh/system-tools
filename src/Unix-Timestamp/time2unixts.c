@@ -40,6 +40,10 @@
 #include <string.h>
 #include <time.h>
 
+#if defined(_WIN32)
+#define timegm(tm) _mkgmtime(tm)
+#endif
+
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #else
@@ -307,7 +311,7 @@ int main(int argc, char** argv)
                }
             }
             ts.tv_sec  = timegm(&t);
-            ts.tv_nsec = nanoseconds;
+            ts.tv_nsec = (long)nanoseconds;
          }
          else {
             remainder  = strptime(argv[i], timeFormatTemplate, &t);
