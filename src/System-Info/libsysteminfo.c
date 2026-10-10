@@ -1176,7 +1176,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
              (powerInfo.battery_state != APM_BATT_UNKNOWN) &&
              (powerInfo.battery_state != APM_BATTERY_ABSENT) ) {
             const unsigned int capacity = powerInfo.battery_life;
-            int status = 0;   // Unknown
+            unsigned int status = 0;   // Unknown
             if(powerInfo.battery_state == APM_BATT_CHARGING) {
                status = 2;    // Charging
             }
@@ -1265,7 +1265,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
             }
 
             // ------ Extract status as status code ------------------------
-            int status = 0;   // Unknown
+            unsigned int status = 0;   // Unknown
             if(batteryInfo[i].state & 0x02) {
                status = 2;    // Charging
             }
