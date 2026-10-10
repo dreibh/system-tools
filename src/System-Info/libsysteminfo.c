@@ -38,6 +38,7 @@
 #include <netinet/in.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -120,7 +121,7 @@
 #include "package-version.h"
 #include "redblacktree.h"
 
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ < 202311L)
+#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 202311L)
 #ifndef nullptr
 #define nullptr ((void*)0)
 #endif

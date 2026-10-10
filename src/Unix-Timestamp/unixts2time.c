@@ -34,11 +34,11 @@
 #include <getopt.h>
 #include <locale.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <unistd.h>
 
 #ifdef ENABLE_NLS
 #include <libintl.h>
@@ -51,7 +51,7 @@
 
 #include "package-version.h"
 
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ < 202311L)
+#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 202311L)
 #ifndef nullptr
 #define nullptr ((void*)0)
 #endif

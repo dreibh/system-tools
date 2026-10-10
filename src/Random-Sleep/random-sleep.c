@@ -34,11 +34,19 @@
 #include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <unistd.h>
 #include <sys/time.h>
+
+#if !defined(_WIN32)
+#include <unistd.h>
+#else
+#include <windows.h>
+#define usleep(us) Sleep((us) / 1000)
+#define sleep(s)   Sleep((s) * 1000)
+#endif
 
 #ifdef ENABLE_NLS
 #include <libintl.h>
@@ -51,7 +59,7 @@
 
 #include "package-version.h"
 
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ < 202311L)
+#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 202311L)
 #ifndef nullptr
 #define nullptr ((void*)0)
 #endif

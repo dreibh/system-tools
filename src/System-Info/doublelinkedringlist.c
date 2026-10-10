@@ -27,9 +27,11 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
+#include <stddef.h>
+
 #include <doublelinkedringlist.h>
 
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ < 202311L)
+#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 202311L)
 #ifndef nullptr
 #define nullptr ((void*)0)
 #endif
