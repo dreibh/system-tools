@@ -720,7 +720,7 @@ int main (int argc, char** argv)
    else {
       wchar_t wide_string[16];
       static const char* utf8test = "😀";
-      const size_t wide_string_length = mbstowcs(wide_string, "😀", strlen(utf8test));
+      const size_t wide_string_length = mbstowcs(wide_string, utf8test, strlen(utf8test));
       if(wide_string_length == (size_t)-1) {
          setlocale(LC_CTYPE, "C.UTF-8");
       }
