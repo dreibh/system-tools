@@ -472,6 +472,26 @@ static int stringwidth(const char* originalString,
 }
 
 
+// ###### Calculate Unicode character count from wide string ###############
+inline static size_t utf8CharacterLength(const wchar_t* wide_string,
+                                         const size_t   wide_string_length)
+{
+   size_t characterCount = wide_string_length;
+#if defined(_WIN32) || (defined(__SIZEOF_WCHAR_T__) && (__SIZEOF_WCHAR_T__ == 2))
+   // On 16-bit wchar_t (UTF-16), subtract 1 for every high surrogate
+   // so that surrogate pairs count as 1 character instead of 2:
+   for(size_t k = 0; k < wide_string_length; k++) {
+      if( (wide_string[k] >= 0xd800) && (wide_string[k] <= 0xdbff) ) {
+         characterCount--;
+      }
+   }
+#else
+   (void)wide_string;
+#endif
+   return characterCount;
+}
+
+
 // ###### Obtain length of UTF-8 string in bytes ############################
 static void stringSizeLengthWidth(const char* originalString,
                                   const bool  removeANSISequences,
@@ -490,7 +510,8 @@ static void stringSizeLengthWidth(const char* originalString,
       space = " ";
    }
    if(showLength) {
-      printf("%s%zd", space, wide_string_length);
+      const size_t char_count = utf8CharacterLength(wide_string, wide_string_length);
+      printf("%s%zd", space, char_count);
       space = " ";
    }
    if(showWidth) {
