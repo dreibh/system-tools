@@ -92,9 +92,10 @@ if ! command -v figlet >/dev/null ; then
    exit 1
 fi
 
+# ====== Build ==============================================================
+cmake --build "$(dirname "$0")" --target text-block
 
 # ====== Run tests ==========================================================
-make text-block
 insertFile="text-block-tests/insert.txt"
 failures=0
 # Tests: simple markers advanced1 advanced2 example1 example2

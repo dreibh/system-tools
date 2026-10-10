@@ -39,7 +39,8 @@ exit-success ()
 
 # ###### Main program #######################################################
 
-cmake --build "$(dirname "$0")/.."
+# ====== Build ==============================================================
+cmake --build "$(dirname "$0")" --target unixts2time time2unixts
 
 # ====== Test auto-detection of Unix timestamp unit =========================
 echo "++++++ Manual, positive ++++++"
