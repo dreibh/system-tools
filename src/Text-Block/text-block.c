@@ -29,6 +29,7 @@
 
 #define _GNU_SOURCE
 #define __EXTENSIONS__
+
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
@@ -41,7 +42,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+
+#if !defined(_WIN32)
 #include <unistd.h>
+#else
+#include <io.h>
+#include <process.h>
+#include <windows.h>
+
+typedef SSIZE_T ssize_t;
+
+#define unlink _unlink
+#define chmod _chmod
+#define chown(path, uid, gid) (0)
+#define realpath(path, resolved) _fullpath((resolved), (path), _MAX_PATH)
+#endif
 
 #ifdef ENABLE_NLS
 #include <libintl.h>
@@ -210,6 +225,45 @@ static void cleanUp(int exitCode)
 
    exit(exitCode);
 }
+
+
+#if defined(_WIN32)
+static inline ssize_t getline(char** lineptr, size_t* n, FILE* stream)
+{
+   if( (!lineptr) || (!n) || (!stream) ) {
+      return -1;
+   }
+   if( (*lineptr == nullptr) || (*n == 0x00) ) {
+      *n       = 128;
+      *lineptr = (char *)malloc(*n);
+      if(*lineptr == nullptr) {
+         return -1;
+      }
+   }
+   size_t pos = 0;
+   int    c;
+   while((c = fgetc(stream)) != EOF) {
+      if(pos + 1 >= *n) {
+         const size_t newN   = *n * 2;
+         char*        newPtr = (char*)realloc(*lineptr, newN);
+         if(!newPtr) {
+            return -1;
+         }
+         *lineptr = newPtr;
+         *n       = newN;
+      }
+      (*lineptr)[pos++] = (char)c;
+      if(c == '\n') {
+         break;
+      }
+   }
+   if(pos == 0) {
+      return -1;
+   }
+   (*lineptr)[pos] = 0x00;
+   return (ssize_t)pos;
+}
+#endif
 
 
 // ###### Generate temporary output file name ###############################
