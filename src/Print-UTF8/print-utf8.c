@@ -36,6 +36,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <getopt.h>
+#include <limits.h>
 #include <locale.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -282,7 +283,7 @@ static char* unescape(const char* originalString)
                         (hexDigitToNumber(originalString[i + 2]) << 8) +
                         (hexDigitToNumber(originalString[i + 3]) << 4) +
                         hexDigitToNumber(originalString[i + 4]);
-                     char      multibyte[MB_CUR_MAX];
+                     char      multibyte[MB_LEN_MAX];
                      const int bytes = wctomb(multibyte, (wchar_t)codepoint);
                      if(bytes > 0) {
                         for(int k = 0; k < bytes; k++) {
@@ -303,7 +304,7 @@ static char* unescape(const char* originalString)
                         (hexDigitToNumber(originalString[i + 6]) << 8) +
                         (hexDigitToNumber(originalString[i + 7]) << 4) +
                         hexDigitToNumber(originalString[i + 8]);
-                     char      multibyte[MB_CUR_MAX];
+                     char      multibyte[MB_LEN_MAX];
                      const int bytes = wctomb(multibyte, (wchar_t)codepoint);
                      if(bytes > 0) {
                         for(int k = 0; k < bytes; k++) {
