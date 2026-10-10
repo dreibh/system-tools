@@ -50,6 +50,7 @@
 #include <sys/ioctl.h>
 #include <termios.h>
 #else
+#include <shellapi.h>
 #include <windows.h>
 #include <io.h>
 #endif
@@ -670,6 +671,41 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
 }
 
 
+#if defined(_WIN32)
+// ###### Convert argv to UTF-8 #############################################
+static void convertArgumentsToUTF8(int* argc, char*** argv)
+{
+   int wargc = 0;
+   wchar_t** wargv = CommandLineToArgvW(GetCommandLineW(), &wargc);
+   if (wargv == nullptr) {
+      return;
+   }
+
+   char** utf8_argv = (char **)malloc(sizeof(char *) * (wargc + 1));
+   if (utf8_argv == nullptr) {
+      LocalFree(wargv);
+      return;
+   }
+
+   for (int i = 0; i < wargc; i++) {
+      int len = WideCharToMultiByte(CP_UTF8, 0, wargv[i], -1, nullptr, 0, nullptr, nullptr);
+      if (len > 0) {
+         utf8_argv[i] = (char *)malloc((size_t)len);
+         if (utf8_argv[i] != nullptr) {
+            WideCharToMultiByte(CP_UTF8, 0, wargv[i], -1, utf8_argv[i], len, nullptr, nullptr);
+         }
+      } else {
+         utf8_argv[i] = _strdup("");
+      }
+   }
+   utf8_argv[wargc] = nullptr;
+   *argc = wargc;
+   *argv = utf8_argv;
+   LocalFree(wargv);
+}
+#endif
+
+
 // ###### Version ###########################################################
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
@@ -713,6 +749,7 @@ static void usage(const char* program, const int exitCode)
 // ###### Main program ######################################################
 int main (int argc, char** argv)
 {
+#if !defined(_WIN32)
    // ====== Initialise locale support ======================================
    if(setlocale(LC_ALL, "") == nullptr) {
       setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
@@ -725,6 +762,20 @@ int main (int argc, char** argv)
          setlocale(LC_CTYPE, "C.UTF-8");
       }
    }
+#else
+   // 1. Fetch real UTF-8 command line arguments
+   convertArgumentsToUTF8(&argc, &argv);
+
+   // 2. Set Console I/O Code Pages to UTF-8:
+   SetConsoleOutputCP(CP_UTF8);
+   SetConsoleCP(CP_UTF8);
+
+   // 3. Set MSVC CRT locale to UTF-8:
+   if(setlocale(LC_ALL, ".UTF-8") == nullptr) {
+      setlocale(LC_ALL, "C.UTF-8");
+   }
+#endif
+
    bindtextdomain("print-utf8", SYSTEMTOOLS_LOCALEDIR);
    textdomain("print-utf8");
 
