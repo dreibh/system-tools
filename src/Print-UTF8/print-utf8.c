@@ -523,12 +523,13 @@ static void terminalInfo(void)
 static void indent(const int indentWidth)
 {
    if(indentWidth > 0) {
-      char indentString[indentWidth + 1];
-      for(int i = 0; i < indentWidth; i++) {
-         indentString[i] = ' ';
+      char* indentString = (char*)malloc((size_t)indentWidth + 1);
+      if(indentString != nullptr) {
+         memset(indentString, ' ', (size_t)indentWidth);
+         indentString[indentWidth] = 0x00;
+         fputs(indentString, stdout);
+         free(indentString);
       }
-      indentString[indentWidth] = 0x00;
-      fputs(indentString, stdout);
    }
 }
 
@@ -600,7 +601,7 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
                                       const printmode_t mode)
 {
    char*        lineArray[1024];
-   unsigned int lineLength[1024];
+   size_t       lineLength[1024];
    unsigned int lines = 0;
 
    // ====== Read lines from stdin ==========================================
@@ -609,7 +610,13 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
    unsigned int maxLength = 0;
    while( (s = fgets((char*)&buffer, sizeof(buffer), stdin)) != nullptr ) {
       buffer[strcspn(buffer, "\r\n")] = 0x00;   // Remove newline
-      lineArray[lines] = strdup(s);
+      lineArray[lines] =
+#if !defined(_WIN32)
+      strdup(s)
+#else
+      _strdup(s)
+#endif
+      ;
       if(lineArray[lines] == nullptr) {
          exit(1);
       }
