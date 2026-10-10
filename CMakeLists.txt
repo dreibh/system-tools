@@ -37,9 +37,9 @@ SET(BUILD_MINOR "7")
 SET(BUILD_PATCH "15")
 SET(BUILD_VERSION ${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH})
 
-SET(CMAKE_CXX_STANDARD 23)
-SET(CMAKE_C_STANDARD_REQUIRED ON)
-SET(CMAKE_C_EXTENSIONS ON)
+SET(CMAKE_C_STANDARD          23)
+SET(CMAKE_C_STANDARD_REQUIRED OFF)
+SET(CMAKE_C_EXTENSIONS        ON)
 
 
 #############################################################################
@@ -118,6 +118,8 @@ ELSEIF (CMAKE_SYSTEM_NAME MATCHES "GNU")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
    MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Windows")
+   MESSAGE(STATUS "${CMAKE_SYSTEM_NAME} supported")
 ELSE()
    MESSAGE(FATAL_ERROR "${CMAKE_SYSTEM_NAME} not supported (yet?)")
 ENDIF()
@@ -178,6 +180,11 @@ ENDIF()
 #### CHECKS                                                              ####
 #############################################################################
 
+CHECK_SYMBOL_EXISTS(strlcat "string.h" HAVE_STRLCAT)
+IF (HAVE_STRLCAT)
+   ADD_DEFINITIONS(-DHAVE_STRLCAT)
+ENDIF()
+
 CHECK_SYMBOL_EXISTS(strlcpy "string.h" HAVE_STRLCPY)
 IF (HAVE_STRLCPY)
    ADD_DEFINITIONS(-DHAVE_STRLCPY)
@@ -188,6 +195,7 @@ ENDIF()
 #### LIBRARIES                                                           ####
 #############################################################################
 
+# ====== libicuuc on Solaris ================================================
 IF (CMAKE_SYSTEM_NAME MATCHES "SunOS")
    FIND_LIBRARY(SOCKET_LIBRARY socket REQUIRED)
    FIND_LIBRARY(NSL_LIBRARY    nsl    REQUIRED)
@@ -206,6 +214,7 @@ IF (CMAKE_SYSTEM_NAME MATCHES "SunOS")
    ENDIF()
 ENDIF()
 
+# ====== SystemD support on Linux ===========================================
 IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
    FIND_LIBRARY(SYSTEMD_LIBRARY systemd)
    FIND_PATH(SYSTEMD_INCLUDE_DIR NAMES systemd/sd-login.h)
