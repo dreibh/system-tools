@@ -104,14 +104,14 @@ static void printBigInteger(
       do {
          int remainder = (int)(value % base);
          if(remainder < 0) remainder = -remainder;
-         buffer[idx++] = (remainder < 10) ? (remainder + '0') : (remainder - 10 + 'a');
+         buffer[idx++] = (char)((remainder < 10) ? (remainder + '0') : (remainder - 10 + 'a'));
          value /= base;
       } while (value < 0);
    }
    else {            // Non-negative value
       do {
          int remainder = (int)(value % base);
-         buffer[idx++] = (remainder < 10) ? (remainder + '0') : (remainder - 10 + 'a');
+         buffer[idx++] = (char)((remainder < 10) ? (remainder + '0') : (remainder - 10 + 'a'));
          value /= base;
       } while (value > 0);
    }
@@ -340,7 +340,7 @@ int main(int argc, char** argv)
          printBigInteger(unixTS / divideBy, 10, false);
          if(useInteger == 0) {
             const unsigned int fractionalUnixTS =
-               (double)(unixTS - (unixTS / divideBy) * divideBy);
+               (unsigned int)(unixTS - (unixTS / divideBy) * divideBy);
             const char* format;
             if(divideBy == 1000000000) {
                format = ".%09u";
