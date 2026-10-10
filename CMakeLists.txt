@@ -190,6 +190,18 @@ IF (HAVE_STRLCPY)
    ADD_DEFINITIONS(-DHAVE_STRLCPY)
 ENDIF()
 
+CHECK_C_SOURCE_COMPILES("
+#include <stddef.h>
+int main(void) {
+   void *ptr = nullptr;
+   (void)ptr;
+   return 0;
+}
+" HAVE_C23_NULLPTR)
+IF(HAVE_C23_NULLPTR)
+   ADD_DEFINITIONS(-DHAVE_C23_NULLPTR)
+ENDIF()
+
 
 #############################################################################
 #### LIBRARIES                                                           ####

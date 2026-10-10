@@ -33,10 +33,8 @@
 
 #include <redblacktree.h>
 
-#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 202311L)
-#ifndef nullptr
+#if !defined(HAVE_C23_NULLPTR)
 #define nullptr ((void*)0)
-#endif
 #endif
 
 
