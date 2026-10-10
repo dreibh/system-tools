@@ -126,6 +126,91 @@ static void printBigInteger(
 }
 
 
+#if defined(_WIN32)
+// ###### strptime() implementation #########################################
+static const char* strptime(const char* buf, const char* fmt, struct tm* tm)
+{
+   if (!buf || !fmt || !tm) return NULL;
+   while (*fmt) {
+      if (isspace((unsigned char)*fmt)) {
+         while (isspace((unsigned char)*buf)) buf++;
+         fmt++;
+         continue;
+      }
+      if (*fmt == '%') {
+         fmt++;
+         if (*fmt == '%') {
+            if (*buf != '%') return NULL;
+            buf++;
+            fmt++;
+         } else if (*fmt == 'Y') {
+            int year = 0, digits = 0;
+            while (digits < 4 && isdigit((unsigned char)*buf)) {
+               year = year * 10 + (*buf - '0');
+               buf++; digits++;
+            }
+            if (digits == 0) return NULL;
+            tm->tm_year = year - 1900;
+            fmt++;
+         } else if (*fmt == 'm') {
+            int mon = 0, digits = 0;
+            while (digits < 2 && isdigit((unsigned char)*buf)) {
+               mon = mon * 10 + (*buf - '0');
+               buf++; digits++;
+            }
+            if (digits == 0) return NULL;
+            tm->tm_mon = mon - 1;
+            fmt++;
+         } else if (*fmt == 'd' || *fmt == 'e') {
+            int day = 0, digits = 0;
+            while (digits < 2 && isdigit((unsigned char)*buf)) {
+               day = day * 10 + (*buf - '0');
+               buf++; digits++;
+            }
+            if (digits == 0) return NULL;
+            tm->tm_mday = day;
+            fmt++;
+         } else if (*fmt == 'H') {
+            int hour = 0, digits = 0;
+            while (digits < 2 && isdigit((unsigned char)*buf)) {
+               hour = hour * 10 + (*buf - '0');
+               buf++; digits++;
+            }
+            if (digits == 0) return NULL;
+            tm->tm_hour = hour;
+            fmt++;
+         } else if (*fmt == 'M') {
+            int min = 0, digits = 0;
+            while (digits < 2 && isdigit((unsigned char)*buf)) {
+               min = min * 10 + (*buf - '0');
+               buf++; digits++;
+            }
+            if (digits == 0) return NULL;
+            tm->tm_min = min;
+            fmt++;
+         } else if (*fmt == 'S') {
+            int sec = 0, digits = 0;
+            while (digits < 2 && isdigit((unsigned char)*buf)) {
+               sec = sec * 10 + (*buf - '0');
+               buf++; digits++;
+            }
+            if (digits == 0) return NULL;
+            tm->tm_sec = sec;
+            fmt++;
+         } else {
+            return NULL;
+         }
+      } else {
+         if (*buf != *fmt) return NULL;
+         buf++;
+         fmt++;
+      }
+   }
+   return buf;
+}
+#endif
+
+
 // ###### Version ###########################################################
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]

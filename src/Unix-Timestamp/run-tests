@@ -39,7 +39,7 @@ exit-success ()
 
 # ###### Main program #######################################################
 
-make
+cmake --build "$(dirname "$0")/.."
 
 # ====== Test auto-detection of Unix timestamp unit =========================
 echo "++++++ Manual, positive ++++++"
