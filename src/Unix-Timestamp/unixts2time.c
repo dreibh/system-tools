@@ -201,8 +201,8 @@ int main(int argc, char** argv)
       if(i == argc) {
          if(optind == argc) {
             struct timespec ts;
-            if(clock_gettime(CLOCK_REALTIME, &ts) == -1) {
-               perror(gettext("clock_gettime() failed"));
+            if(timespec_get(&ts, TIME_UTC) != TIME_UTC) {
+               perror(gettext("timespec_get() failed"));
                exit(1);
             }
 #if (defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
