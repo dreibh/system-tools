@@ -43,6 +43,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#if !defined(_WIN32)
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <net/if.h>
@@ -51,6 +52,18 @@
 #include <sys/statvfs.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
+#elif defined(_WIN32)
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windows.h>
+#include <iphlpapi.h>
+#include <tlhelp32.h>
+#include <io.h>
+#include <process.h>
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "iphlpapi.lib")
+#endif
+
 #if defined(__linux__)
 #include <dirent.h>
 #include <linux/if.h>
@@ -105,16 +118,6 @@
 #include <net/if_dl.h>
 #include <sys/sysctl.h>
 #include <utmpx.h>
-#elif defined(_WIN32)
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <windows.h>
-#include <iphlpapi.h>
-#include <tlhelp32.h>
-#include <io.h>
-#include <process.h>
-#pragma comment(lib, "ws2_32.lib")
-#pragma comment(lib, "iphlpapi.lib")
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
@@ -139,6 +142,21 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+
+#if !defined(HAVE_STRLCPY)
+// ###### strlcpy() implementation ##########################################
+size_t strlcpy(char* dst, const char* src, size_t size)
+{
+   const size_t slen = strlen(src);
+   if(size != 0) {
+      const size_t len = (slen >= size) ? size - 1 : slen;
+      memcpy(dst, src, len);
+      dst[len] = 0x00;
+   }
+   return slen;
+}
 #endif
 
 

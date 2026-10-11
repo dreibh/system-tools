@@ -49,9 +49,15 @@ IF (WITH_GET_SYSTEM_INFO)
    # SET_PROPERTY(TARGET get-system-info PROPERTY C_STANDARD 23)
    TARGET_COMPILE_DEFINITIONS(get-system-info PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
    TARGET_INCLUDE_DIRECTORIES(get-system-info PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${SYSTEMD_INCLUDE_DIRS} ${Intl_INCLUDE_DIRS})
-   TARGET_LINK_LIBRARIES(get-system-info ${SYSTEMD_LIBRARY} ${Intl_LIBRARIES} ${SOCKET_LIBRARY} ${NSL_LIBRARY} ${GETOPT_LIBRARY} ${KSTAT_LIBRARY})
+   TARGET_LINK_LIBRARIES(get-system-info PRIVATE
+                         ${SYSTEMD_LIBRARY}
+                         ${Intl_LIBRARIES}
+                         ${SOCKET_LIBRARY}
+                         ${NSL_LIBRARY}
+                         ${GETOPT_LIBRARY}
+                         ${KSTAT_LIBRARY})
    IF(WIN32)
-      TARGET_LINK_LIBRARIES(systeminfo PRIVATE ws2_32 iphlpapi)
+      TARGET_LINK_LIBRARIES(get-system-info PRIVATE ws2_32 iphlpapi)
    ENDIF()
    IF(NOT MSVC)
       TARGET_COMPILE_OPTIONS(get-system-info PRIVATE -Wall -Wextra -Wpedantic -Wsign-conversion)
