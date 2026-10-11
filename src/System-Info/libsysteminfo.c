@@ -637,10 +637,12 @@ static char* formatFlags(const unsigned int flags)
       result = snprintf(buffer + offset, sizeof(buffer) - offset, " <LOOPBACK>");
       if(result > 0) offset += (unsigned int)result;
    }
+#if defined(IFF_POINTOPOINT)
    if((flags & IFF_POINTOPOINT) && ((size_t)offset < sizeof(buffer))) {
       result = snprintf(buffer + offset, sizeof(buffer) - offset, " <POINTOPOINT>");
       if(result > 0) offset += (unsigned int)result;
    }
+#endif
    return buffer;
 }
 
@@ -653,11 +655,7 @@ static void obtainHostnameInformation(struct SystemInfo* systemInfo)
       hostname[sizeof(hostname) - 1] = 0x00;
    }
    else {
-#if defined(HAVE_STRLCPY)
       strlcpy(hostname, "localhost", sizeof(hostname));
-#else
-      strcpy(hostname, "localhost");
-#endif
    }
 
    systemInfoAddString(systemInfo, "hostname_long", hostname);
@@ -687,8 +685,8 @@ static void obtainKernelInformation(struct SystemInfo* systemInfo)
 #else
    systemInfoAddString(systemInfo, "system_sysname", "Windows");
 
-   char        nodename[256] = "localhost";
-   const DWORD size          = sizeof(nodename);
+   char  nodename[256] = "localhost";
+   DWORD size          = sizeof(nodename);
    GetComputerNameA(nodename, &size);
    systemInfoAddString(systemInfo, "system_nodename", nodename);
 
@@ -1398,11 +1396,11 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
 #elif defined(_WIN32)
    SYSTEM_POWER_STATUS sysStatus;
    if (GetSystemPowerStatus(&sysStatus) && sysStatus.BatteryFlag != 255) {
-      unsigned int status = 0; // Unknown
+      unsigned int status = 0;   // Unknown
       if (sysStatus.ACLineStatus == 1) {
-         status = (sysStatus.BatteryLifePercent >= 100) ? 3 : 2; // Full / Charging
+         status = (sysStatus.BatteryLifePercent >= 100) ? 3 : 2;   // Full / Charging
       } else if (sysStatus.ACLineStatus == 0) {
-         status = 4; // Discharging
+         status = 4;   // Discharging
       }
 
       unsigned int capacity = sysStatus.BatteryLifePercent;
@@ -1410,9 +1408,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
 
       systemInfoAddUInt32(systemInfo, "battery_0_status", status);
       systemInfoAddUInt32(systemInfo, "battery_0_capacity", capacity);
-      systemInfoAddString(systemInfo, "battery_list", "0");
-   } else {
-      systemInfoAddString(systemInfo, "battery_list", "");
+      batteryIDs[batteries++] = 0;
    }
 
 #else
@@ -1818,8 +1814,8 @@ static void obtainStorageInformation(struct SystemInfo* systemInfo)
    // getDiskUsage(systemInfo, "/boot/efi", "efi");
    systemInfoAddString(systemInfo, "disk_list", "root home tmp");
 #else
-   obtainDiskUsage(systemInfo, "C:\\", "root");
-   systemInfoAddString(systemInfo, "disk_list", "root");
+   getDiskUsage(systemInfo, "/c", "c");
+   systemInfoAddString(systemInfo, "disk_list", "root c");
 #endif
 }
 

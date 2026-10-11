@@ -33,6 +33,9 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#if defined(_WIN32)
+#include <winsock2.h>
+#endif
 
 #include <libsysteminfo.h>
 
@@ -84,8 +87,8 @@ int main(int argc, char** argv)
       {  nullptr,        0,                 0, 0   }
    };
 
-   int          option;
-   int          longIndex;
+   int option;
+   int longIndex;
    while( (option = getopt_long(argc, argv, "hvc:", long_options, &longIndex)) != -1 ) {
       switch(option) {
          case 'c':
@@ -117,6 +120,10 @@ int main(int argc, char** argv)
    if(optind < argc) {
       usage(argv[0], 1);
    }
+#if defined(_WIN32)
+   WSADATA wsaData;
+   WSAStartup(MAKEWORD(2, 2), &wsaData);
+#endif
 
    // ====== Show system information in machine-readable form ===============
    struct SystemInfo* systemInfo = systemInfoObtain(LSI_COMPATIBILITY_VERSION, 0xffffffff);
@@ -124,5 +131,10 @@ int main(int argc, char** argv)
       systemInfoPrint(systemInfo, stdout);
       systemInfoRelease(systemInfo);
    }
+
+   // ====== Clean up =======================================================
+#if defined(_WIN32)
+   WSACleanup();
+#endif
    return 0;
 }
