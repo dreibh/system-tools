@@ -109,9 +109,9 @@
 #include <sys/sysctl.h>
 #include <utmpx.h>
 #elif defined(_WIN32)
-#include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <windows.h>
 #include <iphlpapi.h>
 #include <tlhelp32.h>
 #include <io.h>
@@ -138,6 +138,12 @@
 
 #if !defined(HAVE_C23_NULLPTR)
 #define nullptr ((void*)0)
+#endif
+
+#if !defined(__GNUC__) && !defined(__clang__)
+#if !defined(__builtin_expect)
+#define __builtin_expect(expr, expected) (expr)
+#endif
 #endif
 
 
@@ -739,12 +745,11 @@ static bool getUptime(struct timespec* ts)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
 #elif defined(__APPLE__)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
-#if defined(_WIN32)
+#elif defined(_WIN32)
    const ULONGLONG ms = GetTickCount64();
    ts->tv_sec  = (time_t)(ms / 1000);
    ts->tv_nsec = (long)((ms % 1000) * 1000000);
    return true;
-#endif
 #else
 #error Missing case!
 #endif
@@ -773,7 +778,7 @@ static void obtainUptimeInformation(struct SystemInfo* systemInfo)
 }
 
 
-#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__))
+#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__) || defined(_WIN32))
 // ###### Query information via shell #######################################
 static bool queryPipe(const char* command, char* result, size_t resultMaxSize)
 {
@@ -910,7 +915,7 @@ static unsigned int getProcessCount(void)
       count = (unsigned int)bufferSize / sizeof(pid_t);
    }
 
-#elif defined(__WIN32)
+#elif defined(_WIN32)
    // ====== Windows: query process information and count processes =========
    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
    if(hSnapshot != INVALID_HANDLE_VALUE) {
@@ -994,6 +999,10 @@ static unsigned int getUserCount(void)
       fclose(fh);
    }
 
+#elif defined(_WIN32)
+#warning FIXME! getUserCount() for Windows!
+   count = 1;
+
 #else
    // ====== Fallback =======================================================
 #warning Using fallback solution for obtaining the user count!
@@ -1012,10 +1021,17 @@ static unsigned int getUserCount(void)
 // ##### Obtain load information ############################################
 static void obtainLoadInformation(struct SystemInfo* systemInfo)
 {
-   // ====== Cores and page size ============================================
-   const unsigned int cores = (unsigned int)sysconf(_SC_NPROCESSORS_ONLN);
-   systemInfoAddUInt32(systemInfo, "system_cores", cores);
+// ====== Cores and page size ============================================
+#if !defined(_WIN32)
+   const unsigned int cores    = (unsigned int)sysconf(_SC_NPROCESSORS_ONLN);
    const unsigned int pageSize = (unsigned int)sysconf(_SC_PAGESIZE);
+#else
+   SYSTEM_INFO sysInfo;
+   GetSystemInfo(&sysInfo);
+   const unsigned int cores    = (unsigned int)sysInfo.dwNumberOfProcessors;
+   const unsigned int pageSize = (unsigned int)sysInfo.dwPageSize;
+#endif
+   systemInfoAddUInt32(systemInfo, "system_cores", cores);
    systemInfoAddUInt32(systemInfo, "system_pagesize", pageSize);
 
    // ====== Number of running processes and number of users ================
@@ -1026,6 +1042,7 @@ static void obtainLoadInformation(struct SystemInfo* systemInfo)
    systemInfoAddUInt32(systemInfo, "system_users", userCount);
 
    // ====== Get load averages from getloadavg() ============================
+#if !defined(_WIN32)
    double loadavg[3];
    if(getloadavg(loadavg, 3) == 3) {
       const double fPercent = 100.0 / (double)cores;
@@ -1036,6 +1053,9 @@ static void obtainLoadInformation(struct SystemInfo* systemInfo)
       systemInfoAddDouble(systemInfo, "system_load_avg5minpct",  loadavg[1] * fPercent, 4);
       systemInfoAddDouble(systemInfo, "system_load_avg15minpct", loadavg[2] * fPercent, 4);
    }
+#else
+#warning FIXME! obtainLoadInformation() for Windows!
+#endif
 }
 
 
@@ -1062,16 +1082,17 @@ static bool getKstatUint64(const kstat_named_t* kn, uint64_t* val)
 #endif
 
 
+#define MAX_BATTERIES 2
+
 // ##### Obtain battery information #########################################
 static void obtainBatteryInformation(struct SystemInfo* systemInfo)
 {
-   const unsigned int maxBatteries = 2;
-   unsigned int       batteries    = 0;
-   unsigned int       batteryIDs[maxBatteries];
+   unsigned int       batteries = 0;
+   unsigned int       batteryIDs[MAX_BATTERIES];
 
    // ====== Linux: obtain battery status via /sys file system ==============
 #if defined(__linux__)
-   for(unsigned int i = 0; i < maxBatteries; i++) {
+   for(unsigned int i = 0; i < MAX_BATTERIES; i++) {
       // ------ Obtain status of battery unit -------------------------------
       char capacityFileName[64];
       char capacityBuffer[64];
@@ -1146,7 +1167,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
                systemInfoAddUInt32(systemInfo, systemInfoMakeKey("battery_%u_status",   i), status);
                systemInfoAddUInt32(systemInfo, systemInfoMakeKey("battery_%u_capacity", i), capacity);
                batteryIDs[batteries++] = i;
-               if(batteries == maxBatteries) {
+               if(batteries == MAX_BATTERIES) {
                   break;
                }
             }
@@ -1288,7 +1309,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
          bool     foundLastCap;
          bool     foundRemCap;
          bool     foundState;
-      } batteryInfo[maxBatteries];
+      } batteryInfo[MAX_BATTERIES];
       memset(batteryInfo, 0, sizeof(batteryInfo));
 
       for(kstat_t* ksp = kc->kc_chain; ksp != nullptr; ksp = ksp->ks_next) {
@@ -1312,7 +1333,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
                isBST = true;
             }
 
-            if((isBIF || isBST) && (batID < maxBatteries)) {
+            if((isBIF || isBST) && (batID < MAX_BATTERIES)) {
                if(kstat_read(kc, ksp, nullptr) != -1) {
                   const kstat_named_t* knArray = (kstat_named_t*)ksp->ks_data;
                   for(size_t i = 0; i < ksp->ks_ndata; i++) {
@@ -1333,7 +1354,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
       }
       kstat_close(kc);
 
-      for(unsigned int i = 0; i < maxBatteries; i++) {
+      for(unsigned int i = 0; i < MAX_BATTERIES; i++) {
          if(batteryInfo[i].foundLastCap && batteryInfo[i].foundRemCap &&
             batteryInfo[i].foundState && (batteryInfo[i].lastCap > 0)) {
 
@@ -1374,7 +1395,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
 #warning FIXME! Battery status for Apple
 
    // ====== Windows: Obtain battery status via Windows API =================
-#elif defined(__WIN32)
+#elif defined(_WIN32)
    SYSTEM_POWER_STATUS sysStatus;
    if (GetSystemPowerStatus(&sysStatus) && sysStatus.BatteryFlag != 255) {
       unsigned int status = 0; // Unknown
@@ -1399,7 +1420,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
 #endif
 
    // ====== Add battery information ========================================
-   char         buffer[8 * maxBatteries];
+   char         buffer[8 * MAX_BATTERIES];
    unsigned int offset = 0;
    for(unsigned int i = 0; i < batteries; i++) {
       if((size_t)offset >= sizeof(buffer)) {
@@ -1691,6 +1712,26 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
       swapUsed      = swapUsageStatistics.xsu_used;
       swapAvailable = swapUsageStatistics.xsu_avail;
    }
+
+   // ====== Apple: query memory and swap information via Windows API =======
+#elif defined(_WIN32)
+   MEMORYSTATUSEX statex;
+   statex.dwLength = sizeof(statex);
+   if(GlobalMemoryStatusEx(&statex)) {
+      memoryTotal     = statex.ullTotalPhys;
+      memoryAvailable = statex.ullAvailPhys;
+      memoryUsed      = memoryTotal - memoryAvailable;
+
+      if(statex.ullTotalPageFile > memoryTotal) {
+         swapTotal = statex.ullTotalPageFile - memoryTotal;
+         if(statex.ullAvailPageFile > memoryAvailable) {
+            swapAvailable = statex.ullAvailPageFile - memoryAvailable;
+         } else {
+            swapAvailable = 0;
+         }
+         swapUsed = (swapTotal >= swapAvailable) ? (swapTotal - swapAvailable) : 0;
+      }
+   }
 #endif
 
    // ====== Add memory information =========================================
@@ -1724,6 +1765,7 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
 static bool getDiskUsage(struct SystemInfo* systemInfo,
                          const char* mountPoint, const char* label)
 {
+#if !defined(_WIN32)
    // ====== Obtain file system status of mount point =======================
    struct statvfs status;
    if(statvfs(mountPoint, &status) != 0) {
@@ -1738,7 +1780,22 @@ static bool getDiskUsage(struct SystemInfo* systemInfo,
       (unsigned long long)status.f_bavail * (unsigned long long)status.f_frsize;
    const unsigned long long freeSpace =   /* actual free space */
       (unsigned long long)status.f_bfree * (unsigned long long)status.f_frsize;
-   const unsigned long long usedSpace = totalSpace - freeSpace;
+
+#else
+   // ====== Obtain file system status of disk ==============================
+   ULARGE_INTEGER freeBytesAvailable, totalNumberOfBytes, totalNumberOfFreeBytes;
+   if(!GetDiskFreeSpaceExA(mountPoint, &freeBytesAvailable,
+                           &totalNumberOfBytes, &totalNumberOfFreeBytes)) {
+      return false;
+   }
+
+   // ====== Compute the size statistics ====================================
+   const unsigned long long totalSpace     = totalNumberOfBytes.QuadPart;
+   const unsigned long long availableSpace = freeBytesAvailable.QuadPart;
+   const unsigned long long freeSpace      = totalNumberOfFreeBytes.QuadPart;
+#endif
+
+   const unsigned long long usedSpace      = totalSpace - freeSpace;
    const double usagePercentage = (totalSpace > 0) ?
       (100.0 * (double)(totalSpace - availableSpace) / (double)totalSpace) : 0.0;
 
@@ -1771,6 +1828,7 @@ static void obtainStorageInformation(struct SystemInfo* systemInfo)
 static void obtainNetworkInformation(struct SystemInfo* systemInfo,
                                      const bool         filterLocalScope)
 {
+#if !defined(_WIN32)
    // ====== Query available interfaces and their addresses =================
    struct ifaddrs* ifaddr;
    if(getifaddrs(&ifaddr) == -1) {
@@ -1954,6 +2012,10 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
    systemInfoAddString(systemInfo, "netif_list", buffer);
 
    freeifaddrs(ifaddr);
+
+#else
+#warning FIXME! obtainNetworkInformation() for Windows!
+#endif
 }
 
 
