@@ -1846,11 +1846,11 @@ static void obtainStorageInformation(struct SystemInfo* systemInfo)
 }
 
 
-// ##### Obtain network information #########################################
+#if !defined(_WIN32)
+// ##### Obtain network information on Unix systems #########################
 static void obtainNetworkInformation(struct SystemInfo* systemInfo,
                                      const bool         filterLocalScope)
 {
-#if !defined(_WIN32)
    // ====== Query available interfaces and their addresses =================
    struct ifaddrs* ifaddr;
    if(getifaddrs(&ifaddr) == -1) {
@@ -2034,11 +2034,189 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
    systemInfoAddString(systemInfo, "netif_list", buffer);
 
    freeifaddrs(ifaddr);
+}
+
 
 #else
-#warning FIXME! obtainNetworkInformation() for Windows!
-#endif
+// ##### Obtain network information on Windows systems ######################
+static void obtainNetworkInformation(struct SystemInfo* systemInfo,
+                                     const bool         filterLocalScope)
+{
+   ULONG outBufLen = 15360;
+   PIP_ADAPTER_ADDRESSES pAddresses = (IP_ADAPTER_ADDRESSES*)malloc(outBufLen);
+   if(pAddresses == nullptr) {
+      return;
+   }
+
+   DWORD dwRetVal = GetAdaptersAddresses(AF_UNSPEC,
+                                         GAA_FLAG_INCLUDE_PREFIX,
+                                         nullptr,
+                                         pAddresses,
+                                         &outBufLen);
+   if(dwRetVal == ERROR_BUFFER_OVERFLOW) {
+      free(pAddresses);
+      pAddresses = (IP_ADAPTER_ADDRESSES*)malloc(outBufLen);
+      if(pAddresses == nullptr) {
+         return;
+      }
+      dwRetVal = GetAdaptersAddresses(AF_UNSPEC,
+                                      GAA_FLAG_INCLUDE_PREFIX,
+                                      nullptr,
+                                      pAddresses,
+                                      &outBufLen);
+   }
+
+   if(dwRetVal != NO_ERROR) {
+      free(pAddresses);
+      return;
+   }
+
+   // ====== Count adapters =================================================
+   unsigned int adapterCount = 0;
+   for(PIP_ADAPTER_ADDRESSES pAdapter = pAddresses; pAdapter != nullptr; pAdapter = pAdapter->Next) {
+      adapterCount++;
+   }
+
+   // ====== Sort adapter pointers by IfIndex ===============================
+   PIP_ADAPTER_ADDRESSES* adapterArray =
+      (PIP_ADAPTER_ADDRESSES*)malloc(adapterCount * sizeof(PIP_ADAPTER_ADDRESSES));
+   if(adapterArray == nullptr) {
+      free(pAddresses);
+      return;
+   }
+
+   unsigned int idx = 0;
+   for(PIP_ADAPTER_ADDRESSES pAdapter = pAddresses; pAdapter != nullptr; pAdapter = pAdapter->Next) {
+      adapterArray[idx++] = pAdapter;
+   }
+
+   for(unsigned int i = 0; i < adapterCount; i++) {
+      for(unsigned int j = i + 1; j < adapterCount; j++) {
+         const DWORD idx1 = adapterArray[i]->IfIndex ? adapterArray[i]->IfIndex : adapterArray[i]->Ipv6IfIndex;
+         const DWORD idx2 = adapterArray[j]->IfIndex ? adapterArray[j]->IfIndex : adapterArray[j]->Ipv6IfIndex;
+         if(idx1 > idx2) {
+            PIP_ADAPTER_ADDRESSES tmp = adapterArray[i];
+            adapterArray[i]           = adapterArray[j];
+            adapterArray[j]           = tmp;
+         }
+      }
+   }
+
+   // ====== Iterate over sorted adapters ===================================
+   char         netifListBuffer[1024] = { 0 };
+   unsigned int netifListOffset       = 0;
+   for(unsigned int i = 0; i < adapterCount; i++) {
+      PIP_ADAPTER_ADDRESSES pAdapter = adapterArray[i];
+      const DWORD ifIndex = pAdapter->IfIndex ? pAdapter->IfIndex : pAdapter->Ipv6IfIndex;
+      if(ifIndex == 0) {
+         continue;
+      }
+
+      // Filter loopback adapters if filterLocalScope is enabled
+      if(filterLocalScope && (pAdapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK)) {
+         continue;
+      }
+
+      // Convert FriendlyName (WCHAR*) to UTF-8
+      char friendlyName[256] = { 0 };
+      if(pAdapter->FriendlyName != nullptr) {
+         WideCharToMultiByte(CP_UTF8, 0, pAdapter->FriendlyName, -1,
+                             friendlyName, sizeof(friendlyName), nullptr, nullptr);
+      }
+      if(friendlyName[0] == 0x00 && pAdapter->AdapterName != nullptr) {
+         strlcpy(friendlyName, pAdapter->AdapterName, sizeof(friendlyName));
+      }
+
+      // Map adapter operational status to POSIX-compatible flags
+      unsigned int flags = 0;
+      if(pAdapter->OperStatus == IfOperStatusUp) {
+         flags |= 0x1;   // IFF_UP
+         flags |= 0x40;  // IFF_RUNNING
+      }
+      if(pAdapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK) {
+         flags |= 0x8;   // IFF_LOOPBACK
+      }
+      if((pAdapter->IfType == IF_TYPE_PPP) || (pAdapter->IfType == IF_TYPE_TUNNEL)) {
+         flags |= 0x10;  // IFF_POINTOPOINT
+      }
+
+      char* ipv4List = nullptr;
+      char* ipv6List = nullptr;
+
+      // Extract IP addresses
+      for(PIP_ADAPTER_UNICAST_ADDRESS pUnicast = pAdapter->FirstUnicastAddress;
+          pUnicast != nullptr;
+          pUnicast = pUnicast->Next) {
+
+         if(pUnicast->Address.lpSockaddr == nullptr) {
+            continue;
+         }
+
+         const struct sockaddr* sa = pUnicast->Address.lpSockaddr;
+         const unsigned int prefixLen = (unsigned int)pUnicast->OnLinkPrefixLength;
+
+         if(sa->sa_family == AF_INET) {
+            const struct sockaddr_in* sin = (const struct sockaddr_in*)sa;
+            if(filterLocalScope && (ntohl(sin->sin_addr.s_addr) == INADDR_LOOPBACK)) {
+               continue;
+            }
+            const char* addrStr = formatAddress(sa, prefixLen);
+            ipv4List            = strdup_concat(ipv4List, addrStr);
+         }
+         else if(sa->sa_family == AF_INET6) {
+            const struct sockaddr_in6* sin6 = (const struct sockaddr_in6*)sa;
+            if(filterLocalScope &&
+               (IN6_IS_ADDR_LOOPBACK(&sin6->sin6_addr) || IN6_IS_ADDR_LINKLOCAL(&sin6->sin6_addr))) {
+               continue;
+            }
+            const char* addrStr = formatAddress(sa, prefixLen);
+            ipv6List            = strdup_concat(ipv6List, addrStr);
+         }
+      }
+
+      // Format MAC Address
+      char macBuf[128] = { 0 };
+      if(pAdapter->PhysicalAddressLength > 0) {
+         unsigned int macOffset = 0;
+         for(DWORD k = 0; k < pAdapter->PhysicalAddressLength; k++) {
+            if((size_t)macOffset < sizeof(macBuf)) {
+               int result = snprintf(macBuf + macOffset, sizeof(macBuf) - macOffset,
+                                     "%s%02x", (k > 0) ? ":" : "", pAdapter->PhysicalAddress[k]);
+               if(result > 0) macOffset += (unsigned int)result;
+            }
+         }
+      }
+
+      // Store interface information into SystemInfo tree
+      systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_name", ifIndex), friendlyName);
+      systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_flags", ifIndex), formatFlags(flags));
+      if(macBuf[0] != 0x00) {
+         systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_mac", ifIndex), macBuf);
+      }
+      if(ipv4List != nullptr) {
+         systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_ipv4", ifIndex), ipv4List);
+         free(ipv4List);
+      }
+      if(ipv6List != nullptr) {
+         systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_ipv6", ifIndex), ipv6List);
+         free(ipv6List);
+      }
+
+      // Append interface index to netif_list
+      if((size_t)netifListOffset < sizeof(netifListBuffer)) {
+         int result = snprintf(netifListBuffer + netifListOffset,
+                               sizeof(netifListBuffer) - netifListOffset,
+                               (netifListOffset > 0) ? " %u" : "%u", ifIndex);
+         if(result > 0) netifListOffset += (unsigned int)result;
+      }
+   }
+
+   systemInfoAddString(systemInfo, "netif_list", netifListBuffer);
+
+   free(adapterArray);
+   free(pAddresses);
 }
+#endif
 
 
 // ###### Obtain SystemInfo #################################################
