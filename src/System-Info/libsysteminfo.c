@@ -111,6 +111,7 @@
 #elif defined(_WIN32)
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <wtsapi32.h>
 #include <windows.h>
 #include <iphlpapi.h>
 #include <tlhelp32.h>
@@ -119,6 +120,7 @@
 #define strdup(s) _strdup(s)
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "iphlpapi.lib")
+#pragma comment(lib, "wtsapi32.lib")
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
@@ -998,8 +1000,32 @@ static unsigned int getUserCount(void)
    }
 
 #elif defined(_WIN32)
-#warning FIXME! getUserCount() for Windows!
-   count = 1;
+   // ====== Windows: enumerate Terminal Services sessions ==================
+   PWTS_SESSION_INFOA pSessionInfo = nullptr;
+   DWORD              dwCount      = 0;
+   if(WTSEnumerateSessionsA(WTS_CURRENT_SERVER_HANDLE, 0, 1, &pSessionInfo, &dwCount)) {
+      for(DWORD i = 0; i < dwCount; i++) {
+         // Only inspect active or connected user sessions:
+         if((pSessionInfo[i].State == WTSActive) || (pSessionInfo[i].State == WTSConnected)) {
+            LPSTR pUserName = nullptr;
+            DWORD bytesReturned = 0;
+            if(WTSQuerySessionInformationA(WTS_CURRENT_SERVER_HANDLE,
+                                           pSessionInfo[i].SessionId,
+                                           WTSUserName,
+                                           &pUserName,
+                                           &bytesReturned)) {
+               if( (pUserName) && (pUserName[0] != 0x00) ) {
+                  count++;
+               }
+               WTSFreeMemory(pUserName);
+            }
+         }
+      }
+      WTSFreeMemory(pSessionInfo);
+   }
+   if(count == 0) {
+      count = 1;
+   }
 
 #else
    // ====== Fallback =======================================================
@@ -1812,10 +1838,10 @@ static void obtainStorageInformation(struct SystemInfo* systemInfo)
 #if !defined(_WIN32)
    getDiskUsage(systemInfo, "/home", "home");
    // getDiskUsage(systemInfo, "/boot/efi", "efi");
-   systemInfoAddString(systemInfo, "disk_list", "root home tmp");
+   systemInfoAddString(systemInfo, "disk_list", "root tmp home");
 #else
    getDiskUsage(systemInfo, "/c", "c");
-   systemInfoAddString(systemInfo, "disk_list", "root c");
+   systemInfoAddString(systemInfo, "disk_list", "root tmp c");
 #endif
 }
 
