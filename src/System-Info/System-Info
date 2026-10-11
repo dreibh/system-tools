@@ -289,17 +289,19 @@ function print-system-information ()
        )"
 
    # ------ Load ------------------------------------------------------------
-   # xgettext: c-format,sh-printf-format
-   loadFormat="$(gettext "%1.1f %% / %1.1f %% / %1.1f %%")"
+   if [[ ! "${UNAME}" =~ ^(CYGWIN.*|MINGW.*|MSYS.*|Windows_NT)$ ]] ; then
+      # xgettext: c-format,sh-printf-format
+      loadFormat="$(gettext "%1.1f %% / %1.1f %% / %1.1f %%")"
 
-   # shellcheck disable=SC2059
-   add-table-row \
-      "$(gettext "Load (1/5/15 min):")" \
-      "$(printf "${loadFormat}\n" \
-         "${system_load_avg1min}" \
-         "${system_load_avg5min}" \
-         "${system_load_avg15min}"
-       )"
+      # shellcheck disable=SC2059
+      add-table-row \
+         "$(gettext "Load (1/5/15 min):")" \
+         "$(printf "${loadFormat}\n" \
+            "${system_load_avg1min}" \
+            "${system_load_avg5min}" \
+            "${system_load_avg15min}"
+         )"
+   fi
 
    # ------ Battery ---------------------------------------------------------
    if [ "${battery_list}" != "" ] ; then
