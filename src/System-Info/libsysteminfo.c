@@ -115,12 +115,14 @@
 #include <windows.h>
 #include <iphlpapi.h>
 #include <tlhelp32.h>
+#include <psapi.h>
 #include <io.h>
 #include <process.h>
 #define strdup(s) _strdup(s)
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "wtsapi32.lib")
+#pragma comment(lib, "psapi.lib")
 #if !defined(IFF_POINTOPOINT)
 #define IFF_POINTOPOINT 0x10
 #endif
@@ -1464,6 +1466,28 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
 }
 
 
+#if defined(_WIN32)
+struct WindowsSwapContext {
+   unsigned long long total;
+   unsigned long long used;
+   unsigned long long pageSize;
+};
+
+static BOOL CALLBACK enumPageFilesCallback(PVOID                       pContext,
+                                           PENUM_PAGE_FILE_INFORMATION pCasInfo,
+                                           LPCSTR                      lpFilename)
+{
+   (void)lpFilename;
+   struct WindowsSwapContext* ctx = (struct WindowsSwapContext*)pContext;
+   if(pCasInfo != nullptr) {
+      ctx->total += (unsigned long long)pCasInfo->TotalSize * ctx->pageSize;
+      ctx->used  += (unsigned long long)pCasInfo->TotalInUse * ctx->pageSize;
+   }
+   return true;
+}
+#endif
+
+
 // ##### Obtain memory information ##########################################
 static void obtainMemoryInformation(struct SystemInfo* systemInfo)
 {
@@ -1743,7 +1767,7 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
       swapAvailable = swapUsageStatistics.xsu_avail;
    }
 
-   // ====== Apple: query memory and swap information via Windows API =======
+   // ====== Windows: query memory and swap information via Windows API =====
 #elif defined(_WIN32)
    MEMORYSTATUSEX statex;
    statex.dwLength = sizeof(statex);
@@ -1752,14 +1776,14 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
       memoryAvailable = statex.ullAvailPhys;
       memoryUsed      = memoryTotal - memoryAvailable;
 
-      if(statex.ullTotalPageFile > memoryTotal) {
-         swapTotal = statex.ullTotalPageFile - memoryTotal;
-         if(statex.ullAvailPageFile > memoryAvailable) {
-            swapAvailable = statex.ullAvailPageFile - memoryAvailable;
-         } else {
-            swapAvailable = 0;
-         }
-         swapUsed = (swapTotal >= swapAvailable) ? (swapTotal - swapAvailable) : 0;
+      SYSTEM_INFO sysInfo;
+      GetSystemInfo(&sysInfo);
+      struct WindowsSwapContext swapCtx =
+         { 0, 0, sysInfo.dwPageSize ? sysInfo.dwPageSize : 4096 };
+      if(EnumPageFilesA(enumPageFilesCallback, &swapCtx) && (swapCtx.total > 0)) {
+         swapTotal     = swapCtx.total;
+         swapUsed      = swapCtx.used;
+         swapAvailable = (swapTotal >= swapUsed) ? (swapTotal - swapUsed) : 0;
       }
    }
 #endif

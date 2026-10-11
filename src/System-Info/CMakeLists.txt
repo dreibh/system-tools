@@ -57,7 +57,7 @@ IF (WITH_GET_SYSTEM_INFO)
                          ${GETOPT_LIBRARY}
                          ${KSTAT_LIBRARY})
    IF(WIN32)
-      TARGET_LINK_LIBRARIES(get-system-info PRIVATE ws2_32 iphlpapi wtsapi32)
+      TARGET_LINK_LIBRARIES(get-system-info PRIVATE ws2_32 iphlpapi wtsapi32 psapi)
    ENDIF()
    IF(NOT MSVC)
       TARGET_COMPILE_OPTIONS(get-system-info PRIVATE -Wall -Wextra -Wpedantic -Wsign-conversion)
