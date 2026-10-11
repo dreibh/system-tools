@@ -105,9 +105,20 @@
 #include <net/if_dl.h>
 #include <sys/sysctl.h>
 #include <utmpx.h>
+#elif defined(_WIN32)
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windows.h>
+#include <iphlpapi.h>
+#include <tlhelp32.h>
+#include <io.h>
+#include <process.h>
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "iphlpapi.lib")
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
+
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #else
@@ -638,6 +649,7 @@ static void obtainHostnameInformation(struct SystemInfo* systemInfo)
 // ###### Obtain kernel information #########################################
 static void obtainKernelInformation(struct SystemInfo* systemInfo)
 {
+#if !defined(_WIN32)
    struct utsname kernelInfo;
    if(uname(&kernelInfo) >= 0) {
       systemInfoAddString(systemInfo, "system_sysname",  kernelInfo.sysname);
@@ -646,11 +658,53 @@ static void obtainKernelInformation(struct SystemInfo* systemInfo)
       systemInfoAddString(systemInfo, "system_version",  kernelInfo.version);
       systemInfoAddString(systemInfo, "system_machine",  kernelInfo.machine);
    }
+
+#else
+   systemInfoAddString(systemInfo, "system_sysname", "Windows");
+
+   char        nodename[256] = "localhost";
+   const DWORD size          = sizeof(nodename);
+   GetComputerNameA(nodename, &size);
+   systemInfoAddString(systemInfo, "system_nodename", nodename);
+
+   char    release[64]  = "10.0";
+   char    version[128] = "Windows";
+   HMODULE hNtdll       = GetModuleHandleA("ntdll.dll");
+   if(hNtdll) {
+      typedef LONG(WINAPI *fnRtlGetVersion)(PRTL_OSVERSIONINFOW);
+      fnRtlGetVersion pRtlGetVersion = (fnRtlGetVersion)GetProcAddress(hNtdll, "RtlGetVersion");
+      if(pRtlGetVersion) {
+         RTL_OSVERSIONINFOW rovi = { 0 };
+         rovi.dwOSVersionInfoSize = sizeof(rovi);
+         if(pRtlGetVersion(&rovi) == 0) {
+            snprintf(release, sizeof(release), "%lu.%lu", rovi.dwMajorVersion, rovi.dwMinorVersion);
+            snprintf(version, sizeof(version), "Windows Build %lu", rovi.dwBuildNumber);
+         }
+      }
+   }
+
+   SYSTEM_INFO sysInfo;
+   GetNativeSystemInfo(&sysInfo);
+   const char* machine = "x86";
+   if(sysInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+      machine = "x86_64";
+   }
+   else if(sysInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64) {
+      machine = "ARM64";
+   }
+   else if(sysInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM) {
+      machine = "ARM";
+   }
+
+   systemInfoAddString(systemInfo, "system_release", release);
+   systemInfoAddString(systemInfo, "system_version", version);
+   systemInfoAddString(systemInfo, "system_machine", machine);
+#endif
 }
 
 
-// ###### Obtain the system uptime ##########################################
-static bool obtainUptime(struct timespec* ts)
+// ###### Get the system uptime #############################################
+static bool getUptime(struct timespec* ts)
 {
 #if defined(__linux__)
    return clock_gettime(CLOCK_BOOTTIME, ts) == 0;
@@ -666,6 +720,12 @@ static bool obtainUptime(struct timespec* ts)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
 #elif defined(__APPLE__)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
+#if defined(_WIN32)
+   const ULONGLONG ms = GetTickCount64();
+   ts->tv_sec  = (time_t)(ms / 1000);
+   ts->tv_nsec = (long)((ms % 1000) * 1000000);
+   return true;
+#endif
 #else
 #error Missing case!
 #endif
@@ -677,7 +737,7 @@ static bool obtainUptime(struct timespec* ts)
 static void obtainUptimeInformation(struct SystemInfo* systemInfo)
 {
    struct timespec ts;
-   if(obtainUptime(&ts)) {
+   if(getUptime(&ts)) {
       const uint64_t     totalSecs = (uint64_t)ts.tv_sec;
       const unsigned int days      = (unsigned int)(totalSecs / 86400);
       const unsigned int hours     = (unsigned int)((totalSecs / 3600) % 24);
@@ -745,12 +805,12 @@ static bool queryFile(const char* file, char* result, size_t resultMaxSize)
 
 
 // ###### Obtain the number of processes on the system ######################
-static unsigned int obtainProcessCount(void)
+static unsigned int getProcessCount(void)
 {
    unsigned int count = 0;
 
 #if defined(__linux__) || defined(__sun__) || defined(__gnu_hurd__)
-   // ====== Linux: count processes in /proc ================================
+   // ====== Linux, Solaris, GNU Hurd: count processes in /proc =============
    struct dirent* dirEntry;
    DIR*           dir = opendir("/proc");
    if(dir != nullptr) {
@@ -831,6 +891,20 @@ static unsigned int obtainProcessCount(void)
       count = (unsigned int)bufferSize / sizeof(pid_t);
    }
 
+#elif defined(__WIN32)
+   // ====== Windows: query process information and count processes =========
+   HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+   if(hSnapshot != INVALID_HANDLE_VALUE) {
+      PROCESSENTRY32 pe32;
+      pe32.dwSize = sizeof(PROCESSENTRY32);
+      if(Process32First(hSnapshot, &pe32)) {
+         do {
+            count++;
+         } while (Process32Next(hSnapshot, &pe32));
+      }
+      CloseHandle(hSnapshot);
+   }
+
 #else
 #warning Using fallback solution for obtaining the process count!
    // ====== Fallback =======================================================
@@ -847,14 +921,14 @@ static unsigned int obtainProcessCount(void)
 
 
 // ###### Obtain the number of users on the system ##########################
-static unsigned int obtainUserCount(void)
+static unsigned int getUserCount(void)
 {
    // Count the number of user sessions, the same as "who | wc -l":
    unsigned int count = 0;
 
-   // ====== Use getutxent() to obtain and count the number of users ========
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
 #if defined(ENABLE_SYSTEMD)
+   // ====== With SystemD, obtain session information from SystemD ==========
    char** sessions = nullptr;
    int totalSessions = sd_get_sessions(&sessions);
    if(totalSessions < 0) {
@@ -875,7 +949,9 @@ static unsigned int obtainUserCount(void)
       free(sessions[i]);
    }
    free(sessions);
+
 #else
+   // ====== Without SystemD, use getutxent() obtain session information ====
    setutxent();
    struct utmpx* utx;
    while( (utx = getutxent()) != nullptr ) {
@@ -885,13 +961,14 @@ static unsigned int obtainUserCount(void)
    }
    endutxent();
 #endif
+
 #elif defined(__OpenBSD__)
    // ====== OpenBSD: read /var/run/utmp to obtain the number of users ======
    FILE* fh = fopen("/var/run/utmp", "r");
    if(fh != nullptr) {
       struct utmp ut;
       while(fread(&ut, sizeof(struct utmp), 1, fh) == 1) {
-         if(ut.ut_name[0] != '\0') {
+         if(ut.ut_name[0] != 0x00) {
             count++;
          }
       }
@@ -923,27 +1000,13 @@ static void obtainLoadInformation(struct SystemInfo* systemInfo)
    systemInfoAddUInt32(systemInfo, "system_pagesize", pageSize);
 
    // ====== Number of running processes and number of users ================
-   const unsigned int processCount = obtainProcessCount();
+   const unsigned int processCount = getProcessCount();
    systemInfoAddUInt32(systemInfo, "system_procs", processCount);
 
-   const unsigned int userCount = obtainUserCount();
+   const unsigned int userCount = getUserCount();
    systemInfoAddUInt32(systemInfo, "system_users", userCount);
 
-   // ====== Load averages ==================================================
-#if defined(__linux__)
-   struct sysinfo sysInfo;
-   if(sysinfo(&sysInfo) == 0) {
-      const double fFraction = 1.0 / (1 << SI_LOAD_SHIFT);
-      const double fPercent  = 100.0 * fFraction / cores;   // Percent of CPU
-      systemInfoAddDouble(systemInfo, "system_load_avg1min",     (double)sysInfo.loads[0] * fFraction, 6);
-      systemInfoAddDouble(systemInfo, "system_load_avg5min",     (double)sysInfo.loads[1] * fFraction, 6);
-      systemInfoAddDouble(systemInfo, "system_load_avg15min",    (double)sysInfo.loads[2] * fFraction, 6);
-      systemInfoAddDouble(systemInfo, "system_load_avg1minpct",  (double)sysInfo.loads[0] * fPercent, 4);
-      systemInfoAddDouble(systemInfo, "system_load_avg5minpct",  (double)sysInfo.loads[1] * fPercent, 4);
-      systemInfoAddDouble(systemInfo, "system_load_avg15minpct", (double)sysInfo.loads[2] * fPercent, 4);
-   }
-
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__) || defined(__gnu_hurd__)
+   // ====== Get load averages from getloadavg() ============================
    double loadavg[3];
    if(getloadavg(loadavg, 3) == 3) {
       const double fPercent = 100.0 / (double)cores;
@@ -954,10 +1017,6 @@ static void obtainLoadInformation(struct SystemInfo* systemInfo)
       systemInfoAddDouble(systemInfo, "system_load_avg5minpct",  loadavg[1] * fPercent, 4);
       systemInfoAddDouble(systemInfo, "system_load_avg15minpct", loadavg[2] * fPercent, 4);
    }
-
-#else
-#error Missing case!
-#endif
 }
 
 
@@ -991,7 +1050,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
    unsigned int       batteries    = 0;
    unsigned int       batteryIDs[maxBatteries];
 
-   // ====== Linux: Obtain battery status via /sys file system ==============
+   // ====== Linux: obtain battery status via /sys file system ==============
 #if defined(__linux__)
    for(unsigned int i = 0; i < maxBatteries; i++) {
       // ------ Obtain status of battery unit -------------------------------
@@ -1030,7 +1089,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
       }
    }
 
-   // ====== FreeBSD: Obtain battery status via ACPI device ioctls ==========
+   // ====== FreeBSD: obtain battery status via ACPI device ioctls ==========
 #elif defined(__FreeBSD__)
    int acpiFD = open("/dev/acpi", O_RDONLY);
    if(acpiFD >= 0) {
@@ -1077,7 +1136,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
       close(acpiFD);
    }
 
-   // ====== NetBSD: Obtain battery status via envsys =======================
+   // ====== NetBSD: obtain battery status via envsys =======================
 #elif defined(__NetBSD__)
    int sysmonFD = open("/dev/sysmon", O_RDONLY);
    if(sysmonFD >= 0) {
@@ -1165,7 +1224,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
       }
    }
 
-   // ====== OpenBSD: Obtain battery status via APM =========================
+   // ====== OpenBSD: obtain battery status via APM ioctl() =================
 #elif defined(__OpenBSD__)
    int apmFD = open("/dev/apm", O_RDONLY);
    if(apmFD >= 0) {
@@ -1199,7 +1258,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
       close(apmFD);
    }
 
-   // ====== Solaris: Obtain battery status via kstat =======================
+   // ====== Solaris: obtain battery status via kstat() =====================
 #elif defined(__sun__)
    kstat_ctl_t* kc = kstat_open();
    if(kc != nullptr) {
@@ -1293,20 +1352,42 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
 
    // ====== Apple: Obtain battery status via TBD ===========================
 #elif defined(__APPLE__)
-
 #warning FIXME! Battery status for Apple
+
+   // ====== Windows: Obtain battery status via Windows API =================
+#elif defined(__WIN32)
+   SYSTEM_POWER_STATUS sysStatus;
+   if (GetSystemPowerStatus(&sysStatus) && sysStatus.BatteryFlag != 255) {
+      unsigned int status = 0; // Unknown
+      if (sysStatus.ACLineStatus == 1) {
+         status = (sysStatus.BatteryLifePercent >= 100) ? 3 : 2; // Full / Charging
+      } else if (sysStatus.ACLineStatus == 0) {
+         status = 4; // Discharging
+      }
+
+      unsigned int capacity = sysStatus.BatteryLifePercent;
+      if (capacity > 100) capacity = 100;
+
+      systemInfoAddUInt32(systemInfo, "battery_0_status", status);
+      systemInfoAddUInt32(systemInfo, "battery_0_capacity", capacity);
+      systemInfoAddString(systemInfo, "battery_list", "0");
+   } else {
+      systemInfoAddString(systemInfo, "battery_list", "");
+   }
 
 #else
 #warning Missing case!
 #endif
 
+   // ====== Add battery information ========================================
    char         buffer[8 * maxBatteries];
    unsigned int offset = 0;
    for(unsigned int i = 0; i < batteries; i++) {
       if((size_t)offset >= sizeof(buffer)) {
          break;
       }
-      int result = snprintf(buffer + offset, sizeof(buffer) - offset, (i > 0) ? " %u" : "%u", batteryIDs[i]);
+      int result = snprintf(buffer + offset, sizeof(buffer) - offset,
+                            (i > 0) ? " %u" : "%u", batteryIDs[i]);
       if(result > 0) offset += (unsigned int)result;
    }
    systemInfoAddString(systemInfo, "battery_list", buffer);
@@ -1323,8 +1404,8 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
    unsigned long long swapAvailable   = 0;
    unsigned long long swapUsed        = 0;
 
+   // ====== Linux, GNU Hurd: query memory information via /proc ============
 #if defined(__linux__) || defined(__gnu_hurd__)
-   // ====== Query memory information via /proc =============================
    FILE* fh = fopen("/proc/meminfo", "r");
    if(fh != nullptr) {
       char line[256];
@@ -1362,8 +1443,8 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
    swapAvailable   *= 1024;
    swapUsed = swapTotal - swapAvailable;
 
+   // ====== *BSD: query memory information via sysctl() ====================
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
-   // ====== Query system information via sysctl ============================
    // Documentation: https://man.freebsd.org/cgi/man.cgi?query=sysctl&sektion=3
 
    size_t parameterLength;
@@ -1373,7 +1454,8 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
    const unsigned int mibHwPageSizeSize = sizeof(mibHwPageSize) / sizeof(mibHwPageSize[0]);
    unsigned int       pageSize;
    parameterLength = sizeof(pageSize);
-   if(sysctl(mibHwPageSize, mibHwPageSizeSize, &pageSize, &parameterLength, nullptr, 0) != 0) {
+   if(sysctl(mibHwPageSize, mibHwPageSizeSize, &pageSize,
+             &parameterLength, nullptr, 0) != 0) {
       perror("sysctl(hw.pagesize)");
       return;
    }
@@ -1386,9 +1468,11 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
    uint64_t           physMem;
    const int          mibHwPhysMem[2]  = { CTL_HW, HW_PHYSMEM64 };
 #endif
-   const unsigned int mibHwPhysMemSize = sizeof(mibHwPhysMem) / sizeof(mibHwPhysMem[0]);
+   const unsigned int mibHwPhysMemSize =
+      sizeof(mibHwPhysMem) / sizeof(mibHwPhysMem[0]);
    parameterLength = sizeof(physMem);
-   if(sysctl(mibHwPhysMem, mibHwPhysMemSize, &physMem, &parameterLength, nullptr, 0) != 0) {
+   if(sysctl(mibHwPhysMem, mibHwPhysMemSize, &physMem,
+             &parameterLength, nullptr, 0) != 0) {
       perror("sysctl(hw.physmem)");
       return;
    }
@@ -1399,14 +1483,16 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
 #if defined(__FreeBSD__)
    // ------ Query vm.stats.vm.v_inactive_count -----------------------------
    parameterLength = sizeof(vInactiveCount);
-   if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount, &parameterLength, nullptr, 0) != 0) {
+   if(sysctlbyname("vm.stats.vm.v_inactive_count", &vInactiveCount,
+                   &parameterLength, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_inactive_count)");
       return;
    }
 
    // ------ Query vm.stats.vm.v_free_count -----------------------------
    parameterLength = sizeof(vFreeCount);
-   if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount, &parameterLength, nullptr, 0) != 0) {
+   if(sysctlbyname("vm.stats.vm.v_free_count", &vFreeCount,
+                   &parameterLength, nullptr, 0) != 0) {
       perror("sysctl(vm.stats.vm.v_free_count)");
       return;
    }
@@ -1451,8 +1537,8 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
       memoryUsed      = 0;
    }
 
+   // ====== Solaris: query memory information via sysctl() =================
 #elif defined(__sun__)
-   // ====== Query physical memory via sysconf ==============================
    const long pageSize = sysconf(_SC_PAGESIZE);
    if(pageSize > 0) {
       const long physPages   = sysconf(_SC_PHYS_PAGES);
@@ -1470,7 +1556,7 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
    }
 #endif
 
-   // ------ Get information about swap -------------------------------------
+   // ====== FreeBSD: query swap information via sysctl() ===================
 #if defined(__FreeBSD__)
    // Based on: https://cgit.freebsd.org/src/tree/sbin/swapon/swapon.c
    int    mib[16];
@@ -1495,10 +1581,12 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
       }
    }
 
+   // ====== NetBSD, OpenBSD: query swap information via swapctl() ==========
 #elif defined(__NetBSD__) || defined(__OpenBSD__)
    const int numberOfSwapDevices = swapctl(SWAP_NSWAP, nullptr, 0);
    if(numberOfSwapDevices > 0) {
-      struct swapent* swapDeviceArray = malloc((unsigned int)numberOfSwapDevices * sizeof(struct swapent));
+      struct swapent* swapDeviceArray =
+         (struct swapent*)malloc((unsigned int)numberOfSwapDevices * sizeof(struct swapent));
       if(swapDeviceArray) {
          int swapRecords = swapctl(SWAP_STATS, swapDeviceArray, numberOfSwapDevices);
          if(swapRecords > 0) {
@@ -1518,12 +1606,13 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
       }
    }
 
+   // ====== Solaris: query swap information via swapctl() ==================
 #elif defined(__sun__)
-   // ====== Query physical swap space via swapctl(SC_LIST) =================
    if(pageSize > 0) {
       const int numSwap = swapctl(SC_GETNSWP, nullptr);
       if(numSwap > 0) {
-         struct swaptable* swapTable = (struct swaptable*)malloc(sizeof(int) + (size_t)numSwap * sizeof(struct swapent));
+         struct swaptable* swapTable =
+            (struct swaptable*)malloc(sizeof(int) + (size_t)numSwap * sizeof(struct swapent));
          if(swapTable != nullptr) {
             char pathBuffer[numSwap][MAXPATHLEN];
             swapTable->swt_n = numSwap;
@@ -1547,9 +1636,8 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
       }
    }
 
+   // ====== Apple: query memory and swap information via sysctl() ==========
 #elif defined(__APPLE__)
-   // ====== Query system information via sysctl ============================
-
    // ------ Query hw.memsize -----------------------------------------------
    int64_t memSize;
    size_t len = sizeof(memSize);
@@ -1578,27 +1666,34 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
    // ------ Query swap usage -----------------------------------------------
    struct xsw_usage swapUsageStatistics;
    size_t swapUsageStatisticsSize = sizeof(swapUsageStatistics);
-   if(sysctlbyname("vm.swapusage", &swapUsageStatistics, &swapUsageStatisticsSize, nullptr, 0) == 0) {
+   if(sysctlbyname("vm.swapusage", &swapUsageStatistics,
+                   &swapUsageStatisticsSize, nullptr, 0) == 0) {
       swapTotal     = swapUsageStatistics.xsu_total;
       swapUsed      = swapUsageStatistics.xsu_used;
       swapAvailable = swapUsageStatistics.xsu_avail;
    }
 #endif
 
+   // ====== Add memory information =========================================
    systemInfoAddUInt64(systemInfo, "system_mem_total", memoryTotal);
    systemInfoAddUInt64(systemInfo, "system_mem_used",  memoryUsed);
    systemInfoAddUInt64(systemInfo, "system_mem_free",  memoryAvailable);
    if(memoryTotal > 0) {
-      systemInfoAddDouble(systemInfo, "system_mem_usedpct", 100.0 * memoryUsed / memoryTotal, 1);
-      systemInfoAddDouble(systemInfo, "system_mem_freepct", 100.0 * memoryAvailable / memoryTotal, 1);
+      systemInfoAddDouble(systemInfo, "system_mem_usedpct",
+                          100.0 * memoryUsed / memoryTotal, 1);
+      systemInfoAddDouble(systemInfo, "system_mem_freepct",
+                          100.0 * memoryAvailable / memoryTotal, 1);
    }
 
+   // ====== Add swap information ===========================================
    if(swapTotal > 0) {
       systemInfoAddUInt64(systemInfo, "system_swap_total", swapTotal);
       systemInfoAddUInt64(systemInfo, "system_swap_used",  swapUsed);
       systemInfoAddUInt64(systemInfo, "system_swap_free",  swapAvailable);
-      systemInfoAddDouble(systemInfo, "system_swap_usedpct", 100.0 * swapUsed / swapTotal, 1);
-      systemInfoAddDouble(systemInfo, "system_swap_freepct", 100.0 * swapAvailable / swapTotal, 1);
+      systemInfoAddDouble(systemInfo, "system_swap_usedpct",
+                          100.0 * swapUsed / swapTotal, 1);
+      systemInfoAddDouble(systemInfo, "system_swap_freepct",
+                          100.0 * swapAvailable / swapTotal, 1);
    }
    else {
       systemInfoAddUInt64(systemInfo, "system_swap_total", 0);
@@ -1607,8 +1702,8 @@ static void obtainMemoryInformation(struct SystemInfo* systemInfo)
 
 
 // ###### Obtain disk usage statistics ######################################
-static bool obtainDiskUsage(struct SystemInfo* systemInfo,
-                            const char* mountPoint, const char* label)
+static bool getDiskUsage(struct SystemInfo* systemInfo,
+                         const char* mountPoint, const char* label)
 {
    // ====== Obtain file system status of mount point =======================
    struct statvfs status;
@@ -1640,11 +1735,16 @@ static bool obtainDiskUsage(struct SystemInfo* systemInfo,
 // ##### Obtain disk information ############################################
 static void obtainStorageInformation(struct SystemInfo* systemInfo)
 {
-   obtainDiskUsage(systemInfo, "/",     "root");
-   obtainDiskUsage(systemInfo, "/home", "home");
-   obtainDiskUsage(systemInfo, "/tmp",  "tmp");
-   // obtainDiskUsage(systemInfo, "/boot/efi", "efi");
+   getDiskUsage(systemInfo, "/",     "root");
+   getDiskUsage(systemInfo, "/tmp",  "tmp");
+#if !defined(_WIN32)
+   getDiskUsage(systemInfo, "/home", "home");
+   // getDiskUsage(systemInfo, "/boot/efi", "efi");
    systemInfoAddString(systemInfo, "disk_list", "root home tmp");
+#else
+   obtainDiskUsage(systemInfo, "C:\\", "root");
+   systemInfoAddString(systemInfo, "disk_list", "root");
+#endif
 }
 
 
