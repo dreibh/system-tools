@@ -608,6 +608,8 @@ static char* formatAddress(const struct sockaddr* address,
          if(result > 0) offset += (unsigned int)result;
       }
    }
+#elif defined(_WIN32)
+// Not used for MAC address formatting!
 #else
 #error Missing case!
 #endif
@@ -2065,7 +2067,6 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
                                       pAddresses,
                                       &outBufLen);
    }
-
    if(dwRetVal != NO_ERROR) {
       free(pAddresses);
       return;
@@ -2112,12 +2113,12 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
          continue;
       }
 
-      // Filter loopback adapters if filterLocalScope is enabled
+      // Filter loopback adapters if filterLocalScope is enabled:
       if(filterLocalScope && (pAdapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK)) {
          continue;
       }
 
-      // Convert FriendlyName (WCHAR*) to UTF-8
+      // Convert FriendlyName (WCHAR*) to UTF-8:
       char friendlyName[256] = { 0 };
       if(pAdapter->FriendlyName != nullptr) {
          WideCharToMultiByte(CP_UTF8, 0, pAdapter->FriendlyName, -1,
@@ -2127,7 +2128,7 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
          strlcpy(friendlyName, pAdapter->AdapterName, sizeof(friendlyName));
       }
 
-      // Map adapter operational status to POSIX-compatible flags
+      // Map adapter operational status to POSIX-compatible flags:
       unsigned int flags = 0;
       if(pAdapter->OperStatus == IfOperStatusUp) {
          flags |= 0x1;   // IFF_UP
@@ -2143,7 +2144,7 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
       char* ipv4List = nullptr;
       char* ipv6List = nullptr;
 
-      // Extract IP addresses
+      // ------ Extract IP addresses ----------------------------------------
       for(PIP_ADAPTER_UNICAST_ADDRESS pUnicast = pAdapter->FirstUnicastAddress;
           pUnicast != nullptr;
           pUnicast = pUnicast->Next) {
@@ -2174,7 +2175,7 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
          }
       }
 
-      // Format MAC Address
+      // ------ Format MAC address ------------------------------------------
       char macBuf[128] = { 0 };
       if(pAdapter->PhysicalAddressLength > 0) {
          unsigned int macOffset = 0;
@@ -2187,7 +2188,7 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
          }
       }
 
-      // Store interface information into SystemInfo tree
+      // ------ Store interface information into SystemInfo tree ------------
       systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_name", ifIndex), friendlyName);
       systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_flags", ifIndex), formatFlags(flags));
       if(macBuf[0] != 0x00) {
@@ -2202,7 +2203,7 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
          free(ipv6List);
       }
 
-      // Append interface index to netif_list
+      // ------ Append interface index to netif_list ------------------------
       if((size_t)netifListOffset < sizeof(netifListBuffer)) {
          int result = snprintf(netifListBuffer + netifListOffset,
                                sizeof(netifListBuffer) - netifListOffset,

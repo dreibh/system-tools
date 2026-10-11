@@ -146,12 +146,6 @@ function print-system-information ()
    local testSystemInfoInput="$1"
 
    # ====== Obtain system information =======================================
-   if ! command -v get-system-info >/dev/null ; then
-      gettext >&2 \
-         "ERROR: get-system-info not found in search path!"
-      echo >&2
-      exit 1
-   fi
 
    # Initialise variables with defaults:
    hostname_long=""
@@ -182,6 +176,12 @@ function print-system-information ()
 
    # Set the variables:
    if [ "${testSystemInfoInput}" == "" ] ; then
+      if ! command -v get-system-info >/dev/null ; then
+         gettext >&2 \
+            "ERROR: get-system-info not found in search path!"
+         echo >&2
+         exit 1
+      fi
       eval "$(get-system-info)"
    else
       eval "$(cat "${testSystemInfoInput}")"
