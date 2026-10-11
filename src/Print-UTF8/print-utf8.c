@@ -53,6 +53,7 @@
 #include <windows.h>
 #include <io.h>
 #include <shellapi.h>
+#define strdup(s) _strdup(s)
 #endif
 #if defined(__sun__)
 #include <unicode/uchar.h>
@@ -633,13 +634,7 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
    size_t       maxLength = 0;
    while( (s = fgets((char*)&buffer, sizeof(buffer), stdin)) != nullptr ) {
       buffer[strcspn(buffer, "\r\n")] = 0x00;   // Remove newline
-      lineArray[lines] =
-#if !defined(_WIN32)
-      strdup(s)
-#else
-      _strdup(s)
-#endif
-      ;
+      lineArray[lines] = strdup(s);
       if(lineArray[lines] == nullptr) {
          exit(1);
       }

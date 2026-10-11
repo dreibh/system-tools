@@ -32,10 +32,7 @@
 #include <ctype.h>
 #include <fcntl.h>
 #include <getopt.h>
-#include <ifaddrs.h>
 #include <locale.h>
-#include <netdb.h>
-#include <netinet/in.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -44,24 +41,17 @@
 #include <string.h>
 #include <time.h>
 #if !defined(_WIN32)
+#include <ifaddrs.h>
+#include <netdb.h>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <net/if.h>
+#include <netinet/in.h>
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/statvfs.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
-#elif defined(_WIN32)
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <windows.h>
-#include <iphlpapi.h>
-#include <tlhelp32.h>
-#include <io.h>
-#include <process.h>
-#pragma comment(lib, "ws2_32.lib")
-#pragma comment(lib, "iphlpapi.lib")
 #endif
 
 #if defined(__linux__)
@@ -118,6 +108,17 @@
 #include <net/if_dl.h>
 #include <sys/sysctl.h>
 #include <utmpx.h>
+#elif defined(_WIN32)
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <iphlpapi.h>
+#include <tlhelp32.h>
+#include <io.h>
+#include <process.h>
+#define strdup(s) _strdup(s)
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "iphlpapi.lib")
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
