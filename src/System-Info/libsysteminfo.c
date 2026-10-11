@@ -121,6 +121,12 @@
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "wtsapi32.lib")
+#if !defined(IFF_POINTOPOINT)
+#define IFF_POINTOPOINT 0x10
+#endif
+#if !defined(IFF_RUNNING)
+#define IFF_RUNNING     0x40
+#endif
 #else
 #error Unknown system! The system-specific code parts need an update!
 #endif
