@@ -133,7 +133,17 @@ fi
 
 
 # ====== Print SSH key fingerprints =========================================
-if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
+sshDirectory=""
+if [[ "${UNAME}" =~ ^(CYGWIN.*|MINGW.*|MSYS.*|Windows_NT)$ ]] ; then
+   if [ -d "${PROGRAMDATA:-/c/ProgramData}/ssh" ] ; then
+      sshDirectory="${PROGRAMDATA:-/c/ProgramData}/ssh"
+   fi
+else
+   if [ -d "/etc/ssh" ] ; then
+      sshDirectory="/etc/ssh"
+   fi
+fi
+if [ -n "${sshDirectory}" ] && command -v ssh-keygen >/dev/null ; then
    hostname="$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")"
 
    for format in ${FORMATS} ; do
@@ -159,7 +169,7 @@ if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
                   echo -n "   '${type}': '${key}'"
                fi
                keyNumber=$((keyNumber+1))
-            done < <(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
+            done < <(find "${sshDirectory}" -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
             if [ ${INCLUDE_RAW} -eq 2 ] ; then
                echo -e "\n}"
             fi
@@ -174,7 +184,7 @@ if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
             echo -n "#${keyNumber}: "
             ssh-keygen -lf "${key}" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
             keyNumber=$((keyNumber+1))
-         done < <(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
+         done < <(find "${sshDirectory}" -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
          echo
 
       # ====== Print fingerprints in DNS format =============================
@@ -189,7 +199,7 @@ if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
             fi | while read -r in rrType algorithmID hashID fingerprint ; do
                echo -e "${hostname}\t${in}\t${rrType}\t${algorithmID}\t${hashID}\t${fingerprint}"
             done
-         done < <(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print) | sort -k 5n,5n -k 4n,4n -k 6,6
+         done < <(find "${sshDirectory}" -maxdepth 1 -name "ssh_host_*.pub" -print) | sort -k 5n,5n -k 4n,4n -k 6,6
          echo
       fi
 

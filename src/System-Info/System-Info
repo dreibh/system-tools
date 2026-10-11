@@ -481,7 +481,18 @@ function print-system-information ()
 # ###### Print SSH public key fingerprints ##################################
 function print-ssh-key-fingerprints ()
 {
-   if [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
+   local sshDirectory=""
+   if [[ "${UNAME}" =~ ^(CYGWIN.*|MINGW.*|MSYS.*|Windows_NT)$ ]] ; then
+      if [ -d "${PROGRAMDATA:-/c/ProgramData}/ssh" ] ; then
+         sshDirectory="${PROGRAMDATA:-/c/ProgramData}/ssh"
+      fi
+   else
+      if [ -d "/etc/ssh" ] ; then
+         sshDirectory="/etc/ssh"
+      fi
+   fi
+
+   if [ -n "${sshDirectory}" ] && command -v ssh-keygen >/dev/null ; then
       local keyNumber=1
       local keyInfo
       local key
@@ -503,7 +514,7 @@ function print-ssh-key-fingerprints ()
                keyNumber=$((keyNumber+1))
             fi
          fi
-      done < <(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
+      done < <(find "${sshDirectory}" -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
    fi
 }
 
