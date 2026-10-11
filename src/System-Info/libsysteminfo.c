@@ -2131,20 +2131,19 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
       // Map adapter operational status to POSIX-compatible flags:
       unsigned int flags = 0;
       if(pAdapter->OperStatus == IfOperStatusUp) {
-         flags |= 0x1;   // IFF_UP
-         flags |= 0x40;  // IFF_RUNNING
+         flags |= IFF_UP;
+         flags |= IFF_RUNNING;
       }
       if(pAdapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK) {
-         flags |= 0x8;   // IFF_LOOPBACK
+         flags |= IFF_LOOPBACK;
       }
       if((pAdapter->IfType == IF_TYPE_PPP) || (pAdapter->IfType == IF_TYPE_TUNNEL)) {
-         flags |= 0x10;  // IFF_POINTOPOINT
+         flags |= IFF_POINTOPOINT;
       }
 
+      // ------ Extract IP addresses ----------------------------------------
       char* ipv4List = nullptr;
       char* ipv6List = nullptr;
-
-      // ------ Extract IP addresses ----------------------------------------
       for(PIP_ADAPTER_UNICAST_ADDRESS pUnicast = pAdapter->FirstUnicastAddress;
           pUnicast != nullptr;
           pUnicast = pUnicast->Next) {
