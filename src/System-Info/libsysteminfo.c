@@ -1452,7 +1452,7 @@ static void obtainBatteryInformation(struct SystemInfo* systemInfo)
 #endif
 
    // ====== Add battery information ========================================
-   char         buffer[8 * MAX_BATTERIES];
+   char         buffer[8 * MAX_BATTERIES] = { 0x00 };
    unsigned int offset = 0;
    for(unsigned int i = 0; i < batteries; i++) {
       if((size_t)offset >= sizeof(buffer)) {
@@ -2049,7 +2049,7 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
    // ====== Print interfaces list ==========================================
    lastIfIndex = 0;
 
-   char         buffer[8 * n];
+   char         buffer[8 * 1024] = { 0x00 };
    unsigned int offset = 0;
    for(unsigned int i = 0; i < n; i++) {
       if(ifIndices[i] != 0) {
@@ -2134,8 +2134,8 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
    }
 
    // ====== Iterate over sorted adapters ===================================
-   char         netifListBuffer[1024] = { 0 };
-   unsigned int netifListOffset       = 0;
+   char         netifListBuffer[8 * 1024] = { 0x00 };
+   unsigned int netifListOffset           = 0;
    for(unsigned int i = 0; i < adapterCount; i++) {
       PIP_ADAPTER_ADDRESSES pAdapter = adapterArray[i];
       const DWORD ifIndex = pAdapter->IfIndex ? pAdapter->IfIndex : pAdapter->Ipv6IfIndex;
@@ -2149,7 +2149,7 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
       }
 
       // Convert FriendlyName (WCHAR*) to UTF-8:
-      char friendlyName[256] = { 0 };
+      char friendlyName[256] = { 0x00 };
       if(pAdapter->FriendlyName != nullptr) {
          WideCharToMultiByte(CP_UTF8, 0, pAdapter->FriendlyName, -1,
                              friendlyName, sizeof(friendlyName), nullptr, nullptr);
@@ -2205,12 +2205,12 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
       }
 
       // ------ Format MAC address ------------------------------------------
-      char macBuf[128] = { 0 };
+      char macBuffer[128] = { 0x00 };
       if(pAdapter->PhysicalAddressLength > 0) {
          unsigned int macOffset = 0;
          for(DWORD k = 0; k < pAdapter->PhysicalAddressLength; k++) {
-            if((size_t)macOffset < sizeof(macBuf)) {
-               int result = snprintf(macBuf + macOffset, sizeof(macBuf) - macOffset,
+            if((size_t)macOffset < sizeof(macBuffer)) {
+               int result = snprintf(macBuffer + macOffset, sizeof(macBuffer) - macOffset,
                                      "%s%02x", (k > 0) ? ":" : "", pAdapter->PhysicalAddress[k]);
                if(result > 0) macOffset += (unsigned int)result;
             }
@@ -2220,8 +2220,8 @@ static void obtainNetworkInformation(struct SystemInfo* systemInfo,
       // ------ Store interface information into SystemInfo tree ------------
       systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_name", ifIndex), friendlyName);
       systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_flags", ifIndex), formatFlags(flags));
-      if(macBuf[0] != 0x00) {
-         systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_mac", ifIndex), macBuf);
+      if(macBuffer[0] != 0x00) {
+         systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_mac", ifIndex), macBuffer);
       }
       if(ipv4List != nullptr) {
          systemInfoAddString(systemInfo, systemInfoMakeKey("netif_%u_ipv4", ifIndex), ipv4List);
