@@ -82,7 +82,7 @@ center "${color1}-- ${color2}$(gettext "Welcome on the System") ${color1}--"
       fi
    fi
 ) | while IFS= read -r line ; do
-   center "${line}"
+   center "${line//[$'\r\n']/}"
 done
 
 # ------ Print bottom separator ---------------------------------------------
