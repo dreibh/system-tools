@@ -43,7 +43,9 @@ configdir="$(dirname "$0")"
 
 # ------ Get an UTF-8 icon --------------------------------------------------
 icon="😀"
-if [ "$(print-utf8 -w "${icon}")" -lt 1 ] ; then
+width="$(print-utf8 --width "${icon}")"
+width="${width//[$'\r\n']/}"
+if [ "${width}" -lt 1 ] ; then
    # The console cannot print multi-byte characters like 😀 or 💻 -> no icon.
    icon=""
 fi

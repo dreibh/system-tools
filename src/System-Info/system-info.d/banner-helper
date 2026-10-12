@@ -42,6 +42,7 @@ consolewidth()
 {
    local terminalInfo
    terminalInfo="$(print-utf8 --terminal-info)"
+   terminalInfo="${terminalInfo//[$'\r\n']/}"
    local width="${terminalInfo// [0-9]*/}"
    if [[ ! "${width}" =~ ^[0-9]+$ ]] ; then
       # Assume a standard width of 80:
