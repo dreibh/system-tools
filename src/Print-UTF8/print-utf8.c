@@ -54,6 +54,12 @@
 #include <io.h>
 #include <shellapi.h>
 #define strdup(s) _strdup(s)
+struct winsize {
+   unsigned short ws_row;
+   unsigned short ws_col;
+   unsigned short ws_xpixel;
+   unsigned short ws_ypixel;
+};
 #endif
 #if defined(__sun__)
 #include <unicode/uchar.h>
@@ -116,39 +122,67 @@ static void cleanUp(int exitCode)
 }
 
 
-#if !defined(_WIN32)
-// ###### Obtain console size ###############################################
-static bool ioctlTIOCGWINSZ(struct winsize* w)
+// ###### Obtain console dimensions #########################################
+static bool getConsoleDimensions(struct winsize* w)
 {
+#if !defined(_WIN32)
+   // ====== Try stdout first ===============================================
+   if(ioctl(STDOUT_FILENO, TIOCGWINSZ, w) == 0 && w->ws_col > 0) {
+      return true;
+   }
+
+   // ====== Try /dev/tty ===================================================
    int fd = open("/dev/tty", O_RDWR);
    if(fd >= 0) {
-      if(ioctl(fd, TIOCGWINSZ, w) == 0) {
-         close(fd);
-         return true;
-      }
+      int res = ioctl(fd, TIOCGWINSZ, w);
       close(fd);
-   }
-   return false;
-}
-#endif
-
-
-#if defined(_WIN32)
-// ###### Obtain console size ###############################################
-static bool getWinConsoleSize(int* cols, int* rows)
-{
-   HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-   if(hConsole != INVALID_HANDLE_VALUE) {
-      CONSOLE_SCREEN_BUFFER_INFO csbi;
-      if(GetConsoleScreenBufferInfo(hConsole, &csbi)) {
-         if(cols) *cols = csbi.srWindow.Right  - csbi.srWindow.Left + 1;
-         if(rows) *rows = csbi.srWindow.Bottom - csbi.srWindow.Top  + 1;
+      if(res == 0 && w->ws_col > 0) {
          return true;
       }
    }
+
+#else
+   // ====== Try stdout first ===============================================
+   HANDLE                     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+   CONSOLE_SCREEN_BUFFER_INFO csbi;
+   if(GetConsoleScreenBufferInfo(hConsole, &csbi)) {
+      w->ws_col = (unsigned short)(csbi.srWindow.Right - csbi.srWindow.Left + 1);
+      w->ws_row = (unsigned short)(csbi.srWindow.Bottom - csbi.srWindow.Top + 1);
+      return true;
+   }
+
+   // ====== Try CONOUT$, if redirected to a pipe ===========================
+   hConsole = CreateFileA("CONOUT$", GENERIC_READ | GENERIC_WRITE,
+                          FILE_SHARE_READ | FILE_SHARE_WRITE,
+                          NULL, OPEN_EXISTING, 0, NULL);
+   if(hConsole != INVALID_HANDLE_VALUE) {
+      const bool ok = GetConsoleScreenBufferInfo(hConsole, &csbi);
+      if(ok) {
+         w->ws_col = (unsigned short)(csbi.srWindow.Right - csbi.srWindow.Left + 1);
+         w->ws_row = (unsigned short)(csbi.srWindow.Bottom - csbi.srWindow.Top + 1);
+      }
+      CloseHandle(hConsole);
+      if(ok) {
+         return true;
+      }
+   }
+#endif
+
+   // ====== Try environment COLUMNS/LINES as fallback ======================
+   const char* columnsString = getenv("COLUMNS");
+   const char* rowsString    = getenv("LINES");
+   if( (columnsString) && (rowsString) ) {
+      const int columns = atoi(columnsString);
+      const int rows    = atoi(rowsString);
+      if( (columns > 0) && (rows > 0) ) {
+         w->ws_col = (unsigned short)columns;
+         w->ws_row = (unsigned short)rows;
+         return true;
+      }
+   }
+
    return false;
 }
-#endif
 
 
 #if defined(_WIN32)
@@ -184,17 +218,10 @@ static int wcswidth(const wchar_t* pwcs, size_t n)
 // ###### Obtain console width ##############################################
 static int getConsoleWidth(void)
 {
-#if !defined(_WIN32)
    struct winsize w;
-   if(ioctlTIOCGWINSZ(&w)) {
+   if(getConsoleDimensions(&w)) {
       return w.ws_col;
    }
-#else
-   int cols, rows;
-   if(getWinConsoleSize(&cols, &rows)) {
-      return cols;
-   }
-#endif
    return 80;   // Use default!
 }
 
@@ -528,18 +555,13 @@ static void stringSizeLengthWidth(const char* originalString,
 // ###### Get terminal information ##########################################
 static void terminalInfo(void)
 {
-   int columns = 80;
-   int rows    = 24;
-#if !defined(_WIN32)
    struct winsize w;
-   if(ioctlTIOCGWINSZ(&w)) {
-      columns = w.ws_col;
-      rows = w.ws_row;
+   if(!getConsoleDimensions(&w)) {
+      // Use defaults!
+      w.ws_col = 80;
+      w.ws_row = 24;
    }
-#else
-   getWinConsoleSize(&columns, &rows);
-#endif
-   printf("%u %u\n", (unsigned int)columns, (unsigned int)rows);
+   printf("%u %u\n", (unsigned int)w.ws_col, (unsigned int)w.ws_row);
 }
 
 
