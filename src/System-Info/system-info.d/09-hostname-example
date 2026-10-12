@@ -66,7 +66,7 @@ fi
 
 # ------ Print top separator ------------------------------------------------
 echo -en "${color1}"
-separator " *${icon}" "=" "${icon}*"
+separator " *${icon}" "=" "${icon}* "
 echo
 center "${color1}-- ${color2}$(gettext "Welcome on the System") ${color1}--"
 
@@ -87,7 +87,7 @@ done
 
 # ------ Print bottom separator ---------------------------------------------
 echo -en "${reset}${color1}"
-separator " *${icon}" "=" "${icon}*"
+separator " *${icon}" "=" "${icon}* "
 echo -e "${reset}"
 
 

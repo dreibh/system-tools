@@ -49,7 +49,11 @@ color2="\x1b[38;2;33;27;87m"    # SimulaMet dark blue: #211B57
 # color2="\x1b[31m"
 
 # ------ Get an UTF-8 icon --------------------------------------------------
-icon="🇳🇴"
+if [[ ! "$(uname)" =~ ^(CYGWIN.*|MINGW.*|MSYS.*|Windows_NT)$ ]] ; then
+   icon="🇳🇴"
+else
+   icon="😀"   # The windows console has issues with 4-byte characters!
+fi
 width="$(print-utf8 --width "${icon}")"
 width="${width//[$'\r\n']/}"
 if [ "${width}" -lt 1 ] ; then
@@ -59,7 +63,7 @@ fi
 
 # ------ Print top separator ------------------------------------------------
 echo -en "${color1}"
-separator " *${icon}" "=" "${icon}*"
+separator " *${icon}" "=" "${icon}* "
 echo
 center "${color1}-- ${color2}$(gettext "Welcome to") ${color1}--"
 
@@ -86,7 +90,7 @@ fi
 
 # ------ Print bottom separator ---------------------------------------------
 echo -en "${reset}${color1}"
-separator " *${icon}" "=" "${icon}*"
+separator " *${icon}" "=" "${icon}* "
 echo -e "${reset}"
 
 
