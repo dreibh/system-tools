@@ -257,6 +257,32 @@ static unsigned int octDigitToNumber(const char digit)
 }
 
 
+// ###### Encode UTF-32 codepoint directly to UTF-8 bytes ###################
+static size_t encodeCodepointToUtf8(uint32_t codepoint, char* out)
+{
+   if(codepoint <= 0x7f) {
+      out[0] = (char)codepoint;
+      return 1;
+   } else if(codepoint <= 0x7ff) {
+      out[0] = (char)(0xc0 | (codepoint >> 6));
+      out[1] = (char)(0x80 | (codepoint & 0x3f));
+      return 2;
+   } else if(codepoint <= 0xffff) {
+      out[0] = (char)(0xe0 | (codepoint >> 12));
+      out[1] = (char)(0x80 | ((codepoint >> 6) & 0x3f));
+      out[2] = (char)(0x80 | (codepoint & 0x3f));
+      return 3;
+   } else if(codepoint <= 0x10ffff) {
+      out[0] = (char)(0xf0 | (codepoint >> 18));
+      out[1] = (char)(0x80 | ((codepoint >> 12) & 0x3f));
+      out[2] = (char)(0x80 | ((codepoint >> 6) & 0x3f));
+      out[3] = (char)(0x80 | (codepoint & 0x3f));
+      return 4;
+   }
+   return 0;
+}
+
+
 // ###### Unescape string ###################################################
 static char* unescape(const char* originalString)
 {
@@ -313,12 +339,10 @@ static char* unescape(const char* originalString)
                         (hexDigitToNumber(originalString[i + 2]) << 8) +
                         (hexDigitToNumber(originalString[i + 3]) << 4) +
                         hexDigitToNumber(originalString[i + 4]);
-                     char      multibyte[MB_LEN_MAX];
-                     const int bytes = wctomb(multibyte, (wchar_t)codepoint);
-                     if(bytes > 0) {
-                        for(int k = 0; k < bytes; k++) {
-                           unescapedString[j++] = multibyte[k];
-                        }
+                     char multibyte[4];
+                     const size_t bytes = encodeCodepointToUtf8(codepoint, multibyte);
+                     for(size_t k = 0; k < bytes; k++) {
+                        unescapedString[j++] = multibyte[k];
                      }
                      i += 4;
                   }
@@ -334,14 +358,12 @@ static char* unescape(const char* originalString)
                         (hexDigitToNumber(originalString[i + 6]) << 8) +
                         (hexDigitToNumber(originalString[i + 7]) << 4) +
                         hexDigitToNumber(originalString[i + 8]);
-                     char      multibyte[MB_LEN_MAX];
-                     const int bytes = wctomb(multibyte, (wchar_t)codepoint);
-                     if(bytes > 0) {
-                        for(int k = 0; k < bytes; k++) {
-                           unescapedString[j++] = multibyte[k];
-                        }
-                     }
-                     i += 8;
+                      char multibyte[4];
+                      const size_t bytes = encodeCodepointToUtf8(codepoint, multibyte);
+                      for(size_t k = 0; k < bytes; k++) {
+                         unescapedString[j++] = multibyte[k];
+                      }
+                      i += 8;
                   }
                 break;
                case 'a':
@@ -422,28 +444,28 @@ static uint32_t* convertUtf8ToUtf32WithoutANSI(const char* originalString,
 
    size_t i = 0, outIdx = 0;
    while(i < j) {
-      unsigned char c     = (unsigned char)filtered[i];
-      uint32_t      cp    = 0;
-      size_t        bytes = 1;
+      unsigned char c         = (unsigned char)filtered[i];
+      uint32_t      codepoint = 0;
+      size_t        bytes     = 1;
 
       if(c < 0x80) {
-         cp = c;
+         codepoint = c;
          bytes = 1;
       } else if( ((c & 0xe0) == 0xc0) && (i + 1 < j) ) {
-         cp = ((c & 0x1f) << 6) | (filtered[i + 1] & 0x3f);
+         codepoint = ((c & 0x1f) << 6) | (filtered[i + 1] & 0x3f);
          bytes = 2;
       } else if( ((c & 0xf0) == 0xe0) && (i + 2 < j) ) {
-         cp = ((c & 0x0f) << 12) | ((filtered[i + 1] & 0x3f) << 6) | (filtered[i + 2] & 0x3f);
+         codepoint = ((c & 0x0f) << 12) | ((filtered[i + 1] & 0x3f) << 6) | (filtered[i + 2] & 0x3f);
          bytes = 3;
       } else if( ((c & 0xf8) == 0xf0) && (i + 3 < j) ) {
-         cp = ((c & 0x07) << 18) | ((filtered[i + 1] & 0x3f) << 12) |
+         codepoint = ((c & 0x07) << 18) | ((filtered[i + 1] & 0x3f) << 12) |
               ((filtered[i + 2] & 0x3f) << 6) | (filtered[i + 3] & 0x3f);
          bytes = 4;
       } else {
-         cp = 0xfffd; // Replacement character
+         codepoint = 0xfffd; // Replacement character
          bytes = 1;
       }
-      utf32[outIdx++] = cp;
+      utf32[outIdx++] = codepoint;
       i += bytes;
    }
    utf32[outIdx] = 0;
