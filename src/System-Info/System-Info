@@ -102,6 +102,7 @@ function finish-table()
    for ((i=0; i < ${#tableColumnLabels[@]}; i++)) ; do
       label="${tableColumnLabels[$i]}"
       width="$(print-utf8 --width "${label}")"
+      width="${width//[$'\r\n']/}"
       if [ "${width}" -gt "${indent}" ] ; then
          indent="${width}"
       fi
@@ -285,7 +286,7 @@ function print-system-information ()
    add-table-row \
       "$(gettext "Processor:")" \
       "$(eval_gettext \
-         "\${systemCoresString} × \${systemMachineString}; \${processesString}; \${usersString}"
+         "\${systemCoresString} cores (\${systemMachineString}); \${processesString}; \${usersString}"
        )"
 
    # ------ Load ------------------------------------------------------------

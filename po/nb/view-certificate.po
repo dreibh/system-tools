@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-28 14:34+0200\n"
+"POT-Creation-Date: 2026-10-12 16:51+0200\n"
 "PO-Revision-Date: 2026-16-05 14:36+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -99,22 +99,22 @@ msgstr "Innehaver-nøkkelidentifikator:"
 msgid "Authority Key Identifier:"
 msgstr "Utsteder-nøkkelidentifikator:"
 
-#: src/X509/view-certificate:184
+#: src/X509/view-certificate:185
 #, sh-format
 msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
 msgstr "FEIL: Finner ikke sertifikatfilen ${CERTIFICATE_FILE}!"
 
-#: src/X509/view-certificate:189
+#: src/X509/view-certificate:190
 #, sh-format
 msgid "Certificate in ${CERTIFICATE_FILE}:"
 msgstr "Sertifikat i ${CERTIFICATE_FILE}:"
 
-#: src/X509/view-certificate:267
+#: src/X509/view-certificate:268
 #, sh-format
 msgid "Hierarchy in ${CERTIFICATE_FILE}:"
 msgstr "Hierarki i ${CERTIFICATE_FILE}:"
 
-#: src/X509/view-certificate:278
+#: src/X509/view-certificate:279
 #, sh-format
 msgid "#${entry}."
 msgstr "№${entry}"

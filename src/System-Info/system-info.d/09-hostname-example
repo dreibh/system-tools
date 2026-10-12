@@ -51,14 +51,16 @@ if [ "$(print-utf8 -w "💻")" -lt 1 ] ; then
    icon=""
 else
    case "$(uname)" in
-      Linux)   icon="🐧" ;;
-      FreeBSD) icon="😈" ;;
-      NetBSD)  icon="🚩" ;;
-      OpenBSD) icon="🐡" ;;
-      SunOS)   icon="🌞" ;;
-      Darwin)  icon="🍎" ;;
-      GNU)     icon="🦬" ;;
-      *)       icon="💻" ;;
+      Linux)                icon="🐧" ;;
+      FreeBSD)              icon="😈" ;;
+      NetBSD)               icon="🚩" ;;
+      OpenBSD)              icon="🐡" ;;
+      SunOS)                icon="🌞" ;;
+      Darwin)               icon="🍎" ;;
+      GNU|GNU/*)            icon="🦬" ;;
+      Haiku)                icon="🍂" ;;
+      CYGWIN*|MINGW*|MSYS*) icon="🪟" ;;
+      *)                    icon="💻" ;;
    esac
 fi
 
