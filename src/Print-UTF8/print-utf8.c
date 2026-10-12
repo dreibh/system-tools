@@ -40,6 +40,7 @@
 #include <locale.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -380,175 +381,174 @@ static char* unescape(const char* originalString)
 }
 
 
-// ###### Convert UTF-8 string to wide string without ANSI sequences ########
-wchar_t* convertToWideStringWithoutANSI(const char* originalString,
-                                        const bool  removeANSISequences,
-                                        size_t*     utf8Size,
-                                        size_t*     wideLength)
+// ###### Decode UTF-8 string directly to UTF-32 without mbstowcs() #########
+static uint32_t* convertUtf8ToUtf32WithoutANSI(const char* originalString,
+                                               const bool  removeANSISequences,
+                                               size_t*     utf8Size,
+                                               size_t*     utf32Length)
 {
-   const size_t original_string_length = strlen(originalString);
-
-   // ====== Copy string, but filter out ANSI colouring sequences ===========
-   char* utf8String = (char*)malloc(original_string_length + 1);
-   if(utf8String == nullptr) {
-      fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
-      fputs("\n", stderr);
+   const size_t original_len = strlen(originalString);
+   char* filtered = (char*)malloc(original_len + 1);
+   if(!filtered) {
       exit(1);
    }
 
-   bool   inANSISequence = false;
-   size_t j = 0;
-   for(size_t i = 0; i < original_string_length; i++) {
-      if(!inANSISequence) {
-         if((originalString[i] == '\x1b') && (removeANSISequences)) {
-            inANSISequence = true;
+   // 1. Filter out ANSI escape sequences:
+   bool  inANSI = false;
+   size_t j     = 0;
+   for(size_t i = 0; i < original_len; i++) {
+      if(!inANSI) {
+         if( (originalString[i] == 0x1b) && removeANSISequences ) {
+            inANSI = true;
+         } else {
+            filtered[j++] = originalString[i];
          }
-         else {
-            utf8String[j++] = originalString[i];
-         }
-      }
-      else {
-         if(isalpha(originalString[i])) {
-            inANSISequence = false;
-         }
+      } else if(isalpha((unsigned char)originalString[i])) {
+         inANSI = false;
       }
    }
-   utf8String[j] = 0x00;
-
-   // ====== Get string width ===============================================
-   wchar_t* wide_string = (wchar_t*)malloc(sizeof(wchar_t) * (j + 1));
-   if(wide_string == nullptr) {
-      fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
-      fputs("\n", stderr);
-      exit(1);
-   }
-   const size_t wide_string_length = mbstowcs(wide_string, utf8String, j);
-   if(wide_string_length == (size_t)-1) {
-      fprintf(stderr, gettext("ERROR: mbstowcs() failed: %s!"), strerror(errno));
-      fputs("\n", stderr);
-      exit(1);
-   }
+   filtered[j] = 0x00;
 
    if(utf8Size) {
       *utf8Size = j;
    }
-   if(wideLength) {
-      *wideLength = wide_string_length;
+
+   // 2. Direct manual UTF-8 byte stream decoder:
+   uint32_t* utf32 = (uint32_t*)malloc(sizeof(uint32_t) * (j + 1));
+   if(!utf32) {
+      free(filtered);
+      exit(1);
    }
 
-   free(utf8String);
-   return wide_string;
+   size_t i = 0, outIdx = 0;
+   while(i < j) {
+      unsigned char c     = (unsigned char)filtered[i];
+      uint32_t      cp    = 0;
+      size_t        bytes = 1;
+
+      if(c < 0x80) {
+         cp = c;
+         bytes = 1;
+      } else if( ((c & 0xe0) == 0xc0) && (i + 1 < j) ) {
+         cp = ((c & 0x1f) << 6) | (filtered[i + 1] & 0x3f);
+         bytes = 2;
+      } else if( ((c & 0xf0) == 0xe0) && (i + 2 < j) ) {
+         cp = ((c & 0x0f) << 12) | ((filtered[i + 1] & 0x3f) << 6) | (filtered[i + 2] & 0x3f);
+         bytes = 3;
+      } else if( ((c & 0xf8) == 0xf0) && (i + 3 < j) ) {
+         cp = ((c & 0x07) << 18) | ((filtered[i + 1] & 0x3f) << 12) |
+              ((filtered[i + 2] & 0x3f) << 6) | (filtered[i + 3] & 0x3f);
+         bytes = 4;
+      } else {
+         cp = 0xfffd; // Replacement character
+         bytes = 1;
+      }
+      utf32[outIdx++] = cp;
+      i += bytes;
+   }
+   utf32[outIdx] = 0;
+   free(filtered);
+
+   if(utf32Length) {
+      *utf32Length = outIdx;
+   }
+   return utf32;
 }
 
 
-#if defined(__sun)
-#define wcswidth(str, len) icu_wcswidth(str, len)
-// ###### wcswidth() replacement based on libicu ############################
-static int icu_wcswidth(const wchar_t* str, size_t len) {
+// ###### Calculate column width for UTF-32 codepoints ######################
+static int utf32_wcswidth(const uint32_t* str, size_t len)
+{
    int width = 0;
-   for(size_t i = 0; (i < len) && (str[i] != 0x00); i++) {
-      const UChar32 c = (UChar32)str[i];
+   for(size_t i = 0; i < len && str[i] != 0; i++) {
+      uint32_t c = str[i];
 
-      // Skip non-printable or zero-width control/combining characters:
-      const int8_t cc = u_charType(c);
-      if( (cc == U_CONTROL_CHAR)     ||
-          (cc == U_FORMAT_CHAR)      ||
-          (cc == U_NON_SPACING_MARK) ||
-          (cc == U_ENCLOSING_MARK) ) {
+      // Zero-width characters (combining marks, variation selectors, ZWJ):
+      if( ( (c >= 0x0300) && (c <= 0x036f) ) ||
+          ( (c >= 0x1ab0) && (c <= 0x1aff) ) ||
+          ( (c >= 0x1dc0) && (c <= 0x1dff) ) ||
+          ( (c >= 0x20d0) && (c <= 0x20ff) ) ||
+          ( (c >= 0xfe00) && (c <= 0xfe0f) ) ||
+          ( (c >= 0xfe20) && (c <= 0xfe2f) ) ||
+          ( (c >= 0xe0100) && (c <= 0xe01ef) ) ||
+          (c == 0x200b) || (c == 0x200c) || (c == 0x200d) ||
+          (c == 0xfeff) ||
+          (c == 0x00ad) ) {
          continue;
       }
 
-      // Handle country flags (e.g. 🇳🇴):
-      if( u_hasBinaryProperty(c, UCHAR_REGIONAL_INDICATOR) ) {
-         if( (i + 1 < len) && u_hasBinaryProperty((UChar32)str[i + 1], UCHAR_REGIONAL_INDICATOR) ) {
+      // Regional Indicator pairs (e.g. 🇳🇴 = U+1F1F3 U+1F1F4) -> total width 2:
+      if( (c >= 0x1f1e6) && (c <= 0x1f1ff) ) {
+         if( (i + 1 < len) && (str[i + 1] >= 0x1f1e6) && (str[i + 1] <= 0x1f1ff) ) {
             width += 2;
-            i++;   // Skip the second Regional Indicator character in the pair
+            i++; // Skip second Regional Indicator
             continue;
          }
       }
 
-      // Query East Asian width (wide/fullwidth):
-      const UEastAsianWidth eaw =
-         (UEastAsianWidth)u_getIntPropertyValue(c, UCHAR_EAST_ASIAN_WIDTH);
-      if( (eaw == U_EA_FULLWIDTH) || (eaw == U_EA_WIDE) ) {
+      // East Asian Wide & Emoji Presentation characters -> width 2:
+      if( ( (c >= 0x1100) && (c <= 0x115f) ) ||
+          ( (c >= 0x2e80) && (c <= 0xa4cf && c != 0x3030) ) ||
+          ( (c >= 0xac00) && (c <= 0xd7a3) ) ||
+          ( (c >= 0xf900) && (c <= 0xfaff) ) ||
+          ( (c >= 0xfe10) && (c <= 0xfe19) ) ||
+          ( (c >= 0xff01) && (c <= 0xff60) ) ||
+          ( (c >= 0xffe0) && (c <= 0xffe6) ) ||
+          ( (c >= 0x1f300) && (c <= 0x1f6ff) ) ||   // Symbols and Pictographs
+          ( (c >= 0x1f900) && (c <= 0x1f9ff) ) ||   // Supplemental Symbols
+          ( (c >= 0x1fa70) && (c <= 0x1faff) ) ||   // Symbols Extended-A
+          ( (c >= 0x20000) && (c <= 0x3fffd) ) ) {
          width += 2;
-      }
-      // Handle Emoji characters:
-      else if(u_hasBinaryProperty(c, UCHAR_EMOJI_PRESENTATION)) {
-         width += 2;
-      }
-      else {
+      } else {
          width += 1;
       }
    }
    return width;
 }
-#endif
 
 
 // ###### Obtain console printing width of UTF-8 string ######################
 static int stringwidth(const char* originalString,
                        const bool  removeANSISequences)
 {
-   size_t   wide_string_length;
-   wchar_t* wide_string = convertToWideStringWithoutANSI(
-                             originalString, removeANSISequences,
-                             nullptr, &wide_string_length);
-   const int width = wcswidth(wide_string, wide_string_length);
-   free(wide_string);
+   size_t utf32_length;
+   uint32_t* utf32_str = convertUtf8ToUtf32WithoutANSI(
+                            originalString, removeANSISequences,
+                            nullptr, &utf32_length);
+   const int width = utf32_wcswidth(utf32_str, utf32_length);
+   free(utf32_str);
    return ((width >= 0) ? width : 0);
 }
 
 
-// ###### Calculate Unicode character count from wide string ###############
-inline static size_t utf8CharacterLength(const wchar_t* wide_string,
-                                         const size_t   wide_string_length)
-{
-   size_t characterCount = wide_string_length;
-#if defined(_WIN32) || (defined(__SIZEOF_WCHAR_T__) && (__SIZEOF_WCHAR_T__ == 2))
-   // On 16-bit wchar_t (UTF-16), subtract 1 for every high surrogate
-   // so that surrogate pairs count as 1 character instead of 2:
-   for(size_t k = 0; k < wide_string_length; k++) {
-      if( (wide_string[k] >= 0xd800) && (wide_string[k] <= 0xdbff) ) {
-         characterCount--;
-      }
-   }
-#else
-   (void)wide_string;
-#endif
-   return characterCount;
-}
-
-
-// ###### Obtain length of UTF-8 string in bytes ############################
+// ###### Print Size / Length / Width #######################################
 static void stringSizeLengthWidth(const char* originalString,
                                   const bool  removeANSISequences,
                                   const bool  showSize,
                                   const bool  showLength,
                                   const bool  showWidth)
 {
-   size_t   wide_string_length;
-   size_t   utf8_string_size;
-   wchar_t* wide_string = convertToWideStringWithoutANSI(
-                             originalString, removeANSISequences,
-                             &utf8_string_size, &wide_string_length);
+   size_t utf8_string_size;
+   size_t utf32_string_length;
+   uint32_t* utf32_str = convertUtf8ToUtf32WithoutANSI(
+                            originalString, removeANSISequences,
+                            &utf8_string_size, &utf32_string_length);
+
    const char* space = "";
    if(showSize) {
       printf("%zd", utf8_string_size);
       space = " ";
    }
    if(showLength) {
-      const size_t char_count = utf8CharacterLength(wide_string, wide_string_length);
-      printf("%s%zd", space, char_count);
+      printf("%s%zd", space, utf32_string_length);
       space = " ";
    }
    if(showWidth) {
-      printf("%s%d", space, wcswidth(wide_string, wide_string_length));
-      // space = " ";
+      printf("%s%d", space, utf32_wcswidth(utf32_str, utf32_string_length));
    }
    puts("");
 
-   free(wide_string);
+   free(utf32_str);
 }
 
 
@@ -671,23 +671,17 @@ static void doMultiLineIndentOrCenter(const char*       borderLeft,
    }
 
    // ====== Obtain left and right border widths ============================
-   size_t   wll;
-   wchar_t* wsl = convertToWideStringWithoutANSI(borderLeft, true, nullptr, &wll);
-   if(wsl) {
-      const int borderLeftWidth = wcswidth(wsl, wll);
+   if(borderLeft) {
+      const int borderLeftWidth = stringwidth(borderLeft, true);
       if(borderLeftWidth > 0) {
          consoleWidth -= borderLeftWidth;
       }
-      free(wsl);
    }
-   size_t   wlr;
-   wchar_t* wsr = convertToWideStringWithoutANSI(borderRight, true, nullptr, &wlr);
-   if(wsr) {
-      const int borderRightWidth = wcswidth(wsr, wlr);
+   if(borderRight) {
+      const int borderRightWidth = stringwidth(borderRight, true);
       if(borderRightWidth > 0) {
          consoleWidth -= borderRightWidth;
       }
-      free(wsr);
    }
 
    // ====== Print result ===================================================
@@ -715,21 +709,21 @@ static void convertArgumentsToUTF8(int* argc, char*** argv)
 {
    int wargc = 0;
    wchar_t** wargv = CommandLineToArgvW(GetCommandLineW(), &wargc);
-   if (wargv == nullptr) {
+   if(wargv == nullptr) {
       return;
    }
 
    char** utf8_argv = (char **)malloc(sizeof(char *) * (wargc + 1));
-   if (utf8_argv == nullptr) {
+   if(utf8_argv == nullptr) {
       LocalFree(wargv);
       return;
    }
 
-   for (int i = 0; i < wargc; i++) {
+   for(int i = 0; i < wargc; i++) {
       int len = WideCharToMultiByte(CP_UTF8, 0, wargv[i], -1, nullptr, 0, nullptr, nullptr);
-      if (len > 0) {
+      if(len > 0) {
          utf8_argv[i] = (char *)malloc((size_t)len);
-         if (utf8_argv[i] != nullptr) {
+         if(utf8_argv[i] != nullptr) {
             WideCharToMultiByte(CP_UTF8, 0, wargv[i], -1, utf8_argv[i], len, nullptr, nullptr);
          }
       } else {
