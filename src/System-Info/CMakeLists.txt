@@ -85,8 +85,10 @@ IF (WITH_LIBSYSTEMINFO)
                                ${SOCKET_LIBRARY}
                                ${NSL_LIBRARY}
                                ${KSTAT_LIBRARY})
-         INSTALL(TARGETS     libsysteminfo-${TYPE}
-                 DESTINATION ${CMAKE_INSTALL_LIBDIR})
+         INSTALL(TARGETS             libsysteminfo-${TYPE}
+                 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
       ENDIF()
    ENDFOREACH()
 ENDIF()
