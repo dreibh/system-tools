@@ -209,7 +209,7 @@ if [ -n "${sshDirectory}" ] && command -v ssh-keygen >/dev/null ; then
 
    firstSection=1
    printSeparator () {
-      if [ "${firstSection}" -eq 0 ] && [ "${FORMAT}" != "csv" ] ; then
+      if [ "${firstSection}" -eq 0 ] ; then
          echo
       fi
       firstSection=0
