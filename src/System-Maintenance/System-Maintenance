@@ -42,6 +42,8 @@ export TEXTDOMAIN="System-Maintenance"
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
+   # TRANSLATORS: Command-line syntax message prefix:
+   # "Usage: <program> [options]".
    echo >&2 "$(gettext "Usage:") $0 [-k|--interactive-kernel-removal] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
@@ -59,6 +61,7 @@ version () {
 
 # ====== Handle arguments ===================================================
 if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
+   # TRANSLATORS: Error message when installed Bash version is older than 4.4.
    gettext >&2 "ERROR: Bash 4.4 or higher is required!"
    echo >&2
    exit 1
@@ -85,6 +88,8 @@ case "${UNAME}" in
       ;;
 esac
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+   # TRANSLATORS: Error message when enhanced/GNU getopt is not found or is
+   # incompatible.
    gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
    echo >&2
    exit 1
@@ -127,6 +132,8 @@ fi
 
 # ====== Check permissions ==================================================
 if [ "${EUID}" -ne 0 ] ; then
+   # TRANSLATORS: Error message when script is executed without root/superuser
+   # privileges.
    gettext >&2 "ERROR: System-Maintenance requires superuser permissions!"
    echo >&2
    exit 1
@@ -146,6 +153,8 @@ fi
 
 # ====== Stop AutoFS ========================================================
 if [ -e /etc/init.d/autofs ] ; then
+   # TRANSLATORS: Progress notification when stopping the AutoFS service
+   # before maintenance.
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Stopping AutoFS service ...")\x1b[0m"
    service autofs stop >/dev/null 2>&1 || true
 fi
@@ -162,6 +171,8 @@ installOutputFile="$(mktemp -t SystemMaintenance.install.XXXXXXXXXX)"
 
 
 # ====== Update package repositories ========================================
+# TRANSLATORS: Progress notification when updating software package
+# repository indices.
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating package repositories ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    DEBIAN_FRONTEND=noninteractive apt-get update -qq
@@ -208,6 +219,8 @@ if [ "${ID}" == "debian" ] || \
    [ "${ID}" == "ubuntu" ] || \
    [ "${ID}" == "alpine" ] ; then
 
+   # TRANSLATORS: Progress notification when checking and repairing broken
+   # package configurations.
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Applying package fixes, if necessary ...")\x1b[0m"
 
    if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
@@ -216,6 +229,8 @@ if [ "${ID}" == "debian" ] || \
       cat "${installOutputFile}"
 
       # ====== apt-get package fixes ===========================================
+      # TRANSLATORS: Progress notification when attempting to resolve and
+      # install missing package dependencies.
       echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing missing dependencies, if necessary ...")\x1b[0m"
       DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
          -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
@@ -229,6 +244,8 @@ fi
 
 
 # ====== Install updates ====================================================
+# TRANSLATORS: Progress notification when installing available system
+# package updates.
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing updates ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ------ Download --------------------------------------------------------
@@ -323,6 +340,8 @@ fi
 
 
 # ====== Auto-remove ========================================================
+# TRANSLATORS: Progress notification when running autoremove and purging
+# obsolete package caches.
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Cleaning up ...")\x1b[0m"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ------ Remove unnecessary dependencies ---------------
@@ -378,14 +397,22 @@ fi
 
 # ====== Remove obsolete kernel packages ====================================
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
+   # TRANSLATORS: Progress notification when identifying and purging
+   # outdated kernel packages.
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Removing obsolete kernels ...")\x1b[0m"
 
    kernelType=$(uname -r | sed 's/^\([0-9]*\.[0-9]*\.[0-9]*\|[0-9]*\.[0-9]*\.[0-9]*[-+][^-]*\)-\([a-zA-Z0-9\.+]*\)/\2/')
    kernelBootVersion=$(uname -r | sed "s/-${kernelType}$//")
    kernelDiskVersion=$(find /boot -name "vmlinuz-*-${kernelType}" | sort -rV | head -n1 | sed -e "s/^\/boot\/vmlinuz-//" -e "s/-${kernelType}$//")
 
+   # TRANSLATORS: Header label showing the kernel flavor/type
+   # (e.g. generic, server).
+   # Note the trailing spaces used for fixed-width column alignment.
    echo "$(gettext "Kernel Type:        ") ${kernelType}"
+   # TRANSLATORS: Header label showing currently running booted kernel version.
    echo "$(gettext "Kernel Boot Version:") ${kernelBootVersion}"
+   # TRANSLATORS: Header label showing newest kernel version found
+   # installed on disk.
    echo "$(gettext "Kernel Disk Version:") ${kernelDiskVersion}"
 
    # The version will be used in regexp: "+" => "\\+"!
@@ -462,9 +489,13 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
 
    if [ "$(echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$" || true)" != "" ] ; then
 
+      # TRANSLATORS: Section heading for list of obsolete kernel packages
+      # marked for deletion.
       echo -e "$(gettext "To be removed:")\x1b[31m"
       echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$" || true
       echo -en "\x1b[0m"
+      # TRANSLATORS: Section heading for list of active/installed kernel
+      # packages preserved on disk.
       echo -e "$(gettext "To be kept:")\x1b[32m"
       echo "${toBeRemoved}" | xargs -n1 | grep ".*+$" | sed -e "s/+$//g" || true
       echo -en "\x1b[0m"
@@ -492,6 +523,7 @@ rm -f "${installOutputFile}"
 
 # ====== Refresh snaps ======================================================
 if command -v snap >/dev/null ; then
+   # TRANSLATORS: Progress notification when updating snap packages.
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Refreshing snaps ...")\x1b[0m"
    snap refresh || true
 fi
@@ -499,6 +531,8 @@ fi
 
 # ====== Firmware updates ===================================================
 if command -v fwupdmgr >/dev/null ; then
+   # TRANSLATORS: Progress notification when checking fwupd for device
+   # firmware updates.
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Checking for firmware updates ...")\x1b[0m"
    fwupdmgr refresh || true
    fwupdmgr update  || true
@@ -506,6 +540,8 @@ fi
 
 
 # ====== apt-file cache update ==============================================
+# TRANSLATORS: Progress notification when rebuilding search indices
+# (locate, geoip, apt-file).
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating caches ...")\x1b[0m"
 
 # ------ locate -------------------------------------------------------------
@@ -535,12 +571,16 @@ fi
 
 # ====== Start AutoFS =======================================================
 if [ -e /etc/init.d/autofs ] ; then
+   # TRANSLATORS: Progress notification when restarting AutoFS service
+   # after maintenance.
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Starting AutoFS service ...")\x1b[0m"
    service autofs start >/dev/null 2>&1 || true
 fi
 
 
 # ====== Fix time ===========================================================
+# TRANSLATORS: Progress notification when synchronizing clock with
+# external NTP time servers.
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Synchronising system time ...")\x1b[0m"
 
 # Sychronise time from a reliable NTP servers:
@@ -610,6 +650,8 @@ fi
 if [ ${updatedTime} -eq 1 ] ; then
    # shellcheck disable=SC2034
    now="$(date)"
+   # TRANSLATORS: Status message upon successful NTP time synchronization:
+   # ${now} = formatted current date and time string
    eval_gettext "Updated system time to \${now}."
    echo
    if command -v hwclock >/dev/null ; then
@@ -624,6 +666,8 @@ if [ ${updatedTime} -eq 1 ] ; then
       date -v +0S || true
    fi
 else
+   # TRANSLATORS: Status message when NTP time synchronization fails on
+   # all configured servers.
    gettext "No system time update possible."
    echo
 fi
@@ -631,12 +675,16 @@ fi
 
 # ====== SSD trimming =======================================================
 if command -v fstrim >/dev/null ; then
+   # TRANSLATORS: Progress notification when running fstrim to discard
+   # unused blocks on SSD storage.
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Running fstrim ...")\x1b[0m"
    fstrim -a -v 2>/dev/null || ( fstrim -v / && fstrim -v /home ) || true
 fi
 if command -v zpool >/dev/null ; then
    zpools="$(zpool list -H 2>/dev/null | cut -f1 || true)"
    if [ -n "${zpools}" ] ; then
+      # TRANSLATORS: Progress notification when issuing trim operations on ZFS
+      # storage pools.
       echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Running zpool trim ...")\x1b[0m"
       for zpool in ${zpools} ; do
          echo "${zpool}"
@@ -647,6 +695,8 @@ fi
 
 
 # ====== Done! ==============================================================
+# TRANSLATORS: Final notification indicating completion of all
+# maintenance routines.
 echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Done!")\x1b[0m"
 
 

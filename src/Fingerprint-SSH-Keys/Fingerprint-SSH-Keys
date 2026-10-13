@@ -42,7 +42,8 @@ export TEXTDOMAIN="Fingerprint-SSH-Keys"
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   # TRANSLATORS: Command-line syntax message prefix: "Usage: <program> [options]".
+   # TRANSLATORS: Command-line syntax message prefix:
+   # "Usage: <program> [options]".
    echo >&2 "$(gettext "Usage:") $0 [-A|--all] [-a|--none] [-R|--with-raw] [-r|--without-raw] [-D|--with-dns] [-d|--without-dns] [-S|--with-ssh] [-s|--without-ssh] [-F|--format {text|python|csv}] [-K|--key-directory directory] [--include-deprecated] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
@@ -86,7 +87,8 @@ case "${UNAME}" in
       ;;
 esac
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
-   # TRANSLATORS: Error message when enhanced/GNU getopt is not found or is incompatible.
+   # TRANSLATORS: Error message when enhanced/GNU getopt is not found or is
+   # incompatible.
    gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
    echo >&2
    exit 1

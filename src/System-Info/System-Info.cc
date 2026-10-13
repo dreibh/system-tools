@@ -241,7 +241,8 @@ static void readConfiguration(const std::string&              customConfiguratio
    if(!customConfigurationFile.empty()) {
       const std::filesystem::path customPath{ customConfigurationFile };
       if(!std::filesystem::is_regular_file(customPath, errorCode)) {
-         // TRANSLATORS: Error message when configuration file specified via -C/--config cannot be found:
+         // TRANSLATORS: Error message when configuration file specified via
+         // -C/--config cannot be found:
          // {0} = file path
          std::cerr << formatText("ERROR: Unable to find configuration file {0}!\n", customConfigurationFile);
          std::exit(1);
@@ -527,7 +528,8 @@ static void loadTestSystemInfo(std::string_view filePath,
 {
    std::ifstream fileStream{ std::string(filePath) };
    if(!fileStream.is_open()) {
-      // TRANSLATORS: Error message when test input file specified via -Y/--test-system-info cannot be found:
+      // TRANSLATORS: Error message when test input file specified via
+      // -Y/--test-system-info cannot be found:
       // {0} = file path
       std::cerr << formatText("ERROR: Unable to find input file {0}!\n", filePath);
       std::exit(1);
@@ -774,7 +776,8 @@ static void printSystemInformation(const SystemInfo& systemInfo)
       addTableRow(gettext("Used Swap:"), buffer);
    }
    else {
-      // TRANSLATORS: Table row label for swap, and message when no swap space is configured.
+      // TRANSLATORS: Table row label for swap, and message when no swap space
+      // is configured.
       addTableRow(gettext("Used Swap:"),
                   colors.Inactive + gettext("no swap available!") + colors.Basic);
    }
@@ -872,7 +875,8 @@ static void printSystemInformation(const SystemInfo& systemInfo)
                }
             }
             else {
-               // TRANSLATORS: Displayed when a network interface has no IPv4 address configured.
+               // TRANSLATORS: Displayed when a network interface has no IPv4
+               // address configured.
                formattedIpv4 = gettext("(No IPv4)");
             }
 
@@ -921,7 +925,8 @@ static void printSystemInformation(const SystemInfo& systemInfo)
 [[noreturn]] static void usage(const char* program,
                                const int   exitCode)
 {
-   // TRANSLATORS: Command-line syntax message prefix: "Usage: <program> [options]".
+   // TRANSLATORS: Command-line syntax message prefix:
+   // "Usage: <program> [options]".
    std::cerr << gettext("Usage:") << " " << program
              << " [-C|--config config_file] [-S|--scripts scripts_directory]"
              << " [-X|--test-date date_string] [-Y|--test-system-info input_file]"

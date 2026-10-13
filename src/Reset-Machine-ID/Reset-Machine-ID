@@ -180,7 +180,8 @@ EOF
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   # TRANSLATORS: Command-line syntax message prefix: "Usage: <program> [options]".
+   # TRANSLATORS: Command-line syntax message prefix:
+   # "Usage: <program> [options]".
    echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--zabbix|-Z zabbix_server] [--install-zabbix-agent|-A] [--yes-to-all-i-am-really-sure] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
@@ -225,7 +226,8 @@ case "${UNAME}" in
       ;;
 esac
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
-   # TRANSLATORS: Error message when enhanced/GNU getopt is not found or is incompatible.
+   # TRANSLATORS: Error message when enhanced/GNU getopt is not found or is
+   # incompatible.
    gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
    echo >&2
    exit 1
@@ -253,7 +255,8 @@ while [ $# -gt 0 ] ; do
          hostname="$2"
          shift
          if [[ ! "${hostname}" =~ ^([a-zA-Z][a-zA-Z0-9-]+\.)*[a-zA-Z][a-zA-Z0-9-]*$ ]] ; then
-            # TRANSLATORS: Error message when the specified hostname fails domain/hostname syntax validation:
+            # TRANSLATORS: Error message when the specified hostname fails
+            # domain/hostname syntax validation:
             # ${hostname} = invalid hostname string
             # shellcheck disable=SC2005
             echo >&2 "$(eval_gettext "ERROR: Invalid hostname \${hostname}!")"
@@ -307,7 +310,8 @@ fi
 
 # ====== Check permissions ==================================================
 if [ "${EUID}" -ne 0 ] ; then
-   # TRANSLATORS: Error message when script is executed without root/superuser privileges.
+   # TRANSLATORS: Error message when script is executed without root/superuser
+   # privileges.
    gettext >&2 "ERROR: Reset-Machine-ID requires superuser permissions!"
    echo >&2
    exit 1
@@ -492,7 +496,8 @@ EOF
    # ------ Apply configuration ---------------------------------------------
    if ! colordiff "${zabbixConfig}" "${zabbixConfig}.new" ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
-         # TRANSLATORS: Prompt asking whether to write suggested Zabbix agent configuration:
+         # TRANSLATORS: Prompt asking whether to write suggested Zabbix agent
+         # configuration:
          # ${zabbixConfig} = path to Zabbix configuration file
          echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Apply suggested Zabbix Agent changes in \${zabbixConfig}?") [yes/no]\x1b[0m "
          read -er applyChanges
@@ -544,7 +549,8 @@ if [ ${SKIP_SSH_CONFIGURATION} -eq 0 ] && [ -d /etc/ssh ] && [ -x "$(command -v 
    fi
 
    cd /etc/ssh || exit
-   # TRANSLATORS: Progress notification when verifying SSH client and daemon configuration.
+   # TRANSLATORS: Progress notification when verifying SSH client and daemon
+   # configuration.
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Checking SSH configuration ...")\x1b[0m"
 
    # ====== Suggest ssh_config updates ======================================
@@ -576,7 +582,8 @@ EOF
       echo
       if ! colordiff ssh_config ssh_config.suggested ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
-            # TRANSLATORS: Prompt asking user whether to apply suggested ssh_config modifications.
+            # TRANSLATORS: Prompt asking user whether to apply suggested
+            # ssh_config modifications.
             echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested ssh_config changes?") [yes/no]\x1b[0m "
             read -er applyChanges
          fi
@@ -652,7 +659,8 @@ EOF
       # ====== Suggest removal of Cloud-Init sshd configuration =============
       differences=0
       if [ -e sshd_config.d/50-cloud-init.conf ] ; then
-         # TRANSLATORS: Notification indicating proposal to remove cloud-init sshd configuration override.
+         # TRANSLATORS: Notification indicating proposal to remove cloud-init
+         # sshd configuration override.
          gettext "Suggested removal of sshd_config.d/50-cloud-init.conf:"
          echo
          cat sshd_config.d/50-cloud-init.conf
@@ -669,7 +677,8 @@ EOF
       sshd -f sshd_config.suggested -T >/dev/null
       if [ ${differences} -gt 0 ] ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
-            # TRANSLATORS: Prompt asking user whether to apply suggested sshd_config modifications.
+            # TRANSLATORS: Prompt asking user whether to apply suggested
+            # sshd_config modifications.
             echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested sshd_config changes?") [yes/no]\x1b[0m "
             read -er applyChanges
          fi
@@ -678,7 +687,8 @@ EOF
             cp sshd_config sshd_config.old
             mv sshd_config.suggested sshd_config
 
-            # TRANSLATORS: Status message when attempting to restart the SSH server daemon.
+            # TRANSLATORS: Status message when attempting to restart the SSH
+            # server daemon.
             echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
             if command -v service >/dev/null ; then
                # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
@@ -703,7 +713,8 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && command -v ssh-ke
    cd /etc/ssh || exit
 
    if [ ${YES_TO_ALL} -ne 1 ] ; then
-      # TRANSLATORS: Prompt asking whether to purge existing SSH host keys and generate new ones.
+      # TRANSLATORS: Prompt asking whether to purge existing SSH host keys
+      # and generate new ones.
       echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Remove existing SSH host keys and generate new ones?") [yes/no]\x1b[0m "
       read -er applyChanges
    fi
@@ -736,15 +747,18 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && command -v ssh-ke
       # TRANSLATORS: Progress notification when generating an ECDSA SSH host key.
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Generating new ECDSA key ...")\x1b[0m"
       time ssh-keygen -N "" -t ecdsa -b ${ECDSA_BITS} -f ssh_host_ecdsa_key
-      # TRANSLATORS: Progress notification when generating an RSA SSH host key.
+      # TRANSLATORS: Progress notification when generating an RSA SSH host key;
+      # this may take some time ...
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Generating new RSA key; this may take some time ...")\x1b[0m"
       time ssh-keygen -N "" -t rsa -b ${RSA_BITS} -f ssh_host_rsa_key
 
-      # TRANSLATORS: Completion message after successfully generating new SSH host keys.
+      # TRANSLATORS: Completion message after successfully generating new SSH
+      # host keys.
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Done!")\x1b[0m"
 
       if command -v service >/dev/null ; then
-         # TRANSLATORS: Status message when attempting to restart the SSH server daemon.
+         # TRANSLATORS: Status message when attempting to restart the SSH
+         # server daemon.
          echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
          # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
          service sshd restart 2>/dev/null || \
