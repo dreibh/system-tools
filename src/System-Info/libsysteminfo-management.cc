@@ -73,6 +73,9 @@ SystemInfo::SystemInfo(const unsigned int compatibilityVersion,
    if(flags & Flags::Battery) {
       obtainBatteryInformation();
    }
+   if(flags & Flags::User) {
+      obtainUserInformation();
+   }
 }
 
 

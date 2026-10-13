@@ -42,6 +42,7 @@ IF (WITH_LIBSYSTEMINFO)
       libsysteminfo-network.cc
       libsysteminfo-storage.cc
       libsysteminfo-battery.cc
+      libsysteminfo-user.cc
    )
    INSTALL(FILES       ${libsysteminfo_headers}
            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hipercontracer)

@@ -41,24 +41,36 @@
 .Sh SYNOPSIS
 .Nm get-system-info
 .Op Fl c Ar version | Fl Fl compatibility Ar version
+.br
 .Op Fl A | Fl Fl all
 .Op Fl a | Fl Fl none
+.br
 .Op Fl B | Fl Fl with-battery
 .Op Fl b | Fl Fl without-battery
+.br
 .Op Fl K | Fl Fl with-kernel
 .Op Fl k | Fl Fl without-kernel
+.br
 .Op Fl L | Fl Fl with-load
 .Op Fl l | Fl Fl without-load
+.br
 .Op Fl M | Fl Fl with-memory
 .Op Fl m | Fl Fl without-memory
+.br
 .Op Fl N | Fl Fl with-network
 .Op Fl n | Fl Fl without-network
+.br
 .Op Fl O | Fl Fl with-hostname
 .Op Fl o | Fl Fl without-hostname
+.br
 .Op Fl S | Fl Fl with-storage
 .Op Fl s | Fl Fl without-storage
-.Op Fl U | Fl Fl with-uptime
-.Op Fl u | Fl Fl without-uptime
+.br
+.Op Fl T | Fl Fl with-uptime
+.Op Fl t | Fl Fl without-uptime
+.br
+.Op Fl U | Fl Fl with-user
+.Op Fl u | Fl Fl without-user
 .Nm get-system-info
 .Op Fl h | Fl Fl help
 .Nm get-system-info
@@ -107,10 +119,14 @@ Disable query of hostname information.
 Enable query of storage and disk usage information.
 .It Fl s | Fl Fl without-storage
 Disable query of storage and disk usage information.
-.It Fl U | Fl Fl with-uptime
+.It Fl T | Fl Fl with-uptime
 Enable query of system uptime information.
-.It Fl u | Fl Fl without-uptime
+.It Fl t | Fl Fl without-uptime
 Disable query of system uptime information.
+.It Fl U | Fl Fl with-user
+Enable query of user information.
+.It Fl u | Fl Fl without-user
+Disable query of user information.
 .It Fl h | Fl Fl help
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
@@ -125,7 +141,7 @@ tool exits with 0 on success, and >0 in case of an error.
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It get-system-info
-.It get-system-info -a -O -U
+.It get-system-info -a -O -T -U
 .It get-system-info --none --with-memory --with-load
 .It get-system-info --without-battery
 .It LANGUAGE=de_AT get-system-info

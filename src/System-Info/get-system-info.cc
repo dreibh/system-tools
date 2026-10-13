@@ -54,8 +54,7 @@
                                const int   exitCode)
 {
    std::cerr << "Usage: " << program
-             << " [-h|--help] [-v|--version] "
-             << " [-c|--compatibility version]"
+             << " [-h|--help] [-v|--version] [-c|--compatibility version]"
              << " [-A|--all] [-a|--none]"
              << " [-B|--with-battery] [-b|--without-battery]"
              << " [-K|--with-kernel] [-k|--without-kernel]"
@@ -64,7 +63,8 @@
              << " [-N|--with-network] [-n|--without-network]"
              << " [-O|--with-hostname] [-o|--without-hostname]"
              << " [-S|--with-storage] [-s|--without-storage]"
-             << " [-U|--with-uptime] [-u|--without-uptime]\n";
+             << " [-T|--with-uptime] [-t|--without-uptime]"
+             << " [-U|--with-user] [-u|--without-user]\n";
    std::exit(exitCode);
 }
 
@@ -101,8 +101,10 @@ int main(int argc, char** argv)
       { "without-network",   no_argument,       nullptr, 'n' },
       { "with-storage",      no_argument,       nullptr, 'S' },
       { "without-storage",   no_argument,       nullptr, 's' },
-      { "with-uptime",       no_argument,       nullptr, 'U' },
-      { "without-uptime",    no_argument,       nullptr, 'u' },
+      { "with-uptime",       no_argument,       nullptr, 'T' },
+      { "without-uptime",    no_argument,       nullptr, 't' },
+      { "with-user",         no_argument,       nullptr, 'U' },
+      { "without-user",      no_argument,       nullptr, 'u' },
       {  nullptr,            0,                 nullptr, 0   }
    };
 
@@ -110,7 +112,7 @@ int main(int argc, char** argv)
    int longIndex { 0 };
    while((option = getopt_long(argc,
                                argv,
-                               "hvc:AaBbKkLlMmNnOoSsUu",
+                               "hvc:AaBbKkLlMmNnOoSsTtUu",
                                long_options,
                                &longIndex)) != -1) {
       switch(option) {
@@ -162,11 +164,17 @@ int main(int argc, char** argv)
          case 's':
             flags &= ~SystemInfo::Flags::Storage;
             break;
-         case 'U':
+         case 'T':
             flags |= SystemInfo::Flags::Uptime;
             break;
-         case 'u':
+         case 't':
             flags &= ~SystemInfo::Flags::Uptime;
+            break;
+         case 'U':
+            flags |= SystemInfo::Flags::User;
+            break;
+         case 'u':
+            flags &= ~SystemInfo::Flags::User;
             break;
          case 'c':
             compatibilityVersion = static_cast<unsigned int>(
