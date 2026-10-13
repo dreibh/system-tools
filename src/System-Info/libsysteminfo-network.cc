@@ -53,10 +53,10 @@
 #include <sys/ioctl.h>
 #endif
 #else
-#include <windows.h>
-#include <iphlpapi.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <windows.h>
+#include <iphlpapi.h>
 #if !defined(IFF_POINTOPOINT)
 #define IFF_POINTOPOINT 0x10
 #endif
@@ -191,7 +191,7 @@ static bool compareInterfaceAddresses(const InterfaceAddress& a,
       }
       return std::memcmp(mac1->sll_addr, mac2->sll_addr, mac1->sll_halen) < 0;
    }
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
    if(a.Address->sa_family == AF_LINK) {
       const auto* mac1 = reinterpret_cast<const sockaddr_dl*>(a.Address);
       const auto* mac2 = reinterpret_cast<const sockaddr_dl*>(b.Address);

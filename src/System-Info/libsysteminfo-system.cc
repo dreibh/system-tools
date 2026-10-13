@@ -31,6 +31,7 @@
 
 #include <cctype>
 #include <chrono>
+#include <cstdlib>
 #include <cstring>
 #include <format>
 #include <fstream>
@@ -63,7 +64,6 @@
 #include <utmp.h>
 #elif defined(__sun__)
 #include <dirent.h>
-#include <kstat.h>
 #include <sys/loadavg.h>
 #include <utmpx.h>
 #elif defined(__gnu_hurd__)
@@ -74,6 +74,7 @@
 #include <sys/sysctl.h>
 #include <utmpx.h>
 #elif defined(_WIN32)
+#include <winsock2.h>
 #include <windows.h>
 #include <tlhelp32.h>
 #include <wtsapi32.h>
@@ -314,11 +315,11 @@ static unsigned int getUserCount()
             if(className && (std::strcmp(className, "user") == 0)) {
                count++;
             }
-            free(className);
+            std::free(className);
          }
-         free(sessions[i]);
+         std::free(sessions[i]);
       }
-      free(sessions);
+      std::free(sessions);
    }
 #else
    setutxent();

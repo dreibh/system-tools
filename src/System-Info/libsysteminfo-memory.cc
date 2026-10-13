@@ -30,6 +30,7 @@
 #include <libsysteminfo.h>
 
 #include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -52,6 +53,9 @@
 #include <sys/swap.h>
 #include <sys/sysctl.h>
 #include <uvm/uvm_extern.h>
+#elif defined(__sun__)
+#include <sys/param.h>
+#include <sys/swap.h>
 #elif defined(__APPLE__)
 #include <mach/mach.h>
 #include <mach/mach_host.h>
@@ -160,15 +164,37 @@ void SystemInfo::obtainMemoryInformation()
    memoryAvailable = (static_cast<uint64_t>(vInactiveCount) + vFreeCount) * pageSize;
    memoryUsed      = (memoryTotal >= memoryAvailable) ? (memoryTotal - memoryAvailable) : 0;
 
-#if defined(__NetBSD__) || defined(__OpenBSD__)
+#if defined(__FreeBSD__)
+   int    mibSwap[16];
+   size_t mibSwapSize = sizeof(mibSwap) / sizeof(mibSwap[0]);
+   if(sysctlnametomib("vm.swap_info", mibSwap, &mibSwapSize) == 0) {
+      for(int n = 0; ; ++n) {
+         mibSwap[mibSwapSize] = n;
+         struct xswdev xsw { };
+         size_t        xswSize = sizeof(xsw);
+         if(sysctl(mibSwap, static_cast<u_int>(mibSwapSize + 1), &xsw, &xswSize, nullptr, 0) == -1) {
+            break;
+         }
+         if(xsw.xsw_version != XSWDEV_VERSION) {
+            break;
+         }
+         const uint64_t totalDev     = static_cast<uint64_t>(xsw.xsw_nblks) * pageSize;
+         const uint64_t usedDev      = static_cast<uint64_t>(xsw.xsw_used) * pageSize;
+         const uint64_t availableDev = (totalDev >= usedDev) ? (totalDev - usedDev) : 0;
+         swapTotal     += totalDev;
+         swapAvailable += availableDev;
+         swapUsed      += usedDev;
+      }
+   }
+#elif defined(__NetBSD__) || defined(__OpenBSD__)
    const int numSwap = swapctl(SWAP_NSWAP, nullptr, 0);
    if(numSwap > 0) {
-      std::vector<struct swapent> swapDevices(numSwap);
+      std::vector<struct swapent> swapDevices(static_cast<size_t>(numSwap));
       const int swapRecords = swapctl(SWAP_STATS, swapDevices.data(), numSwap);
       for(int i = 0; i < swapRecords; ++i) {
-         if(swapDevices[i].se_flags & SWF_INUSE) {
-            const uint64_t totalBytes = static_cast<uint64_t>(swapDevices[i].se_nblks) * DEV_BSIZE;
-            const uint64_t usedBytes  = static_cast<uint64_t>(swapDevices[i].se_inuse) * DEV_BSIZE;
+         if(swapDevices[static_cast<size_t>(i)].se_flags & SWF_INUSE) {
+            const uint64_t totalBytes = static_cast<uint64_t>(swapDevices[static_cast<size_t>(i)].se_nblks) * DEV_BSIZE;
+            const uint64_t usedBytes  = static_cast<uint64_t>(swapDevices[static_cast<size_t>(i)].se_inuse) * DEV_BSIZE;
             swapTotal     += totalBytes;
             swapUsed      += usedBytes;
             swapAvailable += (totalBytes - usedBytes);
@@ -176,6 +202,48 @@ void SystemInfo::obtainMemoryInformation()
       }
    }
 #endif
+#elif defined(__sun__)
+   const long pageSize = sysconf(_SC_PAGESIZE);
+   if(pageSize > 0) {
+      const long physicalPages          = sysconf(_SC_PHYS_PAGES);
+      const long availablePhysicalPages = sysconf(_SC_AVPHYS_PAGES);
+
+      if(physicalPages >= 0) {
+         memoryTotal = static_cast<uint64_t>(physicalPages) * static_cast<uint64_t>(pageSize);
+      }
+      if(availablePhysicalPages >= 0) {
+         memoryAvailable = static_cast<uint64_t>(availablePhysicalPages) * static_cast<uint64_t>(pageSize);
+      }
+      if(memoryTotal >= memoryAvailable) {
+         memoryUsed = memoryTotal - memoryAvailable;
+      }
+
+      const int numberOfSwapDevices = swapctl(SC_GETNSWP, nullptr);
+      if(numberOfSwapDevices > 0) {
+         const size_t tableSize = sizeof(int) + static_cast<size_t>(numberOfSwapDevices) * sizeof(struct swapent);
+         auto* swapTable = reinterpret_cast<struct swaptable*>(std::malloc(tableSize));
+         if(swapTable != nullptr) {
+            std::vector<std::vector<char>> pathBuffers(static_cast<size_t>(numberOfSwapDevices), std::vector<char>(MAXPATHLEN));
+            swapTable->swt_n = numberOfSwapDevices;
+            for(int i = 0; i < numberOfSwapDevices; ++i) {
+               swapTable->swt_ent[i].ste_path = pathBuffers[static_cast<size_t>(i)].data();
+            }
+            const int returned = swapctl(SC_LIST, swapTable);
+            if(returned > 0) {
+               for(int i = 0; i < returned; ++i) {
+                  if(!(swapTable->swt_ent[i].ste_flags & ST_INDEL)) {
+                     swapTotal     += static_cast<uint64_t>(swapTable->swt_ent[i].ste_pages) * static_cast<uint64_t>(pageSize);
+                     swapAvailable += static_cast<uint64_t>(swapTable->swt_ent[i].ste_free) * static_cast<uint64_t>(pageSize);
+                  }
+               }
+               if(swapTotal >= swapAvailable) {
+                  swapUsed = swapTotal - swapAvailable;
+               }
+            }
+            std::free(swapTable);
+         }
+      }
+   }
 #elif defined(__APPLE__)
    int64_t memSize = 0;
    size_t  length  = sizeof(memSize);
