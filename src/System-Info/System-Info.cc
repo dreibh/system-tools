@@ -142,6 +142,7 @@ static std::string formatPercentage5_1(const double percentage)
 
 
 // ###### UTF-8 visual column display width calculation ######################
+// ###### UTF-8 visual column display width calculation ######################
 static size_t utf8DisplayWidth(std::string_view stringView)
 {
    size_t width = 0;
@@ -161,38 +162,42 @@ static size_t utf8DisplayWidth(std::string_view stringView)
       }
 
       // Decode UTF-8 code point
-      const auto firstByte = static_cast<unsigned char>(stringView[index]);
-      char32_t   codePoint = 0;
-      size_t     charBytes = 0;
+      const uint32_t firstByte = static_cast<unsigned char>(stringView[index]);
+      char32_t       codePoint = 0x00;
+      size_t         charBytes = 0;
 
-      if(firstByte < 0x80) {
-         codePoint = firstByte;
+      const auto continuationByte = [&](const size_t offset) noexcept -> uint32_t {
+         return static_cast<unsigned char>(stringView[index + offset]) & 0x3fu;
+      };
+
+      if(firstByte < 0x80u) {
+         codePoint = static_cast<char32_t>(firstByte);
          charBytes = 1;
       }
-      else if((firstByte & 0xe0) == 0xc0) {
+      else if((firstByte & 0xe0u) == 0xc0u) {
          if(index + 1 >= stringView.size()) {
             break;
          }
-         codePoint = ((firstByte & 0x1f) << 6) | (static_cast<unsigned char>(stringView[index + 1]) & 0x3f);
+         codePoint = static_cast<char32_t>(((firstByte & 0x1fu) << 6u) | continuationByte(1));
          charBytes = 2;
       }
-      else if((firstByte & 0xf0) == 0xe0) {
+      else if((firstByte & 0xf0u) == 0xe0u) {
          if(index + 2 >= stringView.size()) {
             break;
          }
-         codePoint = ((firstByte & 0x0f) << 12)
-                   | ((static_cast<unsigned char>(stringView[index + 1]) & 0x3f) << 6)
-                   | (static_cast<unsigned char>(stringView[index + 2]) & 0x3f);
+         codePoint = static_cast<char32_t>(((firstByte & 0x0fu) << 12u) |
+                                           (continuationByte(1) << 6u) |
+                                           continuationByte(2));
          charBytes = 3;
       }
-      else if((firstByte & 0xf8) == 0xf0) {
+      else if((firstByte & 0xf8u) == 0xf0u) {
          if(index + 3 >= stringView.size()) {
             break;
          }
-         codePoint = ((firstByte & 0x07) << 18)
-                   | ((static_cast<unsigned char>(stringView[index + 1]) & 0x3f) << 12)
-                   | ((static_cast<unsigned char>(stringView[index + 2]) & 0x3f) << 6)
-                   | (static_cast<unsigned char>(stringView[index + 3]) & 0x3f);
+         codePoint = static_cast<char32_t>(((firstByte & 0x07u) << 18u) |
+                                           (continuationByte(1) << 12u) |
+                                           (continuationByte(2) << 6u) |
+                                           continuationByte(3));
          charBytes = 4;
       }
       else {
@@ -202,8 +207,8 @@ static size_t utf8DisplayWidth(std::string_view stringView)
       index += charBytes;
 
       // Skip zero-width control code points
-      if((codePoint == 0x200e) || (codePoint == 0x200f) || (codePoint == 0x200b) ||
-         (codePoint == 0xfeff) || ((codePoint >= 0x200b) && (codePoint <= 0x200f))) {
+      if((codePoint == 0x200eu) || (codePoint == 0x200fu) || (codePoint == 0x200bu) ||
+         (codePoint == 0xfeffu) || ((codePoint >= 0x200bu) && (codePoint <= 0x200fu))) {
          continue;
       }
 
@@ -213,15 +218,15 @@ static size_t utf8DisplayWidth(std::string_view stringView)
          width += static_cast<size_t>(characterWidth);
       }
 #else
-      if(((codePoint >= 0x1100)  && (codePoint <= 0x115f))  ||
-         ((codePoint >= 0x2e80)  && (codePoint <= 0xa4cf))  ||
-         ((codePoint >= 0xac00)  && (codePoint <= 0xd7a3))  ||
-         ((codePoint >= 0xf900)  && (codePoint <= 0xfaff))  ||
-         ((codePoint >= 0xfe10)  && (codePoint <= 0xfe19))  ||
-         ((codePoint >= 0xfe30)  && (codePoint <= 0xfe6f))  ||
-         ((codePoint >= 0xff00)  && (codePoint <= 0xff60))  ||
-         ((codePoint >= 0xffe0)  && (codePoint <= 0xffe6))  ||
-         ((codePoint >= 0x20000) && (codePoint <= 0x3fffd))) {
+      if(((codePoint >= 0x1100u)  && (codePoint <= 0x115fu))  ||
+         ((codePoint >= 0x2e80u)  && (codePoint <= 0xa4cfu))  ||
+         ((codePoint >= 0xac00u)  && (codePoint <= 0xd7a3u))  ||
+         ((codePoint >= 0xf900u)  && (codePoint <= 0xfaffu))  ||
+         ((codePoint >= 0xfe10u)  && (codePoint <= 0xfe19u))  ||
+         ((codePoint >= 0xfe30u)  && (codePoint <= 0xfe6fu))  ||
+         ((codePoint >= 0xff00u)  && (codePoint <= 0xff60u))  ||
+         ((codePoint >= 0xffe0u)  && (codePoint <= 0xffe6u))  ||
+         ((codePoint >= 0x20000u) && (codePoint <= 0x3fffdu))) {
          width += 2;
       }
       else {
