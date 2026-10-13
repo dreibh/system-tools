@@ -48,6 +48,12 @@
 .Op Fl B | Fl Fl with-battery
 .Op Fl b | Fl Fl without-battery
 .br
+.Op Fl E | Fl Fl with-os
+.Op Fl e | Fl Fl without-os
+.br
+.Op Fl F | Fl Fl with-ssh
+.Op Fl f | Fl Fl without-ssh
+.br
 .Op Fl K | Fl Fl with-kernel
 .Op Fl k | Fl Fl without-kernel
 .br
@@ -95,10 +101,18 @@ Do not query any system information.
 Enable query of battery information.
 .It Fl b | Fl Fl without-battery
 Disable query of battery information.
+.It Fl E | Fl Fl with-os
+Enable query of operating system release information.
+.It Fl e | Fl Fl without-os
+Disable query of operating system release information.
+.It Fl F | Fl Fl with-ssh
+Enable query of SSH host key fingerprint information.
+.It Fl f | Fl Fl without-ssh
+Disable query of SSH host key fingerprint information.
 .It Fl K | Fl Fl with-kernel
-Enable query of operating system and kernel information.
+Enable query of kernel information.
 .It Fl k | Fl Fl without-kernel
-Disable query of operating system and kernel information.
+Disable query of kernel information.
 .It Fl L | Fl Fl with-load
 Enable query of system load and process information.
 .It Fl l | Fl Fl without-load

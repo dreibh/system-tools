@@ -57,6 +57,8 @@
              << " [-h|--help] [-v|--version] [-c|--compatibility version]"
              << " [-A|--all] [-a|--none]"
              << " [-B|--with-battery] [-b|--without-battery]"
+             << " [-E|--with-os] [-e|--without-os]"
+             << " [-F|--with-ssh] [-f|--without-ssh]"
              << " [-K|--with-kernel] [-k|--without-kernel]"
              << " [-L|--with-load] [-l|--without-load]"
              << " [-M|--with-memory] [-m|--without-memory]"
@@ -99,6 +101,10 @@ int main(int argc, char** argv)
       { "without-memory",    no_argument,       nullptr, 'm' },
       { "with-network",      no_argument,       nullptr, 'N' },
       { "without-network",   no_argument,       nullptr, 'n' },
+      { "with-os",           no_argument,       nullptr, 'E' },
+      { "without-os",        no_argument,       nullptr, 'e' },
+      { "with-ssh",          no_argument,       nullptr, 'F' },
+      { "without-ssh",       no_argument,       nullptr, 'f' },
       { "with-storage",      no_argument,       nullptr, 'S' },
       { "without-storage",   no_argument,       nullptr, 's' },
       { "with-uptime",       no_argument,       nullptr, 'T' },
@@ -112,7 +118,7 @@ int main(int argc, char** argv)
    int longIndex { 0 };
    while((option = getopt_long(argc,
                                argv,
-                               "hvc:AaBbKkLlMmNnOoSsTtUu",
+                               "hvc:AaBbEeFfKkLlMmNnOoSsTtUu",
                                long_options,
                                &longIndex)) != -1) {
       switch(option) {
@@ -127,6 +133,18 @@ int main(int argc, char** argv)
             break;
          case 'b':
             flags &= ~SystemInfo::Flags::Battery;
+            break;
+         case 'E':
+            flags |= SystemInfo::Flags::OS;
+            break;
+         case 'e':
+            flags &= ~SystemInfo::Flags::OS;
+            break;
+         case 'F':
+            flags |= SystemInfo::Flags::SSH;
+            break;
+         case 'f':
+            flags &= ~SystemInfo::Flags::SSH;
             break;
          case 'O':
             flags |= SystemInfo::Flags::Hostname;
