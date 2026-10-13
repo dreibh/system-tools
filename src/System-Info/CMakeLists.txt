@@ -57,10 +57,11 @@ IF (WITH_LIBSYSTEMINFO)
       IF ( (("${TYPE}" STREQUAL "static") AND (WITH_STATIC_LIBRARIES)) OR
            (("${TYPE}" STREQUAL "shared") AND (WITH_SHARED_LIBRARIES)) )
          SET_TARGET_PROPERTIES(libsysteminfo-${TYPE} PROPERTIES
-            OUTPUT_NAME         systeminfo
-            CLEAN_DIRECT_OUTPUT 1
-            VERSION             ${BUILD_VERSION}
-            SOVERSION           ${BUILD_MAJOR}
+            OUTPUT_NAME                systeminfo
+            CLEAN_DIRECT_OUTPUT        1
+            VERSION                    ${BUILD_VERSION}
+            SOVERSION                  ${BUILD_MAJOR}
+            WINDOWS_EXPORT_ALL_SYMBOLS ON
          )
          TARGET_COMPILE_DEFINITIONS(libsysteminfo-${TYPE} PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
          TARGET_INCLUDE_DIRECTORIES(libsysteminfo-${TYPE} PRIVATE
@@ -83,7 +84,6 @@ IF (WITH_LIBSYSTEMINFO)
                                ${Intl_LIBRARIES}
                                ${SOCKET_LIBRARY}
                                ${NSL_LIBRARY}
-                               ${GETOPT_LIBRARY}
                                ${KSTAT_LIBRARY})
          INSTALL(TARGETS     libsysteminfo-${TYPE}
                  DESTINATION ${CMAKE_INSTALL_LIBDIR})
@@ -121,7 +121,8 @@ IF (WITH_GET_SYSTEM_INFO)
    TARGET_INCLUDE_DIRECTORIES(get-system-info PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${SYSTEMD_INCLUDE_DIRS} ${Intl_INCLUDE_DIRS})
    TARGET_LINK_LIBRARIES(get-system-info PRIVATE
                          libsysteminfo-${libraryType}
-                         ${Intl_LIBRARIES})
+                         ${Intl_LIBRARIES}
+                         ${GETOPT_LIBRARY})
    IF (WIN32)
       TARGET_LINK_LIBRARIES(get-system-info PRIVATE ws2_32 iphlpapi wtsapi32 psapi)
    ENDIF()
