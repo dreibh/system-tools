@@ -169,30 +169,30 @@ static size_t utf8DisplayWidth(std::string_view stringView)
          codePoint = firstByte;
          charBytes = 1;
       }
-      else if((firstByte & 0xE0) == 0xC0) {
+      else if((firstByte & 0xe0) == 0xc0) {
          if(index + 1 >= stringView.size()) {
             break;
          }
-         codePoint = ((firstByte & 0x1F) << 6) | (static_cast<unsigned char>(stringView[index + 1]) & 0x3F);
+         codePoint = ((firstByte & 0x1f) << 6) | (static_cast<unsigned char>(stringView[index + 1]) & 0x3f);
          charBytes = 2;
       }
-      else if((firstByte & 0xF0) == 0xE0) {
+      else if((firstByte & 0xf0) == 0xe0) {
          if(index + 2 >= stringView.size()) {
             break;
          }
-         codePoint = ((firstByte & 0x0F) << 12)
-                   | ((static_cast<unsigned char>(stringView[index + 1]) & 0x3F) << 6)
-                   | (static_cast<unsigned char>(stringView[index + 2]) & 0x3F);
+         codePoint = ((firstByte & 0x0f) << 12)
+                   | ((static_cast<unsigned char>(stringView[index + 1]) & 0x3f) << 6)
+                   | (static_cast<unsigned char>(stringView[index + 2]) & 0x3f);
          charBytes = 3;
       }
-      else if((firstByte & 0xF8) == 0xF0) {
+      else if((firstByte & 0xf8) == 0xf0) {
          if(index + 3 >= stringView.size()) {
             break;
          }
          codePoint = ((firstByte & 0x07) << 18)
-                   | ((static_cast<unsigned char>(stringView[index + 1]) & 0x3F) << 12)
-                   | ((static_cast<unsigned char>(stringView[index + 2]) & 0x3F) << 6)
-                   | (static_cast<unsigned char>(stringView[index + 3]) & 0x3F);
+                   | ((static_cast<unsigned char>(stringView[index + 1]) & 0x3f) << 12)
+                   | ((static_cast<unsigned char>(stringView[index + 2]) & 0x3f) << 6)
+                   | (static_cast<unsigned char>(stringView[index + 3]) & 0x3f);
          charBytes = 4;
       }
       else {
@@ -202,8 +202,8 @@ static size_t utf8DisplayWidth(std::string_view stringView)
       index += charBytes;
 
       // Skip zero-width control code points
-      if((codePoint == 0x200E) || (codePoint == 0x200F) || (codePoint == 0x200B) ||
-         (codePoint == 0xFEFF) || ((codePoint >= 0x200B) && (codePoint <= 0x200F))) {
+      if((codePoint == 0x200e) || (codePoint == 0x200f) || (codePoint == 0x200b) ||
+         (codePoint == 0xfeff) || ((codePoint >= 0x200b) && (codePoint <= 0x200f))) {
          continue;
       }
 
@@ -213,15 +213,15 @@ static size_t utf8DisplayWidth(std::string_view stringView)
          width += static_cast<size_t>(characterWidth);
       }
 #else
-      if(((codePoint >= 0x1100)  && (codePoint <= 0x115F))  ||
-         ((codePoint >= 0x2E80)  && (codePoint <= 0xA4CF))  ||
-         ((codePoint >= 0xAC00)  && (codePoint <= 0xD7A3))  ||
-         ((codePoint >= 0xF900)  && (codePoint <= 0xFAFF))  ||
-         ((codePoint >= 0xFE10)  && (codePoint <= 0xFE19))  ||
-         ((codePoint >= 0xFE30)  && (codePoint <= 0xFE6F))  ||
-         ((codePoint >= 0xFF00)  && (codePoint <= 0xFF60))  ||
-         ((codePoint >= 0xFFE0)  && (codePoint <= 0xFFE6))  ||
-         ((codePoint >= 0x20000) && (codePoint <= 0x3FFFD))) {
+      if(((codePoint >= 0x1100)  && (codePoint <= 0x115f))  ||
+         ((codePoint >= 0x2e80)  && (codePoint <= 0xa4cf))  ||
+         ((codePoint >= 0xac00)  && (codePoint <= 0xd7a3))  ||
+         ((codePoint >= 0xf900)  && (codePoint <= 0xfaff))  ||
+         ((codePoint >= 0xfe10)  && (codePoint <= 0xfe19))  ||
+         ((codePoint >= 0xfe30)  && (codePoint <= 0xfe6f))  ||
+         ((codePoint >= 0xff00)  && (codePoint <= 0xff60))  ||
+         ((codePoint >= 0xffe0)  && (codePoint <= 0xffe6))  ||
+         ((codePoint >= 0x20000) && (codePoint <= 0x3fffd))) {
          width += 2;
       }
       else {
@@ -371,7 +371,7 @@ static void printSshKeyFingerprints()
          continue;
       }
 
-      char lineBuffer[512] { 0 };
+      char lineBuffer[512] { 0x00 };
       if(std::fgets(lineBuffer, sizeof(lineBuffer), pipe) != nullptr) {
          std::string line(lineBuffer);
          while(!line.empty() && ((line.back() == '\r') || (line.back() == '\n'))) {
@@ -492,13 +492,13 @@ static void loadTestSystemInfo(std::string_view filePath,
       else {
          char* endPointer = nullptr;
          const unsigned long long number = std::strtoull(value.c_str(), &endPointer, 10);
-         if((endPointer != value.c_str()) && (*endPointer == '\0')) {
+         if((endPointer != value.c_str()) && (*endPointer == 0x00)) {
             if((key.find("mem") != std::string::npos) ||
                (key.find("swap") != std::string::npos) ||
                (key.find("total") != std::string::npos) ||
                (key.find("used") != std::string::npos) ||
                (key.find("available") != std::string::npos) ||
-               (number > 0xFFFFFFFFULL)) {
+               (number > 0xffffffffull)) {
                systemInfo.addUInt64(key, number);
             }
             else {
@@ -834,8 +834,8 @@ int main(int argc, char** argv)
 
    is_ltr = (std::string(gettext("LTR")) != "RTL");
    if(!is_ltr) {
-      rlm = "\u200F";
-      lrm = "\u200E";
+      rlm = "\u200f";
+      lrm = "\u200e";
    }
 
    std::vector<std::string> scriptDirectories = {
