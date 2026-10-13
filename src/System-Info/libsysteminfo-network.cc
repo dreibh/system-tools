@@ -66,6 +66,13 @@
 #endif
 
 
+#if !defined(_WIN32)
+using InterfaceFlags = decltype(ifaddrs::ifa_flags);
+#else
+using InterfaceFlags = unsigned int;
+#endif
+
+
 // ###### Count set bits in byte array ######################################
 static unsigned int countSetBits(const uint8_t*     array,
                                  const unsigned int size)
@@ -83,7 +90,7 @@ static unsigned int countSetBits(const uint8_t*     array,
 
 
 // ###### Format interface flags ############################################
-static std::string formatFlags(const unsigned int flags)
+static std::string formatFlags(const InterfaceFlags flags)
 {
    std::string result = std::format("0x{:x}: <{}>", flags, (flags & IFF_UP) ? "UP" : "DOWN");
 #if defined(IFF_LOWER_UP)
@@ -157,7 +164,7 @@ struct InterfaceAddress {
    std::string     IfName;
    const sockaddr* Address { nullptr };
    unsigned int    PrefixLen { 0 };
-   unsigned int    Flags { 0 };
+   InterfaceFlags  Flags { 0 };
 };
 
 
@@ -374,7 +381,7 @@ void SystemInfo::obtainNetworkInformation(const bool filterLocalScope)
          std::strncpy(friendlyName, pAdapter->AdapterName, sizeof(friendlyName) - 1);
       }
 
-      unsigned int flags = 0;
+      InterfaceFlags flags = 0;
       if(pAdapter->OperStatus == IfOperStatusUp) {
          flags |= IFF_UP | IFF_RUNNING;
       }
