@@ -42,6 +42,7 @@ export TEXTDOMAIN="Fingerprint-SSH-Keys"
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
+   # TRANSLATORS: Command-line syntax message prefix: "Usage: <program> [options]".
    echo >&2 "$(gettext "Usage:") $0 [-A|--all] [-a|--none] [-R|--with-raw] [-r|--without-raw] [-D|--with-dns] [-d|--without-dns] [-S|--with-ssh] [-s|--without-ssh] [-F|--format {text|python|csv}] [-K|--key-directory directory] [--include-deprecated] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
@@ -58,6 +59,7 @@ version () {
 
 # ====== Handle arguments ===================================================
 if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
+   # TRANSLATORS: Error message when installed Bash version is older than 4.4.
    gettext >&2 "ERROR: Bash 4.4 or higher is required!"
    echo >&2
    exit 1
@@ -84,6 +86,7 @@ case "${UNAME}" in
       ;;
 esac
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+   # TRANSLATORS: Error message when enhanced/GNU getopt is not found or is incompatible.
    gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
    echo >&2
    exit 1
@@ -140,6 +143,8 @@ while [ $# -gt 0 ] ; do
             text | python | csv)
                ;;
             *)
+               # TRANSLATORS: Error message when an invalid output format is specified:
+               # ${FORMAT} = specified format name
                eval_gettext >&2 "ERROR: Invalid format '\${FORMAT}'! Allowed formats: text, python, csv."
                echo >&2
                usage 1
@@ -150,6 +155,8 @@ while [ $# -gt 0 ] ; do
       -K | --key-directory)
          KEY_DIRECTORY="$2"
          if [ ! -d "${KEY_DIRECTORY}" ] ; then
+            # TRANSLATORS: Error message when the specified key directory does not exist:
+            # ${KEY_DIRECTORY} = directory path
             eval_gettext >&2 "ERROR: Key directory '\${KEY_DIRECTORY}' does not exist!"
             echo >&2
             exit 1
@@ -222,6 +229,8 @@ if [ -n "${sshDirectory}" ] && command -v ssh-keygen >/dev/null ; then
          if [ ${WITH_RAW} -ne 0 ] ; then
             printSeparator
             if [ "${FORMAT}" != "csv" ] ; then
+               # TRANSLATORS: Header for raw public keys section:
+               # ${hostname} = system hostname or FQDN
                echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in raw format:")\x1b[0m"
             fi
             keyNumber=1
@@ -257,6 +266,8 @@ if [ -n "${sshDirectory}" ] && command -v ssh-keygen >/dev/null ; then
          if [ ${WITH_SSH} -ne 0 ] ; then
             printSeparator
             if [ "${FORMAT}" != "csv" ] ; then
+               # TRANSLATORS: Header for SSH fingerprint records section:
+               # ${hostname} = system hostname or FQDN
                echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in SSH format:")\x1b[0m"
             fi
             keyNumber=1
@@ -291,6 +302,8 @@ if [ -n "${sshDirectory}" ] && command -v ssh-keygen >/dev/null ; then
          if [ ${WITH_DNS} -ne 0 ] ; then
             printSeparator
             if [ "${FORMAT}" != "csv" ] ; then
+               # TRANSLATORS: Header for DNS SSHFP resource records section:
+               # ${hostname} = system hostname or FQDN
                echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in DNS RR format:")\x1b[0m"
             fi
             keyNumber=1

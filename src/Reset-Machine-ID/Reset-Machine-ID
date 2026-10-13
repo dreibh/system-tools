@@ -180,6 +180,7 @@ EOF
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
+   # TRANSLATORS: Command-line syntax message prefix: "Usage: <program> [options]".
    echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--zabbix|-Z zabbix_server] [--install-zabbix-agent|-A] [--yes-to-all-i-am-really-sure] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
@@ -197,6 +198,7 @@ version () {
 
 # ====== Handle arguments ===================================================
 if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
+   # TRANSLATORS: Error message when installed Bash version is older than 4.4.
    gettext >&2 "ERROR: Bash 4.4 or higher is required!"
    echo >&2
    exit 1
@@ -223,6 +225,7 @@ case "${UNAME}" in
       ;;
 esac
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+   # TRANSLATORS: Error message when enhanced/GNU getopt is not found or is incompatible.
    gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
    echo >&2
    exit 1
@@ -250,6 +253,8 @@ while [ $# -gt 0 ] ; do
          hostname="$2"
          shift
          if [[ ! "${hostname}" =~ ^([a-zA-Z][a-zA-Z0-9-]+\.)*[a-zA-Z][a-zA-Z0-9-]*$ ]] ; then
+            # TRANSLATORS: Error message when the specified hostname fails domain/hostname syntax validation:
+            # ${hostname} = invalid hostname string
             # shellcheck disable=SC2005
             echo >&2 "$(eval_gettext "ERROR: Invalid hostname \${hostname}!")"
             exit 1
@@ -302,6 +307,7 @@ fi
 
 # ====== Check permissions ==================================================
 if [ "${EUID}" -ne 0 ] ; then
+   # TRANSLATORS: Error message when script is executed without root/superuser privileges.
    gettext >&2 "ERROR: Reset-Machine-ID requires superuser permissions!"
    echo >&2
    exit 1
@@ -334,12 +340,8 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
          for currentName in ${currentNames} ; do
             if [[ "${currentName}" =~ ^(localhost|localhost[46]|ip6-localhost|ip6-loopback)(\..*$|$) ]] ; then
                newNames="${newNames} ${currentName}"
-            #else
-               #echo >&2 "${currentName} DDD"
             fi
-
          done
-
          # shellcheck disable=SC2001
          line="$(echo "${line}" | sed -e "s/\([[:blank:]][[:blank:]]*\).*$/\1${newNames}/g")"
 
@@ -376,6 +378,7 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
    # ====== Apply changes ================================================
    if [ "${differences}" -gt 0 ] ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
+         # TRANSLATORS: Prompt asking user whether to apply hostname changes.
          echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Update hostname?") [yes/no]\x1b[0m "
          read -er applyChanges
       fi
@@ -402,6 +405,8 @@ fi
 if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
    if [ ${YES_TO_ALL} -ne 1 ] ; then
       machineID="$(cat /etc/machine-id)"
+      # TRANSLATORS: Prompt asking whether to reset system machine ID:
+      # ${machineID} = current machine ID string
       echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "The current machine ID is \${machineID}. Reset it?") [yes/no]\x1b[0m "
       read -er applyChanges
    fi
@@ -421,6 +426,8 @@ if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
       fi
       # shellcheck disable=SC2034
       machineID="$(cat /etc/machine-id)"
+      # TRANSLATORS: Status message displaying newly generated machine ID:
+      # ${machineID} = new machine ID string
       eval_gettext "The new machine ID is \${machineID}."
       echo
 
@@ -452,6 +459,7 @@ if [ "${ZABBIX_SERVER}" != "" ] ; then
          if [ ${stage} -eq 1 ] ; then
             if [ ${INSTALL_ZABBIX_AGENT} -eq 1 ] ; then
                if [ ${YES_TO_ALL} -ne 1 ] ; then
+                  # TRANSLATORS: Prompt asking user whether to install Zabbix agent.
                   echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Install Zabbix agent?") [yes/no]\x1b[0m "
                   read -er applyChanges
                fi
@@ -484,6 +492,8 @@ EOF
    # ------ Apply configuration ---------------------------------------------
    if ! colordiff "${zabbixConfig}" "${zabbixConfig}.new" ; then
       if [ ${YES_TO_ALL} -ne 1 ] ; then
+         # TRANSLATORS: Prompt asking whether to write suggested Zabbix agent configuration:
+         # ${zabbixConfig} = path to Zabbix configuration file
          echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Apply suggested Zabbix Agent changes in \${zabbixConfig}?") [yes/no]\x1b[0m "
          read -er applyChanges
       fi
@@ -497,6 +507,7 @@ EOF
             done
          fi
       else
+         # TRANSLATORS: Status message shown when user chooses not to apply changes.
          gettext "Skipped!"
          echo
       fi
@@ -533,6 +544,7 @@ if [ ${SKIP_SSH_CONFIGURATION} -eq 0 ] && [ -d /etc/ssh ] && [ -x "$(command -v 
    fi
 
    cd /etc/ssh || exit
+   # TRANSLATORS: Progress notification when verifying SSH client and daemon configuration.
    echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Checking SSH configuration ...")\x1b[0m"
 
    # ====== Suggest ssh_config updates ======================================
@@ -559,10 +571,12 @@ EOF
 
    # ====== Apply ssh_config updates ========================================
    if [ -e ssh_config ] ; then
+      # TRANSLATORS: Header introducing diff of proposed changes to ssh_config.
       gettext "Suggested ssh_config changes:"
       echo
       if ! colordiff ssh_config ssh_config.suggested ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
+            # TRANSLATORS: Prompt asking user whether to apply suggested ssh_config modifications.
             echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested ssh_config changes?") [yes/no]\x1b[0m "
             read -er applyChanges
          fi
@@ -570,6 +584,7 @@ EOF
             cp ssh_config ssh_config.old
             mv ssh_config.suggested ssh_config
          else
+            # TRANSLATORS: Status message shown when user chooses not to apply changes.
             gettext "Skipped!"
             echo
          fi
@@ -637,6 +652,7 @@ EOF
       # ====== Suggest removal of Cloud-Init sshd configuration =============
       differences=0
       if [ -e sshd_config.d/50-cloud-init.conf ] ; then
+         # TRANSLATORS: Notification indicating proposal to remove cloud-init sshd configuration override.
          gettext "Suggested removal of sshd_config.d/50-cloud-init.conf:"
          echo
          cat sshd_config.d/50-cloud-init.conf
@@ -645,6 +661,7 @@ EOF
 
 
       # ====== Apply sshd_config updates ====================================
+      # TRANSLATORS: Header introducing diff of proposed changes to sshd_config.
       gettext "Suggested sshd_config changes:"
       echo
       colordiff sshd_config sshd_config.suggested || differences=$((differences + 1))
@@ -652,6 +669,7 @@ EOF
       sshd -f sshd_config.suggested -T >/dev/null
       if [ ${differences} -gt 0 ] ; then
          if [ ${YES_TO_ALL} -ne 1 ] ; then
+            # TRANSLATORS: Prompt asking user whether to apply suggested sshd_config modifications.
             echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested sshd_config changes?") [yes/no]\x1b[0m "
             read -er applyChanges
          fi
@@ -660,6 +678,7 @@ EOF
             cp sshd_config sshd_config.old
             mv sshd_config.suggested sshd_config
 
+            # TRANSLATORS: Status message when attempting to restart the SSH server daemon.
             echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
             if command -v service >/dev/null ; then
                # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
@@ -669,6 +688,7 @@ EOF
                rcctl restart sshd
             fi
          else
+            # TRANSLATORS: Status message shown when user chooses not to apply changes.
             gettext "Skipped!"
             echo
          fi
@@ -683,12 +703,15 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && command -v ssh-ke
    cd /etc/ssh || exit
 
    if [ ${YES_TO_ALL} -ne 1 ] ; then
+      # TRANSLATORS: Prompt asking whether to purge existing SSH host keys and generate new ones.
       echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Remove existing SSH host keys and generate new ones?") [yes/no]\x1b[0m "
       read -er applyChanges
    fi
    if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
       backupDirectory="backup-$(date "+%FT%H:%M:%S")"
 
+      # TRANSLATORS: Status message when backing up existing SSH host keys:
+      # ${backupDirectory} = path to directory where keys are archived
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Making backup of current keys in \${backupDirectory} ...")\x1b[0m"
       mkdir "${backupDirectory}/"
       find . -maxdepth 1 -name "ssh_host_*_key*" -exec mv {} "${backupDirectory}/" \;
@@ -707,16 +730,21 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && command -v ssh-ke
       # echo "Generating moduli, step 2 ..."
       # time ssh-keygen -T moduli -f moduli.candidates
 
+      # TRANSLATORS: Progress notification when generating an ED25519 SSH host key.
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Generating new ED25519 key ...")\x1b[0m"
       time ssh-keygen -N "" -t ed25519 -f ssh_host_ed25519_key
+      # TRANSLATORS: Progress notification when generating an ECDSA SSH host key.
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Generating new ECDSA key ...")\x1b[0m"
       time ssh-keygen -N "" -t ecdsa -b ${ECDSA_BITS} -f ssh_host_ecdsa_key
+      # TRANSLATORS: Progress notification when generating an RSA SSH host key.
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Generating new RSA key; this may take some time ...")\x1b[0m"
       time ssh-keygen -N "" -t rsa -b ${RSA_BITS} -f ssh_host_rsa_key
 
+      # TRANSLATORS: Completion message after successfully generating new SSH host keys.
       echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Done!")\x1b[0m"
 
       if command -v service >/dev/null ; then
+         # TRANSLATORS: Status message when attempting to restart the SSH server daemon.
          echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
          # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
          service sshd restart 2>/dev/null || \
@@ -724,6 +752,7 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && command -v ssh-ke
       fi
 
    else
+      # TRANSLATORS: Status message shown when user chooses not to apply changes.
       gettext "Skipped!"
       echo
    fi
