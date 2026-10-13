@@ -32,13 +32,13 @@
 #include <getopt.h>
 #include <iostream>
 
-#include <libsysteminfo.h>
-
-#include "package-version.h"
-
 #if defined(_WIN32)
 #include <winsock2.h>
 #endif
+
+#include <libsysteminfo.h>
+
+#include "package-version.h"
 
 
 // ###### Version ###########################################################
@@ -50,10 +50,21 @@
 
 
 // ###### Usage #############################################################
-[[noreturn]] static void usage(const char* program, const int exitCode)
+[[noreturn]] static void usage(const char* program,
+                               const int   exitCode)
 {
    std::cerr << "Usage: " << program
-             << " [-h|--help] [-v|--version] [-c|--compatibility version]\n";
+             << " [-h|--help] [-v|--version] "
+             << " [-c|--compatibility version]"
+             << " [-A|--all] [-a|--none]"
+             << " [-B|--with-battery] [-b|--without-battery]"
+             << " [-K|--with-kernel] [-k|--without-kernel]"
+             << " [-L|--with-load] [-l|--without-load]"
+             << " [-M|--with-memory] [-m|--without-memory]"
+             << " [-N|--with-network] [-n|--without-network]"
+             << " [-O|--with-hostname] [-o|--without-hostname]"
+             << " [-S|--with-storage] [-s|--without-storage]"
+             << " [-U|--with-uptime] [-u|--without-uptime]\n";
    std::exit(exitCode);
 }
 
@@ -61,28 +72,106 @@
 // ###### Main program ######################################################
 int main(int argc, char** argv)
 {
-   unsigned int compatibilityVersion = LSI_COMPATIBILITY_VERSION;
+   unsigned int compatibilityVersion { LSI_COMPATIBILITY_VERSION };
+   uint32_t     flags                { SystemInfo::Flags::All };
 
    // ====== Initialise locale support ======================================
-   if (std::setlocale(LC_ALL, "") == nullptr) {
+   if(std::setlocale(LC_ALL, "") == nullptr) {
       std::setlocale(LC_ALL, "C.UTF-8");
    }
 
    // ====== Handle arguments ===============================================
    static const struct option long_options[] = {
-      { "help",          no_argument,       nullptr, 'h' },
-      { "version",       no_argument,       nullptr, 'v' },
-      { "compatibility", required_argument, nullptr, 'c' },
-      {  nullptr,        0,                 nullptr, 0   }
+      { "help",              no_argument,       nullptr, 'h' },
+      { "version",           no_argument,       nullptr, 'v' },
+      { "compatibility",     required_argument, nullptr, 'c' },
+      { "all",               no_argument,       nullptr, 'A' },
+      { "none",              no_argument,       nullptr, 'a' },
+      { "with-battery",      no_argument,       nullptr, 'B' },
+      { "without-battery",   no_argument,       nullptr, 'b' },
+      { "with-hostname",     no_argument,       nullptr, 'O' },
+      { "without-hostname",  no_argument,       nullptr, 'o' },
+      { "with-kernel",       no_argument,       nullptr, 'K' },
+      { "without-kernel",    no_argument,       nullptr, 'k' },
+      { "with-load",         no_argument,       nullptr, 'L' },
+      { "without-load",      no_argument,       nullptr, 'l' },
+      { "with-memory",       no_argument,       nullptr, 'M' },
+      { "without-memory",    no_argument,       nullptr, 'm' },
+      { "with-network",      no_argument,       nullptr, 'N' },
+      { "without-network",   no_argument,       nullptr, 'n' },
+      { "with-storage",      no_argument,       nullptr, 'S' },
+      { "without-storage",   no_argument,       nullptr, 's' },
+      { "with-uptime",       no_argument,       nullptr, 'U' },
+      { "without-uptime",    no_argument,       nullptr, 'u' },
+      {  nullptr,            0,                 nullptr, 0   }
    };
 
-   int option = 0;
-   int longIndex = 0;
-   while ((option = getopt_long(argc, argv, "hvc:", long_options, &longIndex)) != -1) {
-      switch (option) {
+   int option    { 0 };
+   int longIndex { 0 };
+   while((option = getopt_long(argc,
+                               argv,
+                               "hvc:AaBbKkLlMmNnOoSsUu",
+                               long_options,
+                               &longIndex)) != -1) {
+      switch(option) {
+         case 'A':
+            flags = SystemInfo::Flags::All;
+            break;
+         case 'a':
+            flags = 0;
+            break;
+         case 'B':
+            flags |= SystemInfo::Flags::Battery;
+            break;
+         case 'b':
+            flags &= ~SystemInfo::Flags::Battery;
+            break;
+         case 'O':
+            flags |= SystemInfo::Flags::Hostname;
+            break;
+         case 'o':
+            flags &= ~SystemInfo::Flags::Hostname;
+            break;
+         case 'K':
+            flags |= SystemInfo::Flags::Kernel;
+            break;
+         case 'k':
+            flags &= ~SystemInfo::Flags::Kernel;
+            break;
+         case 'L':
+            flags |= SystemInfo::Flags::Load;
+            break;
+         case 'l':
+            flags &= ~SystemInfo::Flags::Load;
+            break;
+         case 'M':
+            flags |= SystemInfo::Flags::Memory;
+            break;
+         case 'm':
+            flags &= ~SystemInfo::Flags::Memory;
+            break;
+         case 'N':
+            flags |= SystemInfo::Flags::Network;
+            break;
+         case 'n':
+            flags &= ~SystemInfo::Flags::Network;
+            break;
+         case 'S':
+            flags |= SystemInfo::Flags::Storage;
+            break;
+         case 's':
+            flags &= ~SystemInfo::Flags::Storage;
+            break;
+         case 'U':
+            flags |= SystemInfo::Flags::Uptime;
+            break;
+         case 'u':
+            flags &= ~SystemInfo::Flags::Uptime;
+            break;
          case 'c':
-            compatibilityVersion = static_cast<unsigned int>(std::strtoul(optarg, nullptr, 10));
-            if (compatibilityVersion > LSI_COMPATIBILITY_VERSION) {
+            compatibilityVersion = static_cast<unsigned int>(
+               std::strtoul(optarg, nullptr, 10));
+            if(compatibilityVersion > LSI_COMPATIBILITY_VERSION) {
                std::cerr << "ERROR: Requested compatibility version "
                          << compatibilityVersion << " > available version "
                          << LSI_COMPATIBILITY_VERSION << "!\n";
@@ -103,25 +192,25 @@ int main(int argc, char** argv)
             return 1;
       }
    }
-   if (optind < argc) {
+   if(optind < argc) {
       usage(argv[0], 1);
    }
 
 #if defined(_WIN32)
-   struct WinSockInit {
-      WSADATA data;
-      WinSockInit() { WSAStartup(MAKEWORD(2, 2), &data); }
-      ~WinSockInit() { WSACleanup(); }
-   } wsInit;
+   struct WinSockScope {
+      WSADATA Data { };
+      WinSockScope() { WSAStartup(MAKEWORD(2, 2), &Data); }
+      ~WinSockScope() { WSACleanup(); }
+   } winSockScope;
 #endif
 
    // ====== Initialize and print SystemInfo within try-catch ===============
    try {
-      SystemInfo systemInfo(compatibilityVersion, SystemInfo::Flags::All);
+      SystemInfo systemInfo(compatibilityVersion, flags);
       systemInfo.print(std::cout);
    }
-   catch (const std::exception& e) {
-      std::cerr << "ERROR: " << e.what() << '\n';
+   catch(const std::exception& exception) {
+      std::cerr << "ERROR: " << exception.what() << '\n';
       return 1;
    }
 
