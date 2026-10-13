@@ -46,7 +46,7 @@
 #if defined(__linux__)
 #include <linux/if.h>
 #include <netpacket/packet.h>
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__APPLE__)
 #include <net/if_dl.h>
 #elif defined(__gnu_hurd__)
 #include <net/if_arp.h>
@@ -137,7 +137,7 @@ static std::string formatAddress(const struct sockaddr* address,
       }
       return result;
    }
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__APPLE__)
    else if(address->sa_family == AF_LINK) {
       const auto* mac    = reinterpret_cast<const sockaddr_dl*>(address);
       const auto* lladdr = reinterpret_cast<const uint8_t*>(LLADDR(mac));
@@ -156,6 +156,8 @@ static std::string formatAddress(const struct sockaddr* address,
       }
       return result;
    }
+#elif defined(_WIN32)
+   // On Windows, MAC addresses are read directly from IP_ADAPTER_ADDRESSES.
 #else
 #error Missing case!
 #endif
@@ -202,7 +204,7 @@ static bool compareInterfaceAddresses(const InterfaceAddress& a,
       }
       return std::memcmp(mac1->sll_addr, mac2->sll_addr, mac1->sll_halen) < 0;
    }
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__APPLE__)
    if(a.Address->sa_family == AF_LINK) {
       const auto* mac1 = reinterpret_cast<const sockaddr_dl*>(a.Address);
       const auto* mac2 = reinterpret_cast<const sockaddr_dl*>(b.Address);
@@ -211,10 +213,8 @@ static bool compareInterfaceAddresses(const InterfaceAddress& a,
       }
       return std::memcmp(LLADDR(mac1), LLADDR(mac2), mac1->sdl_alen) < 0;
    }
-#elif defined(__sun__) || defined(__gnu_hurd__)
-   // No link-layer hardware address comparison needed
-#elif defined(_WIN32)
-   // On Windows, MAC addresses are read directly from IP_ADAPTER_ADDRESSES.
+#elif defined(__gnu_hurd__)
+   // No link-layer hardware address in getifaddrs(); MAC is queried via ioctl.
 #else
 #error Missing case!
 #endif

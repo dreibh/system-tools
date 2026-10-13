@@ -62,7 +62,7 @@
 #elif defined(__OpenBSD__)
 #include <sys/sysctl.h>
 #include <utmp.h>
-#elif defined(__sun__)
+#elif defined(__sun)
 #include <dirent.h>
 #include <sys/loadavg.h>
 #include <utmpx.h>
@@ -105,7 +105,7 @@ void SystemInfo::obtainHostnameInformation()
 // ###### Obtain kernel information #########################################
 void SystemInfo::obtainKernelInformation()
 {
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__gnu_hurd__) || defined(__APPLE__)
    struct utsname kernelInfo;
    if(uname(&kernelInfo) >= 0) {
       addString("system_sysname",  kernelInfo.sysname);
@@ -164,7 +164,7 @@ static bool getUptime(struct timespec* ts)
    return clock_gettime(CLOCK_BOOTTIME, ts) == 0;
 #elif defined(__FreeBSD__)
    return clock_gettime(CLOCK_UPTIME_PRECISE, ts) == 0;
-#elif defined(__NetBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
+#elif defined(__NetBSD__) || defined(__sun) || defined(__gnu_hurd__) || defined(__APPLE__)
    return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
 #elif defined(_WIN32)
    const ULONGLONG ms = GetTickCount64();
@@ -204,7 +204,7 @@ static unsigned int getProcessCount()
 {
    unsigned int count = 0;
 
-#if defined(__linux__) || defined(__sun__) || defined(__gnu_hurd__)
+#if defined(__linux__) || defined(__sun) || defined(__gnu_hurd__)
    if(DIR* dir = opendir("/proc"); dir != nullptr) {
       while(dirent* entry = readdir(dir)) {
          if(std::isdigit(static_cast<unsigned char>(entry->d_name[0]))) {
@@ -276,7 +276,7 @@ static unsigned int getUserCount()
 {
    unsigned int count = 0;
 
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__sun) || defined(__gnu_hurd__) || defined(__APPLE__)
 #if defined(ENABLE_SYSTEMD)
    char** sessions      = nullptr;
    int    totalSessions = sd_get_sessions(&sessions);
@@ -345,7 +345,7 @@ static unsigned int getUserCount()
 // ##### Obtain load information ############################################
 void SystemInfo::obtainLoadInformation()
 {
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__gnu_hurd__) || defined(__APPLE__)
    const auto cores    = static_cast<uint32_t>(sysconf(_SC_NPROCESSORS_ONLN));
    const auto pageSize = static_cast<uint32_t>(sysconf(_SC_PAGESIZE));
 #elif defined(_WIN32)
@@ -361,7 +361,7 @@ void SystemInfo::obtainLoadInformation()
    addUInt32("system_procs", getProcessCount());
    addUInt32("system_users", getUserCount());
 
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__gnu_hurd__) || defined(__APPLE__)
    double loadavg[3];
    if(getloadavg(loadavg, 3) == 3) {
       const double loadPercentageFactor = (cores > 0) ? (100.0 / static_cast<double>(cores)) : 0.0;

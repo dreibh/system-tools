@@ -50,7 +50,7 @@
 #include <machine/apmvar.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-#elif defined(__sun__)
+#elif defined(__sun)
 #include <kstat.h>
 #elif defined(__APPLE__)
 #include <CoreFoundation/CoreFoundation.h>
@@ -65,7 +65,7 @@
 #endif
 
 
-#if defined(__sun__)
+#if defined(__sun)
 // ###### Get 64-bit unsigned integer value from kstat ######################
 static bool getKstatUint64(const kstat_named_t* kn,
                            uint64_t*            value)
@@ -265,7 +265,7 @@ void SystemInfo::obtainBatteryInformation()
       }
       close(apmFD);
    }
-#elif defined(__sun__)
+#elif defined(__sun)
    kstat_ctl_t* kstatControl = kstat_open();
    if(kstatControl != nullptr) {
       struct SolarisBatteryInfo {

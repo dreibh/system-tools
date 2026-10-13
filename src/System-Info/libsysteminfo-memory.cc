@@ -53,7 +53,7 @@
 #include <sys/swap.h>
 #include <sys/sysctl.h>
 #include <uvm/uvm_extern.h>
-#elif defined(__sun__)
+#elif defined(__sun)
 #include <sys/param.h>
 #include <sys/swap.h>
 #elif defined(__APPLE__)
@@ -208,7 +208,7 @@ void SystemInfo::obtainMemoryInformation()
 #else
 #error Missing case!
 #endif
-#elif defined(__sun__)
+#elif defined(__sun)
    const long pageSize = sysconf(_SC_PAGESIZE);
    if(pageSize > 0) {
       const long physicalPages          = sysconf(_SC_PHYS_PAGES);

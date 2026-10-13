@@ -44,7 +44,7 @@
 bool SystemInfo::getDiskUsage(std::string_view mountPoint,
                               std::string_view label)
 {
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__gnu_hurd__) || defined(__APPLE__)
    struct statvfs status { };
    if(statvfs(std::string(mountPoint).c_str(), &status) != 0) {
       return false;
@@ -81,7 +81,7 @@ void SystemInfo::obtainStorageInformation()
 {
    getDiskUsage("/", "root");
    getDiskUsage("/tmp", "tmp");
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__gnu_hurd__) || defined(__APPLE__)
    getDiskUsage("/home", "home");
    addString("disk_list", "root tmp home");
 #elif defined(_WIN32)
