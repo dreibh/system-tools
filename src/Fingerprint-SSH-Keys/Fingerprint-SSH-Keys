@@ -42,7 +42,7 @@ export TEXTDOMAIN="Fingerprint-SSH-Keys"
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   echo >&2 "$(gettext "Usage:") $0 [-d|--include-deprecated] [-r|--include-raw] [-p|--include-raw-python] [-h|--help] [-v|--version]"
+   echo >&2 "$(gettext "Usage:") $0 [-A|--all] [-a|--none] [-R|--with-raw] [-r|--without-raw] [-D|--with-dns] [-d|--without-dns] [-S|--with-ssh] [-s|--without-ssh] [-F|--format {text|python|csv}] [-K|--key-directory directory] [--include-deprecated] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
 
@@ -88,7 +88,8 @@ if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
    echo >&2
    exit 1
 fi
-options="$(${GETOPT} -o drphv --long include-deprecated,include-raw,include-raw-python,help,version -a -- "$@")"
+
+options="$(${GETOPT} -o AaRrDdsSF:K:hv --long all,none,with-raw,without-raw,with-dns,without-dns,with-ssh,without-ssh,format:,raw-format:,key-directory:,include-deprecated,include-raw,include-raw-python,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
    usage 1
@@ -96,18 +97,75 @@ fi
 eval set -- "${options}"
 
 FORMATS="raw ssh dns"
+WITH_RAW=0
+WITH_DNS=1
+WITH_SSH=1
+FORMAT="text"
+KEY_DIRECTORY=""
 INCLUDE_DEPRECATED=0
-INCLUDE_RAW=0
+
 while [ $# -gt 0 ] ; do
    case "$1" in
-      -d | --include-deprecated)
+      -A | --all)
+         WITH_RAW=1
+         WITH_DNS=1
+         WITH_SSH=1
+         ;;
+      -a | --none)
+         WITH_RAW=0
+         WITH_DNS=0
+         WITH_SSH=0
+         ;;
+      -R | --with-raw)
+         WITH_RAW=1
+         ;;
+      -r | --without-raw)
+         WITH_RAW=0
+         ;;
+      -D | --with-dns)
+         WITH_DNS=1
+         ;;
+      -d | --without-dns)
+         WITH_DNS=0
+         ;;
+      -S | --with-ssh)
+         WITH_SSH=1
+         ;;
+      -s | --without-ssh)
+         WITH_SSH=0
+         ;;
+      -F | --format | --raw-format)
+         FORMAT="${2,,}"
+         case "${FORMAT}" in
+            text | python | csv)
+               ;;
+            *)
+               eval_gettext >&2 "ERROR: Invalid format '\${FORMAT}'! Allowed formats: text, python, csv."
+               echo >&2
+               usage 1
+               ;;
+         esac
+         shift
+         ;;
+      -K | --key-directory)
+         KEY_DIRECTORY="$2"
+         if [ ! -d "${KEY_DIRECTORY}" ] ; then
+            eval_gettext >&2 "ERROR: Key directory '\${KEY_DIRECTORY}' does not exist!"
+            echo >&2
+            exit 1
+         fi
+         shift
+         ;;
+      --include-deprecated)
          INCLUDE_DEPRECATED=1
          ;;
-      -r | --include-raw)
-         INCLUDE_RAW=1
+      --include-raw)
+         WITH_RAW=1
+         FORMAT="text"
          ;;
-      -p | --include-raw-python)
-         INCLUDE_RAW=2
+      --include-raw-python)
+         WITH_RAW=1
+         FORMAT="python"
          ;;
       -h | --help)
          usage 0
@@ -124,8 +182,8 @@ while [ $# -gt 0 ] ; do
          echo >&2 "INTERNAL ERROR: Unhandled option $1!"
          exit 1
          ;;
-  esac
-  shift
+   esac
+   shift
 done
 if [ $# -ne 0 ] ; then
    usage 1
@@ -133,74 +191,144 @@ fi
 
 
 # ====== Print SSH key fingerprints =========================================
-sshDirectory=""
-if [[ "${UNAME}" =~ ^(CYGWIN.*|MINGW.*|MSYS.*|Windows_NT)$ ]] ; then
-   if [ -d "${PROGRAMDATA:-/c/ProgramData}/ssh" ] ; then
-      sshDirectory="${PROGRAMDATA:-/c/ProgramData}/ssh"
-   fi
-else
-   if [ -d "/etc/ssh" ] ; then
-      sshDirectory="/etc/ssh"
+sshDirectory="${KEY_DIRECTORY}"
+if [ -z "${sshDirectory}" ] ; then
+   if [[ "${UNAME}" =~ ^(CYGWIN.*|MINGW.*|MSYS.*|Windows_NT)$ ]] ; then
+      if [ -d "${PROGRAMDATA:-/c/ProgramData}/ssh" ] ; then
+         sshDirectory="${PROGRAMDATA:-/c/ProgramData}/ssh"
+      fi
+   else
+      if [ -d "/etc/ssh" ] ; then
+         sshDirectory="/etc/ssh"
+      fi
    fi
 fi
+
 if [ -n "${sshDirectory}" ] && command -v ssh-keygen >/dev/null ; then
    hostname="$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")"
 
-   for format in ${FORMATS} ; do
+   firstSection=1
+   printSeparator () {
+      if [ "${firstSection}" -eq 0 ] && [ "${FORMAT}" != "csv" ] ; then
+         echo
+      fi
+      firstSection=0
+   }
 
-      # ====== Print fingerprints in SSH format =============================
-      if [ "${format}" == "raw" ] ; then
-         if [ ${INCLUDE_RAW} -ne 0 ] ; then
-            echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in raw format:")\x1b[0m"
+   for target in ${FORMATS} ; do
+
+      # ====== Print fingerprints in raw format =============================
+      if [ "${target}" == "raw" ] ; then
+         if [ ${WITH_RAW} -ne 0 ] ; then
+            printSeparator
+            if [ "${FORMAT}" != "csv" ] ; then
+               echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in raw format:")\x1b[0m"
+            fi
             keyNumber=1
-            if [ ${INCLUDE_RAW} -eq 2 ] ; then
+            if [ "${FORMAT}" == "python" ] ; then
                echo "'public-keys': {"
             fi
-            while IFS= read -r key ; do
-               if [ ${INCLUDE_RAW} -eq 1 ] ; then
-                  echo -n "#${keyNumber}: "
-                  cut -d' ' -f1,2 <"${key}"
-               else
-                  type="$(cut -d' ' -f1 <"${key}")"
-                  key="$(cut -d' ' -f2 <"${key}")"
-                  if [ ${keyNumber} -gt 1 ] ; then
-                     echo ","
-                  fi
-                  echo -n "   '${type}': '${key}'"
-               fi
+            while IFS= read -r keyFile ; do
+               keyType="$(cut -d' ' -f1 <"${keyFile}")"
+               keyData="$(cut -d' ' -f2 <"${keyFile}")"
+               case "${FORMAT}" in
+                  text)
+                     echo "#${keyNumber}: ${keyType} ${keyData}"
+                     ;;
+                  csv)
+                     echo "${keyType},${keyData}"
+                     ;;
+                  python)
+                     if [ ${keyNumber} -gt 1 ] ; then
+                        echo ","
+                     fi
+                     echo -n "   '${keyType}': '${keyData}'"
+                     ;;
+               esac
                keyNumber=$((keyNumber+1))
             done < <(find "${sshDirectory}" -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
-            if [ ${INCLUDE_RAW} -eq 2 ] ; then
+            if [ "${FORMAT}" == "python" ] ; then
                echo -e "\n}"
             fi
-            echo
          fi
 
       # ====== Print fingerprints in SSH format =============================
-      elif [ "${format}" == "ssh" ] ; then
-         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in SSH format:")\x1b[0m"
-         keyNumber=1
-         while IFS= read -r key ; do
-            echo -n "#${keyNumber}: "
-            ssh-keygen -lf "${key}" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
-            keyNumber=$((keyNumber+1))
-         done < <(find "${sshDirectory}" -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
-         echo
+      elif [ "${target}" == "ssh" ] ; then
+         if [ ${WITH_SSH} -ne 0 ] ; then
+            printSeparator
+            if [ "${FORMAT}" != "csv" ] ; then
+               echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in SSH format:")\x1b[0m"
+            fi
+            keyNumber=1
+            if [ "${FORMAT}" == "python" ] ; then
+               echo "'ssh-fingerprints': {"
+            fi
+            while IFS= read -r keyFile ; do
+               read -r bits fingerprint keyType < <(ssh-keygen -lf "${keyFile}" | sed -e 's/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\1 \2 \4/')
+               case "${FORMAT}" in
+                  text)
+                     echo "#${keyNumber}: ${fingerprint} (${keyType} ${bits})"
+                     ;;
+                  csv)
+                     echo "${keyType},${bits},${fingerprint}"
+                     ;;
+                  python)
+                     if [ ${keyNumber} -gt 1 ] ; then
+                        echo ","
+                     fi
+                     echo -n "   '${keyType}': { 'bits': ${bits}, 'fingerprint': '${fingerprint}' }"
+                     ;;
+               esac
+               keyNumber=$((keyNumber+1))
+            done < <(find "${sshDirectory}" -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
+            if [ "${FORMAT}" == "python" ] ; then
+               echo -e "\n}"
+            fi
+         fi
 
       # ====== Print fingerprints in DNS format =============================
-      elif [ "${format}" == "dns" ] ; then
-         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in DNS RR format:")\x1b[0m"
-         while IFS= read -r key ; do
-            if [ ${INCLUDE_DEPRECATED} -eq 1 ] ; then
-               ssh-keygen -r "${hostname}" -f "${key}" 2>/dev/null | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [1-9] [1-9]' || true
-            else
-               # Filter out deprecated DSA key type or SSH-1 hash:
-               ssh-keygen -r "${hostname}" -f "${key}" 2>/dev/null | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [13-9] [2-9]' || true
-            fi | while read -r in rrType algorithmID hashID fingerprint ; do
-               echo -e "${hostname}\t${in}\t${rrType}\t${algorithmID}\t${hashID}\t${fingerprint}"
-            done
-         done < <(find "${sshDirectory}" -maxdepth 1 -name "ssh_host_*.pub" -print) | sort -k 5n,5n -k 4n,4n -k 6,6
-         echo
+      elif [ "${target}" == "dns" ] ; then
+         if [ ${WITH_DNS} -ne 0 ] ; then
+            printSeparator
+            if [ "${FORMAT}" != "csv" ] ; then
+               echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Fingerprints of \${hostname} in DNS RR format:")\x1b[0m"
+            fi
+            keyNumber=1
+            if [ "${FORMAT}" == "python" ] ; then
+               echo "'dns-records': ["
+            fi
+            while read -r rHost rIn rType rAlgo rHash rFp ; do
+               case "${FORMAT}" in
+                  text)
+                     echo -e "${rHost}\t${rIn}\t${rType}\t${rAlgo}\t${rHash}\t${rFp}"
+                     ;;
+                  csv)
+                     echo "${rHost},${rIn},${rType},${rAlgo},${rHash},${rFp}"
+                     ;;
+                  python)
+                     if [ ${keyNumber} -gt 1 ] ; then
+                        echo ","
+                     fi
+                     echo -n "   { 'hostname': '${rHost}', 'rr': '${rType}', 'algorithm': ${rAlgo}, 'hash_type': ${rHash}, 'fingerprint': '${rFp}' }"
+                     keyNumber=$((keyNumber+1))
+                     ;;
+               esac
+            done < <(
+               while IFS= read -r keyFile ; do
+                  if [ ${INCLUDE_DEPRECATED} -eq 1 ] ; then
+                     ssh-keygen -r "${hostname}" -f "${keyFile}" 2>/dev/null | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [1-9] [1-9]' || true
+                  else
+                     # Filter out deprecated DSA key type or SSH-1 hash:
+                     ssh-keygen -r "${hostname}" -f "${keyFile}" 2>/dev/null | cut -d' ' -f2,3,4,5,6 | grep '^IN SSHFP [13-9] [2-9]' || true
+                  fi | while read -r in rrType algorithmID hashID fingerprint ; do
+                     echo -e "${hostname}\t${in}\t${rrType}\t${algorithmID}\t${hashID}\t${fingerprint}"
+                  done
+               done < <(find "${sshDirectory}" -maxdepth 1 -name "ssh_host_*.pub" -print) | sort -k 5n,5n -k 4n,4n -k 6,6
+            )
+            if [ "${FORMAT}" == "python" ] ; then
+               echo -e "\n]"
+            fi
+         fi
       fi
 
    done
