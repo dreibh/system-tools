@@ -156,6 +156,9 @@ static void cleanUp(int exitCode)
    if(OpenOutputFile) {
       if(OutputFile) {
          if(fclose(OutputFile) != 0) {
+            // TRANSLATORS: Error message when closing output file fails:
+            // 1st %s = output file path
+            // 2nd %s = system error message (strerror)
             fprintf(stderr, gettext("ERROR: Unable to open output file %s: %s!"),
                   OutputFileName, strerror(errno));
             fputs("\n", stderr);
@@ -167,6 +170,10 @@ static void cleanUp(int exitCode)
                                          OutputTempFileName : OutputFileName;
          if(brokenFileName) {
             if(unlink(brokenFileName) != 0) {
+               // TRANSLATORS: Error message when deleting broken output file
+               // fails:
+               // 1st %s = broken file path
+               // 2nd %s = system error message (strerror)
                fprintf(stderr, gettext("ERROR: Unable to delete broken output file %s: %s!"),
                      brokenFileName, strerror(errno));
                fputs("\n", stderr);
@@ -182,6 +189,10 @@ static void cleanUp(int exitCode)
             (void)result;   // just ignore errors
             // Restore file permissions:
             if(chmod(OutputTempFileName, fileInfo.st_mode & 07777) != 0) {
+               // TRANSLATORS: Warning message when restoring file permissions
+               // fails:
+               // 1st %s = input file path
+               // 2nd %s = system error message (strerror)
                fprintf(stderr, gettext("WARNING: Unable to restore file permissions for %s: %s!"),
                        InputFileName, strerror(errno));
                fputs("\n", stderr);
@@ -190,6 +201,11 @@ static void cleanUp(int exitCode)
 
          // ------ Overwrite original file ----------------------------------
          if(rename(OutputTempFileName, InputFileName) != 0) {
+            // TRANSLATORS: Error message when renaming temporary file to
+            // target input file name fails:
+            // 1st %s = temporary file path
+            // 2nd %s = target input file path
+            // 3rd %s = system error message (strerror)
             fprintf(stderr, gettext("ERROR: Unable to change name of temporary output file from %s to %s: %s!"),
                     OutputTempFileName, InputFileName, strerror(errno));
             fputs("\n", stderr);
@@ -272,6 +288,8 @@ static char* makeTempOutputFileName(const char* outputFileName)
    const size_t ouputFileNameLength = strlen(outputFileName);
    OutputTempFileName = malloc(ouputFileNameLength + 2);
    if(OutputTempFileName == nullptr) {
+      // TRANSLATORS: Error message when memory allocation fails:
+      // %s = system error message (strerror)
       fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
       fputs("\n", stderr);
       cleanUp(1);
@@ -288,6 +306,9 @@ static void writeToOutputFile(const char* data, const size_t length)
 {
    if(length > 0) {
       if(fwrite(data, 1, length, OutputFile) < length) {
+         // TRANSLATORS: Error message when writing to output file fails:
+         // 1st %s = output file path
+         // 2nd %s = system error message (strerror)
          fprintf(stderr, gettext("ERROR: Unable to write to output file %s: %s!"),
                  OutputFileName, strerror(errno));
          fputs("\n", stderr);
@@ -443,6 +464,8 @@ static void version(void)
 #endif
 static void usage(const char* program, const int exitCode)
 {
+   // TRANSLATORS: Command-line syntax message prefix:
+   // "Usage: <program> [options]".
    fprintf(stderr, "%s %s"
            " [-C|--cat]"
            " [-0|--discard]"
@@ -601,6 +624,8 @@ int main (int argc, char** argv)
                optind++;
             }
             else {
+               // TRANSLATORS: Error message when line selection (--select/-s)
+               // is missing the to_line parameter.
                fputs(gettext("ERROR: Too few arguments for line selection (--select|-s)!"), stderr);
                fputs("\n", stderr);
                return 1;
@@ -635,6 +660,8 @@ int main (int argc, char** argv)
             for(unsigned int i = 0; i < strlen(optarg); i++) {
                if( (optarg[i] == '%') ||
                    ( !isalnum((int)optarg[i]) && (optarg[i] != '-') && (optarg[i] != '\'') ) ) {
+                  // TRANSLATORS: Error message when format string for line
+                  // numbering contains invalid characters.
                   fputs(gettext("ERROR: Invalid value for enumeration format (--enumerate-format)!"), stderr);
                   fputs("\n", stderr);
                   return 1;
@@ -681,6 +708,8 @@ int main (int argc, char** argv)
                optind += 5;
             }
             else {
+               // TRANSLATORS: Error message when --highlight-params is given
+               // fewer than the required 6 arguments.
                fputs(gettext("ERROR: Too few arguments for highlight parameters (--highlight-params)!"), stderr);
                fputs("\n", stderr);
                return 1;
@@ -710,6 +739,7 @@ int main (int argc, char** argv)
 
    // ====== Check parameters ===============================================
    if( (MaxActions >= 0) && (MinActions > MaxActions) ) {
+      // TRANSLATORS: Error message when --min-actions exceeds --max-actions.
       fputs(gettext("ERROR: Invalid min/max settings (--min-actions/-m/--max-actions/-M)!"), stderr);
       fputs("\n", stderr);
       return 1;
@@ -722,6 +752,8 @@ int main (int argc, char** argv)
       EndTag = BeginTag;
    }
    if( (BeginTag) && ((SelectBegin != 0) || (SelectEnd != 0)) ) {
+      // TRANSLATORS: Error message when line selection and tag matching
+      // options are specified together.
       fputs(gettext("ERROR: Line selection (--select|-s) and tags (--begin-tag/-b/--end-tag/-e/--tag/-t) are mutually exclusive!"), stderr);
       fputs("\n", stderr);
       return 1;
@@ -734,6 +766,8 @@ int main (int argc, char** argv)
       case Discard:
       case Enumerate:
          if( showWarnings && ( (BeginTag != nullptr) || (EndTag != nullptr) ) ) {
+            // TRANSLATORS: Warning message when begin/end tags are provided
+            // in modes that do not support tags (Cat, Discard, Enumerate).
             fputs(gettext("WARNING: Begin/end tags (--begin-tag/-b/--end-tag/-e/--tag/-t) have no effect for Cat, Discard, or Enumerate!"), stderr);
             fputs("\n", stderr);
          }
@@ -744,6 +778,9 @@ int main (int argc, char** argv)
       case Remove:
       case Replace:
          if( showWarnings && (BeginTag != nullptr) && (BeginTag == EndTag) && (!IncludeTags) )  {
+            // TRANSLATORS: Warning message when identical begin/end tags
+            // are used with excluded tags in Extract, Remove, or Replace
+            // mode.
             fputs(gettext("WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful for Extract, Remove, or Replace!"), stderr);
             fputs("\n", stderr);
          }
@@ -755,6 +792,8 @@ int main (int argc, char** argv)
    // ====== Allocate buffer ================================================
    Buffer = (char*)malloc(BufferSize);
    if(Buffer == nullptr) {
+      // TRANSLATORS: Error message when memory allocation fails:
+      // %s = system error message (strerror)
       fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
       fputs("\n", stderr);
       cleanUp(1);
@@ -768,6 +807,10 @@ int main (int argc, char** argv)
    if( (InputFileName != nullptr) && InPlaceUpdate ) {
       RealInputFileName = realpath(InputFileName, nullptr);
       if(RealInputFileName == nullptr) {
+         // TRANSLATORS: Error message when resolving canonical path of input
+         // file fails during in-place update:
+         // 1st %s = input file path
+         // 2nd %s = system error message (strerror)
          fprintf(stderr, gettext("ERROR: Unable to resolve absolute path for input file %s: %s!"),
                  InputFileName, strerror(errno));
          fputs("\n", stderr);
@@ -778,6 +821,9 @@ int main (int argc, char** argv)
    if(InputFileName != nullptr) {
       InputFile = fopen(InputFileName, "r");
       if(InputFile == nullptr) {
+         // TRANSLATORS: Error message when opening input file fails:
+         // 1st %s = input file path
+         // 2nd %s = system error message (strerror)
          fprintf(stderr, gettext("ERROR: Unable to open input file %s: %s!"),
                  InputFileName, strerror(errno));
          fputs("\n", stderr);
@@ -798,6 +844,10 @@ int main (int argc, char** argv)
          SelectEnd = TotalInputLines + SelectEnd + 1;
       }
       if(showWarnings && ( (SelectEnd < SelectBegin) && (SelectEnd != 0)) ) {
+         // TRANSLATORS: Warning message when line selection range is empty or
+         // inverted (start line exceeds end line):
+         // 1st %lld = start line number
+         // 2nd %lld = end line number
          fprintf(stderr,
                  gettext("WARNING: Line selection range (%lld — %lld) is not useful. Input file too short?"),
                  SelectBegin, SelectEnd);
@@ -806,11 +856,15 @@ int main (int argc, char** argv)
    }
    else {
       if((SelectBegin < 0) || (SelectEnd < 0)) {
+         // TRANSLATORS: Error message when negative line offset is used
+         // without a file input source.
          fputs(gettext("ERROR: Select from end of file (negative line number) is only possible with input file!"), stderr);
          fputs("\n", stderr);
          cleanUp(1);
       }
       if(InPlaceUpdate) {
+         // TRANSLATORS: Error message when in-place update is requested
+         // without specifying an input file.
          fputs(gettext("ERROR: In-place update (--in-place|-p) requires an input file (--input/-i)!"), stderr);
          fputs("\n", stderr);
          cleanUp(1);
@@ -824,11 +878,15 @@ int main (int argc, char** argv)
    }
    if(InPlaceUpdate) {
       if(OutputFileName != nullptr) {
+         // TRANSLATORS: Error message when in-place update and output file
+         // are specified simultaneously.
          fputs(gettext("ERROR: In-place update (--in-place|-p) and output file (--output/-o) are mutually exclusive!"), stderr);
          fputs("\n", stderr);
          cleanUp(1);
       }
       if(makeTempOutputFileName(InputFileName) == nullptr) {
+         // TRANSLATORS: Error message when generating temporary file name
+         // fails.
          fputs(gettext("ERROR: Cannot generate temporary output file name!"), stderr);
          fputs("\n", stderr);
          cleanUp(1);
@@ -839,6 +897,10 @@ int main (int argc, char** argv)
                              OutputTempFileName : OutputFileName,
                           (OpenOutputAppend == false) ? "w" : "a");
       if(OutputFile == nullptr) {
+         // TRANSLATORS: Error message when opening or creating output file
+         // fails:
+         // 1st %s = output file path
+         // 2nd %s = system error message (strerror)
          fprintf(stderr, gettext("ERROR: Unable to create output file %s: %s!"),
                  OutputFileName, strerror(errno));
          fputs("\n", stderr);
@@ -855,12 +917,17 @@ int main (int argc, char** argv)
       // ------ Insert file is stdin => copy to temporary file --------------
       InsertFileName = nullptr;   // Special case: - => stdin
       if(InputFile == stdin) {
+         // TRANSLATORS: Error message when reading insert content from stdin
+         // while main input is also stdin.
          fputs(gettext("ERROR: Insert from standard input requires an input file!"), stderr);
          fputs("\n", stderr);
          cleanUp(1);
       }
       InsertFile = tmpfile();
       if(InsertFile == nullptr) {
+         // TRANSLATORS: Error message when creating temporary buffer file for
+         // insertion fails:
+         // %s = system error message (strerror)
          fprintf(stderr, gettext("ERROR: Unable to create temporary file for insertion: %s!"), strerror(errno));
          fputs("\n", stderr);
          cleanUp(1);
@@ -869,6 +936,9 @@ int main (int argc, char** argv)
       size_t bytesRead;
       while( (bytesRead = fread(buffer, 1, sizeof(buffer), stdin)) > 0 ) {
          if(fwrite(buffer, 1, bytesRead, InsertFile) < bytesRead) {
+            // TRANSLATORS: Error message when writing stdin to temporary
+            // insert file fails:
+            // %s = system error message (strerror)
             fprintf(stderr, gettext("ERROR: Failed to write to temporary file: %s!"), strerror(errno));
             fputs("\n", stderr);
             cleanUp(1);
@@ -881,6 +951,9 @@ int main (int argc, char** argv)
       // ------ Insert file is a file => just open it -----------------------
       InsertFile = fopen(InsertFileName, "r");
       if(InsertFile == nullptr) {
+         // TRANSLATORS: Error message when opening insert file fails:
+         // 1st %s = insert file path
+         // 2nd %s = system error message (strerror)
          fprintf(stderr, gettext("ERROR: Unable to open insert file %s: %s!"),
                  InsertFileName, strerror(errno));
          fputs("\n", stderr);
@@ -895,6 +968,8 @@ int main (int argc, char** argv)
    }
    else {
       if( (Mode == InsertFront) || (Mode == InsertBack) || (Mode == Replace) ) {
+         // TRANSLATORS: Error message when an insert or replace mode is
+         // selected but no insert file was provided.
          fputs(gettext("ERROR: No insert file provided!"), stderr);
          fputs("\n", stderr);
          cleanUp(1);
@@ -904,11 +979,11 @@ int main (int argc, char** argv)
    // ====== Read lines from input file =====================================
 #ifdef DEBUG_MODE
    printf("Select Begin=%lld\n", SelectBegin);
-   printf("Select End=%lld\n", SelectEnd);
-   printf("Begin Tag=%s\n",   BeginTag);
-   printf("End Tag=%s\n",     EndTag);
-   printf("IncludeTags=%u\n", IncludeTags);
-   printf("FullTagLines=%u\n", FullTagLines);
+   printf("Select End=%lld\n",   SelectEnd);
+   printf("Begin Tag=%s\n",      BeginTag);
+   printf("End Tag=%s\n",        EndTag);
+   printf("IncludeTags=%u\n",    IncludeTags);
+   printf("FullTagLines=%u\n",   FullTagLines);
 #endif
 
    LineNo          = 0;
@@ -1055,6 +1130,8 @@ int main (int argc, char** argv)
       errno = 0;
    }
    if( (lineLength < 0) && (errno != 0) ) {
+      // TRANSLATORS: Error message when reading from input file fails:
+      // %s = system error message (strerror)
       fprintf(stderr, gettext("ERROR: Read error: %s!"), strerror(errno));
       fputs("\n", stderr);
       cleanUp(1);
@@ -1069,6 +1146,8 @@ int main (int argc, char** argv)
       ( (MinActions < 0) || (Actions >= MinActions) ) &&
       ( (MaxActions < 0) || (Actions <= MaxActions) );
    if(!success) {
+      // TRANSLATORS: Error message when the number of performed actions is
+      // outside of configured min/max limits.
       fputs(gettext("ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!"), stderr);
       fputs("\n", stderr);
    }

@@ -239,6 +239,9 @@ static unsigned int hexDigitToNumber(const char digit)
    else if( (digit >= 'A') && (digit <= 'F') ) {
       return (unsigned int)(10 + ((int)digit - (int)'A'));
    }
+   // TRANSLATORS: Error message when an invalid hexadecimal character is
+   // encountered in escape sequence:
+   // %c = invalid character
    fprintf(stderr, gettext("ERROR: Invalid hexadecimal digit %c!"), digit);
    fputs("\n", stderr);
    exit(1);
@@ -251,6 +254,9 @@ static unsigned int octDigitToNumber(const char digit)
    if( (digit >= '0') && (digit <= '7') ) {
       return (unsigned int)((int)digit - (int)'0');
    }
+   // TRANSLATORS: Error message when an invalid octal character is
+   // encountered in escape sequence:
+   // %c = invalid character
    fprintf(stderr, gettext("ERROR: Invalid octal digit %c!"), digit);
    fputs("\n", stderr);
    exit(1);
@@ -289,6 +295,8 @@ static char* unescape(const char* originalString)
    size_t original_string_length = strlen(originalString);
    char*  unescapedString        = (char*)malloc(original_string_length + 1);
    if(unescapedString == nullptr) {
+      // TRANSLATORS: Error message when memory allocation fails:
+      // %s = system error message (strerror)
       fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
       fputs("\n", stderr);
       exit(1);
@@ -777,6 +785,8 @@ static void version(void)
 #endif
 static void usage(const char* program, const int exitCode)
 {
+   // TRANSLATORS: Command-line syntax message prefix:
+   // "Usage: <program> [options]".
    fprintf(stderr, "%s %s"
            " [-n|--newline]"
            " [-i indentation|--indent indentation]"
@@ -890,6 +900,8 @@ int main (int argc, char** argv)
                optind += 2;
             }
             else {
+               // TRANSLATORS: Error message when --multiline-indent/-I is given
+               // fewer than the required arguments (indentation, left, right).
                fputs(gettext("ERROR: Invalid arguments for multiline-indent!"), stderr);
                fputs("\n", stderr);
                cleanUp(1);
@@ -909,6 +921,8 @@ int main (int argc, char** argv)
                optind++;
             }
             else {
+               // TRANSLATORS: Error message when --multiline-center/-C is given
+               // fewer than the required arguments (left, right).
                fputs(gettext("ERROR: Invalid arguments for multiline-center!"), stderr);
                fputs("\n", stderr);
                cleanUp(1);
@@ -932,6 +946,9 @@ int main (int argc, char** argv)
                optind += 2;
             }
             else {
+               // TRANSLATORS: Error message when --separator/-s is given
+               // fewer than the required arguments (border_left, separator,
+               // border_right).
                fputs(gettext("ERROR: Invalid separator setting!"), stderr);
                fputs("\n", stderr);
                cleanUp(1);
@@ -943,6 +960,9 @@ int main (int argc, char** argv)
                consoleWidth = defaultConsoleWidth + consoleWidth;   // subtract!
             }
             if(consoleWidth > 4096) {
+               // TRANSLATORS: Error message when console width exceeds
+               // maximum permitted width of 4096 columns:
+               // %u = specified console width
                fprintf(stderr, gettext("ERROR: Invalid console width %u!"), consoleWidth);
                fputs("\n", stderr);
                cleanUp(1);
@@ -991,6 +1011,9 @@ int main (int argc, char** argv)
       }
       Utf8String = unescape(argv[optind++]);
       while(optind < argc) {
+         // TRANSLATORS: Warning message when extraneous unrecognized command
+         // line parameters are encountered:
+         // %s = unhandled parameter argument
          fprintf(stderr, gettext("WARNING: Unhandled parameter %s!"), argv[optind++]);
          fputs("\n", stderr);
       }
@@ -1011,7 +1034,7 @@ int main (int argc, char** argv)
       case MultiLineIndent:
       case MultiLineCenter:
          doMultiLineIndentOrCenter(BorderLeft, BorderRight,
-                                    consoleWidth, indentWidth, mode);
+                                   consoleWidth, indentWidth, mode);
          break;
       case Separator:
          if(Utf8String) {
