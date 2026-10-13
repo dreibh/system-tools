@@ -32,8 +32,7 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
-ADD_EXECUTABLE(text-block text-block.c)
-# SET_PROPERTY(TARGET text-block PROPERTY C_STANDARD 23)
+ADD_EXECUTABLE(text-block text-block.cc)
 TARGET_COMPILE_DEFINITIONS(text-block PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
 TARGET_INCLUDE_DIRECTORIES(text-block PRIVATE ${Intl_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES(text-block ${GETOPT_LIBRARY} ${Intl_LIBRARIES})
