@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TEST_DIRECTORY="${1:-tests}"
+mkdir -p "${TEST_DIRECTORY}"
+
+echo "Generating test keys in '${TEST_DIRECTORY}' for Ubuntu 24.04 (OpenSSH 9.6)..."
+
+# 1. ED25519:
+ssh-keygen -q -t ed25519 -N "" -f "${TEST_DIRECTORY}/ssh_host_ed25519_key" -C "test-ed25519"
+
+# 2. ECDSA (all 3 supported NIST curves):
+ssh-keygen -q -t ecdsa -b 256 -N "" -f "${TEST_DIRECTORY}/ssh_host_ecdsa256_key" -C "test-ecdsa-256"
+ssh-keygen -q -t ecdsa -b 384 -N "" -f "${TEST_DIRECTORY}/ssh_host_ecdsa384_key" -C "test-ecdsa-384"
+ssh-keygen -q -t ecdsa -b 521 -N "" -f "${TEST_DIRECTORY}/ssh_host_ecdsa521_key" -C "test-ecdsa-521"
+
+# 3. RSA (standard & large bit sizes):
+ssh-keygen -q -t rsa -b 2048 -N "" -f "${TEST_DIRECTORY}/ssh_host_rsa2048_key" -C "test-rsa-2048"
+ssh-keygen -q -t rsa -b 4096 -N "" -f "${TEST_DIRECTORY}/ssh_host_rsa4096_key" -C "test-rsa-4096"
+
+# 4. Deprecated DSA (1024-bit):
+ssh-keygen -q -t dsa -N "" -f "${TEST_DIRECTORY}/ssh_host_dsa_key" -C "test-dsa"
+
+# 5. OpenSSH Host Certificate (creates ssh_host_ed25519_key-cert.pub):
+ssh-keygen -q -t ed25519 -N "" -f "${TEST_DIRECTORY}/ca_key" -C "test-ca"
+ssh-keygen -q -s "${TEST_DIRECTORY}/ca_key" -I "testhost" -h -n "localhost,testhost" -V "+52w" "${TEST_DIRECTORY}/ssh_host_ed25519_key.pub"
+
+echo "Done:"
+ls -1 "${TEST_DIRECTORY}"/ssh_host_*.pub
