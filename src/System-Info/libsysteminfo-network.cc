@@ -75,6 +75,7 @@ using InterfaceFlags = unsigned int;
 #endif
 
 
+#if !defined(_WIN32)
 // ###### Count set bits in byte array ######################################
 static unsigned int countSetBits(const uint8_t*     array,
                                  const unsigned int size)
@@ -89,6 +90,7 @@ static unsigned int countSetBits(const uint8_t*     array,
    }
    return count;
 }
+#endif
 
 
 // ###### Format interface flags ############################################
@@ -384,12 +386,16 @@ void SystemInfo::obtainNetworkInformation(const bool filterLocalScope)
          continue;
       }
 
-      char friendlyName[256] { 0 };
+      std::string friendlyName;
       if(pAdapter->FriendlyName != nullptr) {
-         WideCharToMultiByte(CP_UTF8, 0, pAdapter->FriendlyName, -1, friendlyName, sizeof(friendlyName), nullptr, nullptr);
+         char buffer[256] { 0 };
+         if(WideCharToMultiByte(CP_UTF8, 0, pAdapter->FriendlyName, -1,
+                                buffer, sizeof(buffer), nullptr, nullptr) > 0) {
+            friendlyName = buffer;
+         }
       }
-      if((friendlyName[0] == 0x00) && (pAdapter->AdapterName != nullptr)) {
-         std::strncpy(friendlyName, pAdapter->AdapterName, sizeof(friendlyName) - 1);
+      if(friendlyName.empty() && (pAdapter->AdapterName != nullptr)) {
+         friendlyName = pAdapter->AdapterName;
       }
 
       InterfaceFlags flags = 0;

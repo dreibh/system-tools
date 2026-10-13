@@ -85,10 +85,9 @@
 void SystemInfo::obtainHostnameInformation()
 {
    char hostname[256] { 0 };
-   if(gethostname(hostname, sizeof(hostname)) != 0) {
-      std::strncpy(hostname, "localhost", sizeof(hostname) - 1);
-   }
-   std::string longHost(hostname);
+   std::string longHost = (gethostname(hostname, sizeof(hostname)) == 0)
+                             ? hostname
+                             : "localhost";
    addString("hostname_long", longHost);
 
    std::string shortHost = longHost;
