@@ -47,7 +47,7 @@
 // ##### Obtain user information ############################################
 void SystemInfo::obtainUserInformation()
 {
-#if !defined(_WIN32)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
    const uid_t userIdentifier  = getuid();
    const gid_t groupIdentifier = getgid();
 
@@ -124,7 +124,7 @@ void SystemInfo::obtainUserInformation()
    }
    addString("user_groups", groupList);
 
-#else
+#elif defined(_WIN32)
    char  userNameBuffer[256] { 0 };
    DWORD userNameSize = sizeof(userNameBuffer);
    if(GetUserNameA(userNameBuffer, &userNameSize)) {
@@ -267,5 +267,7 @@ void SystemInfo::obtainUserInformation()
    else {
       addString("user_fullname", userNameBuffer);
    }
+#else
+#error Missing case!
 #endif
 }

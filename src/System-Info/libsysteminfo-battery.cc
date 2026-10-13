@@ -365,6 +365,10 @@ void SystemInfo::obtainBatteryInformation()
       addUInt32("battery_0_capacity", capacity);
       batteryIDs.push_back(0);
    }
+#elif defined(__APPLE__) || defined(__gnu_hurd__)
+   // No battery query support implemented on macOS or GNU Hurd
+#else
+#error Missing case!
 #endif
 
    std::string batList;

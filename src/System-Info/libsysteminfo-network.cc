@@ -51,6 +51,8 @@
 #elif defined(__gnu_hurd__)
 #include <net/if_arp.h>
 #include <sys/ioctl.h>
+#else
+#error Missing case!
 #endif
 #else
 #include <winsock2.h>
@@ -154,6 +156,8 @@ static std::string formatAddress(const struct sockaddr* address,
       }
       return result;
    }
+#else
+#error Missing case!
 #endif
    return "";
 }
@@ -198,7 +202,7 @@ static bool compareInterfaceAddresses(const InterfaceAddress& a,
       }
       return std::memcmp(mac1->sll_addr, mac2->sll_addr, mac1->sll_halen) < 0;
    }
-#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
    if(a.Address->sa_family == AF_LINK) {
       const auto* mac1 = reinterpret_cast<const sockaddr_dl*>(a.Address);
       const auto* mac2 = reinterpret_cast<const sockaddr_dl*>(b.Address);
@@ -207,6 +211,10 @@ static bool compareInterfaceAddresses(const InterfaceAddress& a,
       }
       return std::memcmp(LLADDR(mac1), LLADDR(mac2), mac1->sdl_alen) < 0;
    }
+#elif defined(__sun__) || defined(__gnu_hurd__)
+   // No link-layer hardware address comparison needed
+#else
+#error Missing case!
 #endif
    return false;
 }

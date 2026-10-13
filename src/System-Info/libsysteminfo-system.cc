@@ -105,7 +105,7 @@ void SystemInfo::obtainHostnameInformation()
 // ###### Obtain kernel information #########################################
 void SystemInfo::obtainKernelInformation()
 {
-#if !defined(_WIN32)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
    struct utsname kernelInfo;
    if(uname(&kernelInfo) >= 0) {
       addString("system_sysname",  kernelInfo.sysname);
@@ -114,7 +114,7 @@ void SystemInfo::obtainKernelInformation()
       addString("system_version",  kernelInfo.version);
       addString("system_machine",  kernelInfo.machine);
    }
-#else
+#elif defined(_WIN32)
    addString("system_sysname", "Windows");
    char  nodename[256] = "localhost";
    DWORD size          = sizeof(nodename);
@@ -151,6 +151,8 @@ void SystemInfo::obtainKernelInformation()
    addString("system_release", release);
    addString("system_version", version);
    addString("system_machine", machine);
+#else
+#error Missing case!
 #endif
 }
 
@@ -170,7 +172,7 @@ static bool getUptime(struct timespec* ts)
    ts->tv_nsec        = static_cast<long>((ms % 1000) * 1'000'000);
    return true;
 #else
-   return false;
+#error Missing case!
 #endif
 }
 
@@ -197,32 +199,6 @@ void SystemInfo::obtainUptimeInformation()
 }
 
 
-#if !(defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__) || defined(_WIN32))
-// ###### Query information via shell #######################################
-static bool queryPipe(const char*  command,
-                      char*        result,
-                      const size_t resultMaxSize)
-{
-   FILE* fh = popen(command, "r");
-   if(fh != nullptr) {
-      size_t resultSize = 0;
-      char*  resultPtr;
-      do {
-         resultPtr = fgets(&result[resultSize], resultMaxSize - resultSize, fh);
-         if(resultPtr == nullptr) {
-            break;
-         }
-         resultSize += strlen(resultPtr);
-      } while(resultSize < resultMaxSize - 1);
-      result[resultSize] = 0x00;
-      pclose(fh);
-      return (resultSize > 0);
-   }
-   return false;
-}
-#endif
-
-
 // ###### Obtain the number of processes on the system ######################
 static unsigned int getProcessCount()
 {
@@ -245,7 +221,7 @@ static unsigned int getProcessCount()
       parameterLength = (parameterLength * 5) / 4;
       std::vector<char> buffer(parameterLength);
       if(sysctl(mibKernProcProc, mibKernProcProcSize, buffer.data(), &parameterLength, nullptr, 0) == 0) {
-         count = parameterLength / sizeof(struct kinfo_proc);
+         count = static_cast<unsigned int>(parameterLength / sizeof(struct kinfo_proc));
       }
    }
 #elif defined(__NetBSD__)
@@ -257,7 +233,7 @@ static unsigned int getProcessCount()
       std::vector<char> buffer(parameterLength);
       mibKernProcProc[5] = static_cast<int>(parameterLength / sizeof(struct kinfo_proc2));
       if(sysctl(mibKernProcProc, mibKernProcProcSize, buffer.data(), &parameterLength, nullptr, 0) == 0) {
-         count = parameterLength / sizeof(struct kinfo_proc2);
+         count = static_cast<unsigned int>(parameterLength / sizeof(struct kinfo_proc2));
       }
    }
 #elif defined(__OpenBSD__)
@@ -269,7 +245,7 @@ static unsigned int getProcessCount()
       std::vector<char> buffer(parameterLength);
       mibKernProcProc[5] = static_cast<int>(parameterLength / sizeof(struct kinfo_proc));
       if(sysctl(mibKernProcProc, mibKernProcProcSize, buffer.data(), &parameterLength, nullptr, 0) == 0) {
-         count = parameterLength / sizeof(struct kinfo_proc);
+         count = static_cast<unsigned int>(parameterLength / sizeof(struct kinfo_proc));
       }
    }
 #elif defined(__APPLE__)
@@ -289,11 +265,7 @@ static unsigned int getProcessCount()
       CloseHandle(hSnap);
    }
 #else
-   char         buffer[64];
-   unsigned int value;
-   if(queryPipe("ps -ae -o pid= | wc -l", buffer, sizeof(buffer)) && (sscanf(buffer, "%u", &value) == 1)) {
-      count = value;
-   }
+#error Missing case!
 #endif
    return count;
 }
@@ -364,11 +336,7 @@ static unsigned int getUserCount()
       count = 1;
    }
 #else
-   char         buffer[64];
-   unsigned int value;
-   if(queryPipe("who | wc -l", buffer, sizeof(buffer)) && (sscanf(buffer, "%u", &value) == 1)) {
-      count = value;
-   }
+#error Missing case!
 #endif
    return count;
 }
@@ -377,21 +345,23 @@ static unsigned int getUserCount()
 // ##### Obtain load information ############################################
 void SystemInfo::obtainLoadInformation()
 {
-#if !defined(_WIN32)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
    const auto cores    = static_cast<uint32_t>(sysconf(_SC_NPROCESSORS_ONLN));
    const auto pageSize = static_cast<uint32_t>(sysconf(_SC_PAGESIZE));
-#else
+#elif defined(_WIN32)
    SYSTEM_INFO sysInfo;
    GetSystemInfo(&sysInfo);
    const auto cores    = static_cast<uint32_t>(sysInfo.dwNumberOfProcessors);
    const auto pageSize = static_cast<uint32_t>(sysInfo.dwPageSize);
+#else
+#error Missing case!
 #endif
    addUInt32("system_cores", cores);
    addUInt32("system_pagesize", pageSize);
    addUInt32("system_procs", getProcessCount());
    addUInt32("system_users", getUserCount());
 
-#if !defined(_WIN32)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
    double loadavg[3];
    if(getloadavg(loadavg, 3) == 3) {
       const double loadPercentageFactor = (cores > 0) ? (100.0 / static_cast<double>(cores)) : 0.0;
@@ -402,5 +372,9 @@ void SystemInfo::obtainLoadInformation()
       addDouble("system_load_avg5minpct",  loadavg[1] * loadPercentageFactor, 4);
       addDouble("system_load_avg15minpct", loadavg[2] * loadPercentageFactor, 4);
    }
+#elif defined(_WIN32)
+   // Load average is not supported on Windows
+#else
+#error Missing case!
 #endif
 }

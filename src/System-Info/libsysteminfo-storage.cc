@@ -44,7 +44,7 @@
 bool SystemInfo::getDiskUsage(std::string_view mountPoint,
                               std::string_view label)
 {
-#if !defined(_WIN32)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
    struct statvfs status { };
    if(statvfs(std::string(mountPoint).c_str(), &status) != 0) {
       return false;
@@ -53,7 +53,7 @@ bool SystemInfo::getDiskUsage(std::string_view mountPoint,
    const uint64_t total     = static_cast<uint64_t>(status.f_blocks) * status.f_frsize;
    const uint64_t available = static_cast<uint64_t>(status.f_bavail) * status.f_frsize;
    const uint64_t freeSpace = static_cast<uint64_t>(status.f_bfree) * status.f_frsize;
-#else
+#elif defined(_WIN32)
    ULARGE_INTEGER freeBytes, totalBytes, totalFree;
    if(!GetDiskFreeSpaceExA(std::string(mountPoint).c_str(), &freeBytes, &totalBytes, &totalFree)) {
       return false;
@@ -62,6 +62,8 @@ bool SystemInfo::getDiskUsage(std::string_view mountPoint,
    const uint64_t total     = totalBytes.QuadPart;
    const uint64_t available = freeBytes.QuadPart;
    const uint64_t freeSpace = totalFree.QuadPart;
+#else
+#error Missing case!
 #endif
    const uint64_t used            = total - freeSpace;
    const double   usagePercentage = (total > 0) ? (100.0 * static_cast<double>(total - available) / total) : 0.0;
@@ -79,12 +81,13 @@ void SystemInfo::obtainStorageInformation()
 {
    getDiskUsage("/", "root");
    getDiskUsage("/tmp", "tmp");
-#if !defined(_WIN32)
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun__) || defined(__gnu_hurd__) || defined(__APPLE__)
    getDiskUsage("/home", "home");
    addString("disk_list", "root tmp home");
-#else
+#elif defined(_WIN32)
    getDiskUsage("/c", "c");
    addString("disk_list", "root tmp c");
+#else
+#error Missing case!
 #endif
 }
-

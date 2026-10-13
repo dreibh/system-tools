@@ -131,9 +131,11 @@ void SystemInfo::obtainMemoryInformation()
 #if defined(__FreeBSD__)
    size_t    physMem       = 0;
    const int mibPhysMem[2] = { CTL_HW, HW_PHYSMEM };
-#else
+#elif defined(__NetBSD__) || defined(__OpenBSD__)
    uint64_t  physMem       = 0;
    const int mibPhysMem[2] = { CTL_HW, HW_PHYSMEM64 };
+#else
+#error Missing case!
 #endif
    length = sizeof(physMem);
    sysctl(mibPhysMem, 2, &physMem, &length, nullptr, 0);
@@ -159,6 +161,8 @@ void SystemInfo::obtainMemoryInformation()
    sysctl(mibUvmExp, 2, &uvm, &length, nullptr, 0);
    vInactiveCount = static_cast<unsigned int>(uvm.inactive);
    vFreeCount     = static_cast<unsigned int>(uvm.free);
+#else
+#error Missing case!
 #endif
    memoryTotal     = physMem;
    memoryAvailable = (static_cast<uint64_t>(vInactiveCount) + vFreeCount) * pageSize;
@@ -201,6 +205,8 @@ void SystemInfo::obtainMemoryInformation()
          }
       }
    }
+#else
+#error Missing case!
 #endif
 #elif defined(__sun__)
    const long pageSize = sysconf(_SC_PAGESIZE);
@@ -287,6 +293,8 @@ void SystemInfo::obtainMemoryInformation()
          swapAvailable = (swapTotal >= swapUsed) ? (swapTotal - swapUsed) : 0;
       }
    }
+#else
+#error Missing case!
 #endif
 
    addUInt64("system_mem_total", memoryTotal);
