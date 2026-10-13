@@ -134,11 +134,26 @@ ELSE()
 ENDIF()
 
 IF (WITH_SYSTEM_INFO)
-   CONFIGURE_FILE(System-Info System-Info.versioned @ONLY)
-   SET_PROPERTY(DIRECTORY APPEND PROPERTY ADDITIONAL_CLEAN_FILES System-Info.versioned)
-   INSTALL(PROGRAMS    ${CMAKE_CURRENT_BINARY_DIR}/System-Info.versioned
-           DESTINATION ${CMAKE_INSTALL_BINDIR}
-           RENAME      System-Info)
+   ADD_EXECUTABLE(System-Info System-Info.cc)
+   TARGET_COMPILE_DEFINITIONS(System-Info PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
+   TARGET_INCLUDE_DIRECTORIES(System-Info PRIVATE
+                              ${CMAKE_CURRENT_SOURCE_DIR}
+                              ${SYSTEMD_INCLUDE_DIRS}
+                              ${Intl_INCLUDE_DIRS})
+   TARGET_LINK_LIBRARIES(System-Info PRIVATE
+                         libsysteminfo-${libraryType}
+                         ${Intl_LIBRARIES}
+                         ${GETOPT_LIBRARY})
+   IF (WIN32)
+      TARGET_LINK_LIBRARIES(System-Info PRIVATE ws2_32)
+   ENDIF()
+   IF (NOT MSVC)
+      TARGET_COMPILE_OPTIONS(System-Info PRIVATE -Wall -Wextra -Wpedantic -Wsign-conversion)
+   ELSE()
+      TARGET_COMPILE_OPTIONS(System-Info PRIVATE /W4)
+   ENDIF()
+
+   INSTALL(TARGETS System-Info DESTINATION ${CMAKE_INSTALL_BINDIR})
    INSTALL(FILES System-Info.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
    INSTALL(FILES       System-Info.bash-completion
            DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
@@ -161,6 +176,7 @@ IF (WITH_GET_SYSTEM_INFO)
    ELSE()
       TARGET_COMPILE_OPTIONS(get-system-info PRIVATE /W4)
    ENDIF()
+
    INSTALL(TARGETS get-system-info DESTINATION ${CMAKE_INSTALL_BINDIR})
    INSTALL(FILES get-system-info.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
    INSTALL(FILES       get-system-info.bash-completion
