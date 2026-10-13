@@ -244,23 +244,11 @@ ENDIF()
 #### LIBRARIES                                                           ####
 #############################################################################
 
-# ====== libicuuc on Solaris ================================================
+# ====== Libraries on Solaris ===============================================
 IF (CMAKE_SYSTEM_NAME MATCHES "SunOS")
    FIND_LIBRARY(SOCKET_LIBRARY socket REQUIRED)
    FIND_LIBRARY(NSL_LIBRARY    nsl    REQUIRED)
    FIND_LIBRARY(KSTAT_LIBRARY  kstat  REQUIRED)
-
-   FIND_LIBRARY(ICUUC_LIBRARY NAMES icuuc)
-   FIND_PATH(ICUUC_INCLUDE_DIR NAMES unicode/uchar.h)
-   IF (ICUUC_LIBRARY AND ICUUC_INCLUDE_DIR)
-      MESSAGE(STATUS "ICU-UC library found:")
-      MESSAGE(STATUS " ICUUC_LIBRARY:     ${ICUUC_LIBRARY}")
-      MESSAGE(STATUS " ICUUC_INCLUDE_DIR: ${ICUUC_INCLUDE_DIR}")
-   ELSE()
-      MESSAGE(FATAL_ERROR
-              "Cannot find ICU-UC library! Try:\n"
-              " * Solaris:   sudo pkg install icu")
-   ENDIF()
 ENDIF()
 
 # ====== SystemD support on Linux ===========================================
