@@ -49,8 +49,8 @@ class SystemInfo {
 public:
    enum Flags : uint32_t {
       Hostname = (1U << 0),
-      Cpu      = (1U << 1),
-      // Gpu   = (1U << 2),
+      // CPU   = (1U << 1),
+      // GPU   = (1U << 2),
       Uptime   = (1U << 3),
       Kernel   = (1U << 4),
       Load     = (1U << 5),
@@ -58,7 +58,8 @@ public:
       Storage  = (1U << 7),
       Network  = (1U << 8),
       Battery  = (1U << 9),
-      User     = (1U << 10),
+      SSH      = (1U << 10),
+      User     = (1U << 11),
       All      = 0xFFFFFFFFU
    };
 
@@ -159,6 +160,7 @@ private:
    void obtainStorageInformation();
    void obtainNetworkInformation(const bool filterLocalScope = true);
    void obtainUserInformation();
+   void obtainSshKeyFingerprints();
 
    bool getDiskUsage(std::string_view mountPoint,
                      std::string_view label);

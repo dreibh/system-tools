@@ -29,12 +29,14 @@
 
 #include <libsysteminfo.h>
 
+#include <algorithm>
 #include <cctype>
-#include <chrono>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <format>
-#include <fstream>
+#include <filesystem>
+#include <regex>
+#include <string>
 #include <vector>
 
 #if !defined(_WIN32)
@@ -42,6 +44,8 @@
 #include <sys/types.h>
 #include <sys/utsname.h>
 #include <unistd.h>
+#else
+#include <windows.h>
 #endif
 
 #if defined(__linux__)
@@ -376,4 +380,115 @@ void SystemInfo::obtainLoadInformation()
 #else
 #error Missing case!
 #endif
+}
+
+
+// ###### Obtain SSH key fingerprints #######################################
+void SystemInfo::obtainSshKeyFingerprints()
+{
+   std::string     sshDirectory;
+   std::error_code errorCode;
+
+#if defined(_WIN32)
+   const char* programData = std::getenv("ProgramData");
+   if(programData != nullptr) {
+      const std::string candidate = std::string(programData) + "\\ssh";
+      if(std::filesystem::is_directory(candidate, errorCode)) {
+         sshDirectory = candidate;
+      }
+   }
+   if(sshDirectory.empty()) {
+      if(std::filesystem::is_directory("C:\\ProgramData\\ssh", errorCode)) {
+         sshDirectory = "C:\\ProgramData\\ssh";
+      }
+   }
+#elif defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__gnu_hurd__) || defined(__APPLE__)
+   if(std::filesystem::is_directory("/etc/ssh", errorCode)) {
+      sshDirectory = "/etc/ssh";
+   }
+#else
+#error Missing case!
+#endif
+
+   if(sshDirectory.empty()) {
+      return;
+   }
+
+   std::vector<std::string> keyFiles;
+   for(const auto& directoryEntry : std::filesystem::directory_iterator(sshDirectory, errorCode)) {
+      if(directoryEntry.is_regular_file(errorCode)) {
+         const std::string filename = directoryEntry.path().filename().string();
+         if((filename.rfind("ssh_host_", 0) == 0) &&
+            (filename.length() >= 4) &&
+            (filename.substr(filename.length() - 4) == ".pub") &&
+            (filename.find("_dsa_key.pub") == std::string::npos)) {
+            keyFiles.push_back(directoryEntry.path().string());
+         }
+      }
+   }
+   std::sort(keyFiles.begin(), keyFiles.end());
+
+   const std::regex keyRegex(R"(^([0-9]+)\s+([^ ]+)\s+.*?\s+\((.*?)\)$)");
+   unsigned int     keyNumber = 1;
+   std::string      keyList;
+
+   for(const auto& keyPath : keyFiles) {
+      const std::string command = "ssh-keygen -lf \"" + keyPath + "\"";
+#if !defined(_WIN32)
+      FILE* pipe = popen(command.c_str(), "r");
+#else
+      FILE* pipe = _popen(command.c_str(), "r");
+#endif
+      if(pipe == nullptr) {
+         continue;
+      }
+
+      char lineBuffer[512] { 0x00 };
+      if(std::fgets(lineBuffer, sizeof(lineBuffer), pipe) != nullptr) {
+         std::string line(lineBuffer);
+         while(!line.empty() && ((line.back() == '\r') || (line.back() == '\n'))) {
+            line.pop_back();
+         }
+
+         std::smatch match;
+         if(std::regex_match(line, match, keyRegex) && (match.size() == 4)) {
+            const std::string bitsString  = match[1].str();
+            const std::string fingerprint = match[2].str();
+            const std::string keyType     = match[3].str();
+
+            if(!fingerprint.empty() && std::isupper(static_cast<unsigned char>(fingerprint[0]))) {
+               const std::string indexString = std::to_string(keyNumber);
+
+               addString("ssh_key_fingerprint_" + indexString, fingerprint);
+               addString("ssh_key_type_" + indexString, keyType);
+
+               char* endPointer = nullptr;
+               const unsigned long bits = std::strtoul(bitsString.c_str(), &endPointer, 10);
+               if((endPointer != bitsString.c_str()) && (*endPointer == 0x00)) {
+                  addUInt32("ssh_key_bits_" + indexString, static_cast<uint32_t>(bits));
+               }
+
+               if(keyNumber == 1) {
+                  addString("ssh_key_type", keyType);
+               }
+
+               if(!keyList.empty()) {
+                  keyList += " ";
+               }
+               keyList += indexString;
+
+               keyNumber++;
+            }
+         }
+      }
+#if !defined(_WIN32)
+      pclose(pipe);
+#else
+      _pclose(pipe);
+#endif
+   }
+
+   if(!keyList.empty()) {
+      addString("ssh_key_list", keyList);
+   }
 }

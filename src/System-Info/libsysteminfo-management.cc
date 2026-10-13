@@ -76,6 +76,9 @@ SystemInfo::SystemInfo(const unsigned int compatibilityVersion,
    if(flags & Flags::User) {
       obtainUserInformation();
    }
+   if((flags & Flags::SSH) != 0) {
+      obtainSshKeyFingerprints();
+   }
 }
 
 
