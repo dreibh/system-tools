@@ -228,6 +228,8 @@ static void version(void)
 #endif
 static void usage(const char* program, const int exitCode)
 {
+   // TRANSLATORS: Command-line syntax message prefix:
+   // "Usage: <program> [options]".
    fprintf(stderr, "%s %s time_string [...]"
            " [-T|--template time_format_template]"
            " [-F|--float]"
@@ -242,7 +244,6 @@ static void usage(const char* program, const int exitCode)
            gettext("Usage:"), program);
    exit(exitCode);
 }
-
 
 
 // ###### Main program ######################################################
@@ -342,6 +343,8 @@ int main(int argc, char** argv)
       if(i == argc) {
          if(optind == argc) {
             if(timespec_get(&ts, TIME_UTC) != TIME_UTC) {
+               // TRANSLATORS: Error message prefix when obtaining current time
+               // via timespec_get() fails (system error message appended by perror).
                perror(gettext("timespec_get() failed"));
                exit(1);
             }
@@ -364,7 +367,10 @@ int main(int argc, char** argv)
             const size_t frontLength = (size_t)(secondsPlaceholder - timeFormatTemplate);
             char* frontFormatString  = malloc(frontLength + 1);
             if(frontFormatString == nullptr) {
+               // TRANSLATORS: Error message when memory allocation fails:
+               // %s = system error message (strerror)
                fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
+               fputs("\n", stderr);
                exit(1);
             }
             memcpy(frontFormatString, timeFormatTemplate, frontLength);
@@ -405,6 +411,9 @@ int main(int argc, char** argv)
          }
 
          if( (remainder == nullptr) || (remainder[0] != 0x00) ) {
+            // TRANSLATORS: Error message when parsing time string fails:
+            // 1st %s = input time string
+            // 2nd %s = time format template
             fprintf(stderr, gettext("ERROR: Unable to parse time string \"%s\" with format template \"%s\"!"),
                     timeString, timeFormatTemplate);
             fputs("\n", stderr);
@@ -447,6 +456,8 @@ int main(int argc, char** argv)
          }
       }
       if(humanReadable) {
+         // TRANSLATORS: Suffix appended to human-readable timestamp output:
+         // %s = time unit (e.g. s, ms, µs, ns)
          printf(gettext(" %s since the Unix Epoch"), unit);
       }
       fputs("\n", stdout);

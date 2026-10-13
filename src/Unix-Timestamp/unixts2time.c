@@ -98,6 +98,8 @@ static void version(void)
 #endif
 static void usage(const char* program, const int exitCode)
 {
+   // TRANSLATORS: Command-line syntax message prefix:
+   // "Usage: <program> [options]".
    fprintf(stderr, "%s %s unix_timestamp [...]"
            " [-T|--template time_format_template]"
            " [-H|--human-readable]"
@@ -110,7 +112,6 @@ static void usage(const char* program, const int exitCode)
            gettext("Usage:"), program);
    exit(exitCode);
 }
-
 
 
 // ###### Main program ######################################################
@@ -202,6 +203,8 @@ int main(int argc, char** argv)
          if(optind == argc) {
             struct timespec ts;
             if(timespec_get(&ts, TIME_UTC) != TIME_UTC) {
+               // TRANSLATORS: Error message prefix when obtaining current time
+               // via timespec_get() fails (system error message appended by perror).
                perror(gettext("timespec_get() failed"));
                exit(1);
             }
@@ -266,6 +269,7 @@ int main(int argc, char** argv)
             }
          }
          if( (endptr == nullptr) || (*endptr != 0x00) ) {
+            // TRANSLATORS: Error message when input timestamp string is invalid.
             fputs(gettext("ERROR: Invalid Unix timestamp!"), stderr);
             fputs("\n", stderr);
             exit(1);
@@ -285,6 +289,7 @@ int main(int argc, char** argv)
       // ------ Time in seconds-granularity ---------------------------------
       const struct tm* t = gmtime(&ts.tv_sec);
       if(t == nullptr) {
+         // TRANSLATORS: Error message when gmtime() conversion fails.
          fputs(gettext("ERROR: gmtime() failed!"), stderr);
          fputs("\n", stderr);
          exit(1);
@@ -302,12 +307,17 @@ int main(int argc, char** argv)
          const size_t frontLength = (size_t)(secondsPlaceholder - timeFormatTemplate);
          char* frontFormatString  = malloc(frontLength + 1);
          if(frontFormatString == nullptr) {
+            // TRANSLATORS: Error message when memory allocation fails:
+            // %s = system error message (strerror)
             fprintf(stderr, gettext("ERROR: malloc() failed: %s!"), strerror(errno));
+            fputs("\n", stderr);
             exit(1);
          }
          memcpy(frontFormatString, timeFormatTemplate, frontLength);
          frontFormatString[frontLength] = 0x00;
          if(strftime(frontTimeString, sizeof(frontTimeString), frontFormatString, t) == 0) {
+            // TRANSLATORS: Error message when date/time formatting with strftime() fails:
+            // %s = time format template
             fprintf(stderr, gettext("ERROR: strftime() with format template \"%s\" failed!"),
                     frontFormatString);
             fputs("\n", stderr);
@@ -318,6 +328,8 @@ int main(int argc, char** argv)
 
          // ------ Parse the middle part (seconds) --------------------------
          if(strftime(secondsString, sizeof(secondsString), "%S", t) == 0) {
+            // TRANSLATORS: Error message when date/time formatting with strftime() fails:
+            // %s = time format template
             fprintf(stderr, gettext("ERROR: strftime() with format template \"%s\" failed!"),
                     "%S");
             fputs("\n", stderr);
@@ -351,6 +363,8 @@ int main(int argc, char** argv)
          const char* backFormatString = secondsPlaceholder + 2;
          if(backFormatString[0] != 0x00) {
             if(strftime(backTimeString, sizeof(backTimeString), backFormatString, t) == 0) {
+               // TRANSLATORS: Error message when date/time formatting with strftime() fails:
+               // %s = time format template
                fprintf(stderr, gettext("ERROR: strftime() with format template \"%s\" failed!"),
                        backFormatString);
                fputs("\n", stderr);
@@ -360,6 +374,8 @@ int main(int argc, char** argv)
       }
       else {
          if(strftime(frontTimeString, sizeof(frontTimeString), timeFormatTemplate, t) == 0) {
+            // TRANSLATORS: Error message when date/time formatting with strftime() fails:
+            // %s = time format template
             fprintf(stderr, gettext("ERROR: strftime() with format template \"%s\" failed!"),
                     timeFormatTemplate);
             fputs("\n", stderr);
@@ -377,6 +393,14 @@ int main(int argc, char** argv)
          fputs(backTimeString, stdout);
       }
       else {
+         // TRANSLATORS: Human-readable timestamp conversion output:
+         // 1st %s   = formatted date/time prefix (before seconds)
+         // 2nd %s   = seconds string
+         // 3rd %s   = fractional seconds string
+         // 4th %s   = formatted date/time suffix (after seconds)
+         // 1st %lld = decimal timestamp value
+         // 1st %llx = hexadecimal timestamp value
+         // 5th %s   = time unit (e.g. s, ms, µs, ns)
          fprintf(stdout, gettext("%s%s%s%s is %lld (0x%llx) %s since the Unix Epoch"),
                  frontTimeString,
                  secondsString, (fractionalSecondsString[0] != 0x00) ? fractionalSecondsString + 1 : "",
