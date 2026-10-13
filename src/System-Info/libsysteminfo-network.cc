@@ -124,10 +124,10 @@ static std::string formatAddress(const struct sockaddr* address,
                                  const unsigned int     prefixlen)
 {
    if((address->sa_family == AF_INET6) || (address->sa_family == AF_INET)) {
-      char      host[NI_MAXHOST];
+      char      host[NI_MAXHOST] { 0 };
       socklen_t length = (address->sa_family == AF_INET6) ? sizeof(sockaddr_in6) : sizeof(sockaddr_in);
       if(getnameinfo(address, length, host, sizeof(host), nullptr, 0, NI_NUMERICHOST) == 0) {
-         return std::format("{}/{}", host, prefixlen);
+         return std::format("{}/{}", static_cast<const char*>(host), prefixlen);
       }
    }
 #if defined(__linux__)
