@@ -102,6 +102,8 @@ static void version(void)
 #endif
 static void usage(const char* program, const int exitCode)
 {
+   // TRANSLATORS: Command-line syntax message prefix:
+   // "Usage: <program> [options]".
    fprintf(stderr, "%s %s min_delay max_delay"
            " [-q|--quiet]"
            " [-w|--verbose]"
@@ -175,6 +177,8 @@ int main(int argc, char** argv)
    if( (endptrDelayMin == argv[optind + 0]) || (*endptrDelayMin != 0x00) ||
        (endptrDelayMax == argv[optind + 1]) || (*endptrDelayMax != 0x00) ||
        (delayMin < 0.0) || (delayMin > delayMax) ) {
+      // TRANSLATORS: Error message when min_delay or max_delay are negative,
+      // non-numeric, or min_delay > max_delay.
       fputs(gettext("ERROR: Invalid min_delay/max_delay!"), stderr);
       fputs("\n", stderr);
       return 1;
@@ -193,6 +197,8 @@ int main(int argc, char** argv)
    }
 
    if(verboseMode) {
+      // TRANSLATORS: Verbose status message before entering sleep:
+      // %1.6f = sleep duration in seconds (fractional floating point)
       printf(gettext("Sleeping for %1.6f s ..."), delay);
       puts("");
    }
@@ -207,6 +213,8 @@ int main(int argc, char** argv)
    }
 
    if(verboseMode) {
+      // TRANSLATORS: Verbose status message displayed after sleep duration
+      // completes.
       puts(gettext("Woke up!"));
    }
 

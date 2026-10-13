@@ -42,6 +42,8 @@ export TEXTDOMAIN="try-hard"
 # ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
+   # TRANSLATORS: Command-line syntax message prefix:
+   # "Usage: <program> [options]".
    echo >&2 "$(gettext "Usage:") $0 max_trials max_delay [-m|--min-delay min_delay] [-A|--additive-increase delay_increment] [-M|--multiplicative-increase delay_factor] [-T|--truncate-delay truncated_max_delay] [-D|--deterministic] [-q|--quiet] [-w|--verbose] [-h|--help] [-v|--version] -- command ..."
    exit "${exitCode}"
 }
@@ -59,6 +61,7 @@ version () {
 
 # ====== Handle arguments ===================================================
 if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
+   # TRANSLATORS: Error message when installed Bash version is older than 4.4.
    gettext >&2 "ERROR: Bash 4.4 or higher is required!"
    echo >&2
    exit 1
@@ -85,6 +88,8 @@ case "${UNAME}" in
       ;;
 esac
 if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+   # TRANSLATORS: Error message when enhanced/GNU getopt is not found or is
+   # incompatible.
    gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
    echo >&2
    exit 1
@@ -108,6 +113,9 @@ while [ $# -gt 0 ] ; do
          delayValue="$2"
          shift
          if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+            # TRANSLATORS: Error message when the minimum delay parameter
+            # is invalid:
+            # ${delayValue} = specified minimum delay string
             eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
             echo >&2
             exit 1
@@ -118,6 +126,9 @@ while [ $# -gt 0 ] ; do
          delayValue="$2"
          shift
          if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+            # TRANSLATORS: Error message when the additive increase increment
+            # is invalid:
+            # ${delayValue} = specified additive increment string
             eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
             echo >&2
             exit 1
@@ -128,6 +139,9 @@ while [ $# -gt 0 ] ; do
          delayValue="$2"
          shift
          if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+            # TRANSLATORS: Error message when the multiplicative increase factor
+            # is invalid:
+            # ${delayValue} = specified multiplicative factor string
             eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
             echo >&2
             exit 1
@@ -138,6 +152,9 @@ while [ $# -gt 0 ] ; do
          delayValue="$2"
          shift
          if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+            # TRANSLATORS: Error message when the maximum delay
+            # ceiling/truncation value is invalid:
+            # ${delayValue} = specified delay truncation ceiling string
             eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
             echo >&2
             exit 1
@@ -177,17 +194,25 @@ fi
 
 MAX_TRIALS="$1"
 if [[ ! "${MAX_TRIALS}" =~ ^[0-9]*$ ]] || [ "${MAX_TRIALS}" -lt 1 ] ; then
+   # TRANSLATORS: Error message when the maximum trial count parameter
+   # is invalid:
+   # ${MAX_TRIALS} = specified trial count value
    eval_gettext >&2 "ERROR: Invalid maximum trials \${MAX_TRIALS}!"
    echo >&2
    exit 1
 fi
 delayValue="$2"
 if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+   # TRANSLATORS: Error message when the initial maximum delay value
+   # is invalid:
+   # ${delayValue} = specified maximum delay string
    eval_gettext >&2 "ERROR: Invalid delay value \${delayValue}!"
    echo >&2
    exit 1
 fi
 if [ "${DETERMINISTIC}" -eq 0 ] && ! command -v random-sleep >/dev/null ; then
+   # TRANSLATORS: Error message when the random-sleep utility is not found
+   # in PATH.
    gettext >&2 "ERROR: Cannot find random-sleep in the search path!"
    echo >&2
    exit 1
@@ -217,6 +242,9 @@ while true ; do
    # ====== Start next trial ================================================
    trial=$(( trial+1 ))
    if [ "${VERBOSE}" -eq 1 ] ; then
+      # TRANSLATORS: Progress notification before running a command trial:
+      # ${trial} = current trial attempt index
+      # ${MAX_TRIALS} = maximum configured number of trials
       echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS}:") \x1b[37m$*\x1b[0m"
    fi
 
@@ -226,6 +254,9 @@ while true ; do
    # ====== Check whether trial limit has been reached ======================
    if [ ${trial} -ge "${MAX_TRIALS}" ] ; then
       if [ "${VERBOSE}" -eq 1 ] ; then
+         # TRANSLATORS: Notification when retry limit has been exceeded
+         # without success:
+         # ${MAX_TRIALS} = total number of attempts executed
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Tried \${MAX_TRIALS} times -> giving up now!")\x1b[0m"
       fi
       exit "${exitStatus}"
@@ -257,6 +288,13 @@ BEGIN {
    # ====== Wait a random time span =========================================
    if [ "${DETERMINISTIC}" -eq 0 ] ; then
       if [ "${VERBOSE}" -eq 1 ] ; then
+         # TRANSLATORS: Progress notification when a trial fails and random
+         # backoff begins:
+         # ${trial} = current trial attempt index
+         # ${MAX_TRIALS} = maximum configured number of trials
+         # ${exitStatus} = command exit return code
+         # ${minDelay} = lower bound of random sleep interval in seconds
+         # ${maxDelay} = upper bound of random sleep interval in seconds
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS} failed (exit code \${exitStatus}) -> waiting random time from [\${minDelay}, \${maxDelay}] s ...")\x1b[0m"
          random-sleep -w "${minDelay}" "${maxDelay}"
       else
@@ -264,6 +302,11 @@ BEGIN {
       fi
    else
       if [ "${VERBOSE}" -eq 1 ] ; then
+         # TRANSLATORS: Progress notification when a trial fails and
+         # deterministic backoff begins:
+         # ${trial} = current trial attempt index
+         # ${MAX_TRIALS} = maximum configured number of trials
+         # ${maxDelay} = sleep duration in seconds
          echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS} failed -> waiting for \${maxDelay} s ...")\x1b[0m"
       fi
       sleep "${maxDelay}"
