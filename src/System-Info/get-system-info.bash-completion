@@ -60,12 +60,27 @@ _get_system_info()
 
    # ====== All options =====================================================
    local opts="
--c
---compatibility
--h
---help
--v
---version
+      -h --help
+      -v --version
+      -c --compatibility
+      -A --all
+      -a --none
+      -B --with-battery
+      -b --without-battery
+      -K --with-kernel
+      -k --without-kernel
+      -L --with-load
+      -l --without-load
+      -M --with-memory
+      -m --without-memory
+      -N --with-network
+      -n --without-network
+      -O --with-hostname
+      -o --without-hostname
+      -S --with-storage
+      -s --without-storage
+      -U --with-uptime
+      -u --without-uptime
 "
    mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
    return 0
