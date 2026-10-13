@@ -150,7 +150,6 @@ static std::string formatText(const char* messageIdentifier,
    InsertFile = nullptr;
 
    // ====== Close input file ===============================================
-   // Ensure input file handle is released before renaming on Windows:
    if(OpenInputFile) {
       if(InputFile != nullptr) {
          std::fclose(InputFile);
@@ -166,8 +165,8 @@ static std::string formatText(const char* messageIdentifier,
             // TRANSLATORS: Error message when closing output file fails:
             // {0} = output file path
             // {1} = system error message (std::strerror)
-            std::cerr << formatText("ERROR: Unable to open output file {0}: {1}!\n",
-                                    OutputFileName, std::strerror(errno));
+            std::cerr << formatText("ERROR: Unable to open output file {0}: {1}!",
+                                    OutputFileName, std::strerror(errno)) << '\n';
             exitCode = 1;
          }
       }
@@ -181,8 +180,8 @@ static std::string formatText(const char* messageIdentifier,
                // fails:
                // {0} = broken file path
                // {1} = system error message (std::strerror)
-               std::cerr << formatText("ERROR: Unable to delete broken output file {0}: {1}!\n",
-                                       brokenFileName, errorCode.message());
+               std::cerr << formatText("ERROR: Unable to delete broken output file {0}: {1}!",
+                                       brokenFileName, errorCode.message()) << '\n';
             }
          }
       }
@@ -197,8 +196,8 @@ static std::string formatText(const char* messageIdentifier,
                // fails:
                // {0} = input file path
                // {1} = system error message (std::strerror)
-               std::cerr << formatText("WARNING: Unable to restore file permissions for {0}: {1}!\n",
-                                       InputFileName, std::strerror(errno));
+               std::cerr << formatText("WARNING: Unable to restore file permissions for {0}: {1}!",
+                                       InputFileName, std::strerror(errno)) << '\n';
             }
          }
 
@@ -211,8 +210,8 @@ static std::string formatText(const char* messageIdentifier,
             // {0} = temporary file path
             // {1} = target input file path
             // {2} = system error message (std::strerror)
-            std::cerr << formatText("ERROR: Unable to change name of temporary output file from {0} to {1}: {2}!\n",
-                                    OutputTempFileName, InputFileName, errorCode.message());
+            std::cerr << formatText("ERROR: Unable to change name of temporary output file from {0} to {1}: {2}!",
+                                    OutputTempFileName, InputFileName, errorCode.message()) << '\n';
          }
       }
       OpenOutputFile = false;
@@ -232,8 +231,8 @@ static void writeToOutputFile(const char*  data,
          // TRANSLATORS: Error message when writing to output file fails:
          // {0} = output file path
          // {1} = system error message (std::strerror)
-         std::cerr << formatText("ERROR: Unable to write to output file {0}: {1}!\n",
-                                 OutputFileName, std::strerror(errno));
+         std::cerr << formatText("ERROR: Unable to write to output file {0}: {1}!",
+                                 OutputFileName, std::strerror(errno)) << '\n';
          cleanUp(1);
       }
    }
@@ -592,9 +591,9 @@ int main(int argc, char** argv)
                optind++;
             }
             else {
-               // TRANSLATORS: Error message when line selection (--select/-s)
+               // TRANSLATORS: Error message when line selection (--select|-s)
                // is missing the to_line parameter.
-               std::cerr << gettext("ERROR: Too few arguments for line selection (--select|-s)!\n");
+               std::cerr << gettext("ERROR: Too few arguments for line selection (--select|-s)!") << '\n';
                return 1;
             }
             break;
@@ -630,7 +629,7 @@ int main(int argc, char** argv)
                    (optarg[i] != '-') && (optarg[i] != '\''))) {
                   // TRANSLATORS: Error message when format string for line
                   // numbering contains invalid characters.
-                  std::cerr << gettext("ERROR: Invalid value for enumeration format (--enumerate-format)!\n");
+                  std::cerr << gettext("ERROR: Invalid value for enumeration format (--enumerate-format)!") << '\n';
                   return 1;
                }
             }
@@ -673,7 +672,7 @@ int main(int argc, char** argv)
             else {
                // TRANSLATORS: Error message when --highlight-params is given
                // fewer than the required 6 arguments.
-               std::cerr << gettext("ERROR: Too few arguments for highlight parameters (--highlight-params)!\n");
+               std::cerr << gettext("ERROR: Too few arguments for highlight parameters (--highlight-params)!") << '\n';
                return 1;
             }
             break;
@@ -697,7 +696,7 @@ int main(int argc, char** argv)
    if((MaxActions >= 0) && (MinActions > MaxActions)) {
       // TRANSLATORS: Error message when --min-actions exceeds
       // --max-actions.
-      std::cerr << gettext("ERROR: Invalid min/max settings (--min-actions/-m/--max-actions/-M)!\n");
+      std::cerr << gettext("ERROR: Invalid min/max settings (--min-actions/-m/--max-actions/-M)!") << '\n';
       return 1;
    }
    if(EndTag.empty() || BeginTag.empty() || (EndTag == BeginTag)) {
@@ -706,7 +705,7 @@ int main(int argc, char** argv)
    if(!BeginTag.empty() && ((SelectBegin != 0) || (SelectEnd != 0))) {
       // TRANSLATORS: Error message when line selection and tag matching
       // options are specified together.
-      std::cerr << gettext("ERROR: Line selection (--select|-s) and tags (--begin-tag/-b/--end-tag/-e/--tag/-t) are mutually exclusive!\n");
+      std::cerr << gettext("ERROR: Line selection (--select|-s) and tags (--begin-tag/-b/--end-tag/-e/--tag/-t) are mutually exclusive!") << '\n';
       return 1;
    }
 
@@ -717,7 +716,7 @@ int main(int argc, char** argv)
          if(showWarnings && (!BeginTag.empty() || !EndTag.empty())) {
             // TRANSLATORS: Warning message when begin/end tags are provided
             // in modes that do not support tags (Cat, Discard, Enumerate).
-            std::cerr << gettext("WARNING: Begin/end tags (--begin-tag/-b/--end-tag/-e/--tag/-t) have no effect for Cat, Discard, or Enumerate!\n");
+            std::cerr << gettext("WARNING: Begin/end tags (--begin-tag/-b/--end-tag/-e/--tag/-t) have no effect for Cat, Discard, or Enumerate!") << '\n';
          }
          BeginTag.clear();
          EndTag.clear();
@@ -729,7 +728,7 @@ int main(int argc, char** argv)
             // TRANSLATORS: Warning message when identical begin/end tags
             // are used with excluded tags in Extract, Remove, or Replace
             // mode.
-            std::cerr << gettext("WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful for Extract, Remove, or Replace!\n");
+            std::cerr << gettext("WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful for Extract, Remove, or Replace!") << '\n';
          }
          break;
       default:
@@ -749,8 +748,8 @@ int main(int argc, char** argv)
          // file fails during in-place update:
          // {0} = input file path
          // {1} = system error message (std::strerror)
-         std::cerr << formatText("ERROR: Unable to resolve absolute path for input file {0}: {1}!\n",
-                                 InputFileName, errorCode.message());
+         std::cerr << formatText("ERROR: Unable to resolve absolute path for input file {0}: {1}!",
+                                 InputFileName, errorCode.message()) << '\n';
          cleanUp(1);
       }
       InputFileName = canonicalPath.string();
@@ -761,8 +760,8 @@ int main(int argc, char** argv)
          // TRANSLATORS: Error message when opening input file fails:
          // {0} = input file path
          // {1} = system error message (std::strerror)
-         std::cerr << formatText("ERROR: Unable to open input file {0}: {1}!\n",
-                                 InputFileName, std::strerror(errno));
+         std::cerr << formatText("ERROR: Unable to open input file {0}: {1}!",
+                                 InputFileName, std::strerror(errno)) << '\n';
          cleanUp(1);
       }
       OpenInputFile = true;
@@ -784,21 +783,21 @@ int main(int argc, char** argv)
          // inverted (start line exceeds end line):
          // {0} = start line number
          // {1} = end line number
-         std::cerr << formatText("WARNING: Line selection range ({0} — {1}) is not useful. Input file too short?\n",
-                                 SelectBegin, SelectEnd);
+         std::cerr << formatText("WARNING: Line selection range ({0} — {1}) is not useful. Input file too short?",
+                                 SelectBegin, SelectEnd) << '\n';
       }
    }
    else {
       if((SelectBegin < 0) || (SelectEnd < 0)) {
          // TRANSLATORS: Error message when negative line offset is used
          // without a file input source.
-         std::cerr << gettext("ERROR: Select from end of file (negative line number) is only possible with input file!\n");
+         std::cerr << gettext("ERROR: Select from end of file (negative line number) is only possible with input file!") << '\n';
          cleanUp(1);
       }
       if(InPlaceUpdate) {
          // TRANSLATORS: Error message when in-place update is requested
          // without specifying an input file.
-         std::cerr << gettext("ERROR: In-place update (--in-place|-p) requires an input file (--input/-i)!\n");
+         std::cerr << gettext("ERROR: In-place update (--in-place|-p) requires an input file (--input/-i)!") << '\n';
          cleanUp(1);
       }
    }
@@ -812,7 +811,7 @@ int main(int argc, char** argv)
       if(!OutputFileName.empty()) {
          // TRANSLATORS: Error message when in-place update and output file
          // are specified simultaneously.
-         std::cerr << gettext("ERROR: In-place update (--in-place|-p) and output file (--output/-o) are mutually exclusive!\n");
+         std::cerr << gettext("ERROR: In-place update (--in-place|-p) and output file (--output/-o) are mutually exclusive!") << '\n';
          cleanUp(1);
       }
       OutputTempFileName = InputFileName + "~";
@@ -826,8 +825,8 @@ int main(int argc, char** argv)
          // fails:
          // {0} = output file path
          // {1} = system error message (std::strerror)
-         std::cerr << formatText("ERROR: Unable to create output file {0}: {1}!\n",
-                                 destinationFile, std::strerror(errno));
+         std::cerr << formatText("ERROR: Unable to create output file {0}: {1}!",
+                                 destinationFile, std::strerror(errno)) << '\n';
          cleanUp(1);
       }
       OpenOutputFile = true;
@@ -842,7 +841,7 @@ int main(int argc, char** argv)
       if(InputFile == stdin) {
          // TRANSLATORS: Error message when reading insert content from stdin
          // while main input is also stdin.
-         std::cerr << gettext("ERROR: Insert from standard input requires an input file!\n");
+         std::cerr << gettext("ERROR: Insert from standard input requires an input file!") << '\n';
          cleanUp(1);
       }
       InsertFile = std::tmpfile();
@@ -850,8 +849,8 @@ int main(int argc, char** argv)
          // TRANSLATORS: Error message when creating temporary buffer file for
          // insertion fails:
          // {0} = system error message (std::strerror)
-         std::cerr << formatText("ERROR: Unable to create temporary file for insertion: {0}!\n",
-                                 std::strerror(errno));
+         std::cerr << formatText("ERROR: Unable to create temporary file for insertion: {0}!",
+                                 std::strerror(errno)) << '\n';
          cleanUp(1);
       }
       char   buffer[65536];
@@ -861,8 +860,8 @@ int main(int argc, char** argv)
             // TRANSLATORS: Error message when writing stdin to temporary
             // insert file fails:
             // {0} = system error message (std::strerror)
-            std::cerr << formatText("ERROR: Failed to write to temporary file: {0}!\n",
-                                    std::strerror(errno));
+            std::cerr << formatText("ERROR: Failed to write to temporary file: {0}!",
+                                    std::strerror(errno)) << '\n';
             cleanUp(1);
          }
       }
@@ -875,8 +874,8 @@ int main(int argc, char** argv)
          // TRANSLATORS: Error message when opening insert file fails:
          // {0} = insert file path
          // {1} = system error message (std::strerror)
-         std::cerr << formatText("ERROR: Unable to open insert file {0}: {1}!\n",
-                                 InsertFileName, std::strerror(errno));
+         std::cerr << formatText("ERROR: Unable to open insert file {0}: {1}!",
+                                 InsertFileName, std::strerror(errno)) << '\n';
          cleanUp(1);
       }
       OpenInsertFile = true;
@@ -892,7 +891,7 @@ int main(int argc, char** argv)
          (Mode == TextBlockMode::Replace)) {
          // TRANSLATORS: Error message when an insert or replace mode is
          // selected but no insert file was provided.
-         std::cerr << gettext("ERROR: No insert file provided!\n");
+         std::cerr << gettext("ERROR: No insert file provided!") << '\n';
          cleanUp(1);
       }
    }
@@ -917,7 +916,6 @@ int main(int argc, char** argv)
             foundMarker = true;
 
             // ====== Begin marker found ====================================
-// ====== Begin marker found ====================================
             if(activeMarker == BeginTag) {
                if(FullTagLines) {
                   size_t nextIndex = foundIndex + BeginTag.size();
@@ -935,7 +933,6 @@ int main(int argc, char** argv)
                   if(!IncludeTags) {
                      nextIndex += BeginTag.size();
                   }
-                  // FIX: Use nextIndex - pointerIndex here
                   processUnmarked(std::string_view(currentLine).substr(pointerIndex, nextIndex - pointerIndex), true);
                   if(BeginTag == EndTag) {
                      if(IncludeTags) {
@@ -1005,8 +1002,8 @@ int main(int argc, char** argv)
          }
       }
       // ====== Select handling =============================================
-      else if((SelectBegin > 0) && (LineNo >= SelectBegin) &&
-              ((SelectEnd == 0) || (LineNo <= SelectEnd))) {
+      else if( (SelectBegin > 0) && (LineNo >= SelectBegin) &&
+               ((SelectEnd == 0) || (LineNo <= SelectEnd)) ) {
          if(LineNo == SelectBegin) {
             processUnmarked({}, true);
          }
@@ -1024,7 +1021,7 @@ int main(int argc, char** argv)
    if(std::ferror(InputFile) != 0) {
       // TRANSLATORS: Error message when reading from input file fails:
       // {0} = system error message (std::strerror)
-      std::cerr << formatText("ERROR: Read error: {0}!\n", std::strerror(errno));
+      std::cerr << formatText("ERROR: Read error: {0}!", std::strerror(errno)) << '\n';
       cleanUp(1);
    }
 
@@ -1039,7 +1036,7 @@ int main(int argc, char** argv)
    if(!success) {
       // TRANSLATORS: Error message when the number of performed actions is
       // outside of configured min/max limits.
-      std::cerr << gettext("ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!\n");
+      std::cerr << gettext("ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!") << '\n';
    }
 
    cleanUp(success ? 0 : 1);
