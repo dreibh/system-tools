@@ -158,6 +158,7 @@ IF (WITH_SYSTEM_INFO)
    INSTALL(FILES       System-Info.bash-completion
            DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
            RENAME      System-Info)
+   INSTALL(FILES system-info.conf DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR})
 ENDIF()
 
 IF (WITH_GET_SYSTEM_INFO)

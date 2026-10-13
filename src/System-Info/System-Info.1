@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 9, 2026
+.Dd October 13, 2026
 .Dt System\-Info 1
 .Os System\-Info
 .\" ###### Name #############################################################
@@ -40,6 +40,7 @@
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm System\-Info
+.Op Fl C Ar config_file | Fl Fl config Ar config_file
 .Op Fl S Ar scripts_directory | Fl Fl scripts Ar scripts_directory
 .br
 .Op Fl X Ar date\_string | Fl Fl test\-date Ar date\_string
@@ -51,12 +52,22 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 System\-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System\-Info can be configured to be automatically run when logging in, providing the user an up\-to\-date overview of the system.
-.br
+.Pp
+Console colors and thresholds can be configured via
+.Pa system\-info.conf ,
+which is automatically discovered in the parent directory of the banner scripts directory (such as
+.Pa /etc/system\-info.conf
+or
+.Pa /usr/local/etc/system\-info.conf ) ,
+or explicitly provided with the
+.Fl C
+option.
+.Pp
 One main purpose of System\-Info is to run on login, to particularly show a nice login banner (for example, a project or company logo) and then present the basic system information. For this purpose, System\-Info can be configured with banner scripts (by default looked up in
 .Pa /etc/system\-info.d
 or
-.Pa /usr/local/etc/system\-info.d
-), which are processed in alphabetically descending order by file name, like:
+.Pa /usr/local/etc/system\-info.d ) ,
+which are processed in alphabetically descending order by file name, like:
 .Bl -bullet -compact
 .It
 .Pa 95\-application\-logo
@@ -78,6 +89,11 @@ If one of the scripts exits with non\-zero exit code, the processing of further 
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
+.It Fl C Ar config_file | Fl Fl config Ar config_file
+Sets the configuration file to read color and formatting settings from.
+If not specified, System\-Info searches for
+.Pa system\-info.conf
+in the parent directory of the script directory.
 .It Fl S Ar scripts_directory | Fl Fl scripts Ar scripts_directory
 Sets the directory to look for scripts, for example to test own scripts. Default:
 .Pa /etc/system\-info.d
@@ -87,21 +103,35 @@ Prints the program's command\-line parameters and exits.
 .It Fl v | Fl Fl version
 Prints the program version and exits.
 .It Fl X Ar date\_string | Fl Fl test\-date Ar date\_string
-Test option: instead of calling \(dqdate\(dq to obtain the current system date, use the given date string, to make the output deterministic for testing.
+Test option: instead of obtaining the current system date, use the given date string, to make the output deterministic for testing.
 .It Fl Y Ar input\_file | Fl Fl test\-system\-info Ar input\_file
-Test option: instead of calling \(dqget\-system\-info\(dq to obtain the system information, read get\-system\-info output from a given file, to make the output deterministic for testing.
+Test option: instead of querying the system directly via libsysteminfo, read system information from a given file (in get\-system\-info key-value format), to make the output deterministic for testing.
 .El
 .\" ###### Exit status ######################################################
 .Sh EXIT STATUS
 The
 .Nm
 tool exits with 0 on success, and >0 in case of an error.
+.\" ###### Files ############################################################
+.Sh FILES
+.Bl -tag -width indent
+.It Pa /etc/system\-info.conf
+Default configuration file for colors and display settings.
+.It Pa /etc/system\-info.d
+Default directory for banner scripts.
+.It Pa /usr/local/etc/system\-info.conf
+Fallback configuration file.
+.It Pa /usr/local/etc/system\-info.d
+Fallback directory for banner scripts.
+.El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
 .Bl -tag -width indent
 .It System\-Info
+.It System\-Info \-C /etc/system\-info.conf
+.It System\-Info \-\-config ~/my\-system\-info.conf
 .It System\-Info \-S /usr/share/System\-Info
-.It System\-Info \-S ~/src/system\-info/src/system\-info.d
+.It System\-Info \-S ~/src/system\-tools/src/System\-Info/system\-info.d
 .It System\-Info \-\-scripts ~/my-system\-info-scripts
 .It LANGUAGE=nb System\-Info
 .It LANGUAGE=de_AT System\-Info

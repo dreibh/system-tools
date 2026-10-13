@@ -51,6 +51,11 @@ _System_Info()
    fi
 
    case "${prev}" in
+      #  ====== Special case: configuration file ============================
+      -C | --config)
+         _filedir '@(conf)'
+         return
+         ;;
       #  ====== Special case: directory =====================================
       -S | --scripts)
          _filedir -d
@@ -82,6 +87,8 @@ _System_Info()
 
    # ====== All options =====================================================
    local opts="
+-C
+--config
 -S
 --scripts
 -X

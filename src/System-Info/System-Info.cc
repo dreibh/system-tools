@@ -73,20 +73,149 @@ static bool        is_ltr { true };
 static std::string rlm;
 static std::string lrm;
 
-constexpr const char* colorBasic              = "\033[33m";
-constexpr const char* colorNetwork            = "\033[34m";
-constexpr const char* colorPrefix             = "\033[36m";
-constexpr const char* colorInactive           = "\033[37m";
-constexpr const char* colorNone               = "\033[0m";
 
-constexpr const char* colorBatteryFull        = "\033[32m";
-constexpr const char* colorBatteryCharging    = "\033[33m";
-constexpr const char* colorBatteryNotCharging = "\033[38m";
-constexpr const char* colorBatteryDischarging = "\033[35m";
+// ###### Helper to trim whitespace from strings ############################
+static std::string trimString(std::string_view stringView)
+{
+   const auto firstNonSpace = stringView.find_first_not_of(" \t\r\n");
+   if(firstNonSpace == std::string_view::npos) {
+      return "";
+   }
+   const auto lastNonSpace = stringView.find_last_not_of(" \t\r\n");
+   return std::string(stringView.substr(firstNonSpace, lastNonSpace - firstNonSpace + 1));
+}
 
-constexpr const char* colorDiskNormal         = "\033[32m";
-constexpr const char* colorDisk80             = "\033[33m";
-constexpr const char* colorDisk95             = "\033[31m";
+
+// ###### Helper to unescape ANSI escape sequence strings ###################
+static std::string unescapeColorString(std::string_view input)
+{
+   std::string trimmed = trimString(input);
+   if((trimmed.length() >= 2) &&
+      (((trimmed.front() == '"') && (trimmed.back() == '"')) ||
+       ((trimmed.front() == '\'') && (trimmed.back() == '\'')))) {
+      trimmed = trimmed.substr(1, trimmed.length() - 2);
+   }
+
+   std::string result;
+   for(size_t index = 0; index < trimmed.length(); ++index) {
+      if((trimmed[index] == '\\') && (index + 1 < trimmed.length())) {
+         // \e or \E
+         if((trimmed[index + 1] == 'e') || (trimmed[index + 1] == 'E')) {
+            result += '\x1b';
+            ++index;
+            continue;
+         }
+         // \033
+         if((trimmed[index + 1] == '0') && (index + 3 < trimmed.length()) &&
+            (trimmed[index + 2] == '3') && (trimmed[index + 3] == '3')) {
+            result += '\x1b';
+            index += 3;
+            continue;
+         }
+         // \x1b, \X1b, \x1B, or \X1B
+         if(((trimmed[index + 1] == 'x') || (trimmed[index + 1] == 'X')) &&
+            (index + 3 < trimmed.length()) &&
+            (trimmed[index + 2] == '1') &&
+            ((trimmed[index + 3] == 'b') || (trimmed[index + 3] == 'B'))) {
+            result += '\x1b';
+            index += 3;
+            continue;
+         }
+         // Escaped backslash
+         if(trimmed[index + 1] == '\\') {
+            result += '\\';
+            ++index;
+            continue;
+         }
+      }
+      result += trimmed[index];
+   }
+   return result;
+}
+
+
+// ###### Struct for Color Settings #########################################
+struct ColorSettings {
+   std::string Basic               { unescapeColorString(R"(\e[33m)") };
+   std::string Network             { unescapeColorString(R"(\e[34m)") };
+   std::string Prefix              { unescapeColorString(R"(\e[36m)") };
+   std::string Inactive            { unescapeColorString(R"(\e[37m)") };
+   std::string None                { unescapeColorString(R"(\e[0m)") };
+
+   std::string BatteryFull         { unescapeColorString(R"(\e[32m)") };
+   std::string BatteryCharging     { unescapeColorString(R"(\e[33m)") };
+   std::string BatteryNotCharging  { unescapeColorString(R"(\e[38m)") };
+   std::string BatteryDischarging  { unescapeColorString(R"(\e[35m)") };
+
+   std::string DiskNormal          { unescapeColorString(R"(\e[32m)") };
+   std::string Disk80Percent       { unescapeColorString(R"(\e[33m)") };
+   std::string Disk95Percent       { unescapeColorString(R"(\e[31m)") };
+};
+
+static ColorSettings colors;
+
+
+// ###### Parse key-value pairs from configuration file #####################
+static void parseConfigurationFile(const std::filesystem::path& configPath)
+{
+   std::ifstream configFileStream{ configPath };
+   if(!configFileStream.is_open()) {
+      return;
+   }
+
+   std::string line;
+   while(std::getline(configFileStream, line)) {
+      const auto commentPosition = line.find('#');
+      if(commentPosition != std::string::npos) {
+         line = line.substr(0, commentPosition);
+      }
+
+      const auto delimiterPosition = line.find('=');
+      if(delimiterPosition == std::string::npos) {
+         continue;
+      }
+
+      const std::string key   = trimString(line.substr(0, delimiterPosition));
+      const std::string value = unescapeColorString(line.substr(delimiterPosition + 1));
+
+      if(key == "color_basic") {
+         colors.Basic = value;
+      }
+      else if(key == "color_network") {
+         colors.Network = value;
+      }
+      else if(key == "color_prefix") {
+         colors.Prefix = value;
+      }
+      else if(key == "color_inactive") {
+         colors.Inactive = value;
+      }
+      else if(key == "color_none") {
+         colors.None = value;
+      }
+      else if(key == "color_battery_full") {
+         colors.BatteryFull = value;
+      }
+      else if(key == "color_battery_charging") {
+         colors.BatteryCharging = value;
+      }
+      else if(key == "color_battery_not_charging") {
+         colors.BatteryNotCharging = value;
+      }
+      else if(key == "color_battery_discharging") {
+         colors.BatteryDischarging = value;
+      }
+      else if(key == "color_disk_normal") {
+         colors.DiskNormal = value;
+      }
+      else if(key == "color_disk_80percent") {
+         colors.Disk80Percent = value;
+      }
+      else if(key == "color_disk_95percent") {
+         colors.Disk95Percent = value;
+      }
+   }
+}
 
 
 // ###### C++20 gettext runtime format helper ################################
@@ -100,6 +229,34 @@ static std::string formatText(const char* messageIdentifier,
    }
    catch(const std::format_error&) {
       return gettext(messageIdentifier);
+   }
+}
+
+
+// ###### Read configuration file with fallback discovery ##################
+static void readConfiguration(const std::string&              customConfigurationFile,
+                              const std::vector<std::string>& scriptDirectories)
+{
+   std::error_code errorCode;
+
+   if(!customConfigurationFile.empty()) {
+      const std::filesystem::path customPath{ customConfigurationFile };
+      if(!std::filesystem::is_regular_file(customPath, errorCode)) {
+         std::cerr << formatText("ERROR: Unable to find configuration file {0}!\n", customConfigurationFile);
+         std::exit(1);
+      }
+      parseConfigurationFile(customPath);
+      return;
+   }
+
+   for(const auto& directory : scriptDirectories) {
+      const std::filesystem::path scriptDirectoryPath{ directory };
+      const std::filesystem::path configPath = scriptDirectoryPath.parent_path() / "system-info.conf";
+
+      if(std::filesystem::is_regular_file(configPath, errorCode)) {
+         parseConfigurationFile(configPath);
+         break;
+      }
    }
 }
 
@@ -141,7 +298,6 @@ static std::string formatPercentage5_1(const double percentage)
 }
 
 
-// ###### UTF-8 visual column display width calculation ######################
 // ###### UTF-8 visual column display width calculation ######################
 static size_t utf8DisplayWidth(std::string_view stringView)
 {
@@ -521,7 +677,7 @@ static void loadTestSystemInfo(std::string_view filePath,
 // ###### Print formatted system information ################################
 static void printSystemInformation(const SystemInfo& systemInfo)
 {
-   std::cout << colorBasic;
+   std::cout << colors.Basic;
 
    // ====== Hostname =======================================================
    addTableRow(gettext("Host:"), systemInfo.getString("hostname_long"));
@@ -610,33 +766,34 @@ static void printSystemInformation(const SystemInfo& systemInfo)
          const uint32_t status   = systemInfo.getUInt32("battery_" + batteryIndex + "_status");
          const uint32_t capacity = systemInfo.getUInt32("battery_" + batteryIndex + "_capacity");
 
-         std::string statusString = gettext("unknown");
-         const char* statusColor  = colorInactive;
+         std::string      statusString = gettext("unknown");
+         std::string_view statusColor  = colors.Inactive;
 
          switch(status) {
             case 1:
                statusString = gettext("not charging");
-               statusColor  = colorBatteryNotCharging;
+               statusColor  = colors.BatteryNotCharging;
                break;
             case 2:
                statusString = gettext("charging");
-               statusColor  = colorBatteryCharging;
+               statusColor  = colors.BatteryCharging;
                break;
             case 3:
                statusString = gettext("full");
-               statusColor  = colorBatteryFull;
+               statusColor  = colors.BatteryFull;
                break;
             case 4:
                statusString = gettext("discharging");
-               statusColor  = colorBatteryDischarging;
+               statusColor  = colors.BatteryDischarging;
                break;
             default:
                break;
          }
 
-         batterySummary += separator + statusColor +
-            formatText("#{0} {1}, {2} %", batteryNumber, statusString, capacity) +
-            colorBasic;
+         batterySummary += separator;
+         batterySummary += statusColor;
+         batterySummary += formatText("#{0} {1}, {2} %", batteryNumber, statusString, capacity);
+         batterySummary += colors.Basic;
       }
       addTableRow(gettext("Battery:"), batterySummary);
    }
@@ -660,7 +817,7 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    }
    else {
       addTableRow(gettext("Used Swap:"),
-                  std::string(colorInactive) + gettext("no swap available!") + colorBasic);
+                  colors.Inactive + gettext("no swap available!") + colors.Basic);
    }
 
    // ====== Storage =========================================================
@@ -678,13 +835,13 @@ static void printSystemInformation(const SystemInfo& systemInfo)
 
          const std::string pctKey = "disk_" + mountPointName + "_pct";
          if(systemInfo.exists(pctKey) != SystemInfo::ValueType::Invalid) {
-            const double percentage = systemInfo.getDouble(pctKey);
-            const char* diskColor = colorDiskNormal;
+            const double     percentage = systemInfo.getDouble(pctKey);
+            std::string_view diskColor  = colors.DiskNormal;
             if(percentage >= 95.0) {
-               diskColor = colorDisk95;
+               diskColor = colors.Disk95Percent;
             }
             else if(percentage >= 80.0) {
-               diskColor = colorDisk80;
+               diskColor = colors.Disk80Percent;
             }
 
             char diskBuffer[128];
@@ -692,7 +849,10 @@ static void printSystemInformation(const SystemInfo& systemInfo)
                           gettext("%1.0f %% on %s"),
                           percentage,
                           (lrm + mountPoint + rlm).c_str());
-            diskSummary += separator + diskColor + diskBuffer + colorBasic;
+            diskSummary += separator;
+            diskSummary += diskColor;
+            diskSummary += diskBuffer;
+            diskSummary += colors.Basic;
          }
       }
       addTableRow(gettext("Used Diskspace:"), diskSummary);
@@ -723,8 +883,8 @@ static void printSystemInformation(const SystemInfo& systemInfo)
             const std::string ifFlags = systemInfo.getString(flagsKey);
             const bool isUp = (ifFlags.find("<UP>") != std::string::npos);
 
-            const char* colorA = isUp ? colorNetwork : colorInactive;
-            const char* colorP = isUp ? colorPrefix  : colorInactive;
+            const std::string_view colorA = isUp ? colors.Network : colors.Inactive;
+            const std::string_view colorP = isUp ? colors.Prefix  : colors.Inactive;
 
             std::string formattedIpv4;
             if(hasIpv4) {
@@ -736,7 +896,11 @@ static void printSystemInformation(const SystemInfo& systemInfo)
                   }
                   const auto slashPosition = ipAddress.find('/');
                   if(slashPosition != std::string::npos) {
-                     formattedIpv4 += ipAddress.substr(0, slashPosition) + colorP + " / " + ipAddress.substr(slashPosition + 1) + colorA;
+                     formattedIpv4 += ipAddress.substr(0, slashPosition);
+                     formattedIpv4 += colorP;
+                     formattedIpv4 += " / ";
+                     formattedIpv4 += ipAddress.substr(slashPosition + 1);
+                     formattedIpv4 += colorA;
                   }
                   else {
                      formattedIpv4 += ipAddress;
@@ -747,7 +911,17 @@ static void printSystemInformation(const SystemInfo& systemInfo)
                formattedIpv4 = gettext("(No IPv4)");
             }
 
-            addTableRow("   " + rlm + colorA + ifName + ":", lrm + formattedIpv4 + colorA);
+            std::string networkLabel = "   ";
+            networkLabel += rlm;
+            networkLabel += colorA;
+            networkLabel += ifName;
+            networkLabel += ":";
+
+            std::string networkValue = lrm;
+            networkValue += formattedIpv4;
+            networkValue += colorA;
+
+            addTableRow(networkLabel, networkValue);
 
             if(hasIpv6) {
                std::istringstream ipv6Stream(systemInfo.getString(ipv6Key));
@@ -756,10 +930,15 @@ static void printSystemInformation(const SystemInfo& systemInfo)
                   std::string formattedV6;
                   const auto slashPosition = ipAddress.find('/');
                   if(slashPosition != std::string::npos) {
-                     formattedV6 = ipAddress.substr(0, slashPosition) + colorP + " / " + ipAddress.substr(slashPosition + 1) + colorA;
+                     formattedV6 += ipAddress.substr(0, slashPosition);
+                     formattedV6 += colorP;
+                     formattedV6 += " / ";
+                     formattedV6 += ipAddress.substr(slashPosition + 1);
+                     formattedV6 += colorA;
                   }
                   else {
-                     formattedV6 = ipAddress + colorA;
+                     formattedV6 += ipAddress;
+                     formattedV6 += colorA;
                   }
                   addTableRow("", formattedV6);
                }
@@ -769,7 +948,7 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    }
 
    finishTable(std::cout);
-   std::cout << colorNone;
+   std::cout << colors.None;
 }
 
 
@@ -778,8 +957,9 @@ static void printSystemInformation(const SystemInfo& systemInfo)
                                const int   exitCode)
 {
    std::cerr << gettext("Usage:") << " " << program
-             << " [-S|--scripts scripts_directory] [-X|--test-date date_string]"
-             << " [-Y|--test-system-info input_file] [-h|--help] [-v|--version]\n";
+             << " [-C|--config config_file] [-S|--scripts scripts_directory]"
+             << " [-X|--test-date date_string] [-Y|--test-system-info input_file]"
+             << " [-h|--help] [-v|--version]\n";
    std::exit(exitCode);
 }
 
@@ -859,10 +1039,12 @@ int main(int argc, char** argv)
 #error Missing case!
 #endif
 
+   std::string customConfigurationFile;
    std::string testDate;
    std::string testSystemInfoInput;
 
    static const struct option longOptions[] = {
+      { "config",           required_argument, nullptr, 'C' },
       { "scripts",          required_argument, nullptr, 'S' },
       { "test-date",        required_argument, nullptr, 'X' },
       { "test-system-info", required_argument, nullptr, 'Y' },
@@ -873,8 +1055,11 @@ int main(int argc, char** argv)
 
    int option    { 0 };
    int longIndex { 0 };
-   while((option = getopt_long(argc, argv, "S:X:Y:hv", longOptions, &longIndex)) != -1) {
+   while((option = getopt_long(argc, argv, "C:S:X:Y:hv", longOptions, &longIndex)) != -1) {
       switch(option) {
+         case 'C':
+            customConfigurationFile = optarg;
+            break;
          case 'S':
             scriptDirectories = { optarg };
             break;
@@ -898,6 +1083,9 @@ int main(int argc, char** argv)
    if(optind < argc) {
       usage(argv[0], 1);
    }
+
+   // ====== Read configuration =============================================
+   readConfiguration(customConfigurationFile, scriptDirectories);
 
 #if defined(_WIN32)
    struct WinSockScope {
