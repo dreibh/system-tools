@@ -52,8 +52,16 @@
 #include <unistd.h>
 #elif defined(__sun__)
 #include <kstat.h>
+#elif defined(__APPLE__)
+#include <CoreFoundation/CoreFoundation.h>
+#include <IOKit/ps/IOPowerSources.h>
+#include <IOKit/ps/IOPSKeys.h>
 #elif defined(_WIN32)
 #include <windows.h>
+#elif defined(__linux__) || defined(__gnu_hurd__)
+// No additional headers required
+#else
+#error Missing case!
 #endif
 
 
@@ -346,6 +354,74 @@ void SystemInfo::obtainBatteryInformation()
          }
       }
    }
+#elif defined(__APPLE__)
+   CFTypeRef powerSourcesBlob = IOPSCopyPowerSourcesInfo();
+   if(powerSourcesBlob != nullptr) {
+      CFArrayRef powerSourcesList = IOPSCopyPowerSourcesList(powerSourcesBlob);
+      if(powerSourcesList != nullptr) {
+         const CFIndex count        = CFArrayGetCount(powerSourcesList);
+         unsigned int  batteryIndex = 0;
+
+         for(CFIndex i = 0; (i < count) && (batteryIndex < 2); ++i) {
+            CFTypeRef powerSource = CFArrayGetValueAtIndex(powerSourcesList, i);
+            CFDictionaryRef description = IOPSGetPowerSourceDescription(powerSourcesBlob, powerSource);
+            if(description != nullptr) {
+               auto type = static_cast<CFStringRef>(CFDictionaryGetValue(description, CFSTR(kIOPSTypeKey)));
+               if((type != nullptr) && CFEqual(type, CFSTR(kIOPSInternalBatteryType))) {
+                  int currentCapacity = 0;
+                  int maxCapacity     = 0;
+
+                  auto curRef = static_cast<CFNumberRef>(CFDictionaryGetValue(description, CFSTR(kIOPSCurrentCapacityKey)));
+                  auto maxRef = static_cast<CFNumberRef>(CFDictionaryGetValue(description, CFSTR(kIOPSMaxCapacityKey)));
+                  if(curRef != nullptr) {
+                     CFNumberGetValue(curRef, kCFNumberIntType, &currentCapacity);
+                  }
+                  if(maxRef != nullptr) {
+                     CFNumberGetValue(maxRef, kCFNumberIntType, &maxCapacity);
+                  }
+
+                  unsigned int capacity = 0;
+                  if(maxCapacity > 0) {
+                     const auto safeCurrent = (currentCapacity >= 0) ? static_cast<uint64_t>(currentCapacity) : 0ULL;
+                     capacity = static_cast<unsigned int>((safeCurrent * 100) / static_cast<uint64_t>(maxCapacity));
+                  }
+                  if(capacity > 100) {
+                     capacity = 100;
+                  }
+
+                  auto isChargingRef = static_cast<CFBooleanRef>(CFDictionaryGetValue(description, CFSTR(kIOPSIsChargingKey)));
+                  auto isChargedRef  = static_cast<CFBooleanRef>(CFDictionaryGetValue(description, CFSTR(kIOPSIsChargedKey)));
+                  auto psStateRef    = static_cast<CFStringRef>(CFDictionaryGetValue(description, CFSTR(kIOPSPowerSourceStateKey)));
+
+                  const bool isCharging     = (isChargingRef != nullptr) && CFBooleanGetValue(isChargingRef);
+                  const bool isCharged      = (isChargedRef != nullptr) && CFBooleanGetValue(isChargedRef);
+                  const bool isBatteryPower = (psStateRef != nullptr) && CFEqual(psStateRef, CFSTR(kIOPSBatteryPowerValue));
+
+                  unsigned int status = 0;
+                  if(isCharged || (capacity == 100 && !isBatteryPower)) {
+                     status = 3;
+                  }
+                  else if(isCharging) {
+                     status = 2;
+                  }
+                  else if(isBatteryPower) {
+                     status = 4;
+                  }
+                  else {
+                     status = 1;
+                  }
+
+                  addUInt32(std::format("battery_{}_status", batteryIndex), status);
+                  addUInt32(std::format("battery_{}_capacity", batteryIndex), capacity);
+                  batteryIDs.push_back(batteryIndex);
+                  batteryIndex++;
+               }
+            }
+         }
+         CFRelease(powerSourcesList);
+      }
+      CFRelease(powerSourcesBlob);
+   }
 #elif defined(_WIN32)
    SYSTEM_POWER_STATUS sysStatus;
    if(GetSystemPowerStatus(&sysStatus) && (sysStatus.BatteryFlag != 255)) {
@@ -365,8 +441,8 @@ void SystemInfo::obtainBatteryInformation()
       addUInt32("battery_0_capacity", capacity);
       batteryIDs.push_back(0);
    }
-#elif defined(__APPLE__) || defined(__gnu_hurd__)
-   // No battery query support implemented on macOS or GNU Hurd
+#elif defined(__gnu_hurd__)
+   // No battery query support implemented on GNU Hurd
 #else
 #error Missing case!
 #endif

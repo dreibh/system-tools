@@ -66,10 +66,14 @@ IF (WITH_LIBSYSTEMINFO)
          TARGET_INCLUDE_DIRECTORIES(libsysteminfo-${TYPE} PRIVATE
                                     ${CMAKE_CURRENT_SOURCE_DIR}
                                     ${SYSTEMD_INCLUDE_DIRS})
-         IF(WIN32)
+         IF (APPLE)
+            TARGET_LINK_LIBRARIES(libsysteminfo-${TYPE} PRIVATE
+                                  "-framework IOKit"
+                                  "-framework CoreFoundation")
+         ELSEIF (WIN32)
             TARGET_LINK_LIBRARIES(libsysteminfo-${TYPE} PRIVATE ws2_32 iphlpapi wtsapi32 psapi)
          ENDIF()
-         IF(NOT MSVC)
+         IF (NOT MSVC)
             TARGET_COMPILE_OPTIONS(libsysteminfo-${TYPE} PRIVATE -Wall -Wextra -Wpedantic -Wsign-conversion)
          ELSE()
             TARGET_COMPILE_OPTIONS(libsysteminfo-${TYPE} PRIVATE /W4)
@@ -118,10 +122,10 @@ IF (WITH_GET_SYSTEM_INFO)
    TARGET_LINK_LIBRARIES(get-system-info PRIVATE
                          libsysteminfo-${libraryType}
                          ${Intl_LIBRARIES})
-   IF(WIN32)
+   IF (WIN32)
       TARGET_LINK_LIBRARIES(get-system-info PRIVATE ws2_32 iphlpapi wtsapi32 psapi)
    ENDIF()
-   IF(NOT MSVC)
+   IF (NOT MSVC)
       TARGET_COMPILE_OPTIONS(get-system-info PRIVATE -Wall -Wextra -Wpedantic -Wsign-conversion)
    ELSE()
       TARGET_COMPILE_OPTIONS(get-system-info PRIVATE /W4)
