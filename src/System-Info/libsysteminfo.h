@@ -49,17 +49,18 @@ class SystemInfo {
 public:
    enum Flags : uint32_t {
       Hostname = (1U << 0),
-      // CPU   = (1U << 1),
-      // GPU   = (1U << 2),
-      Uptime   = (1U << 3),
-      Kernel   = (1U << 4),
-      Load     = (1U << 5),
-      Memory   = (1U << 6),
-      Storage  = (1U << 7),
-      Network  = (1U << 8),
-      Battery  = (1U << 9),
-      SSH      = (1U << 10),
-      User     = (1U << 11),
+      Uptime   = (1U << 1),
+      OS       = (1U << 2),
+      Kernel   = (1U << 3),
+      // CPU   = (1U << 4),
+      // GPU   = (1U << 5),
+      Load     = (1U << 6),
+      Memory   = (1U << 7),
+      Storage  = (1U << 8),
+      Network  = (1U << 9),
+      Battery  = (1U << 10),
+      SSH      = (1U << 11),
+      User     = (1U << 12),
       All      = 0xFFFFFFFFU
    };
 
@@ -152,8 +153,9 @@ public:
 
 private:
    void obtainHostnameInformation();
-   void obtainKernelInformation();
    void obtainUptimeInformation();
+   void obtainOperatingSystemInformation();
+   void obtainKernelInformation();
    void obtainLoadInformation();
    void obtainBatteryInformation();
    void obtainMemoryInformation();

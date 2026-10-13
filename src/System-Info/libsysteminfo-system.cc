@@ -35,6 +35,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
+#include <fstream>
 #include <regex>
 #include <string>
 #include <vector>
@@ -105,6 +106,195 @@ void SystemInfo::obtainHostnameInformation()
 }
 
 
+// ###### Get the system uptime #############################################
+static bool getUptime(struct timespec* ts)
+{
+#if defined(__linux__) || defined(__OpenBSD__)
+   return clock_gettime(CLOCK_BOOTTIME, ts) == 0;
+#elif defined(__FreeBSD__)
+   return clock_gettime(CLOCK_UPTIME_PRECISE, ts) == 0;
+#elif defined(__NetBSD__) || defined(__sun) || defined(__gnu_hurd__) || defined(__APPLE__)
+   return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
+#elif defined(_WIN32)
+   const ULONGLONG ms = GetTickCount64();
+   ts->tv_sec         = static_cast<time_t>(ms / 1000);
+   ts->tv_nsec        = static_cast<long>((ms % 1000) * 1'000'000);
+   return true;
+#else
+#error Missing case!
+#endif
+}
+
+
+// ##### Obtain uptime information ##########################################
+void SystemInfo::obtainUptimeInformation()
+{
+   struct timespec ts { };
+   if(getUptime(&ts)) {
+      const auto totalSeconds = static_cast<uint64_t>(ts.tv_sec);
+      const auto days         = static_cast<uint32_t>(totalSeconds / 86400);
+      const auto hours        = static_cast<uint32_t>((totalSeconds / 3600) % 24);
+      const auto minutes      = static_cast<uint32_t>((totalSeconds / 60) % 60);
+      const auto seconds      = static_cast<uint32_t>(totalSeconds % 60);
+      const auto nanoseconds  = static_cast<uint32_t>(ts.tv_nsec);
+
+      addDouble("uptime_total", static_cast<double>(ts.tv_sec) + (static_cast<double>(ts.tv_nsec) / 1e9), 9);
+      addUInt32("uptime_days",  days);
+      addUInt32("uptime_hours", hours);
+      addUInt32("uptime_mins",  minutes);
+      addUInt32("uptime_secs",  seconds);
+      addUInt32("uptime_nsecs", nanoseconds);
+   }
+}
+
+
+// ###### Obtain operating system release details ###########################
+void SystemInfo::obtainOperatingSystemInformation()
+{
+   std::string osName;
+   std::string osVersion;
+   std::string osVersionId;
+   std::string osId;
+   std::string osVersionCodename;
+
+   std::ifstream osReleaseStream("/etc/os-release");
+   if(!osReleaseStream.is_open()) {
+      osReleaseStream.open("/usr/lib/os-release");
+   }
+
+   if(osReleaseStream.is_open()) {
+      std::string line;
+      while(std::getline(osReleaseStream, line)) {
+         const auto equalsPosition = line.find('=');
+         if(equalsPosition == std::string::npos) {
+            continue;
+         }
+         const std::string key   = line.substr(0, equalsPosition);
+         std::string       value = line.substr(equalsPosition + 1);
+
+         if((value.length() >= 2) &&
+            (((value.front() == '"') && (value.back() == '"')) ||
+             ((value.front() == '\'') && (value.back() == '\'')))) {
+            value = value.substr(1, value.length() - 2);
+         }
+
+         if(key == "NAME") {
+            osName = value;
+         }
+         else if(key == "VERSION") {
+            osVersion = value;
+            if(osVersionCodename.empty()) {
+               const auto openParenPosition  = value.rfind('(');
+               const auto closeParenPosition = value.rfind(')');
+               if((openParenPosition != std::string::npos) &&
+                  (closeParenPosition != std::string::npos) &&
+                  (closeParenPosition > openParenPosition)) {
+                  osVersionCodename = value.substr(openParenPosition + 1,
+                                                   closeParenPosition - openParenPosition - 1);
+               }
+            }
+         }
+         else if(key == "VERSION_ID") {
+            osVersionId = value;
+         }
+         else if(key == "ID") {
+            osId = value;
+         }
+         else if(key == "VERSION_CODENAME") {
+            osVersionCodename = value;
+         }
+      }
+   }
+   else {
+#if defined(__APPLE__)
+      osName = "macOS";
+      osId   = "macos";
+
+      FILE* pipe = popen("sw_vers -productVersion", "r");
+      if(pipe != nullptr) {
+         char buffer[128] { 0x00 };
+         if(std::fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+            std::string versionString(buffer);
+            while(!versionString.empty() && ((versionString.back() == '\r') || (versionString.back() == '\n'))) {
+               versionString.pop_back();
+            }
+            osVersion   = versionString;
+            osVersionId = versionString;
+         }
+         pclose(pipe);
+      }
+#elif defined(_WIN32)
+      osName      = "Windows";
+      osId        = "windows";
+      osVersion   = getString("system_release");
+      osVersionId = osVersion;
+#else
+      // Legacy Linux / BSD: Try lsb_release if present
+      FILE* pipe = popen("lsb_release -is 2>/dev/null", "r");
+      if(pipe != nullptr) {
+         char buffer[128] { 0x00 };
+         if(std::fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+            std::string releaseName(buffer);
+            while(!releaseName.empty() && ((releaseName.back() == '\r') || (releaseName.back() == '\n'))) {
+               releaseName.pop_back();
+            }
+            osName = releaseName;
+         }
+         pclose(pipe);
+      }
+
+      pipe = popen("lsb_release -rs 2>/dev/null", "r");
+      if(pipe != nullptr) {
+         char buffer[128] { 0x00 };
+         if(std::fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+            std::string releaseVersion(buffer);
+            while(!releaseVersion.empty() && ((releaseVersion.back() == '\r') || (releaseVersion.back() == '\n'))) {
+               releaseVersion.pop_back();
+            }
+            osVersionId = releaseVersion;
+            osVersion   = releaseVersion;
+         }
+         pclose(pipe);
+      }
+
+      pipe = popen("lsb_release -cs 2>/dev/null", "r");
+      if(pipe != nullptr) {
+         char buffer[128] { 0x00 };
+         if(std::fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+            std::string codename(buffer);
+            while(!codename.empty() && ((codename.back() == '\r') || (codename.back() == '\n'))) {
+               codename.pop_back();
+            }
+            osVersionCodename = codename;
+         }
+         pclose(pipe);
+      }
+
+      // Kernel fallbacks if lsb_release is unavailable
+      if(osName.empty()) {
+         osName      = getString("system_sysname", "Unknown");
+         osVersion   = getString("system_release");
+         osVersionId = osVersion;
+      }
+
+      if(!osName.empty() && osId.empty()) {
+         osId = osName;
+         std::transform(osId.begin(), osId.end(), osId.begin(),
+                        [](const unsigned char character) {
+                           return static_cast<char>(std::tolower(character));
+                        });
+      }
+#endif
+   }
+
+   addString("os_name", osName);
+   addString("os_version", osVersion);
+   addString("os_version_id", osVersionId);
+   addString("os_id", osId);
+   addString("os_version_codename", osVersionCodename);
+}
+
+
 // ###### Obtain kernel information #########################################
 void SystemInfo::obtainKernelInformation()
 {
@@ -157,48 +347,6 @@ void SystemInfo::obtainKernelInformation()
 #else
 #error Missing case!
 #endif
-}
-
-
-// ###### Get the system uptime #############################################
-static bool getUptime(struct timespec* ts)
-{
-#if defined(__linux__) || defined(__OpenBSD__)
-   return clock_gettime(CLOCK_BOOTTIME, ts) == 0;
-#elif defined(__FreeBSD__)
-   return clock_gettime(CLOCK_UPTIME_PRECISE, ts) == 0;
-#elif defined(__NetBSD__) || defined(__sun) || defined(__gnu_hurd__) || defined(__APPLE__)
-   return clock_gettime(CLOCK_MONOTONIC, ts) == 0;
-#elif defined(_WIN32)
-   const ULONGLONG ms = GetTickCount64();
-   ts->tv_sec         = static_cast<time_t>(ms / 1000);
-   ts->tv_nsec        = static_cast<long>((ms % 1000) * 1'000'000);
-   return true;
-#else
-#error Missing case!
-#endif
-}
-
-
-// ##### Obtain uptime information ##########################################
-void SystemInfo::obtainUptimeInformation()
-{
-   struct timespec ts { };
-   if(getUptime(&ts)) {
-      const auto totalSeconds = static_cast<uint64_t>(ts.tv_sec);
-      const auto days         = static_cast<uint32_t>(totalSeconds / 86400);
-      const auto hours        = static_cast<uint32_t>((totalSeconds / 3600) % 24);
-      const auto minutes      = static_cast<uint32_t>((totalSeconds / 60) % 60);
-      const auto seconds      = static_cast<uint32_t>(totalSeconds % 60);
-      const auto nanoseconds  = static_cast<uint32_t>(ts.tv_nsec);
-
-      addDouble("uptime_total", static_cast<double>(ts.tv_sec) + (static_cast<double>(ts.tv_nsec) / 1e9), 9);
-      addUInt32("uptime_days",  days);
-      addUInt32("uptime_hours", hours);
-      addUInt32("uptime_mins",  minutes);
-      addUInt32("uptime_secs",  seconds);
-      addUInt32("uptime_nsecs", nanoseconds);
-   }
 }
 
 
