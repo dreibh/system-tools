@@ -474,90 +474,44 @@ static void printBanners(const std::vector<std::string>& directories)
 
 
 // ###### Print SSH public key fingerprints ##################################
-static void printSshKeyFingerprints()
+static void printSshKeyFingerprints(const SystemInfo& systemInfo)
 {
-   std::string     sshDirectory;
-   std::error_code errorCode;
-
-#if defined(_WIN32)
-   const char* programData = std::getenv("ProgramData");
-   if(programData != nullptr) {
-      const std::string candidate = std::string(programData) + "\\ssh";
-      if(std::filesystem::is_directory(candidate, errorCode)) {
-         sshDirectory = candidate;
-      }
-   }
-   if(sshDirectory.empty()) {
-      if(std::filesystem::is_directory("C:\\ProgramData\\ssh", errorCode)) {
-         sshDirectory = "C:\\ProgramData\\ssh";
-      }
-   }
-#elif defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun) || defined(__gnu_hurd__) || defined(__APPLE__)
-   if(std::filesystem::is_directory("/etc/ssh", errorCode)) {
-      sshDirectory = "/etc/ssh";
-   }
-#else
-#error Missing case!
-#endif
-
-   if(sshDirectory.empty()) {
+   const std::string sshKeyList = systemInfo.getString("ssh_key_list");
+   if(sshKeyList.empty()) {
       return;
    }
 
-   std::vector<std::string> keyFiles;
-   for(const auto& directoryEntry : std::filesystem::directory_iterator(sshDirectory, errorCode)) {
-      if(directoryEntry.is_regular_file(errorCode)) {
-         const std::string filename = directoryEntry.path().filename().string();
-         if((filename.rfind("ssh_host_", 0) == 0) &&
-            (filename.length() >= 4) &&
-            (filename.substr(filename.length() - 4) == ".pub") &&
-            (filename.find("_dsa_key.pub") == std::string::npos)) {
-            keyFiles.push_back(directoryEntry.path().string());
+   std::istringstream stringStream(sshKeyList);
+   std::string        keyIndex;
+   unsigned int       keyNumber = 1;
+
+   while(stringStream >> keyIndex) {
+      const std::string fingerprintKey = "ssh_key_fingerprint_" + keyIndex;
+      const std::string typeKey        = "ssh_key_type_" + keyIndex;
+      const std::string bitsKey        = "ssh_key_bits_" + keyIndex;
+
+      if(systemInfo.exists(fingerprintKey) != SystemInfo::ValueType::Invalid) {
+         const std::string fingerprint = systemInfo.getString(fingerprintKey);
+         std::string       keyType     = systemInfo.getString(typeKey);
+         if(keyType.empty()) {
+            keyType = systemInfo.getString("ssh_key_type");
          }
-      }
-   }
-   std::sort(keyFiles.begin(), keyFiles.end());
+         const uint32_t bits = systemInfo.getUInt32(bitsKey);
 
-   const std::regex keyRegex(R"(^([0-9]+)\s+([^ ]+)\s+.*?\s+\((.*?)\)$)");
-   unsigned int keyNumber = 1;
-
-   for(const auto& keyPath : keyFiles) {
-      const std::string command = "ssh-keygen -lf \"" + keyPath + "\"";
-#if !defined(_WIN32)
-      FILE* pipe = popen(command.c_str(), "r");
-#else
-      FILE* pipe = _popen(command.c_str(), "r");
-#endif
-      if(pipe == nullptr) {
-         continue;
-      }
-
-      char lineBuffer[512] { 0x00 };
-      if(std::fgets(lineBuffer, sizeof(lineBuffer), pipe) != nullptr) {
-         std::string line(lineBuffer);
-         while(!line.empty() && ((line.back() == '\r') || (line.back() == '\n'))) {
-            line.pop_back();
-         }
-
-         std::smatch match;
-         if(std::regex_match(line, match, keyRegex) && (match.size() == 4)) {
-            const std::string bits        = match[1].str();
-            const std::string fingerprint = match[2].str();
-            const std::string keyType     = match[3].str();
-            const std::string keyInfo     = fingerprint + " (" + keyType + " " + bits + ")";
-
-            if(!fingerprint.empty() && std::isupper(static_cast<unsigned char>(fingerprint[0]))) {
-               const std::string label = (keyNumber == 1) ? gettext("SSH Keys:") : "";
-               addTableRow(label, formatText("#{0} {1}", keyNumber, keyInfo));
-               keyNumber++;
+         std::string keyInfo = fingerprint;
+         if(!keyType.empty()) {
+            if(bits > 0) {
+               keyInfo += " (" + keyType + " " + std::to_string(bits) + ")";
+            }
+            else {
+               keyInfo += " (" + keyType + ")";
             }
          }
+
+         const std::string label = (keyNumber == 1) ? gettext("SSH Keys:") : "";
+         addTableRow(label, formatText("#{0} {1}", keyNumber, keyInfo));
+         keyNumber++;
       }
-#if !defined(_WIN32)
-      pclose(pipe);
-#else
-      _pclose(pipe);
-#endif
    }
 }
 
@@ -859,7 +813,7 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    }
 
    // ====== SSH Key Fingerprints ============================================
-   printSshKeyFingerprints();
+   printSshKeyFingerprints(systemInfo);
 
    // ====== Network =========================================================
    addTableRow(gettext("Network:"), "");
