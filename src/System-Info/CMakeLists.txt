@@ -36,7 +36,9 @@
 IF (WITH_LIBSYSTEMINFO)
    LIST(APPEND libsysteminfo_headers libsysteminfo.h)
    LIST(APPEND libsysteminfo_sources
+      libsysteminfo-management.cc
       libsysteminfo-system.cc
+      libsysteminfo-memory.cc
       libsysteminfo-network.cc
       libsysteminfo-storage.cc
       libsysteminfo-battery.cc
