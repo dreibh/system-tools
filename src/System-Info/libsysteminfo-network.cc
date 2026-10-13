@@ -213,6 +213,8 @@ static bool compareInterfaceAddresses(const InterfaceAddress& a,
    }
 #elif defined(__sun__) || defined(__gnu_hurd__)
    // No link-layer hardware address comparison needed
+#elif defined(_WIN32)
+   // On Windows, MAC addresses are read directly from IP_ADAPTER_ADDRESSES.
 #else
 #error Missing case!
 #endif
