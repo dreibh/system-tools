@@ -27,35 +27,6 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-// ==========================================================================
-//         ____            _                     _____           _
-//        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
-//        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
-//         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \.
-//        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
-//               |___/
-//                             --- System-Tools ---
-//                  https://www.nntb.no/~dreibh/system-tools/
-// ==========================================================================
-//
-// System-Info Library
-// Copyright (C) 2024-2026 by Thomas Dreibholz
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Contact: thomas.dreibholz@gmail.com
-
 #ifndef LIBSYSTEMINFO_H
 #define LIBSYSTEMINFO_H
 
@@ -100,7 +71,13 @@ public:
       Double  = 6
    };
 
-   using EntryValue = std::variant<std::monostate, std::string, uint32_t, uint64_t, int32_t, int64_t, double>;
+   using EntryValue = std::variant<std::monostate,
+                                   std::string,
+                                   uint32_t,
+                                   uint64_t,
+                                   int32_t,
+                                   int64_t,
+                                   double>;
 
    struct Entry {
       EntryValue Value;
@@ -108,8 +85,9 @@ public:
    };
 
    // Constructor replacing systemInfoObtain()
-   explicit SystemInfo(unsigned int compatibilityVersion = LSI_COMPATIBILITY_VERSION,
-                       uint32_t     flags                = Flags::All);
+   explicit SystemInfo(
+      const unsigned int compatibilityVersion = LSI_COMPATIBILITY_VERSION,
+      const uint32_t     flags                = Flags::All);
 
    // Destructor replacing systemInfoRelease()
    ~SystemInfo() = default;
@@ -124,25 +102,48 @@ public:
 
    // Mutators replacing systemInfoAdd*()
    void addString(std::string_view key, std::string_view value);
-   void addInt32(std::string_view key, int32_t value);
-   void addInt64(std::string_view key, int64_t value);
-   void addUInt32(std::string_view key, uint32_t value);
-   void addUInt64(std::string_view key, uint64_t value);
-   void addDouble(std::string_view key, double value, int displayHint = 0);
+   void addInt32(std::string_view key, const int32_t value);
+   void addInt64(std::string_view key, const int64_t value);
+   void addUInt32(std::string_view key, const uint32_t value);
+   void addUInt64(std::string_view key, const uint64_t value);
+   void addDouble(std::string_view key,
+                  const double     value,
+                  const int        displayHint = 0);
 
    // Accessors replacing systemInfoGet*() and systemInfoExists()
    [[nodiscard]] ValueType exists(std::string_view key) const;
-   [[nodiscard]] std::string getString(std::string_view key, std::string_view defaultValue = "") const;
-   [[nodiscard]] int32_t getInt32(std::string_view key, int32_t defaultValue = 0) const;
-   [[nodiscard]] int64_t getInt64(std::string_view key, int64_t defaultValue = 0) const;
-   [[nodiscard]] uint32_t getUInt32(std::string_view key, uint32_t defaultValue = 0) const;
-   [[nodiscard]] uint64_t getUInt64(std::string_view key, uint64_t defaultValue = 0) const;
-   [[nodiscard]] double getDouble(std::string_view key, double defaultValue = 0.0) const;
+   [[nodiscard]] std::string getString(
+      std::string_view key,
+      std::string_view defaultValue = "") const;
+   [[nodiscard]] int32_t getInt32(
+      std::string_view key,
+      const int32_t    defaultValue = 0) const;
+   [[nodiscard]] int64_t getInt64(
+      std::string_view key,
+      const int64_t    defaultValue = 0) const;
+   [[nodiscard]] uint32_t getUInt32(
+      std::string_view key,
+      const uint32_t   defaultValue = 0) const;
+   [[nodiscard]] uint64_t getUInt64(
+      std::string_view key,
+      const uint64_t   defaultValue = 0) const;
+   [[nodiscard]] double getDouble(
+      std::string_view key,
+      const double     defaultValue = 0.0) const;
 
-   [[nodiscard]] const std::map<std::string, Entry>& getEntries() const noexcept { return Entries; }
-   [[nodiscard]] unsigned int getCompatibilityVersion() const noexcept { return CompatibilityVersion; }
+   [[nodiscard]] const std::map<std::string, Entry>&
+   getEntries() const noexcept
+   {
+      return Entries;
+   }
 
-   friend std::ostream& operator<<(std::ostream& os, const SystemInfo& info) {
+   [[nodiscard]] unsigned int getCompatibilityVersion() const noexcept
+   {
+      return CompatibilityVersion;
+   }
+
+   friend std::ostream& operator<<(std::ostream& os, const SystemInfo& info)
+   {
       info.print(os);
       return os;
    }
@@ -155,9 +156,10 @@ private:
    void obtainBatteryInformation();
    void obtainMemoryInformation();
    void obtainStorageInformation();
-   void obtainNetworkInformation(bool filterLocalScope = true);
+   void obtainNetworkInformation(const bool filterLocalScope = true);
 
-   bool getDiskUsage(std::string_view mountPoint, std::string_view label);
+   bool getDiskUsage(std::string_view mountPoint,
+                     std::string_view label);
 
    std::map<std::string, Entry> Entries;
    unsigned int                 CompatibilityVersion { LSI_COMPATIBILITY_VERSION };
