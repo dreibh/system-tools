@@ -921,6 +921,22 @@ static void printSystemInformation(const SystemInfo& systemInfo)
 }
 
 
+// ###### Get formatted current timestamp ###################################
+static std::string getCurrentTimeString()
+{
+   const std::time_t now = std::time(nullptr);
+   struct tm timeStructure { };
+#if defined(_WIN32)
+   localtime_s(&timeStructure, &now);
+#else
+   localtime_r(&now, &timeStructure);
+#endif
+   char timeBuffer[128];
+   std::strftime(timeBuffer, sizeof(timeBuffer), "%c", &timeStructure);
+   return timeBuffer;
+}
+
+
 // ###### Usage ##############################################################
 [[noreturn]] static void usage(const char* program,
                                const int   exitCode)
@@ -1071,16 +1087,7 @@ int main(int argc, char** argv)
 
    std::string nowString = testDate;
    if(nowString.empty()) {
-      const std::time_t now = std::time(nullptr);
-      char timeBuffer[128];
-      struct tm timeStructure { };
-#if defined(_WIN32)
-      localtime_s(&timeStructure, &now);
-#else
-      localtime_r(&now, &timeStructure);
-#endif
-      std::strftime(timeBuffer, sizeof(timeBuffer), "%c", &timeStructure);
-      nowString = timeBuffer;
+      nowString = getCurrentTimeString();
    }
 
    // TRANSLATORS: Banner header line displaying the current date and time:
