@@ -193,7 +193,7 @@ static unsigned int hexDigitToNumber(const char digit)
    // TRANSLATORS: Error message when an invalid hexadecimal character is
    // encountered in escape sequence:
    // {0} = invalid character
-   std::cerr << formatText("ERROR: Invalid hexadecimal digit {0}!\n", digit);
+   std::cerr << formatText("ERROR: Invalid hexadecimal digit {0}!", digit) << '\n';
    std::exit(1);
 }
 
@@ -207,7 +207,7 @@ static unsigned int octDigitToNumber(const char digit)
    // TRANSLATORS: Error message when an invalid octal character is
    // encountered in escape sequence:
    // {0} = invalid character
-   std::cerr << formatText("ERROR: Invalid octal digit {0}!\n", digit);
+   std::cerr << formatText("ERROR: Invalid octal digit {0}!", digit) << '\n';
    std::exit(1);
 }
 
@@ -767,7 +767,7 @@ int main(int argc, char** argv)
             else {
                // TRANSLATORS: Error message when --multiline-indent/-I is given
                // fewer than the required arguments (indentation, left, right).
-               std::cerr << gettext("ERROR: Invalid arguments for multiline-indent!\n");
+               std::cerr << gettext("ERROR: Invalid arguments for multiline-indent!") << '\n';
                return 1;
             }
             break;
@@ -781,7 +781,7 @@ int main(int argc, char** argv)
             else {
                // TRANSLATORS: Error message when --multiline-center/-C is given
                // fewer than the required arguments (left, right).
-               std::cerr << gettext("ERROR: Invalid arguments for multiline-center!\n");
+               std::cerr << gettext("ERROR: Invalid arguments for multiline-center!") << '\n';
                return 1;
             }
             break;
@@ -797,7 +797,7 @@ int main(int argc, char** argv)
                // TRANSLATORS: Error message when --separator/-s is given
                // fewer than the required arguments (border_left, separator,
                // border_right).
-               std::cerr << gettext("ERROR: Invalid separator setting!\n");
+               std::cerr << gettext("ERROR: Invalid separator setting!") << '\n';
                return 1;
             }
             break;
@@ -810,7 +810,7 @@ int main(int argc, char** argv)
                // TRANSLATORS: Error message when console width exceeds
                // maximum permitted width of 4096 columns:
                // {0} = specified console width
-               std::cerr << formatText("ERROR: Invalid console width {0}!\n", consoleWidth);
+               std::cerr << formatText("ERROR: Invalid console width {0}!", consoleWidth) << '\n';
                return 1;
             }
             break;
@@ -854,7 +854,7 @@ int main(int argc, char** argv)
          // TRANSLATORS: Warning message when extraneous unrecognized command
          // line parameters are encountered:
          // {0} = unhandled parameter argument
-         std::cerr << formatText("WARNING: Unhandled parameter {0}!\n", argv[optind++]);
+         std::cerr << formatText("WARNING: Unhandled parameter {0}!", argv[optind++]) << '\n';
       }
    }
 
