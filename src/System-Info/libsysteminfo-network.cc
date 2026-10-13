@@ -278,7 +278,8 @@ void SystemInfo::obtainNetworkInformation(const bool filterLocalScope)
          if(sd >= 0) {
             struct ifreq ifr { };
             std::strncpy(ifr.ifr_name, item.IfName.c_str(), IFNAMSIZ - 1);
-            if((ioctl(sd, SIOCGIFHWADDR, &ifr) == 0) && (ifr.ifr_hwaddr.sa_family == ARPHRD_ETHER)) {
+            if( (ioctl(sd, static_cast<unsigned long>(static_cast<uint32_t>(SIOCGIFHWADDR)), &ifr) == 0) &&
+                (ifr.ifr_hwaddr.sa_family == ARPHRD_ETHER) ) {
                addString(std::format("netif_{}_mac", ifIndex), formatAddress(&ifr.ifr_hwaddr, 48));
             }
             close(sd);
