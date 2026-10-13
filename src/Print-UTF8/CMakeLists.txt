@@ -32,8 +32,7 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
-ADD_EXECUTABLE(print-utf8 print-utf8.c)
-# SET_PROPERTY(TARGET print-utf8 PROPERTY C_STANDARD 23)
+ADD_EXECUTABLE(print-utf8 print-utf8.cc)
 TARGET_COMPILE_DEFINITIONS(print-utf8 PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
 TARGET_INCLUDE_DIRECTORIES(print-utf8 PRIVATE ${ICUUC_INCLUDE_DIR} ${Intl_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES(print-utf8 ${ICUUC_LIBRARY} ${Intl_LIBRARIES} ${GETOPT_LIBRARY})
