@@ -29,8 +29,71 @@
 
 
 #############################################################################
+#### LIBRARIES                                                           ####
+#############################################################################
+
+# ====== libsysteminfo ======================================================
+IF (WITH_LIBSYSTEMINFO)
+   LIST(APPEND libsysteminfo_headers libsysteminfo.h)
+   LIST(APPEND libsysteminfo_sources
+      libsysteminfo-system.cc
+      libsysteminfo-network.cc
+      libsysteminfo-storage.cc
+      libsysteminfo-battery.cc
+   )
+   INSTALL(FILES       ${libsysteminfo_headers}
+           DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hipercontracer)
+
+   IF (WITH_STATIC_LIBRARIES)
+      ADD_LIBRARY(libsysteminfo-static STATIC ${libsysteminfo_sources})
+   ENDIF()
+   IF (WITH_SHARED_LIBRARIES)
+      ADD_LIBRARY(libsysteminfo-shared SHARED ${libsysteminfo_sources})
+   ENDIF()
+   FOREACH(TYPE shared;static)
+      IF ( (("${TYPE}" STREQUAL "static") AND (WITH_STATIC_LIBRARIES)) OR
+           (("${TYPE}" STREQUAL "shared") AND (WITH_SHARED_LIBRARIES)) )
+         SET_TARGET_PROPERTIES(libsysteminfo-${TYPE} PROPERTIES
+            OUTPUT_NAME         systeminfo
+            CLEAN_DIRECT_OUTPUT 1
+            VERSION             ${BUILD_VERSION}
+            SOVERSION           ${BUILD_MAJOR}
+         )
+         TARGET_COMPILE_DEFINITIONS(libsysteminfo-${TYPE} PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
+         TARGET_INCLUDE_DIRECTORIES(libsysteminfo-${TYPE} PRIVATE
+                                    ${CMAKE_CURRENT_SOURCE_DIR}
+                                    ${SYSTEMD_INCLUDE_DIRS})
+         IF(WIN32)
+            TARGET_LINK_LIBRARIES(libsysteminfo-${TYPE} PRIVATE ws2_32 iphlpapi wtsapi32 psapi)
+         ENDIF()
+         IF(NOT MSVC)
+            TARGET_COMPILE_OPTIONS(libsysteminfo-${TYPE} PRIVATE -Wall -Wextra -Wpedantic -Wsign-conversion)
+         ELSE()
+            TARGET_COMPILE_OPTIONS(libsysteminfo-${TYPE} PRIVATE /W4)
+         ENDIF()
+         TARGET_LINK_LIBRARIES(libsysteminfo-${TYPE} PRIVATE
+                               ${SYSTEMD_LIBRARY}
+                               ${Intl_LIBRARIES}
+                               ${SOCKET_LIBRARY}
+                               ${NSL_LIBRARY}
+                               ${GETOPT_LIBRARY}
+                               ${KSTAT_LIBRARY})
+         INSTALL(TARGETS     libsysteminfo-${TYPE}
+                 DESTINATION ${CMAKE_INSTALL_LIBDIR})
+      ENDIF()
+   ENDFOREACH()
+ENDIF()
+
+
+#############################################################################
 #### PROGRAMS                                                            ####
 #############################################################################
+
+IF (STATIC_BUILD)
+   SET(libraryType static)
+ELSE()
+   SET(libraryType shared)
+ENDIF()
 
 IF (WITH_SYSTEM_INFO)
    CONFIGURE_FILE(System-Info System-Info.versioned @ONLY)
@@ -45,17 +108,13 @@ IF (WITH_SYSTEM_INFO)
 ENDIF()
 
 IF (WITH_GET_SYSTEM_INFO)
-   ADD_EXECUTABLE(get-system-info get-system-info.cc libsysteminfo.cc)
+   ADD_EXECUTABLE(get-system-info get-system-info.cc)
    # SET_PROPERTY(TARGET get-system-info PROPERTY C_STANDARD 23)
    TARGET_COMPILE_DEFINITIONS(get-system-info PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
    TARGET_INCLUDE_DIRECTORIES(get-system-info PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${SYSTEMD_INCLUDE_DIRS} ${Intl_INCLUDE_DIRS})
    TARGET_LINK_LIBRARIES(get-system-info PRIVATE
-                         ${SYSTEMD_LIBRARY}
-                         ${Intl_LIBRARIES}
-                         ${SOCKET_LIBRARY}
-                         ${NSL_LIBRARY}
-                         ${GETOPT_LIBRARY}
-                         ${KSTAT_LIBRARY})
+                         libsysteminfo-${libraryType}
+                         ${Intl_LIBRARIES})
    IF(WIN32)
       TARGET_LINK_LIBRARIES(get-system-info PRIVATE ws2_32 iphlpapi wtsapi32 psapi)
    ENDIF()

@@ -130,6 +130,27 @@ ENDIF()
 #### OPTIONS                                                             ####
 #############################################################################
 
+OPTION(WITH_STATIC_LIBRARIES "Build static libraries"              OFF)
+OPTION(WITH_SHARED_LIBRARIES "Build shared libraries"              ON)
+OPTION(STATIC_BUILD          "Build statically-linked executables" OFF)
+
+IF ((NOT WITH_STATIC_LIBRARIES) AND (NOT WITH_SHARED_LIBRARIES))
+   MESSAGE(FATAL_ERROR "Static (WITH_STATIC_LIBRARIES) or shared (WITH_SHARED_LIBRARIES) libraries must be enabled!")
+ENDIF()
+
+IF (STATIC_BUILD)
+   IF (WITH_SHARED_LIBRARIES)
+      MESSAGE(FATAL_ERROR "WITH_STATIC_LIBRARIES=ON cannot be used with WITH_SHARED_LIBRARIES=ON!")
+   ENDIF()
+   MESSAGE("Building static executables")
+   SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+   SET(CMAKE_EXE_LINKER_FLAGS      "-static")
+ELSE()
+   IF (NOT WITH_SHARED_LIBRARIES)
+      MESSAGE(FATAL_ERROR "STATIC_BUILD=OFF cannot be used with WITH_SHARED_LIBRARIES=OFF!")
+   ENDIF()
+ENDIF()
+
 OPTION(WITH_I18N "Build with Internationalization (i18n) support"           ON)
 
 OPTION(WITH_SYSTEM_INFO                "Include System-Info"                ON)
@@ -151,6 +172,8 @@ OPTION(WITH_X509_TOOLS                 "Include X.509 Tools"                ON)
 OPTION(WITH_GIMP_SCRIPTS               "Include GIMP-Scripts"               ON)
 OPTION(WITH_GIMP_SCRIPTS_EXAMPLES      "Include GIMP-Scripts Examples"      ON)
 
+OPTION(WITH_LIBSYSTEMINFO              "Build System-Info Library (libsysteminfo)" OFF)
+
 IF (WITH_SYSTEM_INFO AND NOT (WITH_GET_SYSTEM_INFO AND WITH_PRINT_UTF8))
    MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO requires WITH_GET_SYSTEM_INFO and WITH_PRINT_UTF8!")
 ENDIF()
@@ -162,6 +185,9 @@ IF (WITH_SYSTEM_INFO_DEFAULT_BANNER AND NOT WITH_SYSTEM_INFO)
 ENDIF()
 IF (WITH_SYSTEM_INFO_EXAMPLES AND NOT WITH_SYSTEM_INFO)
    MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO_EXAMPLES requires WITH_SYSTEM_INFO!")
+ENDIF()
+IF (WITH_GET_SYSTEM_INFO)
+   SET(WITH_LIBSYSTEMINFO ON)
 ENDIF()
 
 IF (WITH_TRY_HARD AND NOT WITH_RANDOM_SLEEP)
