@@ -118,13 +118,7 @@ static std::string formatLocaleNumber(const uint64_t value)
       return stringStream.str();
    }
    catch(...) {
-      std::string numberString = std::to_string(value);
-      int position = static_cast<int>(numberString.length()) - 3;
-      while(position > 0) {
-         numberString.insert(static_cast<size_t>(position), ",");
-         position -= 3;
-      }
-      return numberString;
+      return std::to_string(value);
    }
 }
 
