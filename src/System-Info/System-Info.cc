@@ -39,7 +39,6 @@
 #include <getopt.h>
 #include <iostream>
 #include <locale>
-#include <map>
 #include <regex>
 #include <sstream>
 #include <string>
@@ -49,10 +48,10 @@
 #if defined(ENABLE_NLS)
 #include <libintl.h>
 #else
-#define gettext(string)                        (string)
-#define ngettext(singular, plural, count)      (((count) == 1) ? (singular) : (plural))
-#define bindtextdomain(domain, directory)      (directory)
-#define textdomain(domain)                     (domain)
+#define gettext(string)                          (string)
+#define ngettext(singular, plural, count)        (((count) == 1) ? (singular) : (plural))
+#define bindtextdomain(domain, directory)        (directory)
+#define textdomain(domain)                       (domain)
 #define bind_textdomain_codeset(domain, codeset) (codeset)
 #endif
 
@@ -90,20 +89,18 @@ constexpr const char* colorDisk80             = "\033[33m";
 constexpr const char* colorDisk95             = "\033[31m";
 
 
-// ###### Evaluation helper for gettext strings with ${variable} placeholders
-static std::string eval_gettext(const char*                               messageIdentifier,
-                                const std::map<std::string, std::string>& variableMap)
+// ###### C++20 gettext runtime format helper ################################
+template<typename... Args>
+static std::string formatText(const char* messageIdentifier,
+                              const Args&... arguments)
 {
-   std::string result = gettext(messageIdentifier);
-   for(const auto& [variableName, variableValue] : variableMap) {
-      const std::string placeholder = "${" + variableName + "}";
-      size_t position = 0;
-      while((position = result.find(placeholder, position)) != std::string::npos) {
-         result.replace(position, placeholder.length(), variableValue);
-         position += variableValue.length();
-      }
+   try {
+      return std::vformat(gettext(messageIdentifier),
+                          std::make_format_args(arguments...));
    }
-   return result;
+   catch(const std::format_error&) {
+      return gettext(messageIdentifier);
+   }
 }
 
 
@@ -390,11 +387,7 @@ static void printSshKeyFingerprints()
 
             if(!fingerprint.empty() && std::isupper(static_cast<unsigned char>(fingerprint[0]))) {
                const std::string label = (keyNumber == 1) ? gettext("SSH Keys:") : "";
-               addTableRow(label,
-                           eval_gettext("#${keyNumber} ${keyInfo}", {
-                              { "keyNumber", std::to_string(keyNumber) },
-                              { "keyInfo",    keyInfo }
-                           }));
+               addTableRow(label, formatText("#{0} {1}", keyNumber, keyInfo));
                keyNumber++;
             }
          }
@@ -473,9 +466,7 @@ static void loadTestSystemInfo(std::string_view filePath,
 {
    std::ifstream fileStream{ std::string(filePath) };
    if(!fileStream.is_open()) {
-      std::cerr << eval_gettext("ERROR: Unable to find input file ${testSystemInfoInput}!", {
-         { "testSystemInfoInput", std::string(filePath) }
-      }) << '\n';
+      std::cerr << formatText("ERROR: Unable to find input file {0}!\n", filePath);
       std::exit(1);
    }
 
@@ -558,12 +549,8 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    const std::string uptimeInSeconds = buffer;
 
    addTableRow(gettext("Uptime:"),
-               eval_gettext("${uptimeInDays}, ${uptimeInHours}, ${uptimeInMinutes}, and ${uptimeInSeconds}", {
-                  { "uptimeInDays",    uptimeInDays },
-                  { "uptimeInHours",   uptimeInHours },
-                  { "uptimeInMinutes", uptimeInMinutes },
-                  { "uptimeInSeconds", uptimeInSeconds }
-               }));
+               formatText("{0}, {1}, {2}, and {3}",
+                          uptimeInDays, uptimeInHours, uptimeInMinutes, uptimeInSeconds));
 
    // ====== Operating System ===============================================
    const OperatingSystemInformation operatingSystemInfo = readOperatingSystemInformation(systemInfo);
@@ -571,10 +558,8 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    const std::string osLabel      = operatingSystemInfo.Identifier + " " + operatingSystemInfo.Release + codeNameText;
 
    addTableRow(gettext("Operating System:"),
-               eval_gettext("${os_label} with kernel ${system_release}", {
-                  { "os_label",       osLabel },
-                  { "system_release", systemInfo.getString("system_release") }
-               }));
+               formatText("{0} with kernel {1}",
+                          osLabel, systemInfo.getString("system_release")));
 
    // ====== Processor ======================================================
    const uint32_t procs = systemInfo.getUInt32("system_procs");
@@ -590,12 +575,11 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    const std::string usersString = buffer;
 
    addTableRow(gettext("Processor:"),
-               eval_gettext("${systemCoresString} cores (${systemMachineString}); ${processesString}; ${usersString}", {
-                  { "systemCoresString",   formatLocaleNumber(cores) },
-                  { "systemMachineString", systemInfo.getString("system_machine") },
-                  { "processesString",     processesString },
-                  { "usersString",         usersString }
-               }));
+               formatText("{0} cores ({1}); {2}; {3}",
+                          formatLocaleNumber(cores),
+                          systemInfo.getString("system_machine"),
+                          processesString,
+                          usersString));
 
    // ====== Load ===========================================================
 #if !defined(_WIN32)
@@ -646,11 +630,8 @@ static void printSystemInformation(const SystemInfo& systemInfo)
          }
 
          batterySummary += separator + statusColor +
-            eval_gettext("#${batteryNumber} ${batteryStatus}, ${batteryCapacity} %", {
-               { "batteryNumber",   std::to_string(batteryNumber) },
-               { "batteryStatus",   statusString },
-               { "batteryCapacity", std::to_string(capacity) }
-            }) + colorBasic;
+            formatText("#{0} {1}, {2} %", batteryNumber, statusString, capacity) +
+            colorBasic;
       }
       addTableRow(gettext("Battery:"), batterySummary);
    }
@@ -936,7 +917,7 @@ int main(int argc, char** argv)
    }
 
    std::cout << '\n'
-             << eval_gettext("System information on ${now}", { { "now", nowString } })
+             << formatText("System information on {0}", nowString)
              << "\n\n";
 
    printBanners(scriptDirectories);
