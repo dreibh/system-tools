@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-12 16:51+0200\n"
+"POT-Creation-Date: 2026-10-13 21:17+0200\n"
 "PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,29 +43,54 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:45
+#. TRANSLATORS: Command-line syntax message prefix:
+#. "Usage: <program> [options]".
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:47
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:61
+#. TRANSLATORS: Error message when installed Bash version is older than 4.4.
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:64
 msgid "ERROR: Bash 4.4 or higher is required!"
 msgstr "FEHLER: Bash 4.4 oder höher ist erforderlich!"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:87
+#. TRANSLATORS: Error message when enhanced/GNU getopt is not found or is
+#. incompatible.
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:92
 msgid "ERROR: Enhanced/GNU getopt is required!"
 msgstr "FEHLER: Enhanced/GNU getopt ist erforderlich!"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:154
+#. TRANSLATORS: Error message when an invalid output format is specified:
+#. ${FORMAT} = specified format name
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:150
+#, sh-format
+msgid "ERROR: Invalid format '${FORMAT}'! Allowed formats: text, python, csv."
+msgstr ""
+
+#. TRANSLATORS: Error message when the specified key directory does not exist:
+#. ${KEY_DIRECTORY} = directory path
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:162
+#, sh-format
+msgid "ERROR: Key directory '${KEY_DIRECTORY}' does not exist!"
+msgstr ""
+
+#. TRANSLATORS: Header for raw public keys section:
+#. ${hostname} = system hostname or FQDN
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:236
 #, sh-format
 msgid "Fingerprints of ${hostname} in raw format:"
 msgstr "Fingerabdrücke von ${hostname} im Rohformat:"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:181
+#. TRANSLATORS: Header for SSH fingerprint records section:
+#. ${hostname} = system hostname or FQDN
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:273
 #, sh-format
 msgid "Fingerprints of ${hostname} in SSH format:"
 msgstr "Fingerabdrücke von ${hostname} im SSH-Format:"
 
-#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:192
+#. TRANSLATORS: Header for DNS SSHFP resource records section:
+#. ${hostname} = system hostname or FQDN
+#: src/Fingerprint-SSH-Keys/Fingerprint-SSH-Keys:309
 #, sh-format
 msgid "Fingerprints of ${hostname} in DNS RR format:"
 msgstr "Fingerabdrücke von ${hostname} im DNS-RR-Format:"

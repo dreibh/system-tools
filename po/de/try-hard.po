@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-28 14:34+0200\n"
+"POT-Creation-Date: 2026-10-13 21:17+0200\n"
 "PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,50 +43,93 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Try-Hard/try-hard:45
+#. TRANSLATORS: Command-line syntax message prefix:
+#. "Usage: <program> [options]".
+#: src/Try-Hard/try-hard:47
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Try-Hard/try-hard:62
+#. TRANSLATORS: Error message when installed Bash version is older than 4.4.
+#: src/Try-Hard/try-hard:65
 msgid "ERROR: Bash 4.4 or higher is required!"
 msgstr "FEHLER: Bash 4.4 oder höher ist erforderlich!"
 
-#: src/Try-Hard/try-hard:88
+#. TRANSLATORS: Error message when enhanced/GNU getopt is not found or is
+#. incompatible.
+#: src/Try-Hard/try-hard:93
 msgid "ERROR: Enhanced/GNU getopt is required!"
 msgstr "FEHLER: Enhanced/GNU getopt ist erforderlich!"
 
-#: src/Try-Hard/try-hard:111 src/Try-Hard/try-hard:121
-#: src/Try-Hard/try-hard:131 src/Try-Hard/try-hard:141
-#: src/Try-Hard/try-hard:186
+#. TRANSLATORS: Error message when the minimum delay parameter
+#. is invalid:
+#. ${delayValue} = specified minimum delay string
+#. TRANSLATORS: Error message when the additive increase increment
+#. is invalid:
+#. ${delayValue} = specified additive increment string
+#. TRANSLATORS: Error message when the multiplicative increase factor
+#. is invalid:
+#. ${delayValue} = specified multiplicative factor string
+#. TRANSLATORS: Error message when the maximum delay
+#. ceiling/truncation value is invalid:
+#. ${delayValue} = specified delay truncation ceiling string
+#. TRANSLATORS: Error message when the initial maximum delay value
+#. is invalid:
+#. ${delayValue} = specified maximum delay string
+#: src/Try-Hard/try-hard:119 src/Try-Hard/try-hard:132
+#: src/Try-Hard/try-hard:145 src/Try-Hard/try-hard:158
+#: src/Try-Hard/try-hard:209
 #, sh-format
 msgid "ERROR: Invalid delay value ${delayValue}!"
 msgstr "FEHLER: Ungültiger Verzögerungswert ${delayValue}!"
 
-#: src/Try-Hard/try-hard:180
+#. TRANSLATORS: Error message when the maximum trial count parameter
+#. is invalid:
+#. ${MAX_TRIALS} = specified trial count value
+#: src/Try-Hard/try-hard:200
 #, sh-format
 msgid "ERROR: Invalid maximum trials ${MAX_TRIALS}!"
 msgstr "FEHLER: Ungültige maximale Anzahl an Versuchen ${MAX_TRIALS}!"
 
-#: src/Try-Hard/try-hard:191
+#. TRANSLATORS: Error message when the random-sleep utility is not found
+#. in PATH.
+#: src/Try-Hard/try-hard:216
 msgid "ERROR: Cannot find random-sleep in the search path!"
 msgstr "FEHLER: random-sleep konnte im Suchpfad nicht gefunden werden!"
 
-#: src/Try-Hard/try-hard:220
+#. TRANSLATORS: Progress notification before running a command trial:
+#. ${trial} = current trial attempt index
+#. ${MAX_TRIALS} = maximum configured number of trials
+#: src/Try-Hard/try-hard:248
 #, sh-format
 msgid "Trial ${trial}/${MAX_TRIALS}:"
 msgstr "Versuch ${trial}/${MAX_TRIALS}:"
 
-#: src/Try-Hard/try-hard:229
+#. TRANSLATORS: Notification when retry limit has been exceeded
+#. without success:
+#. ${MAX_TRIALS} = total number of attempts executed
+#: src/Try-Hard/try-hard:260
 #, sh-format
 msgid "Tried ${MAX_TRIALS} times -> giving up now!"
 msgstr "${MAX_TRIALS}-mal versucht -> gebe jetzt auf!"
 
-#: src/Try-Hard/try-hard:260
+#. TRANSLATORS: Progress notification when a trial fails and random
+#. backoff begins:
+#. ${trial} = current trial attempt index
+#. ${MAX_TRIALS} = maximum configured number of trials
+#. ${exitStatus} = command exit return code
+#. ${minDelay} = lower bound of random sleep interval in seconds
+#. ${maxDelay} = upper bound of random sleep interval in seconds
+#: src/Try-Hard/try-hard:298
 #, sh-format
 msgid "Trial ${trial}/${MAX_TRIALS} failed (exit code ${exitStatus}) -> waiting random time from [${minDelay}, ${maxDelay}] s ..."
 msgstr "Versuch ${trial}/${MAX_TRIALS} fehlgeschlagen (Rückgabewert ${exitStatus}) -> warte zufällige Zeitspanne aus [${minDelay}, ${maxDelay}] s vor einem erneuten Versuch ..."
 
-#: src/Try-Hard/try-hard:267
+#. TRANSLATORS: Progress notification when a trial fails and
+#. deterministic backoff begins:
+#. ${trial} = current trial attempt index
+#. ${MAX_TRIALS} = maximum configured number of trials
+#. ${maxDelay} = sleep duration in seconds
+#: src/Try-Hard/try-hard:310
 #, sh-format
 msgid "Trial ${trial}/${MAX_TRIALS} failed -> waiting for ${maxDelay} s ..."
 msgstr "Versuch ${trial}/${MAX_TRIALS} fehlgeschlagen -> warte ${maxDelay} s vor einem erneuten Versuch ..."

@@ -9,7 +9,7 @@
 #                  https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# Test-Block
+# Text-Block
 # Copyright (C) 2024-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-12 16:51+0200\n"
-"PO-Revision-Date: 2026-16-05 14:36+0200\n"
+"POT-Creation-Date: 2026-10-13 21:27+0200\n"
+"PO-Revision-Date: 2026-10-13 21:25+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
 "Language: nb\n"
@@ -43,132 +43,197 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Text-Block/text-block.c:159
-#, c-format
-msgid "ERROR: Unable to open output file %s: %s!"
-msgstr "FEIL: Kan ikke åpne utdatafilen %s: %s!"
+#. TRANSLATORS: Error message when closing output file fails:
+#. {0} = output file path
+#. {1} = system error message (std::strerror)
+#: src/Text-Block/text-block.cc:168
+#, no-c-format
+msgid "ERROR: Unable to open output file {0}: {1}!"
+msgstr "FEIL: Kan ikke åpne utdatafilen {0}: {1}!"
 
-#: src/Text-Block/text-block.c:170
-#, c-format
-msgid "ERROR: Unable to delete broken output file %s: %s!"
-msgstr "FEIL: Kan ikke slette den ødelagte utdatafilen %s: %s!"
+#. TRANSLATORS: Error message when deleting broken output file
+#. fails:
+#. {0} = broken file path
+#. {1} = system error message (std::strerror)
+#: src/Text-Block/text-block.cc:183
+#, no-c-format
+msgid "ERROR: Unable to delete broken output file {0}: {1}!"
+msgstr "FEIL: Kan ikke slette den ødelagte utdatafilen {0}: {1}!"
 
-#: src/Text-Block/text-block.c:185
-#, c-format
-msgid "WARNING: Unable to restore file permissions for %s: %s!"
-msgstr "ADVARSEL: Filtillatelser for %s kan ikke gjenopprettes: %s!"
+#. TRANSLATORS: Warning message when restoring file permissions
+#. fails:
+#. {0} = input file path
+#. {1} = system error message (std::strerror)
+#: src/Text-Block/text-block.cc:199
+#, no-c-format
+msgid "WARNING: Unable to restore file permissions for {0}: {1}!"
+msgstr "ADVARSEL: Filtillatelser for {0} kan ikke gjenopprettes: {1}!"
 
-#: src/Text-Block/text-block.c:193
-#, c-format
-msgid "ERROR: Unable to change name of temporary output file from %s to %s: %s!"
-msgstr "FEIL: Kan ikke endre navnet på den midlertidige utdatafilen fra %s til %s: %s!"
+#. TRANSLATORS: Error message when renaming temporary file to
+#. target input file name fails:
+#. {0} = temporary file path
+#. {1} = target input file path
+#. {2} = system error message (std::strerror)
+#: src/Text-Block/text-block.cc:213
+#, no-c-format
+msgid "ERROR: Unable to change name of temporary output file from {0} to {1}: {2}!"
+msgstr "FEIL: Kan ikke endre navnet på den midlertidige utdatafilen fra {0} til {1}: {2}!"
 
-#: src/Text-Block/text-block.c:275 src/Text-Block/text-block.c:758
-#, c-format
-msgid "ERROR: malloc() failed: %s!"
-msgstr "FEIL: malloc() mislyktes: %s!"
+#. TRANSLATORS: Error message when writing to output file fails:
+#. {0} = output file path
+#. {1} = system error message (std::strerror)
+#: src/Text-Block/text-block.cc:234
+#, no-c-format
+msgid "ERROR: Unable to write to output file {0}: {1}!"
+msgstr "FEIL: Kan ikke skrive til utdatafilen {0}: {1}!"
 
-#: src/Text-Block/text-block.c:291
-#, c-format
-msgid "ERROR: Unable to write to output file %s: %s!"
-msgstr "FEIL: Kan ikke skrive til utdata %s: %s!"
-
-#: src/Text-Block/text-block.c:478
+#. TRANSLATORS: Command-line syntax message prefix:
+#. "Usage: <program> [options]".
+#: src/Text-Block/text-block.cc:400
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Text-Block/text-block.c:604
+#. TRANSLATORS: Error message when line selection (--select|-s)
+#. is missing the to_line parameter.
+#: src/Text-Block/text-block.cc:596
 msgid "ERROR: Too few arguments for line selection (--select|-s)!"
 msgstr "FEIL: For få argumenter for linjeutvalg (--select|-s)!"
 
-#: src/Text-Block/text-block.c:638
+#. TRANSLATORS: Error message when format string for line
+#. numbering contains invalid characters.
+#: src/Text-Block/text-block.cc:632
 msgid "ERROR: Invalid value for enumeration format (--enumerate-format)!"
 msgstr "FEIL: Ugyldig verdi for tallformat (--enumerate-format)!"
 
-#: src/Text-Block/text-block.c:684
+#. TRANSLATORS: Error message when --highlight-params is given
+#. fewer than the required 6 arguments.
+#: src/Text-Block/text-block.cc:675
 msgid "ERROR: Too few arguments for highlight parameters (--highlight-params)!"
 msgstr "FEIL: For få argumenter for highlight-parametere (--highlight-params)!"
 
-#: src/Text-Block/text-block.c:713
+#. TRANSLATORS: Error message when --min-actions exceeds
+#. --max-actions.
+#: src/Text-Block/text-block.cc:699
 msgid "ERROR: Invalid min/max settings (--min-actions/-m/--max-actions/-M)!"
 msgstr "FEIL: Ugyldige min/maks-innstillinger (--min-actions/-m/--max-actions/-M)!"
 
-#: src/Text-Block/text-block.c:725
+#. TRANSLATORS: Error message when line selection and tag matching
+#. options are specified together.
+#: src/Text-Block/text-block.cc:708
 msgid "ERROR: Line selection (--select|-s) and tags (--begin-tag/-b/--end-tag/-e/--tag/-t) are mutually exclusive!"
 msgstr "FEIL: Linjeutvalg (--select|-s) og merker (--begin-tag/-b/--end-tag/-e/--tag/-t) er gjensidig utelukkende!"
 
-#: src/Text-Block/text-block.c:737
+#. TRANSLATORS: Warning message when begin/end tags are provided
+#. in modes that do not support tags (Cat, Discard, Enumerate).
+#: src/Text-Block/text-block.cc:719
 msgid "WARNING: Begin/end tags (--begin-tag/-b/--end-tag/-e/--tag/-t) have no effect for Cat, Discard, or Enumerate!"
 msgstr "ADVARSEL: Begynn-/sluttmerker (--begin-tag/-b/--end-tag/-e/--tag/-t) har ingen effekt ved Cat, Discard og Enumerate!"
 
-#: src/Text-Block/text-block.c:747
+#. TRANSLATORS: Warning message when identical begin/end tags
+#. are used with excluded tags in Extract, Remove, or Replace
+#. mode.
+#: src/Text-Block/text-block.cc:731
 msgid "WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful for Extract, Remove, or Replace!"
 msgstr "ADVARSEL: Identiske begynn-/sluttmerker (--tag/-t) med ekskluderte merker (--exclude-tags/-x) er ikke nyttige ved Extract, Remove og Replace!"
 
-#: src/Text-Block/text-block.c:771
-#, c-format
-msgid "ERROR: Unable to resolve absolute path for input file %s: %s!"
-msgstr "FEIL: Klarte ikke å løse den absolutte banen for inndatafilen %s: %s!"
+#. TRANSLATORS: Error message when resolving canonical path of input
+#. file fails during in-place update:
+#. {0} = input file path
+#. {1} = system error message (std::strerror)
+#: src/Text-Block/text-block.cc:751
+#, no-c-format
+msgid "ERROR: Unable to resolve absolute path for input file {0}: {1}!"
+msgstr "FEIL: Klarte ikke å løse den absolutte banen for inndatafilen {0}: {1}!"
 
-#: src/Text-Block/text-block.c:781
-#, c-format
-msgid "ERROR: Unable to open input file %s: %s!"
-msgstr "FEIL: Inndatafilen %s kan ikke åpnes: %s!"
+#. TRANSLATORS: Error message when opening input file fails:
+#. {0} = input file path
+#. {1} = system error message (std::strerror)
+#: src/Text-Block/text-block.cc:763
+#, no-c-format
+msgid "ERROR: Unable to open input file {0}: {1}!"
+msgstr "FEIL: Inndatafilen {0} kan ikke åpnes: {1}!"
 
-#: src/Text-Block/text-block.c:802
-#, c-format
-msgid "WARNING: Line selection range (%lld — %lld) is not useful. Input file too short?"
-msgstr "ADVARSEL: Linjeutvalg (%lld — %lld) er ikke nyttig. Inndatafilen er for kort?"
+#. TRANSLATORS: Warning message when line selection range is empty or
+#. inverted (start line exceeds end line):
+#. {0} = start line number
+#. {1} = end line number
+#: src/Text-Block/text-block.cc:786
+#, no-c-format
+msgid "WARNING: Line selection range ({0} — {1}) is not useful. Input file too short?"
+msgstr "ADVARSEL: Linjeutvalg ({0} — {1}) er ikke nyttig. Inndatafilen er for kort?"
 
-#: src/Text-Block/text-block.c:809
+#. TRANSLATORS: Error message when negative line offset is used
+#. without a file input source.
+#: src/Text-Block/text-block.cc:794
 msgid "ERROR: Select from end of file (negative line number) is only possible with input file!"
-msgstr "FEIL: Velg fra slutten av filen (negativ linjenummer) er bare mulig med inndatafil!"
+msgstr "FEIL: Velg fra slutten av filen (negativt linjenummer) er bare mulig med inndatafil!"
 
-#: src/Text-Block/text-block.c:814
+#. TRANSLATORS: Error message when in-place update is requested
+#. without specifying an input file.
+#: src/Text-Block/text-block.cc:800
 msgid "ERROR: In-place update (--in-place|-p) requires an input file (--input/-i)!"
 msgstr "FEIL: Oppdatering på stedet (--in-place|-p) krever en inndatafil (--input/-i)!"
 
-#: src/Text-Block/text-block.c:827
+#. TRANSLATORS: Error message when in-place update and output file
+#. are specified simultaneously.
+#: src/Text-Block/text-block.cc:814
 msgid "ERROR: In-place update (--in-place|-p) and output file (--output/-o) are mutually exclusive!"
-msgstr "FEIL: Oppdatering på stedet (--inplace|-p) og utdatafil (--output/-o) utelukker hverandre!"
+msgstr "FEIL: Oppdatering på stedet (--in-place|-p) og utdatafil (--output/-o) utelukker hverandre!"
 
-#: src/Text-Block/text-block.c:832
-msgid "ERROR: Cannot generate temporary output file name!"
-msgstr "FEIL: Kan ikke opprette filnavn for midlertidig utdatafil!"
+#. TRANSLATORS: Error message when opening or creating output file
+#. fails:
+#. {0} = output file path
+#. {1} = system error message (std::strerror)
+#: src/Text-Block/text-block.cc:828
+#, no-c-format
+msgid "ERROR: Unable to create output file {0}: {1}!"
+msgstr "FEIL: Kan ikke opprette utdatafilen {0}: {1}!"
 
-#: src/Text-Block/text-block.c:842
-#, c-format
-msgid "ERROR: Unable to create output file %s: %s!"
-msgstr "FEIL: Kan ikke opprette utdatafilen %s: %s!"
-
-#: src/Text-Block/text-block.c:858
+#. TRANSLATORS: Error message when reading insert content from stdin
+#. while main input is also stdin.
+#: src/Text-Block/text-block.cc:844
 msgid "ERROR: Insert from standard input requires an input file!"
 msgstr "FEIL: Innsetting fra standardinngang krever en inndatafil!"
 
-#: src/Text-Block/text-block.c:864
-#, c-format
-msgid "ERROR: Unable to create temporary file for insertion: %s!"
-msgstr "FEIL: Kan ikke opprette midlertidig fil for innsetting: %s!"
+#. TRANSLATORS: Error message when creating temporary buffer file for
+#. insertion fails:
+#. {0} = system error message (std::strerror)
+#: src/Text-Block/text-block.cc:852
+#, no-c-format
+msgid "ERROR: Unable to create temporary file for insertion: {0}!"
+msgstr "FEIL: Kan ikke opprette midlertidig fil for innsetting: {0}!"
 
-#: src/Text-Block/text-block.c:872
-#, c-format
-msgid "ERROR: Failed to write to temporary file: %s!"
-msgstr "FEIL: Midlertidig fil kan ikke skrives til: %s!"
+#. TRANSLATORS: Error message when writing stdin to temporary
+#. insert file fails:
+#. {0} = system error message (std::strerror)
+#: src/Text-Block/text-block.cc:863
+#, no-c-format
+msgid "ERROR: Failed to write to temporary file: {0}!"
+msgstr "FEIL: Midlertidig fil kan ikke skrives til: {0}!"
 
-#: src/Text-Block/text-block.c:884
-#, c-format
-msgid "ERROR: Unable to open insert file %s: %s!"
-msgstr "FEIL: Kan ikke åpne innsettingsfil %s: %s!"
+#. TRANSLATORS: Error message when opening insert file fails:
+#. {0} = insert file path
+#. {1} = system error message (std::strerror)
+#: src/Text-Block/text-block.cc:877
+#, no-c-format
+msgid "ERROR: Unable to open insert file {0}: {1}!"
+msgstr "FEIL: Kan ikke åpne innsettingsfil {0}: {1}!"
 
-#: src/Text-Block/text-block.c:898
+#. TRANSLATORS: Error message when an insert or replace mode is
+#. selected but no insert file was provided.
+#: src/Text-Block/text-block.cc:894
 msgid "ERROR: No insert file provided!"
 msgstr "FEIL: Ingen innsettingsfil oppgitt!"
 
-#: src/Text-Block/text-block.c:1058
-#, c-format
-msgid "ERROR: Read error: %s!"
-msgstr "FEIL: Lesefeil: %s!"
+#. TRANSLATORS: Error message when reading from input file fails:
+#. {0} = system error message (std::strerror)
+#: src/Text-Block/text-block.cc:1024
+#, no-c-format
+msgid "ERROR: Read error: {0}!"
+msgstr "FEIL: Lesefeil: {0}!"
 
-#: src/Text-Block/text-block.c:1072
+#. TRANSLATORS: Error message when the number of performed actions is
+#. outside of configured min/max limits.
+#: src/Text-Block/text-block.cc:1039
 msgid "ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!"
-msgstr "FEIL: Antall handlinger utenfor sette grenser (--min-actions/-m/--max-actions/-M)!"
+msgstr "FEIL: Antall handlinger utenfor satte grenser (--min-actions/-m/--max-actions/-M)!"

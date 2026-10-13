@@ -31,8 +31,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-12 16:51+0200\n"
-"PO-Revision-Date: 2026-16-05 14:36+0200\n"
+"POT-Creation-Date: 2026-10-13 21:30+0200\n"
+"PO-Revision-Date: 2026-10-13 21:35+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
 "Language: nb\n"
@@ -43,49 +43,59 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Print-UTF8/print-utf8.c:214
-#, c-format
-msgid "ERROR: Invalid hexadecimal digit %c!"
-msgstr "FEIL: Ugyldig heksadesimalt siffer %c!"
+#. TRANSLATORS: Error message when an invalid hexadecimal character is
+#. encountered in escape sequence:
+#. {0} = invalid character
+#: src/Print-UTF8/print-utf8.cc:196
+#, no-c-format
+msgid "ERROR: Invalid hexadecimal digit {0}!"
+msgstr "FEIL: Ugyldig heksadesimalt siffer {0}!"
 
-#: src/Print-UTF8/print-utf8.c:226
-#, c-format
-msgid "ERROR: Invalid octal digit %c!"
-msgstr "FEIL: Ugyldig oktalt siffer %c!"
+#. TRANSLATORS: Error message when an invalid octal character is
+#. encountered in escape sequence:
+#. {0} = invalid character
+#: src/Print-UTF8/print-utf8.cc:210
+#, no-c-format
+msgid "ERROR: Invalid octal digit {0}!"
+msgstr "FEIL: Ugyldig oktalt siffer {0}!"
 
-#: src/Print-UTF8/print-utf8.c:238 src/Print-UTF8/print-utf8.c:367
-#: src/Print-UTF8/print-utf8.c:394
-#, c-format
-msgid "ERROR: malloc() failed: %s!"
-msgstr "FEIL: malloc() mislyktes: %s!"
-
-#: src/Print-UTF8/print-utf8.c:400
-#, c-format
-msgid "ERROR: mbstowcs() failed: %s!"
-msgstr "FEIL: mbstowcs() mislyktes: %s!"
-
-#: src/Print-UTF8/print-utf8.c:758
+#. TRANSLATORS: Command-line syntax message prefix:
+#. "Usage: <program> [options]".
+#: src/Print-UTF8/print-utf8.cc:649
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/Print-UTF8/print-utf8.c:855
+#. TRANSLATORS: Error message when --multiline-indent/-I is given
+#. fewer than the required arguments (indentation, left, right).
+#: src/Print-UTF8/print-utf8.cc:770
 msgid "ERROR: Invalid arguments for multiline-indent!"
 msgstr "FEIL: Ugyldige argumenter for multiline-indent!"
 
-#: src/Print-UTF8/print-utf8.c:874
+#. TRANSLATORS: Error message when --multiline-center/-C is given
+#. fewer than the required arguments (left, right).
+#: src/Print-UTF8/print-utf8.cc:784
 msgid "ERROR: Invalid arguments for multiline-center!"
 msgstr "FEIL: Ugyldige argumenter for multiline-center!"
 
-#: src/Print-UTF8/print-utf8.c:897
+#. TRANSLATORS: Error message when --separator/-s is given
+#. fewer than the required arguments (border_left, separator,
+#. border_right).
+#: src/Print-UTF8/print-utf8.cc:800
 msgid "ERROR: Invalid separator setting!"
 msgstr "FEIL: Ugyldig separator-innstilling!"
 
-#: src/Print-UTF8/print-utf8.c:908
-#, c-format
-msgid "ERROR: Invalid console width %u!"
-msgstr "FEIL: Ugyldig konsollbredde %u!"
+#. TRANSLATORS: Error message when console width exceeds
+#. maximum permitted width of 4096 columns:
+#. {0} = specified console width
+#: src/Print-UTF8/print-utf8.cc:813
+#, no-c-format
+msgid "ERROR: Invalid console width {0}!"
+msgstr "FEIL: Ugyldig konsollbredde {0}!"
 
-#: src/Print-UTF8/print-utf8.c:956
-#, c-format
-msgid "WARNING: Unhandled parameter %s!"
-msgstr "ADVARSEL: Ubehandlet parameter %s!"
+#. TRANSLATORS: Warning message when extraneous unrecognized command
+#. line parameters are encountered:
+#. {0} = unhandled parameter argument
+#: src/Print-UTF8/print-utf8.cc:857
+#, no-c-format
+msgid "WARNING: Unhandled parameter {0}!"
+msgstr "ADVARSEL: Ubehandlet parameter {0}!"

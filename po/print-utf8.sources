@@ -1,1 +1,1 @@
---language=C src/Print-UTF8/print-utf8.c
+--language=C++ src/Print-UTF8/print-utf8.cc
