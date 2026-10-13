@@ -58,6 +58,9 @@ SystemInfo::SystemInfo(const unsigned int compatibilityVersion,
    if(flags & Flags::Kernel) {
       obtainKernelInformation();
    }
+   if(flags & Flags::OS) {
+      obtainOperatingSystemInformation();
+   }
    if(flags & Flags::Load) {
       obtainLoadInformation();
    }
