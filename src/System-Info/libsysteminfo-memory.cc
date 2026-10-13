@@ -150,15 +150,15 @@ void SystemInfo::obtainMemoryInformation()
    const int            mibUvmExp[2] = { CTL_VM, VM_UVMEXP2 };
    length = sizeof(uvm);
    sysctl(mibUvmExp, 2, &uvm, &length, nullptr, 0);
-   vInactiveCount = uvm.inactive;
-   vFreeCount     = uvm.free;
+   vInactiveCount = static_cast<unsigned int>(uvm.inactive);
+   vFreeCount     = static_cast<unsigned int>(uvm.free);
 #elif defined(__OpenBSD__)
    struct uvmexp uvm { };
    const int     mibUvmExp[2] = { CTL_VM, VM_UVMEXP };
    length = sizeof(uvm);
    sysctl(mibUvmExp, 2, &uvm, &length, nullptr, 0);
-   vInactiveCount = uvm.inactive;
-   vFreeCount     = uvm.free;
+   vInactiveCount = static_cast<unsigned int>(uvm.inactive);
+   vFreeCount     = static_cast<unsigned int>(uvm.free);
 #endif
    memoryTotal     = physMem;
    memoryAvailable = (static_cast<uint64_t>(vInactiveCount) + vFreeCount) * pageSize;
