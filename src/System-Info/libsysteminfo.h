@@ -30,67 +30,108 @@
 #ifndef LIBSYSTEMINFO_H
 #define LIBSYSTEMINFO_H
 
-#include <stdint.h>
-#include <stdio.h>
+#include <cstdint>
+#include <iostream>
+#include <map>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <variant>
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
-// Compatibility version of libsysteminfo, to allow for future changes:
-// Currently, there is just version 0.
 #define LSI_COMPATIBILITY_VERSION 0
 
+class SystemInfoException : public std::runtime_error {
+public:
+   using std::runtime_error::runtime_error;
+};
 
-struct SystemInfo;
+class SystemInfo {
+public:
+   enum Flags : uint32_t {
+      Hostname = (1U << 0),
+      Cpu      = (1U << 1),
+      // Gpu   = (1U << 2),
+      Uptime   = (1U << 3),
+      Kernel   = (1U << 4),
+      Load     = (1U << 5),
+      Memory   = (1U << 6),
+      Storage  = (1U << 7),
+      Network  = (1U << 8),
+      Battery  = (1U << 9),
+      All      = 0xFFFFFFFFU
+   };
 
-typedef enum {
-   SIET_INVALID = 0,
-   SIET_STRING  = 1,
-   SIET_UINT32  = 2,
-   SIET_UINT64  = 3,
-   SIET_INT32   = 4,
-   SIET_INT64   = 5,
-   SIET_DOUBLE  = 6
-} SystemInfoEntryValueType;
+   enum class ValueType {
+      Invalid = 0,
+      String  = 1,
+      UInt32  = 2,
+      UInt64  = 3,
+      Int32   = 4,
+      Int64   = 5,
+      Double  = 6
+   };
 
-typedef enum {
-   SIOF_HOSTNAME = (1UL << 0),
-   SIOF_CPU      = (1UL << 1),
-   // SIOF_GPU   = (1UL << 2),
-   SIOF_UPTIME   = (1UL << 3),
-   SIOF_KERNEL   = (1UL << 4),
-   SIOF_LOAD     = (1UL << 5),
-   SIOF_MEMORY   = (1UL << 6),
-   SIOF_STORAGE  = (1UL << 7),
-   SIOF_NETWORK  = (1UL << 8),
-   SIOF_BATTERY  = (1UL << 9)
-} SystemInfoObtainFlags;
+   using EntryValue = std::variant<std::monostate, std::string, uint32_t, uint64_t, int32_t, int64_t, double>;
 
-struct SystemInfo* systemInfoObtain(const unsigned int compatibilityVersion,
-                                    const unsigned int flags);
-void systemInfoRelease(struct SystemInfo* systemInfo);
-void systemInfoPrint(const struct SystemInfo* systemInfo, FILE* fd);
+   struct Entry {
+      EntryValue Value;
+      int        DisplayHint{0};
+   };
 
-void systemInfoAddString(struct SystemInfo* systemInfo, const char* key, const char* value);
-void systemInfoAddInt32(struct SystemInfo* systemInfo, const char* key, const int32_t value);
-void systemInfoAddInt64(struct SystemInfo* systemInfo, const char* key, const int64_t value);
-void systemInfoAddUInt32(struct SystemInfo* systemInfo, const char* key, const uint32_t value);
-void systemInfoAddUInt64(struct SystemInfo* systemInfo, const char* key, const uint64_t value);
-void systemInfoAddDouble(struct SystemInfo* systemInfo, const char* key, const double value,
-                         const int displayHint);
+   // Constructor replacing systemInfoObtain()
+   explicit SystemInfo(unsigned int compatibilityVersion = LSI_COMPATIBILITY_VERSION,
+                       uint32_t flags = Flags::All);
 
-SystemInfoEntryValueType systemInfoExists(struct SystemInfo* systemInfo, const char* key);
-int32_t systemInfoGetInt32(struct SystemInfo* systemInfo, const char* key, const int32_t defaultValue);
-int64_t systemInfoGetInt64(struct SystemInfo* systemInfo, const char* key, const int64_t defaultValue);
-uint32_t systemInfoGetUInt32(struct SystemInfo* systemInfo, const char* key, const uint32_t defaultValue);
-uint64_t systemInfoGetUInt64(struct SystemInfo* systemInfo, const char* key, const uint64_t defaultValue);
-double systemInfoGetDouble(struct SystemInfo* systemInfo, const char* key, const double defaultValue);
+   // Destructor replacing systemInfoRelease()
+   ~SystemInfo() = default;
 
-#ifdef __cplusplus
-}
-#endif
+   SystemInfo(const SystemInfo&) = default;
+   SystemInfo& operator=(const SystemInfo&) = default;
+   SystemInfo(SystemInfo&&) noexcept = default;
+   SystemInfo& operator=(SystemInfo&&) noexcept = default;
+
+   // Stream formatting replacing systemInfoPrint()
+   void print(std::ostream& os = std::cout) const;
+
+   // Mutators replacing systemInfoAdd*()
+   void addString(std::string_view key, std::string_view value);
+   void addInt32(std::string_view key, int32_t value);
+   void addInt64(std::string_view key, int64_t value);
+   void addUInt32(std::string_view key, uint32_t value);
+   void addUInt64(std::string_view key, uint64_t value);
+   void addDouble(std::string_view key, double value, int displayHint = 0);
+
+   // Accessors replacing systemInfoGet*() and systemInfoExists()
+   [[nodiscard]] ValueType exists(std::string_view key) const;
+   [[nodiscard]] std::string getString(std::string_view key, std::string_view defaultValue = "") const;
+   [[nodiscard]] int32_t getInt32(std::string_view key, int32_t defaultValue = 0) const;
+   [[nodiscard]] int64_t getInt64(std::string_view key, int64_t defaultValue = 0) const;
+   [[nodiscard]] uint32_t getUInt32(std::string_view key, uint32_t defaultValue = 0) const;
+   [[nodiscard]] uint64_t getUInt64(std::string_view key, uint64_t defaultValue = 0) const;
+   [[nodiscard]] double getDouble(std::string_view key, double defaultValue = 0.0) const;
+
+   [[nodiscard]] const std::map<std::string, Entry>& getEntries() const noexcept { return Entries; }
+   [[nodiscard]] unsigned int getCompatibilityVersion() const noexcept { return CompatibilityVersion; }
+
+   friend std::ostream& operator<<(std::ostream& os, const SystemInfo& info) {
+      info.print(os);
+      return os;
+   }
+
+private:
+   void obtainHostnameInformation();
+   void obtainKernelInformation();
+   void obtainUptimeInformation();
+   void obtainLoadInformation();
+   void obtainBatteryInformation();
+   void obtainMemoryInformation();
+   void obtainStorageInformation();
+   void obtainNetworkInformation(bool filterLocalScope = true);
+
+   bool getDiskUsage(std::string_view mountPoint, std::string_view label);
+
+   std::map<std::string, Entry> Entries;
+   unsigned int                 CompatibilityVersion{LSI_COMPATIBILITY_VERSION};
+};
 
 #endif

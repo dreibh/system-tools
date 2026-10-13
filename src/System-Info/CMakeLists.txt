@@ -45,7 +45,7 @@ IF (WITH_SYSTEM_INFO)
 ENDIF()
 
 IF (WITH_GET_SYSTEM_INFO)
-   ADD_EXECUTABLE(get-system-info get-system-info.c libsysteminfo.c redblacktree.c doublelinkedringlist.c)
+   ADD_EXECUTABLE(get-system-info get-system-info.cc libsysteminfo.cc)
    # SET_PROPERTY(TARGET get-system-info PROPERTY C_STANDARD 23)
    TARGET_COMPILE_DEFINITIONS(get-system-info PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
    TARGET_INCLUDE_DIRECTORIES(get-system-info PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${SYSTEMD_INCLUDE_DIRS} ${Intl_INCLUDE_DIRS})

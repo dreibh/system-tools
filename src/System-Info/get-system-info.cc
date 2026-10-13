@@ -27,46 +27,35 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-#include <ctype.h>
+#include <clocale>
+#include <cstdlib>
 #include <getopt.h>
-#include <locale.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#if defined(_WIN32)
-#include <winsock2.h>
-#endif
+#include <iostream>
 
 #include <libsysteminfo.h>
 
 #include "package-version.h"
 
-#if !defined(HAVE_C23_NULLPTR)
-#define nullptr ((void*)0)
+#if defined(_WIN32)
+#include <winsock2.h>
 #endif
 
 
 // ###### Version ###########################################################
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
-[[ noreturn ]]
-#endif
-static void version(void)
+[[noreturn]] static void version()
 {
-   printf("get-system-info %s\n", SYSTEMTOOLS_VERSION);
-   exit(0);
+   std::cout << "get-system-info " << SYSTEMTOOLS_VERSION << '\n';
+   std::exit(0);
 }
 
 
 // ###### Usage #############################################################
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
-[[ noreturn ]]
-#endif
-static void usage(const char* program, const int exitCode)
+[[noreturn]] static void usage(const char* program, const int exitCode)
 {
-   fprintf(stderr, "Usage: %s [-h|--help] [-v|--version] [-c|--compatibility version]\n", program);
-   exit(exitCode);
+   std::cerr << "Usage: " << program
+             << " [-h|--help] [-v|--version] [-c|--compatibility version]\n";
+   std::exit(exitCode);
 }
-
 
 
 // ###### Main program ######################################################
@@ -75,66 +64,66 @@ int main(int argc, char** argv)
    unsigned int compatibilityVersion = LSI_COMPATIBILITY_VERSION;
 
    // ====== Initialise locale support ======================================
-   if(setlocale(LC_ALL, "") == nullptr) {
-      setlocale(LC_ALL, "C.UTF-8");   // "C" should exist on all systems!
+   if (std::setlocale(LC_ALL, "") == nullptr) {
+      std::setlocale(LC_ALL, "C.UTF-8");
    }
 
    // ====== Handle arguments ===============================================
    static const struct option long_options[] = {
-      { "help",          no_argument,       0, 'h' },
-      { "version",       no_argument,       0, 'v' },
-      { "compatibility", required_argument, 0, 'c' },
-      {  nullptr,        0,                 0, 0   }
+      { "help",          no_argument,       nullptr, 'h' },
+      { "version",       no_argument,       nullptr, 'v' },
+      { "compatibility", required_argument, nullptr, 'c' },
+      {  nullptr,        0,                 nullptr, 0   }
    };
 
-   int option;
-   int longIndex;
-   while( (option = getopt_long(argc, argv, "hvc:", long_options, &longIndex)) != -1 ) {
-      switch(option) {
+   int option = 0;
+   int longIndex = 0;
+   while ((option = getopt_long(argc, argv, "hvc:", long_options, &longIndex)) != -1) {
+      switch (option) {
          case 'c':
-            compatibilityVersion = atoll(optarg);
-            if(compatibilityVersion > LSI_COMPATIBILITY_VERSION) {
-               fprintf(stderr, "ERROR: Requested compatibility version %u > available version %u!\n",
-                       compatibilityVersion, LSI_COMPATIBILITY_VERSION);
+            compatibilityVersion = static_cast<unsigned int>(std::strtoul(optarg, nullptr, 10));
+            if (compatibilityVersion > LSI_COMPATIBILITY_VERSION) {
+               std::cerr << "ERROR: Requested compatibility version "
+                         << compatibilityVersion << " > available version "
+                         << LSI_COMPATIBILITY_VERSION << "!\n";
                return 1;
             }
-          break;
+            break;
          case 'v':
             version();
-          break;
+            break;
          case 'h':
          case '?':
-            // Exit with 0 on h/help, exit with 1 on '?' (unknown option):
             usage(argv[0], (option == 'h') ? 0 : 1);
-          break;
+            break;
          case '-':
-          break;
+            break;
          default:
-            // This should not happen: wrong getopt parameters, or missing case?
-            fprintf(stderr, "INTERNAL ERROR: Unhandled option c=%c code=%x!\n",
-                    (isprint(option) ? (char)option : ' '), option);
+            std::cerr << "INTERNAL ERROR: Unhandled option code=" << option << "!\n";
             return 1;
-          break;
       }
    }
-   if(optind < argc) {
+   if (optind < argc) {
       usage(argv[0], 1);
    }
+
 #if defined(_WIN32)
-   WSADATA wsaData;
-   WSAStartup(MAKEWORD(2, 2), &wsaData);
+   struct WinSockInit {
+      WSADATA data;
+      WinSockInit() { WSAStartup(MAKEWORD(2, 2), &data); }
+      ~WinSockInit() { WSACleanup(); }
+   } wsInit;
 #endif
 
-   // ====== Show system information in machine-readable form ===============
-   struct SystemInfo* systemInfo = systemInfoObtain(LSI_COMPATIBILITY_VERSION, 0xffffffff);
-   if(systemInfo) {
-      systemInfoPrint(systemInfo, stdout);
-      systemInfoRelease(systemInfo);
+   // ====== Initialize and print SystemInfo within try-catch ===============
+   try {
+      SystemInfo systemInfo(compatibilityVersion, SystemInfo::Flags::All);
+      systemInfo.print(std::cout);
+   }
+   catch (const std::exception& e) {
+      std::cerr << "ERROR: " << e.what() << '\n';
+      return 1;
    }
 
-   // ====== Clean up =======================================================
-#if defined(_WIN32)
-   WSACleanup();
-#endif
    return 0;
 }
