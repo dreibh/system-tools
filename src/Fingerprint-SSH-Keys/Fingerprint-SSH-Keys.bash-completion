@@ -50,14 +50,46 @@ _Fingerprint_SSH_Keys()
       cword="${COMP_CWORD}"
    fi
 
+   case "${prev}" in
+      # ====== Output format types ========================================
+      -F | --format)
+         mapfile -t COMPREPLY < <(compgen -W "text python csv" -- "${cur}")
+         return 0
+         ;;
+      # ====== Key directory ==============================================
+      -K | --key-directory)
+         if type -t _filedir >/dev/null; then
+            _filedir -d
+         else
+            mapfile -t COMPREPLY < <(compgen -d -- "${cur}")
+         fi
+         return 0
+         ;;
+   esac
+
    # ====== All options =====================================================
    local opts="
--d
---include-deprecated
+-A
+--all
+-a
+--none
+-R
+--with-raw
 -r
---include-raw
--p
---include-raw-python
+--without-raw
+-D
+--with-dns
+-d
+--without-dns
+-S
+--with-ssh
+-s
+--without-ssh
+-F
+--format
+-K
+--key-directory
+--include-deprecated
 -h
 --help
 -v
