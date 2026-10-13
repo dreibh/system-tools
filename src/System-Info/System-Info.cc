@@ -39,7 +39,6 @@
 #include <getopt.h>
 #include <iostream>
 #include <locale>
-#include <regex>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -242,6 +241,8 @@ static void readConfiguration(const std::string&              customConfiguratio
    if(!customConfigurationFile.empty()) {
       const std::filesystem::path customPath{ customConfigurationFile };
       if(!std::filesystem::is_regular_file(customPath, errorCode)) {
+         // TRANSLATORS: Error message when configuration file specified via -C/--config cannot be found:
+         // {0} = file path
          std::cerr << formatText("ERROR: Unable to find configuration file {0}!\n", customConfigurationFile);
          std::exit(1);
       }
@@ -508,7 +509,11 @@ static void printSshKeyFingerprints(const SystemInfo& systemInfo)
             }
          }
 
+         // TRANSLATORS: Table row label for SSH host key fingerprints section.
          const std::string label = (keyNumber == 1) ? gettext("SSH Keys:") : "";
+         // TRANSLATORS: SSH host key entry:
+         // {0} = key index (#1)
+         // {1} = fingerprint and key type details
          addTableRow(label, formatText("#{0} {1}", keyNumber, keyInfo));
          keyNumber++;
       }
@@ -522,6 +527,8 @@ static void loadTestSystemInfo(std::string_view filePath,
 {
    std::ifstream fileStream{ std::string(filePath) };
    if(!fileStream.is_open()) {
+      // TRANSLATORS: Error message when test input file specified via -Y/--test-system-info cannot be found:
+      // {0} = file path
       std::cerr << formatText("ERROR: Unable to find input file {0}!\n", filePath);
       std::exit(1);
    }
@@ -575,6 +582,7 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    std::cout << colors.Basic;
 
    // ====== Hostname =======================================================
+   // TRANSLATORS: Table row label for system hostname.
    addTableRow(gettext("Host:"), systemInfo.getString("hostname_long"));
 
    // ====== Uptime =========================================================
@@ -584,26 +592,35 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    const uint32_t uptimeSecs  = systemInfo.getUInt32("uptime_secs");
 
    char buffer[128];
+   // TRANSLATORS: Number of days in system uptime (singular and plural).
    std::snprintf(buffer, sizeof(buffer),
                  ngettext("%s day", "%s days", static_cast<unsigned long>(uptimeDays)),
                  formatLocaleNumber(uptimeDays).c_str());
    const std::string uptimeInDays = buffer;
 
+   // TRANSLATORS: Number of hours in system uptime (singular and plural).
    std::snprintf(buffer, sizeof(buffer),
                  ngettext("%d hour", "%d hours", static_cast<unsigned long>(uptimeHours)),
                  static_cast<int>(uptimeHours));
    const std::string uptimeInHours = buffer;
 
+   // TRANSLATORS: Number of minutes in system uptime (singular and plural).
    std::snprintf(buffer, sizeof(buffer),
                  ngettext("%d minute", "%d minutes", static_cast<unsigned long>(uptimeMins)),
                  static_cast<int>(uptimeMins));
    const std::string uptimeInMinutes = buffer;
 
+   // TRANSLATORS: Number of seconds in system uptime (singular and plural).
    std::snprintf(buffer, sizeof(buffer),
                  ngettext("%d second", "%d seconds", static_cast<unsigned long>(uptimeSecs)),
                  static_cast<int>(uptimeSecs));
    const std::string uptimeInSeconds = buffer;
 
+   // TRANSLATORS: Plural uptime components:
+   // {0} = days
+   // {1} = hours
+   // {2} = minutes
+   // {3} = seconds
    addTableRow(gettext("Uptime:"),
                formatText("{0}, {1}, {2}, and {3}",
                           uptimeInDays, uptimeInHours, uptimeInMinutes, uptimeInSeconds));
@@ -611,6 +628,7 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    // ====== Operating System ===============================================
    std::string osName = systemInfo.getString("os_name");
    if(osName.empty()) {
+      // TRANSLATORS: Fallback identifier when operating system name is unknown.
       osName = systemInfo.getString("system_sysname", gettext("Unknown"));
    }
 
@@ -626,6 +644,9 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    const std::string codeNameText = !codename.empty() ? (" (" + codename + ")") : "";
    const std::string osLabel      = osName + (!osRelease.empty() ? (" " + osRelease) : "") + codeNameText;
 
+   // TRANSLATORS: Operating system details:
+   // {0} = OS distribution, version, and codename
+   // {1} = kernel release
    addTableRow(gettext("Operating System:"),
                formatText("{0} with kernel {1}",
                           osLabel, systemInfo.getString("system_release")));
@@ -635,14 +656,21 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    const uint32_t users = systemInfo.getUInt32("system_users");
    const uint32_t cores = systemInfo.getUInt32("system_cores");
 
+   // TRANSLATORS: Number of active processes running on the system.
    std::snprintf(buffer, sizeof(buffer), gettext("%s processes"), formatLocaleNumber(procs).c_str());
    const std::string processesString = buffer;
 
+   // TRANSLATORS: Number of logged-in users (singular and plural).
    std::snprintf(buffer, sizeof(buffer),
                  ngettext("%s user", "%s users", static_cast<unsigned long>(users)),
                  formatLocaleNumber(users).c_str());
    const std::string usersString = buffer;
 
+   // TRANSLATORS: Processor details:
+   // {0} = core count
+   // {1} = CPU machine architecture (e.g. x86_64, aarch64)
+   // {2} = formatted processes count string
+   // {3} = formatted users count string
    addTableRow(gettext("Processor:"),
                formatText("{0} cores ({1}); {2}; {3}",
                           formatLocaleNumber(cores),
@@ -652,11 +680,16 @@ static void printSystemInformation(const SystemInfo& systemInfo)
 
    // ====== Load ===========================================================
 #if !defined(_WIN32)
+   // TRANSLATORS: System load averages in percent:
+   // 1st argument = 1-minute load average
+   // 2nd argument = 5-minute load average
+   // 3rd argument = 15-minute load average
    std::snprintf(buffer, sizeof(buffer),
                  gettext("%1.1f %% / %1.1f %% / %1.1f %%"),
                  systemInfo.getDouble("system_load_avg1min"),
                  systemInfo.getDouble("system_load_avg5min"),
                  systemInfo.getDouble("system_load_avg15min"));
+   // TRANSLATORS: Table row label for system load averages.
    addTableRow(gettext("Load (1/5/15 min):"), buffer);
 #endif
 
@@ -674,23 +707,28 @@ static void printSystemInformation(const SystemInfo& systemInfo)
          const uint32_t status   = systemInfo.getUInt32("battery_" + batteryIndex + "_status");
          const uint32_t capacity = systemInfo.getUInt32("battery_" + batteryIndex + "_capacity");
 
+         // TRANSLATORS: Default battery state when the status cannot be determined.
          std::string      statusString = gettext("unknown");
          std::string_view statusColor  = colors.Inactive;
 
          switch(status) {
             case 1:
+               // TRANSLATORS: Battery status: plugged in but not currently charging.
                statusString = gettext("not charging");
                statusColor  = colors.BatteryNotCharging;
                break;
             case 2:
+               // TRANSLATORS: Battery status: currently charging.
                statusString = gettext("charging");
                statusColor  = colors.BatteryCharging;
                break;
             case 3:
+               // TRANSLATORS: Battery status: battery is fully charged.
                statusString = gettext("full");
                statusColor  = colors.BatteryFull;
                break;
             case 4:
+               // TRANSLATORS: Battery status: running on battery power (discharging).
                statusString = gettext("discharging");
                statusColor  = colors.BatteryDischarging;
                break;
@@ -700,19 +738,30 @@ static void printSystemInformation(const SystemInfo& systemInfo)
 
          batterySummary += separator;
          batterySummary += statusColor;
+         // TRANSLATORS: Battery status entry:
+         // {0} = battery number (#1)
+         // {1} = charging status (e.g. charging, discharging)
+         // {2} = capacity percentage
          batterySummary += formatText("#{0} {1}, {2} %", batteryNumber, statusString, capacity);
          batterySummary += colors.Basic;
       }
+      // TRANSLATORS: Table row label for battery section.
       addTableRow(gettext("Battery:"), batterySummary);
    }
 
    // ====== Memory =========================================================
+   // TRANSLATORS: Memory usage:
+   // 1st %s = used MiB
+   // 2nd %s = total MiB
+   // 3rd %s = free/available MiB
+   // 4th %s = free percentage
    const char* memoryFormat = gettext("%s MiB of %s MiB (%s MiB available: %s %%)");
    std::snprintf(buffer, sizeof(buffer), memoryFormat,
                  formatMemoryMiB(systemInfo.getUInt64("system_mem_used")).c_str(),
                  formatMemoryMiB(systemInfo.getUInt64("system_mem_total")).c_str(),
                  formatMemoryMiB(systemInfo.getUInt64("system_mem_free")).c_str(),
                  formatPercentage5_1(systemInfo.getDouble("system_mem_freepct")).c_str());
+   // TRANSLATORS: Table row label for physical RAM utilization.
    addTableRow(gettext("Used Memory:"), buffer);
 
    if(systemInfo.getUInt64("system_swap_total") > 0) {
@@ -721,9 +770,11 @@ static void printSystemInformation(const SystemInfo& systemInfo)
                     formatMemoryMiB(systemInfo.getUInt64("system_swap_total")).c_str(),
                     formatMemoryMiB(systemInfo.getUInt64("system_swap_free")).c_str(),
                     formatPercentage5_1(systemInfo.getDouble("system_swap_freepct")).c_str());
+      // TRANSLATORS: Table row label for swap space utilization.
       addTableRow(gettext("Used Swap:"), buffer);
    }
    else {
+      // TRANSLATORS: Table row label for swap, and message when no swap space is configured.
       addTableRow(gettext("Used Swap:"),
                   colors.Inactive + gettext("no swap available!") + colors.Basic);
    }
@@ -753,6 +804,9 @@ static void printSystemInformation(const SystemInfo& systemInfo)
             }
 
             char diskBuffer[128];
+            // TRANSLATORS: Disk partition utilization:
+            // 1st argument = percentage used
+            // 2nd argument = mount point path
             std::snprintf(diskBuffer, sizeof(diskBuffer),
                           gettext("%1.0f %% on %s"),
                           percentage,
@@ -763,6 +817,7 @@ static void printSystemInformation(const SystemInfo& systemInfo)
             diskSummary += colors.Basic;
          }
       }
+      // TRANSLATORS: Table row label for storage diskspace utilization.
       addTableRow(gettext("Used Diskspace:"), diskSummary);
    }
 
@@ -770,6 +825,7 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    printSshKeyFingerprints(systemInfo);
 
    // ====== Network =========================================================
+   // TRANSLATORS: Table row label for network interfaces section.
    addTableRow(gettext("Network:"), "");
 
    const std::string netifList = systemInfo.getString("netif_list");
@@ -816,6 +872,7 @@ static void printSystemInformation(const SystemInfo& systemInfo)
                }
             }
             else {
+               // TRANSLATORS: Displayed when a network interface has no IPv4 address configured.
                formattedIpv4 = gettext("(No IPv4)");
             }
 
@@ -864,6 +921,7 @@ static void printSystemInformation(const SystemInfo& systemInfo)
 [[noreturn]] static void usage(const char* program,
                                const int   exitCode)
 {
+   // TRANSLATORS: Command-line syntax message prefix: "Usage: <program> [options]".
    std::cerr << gettext("Usage:") << " " << program
              << " [-C|--config config_file] [-S|--scripts scripts_directory]"
              << " [-X|--test-date date_string] [-Y|--test-system-info input_file]"
@@ -925,6 +983,9 @@ int main(int argc, char** argv)
    textdomain("System-Info");
 #endif
 
+   // TRANSLATORS: "LTR" stands for Left-to-Right layout direction.
+   // Translators of Right-to-Left languages (such as Arabic, Hebrew, Persian)
+   // must translate this string to "RTL".
    is_ltr = (std::string(gettext("LTR")) != "RTL");
    if(!is_ltr) {
       rlm = "\u200f";
@@ -1017,6 +1078,8 @@ int main(int argc, char** argv)
       nowString = timeBuffer;
    }
 
+   // TRANSLATORS: Banner header line displaying the current date and time:
+   // {0} = formatted timestamp
    std::cout << '\n'
              << formatText("System information on {0}", nowString)
              << "\n\n";
