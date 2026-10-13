@@ -516,65 +516,6 @@ static void printSshKeyFingerprints(const SystemInfo& systemInfo)
 }
 
 
-// ###### Operating system release details ##################################
-struct OperatingSystemInformation {
-   std::string Identifier;
-   std::string Release;
-   std::string Codename;
-};
-
-
-// ###### Read operating system release information #########################
-static OperatingSystemInformation readOperatingSystemInformation(const SystemInfo& systemInfo)
-{
-   OperatingSystemInformation operatingSystemInfo;
-   operatingSystemInfo.Identifier = gettext("Unknown");
-   operatingSystemInfo.Release    = operatingSystemInfo.Identifier;
-
-   std::ifstream osReleaseStream("/etc/os-release");
-   if(osReleaseStream.is_open()) {
-      std::string line;
-      while(std::getline(osReleaseStream, line)) {
-         const auto equalsPosition = line.find('=');
-         if(equalsPosition == std::string::npos) {
-            continue;
-         }
-         const std::string key   = line.substr(0, equalsPosition);
-         std::string       value = line.substr(equalsPosition + 1);
-         if((value.length() >= 2) && (value.front() == '"') && (value.back() == '"')) {
-            value = value.substr(1, value.length() - 2);
-         }
-
-         if(key == "NAME") {
-            operatingSystemInfo.Identifier = value;
-         }
-         else if(key == "VERSION_ID") {
-            operatingSystemInfo.Release = value;
-         }
-         else if(key == "VERSION") {
-            const auto openParenPosition  = value.rfind('(');
-            const auto closeParenPosition = value.rfind(')');
-            if((openParenPosition != std::string::npos) &&
-               (closeParenPosition != std::string::npos) &&
-               (closeParenPosition > openParenPosition)) {
-               operatingSystemInfo.Codename = value.substr(openParenPosition + 1,
-                                                           closeParenPosition - openParenPosition - 1);
-            }
-         }
-         else if((key == "VERSION_CODENAME") && operatingSystemInfo.Codename.empty()) {
-            operatingSystemInfo.Codename = value;
-         }
-      }
-   }
-   else {
-      operatingSystemInfo.Identifier = systemInfo.getString("system_sysname", gettext("Unknown"));
-      operatingSystemInfo.Release    = systemInfo.getString("system_release", operatingSystemInfo.Identifier);
-   }
-
-   return operatingSystemInfo;
-}
-
-
 // ###### Parse test file into SystemInfo entries ###########################
 static void loadTestSystemInfo(std::string_view filePath,
                                SystemInfo&      systemInfo)
@@ -668,9 +609,22 @@ static void printSystemInformation(const SystemInfo& systemInfo)
                           uptimeInDays, uptimeInHours, uptimeInMinutes, uptimeInSeconds));
 
    // ====== Operating System ===============================================
-   const OperatingSystemInformation operatingSystemInfo = readOperatingSystemInformation(systemInfo);
-   const std::string codeNameText = !operatingSystemInfo.Codename.empty() ? (" (" + operatingSystemInfo.Codename + ")") : "";
-   const std::string osLabel      = operatingSystemInfo.Identifier + " " + operatingSystemInfo.Release + codeNameText;
+   std::string osName = systemInfo.getString("os_name");
+   if(osName.empty()) {
+      osName = systemInfo.getString("system_sysname", gettext("Unknown"));
+   }
+
+   std::string osRelease = systemInfo.getString("os_version_id");
+   if(osRelease.empty()) {
+      osRelease = systemInfo.getString("os_version");
+   }
+   if(osRelease.empty()) {
+      osRelease = systemInfo.getString("system_release");
+   }
+
+   const std::string codename     = systemInfo.getString("os_version_codename");
+   const std::string codeNameText = !codename.empty() ? (" (" + codename + ")") : "";
+   const std::string osLabel      = osName + (!osRelease.empty() ? (" " + osRelease) : "") + codeNameText;
 
    addTableRow(gettext("Operating System:"),
                formatText("{0} with kernel {1}",
