@@ -36,6 +36,31 @@ exit-success ()
 }
 
 
+# ###### Compare two numeric timestamp strings (ignoring trailing zeros) ####
+compare_numeric_timestamps ()
+{
+   local a="$1"
+   local b="$2"
+
+   # Compare integer parts:
+   if [ "${a%%.*}" != "${b%%.*}" ]; then
+      return 1
+   fi
+
+   # Extract fractional parts:
+   local frac_a="${a#*.}"
+   [ "${frac_a}" = "${a}" ] && frac_a=""
+   local frac_b="${b#*.}"
+   [ "${frac_b}" = "${b}" ] && frac_b=""
+
+   # Strip trailing zeros:
+   frac_a="${frac_a%"${frac_a##*[!0]}"}"
+   frac_b="${frac_b%"${frac_b##*[!0]}"}"
+
+   [ "${frac_a}" = "${frac_b}" ]
+}
+
+
 
 # ###### Main program #######################################################
 
@@ -151,19 +176,6 @@ if ! command -v figlet >/dev/null ; then
    echo >&2 " * OpenBSD:       sudo pkg_add figlet"
    echo >&2 " * Solaris:       (install from sources)"
    echo >&2 " * Apple:         brew install figlet"
-   exit 1
-fi
-if ! command -v gawk 2>/dev/null ; then
-   echo >&2 "ERROR: GAWK is not installed!"
-   echo >&2 " * Ubuntu/Debian: sudo apt install -y gawk"
-   echo >&2 " * Fedora:        sudo dnf install -y gawk"
-   echo >&2 " * OpenSUSE:      sudo zypper install -y gawk"
-   echo >&2 " * Alpine:        sudo apk add gawk"
-   echo >&2 " * FreeBSD:       sudo pkg install -y gawk"
-   echo >&2 " * NetBSD:        sudo pkgin -y install gawk"
-   echo >&2 " * OpenBSD:       sudo pkg_add gawk"
-   echo >&2 " * Solaris:       sudo pkg install gawk"
-   echo >&2 " * Apple:         brew install gawk"
    exit 1
 fi
 
@@ -533,16 +545,16 @@ EOF
 
          # ====== Check float handling ======================================
          if [ "${unit}" == "nanoseconds" ] ; then
-            unixTSasFloat="$(gawk --bignum "BEGIN { printf(\"%1.9f\", ${unixTS}); }")"
+            unixTSasFloat="${unixTS}.000000000"
             expectedDateTimeFromFloat="${dateTime}"
          elif [ "${unit}" == "microseconds" ] ; then
-            unixTSasFloat="$(gawk --bignum "BEGIN { printf(\"%1.6f\", ${unixTS}); }")"
+            unixTSasFloat="${unixTS}.000000"
             expectedDateTimeFromFloat="${dateTime}000"
          elif [ "${unit}" == "milliseconds" ] ; then
-            unixTSasFloat="$(gawk --bignum "BEGIN { printf(\"%1.3f\", ${unixTS}); }")"
+            unixTSasFloat="${unixTS}.000"
             expectedDateTimeFromFloat="${dateTime}000"
          elif [ "${unit}" == "seconds" ] ; then
-            unixTSasFloat="$(gawk --bignum "BEGIN { printf(\"%1.0f.0\", ${unixTS}); }")"
+            unixTSasFloat="${unixTS}.0"
             expectedDateTimeFromFloat="${dateTime}.0"
          else
             echo >&2 "ERROR: Unexpected unit ${unit}!"
@@ -550,7 +562,7 @@ EOF
          fi
 
          echo "Checking ${unixTSasFloat} <-> ${dateTime}"
-         if gawk "BEGIN { exit ( ${computedUnixTS} == ${unixTSasFloat} ? 1 : 0) }" ; then
+         if ! compare_numeric_timestamps "${computedUnixTS}" "${unixTSasFloat}" ; then
             echo "Test 2.A"
             echo "Input:      ${dateTime}"
             echo "From table: ${computedUnixTS}"
@@ -569,7 +581,7 @@ EOF
          fi
 
          computedUnixTSfromFloat="$(./time2unixts --float --"${unit}" "${dateTime}")"
-         if gawk "BEGIN { exit ( ${computedUnixTSfromFloat} == ${unixTSasFloat} ? 1 : 0) }" ; then
+         if ! compare_numeric_timestamps "${computedUnixTSfromFloat}" "${unixTSasFloat}" ; then
             echo "Test 2.C"
             echo "Input:      ${dateTime}"
             echo "Unit:       ${unit}"
