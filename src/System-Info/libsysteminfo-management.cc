@@ -188,22 +188,24 @@ SystemInfo::ValueType SystemInfo::exists(std::string_view key) const
       if constexpr(std::is_same_v<Type, std::string>) {
          return ValueType::String;
       }
-      if constexpr(std::is_same_v<Type, uint32_t>) {
+      else if constexpr(std::is_same_v<Type, uint32_t>) {
          return ValueType::UInt32;
       }
-      if constexpr(std::is_same_v<Type, uint64_t>) {
+      else if constexpr(std::is_same_v<Type, uint64_t>) {
          return ValueType::UInt64;
       }
-      if constexpr(std::is_same_v<Type, int32_t>) {
+      else if constexpr(std::is_same_v<Type, int32_t>) {
          return ValueType::Int32;
       }
-      if constexpr(std::is_same_v<Type, int64_t>) {
+      else if constexpr(std::is_same_v<Type, int64_t>) {
          return ValueType::Int64;
       }
-      if constexpr(std::is_same_v<Type, double>) {
+      else if constexpr(std::is_same_v<Type, double>) {
          return ValueType::Double;
       }
-      return ValueType::Invalid;
+      else {
+         return ValueType::Invalid;
+      }
    }, iterator->second.Value);
 }
 
