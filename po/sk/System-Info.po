@@ -1,0 +1,299 @@
+# ==========================================================================
+#         ____            _                     _____           _
+#        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \.
+#        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+#               |___/
+#                             --- System-Tools ---
+#                  https://www.nntb.no/~dreibh/system-tools/
+# ==========================================================================
+#
+# System-Info
+# Copyright (C) 2024-2026 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+#
+# NOTE: This catalog was automatically generated/translated with AI assistance.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
+"Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
+"POT-Creation-Date: 2026-10-16 20:46+0200\n"
+"PO-Revision-Date: 2026-10-16 21:00+0200\n"
+"Last-Translator: AI Translation <ai@noreply.localhost>\n"
+"Language-Team: none\n"
+"Language: sk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Language: sk\n"
+"X-Source-Language: en_GB\n"
+"X-Generator: AI Translation (Gemini)\n"
+
+#. TRANSLATORS: Error message when configuration file specified via
+#. -C/--config cannot be found:
+#. {0} = file path
+#: src/System-Info/System-Info.cc:248
+#, no-c-format
+msgid "ERROR: Unable to find configuration file {0}!\n"
+msgstr "CHYBA: Nepodarilo sa nájsť konfiguračný súbor {0}!\n"
+
+#. TRANSLATORS: Table row label for SSH host key fingerprints section.
+#: src/System-Info/System-Info.cc:515
+msgid "SSH Keys:"
+msgstr "Kľúče SSH:"
+
+#. TRANSLATORS: SSH host key entry:
+#. {0} = key index (#1)
+#. {1} = fingerprint and key type details
+#: src/System-Info/System-Info.cc:519
+#, no-c-format
+msgid "#{0} {1}"
+msgstr "#{0} {1}"
+
+#. TRANSLATORS: Error message when test input file specified via
+#. -Y/--test-system-info cannot be found:
+#. {0} = file path
+#: src/System-Info/System-Info.cc:535
+#, no-c-format
+msgid "ERROR: Unable to find input file {0}!\n"
+msgstr "CHYBA: Nepodarilo sa nájsť vstupný súbor {0}!\n"
+
+#. TRANSLATORS: Table row label for system hostname.
+#: src/System-Info/System-Info.cc:589
+msgid "Host:"
+msgstr "Hostiteľ:"
+
+#: src/System-Info/System-Info.cc:600
+#, c-format
+msgid "%s day"
+msgid_plural "%s days"
+msgstr[0] "%s deň"
+msgstr[1] "%s dni"
+msgstr[2] "%s dní"
+
+#: src/System-Info/System-Info.cc:606
+#, c-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d hodina"
+msgstr[1] "%d hodiny"
+msgstr[2] "%d hodín"
+
+#: src/System-Info/System-Info.cc:612
+#, c-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d minúta"
+msgstr[1] "%d minúty"
+msgstr[2] "%d minút"
+
+#: src/System-Info/System-Info.cc:618
+#, c-format
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] "%d sekunda"
+msgstr[1] "%d sekundy"
+msgstr[2] "%d sekúnd"
+
+#. TRANSLATORS: Plural uptime components:
+#. {0} = days
+#. {1} = hours
+#. {2} = minutes
+#. {3} = seconds
+#: src/System-Info/System-Info.cc:627
+msgid "Uptime:"
+msgstr "Čas prevádzky:"
+
+#: src/System-Info/System-Info.cc:628
+#, no-c-format
+msgid "{0}, {1}, {2}, and {3}"
+msgstr "{0}, {1}, {2} a {3}"
+
+#. TRANSLATORS: Fallback identifier when operating system name is unknown.
+#: src/System-Info/System-Info.cc:635
+msgid "Unknown"
+msgstr "Neznáme"
+
+#. TRANSLATORS: Operating system details:
+#. {0} = OS distribution, version, and codename
+#. {1} = kernel release
+#: src/System-Info/System-Info.cc:653
+msgid "Operating System:"
+msgstr "Operačný systém:"
+
+#: src/System-Info/System-Info.cc:654
+#, no-c-format
+msgid "{0} with kernel {1}"
+msgstr "{0} s jadrom {1}"
+
+#. TRANSLATORS: Number of active processes running on the system.
+#: src/System-Info/System-Info.cc:663
+#, c-format
+msgid "%s processes"
+msgstr "%s procesov"
+
+#: src/System-Info/System-Info.cc:668
+#, c-format
+msgid "%s user"
+msgid_plural "%s users"
+msgstr[0] "%s používateľ"
+msgstr[1] "%s používatelia"
+msgstr[2] "%s používateľov"
+
+#. TRANSLATORS: Processor details:
+#. {0} = core count
+#. {1} = CPU machine architecture (e.g. x86_64, aarch64)
+#. {2} = formatted processes count string
+#. {3} = formatted users count string
+#: src/System-Info/System-Info.cc:677
+msgid "Processor:"
+msgstr "Procesor:"
+
+#: src/System-Info/System-Info.cc:678
+#, no-c-format
+msgid "{0} cores ({1}); {2}; {3}"
+msgstr "{0} jadier ({1}); {2}; {3}"
+
+#: src/System-Info/System-Info.cc:691
+#, c-format
+msgid "%1.1f %% / %1.1f %% / %1.1f %%"
+msgstr "%1.1f %% / %1.1f %% / %1.1f %%"
+
+#. TRANSLATORS: Table row label for system load averages.
+#: src/System-Info/System-Info.cc:696
+msgid "Load (1/5/15 min):"
+msgstr "Záťaž (1/5/15 min.):"
+
+#. TRANSLATORS: Default battery state when the status cannot be determined.
+#: src/System-Info/System-Info.cc:714
+msgid "unknown"
+msgstr "neznámy"
+
+#. TRANSLATORS: Battery status: plugged in but not currently charging.
+#: src/System-Info/System-Info.cc:720
+msgid "not charging"
+msgstr "nenabíja sa"
+
+#. TRANSLATORS: Battery status: currently charging.
+#: src/System-Info/System-Info.cc:725
+msgid "charging"
+msgstr "nabíja sa"
+
+#. TRANSLATORS: Battery status: battery is fully charged.
+#: src/System-Info/System-Info.cc:730
+msgid "full"
+msgstr "úplne nabitá"
+
+#. TRANSLATORS: Battery status: running on battery power (discharging).
+#: src/System-Info/System-Info.cc:735
+msgid "discharging"
+msgstr "vybíja sa"
+
+#. TRANSLATORS: Battery status entry:
+#. {0} = battery number (#1)
+#. {1} = charging status (e.g. charging, discharging)
+#. {2} = capacity percentage
+#: src/System-Info/System-Info.cc:748
+#, no-c-format
+msgid "#{0} {1}, {2} %"
+msgstr "#{0} {1}, {2} %"
+
+#. TRANSLATORS: Table row label for battery section.
+#: src/System-Info/System-Info.cc:752
+msgid "Battery:"
+msgstr "Batéria:"
+
+#. TRANSLATORS: Memory usage:
+#. 1st %s = used MiB
+#. 2nd %s = total MiB
+#. 3rd %s = free/available MiB
+#. 4th %s = free percentage
+#: src/System-Info/System-Info.cc:761
+#, c-format
+msgid "%s MiB of %s MiB (%s MiB available: %s %%)"
+msgstr "%s MiB z %s MiB (%s MiB k dispozícii: %s %%)"
+
+#. TRANSLATORS: Table row label for physical RAM utilization.
+#: src/System-Info/System-Info.cc:768
+msgid "Used Memory:"
+msgstr "Využitá pamäť:"
+
+#. TRANSLATORS: Table row label for swap space utilization.
+#. TRANSLATORS: Table row label for swap, and message when no swap space
+#. is configured.
+#: src/System-Info/System-Info.cc:777 src/System-Info/System-Info.cc:782
+msgid "Used Swap:"
+msgstr "Využitý swap:"
+
+#: src/System-Info/System-Info.cc:783
+msgid "no swap available!"
+msgstr "Swap nie je k dispozícii!"
+
+#: src/System-Info/System-Info.cc:815
+#, c-format
+msgid "%1.0f %% on %s"
+msgstr "%1.0f %% na %s"
+
+#. TRANSLATORS: Table row label for storage diskspace utilization.
+#: src/System-Info/System-Info.cc:825
+msgid "Used Diskspace:"
+msgstr "Využité miesto na disku:"
+
+#. TRANSLATORS: Table row label for network interfaces section.
+#: src/System-Info/System-Info.cc:833
+msgid "Network:"
+msgstr "Sieť:"
+
+#. TRANSLATORS: Displayed when a network interface has no IPv4
+#. address configured.
+#: src/System-Info/System-Info.cc:881
+msgid "(No IPv4)"
+msgstr "(Žiadna IPv4)"
+
+#. TRANSLATORS: Command-line syntax message prefix:
+#. "Usage: <program> [options]".
+#: src/System-Info/System-Info.cc:947
+msgid "Usage:"
+msgstr "Použitie:"
+
+#. TRANSLATORS: "LTR" stands for Left-to-Right layout direction.
+#. Translators of Right-to-Left languages (such as Arabic, Hebrew, Persian)
+#. must translate this string to "RTL".
+#: src/System-Info/System-Info.cc:1014
+msgid "LTR"
+msgstr "LTR"
+
+#: src/System-Info/System-Info.cc:1100
+#, no-c-format
+msgid "System information on {0}"
+msgstr "Systémové informácie k {0}"
+
+#: src/System-Info/system-info.d/01-example:72
+#, sh-format
+msgid "You can change this banner in ${configdir}!"
+msgstr "Tento banner môžete zmeniť v ${configdir}!"
+
+#: src/System-Info/system-info.d/09-hostname-example:70
+msgid "Welcome on the System"
+msgstr "Vitajte v systéme"
+
+#: src/System-Info/system-info.d/10-company-logo-example:68
+msgid "Welcome to"
+msgstr "Vitajte v"
