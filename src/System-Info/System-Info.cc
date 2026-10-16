@@ -974,32 +974,40 @@ int main(int argc, char** argv)
    }
 
 #if defined(ENABLE_NLS)
-   std::string localeDirectory;
-   const char* environmentLocaleDirectory = std::getenv("TEXTDOMAINDIR");
-   if(environmentLocaleDirectory != nullptr) {
-      localeDirectory = environmentLocaleDirectory;
+   // ====== Initialise i18n and locale support =============================
+   if(std::setlocale(LC_ALL, "") == nullptr) {
+      std::setlocale(LC_ALL, "C.UTF-8");
    }
-#if defined(_WIN32)
-   else {
-      char modulePath[MAX_PATH];
-      if(GetModuleFileNameA(nullptr, modulePath, MAX_PATH) > 0) {
-         const std::filesystem::path executablePath(modulePath);
-         const std::filesystem::path candidatePath = executablePath.parent_path().parent_path() / "share" / "locale";
-         std::error_code             errorCode;
-         if(std::filesystem::is_directory(candidatePath, errorCode)) {
-            localeDirectory = candidatePath.string();
-         }
+   try {
+      std::locale user_locale("");
+      std::cout.imbue(user_locale);
+      std::cerr.imbue(user_locale);
+   } catch (const std::runtime_error&) {
+      try {
+         std::locale fallback("C.UTF-8");
+         std::cout.imbue(fallback);
+         std::cerr.imbue(fallback);
+      } catch (const std::runtime_error&) {
+         // Defaults to std::locale::classic() if C.UTF-8 is unavailable
       }
    }
-#elif defined(SYSTEMTOOLS_LOCALEDIR)
-   else {
-      localeDirectory = SYSTEMTOOLS_LOCALEDIR;
+
+   // ====== Initialise i18n support ========================================
+#if !defined(_WIN32)
+   const char* textdomaindir = std::getenv("TEXTDOMAINDIR");
+#else
+   char*  textdomaindir     = nullptr;
+   size_t textdomaindirsize = 0;
+   _dupenv_s(&textdomaindir, &textdomaindirsize, "TEXTDOMAINDIR");
+#endif
+   bindtextdomain("System-Info",
+                  ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
+                     textdomaindir : SYSTEMTOOLS_LOCALEDIR ));
+#if defined(_WIN32)
+   if(textdomaindir) {
+       free(textdomaindir);
    }
 #endif
-
-   if(!localeDirectory.empty()) {
-      bindtextdomain("System-Info", localeDirectory.c_str());
-   }
    bind_textdomain_codeset("System-Info", "UTF-8");
    textdomain("System-Info");
 #endif
