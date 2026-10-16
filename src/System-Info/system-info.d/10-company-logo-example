@@ -82,11 +82,11 @@ center "${color2}-- ${color1}Simula Metropolitan Centre ${color2}for Digital Eng
 # ------ Print an additional information line from a file -------------------
 # This part could e.g. pint a package version of an application:
 echo -e "${color2}"
-if [ -e /etc/simulamet/simulamet-version ] ; then
-   center "$(cat /etc/simulamet/simulamet-version)"
-else
-   center "$(eval_gettext "You can change this banner in \${configdir}!")"
-fi
+# if [ -e /etc/simulamet/simulamet-version ] ; then
+#    center "$(cat /etc/simulamet/simulamet-version)"
+# else
+#    center "$(eval_gettext "You can change this banner in \${configdir}!")"
+# fi
 
 # ------ Print bottom separator ---------------------------------------------
 echo -en "${reset}${color1}"
