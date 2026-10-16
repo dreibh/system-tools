@@ -45,8 +45,6 @@
 #include <sys/types.h>
 #include <sys/utsname.h>
 #include <unistd.h>
-#else
-#include <windows.h>
 #endif
 
 #if defined(__linux__)
@@ -538,8 +536,9 @@ void SystemInfo::obtainSshKeyFingerprints()
    std::error_code errorCode;
 
 #if defined(_WIN32)
-   const char* programData = std::getenv("ProgramData");
-   if(programData != nullptr) {
+   char         programData[MAX_PATH] { 0 };
+   const DWORD length = GetEnvironmentVariableA("ProgramData", programData, sizeof(programData));
+   if((length > 0) && (length < sizeof(programData))) {
       const std::string candidate = std::string(programData) + "\\ssh";
       if(std::filesystem::is_directory(candidate, errorCode)) {
          sshDirectory = candidate;
