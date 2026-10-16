@@ -36,12 +36,13 @@
 IF (WITH_LIBSYSTEMINFO)
    LIST(APPEND libsysteminfo_headers libsysteminfo.h)
    LIST(APPEND libsysteminfo_sources
+      libsysteminfo-battery.cc
       libsysteminfo-management.cc
-      libsysteminfo-system.cc
       libsysteminfo-memory.cc
       libsysteminfo-network.cc
+      libsysteminfo-os.cc
       libsysteminfo-storage.cc
-      libsysteminfo-battery.cc
+      libsysteminfo-system.cc
       libsysteminfo-user.cc
    )
    INSTALL(FILES       ${libsysteminfo_headers}
