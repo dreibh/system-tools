@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <charconv>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -81,6 +82,9 @@
 #include <windows.h>
 #include <tlhelp32.h>
 #include <wtsapi32.h>
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "wtsapi32.lib")
+#pragma comment(lib, "advapi32.lib")
 #endif
 
 
@@ -221,11 +225,101 @@ void SystemInfo::obtainOperatingSystemInformation()
          }
          pclose(pipe);
       }
+
+      int major = 0;
+      if(!osVersion.empty()) {
+         const auto dotPos = osVersion.find('.');
+         const size_t len  = (dotPos != std::string::npos) ? dotPos : osVersion.size();
+         std::from_chars(osVersion.data(), osVersion.data() + len, major);
+      }
+
+      // Actively supported releases
+      switch(major) {
+         case 14: osVersionCodename = "Sonoma";      break;
+         case 15: osVersionCodename = "Sequoia";     break;
+         case 16: // Fallthrough in case of legacy minor-bump builds
+         case 26: osVersionCodename = "Tahoe";       break;
+         case 27: osVersionCodename = "Golden Gate"; break;
+         default: break;
+      }
+
 #elif defined(_WIN32)
-      osName      = "Windows";
-      osId        = "windows";
-      osVersion   = getString("system_release");
-      osVersionId = osVersion;
+      osId = "windows";
+
+      RTL_OSVERSIONINFOEXW rovi { sizeof(rovi) };
+      HMODULE hNtdll = GetModuleHandleA("ntdll.dll");
+      if(hNtdll) {
+         using fnRtlGetVersion = LONG(WINAPI*)(PRTL_OSVERSIONINFOEXW);
+         auto pRtlGetVersion = reinterpret_cast<fnRtlGetVersion>(GetProcAddress(hNtdll, "RtlGetVersion"));
+         if(pRtlGetVersion) {
+            pRtlGetVersion(&rovi);
+         }
+      }
+
+      const bool isServer = (rovi.wProductType != VER_NT_WORKSTATION);
+      DWORD build = rovi.dwBuildNumber;
+
+      char displayVersion[64] { 0 };
+      DWORD dispSize = sizeof(displayVersion);
+      HKEY hKey = nullptr;
+      if(RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion",
+                       0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+         if(RegQueryValueExA(hKey, "DisplayVersion", nullptr, nullptr,
+                             reinterpret_cast<LPBYTE>(displayVersion), &dispSize) != ERROR_SUCCESS) {
+            dispSize = sizeof(displayVersion);
+            if(RegQueryValueExA(hKey, "ReleaseId", nullptr, nullptr,
+                                reinterpret_cast<LPBYTE>(displayVersion), &dispSize) != ERROR_SUCCESS) {
+               dispSize = sizeof(displayVersion);
+               RegQueryValueExA(hKey, "CSDVersion", nullptr, nullptr,
+                                reinterpret_cast<LPBYTE>(displayVersion), &dispSize);
+            }
+         }
+
+         if(build == 0) {
+            char buildBuffer[32] { 0 };
+            DWORD bSize = sizeof(buildBuffer);
+            if(RegQueryValueExA(hKey, "CurrentBuildNumber", nullptr, nullptr,
+                                reinterpret_cast<LPBYTE>(buildBuffer), &bSize) == ERROR_SUCCESS) {
+               build = std::strtoul(buildBuffer, nullptr, 10);
+            }
+         }
+         RegCloseKey(hKey);
+      }
+
+      if(isServer) {
+         osName = "Windows Server";
+         if(build >= 26100) {
+            osVersion = "2025";
+         }
+         else if(build >= 20348) {
+            osVersion = "2022";
+         }
+         else if(build >= 17763) {
+            osVersion = "2019";
+         }
+         else if(build >= 14393) {
+            osVersion = "2016";
+         }
+         else {
+            osVersion = "Server";
+         }
+      }
+      else {
+         osName = "Windows";
+         if(build >= 22000) {
+            osVersion = "11";
+         }
+         else if(build >= 10240) {
+            osVersion = "10";
+         }
+         else {
+            osVersion = getString("system_release");
+         }
+      }
+
+      osVersionId       = osVersion;
+      osVersionCodename = displayVersion;
+
 #else
       // Legacy Linux / BSD: Try lsb_release if present
       FILE* pipe = popen("lsb_release -is 2>/dev/null", "r");
