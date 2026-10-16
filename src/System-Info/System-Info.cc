@@ -968,11 +968,6 @@ int main(int argc, char** argv)
    SetConsoleOutputCP(CP_UTF8);
 #endif
 
-   // ====== Initialize locale support ======================================
-   if(std::setlocale(LC_ALL, "") == nullptr) {
-      std::setlocale(LC_ALL, "C.UTF-8");
-   }
-
 #if defined(ENABLE_NLS)
    // ====== Initialise i18n and locale support =============================
    if(std::setlocale(LC_ALL, "") == nullptr) {
