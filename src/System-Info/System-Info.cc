@@ -32,6 +32,7 @@
 #include <clocale>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <ctime>
 #include <filesystem>
 #include <format>
@@ -68,7 +69,7 @@
 
 
 // ###### Global settings and formatting constants ##########################
-static bool        is_ltr { true };
+static bool        isRTL { false };
 static std::string rlm;
 static std::string lrm;
 
@@ -232,7 +233,7 @@ static std::string formatText(const char* messageIdentifier,
 }
 
 
-// ###### Read configuration file with fallback discovery ##################
+// ###### Read configuration file with fallbackLocale discovery ##################
 static void readConfiguration(const std::string&              customConfigurationFile,
                               const std::vector<std::string>& scriptDirectories)
 {
@@ -429,7 +430,7 @@ static void finishTable(std::ostream& outputStream)
       const size_t padding      = (columnWidth > labelWidth) ? (columnWidth - labelWidth) : 0;
       const std::string paddedLabel = row.Label + std::string(padding, ' ');
 
-      if(is_ltr) {
+      if(!isRTL) {
          outputStream << paddedLabel << row.Value << '\n';
       }
       else {
@@ -968,36 +969,36 @@ int main(int argc, char** argv)
    SetConsoleOutputCP(CP_UTF8);
 #endif
 
-#if defined(ENABLE_NLS)
-   // ====== Initialise i18n and locale support =============================
+   // ====== Initialise locale support ======================================
    if(std::setlocale(LC_ALL, "") == nullptr) {
       std::setlocale(LC_ALL, "C.UTF-8");
    }
    try {
-      std::locale user_locale("");
-      std::cout.imbue(user_locale);
-      std::cerr.imbue(user_locale);
+      std::locale userLocale("");
+      std::cout.imbue(userLocale);
+      std::cerr.imbue(userLocale);
    } catch (const std::runtime_error&) {
       try {
-         std::locale fallback("C.UTF-8");
-         std::cout.imbue(fallback);
-         std::cerr.imbue(fallback);
+         std::locale fallbackLocale("C.UTF-8");
+         std::cout.imbue(fallbackLocale);
+         std::cerr.imbue(fallbackLocale);
       } catch (const std::runtime_error&) {
          // Defaults to std::locale::classic() if C.UTF-8 is unavailable
       }
    }
 
    // ====== Initialise i18n support ========================================
+#if defined(ENABLE_NLS)
 #if !defined(_WIN32)
-   const char* textdomaindir = std::getenv("TEXTDOMAINDIR");
+   const char* textdomaindir     = std::getenv("TEXTDOMAINDIR");
 #else
-   char*  textdomaindir     = nullptr;
-   size_t textdomaindirsize = 0;
+   char*       textdomaindir     = nullptr;
+   size_t      textdomaindirsize = 0;
    _dupenv_s(&textdomaindir, &textdomaindirsize, "TEXTDOMAINDIR");
 #endif
    bindtextdomain("System-Info",
                   ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
-                     textdomaindir : SYSTEMTOOLS_LOCALEDIR ));
+                       textdomaindir : SYSTEMTOOLS_LOCALEDIR ));
 #if defined(_WIN32)
    if(textdomaindir) {
        free(textdomaindir);
@@ -1010,10 +1011,10 @@ int main(int argc, char** argv)
    // TRANSLATORS: "LTR" stands for Left-to-Right layout direction.
    // Translators of Right-to-Left languages (such as Arabic, Hebrew, Persian)
    // must translate this string to "RTL".
-   is_ltr = (std::string(gettext("LTR")) != "RTL");
-   if(!is_ltr) {
-      rlm = "\u200f";
-      lrm = "\u200e";
+   isRTL = (std::strcmp(gettext("LTR"), "RTL") == 0);
+   if(isRTL) {
+      rlm = "\u200f";   // Right-to-Left Marker (RLM)
+      lrm = "\u200e";   // Left-to-Right Marker (LRM)
    }
 
    std::vector<std::string> scriptDirectories = {
