@@ -36,19 +36,54 @@
 set -euo pipefail
 
 
-# ###### Usage ##############################################################
-usage () {
-   local exitCode="$1"
-   echo >&2 "Usage: $0 output_filename text [-F|--font-name font] [-S|--font-size size] [-G|--blend-gradient-text gradient] [-g|--blend-gradient-text-reverse on|off] [-L|--blend-gradient-outline gradient] [-l|--blend-gradient-outline-reverse on|off] [-O|--outline-size size] [-B|--background-color color] [-I|--pattern-text pattern] [-i|--use-pattern-text on|off] [-J|--pattern-outline pattern] [-j|--use-pattern-outline on|off] [-R|--pattern-overlay pattern] [-r|--use-pattern-overlay on|off] [-s|--use-shadow on|off] [-X|--shadow-offset-x offset] [-Y|--shadow-offset-y offset] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
-   exit "${exitCode}"
-}
-
-
 # ###### Version ############################################################
 version () {
    echo "gs-glossytext @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
    exit 0
 }
+
+
+# ------ BEGIN-OF-USAGE-BLOCK ------
+# ###### Usage ##############################################################
+usage () {
+   local program="$1"
+   local exitCode="$2"
+   local header=$'\x1b[4m'
+   local cmd=$'\x1b[1m'
+   local opt=$'\x1b[1m'
+   local arg=$'\x1b[4m'
+   local syn=$'\x1b[1m'
+   local reset=$'\x1b[0m'
+   cat >&2 <<EOF
+${header}Usage:${reset}
+${cmd}${program}${reset} ${arg}output_filename${reset} ${arg}text${reset}
+	${syn}[${reset}${opt}-F${reset} ${arg}font${reset} ${opt}|${reset} ${opt}--font-name${reset} ${arg}font${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-S${reset} ${arg}size${reset} ${opt}|${reset} ${opt}--font-size${reset} ${arg}size${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-G${reset} ${arg}gradient${reset} ${opt}|${reset} ${opt}--blend-gradient-text${reset} ${arg}gradient${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-g${reset} ${arg}on|off${reset} ${opt}|${reset} ${opt}--blend-gradient-text-reverse${reset} ${arg}on|off${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-L${reset} ${arg}gradient${reset} ${opt}|${reset} ${opt}--blend-gradient-outline${reset} ${arg}gradient${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-l${reset} ${arg}on|off${reset} ${opt}|${reset} ${opt}--blend-gradient-outline-reverse${reset} ${arg}on|off${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-O${reset} ${arg}size${reset} ${opt}|${reset} ${opt}--outline-size${reset} ${arg}size${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-B${reset} ${arg}color${reset} ${opt}|${reset} ${opt}--background-color${reset} ${arg}color${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-I${reset} ${arg}pattern${reset} ${opt}|${reset} ${opt}--pattern-text${reset} ${arg}pattern${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-i${reset} ${arg}on|off${reset} ${opt}|${reset} ${opt}--use-pattern-text${reset} ${arg}on|off${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-J${reset} ${arg}pattern${reset} ${opt}|${reset} ${opt}--pattern-outline${reset} ${arg}pattern${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-j${reset} ${arg}on|off${reset} ${opt}|${reset} ${opt}--use-pattern-outline${reset} ${arg}on|off${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-R${reset} ${arg}pattern${reset} ${opt}|${reset} ${opt}--pattern-overlay${reset} ${arg}pattern${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-r${reset} ${arg}on|off${reset} ${opt}|${reset} ${opt}--use-pattern-overlay${reset} ${arg}on|off${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-s${reset} ${arg}on|off${reset} ${opt}|${reset} ${opt}--use-shadow${reset} ${arg}on|off${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-X${reset} ${arg}offset${reset} ${opt}|${reset} ${opt}--shadow-offset-x${reset} ${arg}offset${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-Y${reset} ${arg}offset${reset} ${opt}|${reset} ${opt}--shadow-offset-y${reset} ${arg}offset${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-q${reset} ${opt}|${reset} ${opt}--quiet${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-w${reset} ${opt}|${reset} ${opt}--verbose${reset}${syn}]${reset}
+${cmd}${program}${reset}
+	${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
+${cmd}${program}${reset}
+	${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
+EOF
+   exit "${exitCode}"
+}
+# ------ END-OF-USAGE-BLOCK ------
 
 
 
@@ -87,7 +122,7 @@ fi
 options="$(${GETOPT} -o F:S:G:g:L:l:O:B:I:i:J:j:R:r:s:X:Y:wqhv --long font-name:,font-size:,blend-gradient-text:,blend-gradient-text-reverse:,blend-gradient-outline:,blend-gradient-outline-reverse:,outline-size:,background-color:,pattern-text:,use-pattern-text:,pattern-outline:,use-pattern-outline:,pattern-overlay:,use-pattern-overlay:,use-shadow:,shadow-offset-x:,shadow-offset-y:,verbose,quiet,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage 1
+   usage "$0" 1
 fi
 eval set -- "${options}"
 
@@ -254,7 +289,7 @@ while [ $# -gt 0 ] ; do
          VERBOSE=0
          ;;
       -h | --help)
-         usage 0
+         usage "$0" 0
          ;;
       -v | --version)
          version
@@ -273,7 +308,7 @@ while [ $# -gt 0 ] ; do
 done
 
 if [ $# -ne 2 ] ; then
-   usage 1
+   usage "$0" 1
 fi
 OUTPUT_FILENAME="$1"
 TEXT="$2"

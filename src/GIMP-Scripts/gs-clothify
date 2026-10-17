@@ -32,19 +32,42 @@
 set -euo pipefail
 
 
-# ###### Usage ##############################################################
-usage () {
-   local exitCode="$1"
-   echo >&2 "Usage: $0 input_filename output_filename [-X|--blur-x value] [-Y|--blur-y value] [-A|--azimuth bearing] [-E|--elevation bearing] [-D|--depth depth] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
-   exit "${exitCode}"
-}
-
-
 # ###### Version ############################################################
 version () {
    echo "gs-clothify @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
    exit 0
 }
+
+
+# ------ BEGIN-OF-USAGE-BLOCK ------
+# ###### Usage ##############################################################
+usage () {
+   local program="$1"
+   local exitCode="$2"
+   local header=$'\x1b[4m'
+   local cmd=$'\x1b[1m'
+   local opt=$'\x1b[1m'
+   local arg=$'\x1b[4m'
+   local syn=$'\x1b[1m'
+   local reset=$'\x1b[0m'
+   cat >&2 <<EOF
+${header}Usage:${reset}
+${cmd}${program}${reset} ${arg}input_filename${reset} ${arg}output_filename${reset}
+	${syn}[${reset}${opt}-X${reset} ${arg}value${reset} ${opt}|${reset} ${opt}--blur-x${reset} ${arg}value${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-Y${reset} ${arg}value${reset} ${opt}|${reset} ${opt}--blur-y${reset} ${arg}value${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-A${reset} ${arg}bearing${reset} ${opt}|${reset} ${opt}--azimuth${reset} ${arg}bearing${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-E${reset} ${arg}bearing${reset} ${opt}|${reset} ${opt}--elevation${reset} ${arg}bearing${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-D${reset} ${arg}depth${reset} ${opt}|${reset} ${opt}--depth${reset} ${arg}depth${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-q${reset} ${opt}|${reset} ${opt}--quiet${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-w${reset} ${opt}|${reset} ${opt}--verbose${reset}${syn}]${reset}
+${cmd}${program}${reset}
+	${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
+${cmd}${program}${reset}
+	${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
+EOF
+   exit "${exitCode}"
+}
+# ------ END-OF-USAGE-BLOCK ------
 
 
 
@@ -83,7 +106,7 @@ fi
 options="$(${GETOPT} -o X:Y:A:E:D:wqhv --long blur-x:,blur-y:,azimuth:,elevation:,depth:,verbose,quiet,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage 1
+   usage "$0" 1
 fi
 eval set -- "${options}"
 
@@ -144,7 +167,7 @@ while [ $# -gt 0 ] ; do
          VERBOSE=0
          ;;
       -h | --help)
-         usage 0
+         usage "$0" 0
          ;;
       -v | --version)
          version
@@ -163,7 +186,7 @@ while [ $# -gt 0 ] ; do
 done
 
 if [ $# -ne 2 ] ; then
-   usage 1
+   usage "$0" 1
 fi
 INPUT_FILENAME="$1"
 OUTPUT_FILENAME="$2"
