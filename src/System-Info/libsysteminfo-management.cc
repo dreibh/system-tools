@@ -88,6 +88,7 @@ SystemInfo::SystemInfo(const unsigned int compatibilityVersion,
 // ##### Obtain SystemInfo ##################################################
 void SystemInfo::print(std::ostream& os) const
 {
+   const std::locale& locale = os.getloc();
    for(const auto& [key, entry] : Entries) {
       std::visit([&](const auto& value) {
          using Type = std::decay_t<decltype(value)>;
@@ -99,14 +100,15 @@ void SystemInfo::print(std::ostream& os) const
          }
          else if constexpr(std::is_same_v<Type, double>) {
             if(entry.DisplayHint >= 0) {
-               os << std::format("{}={:.{}f}\n", key, value, entry.DisplayHint);
+               // {:.{}Lf}: precision goes BEFORE 'L', and 'L' goes BEFORE 'f':
+               os << std::format(locale, "{}={:.{}Lf}\n", key, value, entry.DisplayHint);
             }
             else {
-               os << std::format("{}={:f}\n", key, value);
+               os << std::format(locale, "{}={:Lf}\n", key, value);
             }
          }
          else {
-            os << std::format("{}={}\n", key, value);
+            os << std::format(locale, "{}={:L}\n", key, value);
          }
       }, entry.Value);
    }

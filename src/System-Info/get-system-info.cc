@@ -41,6 +41,34 @@
 #include "package-version.h"
 
 
+// ###### Locale helper to disable the thousands separator ##################
+struct no_grouping : std::numpunct<char> {
+    explicit no_grouping(const std::locale& base)
+       : m_dp(std::use_facet<std::numpunct<char>>(base).decimal_point()),
+         m_truename(std::use_facet<std::numpunct<char>>(base).truename()),
+         m_falsename(std::use_facet<std::numpunct<char>>(base).falsename()) {}
+
+protected:
+    char do_decimal_point()    const override { return m_dp;        }
+    std::string do_grouping()  const override {
+       // Disables thousands separators
+       return "";
+    }
+    std::string do_truename()  const override { return m_truename;  }
+    std::string do_falsename() const override { return m_falsename; }
+
+private:
+    char        m_dp;
+    std::string m_truename;
+    std::string m_falsename;
+};
+
+// Helper to construct a new locale replacing only the numpunct<char> facet:
+inline std::locale disableThousandsSeparator(const std::locale& base) {
+    return std::locale(base, new no_grouping(base));
+}
+
+
 // ###### Version ###########################################################
 [[noreturn]] static void version()
 {
@@ -99,18 +127,32 @@ static void usage(const char* program, const int exitCode)
 
 
 
+
 // ###### Main program ######################################################
 int main(int argc, char** argv)
 {
-   unsigned int compatibilityVersion { LSI_COMPATIBILITY_VERSION };
-   uint32_t     flags                { SystemInfo::Flags::All };
-
    // ====== Initialise locale support ======================================
    if(std::setlocale(LC_ALL, "") == nullptr) {
       std::setlocale(LC_ALL, "C.UTF-8");
    }
+   try {
+      std::locale userLocale = disableThousandsSeparator(std::locale(""));
+      std::cout.imbue(userLocale);
+      std::cerr.imbue(userLocale);
+   } catch (const std::runtime_error&) {
+      try {
+         std::locale fallbackLocale = disableThousandsSeparator(std::locale("C.UTF-8"));
+         std::cout.imbue(fallbackLocale);
+         std::cerr.imbue(fallbackLocale);
+      } catch (const std::runtime_error&) {
+         // Defaults to std::locale::classic() if C.UTF-8 is unavailable
+      }
+   }
 
    // ====== Handle arguments ===============================================
+   unsigned int compatibilityVersion { LSI_COMPATIBILITY_VERSION };
+   uint32_t     flags                { SystemInfo::Flags::All };
+
    static const struct option long_options[] = {
       { "help",              no_argument,       nullptr, 'h' },
       { "version",           no_argument,       nullptr, 'v' },
@@ -142,8 +184,8 @@ int main(int argc, char** argv)
       {  nullptr,            0,                 nullptr, 0   }
    };
 
-   int option    { 0 };
-   int longIndex { 0 };
+   int          option    { 0 };
+   int          longIndex { 0 };
    while((option = getopt_long(argc,
                                argv,
                                "hvc:AaBbEeFfKkLlMmNnOoSsTtUu",
