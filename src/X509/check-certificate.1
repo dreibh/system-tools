@@ -39,37 +39,35 @@
 .\" Manpage syntax help:
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm check\-certificate Ar ca\_certificate\_file Ar certificate\_file
-.Op ...
-.br
-.Op Fl C Ar crl\_file | Fl Fl crl Ar crl\_file
-.br
-.Op Fl n | Fl Fl no\-view\-certificate
-.br
 .Nm check\-certificate
-.Op Fl h | Fl Fl help
+.Ar ca\_certificate\_file certificate\_file ...
+.br
+.Op Fl C Ar crl\_file | Fl \-crl Ar crl\_file
+.br
+.Op Fl n | Fl \-no\-view\-certificate
 .Nm check\-certificate
-.Op Fl v | Fl Fl version
+.Op Fl h | Fl \-help
+.Nm check\-certificate
+.Op Fl v | Fl \-version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm check\-certificate
 verifies X.509 certificates against a Certification Authority (CA) certificate and optionally a Certificate Revocation List (CRL). The verification is made using OpenSSL, and if available GnuTLS and NSS, to ensure the certificates are working properly with all three TLS implementations.
-.Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
-The following options are available:
+The following arguments and options are available:
 .Bl -tag -width indent
 .It Ar ca\_certificate\_file
 Specifies the CA certificate file to verify certificates.
-.It Ar certificate\_file [...]
+.It Ar certificate\_file ...
 Specifies one or more certificate files to be verified.
-.It Fl C Ar crl\_file | Fl Fl crl Ar crl\_file
+.It Fl C Ar crl\_file | Fl \-crl Ar crl\_file
 Specifies a CRL file.
-.It Fl n | Fl Fl no\-view\-certificate
+.It Fl n | Fl \-no\-view\-certificate
 Do not display a certificate before verification.
-.It Fl h | Fl Fl help
+.It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
-.It Fl v | Fl Fl version
+.It Fl v | Fl \-version
 Prints the program version and exits.
 .El
 .\" ###### Exit status ######################################################
@@ -79,15 +77,23 @@ The
 tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-.Bl -tag -width indent
-.It check\-certificate My\-CA\-Certificate.crt My\-Server\-Certificate.crt
-.It check\-certificate \-\-crl CRL.crl My\-CA\-Certificate.crt My\-Server\-Certificate.crt
-.It check\-certificate /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt www.nntb.no.crt
-.It check\-certificate /etc/ssl/certs/DigiCert_Global_Root_G2.pem www.dnb.no.crt
-.It check\-certificate \-\-help
-.It check\-certificate \-h
-.It check\-certificate \-\-version
-.It check\-certificate \-v
+.Bl -bullet
+.It
+check\-certificate My\-CA\-Certificate.crt My\-Server\-Certificate.crt
+.It
+check\-certificate \-\-crl CRL.crl My\-CA\-Certificate.crt My\-Server\-Certificate.crt
+.It
+check\-certificate /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt www.nntb.no.crt
+.It
+check\-certificate /etc/ssl/certs/DigiCert\_Global\_Root\_G2.pem www.dnb.no.crt
+.It
+check\-certificate \-\-help
+.It
+check\-certificate \-h
+.It
+check\-certificate \-\-version
+.It
+check\-certificate \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
