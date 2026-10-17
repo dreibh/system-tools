@@ -54,7 +54,7 @@ usage () {
    local header=$'\x1b[4m'
    local cmd=$'\x1b[1m'
    local opt=$'\x1b[1m'
-   local arg=$'\x1b[4m'
+   # local arg=$'\x1b[4m'
    local syn=$'\x1b[1m'
    local reset=$'\x1b[0m'
    # TRANSLATORS: Command-line syntax message prefix:
