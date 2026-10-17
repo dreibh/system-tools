@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 9, 2026
+.Dd October 17, 2026
 .Dt pem2der 1
 .Os pem2der
 .\" ###### Name #############################################################
@@ -36,30 +36,28 @@
 .Nm pem2der
 .Nd converts a certificate or CRL from PEM to DER format
 .\" ###### Synopsis #########################################################
-.\" Manpage syntax help:
-.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm pem2der Ar pem\_file Ar der\_file
 .Nm pem2der
-.Op Fl h | Fl Fl help
+.Ar pem\_file der\_file
 .Nm pem2der
-.Op Fl v | Fl Fl version
+.Op Fl h | Fl \-help
+.Nm pem2der
+.Op Fl v | Fl \-version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm pem2der
 converts a given certificate or CRL file from PEM to DER format.
-.Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
-The following options are available:
+The following arguments and options are available:
 .Bl -tag -width indent
 .It Ar pem\_file
 The certificate or CRL file in PEM format to be converted.
 .It Ar der\_file
 The certificate or CRL file in DER format to be written.
-.It Fl h | Fl Fl help
+.It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
-.It Fl v | Fl Fl version
+.It Fl v | Fl \-version
 Prints the program version and exits.
 .El
 .\" ###### Exit status ######################################################
@@ -69,13 +67,19 @@ The
 tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-.Bl -tag -width indent
-.It pem2der my\-server\-certificate.crt my\-server\-certificate.der
-.It pem2der my\-crl.crl my\-crl.der
-.It pem2der \-\-help
-.It pem2der \-h
-.It pem2der \-\-version
-.It pem2der \-v
+.Bl -bullet
+.It
+pem2der my\-server\-certificate.crt my\-server\-certificate.der
+.It
+pem2der my\-crl.crl my\-crl.der
+.It
+pem2der \-\-help
+.It
+pem2der \-h
+.It
+pem2der \-\-version
+.It
+pem2der \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO

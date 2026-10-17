@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 9, 2026
+.Dd October 17, 2026
 .Dt der2pem 1
 .Os der2pem
 .\" ###### Name #############################################################
@@ -36,30 +36,28 @@
 .Nm der2pem
 .Nd converts a certificate or CRL from DER to PEM format
 .\" ###### Synopsis #########################################################
-.\" Manpage syntax help:
-.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm der2pem Ar der\_file Ar pem\_file
 .Nm der2pem
-.Op Fl h | Fl Fl help
+.Ar der\_file pem\_file
 .Nm der2pem
-.Op Fl v | Fl Fl version
+.Op Fl h | Fl \-help
+.Nm der2pem
+.Op Fl v | Fl \-version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm der2pem
 converts a given certificate or CRL file from DER to PEM format.
-.Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
-The following options are available:
+The following arguments and options are available:
 .Bl -tag -width indent
 .It Ar der\_file
 The certificate or CRL file in DER format to be converted.
 .It Ar pem\_file
 The certificate or CRL file in PEM format to be written.
-.It Fl h | Fl Fl help
+.It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
-.It Fl v | Fl Fl version
+.It Fl v | Fl \-version
 Prints the program version and exits.
 .El
 .\" ###### Exit status ######################################################
@@ -69,14 +67,21 @@ The
 tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-.Bl -tag -width indent
-.It der2pem my\-server\-certificate.der my\-server\-certificate.crt
-.It der2pem my\-crl.der my\-crl.crl
-.It curl \-o google\-crl.der.crl http://c.pki.goog/wr2/GSyT1N4PBrg.crl && der2pem google\-crl.der.crl google\-crl.pem
-.It der2pem \-\-help
-.It der2pem \-h
-.It der2pem \-\-version
-.It der2pem \-v
+.Bl -bullet
+.It
+der2pem my\-server\-certificate.der my\-server\-certificate.crt
+.It
+der2pem my\-crl.der my\-crl.crl
+.It
+curl \-o google\-crl.der.crl http://c.pki.goog/wr2/GSyT1N4PBrg.crl && der2pem google\-crl.der.crl google\-crl.pem
+.It
+der2pem \-\-help
+.It
+der2pem \-h
+.It
+der2pem \-\-version
+.It
+der2pem \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO

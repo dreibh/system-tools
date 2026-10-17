@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 9, 2026
+.Dd October 17, 2026
 .Dt extract\-pem 1
 .Os extract\-pem
 .\" ###### Name #############################################################
@@ -36,53 +36,57 @@
 .Nm extract\-pem
 .Nd extracts blocks of PEM files into separate files
 .\" ###### Synopsis #########################################################
-.\" Manpage syntax help:
-.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm extract\-pem Ar pem\_file
-.Op ...
-.br
-.Op Fl o Ar file\_name\_prefix | Fl Fl output\-prefix Ar file\_name\_prefix
-.br
-.Op Fl 1 | Fl Fl only\-first\-entry
-.Op Fl f | Fl Fl skip\-first\-entry
-.Op Fl l | Fl Fl skip\-last\-entry
-.br
-.Op Fl q | Fl Fl quiet
-.br
 .Nm extract\-pem
-.Op Fl h | Fl Fl help
+.Ar pem\_file ...
+.br
+.Op Fl o Ar file\_name\_prefix | Fl \-output\-prefix Ar file\_name\_prefix
+.br
+.Op Fl 1 | Fl \-only\-first\-entry
+.br
+.Op Fl f | Fl \-skip\-first\-entry
+.br
+.Op Fl l | Fl \-skip\-last\-entry
+.br
+.Op Fl q | Fl \-quiet
 .Nm extract\-pem
-.Op Fl v | Fl Fl version
+.Op Fl h | Fl \-help
+.Nm extract\-pem
+.Op Fl v | Fl \-version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm extract\-pem
 extracts the blocks of PEM files into separate files. The output files will be named with a given output prefix (default: "output\-"), and a sequential number according to the occurrence. The output file extension will be chosen based on the content:
-.Bl -tag -width indent
-.It * .crt for a certificate,
-.It * .crl for a certificate revocation list (CRL),
-.It * .key for a private key.
+.Bl -bullet -compact
+.It
+.Pa .crt
+for a certificate,
+.It
+.Pa .crl
+for a certificate revocation list (CRL),
+.It
+.Pa .key
+for a private key.
 .El
-.Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
-The following options are available:
+The following arguments and options are available:
 .Bl -tag -width indent
 .It Ar pem\_file ...
 Specifies one or more PEM files to be extracted.
-.It Fl o Ar file\_name\_prefix | Fl Fl output\-prefix Ar file\_name\_prefix
+.It Fl o Ar file\_name\_prefix | Fl \-output\-prefix Ar file\_name\_prefix
 Sets the output file prefix (default: "output\-").
-.It Fl 1 | Fl Fl only\-first\-entry
+.It Fl 1 | Fl \-only\-first\-entry
 Extract only the first entry (i.e. extract the certificate of e.g. a server itself, if the PEM file contains a chain of certificates).
-.It Fl f | Fl Fl skip\-first\-entry
+.It Fl f | Fl \-skip\-first\-entry
 Do not extract the first entry (i.e. do not extract the certificate of e.g. a server itself, if the PEM file contains a chain of certificates).
-.It Fl l | Fl Fl skip\-last\-entry
+.It Fl l | Fl \-skip\-last\-entry
 Do not extract the last entry (i.e. do not extract the certificate of the root CA, if the PEM file contains a chain of certificates).
-.It Fl q | Fl Fl quiet
+.It Fl q | Fl \-quiet
 Quiet mode: only print information in case of errors.
-.It Fl h | Fl Fl help
+.It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
-.It Fl v | Fl Fl version
+.It Fl v | Fl \-version
 Prints the program version and exits.
 .El
 .\" ###### Exit status ######################################################
@@ -92,15 +96,23 @@ The
 tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-.Bl -tag -width indent
-.It extract\-pem my\-server\-certificate.crt \-\-output\-prefix extract\-
-.It extract\-pem my\-server\-certificate.crt \-o extract\-
-.It extract\-pem my\-server\-certificate.crt \-\-skip\-first\-entry \-\-skip\-last\-entry \-o extract\-intermediate\-
-.It extract\-pem my\-server\-certificate.crt \-\-only\-first\-entry \-o extract\-server\-
-.It extract\-pem \-\-help
-.It extract\-pem \-h
-.It extract\-pem \-\-version
-.It extract\-pem \-v
+.Bl -bullet
+.It
+extract\-pem my\-server\-certificate.crt \-\-output\-prefix extract\-
+.It
+extract\-pem my\-server\-certificate.crt \-o extract\-
+.It
+extract\-pem my\-server\-certificate.crt \-\-skip\-first\-entry \-\-skip\-last\-entry \-o extract\-intermediate\-
+.It
+extract\-pem my\-server\-certificate.crt \-\-only\-first\-entry \-o extract\-server\-
+.It
+extract\-pem \-\-help
+.It
+extract\-pem \-h
+.It
+extract\-pem \-\-version
+.It
+extract\-pem \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
