@@ -32,8 +32,7 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
-ADD_EXECUTABLE(random-sleep random-sleep.c)
-# SET_PROPERTY(TARGET random-sleep PROPERTY C_STANDARD 23)
+ADD_EXECUTABLE(random-sleep random-sleep.cc)
 TARGET_INCLUDE_DIRECTORIES(random-sleep PRIVATE ${Intl_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES(random-sleep ${Intl_LIBRARIES} ${GETOPT_LIBRARY})
 IF(NOT MSVC)
