@@ -40,27 +40,27 @@
 .\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm Fingerprint\-SSH\-Keys
-.Op Fl A | Fl Fl all
-.Op Fl a | Fl Fl none
+.Op Fl A | Fl \-all
+.Op Fl a | Fl \-none
 .br
-.Op Fl R | Fl Fl with\-raw
-.Op Fl r | Fl Fl without\-raw
+.Op Fl R | Fl \-with\-raw
+.Op Fl r | Fl \-without\-raw
 .br
-.Op Fl D | Fl Fl with\-dns
-.Op Fl d | Fl Fl without\-dns
+.Op Fl D | Fl \-with\-dns
+.Op Fl d | Fl \-without\-dns
 .br
-.Op Fl S | Fl Fl with\-ssh
-.Op Fl s | Fl Fl without\-ssh
+.Op Fl S | Fl \-with\-ssh
+.Op Fl s | Fl \-without\-ssh
 .br
-.Op Fl F Ar text|python|csv | Fl Fl format Ar text|python|csv
+.Op Fl F Ar text|python|csv | Fl \-format Ar text|python|csv
 .br
-.Op Fl K Ar directory | Fl Fl key\-directory Ar directory
+.Op Fl K Ar directory | Fl \-key\-directory Ar directory
 .br
-.Op Fl Fl include\-deprecated
+.Op Fl \-include\-deprecated
 .Nm Fingerprint\-SSH\-Keys
-.Op Fl h | Fl Fl help
+.Op Fl h | Fl \-help
 .Nm Fingerprint\-SSH\-Keys
-.Op Fl v | Fl Fl version
+.Op Fl v | Fl \-version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm Fingerprint\-SSH\-Keys
@@ -81,41 +81,39 @@ By default, SSH and DNS formats are enabled using plain text.
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl A | Fl Fl all
+.It Fl A | Fl \-all
 Enable all outputs (raw, ssh, and dns).
-.It Fl a | Fl Fl none
+.It Fl a | Fl \-none
 Disable all outputs.
-.It Fl R | Fl Fl with\-raw
+.It Fl R | Fl \-with\-raw
 Include raw public keys in the output.
-.It Fl r | Fl Fl without\-raw
+.It Fl r | Fl \-without\-raw
 Exclude raw public keys from the output.
-.It Fl D | Fl Fl with\-dns
+.It Fl D | Fl \-with\-dns
 Include DNS SSHFP resource records in the output.
-.It Fl d | Fl Fl without\-dns
+.It Fl d | Fl \-without\-dns
 Exclude DNS SSHFP resource records from the output.
-.It Fl S | Fl Fl with\-ssh
+.It Fl S | Fl \-with\-ssh
 Include SSH key fingerprints in the output.
-.It Fl s | Fl Fl without\-ssh
+.It Fl s | Fl \-without\-ssh
 Exclude SSH key fingerprints from the output.
-.It Fl F Ar text|python|csv | Fl Fl format Ar text|python|csv
-Set output format
-.Ar type
-to one of
+.It Fl F Ar text|python|csv | Fl \-format Ar text|python|csv
+Set output format to one of
 .Cm text
 (default),
 .Cm python ,
 or
 .Cm csv .
-.It Fl K Ar directory | Fl Fl key\-directory Ar directory
+.It Fl K Ar directory | Fl \-key\-directory Ar directory
 Specify the directory containing the SSH host public keys (defaults to
 .Pa /etc/ssh
 or Windows
 .Pa %PROGRAMDATA%/ssh ) .
-.It Fl Fl include\-deprecated
+.It Fl \-include\-deprecated
 Also include deprecated key types and hash algorithms in DNS SSHFP RR output.
-.It Fl h | Fl Fl help
+.It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
-.It Fl v | Fl Fl version
+.It Fl v | Fl \-version
 Prints the program version and exits.
 .El
 .\" ###### Exit status ######################################################

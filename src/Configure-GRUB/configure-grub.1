@@ -37,47 +37,60 @@
 .Nd helps to change some GRUB boot\-loader options
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
-.Nm configure\-grub Ar grub\-defaults\-template\-file
-.br
-.Op Fl i Ar input-\%grub-\%defaults-\%file | Fl Fl input Ar input-\%grub-\%defaults-\%file
-.br
-.Op Fl o Ar output-\%grub-\%defaults-\%file | Fl Fl output Ar output-\%grub-\%defaults-\%file
-.br
-.Op Fl V Ar GRUB_GFXMODE | Fl Fl video Ar GRUB_GFXMODE
-.br
-.Op Fl T Ar GRUB_INIT_TUNE | Fl Fl tune Ar GRUB_INIT_TUNE
 .Nm configure\-grub
-.Op Fl h | Fl Fl help
+.Ar grub\-defaults\-template\-file
+.br
+.Op Fl i Ar input\-grub\-defaults\-file | Fl \-input Ar input\-grub\-defaults\-file
+.br
+.Op Fl o Ar output\-grub\-defaults\-file | Fl \-output Ar output\-grub\-defaults\-file
+.br
+.Op Fl V Ar GRUB_GFXMODE | Fl \-video Ar GRUB_GFXMODE
+.br
+.Op Fl T Ar GRUB_INIT_TUNE | Fl \-tune Ar GRUB_INIT_TUNE
 .Nm configure\-grub
-.Op Fl v | Fl Fl version
+.Op Fl h | Fl \-help
+.Nm configure\-grub
+.Op Fl v | Fl \-version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm configure\-grub
 adjusts a GRUB configuration file by applying a configuration
 from a template, and merging the existing configuration settings with
 additional customisations. It can for example be used to set a custom
-screen resolution (GRUB_GFXMODE option) or startup tune (GRUB_INIT_TUNE
-option).
+screen resolution
+.Pq the Ev GRUB_GFXMODE option
+or startup tune
+.Pq the Ev GRUB_INIT_TUNE option
+.
 .Pp
-WARNING: This program is meant to be used by expert users! Do not modify
+.Sy WARNING :
+This program is meant to be used by expert users! Do not modify
 a working GRUB configuration without knowing how to boot the system from
 a rescue media to fix a broken setup!
 .Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
-The following options are available:
+The following arguments and options are available:
 .Bl -tag -width indent
-.It Fl i Ar input\-grub\-defaults\-file | Fl Fl input Ar input\-grub\-defaults\-file
-Set name of input GRUB file (default: /etc/default/grub).
-.It Fl o Ar output\-grub\-defaults\-file | Fl Fl output Ar output\-grub\-defaults\-file
-Set name of output GRUB file to write (default: grub-defaults.new).
-.It Fl V Ar GRUB_GFXMODE | Fl Fl video Ar GRUB_GFXMODE
-Replace GRUB_GFXMODE by the provided setting.
-.It Fl T Ar GRUB_INIT_TUNE | Fl Fl tune Ar GRUB_INIT_TUNE
-Replace GRUB_INIT_TUNE by the provided setting.
-.It Fl h | Fl Fl help
+.It Ar grub\-defaults\-template\-file
+The GRUB defaults template file to apply.
+.It Fl i Ar input\-grub\-defaults\-file | Fl \-input Ar input\-grub\-defaults\-file
+Set name of input GRUB file (default:
+.Pa /etc/default/grub ) .
+.It Fl o Ar output\-grub\-defaults\-file | Fl \-output Ar output\-grub\-defaults\-file
+Set name of output GRUB file to write (default:
+.Pa grub\-defaults.new ) .
+.It Fl V Ar GRUB_GFXMODE | Fl \-video Ar GRUB_GFXMODE
+Replace
+.Ev GRUB_GFXMODE
+by the provided setting.
+.It Fl T Ar GRUB_INIT_TUNE | Fl \-tune Ar GRUB_INIT_TUNE
+Replace
+.Ev GRUB_INIT_TUNE
+by the provided setting.
+.It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
-.It Fl v | Fl Fl version
+.It Fl v | Fl \-version
 Prints the program version and exits.
 .El
 .\" ###### Exit status ######################################################
@@ -87,20 +100,25 @@ The
 tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-.Bl -tag -width indent
-.It configure\-grub /usr/share/configure\-grub/grub\-defaults\-standard \
+.Bl -bullet
+.It
+configure\-grub /usr/share/configure\-grub/grub\-defaults\-standard \
    \-V 'auto,1920x1080,1024x768' \
    \-T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192'
-.It sudo configure\-grub /usr/share/configure\-grub/grub\-defaults\-nornet \
+.It
+sudo configure\-grub /usr/share/configure\-grub/grub\-defaults\-nornet \
    \-V 'auto,1024x768' \
    \-o /etc/default/grub
-.It sudo configure\-grub /usr/share/configure\-grub/grub\-defaults\-nornet \
+.It
+sudo configure\-grub /usr/share/configure\-grub/grub\-defaults\-nornet \
    \-i /etc/default/grub \
    \-V 'auto,1920x1080,1024x768' \
    \-T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192' \
    \-o /etc/default/grub
-.It configure\-grub \-\-version
-.It configure\-grub \-\-help
+.It
+configure\-grub \-\-version
+.It
+configure\-grub \-\-help
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
