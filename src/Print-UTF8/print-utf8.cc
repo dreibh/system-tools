@@ -915,24 +915,16 @@ int main(int argc, char** argv)
          }
          break;
       case PrintMode::Width:
-         if(!utf8String.empty()) {
-            printStringSizeLengthWidth(utf8String, true, false, false, true);
-         }
+         printStringSizeLengthWidth(utf8String, true, false, false, true);
          break;
       case PrintMode::Length:
-         if(!utf8String.empty()) {
-            printStringSizeLengthWidth(utf8String, true, false, true, false);
-         }
+         printStringSizeLengthWidth(utf8String, true, false, true, false);
          break;
       case PrintMode::Size:
-         if(!utf8String.empty()) {
-            printStringSizeLengthWidth(utf8String, true, true, false, false);
-         }
+         printStringSizeLengthWidth(utf8String, true, true, false, false);
          break;
       case PrintMode::SizeLengthWidth:
-         if(!utf8String.empty()) {
-            printStringSizeLengthWidth(utf8String, true, true, true, true);
-         }
+         printStringSizeLengthWidth(utf8String, true, true, true, true);
          break;
       case PrintMode::TerminalInfo:
          printTerminalInfo();
