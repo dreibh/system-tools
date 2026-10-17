@@ -27,8 +27,8 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-STRING(ASCII 27 ESC)
 SET(TEST_LOCALE_DIR "${CMAKE_BINARY_DIR}/po")
+STRING(ASCII 27 ESC)
 
 # ===========================================================================
 # Deterministic Mock Data for System-Info Testing (-X and -Y)

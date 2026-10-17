@@ -41,3 +41,13 @@ INSTALL(FILES Fingerprint-SSH-Keys.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       Fingerprint-SSH-Keys.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      Fingerprint-SSH-Keys)
+
+
+#############################################################################
+#### TESTING                                                             ####
+#############################################################################
+
+IF (BUILD_TESTING)
+   SET(FINGERPRINT_SSH_KEYS_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/Fingerprint-SSH-Keys.versioned")
+   ADD_SUBDIRECTORY(tests)
+ENDIF()
