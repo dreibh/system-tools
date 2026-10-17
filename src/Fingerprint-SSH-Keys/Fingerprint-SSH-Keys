@@ -39,21 +39,46 @@ export TEXTDOMAIN="Fingerprint-SSH-Keys"
 . gettext.sh
 
 
-# ###### Usage ##############################################################
-usage () {
-   local exitCode="$1"
-   # TRANSLATORS: Command-line syntax message prefix:
-   # "Usage: <program> [options]".
-   echo >&2 "$(gettext "Usage:") $0 [-A|--all] [-a|--none] [-R|--with-raw] [-r|--without-raw] [-D|--with-dns] [-d|--without-dns] [-S|--with-ssh] [-s|--without-ssh] [-F|--format {text|python|csv}] [-K|--key-directory directory] [--include-deprecated] [-h|--help] [-v|--version]"
-   exit "${exitCode}"
-}
-
-
 # ###### Version ############################################################
 version () {
    echo "Fingerprint-SSH-Keys @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
    exit 0
 }
+
+
+# ------ BEGIN-OF-USAGE-BLOCK ------
+# ###### Usage ##############################################################
+usage () {
+   local program="$1"
+   local exitCode="$2"
+   local bold=$'\x1b[1m'
+   local underline=$'\x1b[4m'
+   local reset=$'\x1b[0m'
+   # TRANSLATORS: Command-line syntax message prefix:
+   # "Usage: <program> [options]".
+   cat >&2 <<EOF
+${underline}$(gettext "Usage:")${reset}
+${bold}${program}${reset}
+        ${bold}[${reset}${bold}-A${reset} ${bold}|${reset} ${bold}--all${reset}${bold}]${reset}
+        ${bold}[${reset}${bold}-a${reset} ${bold}|${reset} ${bold}--none${reset}${bold}]${reset}
+        ${bold}[${reset}${bold}-R${reset} ${bold}|${reset} ${bold}--with-raw${reset}${bold}]${reset}
+        ${bold}[${reset}${bold}-r${reset} ${bold}|${reset} ${bold}--without-raw${reset}${bold}]${reset}
+        ${bold}[${reset}${bold}-D${reset} ${bold}|${reset} ${bold}--with-dns${reset}${bold}]${reset}
+        ${bold}[${reset}${bold}-d${reset} ${bold}|${reset} ${bold}--without-dns${reset}${bold}]${reset}
+        ${bold}[${reset}${bold}-S${reset} ${bold}|${reset} ${bold}--with-ssh${reset}${bold}]${reset}
+        ${bold}[${reset}${bold}-s${reset} ${bold}|${reset} ${bold}--without-ssh${reset}${bold}]${reset}
+        ${bold}[${reset}${bold}-F${reset} ${underline}type${reset} ${bold}|${reset} ${bold}--format${reset} ${underline}type${reset}${bold}]${reset}
+        ${bold}[${reset}${bold}-K${reset} ${underline}directory${reset} ${bold}|${reset} ${bold}--key-directory${reset} ${underline}directory${reset}${bold}]${reset}
+        ${bold}[${reset}${bold}--include-deprecated${reset}${bold}]${reset}
+${bold}${program}${reset}
+        ${bold}[${reset}${bold}-h${reset} ${bold}|${reset} ${bold}--help${reset}${bold}]${reset}
+${bold}${program}${reset}
+        ${bold}[${reset}${bold}-v${reset} ${bold}|${reset} ${bold}--version${reset}${bold}]${reset}
+EOF
+   exit "${exitCode}"
+}
+# ------ END-OF-USAGE-BLOCK ------
+
 
 
 # ###### Main program #######################################################
@@ -97,7 +122,7 @@ fi
 options="$(${GETOPT} -o AaRrDdsSF:K:hv --long all,none,with-raw,without-raw,with-dns,without-dns,with-ssh,without-ssh,format:,raw-format:,key-directory:,include-deprecated,include-raw,include-raw-python,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage 1
+   usage "$0" 1
 fi
 eval set -- "${options}"
 
@@ -149,7 +174,7 @@ while [ $# -gt 0 ] ; do
                # ${FORMAT} = specified format name
                eval_gettext >&2 "ERROR: Invalid format '\${FORMAT}'! Allowed formats: text, python, csv."
                echo >&2
-               usage 1
+               usage "$0" 1
                ;;
          esac
          shift
@@ -177,7 +202,7 @@ while [ $# -gt 0 ] ; do
          FORMAT="python"
          ;;
       -h | --help)
-         usage 0
+         usage "$0" 0
          ;;
       -v | --version)
          version
@@ -195,7 +220,7 @@ while [ $# -gt 0 ] ; do
    shift
 done
 if [ $# -ne 0 ] ; then
-   usage 1
+   usage "$0" 1
 fi
 
 
