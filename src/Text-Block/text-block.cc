@@ -391,46 +391,83 @@ static void processMarked(std::string_view text,
 }
 
 
+// ------ BEGIN-OF-USAGE-BLOCK ------
 // ###### Usage #############################################################
-[[noreturn]] static void usage(const char* program,
-                               const int   exitCode)
+#define HEADER(s)    "\x1b[4m" << (s) << "\x1b[0m"
+#define CMD(s)       "\x1b[1m" << (s) << "\x1b[0m"
+#define OPT(s)       "\x1b[1m" s "\x1b[0m"
+#define ARG(s)       "\x1b[4m" s "\x1b[0m"
+#define SYN(s)       "\x1b[1m" s "\x1b[0m"
+#define PIPE         SYN(" | ")
+#define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
+
+[[ noreturn ]]
+static void usage(const char* program, const int exitCode)
 {
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
-   std::cerr << gettext("Usage:") << " " << program
-             << " [-C|--cat]"
-             << " [-0|--discard]"
-             << " [-H|--highlight]"
-             << " [-E|--enumerate]"
-             << " [-X|--extract]"
-             << " [-D|--delete|--remove]"
-             << " [-F|--insert-front insert_file]"
-             << " [-B|--insert-back insert_file]"
-             << " [-R|--replace insert_file]"
-             << " [-i|--input input_file]"
-             << " [-o|--output output_file]"
-             << " [-a|--append]"
-             << " [-p|--in-place]"
-             << " [-k|--keep-broken]"
-             << " [--min-actions|-m actions]"
-             << " [--max-actions|-M actions]"
-             << " [-s|--select from_line to_line]"
-             << " [-b|--begin-tag begin_tag]"
-             << " [-e|--end-tag end_tag]"
-             << " [-t|--tag tag]"
-             << " [-y|--include-tags]"
-             << " [-x|--exclude-tags]"
-             << " [-f|--full-tag-lines]"
-             << " [-g|--tags-only]"
-             << " [--highlight-[begin|end|unmarked1|unmarked2|marked1|marked2] label]"
-             << " [--highlight-params begin_label end_label unmarked1_label unmarked2_label marked1_label marked2_label]"
-             << " [--enumerate-format format]"
-             << " [--enumerate-label[1|2] string]"
-             << " [-q|--suppress-warnings]"
-             << " [-h|--help]"
-             << " [-v|--version]\n";
-   std::exit(exitCode);
+   std::cerr << HEADER(gettext("Usage:")) << "\n"
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-C") PIPE OPT("--cat"))
+                   ENTRY(ARG("options"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-0") PIPE OPT("--discard"))
+                   ENTRY(ARG("options"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-H") PIPE OPT("--highlight"))
+                   ENTRY(ARG("options"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-E") PIPE OPT("--enumerate"))
+                   ENTRY(ARG("options"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-X") PIPE OPT("--extract"))
+                   ENTRY(ARG("options"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-D") PIPE OPT("--delete") PIPE OPT("--remove"))
+                   ENTRY(ARG("options"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-F") " " ARG("insert_file") PIPE OPT("--insert-front") " " ARG("insert_file"))
+                   ENTRY(ARG("options"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-B") " " ARG("insert_file") PIPE OPT("--insert-back") " " ARG("insert_file"))
+                   ENTRY(ARG("options"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-R") " " ARG("insert_file") PIPE OPT("--replace") " " ARG("insert_file"))
+                   ENTRY(ARG("options"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-h") PIPE OPT("--help"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-v") PIPE OPT("--version"))
+             << CMD("OPTIONS:") << "\n"
+                   ENTRY(OPT("-b") " " ARG("begin_tag") PIPE OPT("--begin-tag") " " ARG("begin_tag"))
+                   ENTRY(OPT("-e") " " ARG("end_tag") PIPE OPT("--end-tag") " " ARG("end_tag"))
+                   ENTRY(OPT("-i") PIPE OPT("--input") " " ARG("input_file"))
+                   ENTRY(OPT("-o") PIPE OPT("--output") " " ARG("output_file"))
+                   ENTRY(OPT("-a") PIPE OPT("--append"))
+                   ENTRY(OPT("-p") PIPE OPT("--in-place"))
+                   ENTRY(OPT("-k") PIPE OPT("--keep-broken"))
+                   ENTRY(OPT("-m") PIPE OPT("--min-actions"))
+                   ENTRY(OPT("-M") PIPE OPT("--max-actions"))
+                   ENTRY(OPT("-s") PIPE OPT("--select") " " ARG("from_line") " " ARG("to_line"))
+                   ENTRY(OPT("-t") PIPE OPT("--tag") " " ARG("tag"))
+                   ENTRY(OPT("-y") PIPE OPT("--include-tags"))
+                   ENTRY(OPT("-x") PIPE OPT("--exclude-tags"))
+                   ENTRY(OPT("-f") PIPE OPT("--full-tag-lines"))
+                   ENTRY(OPT("-g") PIPE OPT("--tags-only"))
+                   ENTRY(OPT("-q") PIPE OPT("--suppress-warnings"))
+                   ENTRY(OPT("--enumerate-format") " " ARG("format"))
+                   ENTRY(OPT("--enumerate-label1") " " ARG("string"))
+                   ENTRY(OPT("--enumerate-label2") " " ARG("string"))
+                   ENTRY(OPT("--highlight-begin") " " ARG("string"))
+                   ENTRY(OPT("--highlight-end") " " ARG("string"))
+                   ENTRY(OPT("--highlight-unmarked1") " " ARG("string"))
+                   ENTRY(OPT("--highlight-unmarked2") " " ARG("string"))
+                   ENTRY(OPT("--highlight-marked1") " " ARG("string"))
+                   ENTRY(OPT("--highlight-marked2") " " ARG("string"))
+                   ENTRY(OPT("--highlight-param") " " ARG("begin_label") " " ARG("end_label") " " ARG("unmarked1_label") " " ARG("unmarked2_label") " " ARG("marked1_label") " " ARG("marked2_label"));
+   exit(exitCode);
 }
+// ------ END-OF-USAGE-BLOCK ------
 
 
 // ###### Main program ######################################################

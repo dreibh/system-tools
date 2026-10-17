@@ -38,11 +38,11 @@
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm System\-Maintenance
-.Op Fl k | Fl Fl interactive\-kernel\-removal
+.Op Fl k | Fl \-interactive\-kernel\-removal
 .Nm System\-Maintenance
-.Op Fl h | Fl Fl help
+.Op Fl h | Fl \-help
 .Nm System\-Maintenance
-.Op Fl v | Fl Fl version
+.Op Fl v | Fl \-version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm System\-Maintenance
@@ -71,11 +71,11 @@ Trimming SSDs and virtual storage
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl k | Fl Fl interactive\-kernel\-removal
+.It Fl k | Fl \-interactive\-kernel\-removal
 Remove obsolete kernels interactively.
-.It Fl h | Fl Fl help
+.It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
-.It Fl v | Fl Fl version
+.It Fl v | Fl \-version
 Prints the program version and exits.
 .El
 .\" ###### Exit status ######################################################
@@ -85,11 +85,15 @@ The
 tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-.Bl -tag -width indent
-.It sudo System\-Maintenance
-.It sudo System\-Maintenance \-\-interactive\-kernel\-removal
-.It System\-Maintenance \-\-version
-.It System\-Maintenance \-\-help
+.Bl -bullet
+.It
+sudo System\-Maintenance
+.It
+sudo System\-Maintenance \-\-interactive\-kernel\-removal
+.It
+System\-Maintenance \-\-version
+.It
+System\-Maintenance \-\-help
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO

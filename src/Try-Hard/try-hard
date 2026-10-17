@@ -62,18 +62,18 @@ usage () {
    cat >&2 <<EOF
 ${header}$(gettext "Usage:")${reset}
 ${cmd}${program}${reset} ${arg}max_trials${reset} ${arg}max_delay${reset}
-        ${syn}[${reset}${opt}-m${reset} ${arg}min_delay${reset} ${opt}|${reset} ${opt}--min-delay${reset} ${arg}min_delay${reset}${syn}]${reset}
-        ${syn}[${reset}${opt}-A${reset} ${arg}delay_increment${reset} ${opt}|${reset} ${opt}--additive-increase${reset} ${arg}delay_increment${reset}${syn}]${reset}
-        ${syn}[${reset}${opt}-M${reset} ${arg}delay_factor${reset} ${opt}|${reset} ${opt}--multiplicative-increase${reset} ${arg}delay_factor${reset}${syn}]${reset}
-        ${syn}[${reset}${opt}-T${reset} ${arg}max_delay${reset} ${opt}|${reset} ${opt}--truncate-delay${reset} ${arg}truncated_max_delay${reset}${syn}]${reset}
-        ${syn}[${reset}${opt}-D${reset} ${opt}|${reset} ${opt}--deterministic${reset}${syn}]${reset}
-        ${syn}[${reset}${opt}-q${reset} ${opt}|${reset} ${opt}--quiet${reset}${syn}]${reset}
-        ${syn}[${reset}${opt}-w${reset} ${opt}|${reset} ${opt}--verbose${reset}${syn}]${reset}
-        ${syn}--${reset} ${arg}command${reset} ${syn}[${reset}${arg}argument${reset} ...${syn}]${reset}
+	${syn}[${reset}${opt}-m${reset} ${arg}min_delay${reset} ${opt}|${reset} ${opt}--min-delay${reset} ${arg}min_delay${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-A${reset} ${arg}delay_increment${reset} ${opt}|${reset} ${opt}--additive-increase${reset} ${arg}delay_increment${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-M${reset} ${arg}delay_factor${reset} ${opt}|${reset} ${opt}--multiplicative-increase${reset} ${arg}delay_factor${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-T${reset} ${arg}max_delay${reset} ${opt}|${reset} ${opt}--truncate-delay${reset} ${arg}truncated_max_delay${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-D${reset} ${opt}|${reset} ${opt}--deterministic${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-q${reset} ${opt}|${reset} ${opt}--quiet${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-w${reset} ${opt}|${reset} ${opt}--verbose${reset}${syn}]${reset}
+	${syn}--${reset} ${arg}command${reset} ${syn}[${reset}${arg}argument${reset} ...${syn}]${reset}
 ${cmd}${program}${reset}
-        ${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
 ${cmd}${program}${reset}
-        ${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
 EOF
    exit "${exitCode}"
 }

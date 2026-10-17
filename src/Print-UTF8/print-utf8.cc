@@ -640,30 +640,64 @@ static void doMultiLineIndentOrCenter(std::string_view borderLeft,
 }
 
 
+// ------ BEGIN-OF-USAGE-BLOCK ------
 // ###### Usage #############################################################
-[[noreturn]] static void usage(const char* program,
-                               const int   exitCode)
+#define HEADER(s)    "\x1b[4m" << (s) << "\x1b[0m"
+#define CMD(s)       "\x1b[1m" << (s) << "\x1b[0m"
+#define OPT(s)       "\x1b[1m" s "\x1b[0m"
+#define ARG(s)       "\x1b[4m" s "\x1b[0m"
+#define SYN(s)       "\x1b[1m" s "\x1b[0m"
+#define PIPE         SYN(" | ")
+#define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
+
+[[ noreturn ]]
+static void usage(const char* program, const int exitCode)
 {
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
-   std::cerr << gettext("Usage:") << " " << program
-             << " [-n|--newline]"
-             << " [-i indentation|--indent indentation]"
-             << " [-c|--center]"
-             << " [-I indentation left right|--multiline-indent indentation left right]"
-             << " [-C left right|--multiline-center left right]"
-             << " [-s border_left separator border_right|--separator border_left separator border_right]"
-             << " [-x columns|--columns columns]"
-             << " [-b|--size]"
-             << " [-l|--length]"
-             << " [-w|--width]"
-             << " [-a|--size-length-width]"
-             << " [-t|--terminal-info]"
-             << " [-h|--help]"
-             << " [-v|--version]"
-             << " [string]\n";
-   std::exit(exitCode);
+   std::cerr << HEADER(gettext("Usage:")) << "\n"
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-n") PIPE OPT("--newline"))
+                   ENTRY(OPT("-i") " " ARG("indentation") PIPE OPT("--indent") " " ARG("indentation"))
+                   ENTRY(ARG("string"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-n") PIPE OPT("--newline"))
+                   ENTRY(OPT("-x") " " ARG("console_width") PIPE OPT("--columns") " " ARG("console_width"))
+                   ENTRY(OPT("-c") PIPE OPT("--center"))
+                   ENTRY(ARG("string"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-n") PIPE OPT("--newline"))
+                   ENTRY(OPT("-x") " " ARG("console_width") PIPE OPT("--columns") " " ARG("console_width"))
+                   ENTRY(OPT("-I") " " ARG("indentation") " " ARG("left") " " ARG("right") PIPE OPT("--multiline-indent") " " ARG("indentation") " " ARG("left") " " ARG("right"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-n") PIPE OPT("--newline"))
+                   ENTRY(OPT("-x") " " ARG("console_width") PIPE OPT("--columns") " " ARG("console_width"))
+                   ENTRY(OPT("-C") " " ARG("left") " " ARG("right") PIPE OPT("--multiline-center") " " ARG("left") " " ARG("right"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-n") PIPE OPT("--newline"))
+                   ENTRY(OPT("-x") " " ARG("console_width") PIPE OPT("--columns") " " ARG("console_width"))
+                   ENTRY(OPT("-s") " " ARG("left") " " ARG("separator") " " ARG("right") PIPE OPT("--separator") " " ARG("left") " " ARG("separator") " " ARG("right"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-b") PIPE OPT("--size"))
+                   ENTRY(ARG("string"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-l") PIPE OPT("--length"))
+                   ENTRY(ARG("string"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-w") PIPE OPT("--width"))
+                   ENTRY(ARG("string"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-a") PIPE OPT("--size-length-width"))
+                   ENTRY(ARG("string"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-t") PIPE OPT("--terminal-info"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-h") PIPE OPT("--help"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-v") PIPE OPT("--version"));
+   exit(exitCode);
 }
+// ------ END-OF-USAGE-BLOCK ------
 
 
 // ###### Main program #######################################################

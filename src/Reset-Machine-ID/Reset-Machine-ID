@@ -200,17 +200,17 @@ usage () {
    cat >&2 <<EOF
 ${header}$(gettext "Usage:")${reset}
 ${cmd}${program}${reset}
-        ${syn}[${reset}${opt}-H${reset} ${arg}hostname${reset} ${opt}|${reset} ${opt}--hostname${reset} ${arg}hostname${reset}${syn}]${reset}
-        ${syn}[${reset}${opt}-M${reset} ${opt}|${reset} ${opt}--skip-machine-id${reset}${syn}]${reset}
-        ${syn}[${reset}${opt}-S${reset} ${opt}|${reset} ${opt}--skip-ssh-configuration${reset}${syn}]${reset}
-        ${syn}[${reset}${opt}-K${reset} ${opt}|${reset} ${opt}--skip-ssh-key-replacement${reset}${syn}]${reset}
-        ${syn}[${reset}${opt}-Z${reset} ${arg}zabbix_server${reset} ${opt}|${reset} ${opt}--zabbix${reset} ${arg}zabbix_server${reset}${syn}]${reset}
-        ${syn}[${reset}${opt}-A${reset} ${opt}|${reset} ${opt}--install-zabbix-agent${reset}${syn}]${reset}
-        ${syn}[${reset}${opt}--yes-to-all-i-am-really-sure${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-H${reset} ${arg}hostname${reset} ${opt}|${reset} ${opt}--hostname${reset} ${arg}hostname${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-M${reset} ${opt}|${reset} ${opt}--skip-machine-id${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-S${reset} ${opt}|${reset} ${opt}--skip-ssh-configuration${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-K${reset} ${opt}|${reset} ${opt}--skip-ssh-key-replacement${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-Z${reset} ${arg}zabbix_server${reset} ${opt}|${reset} ${opt}--zabbix${reset} ${arg}zabbix_server${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-A${reset} ${opt}|${reset} ${opt}--install-zabbix-agent${reset}${syn}]${reset}
+	${syn}[${reset}${opt}--yes-to-all-i-am-really-sure${reset}${syn}]${reset}
 ${cmd}${program}${reset}
-        ${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
 ${cmd}${program}${reset}
-        ${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
 EOF
    exit "${exitCode}"
 }

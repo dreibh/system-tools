@@ -54,7 +54,7 @@ usage () {
    local header=$'\x1b[4m'
    local cmd=$'\x1b[1m'
    local opt=$'\x1b[1m'
-   # local arg=$'\x1b[4m'
+   local arg=$'\x1b[4m'
    local syn=$'\x1b[1m'
    local reset=$'\x1b[0m'
    # TRANSLATORS: Command-line syntax message prefix:
@@ -62,11 +62,11 @@ usage () {
    cat >&2 <<EOF
 ${header}$(gettext "Usage:")${reset}
 ${cmd}${program}${reset}
-        ${syn}[${reset}${opt}-k${reset} ${opt}|${reset} ${opt}--interactive-kernel-removal${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-k${reset} ${opt}|${reset} ${opt}--interactive-kernel-removal${reset}${syn}]${reset}
 ${cmd}${program}${reset}
-        ${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
 ${cmd}${program}${reset}
-        ${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
 EOF
    exit "${exitCode}"
 }
