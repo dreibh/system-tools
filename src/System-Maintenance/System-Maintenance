@@ -39,21 +39,38 @@ export TEXTDOMAIN="System-Maintenance"
 . gettext.sh
 
 
-# ###### Usage ##############################################################
-usage () {
-   local exitCode="$1"
-   # TRANSLATORS: Command-line syntax message prefix:
-   # "Usage: <program> [options]".
-   echo >&2 "$(gettext "Usage:") $0 [-k|--interactive-kernel-removal] [-h|--help] [-v|--version]"
-   exit "${exitCode}"
-}
-
-
 # ###### Version ############################################################
 version () {
    echo "System-Maintenance @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
    exit 0
 }
+
+
+# ------ BEGIN-OF-USAGE-BLOCK ------
+# ###### Usage ##############################################################
+usage () {
+   local program="$1"
+   local exitCode="$2"
+   local header=$'\x1b[4m'
+   local cmd=$'\x1b[1m'
+   local opt=$'\x1b[1m'
+   # local arg=$'\x1b[4m'
+   local syn=$'\x1b[1m'
+   local reset=$'\x1b[0m'
+   # TRANSLATORS: Command-line syntax message prefix:
+   # "Usage: <program> [options]".
+   cat >&2 <<EOF
+${header}$(gettext "Usage:")${reset}
+${cmd}${program}${reset}
+        ${syn}[${reset}${opt}-k${reset} ${opt}|${reset} ${opt}--interactive-kernel-removal${reset}${syn}]${reset}
+${cmd}${program}${reset}
+        ${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
+${cmd}${program}${reset}
+        ${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
+EOF
+   exit "${exitCode}"
+}
+# ------ END-OF-USAGE-BLOCK ------
 
 
 
@@ -97,7 +114,7 @@ fi
 options="$(${GETOPT} -o khv --long interactive-kernel-removal,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage 1
+   usage "$0" 1
 fi
 eval set -- "${options}"
 
@@ -108,7 +125,7 @@ while [ $# -gt 0 ] ; do
          INTERACTIVE_KERNEL_REMOVAL=1
          ;;
       -h | --help)
-         usage 0
+         usage "$0" 0
          ;;
       -v | --version)
          version
@@ -126,7 +143,7 @@ while [ $# -gt 0 ] ; do
   shift
 done
 if [ $# -ne 0 ] ; then
-   usage 1
+   usage "$0" 1
 fi
 
 

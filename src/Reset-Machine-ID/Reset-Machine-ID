@@ -177,21 +177,44 @@ EOF
 }
 
 
-# ###### Usage ##############################################################
-usage () {
-   local exitCode="$1"
-   # TRANSLATORS: Command-line syntax message prefix:
-   # "Usage: <program> [options]".
-   echo >&2 "$(gettext "Usage:") $0 [--hostname|-H hostname] [--skip-machine-id|-M] [--skip-ssh-configuration|-S] [--skip-ssh-key-replacement|-K] [--zabbix|-Z zabbix_server] [--install-zabbix-agent|-A] [--yes-to-all-i-am-really-sure] [-h|--help] [-v|--version]"
-   exit "${exitCode}"
-}
-
-
 # ###### Version ############################################################
 version () {
    echo "Reset-Machine-ID @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
    exit 0
 }
+
+
+# ------ BEGIN-OF-USAGE-BLOCK ------
+# ###### Usage ##############################################################
+usage () {
+   local program="$1"
+   local exitCode="$2"
+   local header=$'\x1b[4m'
+   local cmd=$'\x1b[1m'
+   local opt=$'\x1b[1m'
+   local arg=$'\x1b[4m'
+   local syn=$'\x1b[1m'
+   local reset=$'\x1b[0m'
+   # TRANSLATORS: Command-line syntax message prefix:
+   # "Usage: <program> [options]".
+   cat >&2 <<EOF
+${header}$(gettext "Usage:")${reset}
+${cmd}${program}${reset}
+        ${syn}[${reset}${opt}-H${reset} ${arg}hostname${reset} ${opt}|${reset} ${opt}--hostname${reset} ${arg}hostname${reset}${syn}]${reset}
+        ${syn}[${reset}${opt}-M${reset} ${opt}|${reset} ${opt}--skip-machine-id${reset}${syn}]${reset}
+        ${syn}[${reset}${opt}-S${reset} ${opt}|${reset} ${opt}--skip-ssh-configuration${reset}${syn}]${reset}
+        ${syn}[${reset}${opt}-K${reset} ${opt}|${reset} ${opt}--skip-ssh-key-replacement${reset}${syn}]${reset}
+        ${syn}[${reset}${opt}-Z${reset} ${arg}zabbix_server${reset} ${opt}|${reset} ${opt}--zabbix${reset} ${arg}zabbix_server${reset}${syn}]${reset}
+        ${syn}[${reset}${opt}-A${reset} ${opt}|${reset} ${opt}--install-zabbix-agent${reset}${syn}]${reset}
+        ${syn}[${reset}${opt}--yes-to-all-i-am-really-sure${reset}${syn}]${reset}
+${cmd}${program}${reset}
+        ${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
+${cmd}${program}${reset}
+        ${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
+EOF
+   exit "${exitCode}"
+}
+# ------ END-OF-USAGE-BLOCK ------
 
 
 
@@ -235,7 +258,7 @@ fi
 options="$(${GETOPT} -o H:MSKZ:Ahv --long hostname:,skip-machine-id,skip-ssh-configuration,skip-ssh-key-replacement,zabbix:,install-zabbix-agent,yes-to-all-i-am-really-sure,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage 1
+   usage "$0" "$0" 1
 fi
 eval set -- "${options}"
 
@@ -286,7 +309,7 @@ while [ $# -gt 0 ] ; do
          applyChanges="yes"
          ;;
       -h | --help)
-         usage 0
+         usage "$0" 0
          ;;
       -v | --version)
          version
@@ -304,7 +327,7 @@ while [ $# -gt 0 ] ; do
   shift
 done
 if [ $# -ne 0 ] ; then
-   usage 1
+   usage "$0" 1
 fi
 
 
