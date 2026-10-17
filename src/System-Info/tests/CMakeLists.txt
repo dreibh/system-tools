@@ -30,64 +30,65 @@
 SET(TEST_LOCALE_DIR "${CMAKE_BINARY_DIR}/po")
 STRING(ASCII 27 ESC)
 
-# ===========================================================================
-# Deterministic Mock Data for System-Info Testing (-X and -Y)
-# ===========================================================================
+#############################################################################
+#### Deterministic Mock Data for System-Info Testing (-X and -Y)         ####
+#############################################################################
+
 SET(MOCK_SYSTEM_INFO_FILE "${CMAKE_CURRENT_BINARY_DIR}/mock-system-info.txt")
 SET(MOCK_CONFIG_FILE      "${CMAKE_CURRENT_BINARY_DIR}/mock-system-info.conf")
 SET(MOCK_DATE_STRING      "Sat Oct 17 22:45:00 CEST 2026")
 
 FILE(WRITE "${MOCK_SYSTEM_INFO_FILE}"
-"hostname_long=\"nordmarka.nntb.no\"\n"
-"uptime_days=12\n"
-"uptime_hours=3\n"
-"uptime_mins=45\n"
-"uptime_secs=30\n"
-"os_name=\"Ubuntu\"\n"
-"os_version=\"24.04.1 LTS\"\n"
-"os_version_id=\"24.04\"\n"
-"os_version_codename=\"Noble Numbat\"\n"
-"system_sysname=\"Linux\"\n"
-"system_release=\"6.8.0-45-generic\"\n"
-"system_machine=\"x86_64\"\n"
-"system_cores=8\n"
-"system_procs=312\n"
-"system_users=2\n"
-"system_load_avg1min=0.45\n"
-"system_load_avg5min=0.38\n"
-"system_load_avg15min=0.29\n"
-"battery_list=\"1\"\n"
-"battery_1_status=3\n"
-"battery_1_capacity=100\n"
-"system_mem_total=16777216000\n"
-"system_mem_used=8388608000\n"
-"system_mem_free=8388608000\n"
-"system_mem_freepct=50.0\n"
-"system_swap_total=4194304000\n"
-"system_swap_used=1048576000\n"
-"system_swap_free=3145728000\n"
-"system_swap_freepct=75.0\n"
-"disk_list=\"root home\"\n"
-"disk_root_pct=42.0\n"
-"disk_home_pct=85.0\n"
-"ssh_key_list=\"1 2\"\n"
-"ssh_key_type_1=\"ED25519\"\n"
-"ssh_key_bits_1=256\n"
-"ssh_key_fingerprint_1=\"SHA256:abcdef1234567890\"\n"
-"ssh_key_type_2=\"RSA\"\n"
-"ssh_key_bits_2=4096\n"
-"ssh_key_fingerprint_2=\"SHA256:0987654321fedcba\"\n"
-"netif_list=\"1\"\n"
-"netif_1_name=\"eth0\"\n"
-"netif_1_flags=\"<UP>\"\n"
-"netif_1_ipv4=\"192.168.1.100/24\"\n"
-"netif_1_ipv6=\"2001:db8::1/64 fe80::1/64\"\n"
+     "hostname_long=\"nordmarka.nntb.no\"\n"
+     "uptime_days=12\n"
+     "uptime_hours=3\n"
+     "uptime_mins=45\n"
+     "uptime_secs=30\n"
+     "os_name=\"Ubuntu\"\n"
+     "os_version=\"24.04.1 LTS\"\n"
+     "os_version_id=\"24.04\"\n"
+     "os_version_codename=\"Noble Numbat\"\n"
+     "system_sysname=\"Linux\"\n"
+     "system_release=\"6.8.0-45-generic\"\n"
+     "system_machine=\"x86_64\"\n"
+     "system_cores=8\n"
+     "system_procs=312\n"
+     "system_users=2\n"
+     "system_load_avg1min=0.45\n"
+     "system_load_avg5min=0.38\n"
+     "system_load_avg15min=0.29\n"
+     "battery_list=\"1\"\n"
+     "battery_1_status=3\n"
+     "battery_1_capacity=100\n"
+     "system_mem_total=16777216000\n"
+     "system_mem_used=8388608000\n"
+     "system_mem_free=8388608000\n"
+     "system_mem_freepct=50.0\n"
+     "system_swap_total=4194304000\n"
+     "system_swap_used=1048576000\n"
+     "system_swap_free=3145728000\n"
+     "system_swap_freepct=75.0\n"
+     "disk_list=\"root home\"\n"
+     "disk_root_pct=42.0\n"
+     "disk_home_pct=85.0\n"
+     "ssh_key_list=\"1 2\"\n"
+     "ssh_key_type_1=\"ED25519\"\n"
+     "ssh_key_bits_1=256\n"
+     "ssh_key_fingerprint_1=\"SHA256:abcdef1234567890\"\n"
+     "ssh_key_type_2=\"RSA\"\n"
+     "ssh_key_bits_2=4096\n"
+     "ssh_key_fingerprint_2=\"SHA256:0987654321fedcba\"\n"
+     "netif_list=\"1\"\n"
+     "netif_1_name=\"eth0\"\n"
+     "netif_1_flags=\"<UP>\"\n"
+     "netif_1_ipv4=\"192.168.1.100/24\"\n"
+     "netif_1_ipv6=\"2001:db8::1/64 fe80::1/64\"\n"
 )
 
 FILE(WRITE "${MOCK_CONFIG_FILE}"
-"color_basic=\"\\e[31m\"\n"
-"color_network=\"\\e[32m\"\n"
-"color_none=\"\\e[0m\"\n"
+     "color_basic=\"\\e[31m\"\n"
+     "color_network=\"\\e[32m\"\n"
+     "color_none=\"\\e[0m\"\n"
 )
 
 
@@ -125,7 +126,7 @@ FUNCTION(ADD_GETSYSTEMINFO_FAIL_TEST TEST_NAME)
 ENDFUNCTION()
 
 
-# --- Basic CLI Options -----------------------------------------------------
+# === Basic CLI Options =====================================================
 ADD_GETSYSTEMINFO_TEST(getsysteminfo_cli_version_short -v)
 ADD_GETSYSTEMINFO_TEST(getsysteminfo_cli_version_long  --version)
 ADD_GETSYSTEMINFO_TEST(getsysteminfo_cli_help_short    -h)
@@ -139,7 +140,7 @@ SET_TESTS_PROPERTIES(getsysteminfo_cli_help_short getsysteminfo_cli_help_long PR
    PASS_REGULAR_EXPRESSION "Usage:"
 )
 
-# --- Subsystem Query Flags -------------------------------------------------
+# === Subsystem Query Flags =================================================
 ADD_GETSYSTEMINFO_TEST(getsysteminfo_query_all            -A)
 ADD_GETSYSTEMINFO_TEST(getsysteminfo_query_none           -a)
 ADD_GETSYSTEMINFO_TEST(getsysteminfo_with_hostname        -a -O)
@@ -178,7 +179,7 @@ SET_TESTS_PROPERTIES(getsysteminfo_with_network PROPERTIES
    PASS_REGULAR_EXPRESSION "netif_"
 )
 
-# --- Error Handling & Validation -------------------------------------------
+# === Error Handling & Validation ===========================================
 ADD_GETSYSTEMINFO_FAIL_TEST(getsysteminfo_fail_extra_arg       extra_argument)
 ADD_GETSYSTEMINFO_FAIL_TEST(getsysteminfo_fail_invalid_compat  -c 9999)
 ADD_GETSYSTEMINFO_FAIL_TEST(getsysteminfo_fail_unknown_flag    --invalid-option)
@@ -218,7 +219,7 @@ FUNCTION(ADD_SYSTEMINFO_FAIL_TEST TEST_NAME)
 ENDFUNCTION()
 
 
-# --- Basic CLI Options -----------------------------------------------------
+# === Basic CLI Options =====================================================
 ADD_SYSTEMINFO_TEST(systeminfo_cli_version_short -v)
 ADD_SYSTEMINFO_TEST(systeminfo_cli_version_long  --version)
 ADD_SYSTEMINFO_TEST(systeminfo_cli_help_short    -h)
@@ -232,7 +233,7 @@ SET_TESTS_PROPERTIES(systeminfo_cli_help_short systeminfo_cli_help_long PROPERTI
    PASS_REGULAR_EXPRESSION "Usage:"
 )
 
-# --- CLI Help Internationalization -----------------------------------------
+# === CLI Help Internationalization =========================================
 ADD_SYSTEMINFO_TEST(systeminfo_cli_help_i18n_de  -h)
 ADD_SYSTEMINFO_TEST(systeminfo_cli_help_i18n_nb  -h)
 ADD_SYSTEMINFO_TEST(systeminfo_cli_help_i18n_ar  -h)
@@ -262,7 +263,7 @@ SET_TESTS_PROPERTIES(systeminfo_cli_help_i18n_he PROPERTIES
    LABELS "system-info;cli;i18n;locale_he;rtl"
 )
 
-# --- Deterministic Mock Data Tests (-X and -Y) -----------------------------
+# === Deterministic Mock Data Tests (=X and =Y) =============================
 ADD_SYSTEMINFO_TEST(systeminfo_mock_deterministic_en
    -S /nonexistent
    -X "${MOCK_DATE_STRING}"
@@ -285,7 +286,7 @@ SET_TESTS_PROPERTIES(systeminfo_mock_custom_config PROPERTIES
    LABELS "system-info;mock;config"
 )
 
-# --- Deterministic RTL Tests (Arabic & Hebrew) ------------------------------
+# === Deterministic RTL Tests (Arabic & Hebrew) ==============================
 ADD_SYSTEMINFO_TEST(systeminfo_mock_deterministic_ar
    -S /nonexistent
    -X "${MOCK_DATE_STRING}"
@@ -308,7 +309,7 @@ SET_TESTS_PROPERTIES(systeminfo_mock_deterministic_he PROPERTIES
    LABELS "system-info;mock;i18n;locale_he;rtl"
 )
 
-# --- Error Handling & Validation -------------------------------------------
+# === Error Handling & Validation ===========================================
 ADD_SYSTEMINFO_FAIL_TEST(systeminfo_fail_config_not_found  -C /nonexistent/system-info.conf)
 ADD_SYSTEMINFO_FAIL_TEST(systeminfo_fail_input_not_found   -Y /nonexistent/input.txt)
 ADD_SYSTEMINFO_FAIL_TEST(systeminfo_fail_extra_arg         extra_argument)

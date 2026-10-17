@@ -29,20 +29,21 @@
 
 SET(TEST_LOCALE_DIR "${CMAKE_BINARY_DIR}/po")
 
-# ===========================================================================
-# Deterministic Mock SSH Host Public Keys
-# ===========================================================================
+#############################################################################
+#### Deterministic Mock SSH Host Public Keys                             ####
+#############################################################################
+
 SET(MOCK_SSH_DIR "${CMAKE_CURRENT_BINARY_DIR}/mock-ssh-keys")
 FILE(MAKE_DIRECTORY "${MOCK_SSH_DIR}")
 
 # Deterministic RFC 4253 / OpenSSH public key files:
-# RFC 8032 Section 7.1 Test Vector 1 (valid Curve25519 point)
+# RFC 8032 Section 7.1 Test Vector 1 (valid Curve25519 point):
 FILE(WRITE "${MOCK_SSH_DIR}/ssh_host_ed25519_key.pub"
-"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINdamAGCsQq31Uv+08lkBzoO4XLz2qYjJa8CGmj3B1Ea root@nordmarka\n"
+     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINdamAGCsQq31Uv+08lkBzoO4XLz2qYjJa8CGmj3B1Ea root@nordmarka\n"
 )
 # Valid NIST P-256 base generator point G
 FILE(WRITE "${MOCK_SSH_DIR}/ssh_host_ecdsa_key.pub"
-"ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBGsX0fLhLEJH+Lzm5WOkQPJ3A32BLeszoPShOUXYmMKWT+NC4v4af5uO5+tKfA+eFivOM1drMV7Oy7ZAaDe/UfU= root@nordmarka\n"
+     "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBGsX0fLhLEJH+Lzm5WOkQPJ3A32BLeszoPShOUXYmMKWT+NC4v4af5uO5+tKfA+eFivOM1drMV7Oy7ZAaDe/UfU= root@nordmarka\n"
 )
 
 
@@ -81,7 +82,7 @@ FUNCTION(ADD_FINGERPRINT_SSH_KEYS_FAIL_TEST TEST_NAME)
 ENDFUNCTION()
 
 
-# --- Basic CLI Options -----------------------------------------------------
+# === Basic CLI Options =====================================================
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_cli_version_short -v)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_cli_version_long  --version)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_cli_help_short    -h)
@@ -95,7 +96,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_cli_help_short fpsshkeys_cli_help_long PROPERTIES
    PASS_REGULAR_EXPRESSION "Usage:"
 )
 
-# --- CLI Help Internationalization -----------------------------------------
+# === CLI Help Internationalization =========================================
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_cli_help_i18n_de  -h)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_cli_help_i18n_nb  -h)
 
@@ -112,7 +113,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_cli_help_i18n_nb PROPERTIES
 )
 
 
-# --- Deterministic Output Tests: Raw Public Keys (-R) ----------------------
+# === Deterministic Output Tests: Raw Public Keys (=R) ======================
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_raw_text
    -a -R -K "${MOCK_SSH_DIR}" -F text
 )
@@ -138,7 +139,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_raw_python PROPERTIES
 )
 
 
-# --- Deterministic Output Tests: SSH Fingerprint Records (-S) --------------
+# === Deterministic Output Tests: SSH Fingerprint Records (=S) ==============
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_ssh_text
    -a -S -K "${MOCK_SSH_DIR}" -F text
 )
@@ -164,7 +165,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_ssh_python PROPERTIES
 )
 
 
-# --- Deterministic Output Tests: DNS SSHFP Records (-D) --------------------
+# === Deterministic Output Tests: DNS SSHFP Records (=D) ====================
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_dns_text
    -a -D -K "${MOCK_SSH_DIR}" -F text
 )
@@ -190,7 +191,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_dns_python PROPERTIES
 )
 
 
-# --- Combined & All Flag Tests (-A, -a, --none) ----------------------------
+# === Combined & All Flag Tests (=A, =a, ==none) ============================
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_all_csv
    -A -K "${MOCK_SSH_DIR}" -F csv
 )
@@ -209,7 +210,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_none_empty PROPERTIES
 )
 
 
-# --- CLI Flag Variants & Case-Insensitivity --------------------------------
+# === CLI Flag Variants & Case=Insensitivity ================================
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_format_case_insensitive_csv
    -a -R -K "${MOCK_SSH_DIR}" --format CsV
 )
@@ -240,7 +241,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_legacy_include_raw_python PROPERTIES
 )
 
 
-# --- Error Handling & Validation -------------------------------------------
+# === Error Handling & Validation ===========================================
 ADD_FINGERPRINT_SSH_KEYS_FAIL_TEST(fpsshkeys_fail_invalid_format_xml   -F xml)
 ADD_FINGERPRINT_SSH_KEYS_FAIL_TEST(fpsshkeys_fail_invalid_format_json  --format json)
 ADD_FINGERPRINT_SSH_KEYS_FAIL_TEST(fpsshkeys_fail_nonexistent_key_dir  -K /nonexistent/ssh/directory)
