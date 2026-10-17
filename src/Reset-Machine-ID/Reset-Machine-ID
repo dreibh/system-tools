@@ -258,7 +258,7 @@ fi
 options="$(${GETOPT} -o H:MSKZ:Ahv --long hostname:,skip-machine-id,skip-ssh-configuration,skip-ssh-key-replacement,zabbix:,install-zabbix-agent,yes-to-all-i-am-really-sure,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage "$0" "$0" 1
+   usage "$0" 1
 fi
 eval set -- "${options}"
 

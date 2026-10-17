@@ -41,3 +41,13 @@ INSTALL(FILES Reset-Machine-ID.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       Reset-Machine-ID.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      Reset-Machine-ID)
+
+
+#############################################################################
+#### TESTING                                                             ####
+#############################################################################
+
+IF (BUILD_TESTING)
+   SET(RESET_MACHINE_ID_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/Reset-Machine-ID.versioned")
+   ADD_SUBDIRECTORY(tests)
+ENDIF()
