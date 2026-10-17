@@ -28,122 +28,123 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 13, 2026
-.Dt get-system-info 1
-.Os get-system-info
+.Dd October 17, 2026
+.Dt get\-system\-info 1
+.Os get\-system\-info
 .\" ###### Name #############################################################
 .Sh NAME
-.Nm get-system-info
+.Nm get\-system\-info
 .Nd obtains system information
 .\" ###### Synopsis #########################################################
-.\" Manpage syntax help:
-.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm get-system-info
-.Op Fl c Ar version | Fl Fl compatibility Ar version
+.Nm get\-system\-info
+.Op Fl c Ar version | Fl \-compatibility Ar version
 .br
-.Op Fl A | Fl Fl all
-.Op Fl a | Fl Fl none
+.Op Fl A | Fl \-all
+.Op Fl a | Fl \-none
 .br
-.Op Fl B | Fl Fl with-battery
-.Op Fl b | Fl Fl without-battery
+.Op Fl B | Fl \-with\-battery
+.Op Fl b | Fl \-without\-battery
 .br
-.Op Fl E | Fl Fl with-os
-.Op Fl e | Fl Fl without-os
+.Op Fl E | Fl \-with\-os
+.Op Fl e | Fl \-without\-os
 .br
-.Op Fl F | Fl Fl with-ssh
-.Op Fl f | Fl Fl without-ssh
+.Op Fl F | Fl \-with\-ssh
+.Op Fl f | Fl \-without\-ssh
 .br
-.Op Fl K | Fl Fl with-kernel
-.Op Fl k | Fl Fl without-kernel
+.Op Fl K | Fl \-with\-kernel
+.Op Fl k | Fl \-without\-kernel
 .br
-.Op Fl L | Fl Fl with-load
-.Op Fl l | Fl Fl without-load
+.Op Fl L | Fl \-with\-load
+.Op Fl l | Fl \-without\-load
 .br
-.Op Fl M | Fl Fl with-memory
-.Op Fl m | Fl Fl without-memory
+.Op Fl M | Fl \-with\-memory
+.Op Fl m | Fl \-without\-memory
 .br
-.Op Fl N | Fl Fl with-network
-.Op Fl n | Fl Fl without-network
+.Op Fl N | Fl \-with\-network
+.Op Fl n | Fl \-without\-network
 .br
-.Op Fl O | Fl Fl with-hostname
-.Op Fl o | Fl Fl without-hostname
+.Op Fl O | Fl \-with\-hostname
+.Op Fl o | Fl \-without\-hostname
 .br
-.Op Fl S | Fl Fl with-storage
-.Op Fl s | Fl Fl without-storage
+.Op Fl S | Fl \-with\-storage
+.Op Fl s | Fl \-without\-storage
 .br
-.Op Fl T | Fl Fl with-uptime
-.Op Fl t | Fl Fl without-uptime
+.Op Fl T | Fl \-with\-uptime
+.Op Fl t | Fl \-without\-uptime
 .br
-.Op Fl U | Fl Fl with-user
-.Op Fl u | Fl Fl without-user
-.Nm get-system-info
-.Op Fl h | Fl Fl help
-.Nm get-system-info
-.Op Fl v | Fl Fl version
+.Op Fl U | Fl \-with\-user
+.Op Fl u | Fl \-without\-user
+.Nm get\-system\-info
+.Op Fl h | Fl \-help
+.Nm get\-system\-info
+.Op Fl v | Fl \-version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-get-system-info obtains system information in machine\-readable form. It is
-mainly intended for being used by
-.Xr System\-Info 1 .
+.Nm get\-system\-info
+obtains system information in machine\-readable form.
+It is mainly intended for being used by
+.Xr System\-Info 1.
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl c Ar version | Fl Fl compatibility Ar version
-Request a certain version for the output. This option is to allow for future
-changes of get\-system\-info. Currently, the only available version is 0.
-.It Fl A | Fl Fl all
+.It Fl c Ar version | Fl \-compatibility Ar version
+Request a certain version for the output.
+This option is to allow for future changes of
+.Nm get\-system\-info .
+Currently, the only available version is 0.
+.It Fl A | Fl \-all
 Query all system information (default).
-.It Fl a | Fl Fl none
+.It Fl a | Fl \-none
 Do not query any system information.
-.It Fl B | Fl Fl with-battery
+.It Fl B | Fl \-with\-battery
 Enable query of battery information.
-.It Fl b | Fl Fl without-battery
+.It Fl b | Fl \-without\-battery
 Disable query of battery information.
-.It Fl E | Fl Fl with-os
+.It Fl E | Fl \-with\-os
 Enable query of operating system release information.
-.It Fl e | Fl Fl without-os
+.It Fl e | Fl \-without\-os
 Disable query of operating system release information.
-.It Fl F | Fl Fl with-ssh
+.It Fl F | Fl \-with\-ssh
 Enable query of SSH host key fingerprint information.
-.It Fl f | Fl Fl without-ssh
+.It Fl f | Fl \-without\-ssh
 Disable query of SSH host key fingerprint information.
-.It Fl K | Fl Fl with-kernel
+.It Fl K | Fl \-with\-kernel
 Enable query of kernel information.
-.It Fl k | Fl Fl without-kernel
+.It Fl k | Fl \-without\-kernel
 Disable query of kernel information.
-.It Fl L | Fl Fl with-load
+.It Fl L | Fl \-with\-load
 Enable query of system load and process information.
-.It Fl l | Fl Fl without-load
+.It Fl l | Fl \-without\-load
 Disable query of system load and process information.
-.It Fl M | Fl Fl with-memory
+.It Fl M | Fl \-with\-memory
 Enable query of system memory and swap information.
-.It Fl m | Fl Fl without-memory
+.It Fl m | Fl \-without\-memory
 Disable query of system memory and swap information.
-.It Fl N | Fl Fl with-network
+.It Fl N | Fl \-with\-network
 Enable query of network interface information.
-.It Fl n | Fl Fl without-network
+.It Fl n | Fl \-without\-network
 Disable query of network interface information.
-.It Fl O | Fl Fl with-hostname
+.It Fl O | Fl \-with\-hostname
 Enable query of hostname information.
-.It Fl o | Fl Fl without-hostname
+.It Fl o | Fl \-without\-hostname
 Disable query of hostname information.
-.It Fl S | Fl Fl with-storage
+.It Fl S | Fl \-with\-storage
 Enable query of storage and disk usage information.
-.It Fl s | Fl Fl without-storage
+.It Fl s | Fl \-without\-storage
 Disable query of storage and disk usage information.
-.It Fl T | Fl Fl with-uptime
+.It Fl T | Fl \-with\-uptime
 Enable query of system uptime information.
-.It Fl t | Fl Fl without-uptime
+.It Fl t | Fl \-without\-uptime
 Disable query of system uptime information.
-.It Fl U | Fl Fl with-user
+.It Fl U | Fl \-with\-user
 Enable query of user information.
-.It Fl u | Fl Fl without-user
+.It Fl u | Fl \-without\-user
 Disable query of user information.
-.It Fl h | Fl Fl help
+.It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
-.It Fl v | Fl Fl version
+.It Fl v | Fl \-version
 Prints the program version and exits.
 .El
 .\" ###### Exit status ######################################################
@@ -153,14 +154,27 @@ The
 tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-.Bl -tag -width indent
-.It get-system-info
-.It get-system-info -a -O -T -U
-.It get-system-info --none --with-memory --with-load
-.It get-system-info --without-battery
-.It LANGUAGE=de_AT get-system-info
-.It LANGUAGE=nb get-system-info
-.It get-system-info \-\-version
+.Bl -bullet
+.It
+get\-system\-info
+.It
+get\-system\-info \-a \-O \-T \-U
+.It
+get\-system\-info \-\-none \-\-with\-memory \-\-with\-load
+.It
+get\-system\-info \-\-without\-battery
+.It
+LANGUAGE=de_AT get\-system\-info
+.It
+LANGUAGE=nb get\-system\-info
+.It
+get\-system\-info \-\-version
+.It
+get\-system\-info \-v
+.It
+get\-system\-info \-\-help
+.It
+get\-system\-info \-h
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
