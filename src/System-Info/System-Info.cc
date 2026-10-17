@@ -938,26 +938,43 @@ static std::string getCurrentTimeString()
 }
 
 
-// ###### Usage ##############################################################
-[[noreturn]] static void usage(const char* program,
-                               const int   exitCode)
-{
-   // TRANSLATORS: Command-line syntax message prefix:
-   // "Usage: <program> [options]".
-   std::cerr << gettext("Usage:") << " " << program
-             << " [-C|--config config_file] [-S|--scripts scripts_directory]"
-             << " [-X|--test-date date_string] [-Y|--test-system-info input_file]"
-             << " [-h|--help] [-v|--version]\n";
-   std::exit(exitCode);
-}
-
-
 // ###### Version ############################################################
 [[noreturn]] static void version()
 {
    std::cout << "System-Info " << SYSTEMTOOLS_VERSION << '\n';
    std::exit(0);
 }
+
+
+// ------ BEGIN-OF-USAGE-BLOCK ------
+// ###### Usage #############################################################
+#define HEADER(s)    "\x1b[4m" << (s) << "\x1b[0m"
+#define CMD(s)       "\x1b[1m" << (s) << "\x1b[0m"
+#define OPT(s)       "\x1b[1m" s "\x1b[0m"
+#define ARG(s)       "\x1b[4m" s "\x1b[0m"
+#define SYN(s)       "\x1b[1m" s "\x1b[0m"
+#define PIPE         SYN(" | ")
+#define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
+
+[[ noreturn ]]
+static void usage(const char* program, const int exitCode)
+{
+   // TRANSLATORS: Command-line syntax message prefix:
+   // "Usage: <program> [options]".
+   std::cerr << HEADER(gettext("Usage:")) << "\n"
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-C") " " ARG("config_file") PIPE OPT("--config") " " ARG("config_file"))
+                   ENTRY(OPT("-S") " " ARG("scripts_directory") PIPE OPT("--scripts") " " ARG("scripts_directory"))
+                   ENTRY(OPT("-X") " " ARG("date_string") PIPE OPT("--test-date") " " ARG("date_string"))
+                   ENTRY(OPT("-Y") " " ARG("input_file") PIPE OPT("--test-system-info") " " ARG("input_file"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-h") PIPE OPT("--help"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-v") PIPE OPT("--version"));
+   exit(exitCode);
+}
+// ------ END-OF-USAGE-BLOCK ------
+
 
 
 // ###### Main program #######################################################

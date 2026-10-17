@@ -49,26 +49,54 @@
 }
 
 
+// ------ BEGIN-OF-USAGE-BLOCK ------
 // ###### Usage #############################################################
-[[noreturn]] static void usage(const char* program,
-                               const int   exitCode)
+#define HEADER(s)    "\x1b[4m" << (s) << "\x1b[0m"
+#define CMD(s)       "\x1b[1m" << (s) << "\x1b[0m"
+#define OPT(s)       "\x1b[1m" s "\x1b[0m"
+#define ARG(s)       "\x1b[4m" s "\x1b[0m"
+#define SYN(s)       "\x1b[1m" s "\x1b[0m"
+#define PIPE         SYN(" | ")
+#define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
+
+[[ noreturn ]]
+static void usage(const char* program, const int exitCode)
 {
-   std::cerr << "Usage: " << program
-             << " [-h|--help] [-v|--version] [-c|--compatibility version]"
-             << " [-A|--all] [-a|--none]"
-             << " [-B|--with-battery] [-b|--without-battery]"
-             << " [-E|--with-os] [-e|--without-os]"
-             << " [-F|--with-ssh] [-f|--without-ssh]"
-             << " [-K|--with-kernel] [-k|--without-kernel]"
-             << " [-L|--with-load] [-l|--without-load]"
-             << " [-M|--with-memory] [-m|--without-memory]"
-             << " [-N|--with-network] [-n|--without-network]"
-             << " [-O|--with-hostname] [-o|--without-hostname]"
-             << " [-S|--with-storage] [-s|--without-storage]"
-             << " [-T|--with-uptime] [-t|--without-uptime]"
-             << " [-U|--with-user] [-u|--without-user]\n";
-   std::exit(exitCode);
+   std::cerr << HEADER("Usage:") << "\n"
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-c") " " ARG("version") PIPE OPT("--compatibility") " " ARG("version"))
+                   ENTRY(OPT("-A") PIPE OPT("--all"))
+                   ENTRY(OPT("-a") PIPE OPT("--none"))
+                   ENTRY(OPT("-B") PIPE OPT("--with-battery"))
+                   ENTRY(OPT("-b") PIPE OPT("--without-battery"))
+                   ENTRY(OPT("-E") PIPE OPT("--with-os"))
+                   ENTRY(OPT("-e") PIPE OPT("--without-os"))
+                   ENTRY(OPT("-F") PIPE OPT("--with-ssh"))
+                   ENTRY(OPT("-f") PIPE OPT("--without-ssh"))
+                   ENTRY(OPT("-K") PIPE OPT("--with-kernel"))
+                   ENTRY(OPT("-k") PIPE OPT("--without-kernel"))
+                   ENTRY(OPT("-L") PIPE OPT("--with-load"))
+                   ENTRY(OPT("-l") PIPE OPT("--without-load"))
+                   ENTRY(OPT("-M") PIPE OPT("--with-memory"))
+                   ENTRY(OPT("-m") PIPE OPT("--without-memory"))
+                   ENTRY(OPT("-N") PIPE OPT("--with-network"))
+                   ENTRY(OPT("-n") PIPE OPT("--without-network"))
+                   ENTRY(OPT("-O") PIPE OPT("--with-hostname"))
+                   ENTRY(OPT("-o") PIPE OPT("--without-hostname"))
+                   ENTRY(OPT("-S") PIPE OPT("--with-storage"))
+                   ENTRY(OPT("-s") PIPE OPT("--without-storage"))
+                   ENTRY(OPT("-T") PIPE OPT("--with-uptime"))
+                   ENTRY(OPT("-t") PIPE OPT("--without-uptime"))
+                   ENTRY(OPT("-U") PIPE OPT("--with-user"))
+                   ENTRY(OPT("-u") PIPE OPT("--without-user"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-h") PIPE OPT("--help"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-v") PIPE OPT("--version"));
+   exit(exitCode);
 }
+// ------ END-OF-USAGE-BLOCK ------
+
 
 
 // ###### Main program ######################################################
