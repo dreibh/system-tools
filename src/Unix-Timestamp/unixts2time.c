@@ -92,7 +92,16 @@ static void version(void)
 }
 
 
+// ------ BEGIN-OF-USAGE-BLOCK ------
 // ###### Usage #############################################################
+#define HEADER(s)    "\x1b[4m" s "\x1b[0m"
+#define CMD(s)       "\x1b[1m" s "\x1b[0m"
+#define OPT(s)       "\x1b[1m" s "\x1b[0m"
+#define ARG(s)       "\x1b[4m" s "\x1b[0m"
+#define SYN(s)       "\x1b[1m" s "\x1b[0m"
+#define PIPE         SYN(" | ")
+#define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
+
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
 #endif
@@ -100,18 +109,24 @@ static void usage(const char* program, const int exitCode)
 {
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
-   fprintf(stderr, "%s %s unix_timestamp [...]"
-           " [-T|--template time_format_template]"
-           " [-H|--human-readable]"
-           " [-s|--seconds]"
-           " [-m|--milliseconds]"
-           " [-u|--microseconds]"
-           " [-n|--nanoseconds]"
-           " [-h|--help]"
-           " [-v|--version]\n",
-           gettext("Usage:"), program);
+   fprintf(stderr, HEADER("%s") "\n"
+           CMD("%s\n")
+              ENTRY(OPT("-T") " " ARG("time_format_template") PIPE OPT("--template") " " ARG("time_format_template"))
+              ENTRY(OPT("-H") PIPE OPT("--human-readable"))
+              ENTRY(OPT("-s") PIPE OPT("--seconds"))
+              ENTRY(OPT("-m") PIPE OPT("--milliseconds"))
+              ENTRY(OPT("-u") PIPE OPT("--microseconds"))
+              ENTRY(OPT("-n") PIPE OPT("--nanoseconds"))
+              ENTRY(ARG("unix_timestamp") " " "...")
+           CMD("%s\n")
+              ENTRY(OPT("-h") PIPE OPT("--help"))
+           CMD("%s\n")
+              ENTRY(OPT("-v") PIPE OPT("--version")),
+           gettext("Usage:"), program, program, program);
    exit(exitCode);
 }
+// ------ END-OF-USAGE-BLOCK ------
+
 
 
 // ###### Main program ######################################################
@@ -123,6 +138,7 @@ int main(int argc, char** argv)
    }
    setlocale(LC_NUMERIC, "C");   // Use "." for fractional numbers!
    bindtextdomain("unixts2time", SYSTEMTOOLS_LOCALEDIR);
+   bind_textdomain_codeset("unixts2time", "UTF-8");
    textdomain("unixts2time");
 
    // ====== Handle arguments ===============================================
