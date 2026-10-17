@@ -77,34 +77,78 @@ static std::string formatText(const char* messageIdentifier,
 }
 
 
+// ------ BEGIN-OF-USAGE-BLOCK ------
 // ###### Usage #############################################################
-[[noreturn]] static void usage(const char* program,
-                               const int   exitCode)
+#define HEADER(s)    "\x1b[4m" << (s) << "\x1b[0m"
+#define CMD(s)       "\x1b[1m" << (s) << "\x1b[0m"
+#define OPT(s)       "\x1b[1m" s "\x1b[0m"
+#define ARG(s)       "\x1b[4m" s "\x1b[0m"
+#define SYN(s)       "\x1b[1m" s "\x1b[0m"
+#define PIPE         SYN(" | ")
+#define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
+
+[[ noreturn ]]
+static void usage(const char* program, const int exitCode)
 {
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
-   std::cerr << gettext("Usage:") << " " << program
-             << " min_delay max_delay"
-             << " [-q|--quiet]"
-             << " [-w|--verbose]"
-             << " [-h|--help]"
-             << " [-v|--version]\n";
-   std::exit(exitCode);
+   std::cerr << HEADER(gettext("Usage:")) << "\n"
+             << CMD(program) << " "
+                ARG("min_delay") " " ARG("max_delay") "\n"
+                   ENTRY(OPT("-q") PIPE OPT("--quiet"))
+                   ENTRY(OPT("-w") PIPE OPT("--verbose"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-h") PIPE OPT("--help"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-v") PIPE OPT("--version"));
+   exit(exitCode);
 }
+// ------ END-OF-USAGE-BLOCK ------
+
 
 
 // ###### Main program ######################################################
 int main(int argc, char** argv)
 {
-   bool verboseMode = false;
-
-   // ====== Initialise i18n support ========================================
+   // ====== Initialise locale support ======================================
    if(std::setlocale(LC_ALL, "") == nullptr) {
       std::setlocale(LC_ALL, "C.UTF-8");
    }
+   try {
+      std::locale userLocale("");
+      std::cout.imbue(userLocale);
+      std::cerr.imbue(userLocale);
+   } catch (const std::runtime_error&) {
+      try {
+         std::locale fallbackLocale("C.UTF-8");
+         std::cout.imbue(fallbackLocale);
+         std::cerr.imbue(fallbackLocale);
+      } catch (const std::runtime_error&) {
+         // Defaults to std::locale::classic() if C.UTF-8 is unavailable
+      }
+   }
    std::setlocale(LC_NUMERIC, "C"); // Use "." for fractional numbers!
-   bindtextdomain("random-sleep", SYSTEMTOOLS_LOCALEDIR);
+
+   // ====== Initialise i18n support ========================================
+#if defined(ENABLE_NLS)
+#if !defined(_WIN32)
+   const char* textdomaindir     = std::getenv("TEXTDOMAINDIR");
+#else
+   char*       textdomaindir     = nullptr;
+   size_t      textdomaindirsize = 0;
+   _dupenv_s(&textdomaindir, &textdomaindirsize, "TEXTDOMAINDIR");
+#endif
+   bindtextdomain("random-sleep",
+                  ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
+                       textdomaindir : SYSTEMTOOLS_LOCALEDIR ));
+#if defined(_WIN32)
+   if(textdomaindir) {
+       free(textdomaindir);
+   }
+#endif
+   bind_textdomain_codeset("random-sleep", "UTF-8");
    textdomain("random-sleep");
+#endif
 
    // ====== Handle arguments ===============================================
    static const struct option longOptions[] = {
@@ -115,8 +159,9 @@ int main(int argc, char** argv)
       { nullptr,   0,           nullptr, 0   }
    };
 
-   int option    { 0 };
-   int longIndex { 0 };
+   bool verboseMode = false;
+   int  option    { 0 };
+   int  longIndex { 0 };
    while((option = getopt_long(argc, argv, "wqhv", longOptions, &longIndex)) != -1) {
       switch(option) {
          case 'w':
