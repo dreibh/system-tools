@@ -96,7 +96,16 @@ static void version(void)
 }
 
 
+// ------ BEGIN-OF-USAGE-BLOCK ------
 // ###### Usage #############################################################
+#define HEADER(s)    "\x1b[4m" s "\x1b[0m"
+#define CMD(s)       "\x1b[1m" s "\x1b[0m"
+#define OPT(s)       "\x1b[1m" s "\x1b[0m"
+#define ARG(s)       "\x1b[4m" s "\x1b[0m"
+#define SYN(s)       "\x1b[1m" s "\x1b[0m"
+#define PIPE         SYN(" | ")
+#define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
+
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202000L)
 [[ noreturn ]]
 #endif
@@ -104,14 +113,18 @@ static void usage(const char* program, const int exitCode)
 {
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
-   fprintf(stderr, "%s %s min_delay max_delay"
-           " [-q|--quiet]"
-           " [-w|--verbose]"
-           " [-h|--help]"
-           " [-v|--version]\n",
-           gettext("Usage:"), program);
+   fprintf(stderr, HEADER("%s") "\n"
+           CMD("%s") " " ARG("min_delay") " " ARG("max_delay") "\n"
+              ENTRY(OPT("-q") PIPE OPT("--quiet"))
+              ENTRY(OPT("-w") PIPE OPT("--verbose"))
+           CMD("%s\n")
+              ENTRY(OPT("-h") PIPE OPT("--help"))
+           CMD("%s\n")
+              ENTRY(OPT("-v") PIPE OPT("--version")),
+           gettext("Usage:"), program, program, program);
    exit(exitCode);
 }
+// ------ END-OF-USAGE-BLOCK ------
 
 
 
