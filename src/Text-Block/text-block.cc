@@ -473,11 +473,6 @@ static void usage(const char* program, const int exitCode)
 // ###### Main program ######################################################
 int main(int argc, char** argv)
 {
-   // ====== Initialise i18n support ========================================
-   if(std::setlocale(LC_ALL, "") == nullptr) {
-      std::setlocale(LC_ALL, "C.UTF-8");
-   }
-
 #if defined(_WIN32)
    SetConsoleCP(CP_UTF8);
    SetConsoleOutputCP(CP_UTF8);
@@ -515,8 +510,44 @@ int main(int argc, char** argv)
    argv = argPointers.data();
 #endif
 
-   bindtextdomain("text-block", SYSTEMTOOLS_LOCALEDIR);
+   // ====== Initialise locale support ======================================
+   if(std::setlocale(LC_ALL, "") == nullptr) {
+      std::setlocale(LC_ALL, "C.UTF-8");
+   }
+   try {
+      std::locale userLocale("");
+      std::cout.imbue(userLocale);
+      std::cerr.imbue(userLocale);
+   } catch (const std::runtime_error&) {
+      try {
+         std::locale fallbackLocale("C.UTF-8");
+         std::cout.imbue(fallbackLocale);
+         std::cerr.imbue(fallbackLocale);
+      } catch (const std::runtime_error&) {
+         // Defaults to std::locale::classic() if C.UTF-8 is unavailable
+      }
+   }
+
+   // ====== Initialise i18n support ========================================
+#if defined(ENABLE_NLS)
+#if !defined(_WIN32)
+   const char* textdomaindir     = std::getenv("TEXTDOMAINDIR");
+#else
+   char*       textdomaindir     = nullptr;
+   size_t      textdomaindirsize = 0;
+   _dupenv_s(&textdomaindir, &textdomaindirsize, "TEXTDOMAINDIR");
+#endif
+   bindtextdomain("text-block",
+                  ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
+                       textdomaindir : SYSTEMTOOLS_LOCALEDIR ));
+#if defined(_WIN32)
+   if(textdomaindir) {
+       free(textdomaindir);
+   }
+#endif
+   bind_textdomain_codeset("text-block", "UTF-8");
    textdomain("text-block");
+#endif
 
    // ====== Handle arguments ===============================================
    bool showWarnings = true;

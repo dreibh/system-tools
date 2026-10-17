@@ -159,9 +159,9 @@ int main(int argc, char** argv)
       { nullptr,   0,           nullptr, 0   }
    };
 
-   bool verboseMode = false;
-   int  option    { 0 };
-   int  longIndex { 0 };
+   bool verboseMode { false };
+   int  option      { 0 };
+   int  longIndex   { 0 };
    while((option = getopt_long(argc, argv, "wqhv", longOptions, &longIndex)) != -1) {
       switch(option) {
          case 'w':
