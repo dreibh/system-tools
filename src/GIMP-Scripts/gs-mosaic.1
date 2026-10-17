@@ -28,95 +28,98 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 22, 2026
+.Dd October 17, 2026
 .Dt gs\-mosaic 1
 .Os gs\-mosaic
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm gs\-mosaic
-.Nd applies the GIMP GEGL "Mosaic" filter on an image
+.Nd applies the GIMP GEGL \[dq]Mosaic\[dq] filter on an image
 .\" ###### Synopsis #########################################################
-.\" Manpage syntax help:
-.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm gs\-mosaic Ar input\_filename Ar output\_filename
-.br
-.Op Fl T Ar triangles|squares|hexagons|octagons | Fl Fl tile\-type Ar triangles|squares|hexagons|octagons
-.br
-.Op Fl S Ar size | Fl Fl tile\-size Ar size
-.br
-.Op Fl H Ar height | Fl Fl tile\-height Ar height
-.br
-.Op Fl N Ar neatness | Fl Fl tile\-neatness Ar neatness
-.br
-.Op Fl F Ar rough|smooth | Fl Fl tile\-surface Ar rough|smooth
-.br
-.Op Fl X Ar spacing | Fl Fl tile\-spacing Ar spacing
-.br
-.Op Fl I Ar on|off | Fl Fl tile\-allow\-split Ar on|off
-.br
-.Op Fl C Ar variation | Fl Fl color\-variation Ar variation
-.br
-.Op Fl G Ar on|off | Fl Fl color\-averaging Ar on|off
-.br
-.Op Fl A Ar on|off | Fl Fl antialiasing Ar on|off
-.br
-.Op Fl L Ar degrees | Fl Fl light\-direction Ar degrees
-.br
-.Op Fl q | Fl Fl quiet
-.Op Fl w | Fl Fl verbose
 .Nm gs\-mosaic
-.Op Fl h | Fl Fl help
+.Ar input\_filename output\_filename
+.br
+.Op Fl T Ar triangles|squares|hexagons|octagons | Fl \-tile\-type Ar triangles|squares|hexagons|octagons
+.br
+.Op Fl S Ar size | Fl \-tile\-size Ar size
+.br
+.Op Fl H Ar height | Fl \-tile\-height Ar height
+.br
+.Op Fl N Ar neatness | Fl \-tile\-neatness Ar neatness
+.br
+.Op Fl F Ar rough|smooth | Fl \-tile\-surface Ar rough|smooth
+.br
+.Op Fl X Ar spacing | Fl \-tile\-spacing Ar spacing
+.br
+.Op Fl I Ar on|off | Fl \-tile\-allow\-split Ar on|off
+.br
+.Op Fl C Ar variation | Fl \-color\-variation Ar variation
+.br
+.Op Fl G Ar on|off | Fl \-color\-averaging Ar on|off
+.br
+.Op Fl A Ar on|off | Fl \-antialiasing Ar on|off
+.br
+.Op Fl L Ar degrees | Fl \-light\-direction Ar degrees
+.br
+.Op Fl q | Fl \-quiet
+.Op Fl w | Fl \-verbose
 .Nm gs\-mosaic
-.Op Fl v | Fl Fl version
+.Op Fl h | Fl \-help
+.Nm gs\-mosaic
+.Op Fl v | Fl \-version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs\-mosaic
-runs GIMP to load an image, applies the GIMP GEGL "Mosaic" filter
+runs GIMP to load an image, applies the GIMP GEGL \[dq]Mosaic\[dq] filter
 (details:
 .Lk https://gegl.org/operations/gegl\-mosaic.html "GEGL Mosaic" ) ,
 and stores the result into an output file.
 The tile type (triangles, squares, hexagons, octagons), tile size, tile
 height, tile neatness, tile surface (smooth or rough) tile spacing, coloring
 and lighting are configurable.
-.Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
-The following options are available:
+The following arguments and options are available:
 .Bl -tag -width indent
 .It Ar input\_filename
-The input image. Any format supported by GIMP can be used. The format will be detected automatically.
+The input image.
+Any format supported by GIMP can be used.
+The format will be detected automatically.
 .It Ar output\_filename
-The name for the output image to be written. Any format supported by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It Fl T Ar triangles|squares|hexagons|octagons | Fl Fl tile\-type Ar triangles|squares|hexagons|octagons
+The name for the output image to be written.
+Any format supported by GIMP can be used.
+The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...).
+An existing output file will be overwritten.
+.It Fl T Ar triangles|squares|hexagons|octagons | Fl \-tile\-type Ar triangles|squares|hexagons|octagons
 Sets the tile type: triangles, squares, hexagons, octagons. Default: hexagons.
-.It Fl S Ar size | Fl Fl tile\-size Ar size
+.It Fl S Ar size | Fl \-tile\-size Ar size
 Specifies the tile size. Range: 1.0\-1000.0. Default: 15.0.
-.It Fl H Ar height | Fl Fl tile\-height Ar height
+.It Fl H Ar height | Fl \-tile\-height Ar height
 Specifies the tile height. Range: 1.0\-1000.0. Default: 4.0.
-.It Fl N Ar neatness | Fl Fl tile\-neatness Ar neatness
+.It Fl N Ar neatness | Fl \-tile\-neatness Ar neatness
 Specifies the tile neatness. Range: 0.0\-1.0. Default: 0.65.
-.It Fl F Ar rough|smooth | Fl Fl tile\-surface Ar rough|smooth
+.It Fl F Ar rough|smooth | Fl \-tile\-surface Ar rough|smooth
 Sets the tile surface to rough or smooth. Default: rough.
-.It Fl X Ar spacing | Fl Fl tile\-spacing Ar spacing
+.It Fl X Ar spacing | Fl \-tile\-spacing Ar spacing
 Specifies the tile spacing. Range: 0.0\-1000.0. Default: 4.0.
-.It Fl I Ar on|off | Fl Fl tile\-allow\-split Ar on|off
+.It Fl I Ar on|off | Fl \-tile\-allow\-split Ar on|off
 Turns allowing tile split on sharp edges on or off. Default: on.
-.It Fl C Ar variation | Fl Fl color\-variation Ar variation
+.It Fl C Ar variation | Fl \-color\-variation Ar variation
 Specifies the color variation. Range: 0.0\-1.0. Default: 0.2.
-.It Fl G Ar on|off | Fl Fl color\-averaging Ar on|off
+.It Fl G Ar on|off | Fl \-color\-averaging Ar on|off
 Turns color averaging on or off. Default: on.
-.It Fl A Ar on|off | Fl Fl antialiasing Ar on|off
+.It Fl A Ar on|off | Fl \-antialiasing Ar on|off
 Turns antialiasing on or off. Default: on.
-.It Fl L Ar degrees | Fl Fl light\-direction Ar degrees
+.It Fl L Ar degrees | Fl \-light\-direction Ar degrees
 Specifies the light direction in degrees. Range: 0.0\-360.0. Default: 135.0.
-.It Fl q | Fl Fl quiet
+.It Fl q | Fl \-quiet
 Quiet mode: suppress GIMP console output. This is the default.
-.It Fl w | Fl Fl verbose
+.It Fl w | Fl \-verbose
 Verbose mode: print GIMP console output and processing details.
-.It Fl h | Fl Fl help
+.It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
-.It Fl v | Fl Fl version
+.It Fl v | Fl \-version
 Prints the program version and exits.
 .El
 .\" ###### Exit status ######################################################
@@ -126,14 +129,21 @@ The
 tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-.Bl -tag -width indent
-.It gs\-mosaic Bergen.jpeg Bergen\-Hexagons.png \-\-tile\-size 24 \-\-tile\-height 4 \-\-tile\-spacing 4 \-\-tile\-type hexagons \-\-tile\-surface rough
-.It gs\-mosaic Bergen.jpeg Bergen\-Octagons.webp \-S 24 \-H 4 \-X 4 \-T octagons \-F smooth \-T hexagons \-N 1.0
-.It gs\-mosaic Portobello.jpeg Portobello\-Octagons.jpeg \-S 32 \-H 8 \-X 8 \-T octagons \-F smooth \-N 1.0
-.It gs\-mosaic \-\-help
-.It gs\-mosaic \-h
-.It gs\-mosaic \-\-version
-.It gs\-mosaic \-v
+.Bl -bullet
+.It
+gs\-mosaic Bergen.jpeg Bergen\-Hexagons.png \-\-tile\-size 24 \-\-tile\-height 4 \-\-tile\-spacing 4 \-\-tile\-type hexagons \-\-tile\-surface rough
+.It
+gs\-mosaic Bergen.jpeg Bergen\-Octagons.webp \-S 24 \-H 4 \-X 4 \-T octagons \-F smooth \-T hexagons \-N 1.0
+.It
+gs\-mosaic Portobello.jpeg Portobello\-Octagons.jpeg \-S 32 \-H 8 \-X 8 \-T octagons \-F smooth \-N 1.0
+.It
+gs\-mosaic \-\-help
+.It
+gs\-mosaic \-h
+.It
+gs\-mosaic \-\-version
+.It
+gs\-mosaic \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO

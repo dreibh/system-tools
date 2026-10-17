@@ -28,66 +28,69 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 22, 2026
+.Dd October 17, 2026
 .Dt gs\-oldphoto 1
 .Os gs\-oldphoto
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm gs\-oldphoto
-.Nd applies the GIMP Script\-Fu "Old Photo" filter on an image
+.Nd applies the GIMP Script\-Fu \[dq]Old Photo\[dq] filter on an image
 .\" ###### Synopsis #########################################################
-.\" Manpage syntax help:
-.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
-.Nm gs\-oldphoto Ar input\_filename Ar output\_filename
-.br
-.Op Fl D Ar on|off | Fl Fl defocus Ar on|off
-.br
-.Op Fl B Ar border\_size | Fl Fl border\-size Ar border\_size
-.br
-.Op Fl S Ar on|off | Fl Fl sepia Ar on|off
-.br
-.Op Fl M Ar on|off | Fl Fl mottle Ar on|off
-.br
-.Op Fl q | Fl Fl quiet
-.Op Fl w | Fl Fl verbose
 .Nm gs\-oldphoto
-.Op Fl h | Fl Fl help
+.Ar input\_filename output\_filename
+.br
+.Op Fl D Ar on|off | Fl \-defocus Ar on|off
+.br
+.Op Fl B Ar border\_size | Fl \-border\-size Ar border\_size
+.br
+.Op Fl S Ar on|off | Fl \-sepia Ar on|off
+.br
+.Op Fl M Ar on|off | Fl \-mottle Ar on|off
+.br
+.Op Fl q | Fl \-quiet
+.Op Fl w | Fl \-verbose
 .Nm gs\-oldphoto
-.Op Fl v | Fl Fl version
+.Op Fl h | Fl \-help
+.Nm gs\-oldphoto
+.Op Fl v | Fl \-version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs\-oldphoto
-runs GIMP to load an image, applies the GIMP Script\-Fu "Old Photo" filter
+runs GIMP to load an image, applies the GIMP Script\-Fu \[dq]Old Photo\[dq] filter
 (details:
 .Lk https://docs.gimp.org/3.0/en/script\-fu\-old\-photo.html "GIMP Script\-Fu Old Photo" ) ,
 and stores the result into an output file.
 The defocus mode (on or off), border size, sepia mode (on or off) and mottle mode
 (on or off) are configurable.
-.Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
-The following options are available:
+The following arguments and options are available:
 .Bl -tag -width indent
 .It Ar input\_filename
-The input image. Any format supported by GIMP can be used. The format will be detected automatically.
+The input image.
+Any format supported by GIMP can be used.
+The format will be detected automatically.
 .It Ar output\_filename
-The name for the output image to be written. Any format supported by GIMP can be used. The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...). An existing output file will be overwritten.
-.It Fl D Ar on|off | Fl Fl defocus Ar on|off
+The name for the output image to be written.
+Any format supported by GIMP can be used.
+The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...).
+An existing output file will be overwritten.
+.It Fl D Ar on|off | Fl \-defocus Ar on|off
 Turns defocus on or off. Default: on.
-.It Fl B Ar border\_size | Fl Fl border\-size Ar border\_size
-Sets the border size for the "Old Photo" filter. Default: 10.
-.It Fl S Ar on|off | Fl Fl sepia Ar on|off
+.It Fl B Ar border\_size | Fl \-border\-size Ar border\_size
+Sets the border size for the \[dq]Old Photo\[dq] filter. Default: 10.
+.It Fl S Ar on|off | Fl \-sepia Ar on|off
 Turns sepia on or off. Default: on.
-.It Fl M Ar on|off | Fl Fl mottle Ar on|off
+.It Fl M Ar on|off | Fl \-mottle Ar on|off
 Turns mottle on or off. Default: off.
-.It Fl q | Fl Fl quiet
+.It Fl q | Fl \-quiet
 Quiet mode: suppress GIMP console output. This is the default.
-.It Fl w | Fl Fl verbose
+.It Fl w | Fl \-verbose
 Verbose mode: print GIMP console output and processing details.
-.It Fl h | Fl Fl help
+.It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
-.It Fl v | Fl Fl version
+.It Fl v | Fl \-version
 Prints the program version and exits.
 .El
 .\" ###### Exit status ######################################################
@@ -97,15 +100,23 @@ The
 tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-.Bl -tag -width indent
-.It gs\-oldphoto Bergen.jpeg Bergen\-OldPhoto.jpeg
-.It gs\-oldphoto Bergen.jpeg Bergen\-OldPhoto\-with\-Border20.jpeg \-\-border\-size 20 \-\-verbose
-.It gs\-oldphoto Bergen.jpeg Bergen\-OldPhoto\-with\-Border40.jpeg \-B 40
-.It gs\-oldphoto Portobello.jpeg Portobello\-OldPhoto.jpeg \-\-verbose \-\-sepia off \-\-mottle on
-.It gs\-oldphoto \-\-help
-.It gs\-oldphoto \-h
-.It gs\-oldphoto \-\-version
-.It gs\-oldphoto \-v
+.Bl -bullet
+.It
+gs\-oldphoto Bergen.jpeg Bergen\-OldPhoto.jpeg
+.It
+gs\-oldphoto Bergen.jpeg Bergen\-OldPhoto\-with\-Border20.jpeg \-\-border\-size 20 \-\-verbose
+.It
+gs\-oldphoto Bergen.jpeg Bergen\-OldPhoto\-with\-Border40.jpeg \-B 40
+.It
+gs\-oldphoto Portobello.jpeg Portobello\-OldPhoto.jpeg \-\-verbose \-\-sepia off \-\-mottle on
+.It
+gs\-oldphoto \-\-help
+.It
+gs\-oldphoto \-h
+.It
+gs\-oldphoto \-\-version
+.It
+gs\-oldphoto \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO

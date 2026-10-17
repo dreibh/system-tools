@@ -28,40 +28,43 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd May 22, 2026
+.Dd October 17, 2026
 .Dt gs\-test\-gimp 1
 .Os gs\-test\-gimp
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm gs\-test\-gimp
-.Nd runs a short test to verify that GIMP can run a GIMP script in non-GUI mode.
+.Nd runs a short test to verify that GIMP can run a GIMP script in non\-GUI mode
 .\" ###### Synopsis #########################################################
-.\" Manpage syntax help:
-.\" https://forums.freebsd.org/threads/howto-create-a-manpage-from-scratch.13200/
 .Sh SYNOPSIS
 .Nm gs\-test\-gimp
-.Op Fl q | Fl Fl quiet
-.Op Fl w | Fl Fl verbose
+.Op Fl q | Fl \-quiet
+.Op Fl w | Fl \-verbose
 .Nm gs\-test\-gimp
-.Op Fl h | Fl Fl help
+.Op Fl h | Fl \-help
 .Nm gs\-test\-gimp
-.Op Fl v | Fl Fl version
+.Op Fl v | Fl \-version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs\-test\-gimp
-runs a short test to verify that GIMP can run a GIMP script in non\-GUI mode. If not already initialised, GIMP will create the GIMP directory with configuration files on first startup. The storage location of this directory is provided to GIMP by its environment variables GIMP3_DIRECTORY (Gimp 3.x) and GIMP2_DIRECTORY (Gimp 2.x).
-.Pp
+runs a short test to verify that GIMP can run a GIMP script in non\-GUI mode.
+If not already initialised, GIMP will create the GIMP directory with configuration files on first startup.
+The storage location of this directory is provided to GIMP by its environment variables
+.Ev GIMP3_DIRECTORY
+(GIMP 3.x) and
+.Ev GIMP2_DIRECTORY
+(GIMP 2.x).
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl q | Fl Fl quiet
+.It Fl q | Fl \-quiet
 Quiet mode: suppress GIMP console output. This is the default.
-.It Fl w | Fl Fl verbose
+.It Fl w | Fl \-verbose
 Verbose mode: print GIMP console output and processing details.
-.It Fl h | Fl Fl help
+.It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
-.It Fl v | Fl Fl version
+.It Fl v | Fl \-version
 Prints the program version and exits.
 .El
 .\" ###### Exit status ######################################################
@@ -71,14 +74,21 @@ The
 tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-.Bl -tag -width indent
-.It gs\-test\-gimp
-.It GIMP3_DIRECTORY=/tmp/gimp3.tmp gs\-test\-gimp
-.It GIMP3_DIRECTORY=/tmp/gimp3.tmp gs\-test\-gimp \-\-verbose
-.It gs\-test\-gimp \-\-help
-.It gs\-test\-gimp \-h
-.It gs\-test\-gimp \-\-version
-.It gs\-test\-gimp \-v
+.Bl -bullet
+.It
+gs\-test\-gimp
+.It
+GIMP3_DIRECTORY=/tmp/gimp3.tmp gs\-test\-gimp
+.It
+GIMP3_DIRECTORY=/tmp/gimp3.tmp gs\-test\-gimp \-\-verbose
+.It
+gs\-test\-gimp \-\-help
+.It
+gs\-test\-gimp \-h
+.It
+gs\-test\-gimp \-\-version
+.It
+gs\-test\-gimp \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
