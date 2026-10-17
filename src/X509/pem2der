@@ -32,19 +32,35 @@
 set -euo pipefail
 
 
-# ###### Usage ##############################################################
-usage () {
-   local exitCode="$1"
-   echo >&2 "Usage: $0 pem_file der_file [-h|--help] [-v|--version]"
-   exit "${exitCode}"
-}
-
-
 # ###### Version ############################################################
 version () {
    echo "pem2der @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
    exit 0
 }
+
+
+# ------ BEGIN-OF-USAGE-BLOCK ------
+# ###### Usage ##############################################################
+usage () {
+   local program="$1"
+   local exitCode="$2"
+   local header=$'\x1b[4m'
+   local cmd=$'\x1b[1m'
+   local opt=$'\x1b[1m'
+   local arg=$'\x1b[4m'
+   local syn=$'\x1b[1m'
+   local reset=$'\x1b[0m'
+   cat >&2 <<EOF
+${header}Usage:${reset}
+${cmd}${program}${reset} ${arg}pem_file${reset} ${arg}der_file${reset}
+${cmd}${program}${reset}
+	${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
+${cmd}${program}${reset}
+	${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
+EOF
+   exit "${exitCode}"
+}
+# ------ END-OF-USAGE-BLOCK ------
 
 
 
@@ -83,14 +99,14 @@ fi
 options="$(${GETOPT} -o hv --long help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage 1
+   usage "$0" 1
 fi
 eval set -- "${options}"
 
 while [ $# -gt 0 ] ; do
    case "$1" in
       -h | --help)
-         usage 0
+         usage "$0" 0
          ;;
       -v | --version)
          version
@@ -108,7 +124,7 @@ while [ $# -gt 0 ] ; do
   shift
 done
 if [ $# -ne 2 ] ; then
-   usage 1
+   usage "$0" 1
 fi
 
 INPUT="$1"

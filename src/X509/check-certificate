@@ -39,19 +39,40 @@ export TEXTDOMAIN="check-certificate"
 . gettext.sh
 
 
-# ###### Usage ##############################################################
-usage () {
-   local exitCode="$1"
-   echo >&2 "$(gettext "Usage:") $0 ca_certificate_file certificate_file [...] [-C|--crl crl] [-n|--no-view-certificate] [-h|--help] [-v|--version]"
-   exit "${exitCode}"
-}
-
-
 # ###### Version ############################################################
 version () {
    echo "check-certificate @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
    exit 0
 }
+
+
+# ------ BEGIN-OF-USAGE-BLOCK ------
+# ###### Usage ##############################################################
+usage () {
+   local program="$1"
+   local exitCode="$2"
+   local header=$'\x1b[4m'
+   local cmd=$'\x1b[1m'
+   local opt=$'\x1b[1m'
+   local arg=$'\x1b[4m'
+   local syn=$'\x1b[1m'
+   local reset=$'\x1b[0m'
+   # TRANSLATORS: Command-line syntax message prefix:
+   # "Usage: <program> [options]".
+   cat >&2 <<EOF
+${header}$(gettext "Usage:")${reset}
+${cmd}${program}${reset} ${arg}ca_certificate_file${reset} ${arg}certificate_file${reset} ...
+	${syn}[${reset}${opt}-C${reset} ${arg}crl_file${reset} ${opt}|${reset} ${opt}--crl${reset} ${arg}crl_file${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-n${reset} ${opt}|${reset} ${opt}--no-view-certificate${reset}${syn}]${reset}
+${cmd}${program}${reset}
+	${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
+${cmd}${program}${reset}
+	${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
+EOF
+   exit "${exitCode}"
+}
+# ------ END-OF-USAGE-BLOCK ------
+
 
 
 # ###### Main program #######################################################
@@ -92,7 +113,7 @@ fi
 options="$(${GETOPT} -o C:nhv --long crl:,no-view-certificate,help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage 1
+   usage "$0" 1
 fi
 eval set -- "${options}"
 
@@ -108,7 +129,7 @@ while [ $# -gt 0 ] ; do
          VIEW_CERTIFICATE=0
          ;;
       -h | --help)
-         usage 0
+         usage "$0" 0
          ;;
       -v | --version)
          version
@@ -126,7 +147,7 @@ while [ $# -gt 0 ] ; do
   shift
 done
 if [ $# -lt 1 ] ; then
-   usage 1
+   usage "$0" 1
 fi
 CA_FILE="$1"
 shift

@@ -39,11 +39,13 @@ export TEXTDOMAIN="view-crl"
 . gettext.sh
 
 
-# ###### Usage ##############################################################
-usage () {
-   local exitCode="$1"
-   echo >&2 "$(gettext "Usage:") $0 [-h|--help] [-v|--version] crl [...]"
-   exit "${exitCode}"
+# ###### Print date in current locale and current time zone #################
+print-date ()
+{
+   local inputDateTime="$1"
+   local unixTimestamp
+   unixTimestamp="$(LC_ALL=C time2unixts -T "%b %d %T %Y %Z" "${inputDateTime}")"
+   unixts2time -T "%c %Z" "${unixTimestamp}"
 }
 
 
@@ -54,14 +56,30 @@ version () {
 }
 
 
-# ###### Print date in current locale and current time zone #################
-print-date ()
-{
-   local inputDateTime="$1"
-   local unixTimestamp
-   unixTimestamp="$(LC_ALL=C time2unixts -T "%b %d %T %Y %Z" "${inputDateTime}")"
-   unixts2time -T "%c %Z" "${unixTimestamp}"
+# ------ BEGIN-OF-USAGE-BLOCK ------
+# ###### Usage ##############################################################
+usage () {
+   local program="$1"
+   local exitCode="$2"
+   local header=$'\x1b[4m'
+   local cmd=$'\x1b[1m'
+   local opt=$'\x1b[1m'
+   local arg=$'\x1b[4m'
+   local syn=$'\x1b[1m'
+   local reset=$'\x1b[0m'
+   # TRANSLATORS: Command-line syntax message prefix:
+   # "Usage: <program> [options]".
+   cat >&2 <<EOF
+${header}$(gettext "Usage:")${reset}
+${cmd}${program}${reset} ${arg}crl_file${reset} ...
+${cmd}${program}${reset}
+	${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
+${cmd}${program}${reset}
+	${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
+EOF
+   exit "${exitCode}"
 }
+# ------ END-OF-USAGE-BLOCK ------
 
 
 
@@ -102,14 +120,14 @@ fi
 options="$(${GETOPT} -o hv --long help,version -a -- "$@")"
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
-   usage 1
+   usage "$0" 1
 fi
 eval set -- "${options}"
 
 while [ $# -gt 0 ] ; do
    case "$1" in
       -h | --help)
-         usage 0
+         usage "$0" 0
          ;;
       -v | --version)
          version
@@ -127,7 +145,7 @@ while [ $# -gt 0 ] ; do
   shift
 done
 if [ $# -lt 1 ] ; then
-   usage 1
+   usage "$0" 1
 fi
 
 # ====== Check availability of tools ========================================
