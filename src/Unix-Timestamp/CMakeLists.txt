@@ -63,3 +63,12 @@ INSTALL(FILES       unixts2time.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       unixts2time.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      unixts2time)
+
+
+#############################################################################
+#### TESTING                                                             ####
+#############################################################################
+
+IF (BUILD_TESTING)
+   ADD_SUBDIRECTORY(tests)
+ENDIF()
