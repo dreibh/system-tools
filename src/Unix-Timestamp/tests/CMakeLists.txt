@@ -102,19 +102,19 @@ ENDFUNCTION()
 #### 1. Basic CLI Options & Internationalization                         ####
 #############################################################################
 
-# Test unixts2time version flag (-v)
+# Test unixts2time version flag (short option -v)
 ADD_UNIXTS2TIME_TEST(unixts2time_cli_version_short -v)
 
-# Test unixts2time version flag (--version)
+# Test unixts2time version flag (long option --version)
 ADD_UNIXTS2TIME_TEST(unixts2time_cli_version_long  --version)
 SET_TESTS_PROPERTIES(unixts2time_cli_version_short unixts2time_cli_version_long PROPERTIES
    PASS_REGULAR_EXPRESSION "unixts2time [0-9]+\\.[0-9]+"
 )
 
-# Test unixts2time help flag (-h)
+# Test unixts2time help flag (short option -h)
 ADD_UNIXTS2TIME_TEST(unixts2time_cli_help_short -h)
 
-# Test unixts2time help flag (--help)
+# Test unixts2time help flag (long option --help)
 ADD_UNIXTS2TIME_TEST(unixts2time_cli_help_long  --help)
 SET_TESTS_PROPERTIES(unixts2time_cli_help_short unixts2time_cli_help_long PROPERTIES
    PASS_REGULAR_EXPRESSION "Usage:"
@@ -136,19 +136,19 @@ SET_TESTS_PROPERTIES(unixts2time_cli_help_i18n_nb PROPERTIES
    LABELS "unixts2time;cli;i18n;locale_nb"
 )
 
-# Test time2unixts version flag (-v)
+# Test time2unixts version flag (short option -v)
 ADD_TIME2UNIXTS_TEST(time2unixts_cli_version_short -v)
 
-# Test time2unixts version flag (--version)
+# Test time2unixts version flag (long option --version)
 ADD_TIME2UNIXTS_TEST(time2unixts_cli_version_long  --version)
 SET_TESTS_PROPERTIES(time2unixts_cli_version_short time2unixts_cli_version_long PROPERTIES
    PASS_REGULAR_EXPRESSION "time2unixts [0-9]+\\.[0-9]+"
 )
 
-# Test time2unixts help flag (-h)
+# Test time2unixts help flag (short option -h)
 ADD_TIME2UNIXTS_TEST(time2unixts_cli_help_short -h)
 
-# Test time2unixts help flag (--help)
+# Test time2unixts help flag (long option --help)
 ADD_TIME2UNIXTS_TEST(time2unixts_cli_help_long  --help)
 SET_TESTS_PROPERTIES(time2unixts_cli_help_short time2unixts_cli_help_long PROPERTIES
    PASS_REGULAR_EXPRESSION "Usage:"
@@ -188,56 +188,56 @@ SET_TESTS_PROPERTIES(time2unixts_current_time_default PROPERTIES
 #############################################################################
 
 # ------ Positive Integer Boundaries: Manual Flag vs Auto-Detection --------
-# Test positive seconds minimum boundary: manual flag -s vs auto-detection[cite: 12]
+# Test positive seconds minimum boundary: manual flag -s vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_pos_manual_s_min 0 -s)
 ADD_UNIXTS2TIME_TEST(autodetect_pos_auto_s_min   0)
 SET_TESTS_PROPERTIES(autodetect_pos_manual_s_min autodetect_pos_auto_s_min PROPERTIES
    PASS_REGULAR_EXPRESSION "^1970-01-01 00:00:00"
 )
 
-# Test positive seconds maximum boundary: manual flag -s vs auto-detection[cite: 12]
+# Test positive seconds maximum boundary: manual flag -s vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_pos_manual_s_max 4999999999 -s)
 ADD_UNIXTS2TIME_TEST(autodetect_pos_auto_s_max   4999999999)
 SET_TESTS_PROPERTIES(autodetect_pos_manual_s_max autodetect_pos_auto_s_max PROPERTIES
    PASS_REGULAR_EXPRESSION "^2128-06-11 08:53:19"
 )
 
-# Test positive milliseconds minimum boundary: manual flag -m vs auto-detection[cite: 12]
+# Test positive milliseconds minimum boundary: manual flag -m vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_pos_manual_ms_min 5000000000 -m)
 ADD_UNIXTS2TIME_TEST(autodetect_pos_auto_ms_min   5000000000)
 SET_TESTS_PROPERTIES(autodetect_pos_manual_ms_min autodetect_pos_auto_ms_min PROPERTIES
    PASS_REGULAR_EXPRESSION "^1970-02-27 20:53:20\\.000"
 )
 
-# Test positive milliseconds maximum boundary: manual flag -m vs auto-detection[cite: 12]
+# Test positive milliseconds maximum boundary: manual flag -m vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_pos_manual_ms_max 4999999999999 -m)
 ADD_UNIXTS2TIME_TEST(autodetect_pos_auto_ms_max   4999999999999)
 SET_TESTS_PROPERTIES(autodetect_pos_manual_ms_max autodetect_pos_auto_ms_max PROPERTIES
    PASS_REGULAR_EXPRESSION "^2128-06-11 08:53:19\\.999"
 )
 
-# Test positive microseconds minimum boundary: manual flag -u vs auto-detection[cite: 12]
+# Test positive microseconds minimum boundary: manual flag -u vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_pos_manual_us_min 5000000000000 -u)
 ADD_UNIXTS2TIME_TEST(autodetect_pos_auto_us_min   5000000000000)
 SET_TESTS_PROPERTIES(autodetect_pos_manual_us_min autodetect_pos_auto_us_min PROPERTIES
    PASS_REGULAR_EXPRESSION "^1970-02-27 20:53:20\\.000000"
 )
 
-# Test positive microseconds maximum boundary: manual flag -u vs auto-detection[cite: 12]
+# Test positive microseconds maximum boundary: manual flag -u vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_pos_manual_us_max 4999999999999999 -u)
 ADD_UNIXTS2TIME_TEST(autodetect_pos_auto_us_max   4999999999999999)
 SET_TESTS_PROPERTIES(autodetect_pos_manual_us_max autodetect_pos_auto_us_max PROPERTIES
    PASS_REGULAR_EXPRESSION "^2128-06-11 08:53:19\\.999999"
 )
 
-# Test positive nanoseconds minimum boundary: manual flag -n vs auto-detection[cite: 12]
+# Test positive nanoseconds minimum boundary: manual flag -n vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_pos_manual_ns_min 5000000000000000 -n)
 ADD_UNIXTS2TIME_TEST(autodetect_pos_auto_ns_min   5000000000000000)
 SET_TESTS_PROPERTIES(autodetect_pos_manual_ns_min autodetect_pos_auto_ns_min PROPERTIES
    PASS_REGULAR_EXPRESSION "^1970-02-27 20:53:20\\.000000000"
 )
 
-# Test positive nanoseconds maximum boundary: manual flag -n vs auto-detection[cite: 12]
+# Test positive nanoseconds maximum boundary: manual flag -n vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_pos_manual_ns_max 4999999999999999999 -n)
 ADD_UNIXTS2TIME_TEST(autodetect_pos_auto_ns_max   4999999999999999999)
 SET_TESTS_PROPERTIES(autodetect_pos_manual_ns_max autodetect_pos_auto_ns_max PROPERTIES
@@ -245,56 +245,56 @@ SET_TESTS_PROPERTIES(autodetect_pos_manual_ns_max autodetect_pos_auto_ns_max PRO
 )
 
 # ------ Negative Integer Boundaries: Manual Flag vs Auto-Detection --------
-# Test negative seconds zero boundary: manual flag -s vs auto-detection[cite: 12]
+# Test negative seconds zero boundary: manual flag -s vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_neg_manual_s_zero -s -- 0)
 ADD_UNIXTS2TIME_TEST(autodetect_neg_auto_s_zero   -- 0)
 SET_TESTS_PROPERTIES(autodetect_neg_manual_s_zero autodetect_neg_auto_s_zero PROPERTIES
    PASS_REGULAR_EXPRESSION "^1970-01-01 00:00:00"
 )
 
-# Test negative seconds maximum boundary: manual flag -s vs auto-detection[cite: 12]
+# Test negative seconds maximum boundary: manual flag -s vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_neg_manual_s_max -s -- -4999999999)
 ADD_UNIXTS2TIME_TEST(autodetect_neg_auto_s_max   -- -4999999999)
 SET_TESTS_PROPERTIES(autodetect_neg_manual_s_max autodetect_neg_auto_s_max PROPERTIES
    PASS_REGULAR_EXPRESSION "^1811-07-23 15:06:41"
 )
 
-# Test negative milliseconds minimum boundary: manual flag -m vs auto-detection[cite: 12]
+# Test negative milliseconds minimum boundary: manual flag -m vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_neg_manual_ms_min -m -- -5000000000)
 ADD_UNIXTS2TIME_TEST(autodetect_neg_auto_ms_min   -- -5000000000)
 SET_TESTS_PROPERTIES(autodetect_neg_manual_ms_min autodetect_neg_auto_ms_min PROPERTIES
    PASS_REGULAR_EXPRESSION "^1969-11-04 03:06:40\\.000"
 )
 
-# Test negative milliseconds maximum boundary: manual flag -m vs auto-detection[cite: 12]
+# Test negative milliseconds maximum boundary: manual flag -m vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_neg_manual_ms_max -m -- -4999999999999)
 ADD_UNIXTS2TIME_TEST(autodetect_neg_auto_ms_max   -- -4999999999999)
 SET_TESTS_PROPERTIES(autodetect_neg_manual_ms_max autodetect_neg_auto_ms_max PROPERTIES
    PASS_REGULAR_EXPRESSION "^1811-07-23 15:06:40\\.001"
 )
 
-# Test negative microseconds minimum boundary: manual flag -u vs auto-detection[cite: 12]
+# Test negative microseconds minimum boundary: manual flag -u vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_neg_manual_us_min -u -- -5000000000000)
 ADD_UNIXTS2TIME_TEST(autodetect_neg_auto_us_min   -- -5000000000000)
 SET_TESTS_PROPERTIES(autodetect_neg_manual_us_min autodetect_neg_auto_us_min PROPERTIES
    PASS_REGULAR_EXPRESSION "^1969-11-04 03:06:40\\.000000"
 )
 
-# Test negative microseconds maximum boundary: manual flag -u vs auto-detection[cite: 12]
+# Test negative microseconds maximum boundary: manual flag -u vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_neg_manual_us_max -u -- -4999999999999999)
 ADD_UNIXTS2TIME_TEST(autodetect_neg_auto_us_max   -- -4999999999999999)
 SET_TESTS_PROPERTIES(autodetect_neg_manual_us_max autodetect_neg_auto_us_max PROPERTIES
    PASS_REGULAR_EXPRESSION "^1811-07-23 15:06:40\\.000001"
 )
 
-# Test negative nanoseconds minimum boundary: manual flag -n vs auto-detection[cite: 12]
+# Test negative nanoseconds minimum boundary: manual flag -n vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_neg_manual_ns_min -n -- -5000000000000000)
 ADD_UNIXTS2TIME_TEST(autodetect_neg_auto_ns_min   -- -5000000000000000)
 SET_TESTS_PROPERTIES(autodetect_neg_manual_ns_min autodetect_neg_auto_ns_min PROPERTIES
    PASS_REGULAR_EXPRESSION "^1969-11-04 03:06:40\\.000000000"
 )
 
-# Test negative nanoseconds maximum boundary: manual flag -n vs auto-detection[cite: 12]
+# Test negative nanoseconds maximum boundary: manual flag -n vs auto-detection
 ADD_UNIXTS2TIME_TEST(autodetect_neg_manual_ns_max -n -- -4999999999999999999)
 ADD_UNIXTS2TIME_TEST(autodetect_neg_auto_ns_max   -- -4999999999999999999)
 SET_TESTS_PROPERTIES(autodetect_neg_manual_ns_max autodetect_neg_auto_ns_max PROPERTIES
@@ -307,131 +307,131 @@ SET_TESTS_PROPERTIES(autodetect_neg_manual_ns_max autodetect_neg_auto_ns_max PRO
 #############################################################################
 
 # ------ 3.1 Multi-Unit Auto-Detection (Positive & Negative) ----------------
-# Test float auto-detection for positive seconds[cite: 12]
+# Test float auto-detection for positive seconds
 ADD_FLOAT_UNIXTS_CHECK(float_autodetect_pos_s  "1788550214.7787085"      "2026-09-04 19:30:14.7787085")
 
-# Test float auto-detection for positive milliseconds[cite: 12]
+# Test float auto-detection for positive milliseconds
 ADD_FLOAT_UNIXTS_CHECK(float_autodetect_pos_ms "1788550214778.7085"      "2026-09-04 19:30:14.7787085")
 
-# Test float auto-detection for positive microseconds[cite: 12]
+# Test float auto-detection for positive microseconds
 ADD_FLOAT_UNIXTS_CHECK(float_autodetect_pos_us "1788550214778708.5"      "2026-09-04 19:30:14.7787085")
 
-# Test float auto-detection for positive nanoseconds[cite: 12]
+# Test float auto-detection for positive nanoseconds
 ADD_FLOAT_UNIXTS_CHECK(float_autodetect_pos_ns "1788550214778708500.0"  "2026-09-04 19:30:14.778708500")
 
-# Test float auto-detection for negative seconds[cite: 12]
+# Test float auto-detection for negative seconds
 ADD_FLOAT_UNIXTS_CHECK(float_autodetect_neg_s  "-1788550214.7787085"     "1913-04-29 04:29:45.2212915")
 
-# Test float auto-detection for negative milliseconds[cite: 12]
+# Test float auto-detection for negative milliseconds
 ADD_FLOAT_UNIXTS_CHECK(float_autodetect_neg_ms "-1788550214778.7085"     "1913-04-29 04:29:45.2212915")
 
-# Test float auto-detection for negative microseconds[cite: 12]
+# Test float auto-detection for negative microseconds
 ADD_FLOAT_UNIXTS_CHECK(float_autodetect_neg_us "-1788550214778708.5"     "1913-04-29 04:29:45.2212915")
 
-# Test float auto-detection for negative nanoseconds[cite: 12]
+# Test float auto-detection for negative nanoseconds
 ADD_FLOAT_UNIXTS_CHECK(float_autodetect_neg_ns "-1788550214778708500.0" "1913-04-29 04:29:45.221291500")
 
 # ------ 3.2 Explicit Zero Precision & Trailing Zero Retention --------------
-# Test explicit single zero precision retention[cite: 12]
+# Test explicit single zero precision retention
 ADD_FLOAT_UNIXTS_CHECK(float_zero_prec_1 "0.0"                "1970-01-01 00:00:00.0")
 
-# Test explicit three zeroes precision retention[cite: 12]
+# Test explicit three zeroes precision retention
 ADD_FLOAT_UNIXTS_CHECK(float_zero_prec_3 "0.000"              "1970-01-01 00:00:00.000")
 
-# Test explicit nine zeroes precision retention[cite: 12]
+# Test explicit nine zeroes precision retention
 ADD_FLOAT_UNIXTS_CHECK(float_zero_prec_9 "0.000000000"        "1970-01-01 00:00:00.000000000")
 
-# Test single trailing zero retention on non-zero timestamp[cite: 12]
+# Test single trailing zero retention on non-zero timestamp
 ADD_FLOAT_UNIXTS_CHECK(float_trailing_0  "1788550214.0"       "2026-09-04 19:30:14.0")
 
-# Test multiple trailing zeroes retention[cite: 12]
+# Test multiple trailing zeroes retention
 ADD_FLOAT_UNIXTS_CHECK(float_trailing_3  "1788550214.7787000" "2026-09-04 19:30:14.7787000")
 
-# Test four trailing zeroes retention[cite: 12]
+# Test four trailing zeroes retention
 ADD_FLOAT_UNIXTS_CHECK(float_trailing_4  "100.5000"           "1970-01-01 00:01:40.5000")
 
 # ------ 3.3 Sub-Second Precision Graduation & Nanosecond Capping -----------
-# Test 1 fractional digit precision[cite: 12]
+# Test 1 fractional digit precision
 ADD_FLOAT_UNIXTS_CHECK(float_prec_grad_1 "1.5"                      "1970-01-01 00:00:01.5")
 
-# Test 2 fractional digits precision[cite: 12]
+# Test 2 fractional digits precision
 ADD_FLOAT_UNIXTS_CHECK(float_prec_grad_2 "1.25"                     "1970-01-01 00:00:01.25")
 
-# Test 3 fractional digits precision[cite: 12]
+# Test 3 fractional digits precision
 ADD_FLOAT_UNIXTS_CHECK(float_prec_grad_3 "1.123"                    "1970-01-01 00:00:01.123")
 
-# Test 5 fractional digits precision[cite: 12]
+# Test 5 fractional digits precision
 ADD_FLOAT_UNIXTS_CHECK(float_prec_grad_5 "1.12345"                  "1970-01-01 00:00:01.12345")
 
-# Test 8 fractional digits precision[cite: 12]
+# Test 8 fractional digits precision
 ADD_FLOAT_UNIXTS_CHECK(float_prec_grad_8 "1.12345678"               "1970-01-01 00:00:01.12345678")
 
-# Test 9 fractional digits precision[cite: 12]
+# Test 9 fractional digits precision
 ADD_FLOAT_UNIXTS_CHECK(float_prec_grad_9 "1.123456789"              "1970-01-01 00:00:01.123456789")
 
-# Test fractional digits capped at 9 decimals[cite: 12]
+# Test fractional digits capped at 9 decimals
 ADD_FLOAT_UNIXTS_CHECK(float_prec_capped "1788550214.1234567890123" "2026-09-04 19:30:14.123456789")
 
 # ------ 3.4 Leading Fractional Zeros & High Sub-Second Scale ---------------
-# Test leading fractional zero preservation (5 decimals)[cite: 12]
+# Test leading fractional zero preservation (5 decimals)
 ADD_FLOAT_UNIXTS_CHECK(float_leading_zero_5 "1.00001"     "1970-01-01 00:00:01.00001")
 
-# Test leading fractional zero preservation (9 decimals)[cite: 12]
+# Test leading fractional zero preservation (9 decimals)
 ADD_FLOAT_UNIXTS_CHECK(float_leading_zero_9 "1.000000001" "1970-01-01 00:00:01.000000001")
 
-# Test maximum fractional sub-second value[cite: 12]
+# Test maximum fractional sub-second value
 ADD_FLOAT_UNIXTS_CHECK(float_scale_9        "0.999999999" "1970-01-01 00:00:00.999999999")
 
 # ------ 3.5 Negative Epoch Boundaries & Complement Borrow Arithmetic -------
-# Test negative epoch boundary: -1.0[cite: 12]
+# Test negative epoch boundary: -1.0
 ADD_FLOAT_UNIXTS_CHECK(float_neg_epoch_1_0      "-1.0"        "1969-12-31 23:59:59.0")
 
-# Test negative epoch boundary: -1.5[cite: 12]
+# Test negative epoch boundary: -1.5
 ADD_FLOAT_UNIXTS_CHECK(float_neg_epoch_1_5      "-1.5"        "1969-12-31 23:59:58.5")
 
-# Test negative epoch boundary: -86400.123 (1 day back)[cite: 12]
+# Test negative epoch boundary: -86400.123 (1 day back)
 ADD_FLOAT_UNIXTS_CHECK(float_neg_epoch_day      "-86400.123"  "1969-12-30 23:59:59.877")
 
-# Test negative epoch boundary: -31536000.1 (1 year back)[cite: 12]
+# Test negative epoch boundary: -31536000.1 (1 year back)
 ADD_FLOAT_UNIXTS_CHECK(float_neg_epoch_year     "-31536000.1" "1968-12-31 23:59:59.9")
 
 # ------ 3.6 Epoch & Calendar Edge Cases ------------------------------------
-# Test Y2K38 signed 32-bit integer limit[cite: 12]
+# Test Y2K38 signed 32-bit integer limit
 ADD_FLOAT_UNIXTS_CHECK(float_edge_y2k38    "2147483647.5"      "2038-01-19 03:14:07.5")
 
-# Test leap day calendar calculation (2024-02-29)[cite: 12]
+# Test leap day calendar calculation (2024-02-29)
 ADD_FLOAT_UNIXTS_CHECK(float_edge_leap_day "1709208000.123456" "2024-02-29 12:00:00.123456")
 
-# Test Y2K99 calendar limit[cite: 12]
+# Test Y2K99 calendar limit
 ADD_FLOAT_UNIXTS_CHECK(float_edge_y2k99    "4102444799.999"    "2099-12-31 23:59:59.999")
 
 # ------ 3.7 Auto-Detected Sub-Second Ranges --------------------------------
-# Test sub-second auto-detection in millisecond range[cite: 12]
+# Test sub-second auto-detection in millisecond range
 ADD_FLOAT_UNIXTS_CHECK(float_autodetect_subsecond_ms "5000000000.12"   "1970-02-27 20:53:20.00012")
 
-# Test sub-second auto-detection in microsecond range[cite: 12]
+# Test sub-second auto-detection in microsecond range
 ADD_FLOAT_UNIXTS_CHECK(float_autodetect_subsecond_us "5000000000000.5" "1970-02-27 20:53:20.0000005")
 
 # ------ 3.8 Explicit Unit Flag Overrides -----------------------------------
-# Test explicit seconds override on timestamp > 5e9[cite: 12]
+# Test explicit seconds override on timestamp > 5e9
 ADD_FLOAT_UNIXTS_CHECK(float_override_sec_5e9   "5000000000.5"   "2128-06-11 08:53:20.5"         seconds)
 
-# Test explicit milliseconds override on small timestamp[cite: 12]
+# Test explicit milliseconds override on small timestamp
 ADD_FLOAT_UNIXTS_CHECK(float_override_ms_1000   "1000.5"         "1970-01-01 00:00:01.0005"      milliseconds)
 
-# Test explicit milliseconds override with 4 decimals[cite: 12]
+# Test explicit milliseconds override with 4 decimals
 ADD_FLOAT_UNIXTS_CHECK(float_override_ms_10     "10.1234"        "1970-01-01 00:00:00.0101234"   milliseconds)
 
-# Test explicit milliseconds override with 1 decimal[cite: 12]
+# Test explicit milliseconds override with 1 decimal
 ADD_FLOAT_UNIXTS_CHECK(float_override_ms_1      "1.1"            "1970-01-01 00:00:00.0011"      milliseconds)
 
-# Test explicit microseconds override[cite: 12]
+# Test explicit microseconds override
 ADD_FLOAT_UNIXTS_CHECK(float_override_us_1e6    "1000000.12"     "1970-01-01 00:00:01.00000012"  microseconds)
 
-# Test explicit microseconds override on small timestamp[cite: 12]
+# Test explicit microseconds override on small timestamp
 ADD_FLOAT_UNIXTS_CHECK(float_override_us_10     "10.1"           "1970-01-01 00:00:00.0000101"   microseconds)
 
-# Test explicit nanoseconds override[cite: 12]
+# Test explicit nanoseconds override
 ADD_FLOAT_UNIXTS_CHECK(float_override_ns_1e9    "1000000000.123" "1970-01-01 00:00:01.000000000" nanoseconds)
 
 
@@ -439,7 +439,7 @@ ADD_FLOAT_UNIXTS_CHECK(float_override_ns_1e9    "1000000000.123" "1970-01-01 00:
 #### 4. Integer Input Tests (Comprehensive Conversion Table)             ####
 #############################################################################
 
-# Dataset from run-tests: Timestamp Value | Human-Readable Date | Time Unit[cite: 12]
+# Dataset from run-tests: Timestamp Value | Human-Readable Date | Time Unit
 SET(TIMESTAMP_DATASET
    "178524103|1975-08-29 06:01:43|seconds"
    "599224425|1988-12-27 11:13:45|seconds"
@@ -761,7 +761,7 @@ FOREACH(ROW ${TIMESTAMP_DATASET})
    # Escape dots in date strings for strict regex matching
    STRING(REPLACE "." "\\." DATE_STR_ESC "${DATE_STR}")
 
-   # Test 1.A: unixts2time with integer timestamp -> ISO date string[cite: 12]
+   # Test 1.A: unixts2time with integer timestamp -> ISO date string
    ADD_TEST(
       NAME unixts2time_table_entry_${ENTRY_INDEX}
       COMMAND $<TARGET_FILE:unixts2time> --${TIME_UNIT} -- "${TS_VALUE}"
@@ -773,7 +773,7 @@ FOREACH(ROW ${TIMESTAMP_DATASET})
       LABELS "unixts2time;table"
    )
 
-   # Test 1.B: time2unixts with ISO date string -> integer timestamp[cite: 12]
+   # Test 1.B: time2unixts with ISO date string -> integer timestamp
    ADD_TEST(
       NAME time2unixts_table_entry_${ENTRY_INDEX}
       COMMAND $<TARGET_FILE:time2unixts> --${TIME_UNIT} "${DATE_STR}"
@@ -785,7 +785,7 @@ FOREACH(ROW ${TIMESTAMP_DATASET})
       LABELS "time2unixts;table"
    )
 
-   # Prepare float representation[cite: 12]
+   # Prepare float representation
    IF(TIME_UNIT STREQUAL "nanoseconds")
       SET(FLOAT_TS "${TS_VALUE}.000000000")
       SET(EXPECTED_DATE_FLOAT "${DATE_STR}")
@@ -801,7 +801,7 @@ FOREACH(ROW ${TIMESTAMP_DATASET})
    ENDIF()
    STRING(REPLACE "." "\\." EXPECTED_DATE_FLOAT_ESC "${EXPECTED_DATE_FLOAT}")
 
-   # Test 2.B: unixts2time with float timestamp -> padded ISO date string[cite: 12]
+   # Test 2.B: unixts2time with float timestamp -> padded ISO date string
    ADD_TEST(
       NAME unixts2time_float_table_entry_${ENTRY_INDEX}
       COMMAND $<TARGET_FILE:unixts2time> --${TIME_UNIT} -- "${FLOAT_TS}"
@@ -813,7 +813,7 @@ FOREACH(ROW ${TIMESTAMP_DATASET})
       LABELS "unixts2time;table;float"
    )
 
-   # Test 2.C: time2unixts with --float -> matches numeric float pattern[cite: 12]
+   # Test 2.C: time2unixts with --float -> matches numeric float pattern
    ADD_TEST(
       NAME time2unixts_float_table_entry_${ENTRY_INDEX}
       COMMAND $<TARGET_FILE:time2unixts> --float --${TIME_UNIT} "${DATE_STR}"
@@ -832,7 +832,7 @@ ENDFOREACH()
 #############################################################################
 
 # ------ time2unixts Numeric Format Flags (-I, -X, -0, -F) ------------------
-# Test decimal integer output flag (-I / --integer-decimal)[cite: 16]
+# Test decimal integer output flag (-I / --integer-decimal)
 ADD_TIME2UNIXTS_TEST(time2unixts_fmt_dec -I -s "2026-03-17 10:52:35")
 SET_TESTS_PROPERTIES(time2unixts_fmt_dec PROPERTIES
    PASS_REGULAR_EXPRESSION "^1773744755"
@@ -850,10 +850,30 @@ SET_TESTS_PROPERTIES(time2unixts_fmt_0x_hex PROPERTIES
    PASS_REGULAR_EXPRESSION "^0x69b93273"
 )
 
-# Test floating-point timestamp output flag (-F / --float)[cite: 16]
+# Test floating-point timestamp output flag (-F / --float)
 ADD_TIME2UNIXTS_TEST(time2unixts_fmt_float -F -s "2026-03-17 10:52:35")
 SET_TESTS_PROPERTIES(time2unixts_fmt_float PROPERTIES
    PASS_REGULAR_EXPRESSION "^1773744755\\.000000000"
+)
+
+# ------ Negative Hexadecimal Output Formatting (-X, -0) -------------------
+# Test time2unixts formatting negative timestamp as raw hexadecimal (-X)
+ADD_TIME2UNIXTS_TEST(time2unixts_fmt_hex_negative -X -s "1969-12-31 23:59:58")
+SET_TESTS_PROPERTIES(time2unixts_fmt_hex_negative PROPERTIES
+   PASS_REGULAR_EXPRESSION "^-2"
+)
+
+# Test time2unixts formatting negative timestamp with 0x prefix (-0)
+ADD_TIME2UNIXTS_TEST(time2unixts_fmt_0x_hex_negative -0 -s "1969-12-31 23:59:58")
+SET_TESTS_PROPERTIES(time2unixts_fmt_0x_hex_negative PROPERTIES
+   PASS_REGULAR_EXPRESSION "^-0x2"
+)
+
+# ------ Fractional Second Rounding Rollover -------------------------------
+# Test sub-second fraction rounding up to next whole second (0.9999999999 -> 1s)
+ADD_TIME2UNIXTS_TEST(time2unixts_subsecond_rounding_rollover -s "1970-01-01 00:00:00.9999999999")
+SET_TESTS_PROPERTIES(time2unixts_subsecond_rounding_rollover PROPERTIES
+   PASS_REGULAR_EXPRESSION "^1"
 )
 
 # ------ Human-Readable Suffix Flags (-H / --human-readable) ----------------
@@ -863,46 +883,64 @@ SET_TESTS_PROPERTIES(unixts2time_human_readable PROPERTIES
    PASS_REGULAR_EXPRESSION "2026-03-17 10:52:35 is 1773744755 \\(0x69b93273\\) s since the Unix Epoch"
 )
 
-# Test time2unixts human-readable explanation output (-H)[cite: 13, 16]
+# Test time2unixts human-readable explanation output (-H)
 ADD_TIME2UNIXTS_TEST(time2unixts_human_readable -H -s "2026-03-17 10:52:35")
 SET_TESTS_PROPERTIES(time2unixts_human_readable PROPERTIES
    PASS_REGULAR_EXPRESSION "1773744755 s since the Unix Epoch"
 )
 
 # ------ Custom Time Format Templates (-T / --template) --------------------
-# Test unixts2time custom strftime template formatting (-T)[cite: 14, 15]
+# Test unixts2time custom strftime template formatting (-T)
 ADD_UNIXTS2TIME_TEST(unixts2time_custom_template -T "%Y/%m/%d - %H:%M:%S" -s 1773744755)
 SET_TESTS_PROPERTIES(unixts2time_custom_template PROPERTIES
    PASS_REGULAR_EXPRESSION "^2026/03/17 - 10:52:35"
 )
 
-# Test time2unixts custom strptime template parsing (-T)[cite: 13, 16]
+# Test time2unixts custom strptime template parsing (-T)
 ADD_TIME2UNIXTS_TEST(time2unixts_custom_template -T "%Y/%m/%d - %H:%M:%S" -s "2026/03/17 - 10:52:35")
 SET_TESTS_PROPERTIES(time2unixts_custom_template PROPERTIES
    PASS_REGULAR_EXPRESSION "^1773744755"
 )
 
+# Test unixts2time with date-only format template (no %S placeholder)
+ADD_UNIXTS2TIME_TEST(unixts2time_template_date_only -T "%Y-%m-%d" -s 1773744755)
+SET_TESTS_PROPERTIES(unixts2time_template_date_only PROPERTIES
+   PASS_REGULAR_EXPRESSION "^2026-03-17"
+)
+
+# Test time2unixts with date-only format template (no %S placeholder)
+ADD_TIME2UNIXTS_TEST(time2unixts_template_date_only -T "%Y-%m-%d" -s "2026-03-17")
+SET_TESTS_PROPERTIES(time2unixts_template_date_only PROPERTIES
+   PASS_REGULAR_EXPRESSION "^1773705600"
+)
+
+# Test unixts2time with time-only format template (no %S placeholder)
+ADD_UNIXTS2TIME_TEST(unixts2time_template_time_only -T "%H:%M" -s 1773744755)
+SET_TESTS_PROPERTIES(unixts2time_template_time_only PROPERTIES
+   PASS_REGULAR_EXPRESSION "^10:52"
+)
+
 # ------ Hexadecimal and Octal Integer Parsing in unixts2time ---------------
-# Test unixts2time parsing hexadecimal integer input (0x prefix)[cite: 14, 15]
+# Test unixts2time parsing hexadecimal integer input (0x prefix)
 ADD_UNIXTS2TIME_TEST(unixts2time_input_hex -s 0x69b93273)
 SET_TESTS_PROPERTIES(unixts2time_input_hex PROPERTIES
    PASS_REGULAR_EXPRESSION "^2026-03-17 10:52:35"
 )
 
-# Test unixts2time parsing octal integer input (0 prefix)[cite: 14, 15]
+# Test unixts2time parsing octal integer input (0 prefix)
 ADD_UNIXTS2TIME_TEST(unixts2time_input_octal -s 015156231163)
 SET_TESTS_PROPERTIES(unixts2time_input_octal PROPERTIES
    PASS_REGULAR_EXPRESSION "^2026-03-17 10:52:35"
 )
 
 # ------ Multi-Argument Batch Conversions -----------------------------------
-# Test unixts2time converting multiple positional arguments in batch[cite: 14, 15]
+# Test unixts2time converting multiple positional arguments in batch
 ADD_UNIXTS2TIME_TEST(unixts2time_batch_convert -s 0 1000000000 2000000000)
 SET_TESTS_PROPERTIES(unixts2time_batch_convert PROPERTIES
    PASS_REGULAR_EXPRESSION "1970-01-01 00:00:00.*2001-09-09 01:46:40.*2033-05-18 03:33:20"
 )
 
-# Test time2unixts converting multiple positional arguments in batch[cite: 13, 16]
+# Test time2unixts converting multiple positional arguments in batch
 ADD_TIME2UNIXTS_TEST(time2unixts_batch_convert -s "1970-01-01 00:00:00" "2001-09-09 01:46:40")
 SET_TESTS_PROPERTIES(time2unixts_batch_convert PROPERTIES
    PASS_REGULAR_EXPRESSION "0.*1000000000"
@@ -913,20 +951,20 @@ SET_TESTS_PROPERTIES(time2unixts_batch_convert PROPERTIES
 #### 6. Error Handling & Negative Boundaries                             ####
 #############################################################################
 
-# Test unixts2time failure on non-numeric input string[cite: 14]
+# Test unixts2time failure on non-numeric input string
 ADD_TIMESTAMP_FAIL_TEST(unixts2time_fail_non_numeric unixts2time "not-a-number")
 
-# Test unixts2time failure on trailing garbage characters[cite: 14]
+# Test unixts2time failure on trailing garbage characters
 ADD_TIMESTAMP_FAIL_TEST(unixts2time_fail_trailing_garbage unixts2time "12345abc")
 
-# Test time2unixts failure on invalid date string format[cite: 13]
+# Test time2unixts failure on invalid date string format
 ADD_TIMESTAMP_FAIL_TEST(time2unixts_fail_invalid_date time2unixts "invalid-date-string")
 
-# Test time2unixts failure on format template mismatch[cite: 13]
+# Test time2unixts failure on format template mismatch
 ADD_TIMESTAMP_FAIL_TEST(time2unixts_fail_mismatched_template time2unixts -T "%d.%m.%Y" "2026-03-17")
 
-# Test unixts2time failure on unknown command-line option[cite: 14]
+# Test unixts2time failure on unknown command-line option
 ADD_TIMESTAMP_FAIL_TEST(unixts2time_fail_unknown_option unixts2time --invalid-option)
 
-# Test time2unixts failure on unknown command-line option[cite: 13]
+# Test time2unixts failure on unknown command-line option
 ADD_TIMESTAMP_FAIL_TEST(time2unixts_fail_unknown_option time2unixts --invalid-option)
