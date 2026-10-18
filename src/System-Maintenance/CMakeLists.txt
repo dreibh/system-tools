@@ -48,3 +48,12 @@ INSTALL(FILES       System-Maintenance.bash-completion
 #############################################################################
 
 INSTALL(PROGRAMS system-maintenance.d/XX-example DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/system-maintenance.d)
+
+
+#############################################################################
+#### TESTING                                                             ####
+#############################################################################
+
+IF (BUILD_TESTING)
+   ADD_SUBDIRECTORY(tests)
+ENDIF()
