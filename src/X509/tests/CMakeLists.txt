@@ -728,8 +728,10 @@ SET_TESTS_PROPERTIES(checkcert_fail_untrusted_certificate PROPERTIES
 
 
 #############################################################################
-#### 7. test-tls-connection Parameter Handling & Connection Failure     ####
+#### 7. test-tls-connection Tests                                        ####
 #############################################################################
+
+# ====== 7.1 Offline Parameter Handling & Connection Failure ================
 
 # Test failure connecting to a closed/unreachable local port (fails gracefully without hang)
 ADD_X509_FAIL_TEST(testtls_connect_unreachable_port
@@ -745,6 +747,122 @@ ADD_X509_FAIL_TEST(testtls_save_cert_option_unreachable
 )
 SET_TESTS_PROPERTIES(testtls_save_cert_option_unreachable PROPERTIES
    LABELS "test-tls-connection;network;negative"
+)
+
+
+# ====== 7.2 Live Network Tests (www.ietf.org & www.heise.de) ==============
+
+# Search for system CA bundle / root certificate to verify public servers
+SET(SYSTEM_CA_CERT "")
+FOREACH(CA_CANDIDATE
+   "/etc/ssl/certs/ca-certificates.crt"
+   "/etc/ssl/cert.pem"
+   "/etc/pki/tls/certs/ca-bundle.crt"
+   "/etc/ssl/ca-bundle.pem"
+   "/usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt"
+   "/etc/ssl/certs/ISRG_Root_X1.pem"
+   "/usr/local/share/certs/ca-root-nss.crt"
+   "/opt/homebrew/etc/ca-certificates/cert.pem"
+   )
+   IF(EXISTS "${CA_CANDIDATE}")
+      SET(SYSTEM_CA_CERT "${CA_CANDIDATE}")
+      BREAK()
+   ENDIF()
+ENDFOREACH()
+
+# Fallback to test PKI Root CA if no system store is installed
+IF(NOT SYSTEM_CA_CERT)
+   SET(SYSTEM_CA_CERT "${ROOT_CERT}")
+ENDIF()
+
+# Regex patterns to detect missing network connectivity across platforms
+SET(NETWORK_SKIP_REGEX
+   "Temporary failure in name resolution|Name or service not known|nodename nor servname provided|No address associated with hostname|Could not resolve|Connection refused|Network is unreachable|No route to host|Operation timed out|Connection timed out|connect:errno=|Minimum number of 1 action"
+)
+
+SET(ONLINE_CERTS_DIR "${CMAKE_CURRENT_BINARY_DIR}/online_certs")
+FILE(MAKE_DIRECTORY "${ONLINE_CERTS_DIR}")
+
+# 1. Test downloading and verifying certificate from www.ietf.org:443
+ADD_X509_MATCH_TEST(testtls_online_ietf_verify
+   "${TEST_TLS_CONNECTION_BIN}" -n "www.ietf.org:443" "${SYSTEM_CA_CERT}"
+)
+SET_TESTS_PROPERTIES(testtls_online_ietf_verify PROPERTIES
+   PASS_REGULAR_EXPRESSION "Connecting to www\\.ietf\\.org:443"
+   SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   LABELS "test-tls-connection;network;online"
+)
+
+# 2. Test downloading and verifying certificate from www.heise.de:443
+ADD_X509_MATCH_TEST(testtls_online_heise_verify
+   "${TEST_TLS_CONNECTION_BIN}" -n "www.heise.de:443" "${SYSTEM_CA_CERT}"
+)
+SET_TESTS_PROPERTIES(testtls_online_heise_verify PROPERTIES
+   PASS_REGULAR_EXPRESSION "Connecting to www\\.heise\\.de:443"
+   SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   LABELS "test-tls-connection;network;online"
+)
+
+# 3. Test default port fallback (automatic :443 append) on www.ietf.org
+ADD_X509_MATCH_TEST(testtls_online_ietf_default_port
+   "${TEST_TLS_CONNECTION_BIN}" -n -c "www.ietf.org" "${SYSTEM_CA_CERT}"
+)
+SET_TESTS_PROPERTIES(testtls_online_ietf_default_port PROPERTIES
+   PASS_REGULAR_EXPRESSION "Connecting to www\\.ietf\\.org:443"
+   SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   LABELS "test-tls-connection;network;online"
+)
+
+# 4. Test default port fallback (automatic :443 append) on www.heise.de
+ADD_X509_MATCH_TEST(testtls_online_heise_default_port
+   "${TEST_TLS_CONNECTION_BIN}" -n -c "www.heise.de" "${SYSTEM_CA_CERT}"
+)
+SET_TESTS_PROPERTIES(testtls_online_heise_default_port PROPERTIES
+   PASS_REGULAR_EXPRESSION "Connecting to www\\.heise\\.de:443"
+   SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   LABELS "test-tls-connection;network;online"
+)
+
+# 5. Test downloading and saving certificate to file (-s) from www.ietf.org
+SET(IETF_SAVED_CERT "${ONLINE_CERTS_DIR}/www_ietf_org.crt")
+ADD_X509_MATCH_TEST(testtls_online_ietf_save_cert
+   "${TEST_TLS_CONNECTION_BIN}" -s "${IETF_SAVED_CERT}" -n -c "www.ietf.org:443" "${SYSTEM_CA_CERT}"
+)
+SET_TESTS_PROPERTIES(testtls_online_ietf_save_cert PROPERTIES
+   PASS_REGULAR_EXPRESSION "Connecting to www\\.ietf\\.org:443"
+   SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   LABELS "test-tls-connection;network;online"
+)
+
+# 6. Test downloading and saving certificate using long option (--save-certificate) from www.heise.de
+SET(HEISE_SAVED_CERT "${ONLINE_CERTS_DIR}/www_heise_de.crt")
+ADD_X509_MATCH_TEST(testtls_online_heise_save_cert
+   "${TEST_TLS_CONNECTION_BIN}" --save-certificate "${HEISE_SAVED_CERT}" -n -c "www.heise.de:443" "${SYSTEM_CA_CERT}"
+)
+SET_TESTS_PROPERTIES(testtls_online_heise_save_cert PROPERTIES
+   PASS_REGULAR_EXPRESSION "Connecting to www\\.heise\\.de:443"
+   SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   LABELS "test-tls-connection;network;online"
+)
+
+# 7. Test view-certificate integration pipeline with live downloaded certificate from www.ietf.org
+ADD_X509_MATCH_TEST(testtls_online_ietf_view
+   "${TEST_TLS_CONNECTION_BIN}" -c "www.ietf.org:443" "${SYSTEM_CA_CERT}"
+)
+SET_TESTS_PROPERTIES(testtls_online_ietf_view PROPERTIES
+   PASS_REGULAR_EXPRESSION "Connecting to www\\.ietf\\.org:443.*Subject:.*ietf\\.org"
+   SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   LABELS "test-tls-connection;network;online"
+)
+
+# 8. Test view-certificate integration pipeline with live downloaded certificate from www.heise.de
+ADD_X509_MATCH_TEST(testtls_online_heise_view
+   "${TEST_TLS_CONNECTION_BIN}" -c "www.heise.de:443" "${SYSTEM_CA_CERT}"
+)
+SET_TESTS_PROPERTIES(testtls_online_heise_view PROPERTIES
+   PASS_REGULAR_EXPRESSION "Connecting to www\\.heise\\.de:443.*Subject:.*heise\\.de"
+   SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   LABELS "test-tls-connection;network;online"
 )
 
 
