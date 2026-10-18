@@ -767,10 +767,13 @@ int main(int argc, char** argv)
       std::cerr << gettext("ERROR: Invalid min/max settings (--min-actions/-m/--max-actions/-M)!") << '\n';
       return 1;
    }
-   if(EndTag.empty() || BeginTag.empty() || (EndTag == BeginTag)) {
+   if(EndTag.empty()) {
       EndTag = BeginTag;
    }
-   if(!BeginTag.empty() && ((SelectBegin != 0) || (SelectEnd != 0))) {
+   else if(BeginTag.empty()) {
+      BeginTag = EndTag;
+   }
+   if((!BeginTag.empty() || !EndTag.empty()) && ((SelectBegin != 0) || (SelectEnd != 0))) {
       // TRANSLATORS: Error message when line selection and tag matching
       // options are specified together.
       std::cerr << gettext("ERROR: Line selection (--select|-s) and tags (--begin-tag/-b/--end-tag/-e/--tag/-t) are mutually exclusive!") << '\n';
