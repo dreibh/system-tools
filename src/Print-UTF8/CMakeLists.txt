@@ -46,3 +46,12 @@ INSTALL(FILES print-utf8.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES              print-utf8.bash-completion
         DESTINATION        ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME             print-utf8)
+
+
+#############################################################################
+#### TESTING                                                             ####
+#############################################################################
+
+IF (BUILD_TESTING)
+   ADD_SUBDIRECTORY(tests)
+ENDIF()
