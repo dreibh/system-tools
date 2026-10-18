@@ -153,19 +153,19 @@ ENDFUNCTION()
 #### 1. Basic CLI Options                                                ####
 #############################################################################
 
-# Test version flag (short option -v)[cite: 28, 29]
+# Test version flag (short option -v)
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_cli_version_short -v)
 
-# Test version flag (long option --version)[cite: 28, 29]
+# Test version flag (long option --version)
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_cli_version_long --version)
 SET_TESTS_PROPERTIES(configgrub_cli_version_short configgrub_cli_version_long PROPERTIES
    PASS_REGULAR_EXPRESSION "configure-grub (@BUILD_MAJOR@|[0-9]+)"
 )
 
-# Test help flag (short option -h)[cite: 28, 29]
+# Test help flag (short option -h)
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_cli_help_short -h)
 
-# Test help flag (long option --help)[cite: 28, 29]
+# Test help flag (long option --help)
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_cli_help_long --help)
 SET_TESTS_PROPERTIES(configgrub_cli_help_short configgrub_cli_help_long PROPERTIES
    PASS_REGULAR_EXPRESSION "Usage:"
@@ -178,7 +178,7 @@ SET_TESTS_PROPERTIES(configgrub_cli_help_short configgrub_cli_help_long PROPERTI
 
 SET(TEST_OUT_MERGE "${CMAKE_CURRENT_BINARY_DIR}/out_grub_merge")
 
-# Test merging template and existing input using short options -i and -o[cite: 28, 29]
+# Test merging template and existing input using short options -i and -o
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_merge_short_opts
    -i "${MOCK_INPUT_FILE}" -o "${TEST_OUT_MERGE}" "${MOCK_TEMPLATE_FILE}"
 )
@@ -189,7 +189,7 @@ SET_TESTS_PROPERTIES(configgrub_merge_short_opts PROPERTIES
 
 SET(TEST_OUT_LONG_OPTS "${CMAKE_CURRENT_BINARY_DIR}/out_grub_long_opts")
 
-# Test merging template and existing input using long options --input and --output[cite: 28, 29]
+# Test merging template and existing input using long options --input and --output
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_merge_long_opts
    --input "${MOCK_INPUT_FILE}" --output "${TEST_OUT_LONG_OPTS}" "${MOCK_TEMPLATE_FILE}"
 )
@@ -200,7 +200,7 @@ SET_TESTS_PROPERTIES(configgrub_merge_long_opts PROPERTIES
 
 SET(TEST_OUT_DEVNULL "${CMAKE_CURRENT_BINARY_DIR}/out_grub_devnull")
 
-# Test merging template with /dev/null input[cite: 28]
+# Test merging template with /dev/null input
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_merge_input_devnull
    -i "/dev/null" -o "${TEST_OUT_DEVNULL}" "${MOCK_TEMPLATE_FILE}"
 )
@@ -211,7 +211,7 @@ SET_TESTS_PROPERTIES(configgrub_merge_input_devnull PROPERTIES
 
 SET(TEST_OUT_EMPTY "${CMAKE_CURRENT_BINARY_DIR}/out_grub_empty")
 
-# Test merging template with an empty input file[cite: 28]
+# Test merging template with an empty input file
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_merge_input_empty
    -i "${MOCK_EMPTY_INPUT_FILE}" -o "${TEST_OUT_EMPTY}" "${MOCK_TEMPLATE_FILE}"
 )
@@ -222,7 +222,7 @@ SET_TESTS_PROPERTIES(configgrub_merge_input_empty PROPERTIES
 
 SET(TEST_OUT_CRYPTO "${CMAKE_CURRENT_BINARY_DIR}/out_grub_crypto")
 
-# Test preserving GRUB_ENABLE_CRYPTODISK=y from input configuration[cite: 28]
+# Test preserving GRUB_ENABLE_CRYPTODISK=y from input configuration
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_merge_cryptodisk
    -i "${MOCK_INPUT_FILE}" -o "${TEST_OUT_CRYPTO}" "${MOCK_CRYPTO_TEMPLATE_FILE}"
 )
@@ -233,7 +233,7 @@ SET_TESTS_PROPERTIES(configgrub_merge_cryptodisk PROPERTIES
 
 SET(TEST_OUT_NETNAMES "${CMAKE_CURRENT_BINARY_DIR}/out_grub_netnames")
 
-# Test stripping biosdevname=0 and net.ifnames=0 when absent from /proc/cmdline[cite: 28]
+# Test stripping biosdevname=0 and net.ifnames=0 when absent from /proc/cmdline
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_strip_netnames
    -i "${MOCK_INPUT_NETNAMES_FILE}" -o "${TEST_OUT_NETNAMES}" "${MOCK_TEMPLATE_FILE}"
 )
@@ -249,7 +249,7 @@ SET_TESTS_PROPERTIES(configgrub_strip_netnames PROPERTIES
 
 SET(TEST_OUT_VIDEO_SHORT "${CMAKE_CURRENT_BINARY_DIR}/out_grub_video_short")
 
-# Test overriding video mode with short option (-V)[cite: 28, 29]
+# Test overriding video mode with short option (-V)
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_override_video_short
    -i "${MOCK_INPUT_FILE}" -o "${TEST_OUT_VIDEO_SHORT}"
    -V "auto,1920x1080,1024x768" "${MOCK_TEMPLATE_FILE}"
@@ -261,7 +261,7 @@ SET_TESTS_PROPERTIES(configgrub_override_video_short PROPERTIES
 
 SET(TEST_OUT_VIDEO_LONG "${CMAKE_CURRENT_BINARY_DIR}/out_grub_video_long")
 
-# Test overriding video mode with long option (--video)[cite: 28, 29]
+# Test overriding video mode with long option (--video)
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_override_video_long
    -i "${MOCK_INPUT_FILE}" -o "${TEST_OUT_VIDEO_LONG}"
    --video "1280x1024" "${MOCK_TEMPLATE_FILE}"
@@ -273,7 +273,7 @@ SET_TESTS_PROPERTIES(configgrub_override_video_long PROPERTIES
 
 SET(TEST_OUT_TUNE_SHORT "${CMAKE_CURRENT_BINARY_DIR}/out_grub_tune_short")
 
-# Test overriding startup tune with short option (-T)[cite: 28, 29]
+# Test overriding startup tune with short option (-T)
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_override_tune_short
    -i "${MOCK_INPUT_FILE}" -o "${TEST_OUT_TUNE_SHORT}"
    -T "20000 584 144 736 48" "${MOCK_TEMPLATE_FILE}"
@@ -285,7 +285,7 @@ SET_TESTS_PROPERTIES(configgrub_override_tune_short PROPERTIES
 
 SET(TEST_OUT_TUNE_LONG "${CMAKE_CURRENT_BINARY_DIR}/out_grub_tune_long")
 
-# Test overriding startup tune with long option (--tune)[cite: 28, 29]
+# Test overriding startup tune with long option (--tune)
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_override_tune_long
    -i "${MOCK_INPUT_FILE}" -o "${TEST_OUT_TUNE_LONG}"
    --tune "480 440 1" "${MOCK_TEMPLATE_FILE}"
@@ -326,7 +326,7 @@ SET_TESTS_PROPERTIES(configgrub_override_video_and_tune_long PROPERTIES
 
 SET(TEST_OUT_MINIMAL "${CMAKE_CURRENT_BINARY_DIR}/out_grub_minimal")
 
-# Test appending settings when absent from minimal template[cite: 28]
+# Test appending settings when absent from minimal template
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_minimal_template_appends
    -i "${MOCK_INPUT_FILE}" -o "${TEST_OUT_MINIMAL}" "${MOCK_MINIMAL_TEMPLATE_FILE}"
 )
@@ -341,13 +341,13 @@ SET_TESTS_PROPERTIES(configgrub_minimal_template_appends PROPERTIES
 #############################################################################
 
 # ------ Missing Positional Arguments ---------------------------------------
-# Test error when invoked with no arguments[cite: 28, 29]
+# Test error when invoked with no arguments
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_fail_missing_all_args)
 SET_TESTS_PROPERTIES(configgrub_fail_missing_all_args PROPERTIES
    PASS_REGULAR_EXPRESSION "Usage:"
 )
 
-# Test error when only options are passed without template argument[cite: 28, 29]
+# Test error when only options are passed without template argument
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_fail_only_options
    -i "${MOCK_INPUT_FILE}" -o "out.txt"
 )
@@ -356,7 +356,7 @@ SET_TESTS_PROPERTIES(configgrub_fail_only_options PROPERTIES
 )
 
 # ------ Extraneous Positional Arguments ------------------------------------
-# Test error on two positional arguments[cite: 28, 29]
+# Test error on two positional arguments
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_fail_extraneous_two_args
    "${MOCK_TEMPLATE_FILE}" extra_arg
 )
@@ -364,7 +364,7 @@ SET_TESTS_PROPERTIES(configgrub_fail_extraneous_two_args PROPERTIES
    PASS_REGULAR_EXPRESSION "Usage:"
 )
 
-# Test error on three positional arguments[cite: 28, 29]
+# Test error on three positional arguments
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_fail_extraneous_multiple_args
    "${MOCK_TEMPLATE_FILE}" extra1 extra2
 )
@@ -372,7 +372,7 @@ SET_TESTS_PROPERTIES(configgrub_fail_extraneous_multiple_args PROPERTIES
    PASS_REGULAR_EXPRESSION "Usage:"
 )
 
-# Test error on double-dash followed by extra positional arguments[cite: 28, 29]
+# Test error on double-dash followed by extra positional arguments
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_fail_extraneous_with_delimiter
    -- "${MOCK_TEMPLATE_FILE}" extra
 )
@@ -381,7 +381,7 @@ SET_TESTS_PROPERTIES(configgrub_fail_extraneous_with_delimiter PROPERTIES
 )
 
 # ------ Non-Existent Files -------------------------------------------------
-# Test error when input file does not exist[cite: 28]
+# Test error when input file does not exist
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_fail_nonexistent_input
    -i "/nonexistent/input/path" "${MOCK_TEMPLATE_FILE}"
 )
@@ -389,7 +389,7 @@ SET_TESTS_PROPERTIES(configgrub_fail_nonexistent_input PROPERTIES
    PASS_REGULAR_EXPRESSION "ERROR: Input configuration /nonexistent/input/path not found!"
 )
 
-# Test error when template file does not exist[cite: 28]
+# Test error when template file does not exist
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_fail_nonexistent_template
    -i "${MOCK_INPUT_FILE}" "/nonexistent/template/path"
 )
@@ -398,46 +398,69 @@ SET_TESTS_PROPERTIES(configgrub_fail_nonexistent_template PROPERTIES
 )
 
 # ------ Missing Required Option Arguments ----------------------------------
-# Test error when -i is passed without argument[cite: 28]
+# Test error when -i is passed without argument
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_missing_opt_arg_i -i)
 
-# Test error when -o is passed without argument[cite: 28]
+# Test error when -o is passed without argument
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_missing_opt_arg_o -o)
 
-# Test error when -V is passed without argument[cite: 28]
+# Test error when -V is passed without argument
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_missing_opt_arg_V -V)
 
-# Test error when -T is passed without argument[cite: 28]
+# Test error when -T is passed without argument
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_missing_opt_arg_T -T)
 
-# Test error when --input is passed without argument[cite: 28]
+# Test error when --input is passed without argument
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_missing_opt_arg_input --input)
 
-# Test error when --output is passed without argument[cite: 28]
+# Test error when --output is passed without argument
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_missing_opt_arg_output --output)
 
-# Test error when --video is passed without argument[cite: 28]
+# Test error when --video is passed without argument
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_missing_opt_arg_video --video)
 
-# Test error when --tune is passed without argument[cite: 28]
+# Test error when --tune is passed without argument
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_missing_opt_arg_tune --tune)
 
 # ------ Disallowed Arguments to Flag Options -------------------------------
-# Test error when --help is passed with an argument[cite: 28]
+# Test error when --help is passed with an argument
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_help_with_arg --help=foo)
 
-# Test error when --version is passed with an argument[cite: 28]
+# Test error when --version is passed with an argument
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_version_with_arg --version=foo)
 
 # ------ Unrecognized Options -----------------------------------------------
-# Test error on unrecognized short option -z[cite: 28]
+# Test error on unrecognized short option -z
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_unknown_short_opt_z -z "${MOCK_TEMPLATE_FILE}")
 
-# Test error on unrecognized short option -a[cite: 28]
+# Test error on unrecognized short option -a
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_unknown_short_opt_a -a "${MOCK_TEMPLATE_FILE}")
 
-# Test error on unrecognized long option --invalid-option[cite: 28]
+# Test error on unrecognized long option --invalid-option
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_unknown_long_opt --invalid-option "${MOCK_TEMPLATE_FILE}")
 
-# Test error on unrecognized long option --custom-flag[cite: 28]
+# Test error on unrecognized long option --custom-flag
 ADD_CONFIG_GRUB_FAIL_TEST(configgrub_fail_unknown_long_opt_custom --custom-flag "${MOCK_TEMPLATE_FILE}")
+
+
+#### TBD ####################################################################
+
+# Fixture with commented-out options containing irregular leading whitespace
+SET(MOCK_INDENTED_TEMPLATE_FILE "${CMAKE_CURRENT_BINARY_DIR}/mock_grub_indented_template")
+FILE(WRITE "${MOCK_INDENTED_TEMPLATE_FILE}"
+"GRUB_DEFAULT=0\n"
+"#   GRUB_GFXMODE=800x600\n"
+"#   GRUB_INIT_TUNE=\"480 440 1\"\n"
+)
+
+SET(TEST_OUT_INDENTED "${CMAKE_CURRENT_BINARY_DIR}/out_grub_indented")
+
+# Test replacing commented options with irregular leading whitespace
+ADD_CONFIG_GRUB_MATCH_TEST(configgrub_indented_comments_replacement
+   -i "${MOCK_INPUT_FILE}" -o "${TEST_OUT_INDENTED}"
+   -V "1920x1080" -T "1000 440 2" "${MOCK_INDENTED_TEMPLATE_FILE}"
+)
+SET_TESTS_PROPERTIES(configgrub_indented_comments_replacement PROPERTIES
+   PASS_REGULAR_EXPRESSION "OPTION_INIT_TUNE:[ \t]+GRUB_INIT_TUNE=\"1000 440 2\".*OPTION_GFXMODE:[ \t]+GRUB_GFXMODE=\"1920x1080\""
+   LABELS "Configure-GRUB;formatting"
+)

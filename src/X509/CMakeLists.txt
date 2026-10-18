@@ -66,3 +66,12 @@ INSTALL(PROGRAMS
            generate-test-certificates
            make-test-certificates
         DESTINATION ${CMAKE_INSTALL_DATADIR}/system-tools)
+
+
+#############################################################################
+#### TESTING                                                             ####
+#############################################################################
+
+IF (BUILD_TESTING)
+   ADD_SUBDIRECTORY(tests)
+ENDIF()
