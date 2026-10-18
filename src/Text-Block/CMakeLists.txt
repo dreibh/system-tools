@@ -57,3 +57,12 @@ INSTALL(FILES text-block-tests/example1.txt
               text-block-tests/insert.txt
               text-block-tests/numbers.txt
         DESTINATION ${CMAKE_INSTALL_DATADIR}/text-block)
+
+
+#############################################################################
+#### TESTING                                                             ####
+#############################################################################
+
+IF (BUILD_TESTING)
+   ADD_SUBDIRECTORY(tests)
+ENDIF()
