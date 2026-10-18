@@ -240,7 +240,7 @@ SET_TESTS_PROPERTIES(textblock_enumerate_fmt_1 PROPERTIES
    LABELS "text-block;enumerate"
 )
 
-# Zero-padded formats: 02, 03, 04, 05, 08
+# Zero-padded formats: 02, 03, 04, 05, 06, 07, 08, 09, 10
 ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_02 -i "${MOCK_LINES_FILE}" -E
    --enumerate-format 02 --enumerate-label1 "#" --enumerate-label2 ": "
 )
@@ -273,6 +273,22 @@ SET_TESTS_PROPERTIES(textblock_enumerate_fmt_05 PROPERTIES
    LABELS "text-block;enumerate"
 )
 
+ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_06 -i "${MOCK_LINES_FILE}" -E
+   --enumerate-format 06 --enumerate-label1 "#" --enumerate-label2 ": "
+)
+SET_TESTS_PROPERTIES(textblock_enumerate_fmt_06 PROPERTIES
+   PASS_REGULAR_EXPRESSION "#000001: Line 1.*#000005: Line 5"
+   LABELS "text-block;enumerate"
+)
+
+ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_07 -i "${MOCK_LINES_FILE}" -E
+   --enumerate-format 07 --enumerate-label1 "#" --enumerate-label2 ": "
+)
+SET_TESTS_PROPERTIES(textblock_enumerate_fmt_07 PROPERTIES
+   PASS_REGULAR_EXPRESSION "#0000001: Line 1.*#0000005: Line 5"
+   LABELS "text-block;enumerate"
+)
+
 ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_08 -i "${MOCK_LINES_FILE}" -E
    --enumerate-format 08 --enumerate-label1 "#" --enumerate-label2 ": "
 )
@@ -281,7 +297,23 @@ SET_TESTS_PROPERTIES(textblock_enumerate_fmt_08 PROPERTIES
    LABELS "text-block;enumerate"
 )
 
-# Space-padded formats: 2, 3, 4, 5, 8
+ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_09 -i "${MOCK_LINES_FILE}" -E
+   --enumerate-format 09 --enumerate-label1 "#" --enumerate-label2 ": "
+)
+SET_TESTS_PROPERTIES(textblock_enumerate_fmt_09 PROPERTIES
+   PASS_REGULAR_EXPRESSION "#000000001: Line 1.*#000000005: Line 5"
+   LABELS "text-block;enumerate"
+)
+
+ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_10 -i "${MOCK_LINES_FILE}" -E
+   --enumerate-format 10 --enumerate-label1 "#" --enumerate-label2 ": "
+)
+SET_TESTS_PROPERTIES(textblock_enumerate_fmt_10 PROPERTIES
+   PASS_REGULAR_EXPRESSION "#         1: Line 1.*#         5: Line 5"
+   LABELS "text-block;enumerate"
+)
+
+# Space-padded formats: 2, 3, 4, 5, 6, 7, 8, 9
 ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_2 -i "${MOCK_LINES_FILE}" -E
    --enumerate-format 2 --enumerate-label1 "#" --enumerate-label2 ": "
 )
@@ -314,6 +346,22 @@ SET_TESTS_PROPERTIES(textblock_enumerate_fmt_5 PROPERTIES
    LABELS "text-block;enumerate"
 )
 
+ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_6 -i "${MOCK_LINES_FILE}" -E
+   --enumerate-format 6 --enumerate-label1 "#" --enumerate-label2 ": "
+)
+SET_TESTS_PROPERTIES(textblock_enumerate_fmt_6 PROPERTIES
+   PASS_REGULAR_EXPRESSION "#     1: Line 1.*#     5: Line 5"
+   LABELS "text-block;enumerate"
+)
+
+ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_7 -i "${MOCK_LINES_FILE}" -E
+   --enumerate-format 7 --enumerate-label1 "#" --enumerate-label2 ": "
+)
+SET_TESTS_PROPERTIES(textblock_enumerate_fmt_7 PROPERTIES
+   PASS_REGULAR_EXPRESSION "#      1: Line 1.*#      5: Line 5"
+   LABELS "text-block;enumerate"
+)
+
 ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_8 -i "${MOCK_LINES_FILE}" -E
    --enumerate-format 8 --enumerate-label1 "#" --enumerate-label2 ": "
 )
@@ -322,7 +370,23 @@ SET_TESTS_PROPERTIES(textblock_enumerate_fmt_8 PROPERTIES
    LABELS "text-block;enumerate"
 )
 
-# Left-adjusted formats: -2, -3, -4, -5, -6
+ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_9 -i "${MOCK_LINES_FILE}" -E
+   --enumerate-format 9 --enumerate-label1 "#" --enumerate-label2 ": "
+)
+SET_TESTS_PROPERTIES(textblock_enumerate_fmt_9 PROPERTIES
+   PASS_REGULAR_EXPRESSION "#        1: Line 1.*#        5: Line 5"
+   LABELS "text-block;enumerate"
+)
+
+# Left-adjusted formats: -1, -2, -3, -4, -5, -6, -7, -8, -10
+ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_left_1 -i "${MOCK_LINES_FILE}" -E
+   --enumerate-format -1 --enumerate-label1 "#" --enumerate-label2 ": "
+)
+SET_TESTS_PROPERTIES(textblock_enumerate_fmt_left_1 PROPERTIES
+   PASS_REGULAR_EXPRESSION "#1: Line 1.*#5: Line 5"
+   LABELS "text-block;enumerate"
+)
+
 ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_left_2 -i "${MOCK_LINES_FILE}" -E
    --enumerate-format -2 --enumerate-label1 "#" --enumerate-label2 ": "
 )
@@ -363,6 +427,30 @@ SET_TESTS_PROPERTIES(textblock_enumerate_fmt_left_6 PROPERTIES
    LABELS "text-block;enumerate"
 )
 
+ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_left_7 -i "${MOCK_LINES_FILE}" -E
+   --enumerate-format -7 --enumerate-label1 "#" --enumerate-label2 ": "
+)
+SET_TESTS_PROPERTIES(textblock_enumerate_fmt_left_7 PROPERTIES
+   PASS_REGULAR_EXPRESSION "#1      : Line 1.*#5      : Line 5"
+   LABELS "text-block;enumerate"
+)
+
+ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_left_8 -i "${MOCK_LINES_FILE}" -E
+   --enumerate-format -8 --enumerate-label1 "#" --enumerate-label2 ": "
+)
+SET_TESTS_PROPERTIES(textblock_enumerate_fmt_left_8 PROPERTIES
+   PASS_REGULAR_EXPRESSION "#1       : Line 1.*#5       : Line 5"
+   LABELS "text-block;enumerate"
+)
+
+ADD_TEXT_BLOCK_TEST(textblock_enumerate_fmt_left_10 -i "${MOCK_LINES_FILE}" -E
+   --enumerate-format -10 --enumerate-label1 "#" --enumerate-label2 ": "
+)
+SET_TESTS_PROPERTIES(textblock_enumerate_fmt_left_10 PROPERTIES
+   PASS_REGULAR_EXPRESSION "#1         : Line 1.*#5         : Line 5"
+   LABELS "text-block;enumerate"
+)
+
 # Custom Label Styling Combinations
 ADD_TEXT_BLOCK_TEST(textblock_enumerate_label1_prefix -i "${MOCK_LINES_FILE}" -E
    --enumerate-format 2 --enumerate-label1 "ROW_"
@@ -393,6 +481,22 @@ ADD_TEXT_BLOCK_TEST(textblock_enumerate_xml_tags -i "${MOCK_LINES_FILE}" -E
 )
 SET_TESTS_PROPERTIES(textblock_enumerate_xml_tags PROPERTIES
    PASS_REGULAR_EXPRESSION "<line n=\" 1\"> Line 1.*<line n=\" 5\"> Line 5"
+   LABELS "text-block;enumerate"
+)
+
+ADD_TEXT_BLOCK_TEST(textblock_enumerate_bracket_labels -i "${MOCK_LINES_FILE}" -E
+   --enumerate-format 2 --enumerate-label1 "(#" --enumerate-label2 ") "
+)
+SET_TESTS_PROPERTIES(textblock_enumerate_bracket_labels PROPERTIES
+   PASS_REGULAR_EXPRESSION "\\(# 1\\) Line 1.*\\(# 5\\) Line 5"
+   LABELS "text-block;enumerate"
+)
+
+ADD_TEXT_BLOCK_TEST(textblock_enumerate_brace_labels -i "${MOCK_LINES_FILE}" -E
+   --enumerate-format 2 --enumerate-label1 "{" --enumerate-label2 "}: "
+)
+SET_TESTS_PROPERTIES(textblock_enumerate_brace_labels PROPERTIES
+   PASS_REGULAR_EXPRESSION "{ 1}: Line 1.*{ 5}: Line 5"
    LABELS "text-block;enumerate"
 )
 
@@ -477,6 +581,16 @@ ADD_TEXT_BLOCK_TEST(textblock_extract_three_blocks_full_lines
 SET_TESTS_PROPERTIES(textblock_extract_three_blocks_full_lines PROPERTIES
    PASS_REGULAR_EXPRESSION "<B>.*One.*</B>.*<B>.*Two.*</B>.*<B>.*Three.*</B>"
    FAIL_REGULAR_EXPRESSION "Top|Mid1|Mid2|Bottom"
+   LABELS "text-block;extract"
+)
+
+# Extraction of 3 blocks with tags-only excluded
+ADD_TEXT_BLOCK_TEST(textblock_extract_three_blocks_tags_only
+   -i "${MOCK_THREE_BLOCKS_FILE}" -X -b "<B>" -e "</B>" -g -x
+)
+SET_TESTS_PROPERTIES(textblock_extract_three_blocks_tags_only PROPERTIES
+   PASS_REGULAR_EXPRESSION "One.*Two.*Three"
+   FAIL_REGULAR_EXPRESSION "<B>|</B>|Top|Mid1|Mid2|Bottom"
    LABELS "text-block;extract"
 )
 
@@ -649,6 +763,15 @@ SET_TESTS_PROPERTIES(textblock_insert_front_multitag PROPERTIES
    LABELS "text-block;insert"
 )
 
+# Insert Front on 3 blocks with full tag lines
+ADD_TEXT_BLOCK_TEST(textblock_insert_front_three_blocks
+   -i "${MOCK_THREE_BLOCKS_FILE}" -F "${MOCK_INSERT_FILE}" -b "<B>" -e "</B>" -f
+)
+SET_TESTS_PROPERTIES(textblock_insert_front_three_blocks PROPERTIES
+   PASS_REGULAR_EXPRESSION "INSERTED_PAYLOAD\nOne.*INSERTED_PAYLOAD\nTwo.*INSERTED_PAYLOAD\nThree"
+   LABELS "text-block;insert"
+)
+
 # Insert Back (-B / --insert-back) tags-only
 ADD_TEXT_BLOCK_TEST(textblock_insert_back_short
    -i "${MOCK_TAGGED_FILE}" -B "${MOCK_INSERT_FILE}" -b "<BEGIN>" -e "<END>"
@@ -676,6 +799,15 @@ ADD_TEXT_BLOCK_TEST(textblock_insert_back_multitag
 )
 SET_TESTS_PROPERTIES(textblock_insert_back_multitag PROPERTIES
    PASS_REGULAR_EXPRESSION "Block 1\nINSERTED_PAYLOAD\n<END>.*Block 2\nINSERTED_PAYLOAD\n<END>"
+   LABELS "text-block;insert"
+)
+
+# Insert Back on 3 blocks with full tag lines
+ADD_TEXT_BLOCK_TEST(textblock_insert_back_three_blocks
+   -i "${MOCK_THREE_BLOCKS_FILE}" -B "${MOCK_INSERT_FILE}" -b "<B>" -e "</B>" -f
+)
+SET_TESTS_PROPERTIES(textblock_insert_back_three_blocks PROPERTIES
+   PASS_REGULAR_EXPRESSION "One\nINSERTED_PAYLOAD\n</B>.*Two\nINSERTED_PAYLOAD\n</B>.*Three\nINSERTED_PAYLOAD\n</B>"
    LABELS "text-block;insert"
 )
 
@@ -716,6 +848,16 @@ ADD_TEXT_BLOCK_TEST(textblock_replace_multitag
 SET_TESTS_PROPERTIES(textblock_replace_multitag PROPERTIES
    PASS_REGULAR_EXPRESSION "Header\nINSERTED_PAYLOAD\nMiddle\nINSERTED_PAYLOAD\nFooter"
    FAIL_REGULAR_EXPRESSION "<BEGIN>|<END>|Block 1|Block 2"
+   LABELS "text-block;replace"
+)
+
+# Replace on 3 blocks with full tag lines
+ADD_TEXT_BLOCK_TEST(textblock_replace_three_blocks
+   -i "${MOCK_THREE_BLOCKS_FILE}" -R "${MOCK_INSERT_FILE}" -b "<B>" -e "</B>" -f -y
+)
+SET_TESTS_PROPERTIES(textblock_replace_three_blocks PROPERTIES
+   PASS_REGULAR_EXPRESSION "Top\nINSERTED_PAYLOAD\nMid1\nINSERTED_PAYLOAD\nMid2\nINSERTED_PAYLOAD\nBottom"
+   FAIL_REGULAR_EXPRESSION "<B>|</B>|One|Two|Three"
    LABELS "text-block;replace"
 )
 
@@ -1108,6 +1250,20 @@ SET_TESTS_PROPERTIES(textblock_select_mixed_delete_2_neg2 PROPERTIES
 )
 
 # Line selection on longer file (mock_long.txt: 10 lines)
+ADD_TEXT_BLOCK_TEST(textblock_select_long_range_1_to_5 -i "${MOCK_LONG_FILE}" -s 1 5 -X)
+SET_TESTS_PROPERTIES(textblock_select_long_range_1_to_5 PROPERTIES
+   PASS_REGULAR_EXPRESSION "Row 01.*Row 02.*Row 03.*Row 04.*Row 05"
+   FAIL_REGULAR_EXPRESSION "Row 06|Row 07|Row 08|Row 09|Row 10"
+   LABELS "text-block;select"
+)
+
+ADD_TEXT_BLOCK_TEST(textblock_select_long_range_6_to_10 -i "${MOCK_LONG_FILE}" -s 6 10 -X)
+SET_TESTS_PROPERTIES(textblock_select_long_range_6_to_10 PROPERTIES
+   PASS_REGULAR_EXPRESSION "Row 06.*Row 07.*Row 08.*Row 09.*Row 10"
+   FAIL_REGULAR_EXPRESSION "Row 01|Row 02|Row 03|Row 04|Row 05"
+   LABELS "text-block;select"
+)
+
 ADD_TEXT_BLOCK_TEST(textblock_select_long_range_4_to_7 -i "${MOCK_LONG_FILE}" -s 4 7 -X)
 SET_TESTS_PROPERTIES(textblock_select_long_range_4_to_7 PROPERTIES
    PASS_REGULAR_EXPRESSION "Row 04.*Row 05.*Row 06.*Row 07"
@@ -1119,6 +1275,20 @@ ADD_TEXT_BLOCK_TEST(textblock_select_long_neg_range_neg4_to_neg2 -i "${MOCK_LONG
 SET_TESTS_PROPERTIES(textblock_select_long_neg_range_neg4_to_neg2 PROPERTIES
    PASS_REGULAR_EXPRESSION "Row 07.*Row 08.*Row 09"
    FAIL_REGULAR_EXPRESSION "Row 01|Row 06|Row 10"
+   LABELS "text-block;select"
+)
+
+ADD_TEXT_BLOCK_TEST(textblock_select_long_neg_to_eof -i "${MOCK_LONG_FILE}" -s -5 0 -X)
+SET_TESTS_PROPERTIES(textblock_select_long_neg_to_eof PROPERTIES
+   PASS_REGULAR_EXPRESSION "Row 06.*Row 07.*Row 08.*Row 09.*Row 10"
+   FAIL_REGULAR_EXPRESSION "Row 01|Row 02|Row 03|Row 04|Row 05"
+   LABELS "text-block;select"
+)
+
+ADD_TEXT_BLOCK_TEST(textblock_select_long_delete_neg_to_eof -i "${MOCK_LONG_FILE}" -s -4 0 -D)
+SET_TESTS_PROPERTIES(textblock_select_long_delete_neg_to_eof PROPERTIES
+   PASS_REGULAR_EXPRESSION "Row 01.*Row 02.*Row 03.*Row 04.*Row 05.*Row 06"
+   FAIL_REGULAR_EXPRESSION "Row 07|Row 08|Row 09|Row 10"
    LABELS "text-block;select"
 )
 
@@ -1267,6 +1437,10 @@ ADD_TEXT_BLOCK_FAIL_TEST(textblock_actions_multi_over_max
 # Actions on 3-block file
 ADD_TEXT_BLOCK_TEST(textblock_actions_three_blocks_exact
    -i "${MOCK_THREE_BLOCKS_FILE}" -X -b "<B>" -e "</B>" -m 3 -M 3
+)
+
+ADD_TEXT_BLOCK_TEST(textblock_actions_three_blocks_range_2_to_4
+   -i "${MOCK_THREE_BLOCKS_FILE}" -X -b "<B>" -e "</B>" -m 2 -M 4
 )
 
 ADD_TEXT_BLOCK_FAIL_TEST(textblock_actions_three_blocks_under_min
@@ -1522,6 +1696,15 @@ ADD_TEXT_BLOCK_FAIL_TEST(textblock_fail_highlight_param_4_args
 ADD_TEXT_BLOCK_FAIL_TEST(textblock_fail_highlight_param_5_args
    -i "${MOCK_TAGGED_FILE}" -H -b "<BEGIN>" -e "<END>" --highlight-param "A" "B" "C" "D" "E"
 )
+
+# Missing option arguments (getopt_long)
+ADD_TEXT_BLOCK_FAIL_TEST(textblock_fail_opt_missing_b -b)
+ADD_TEXT_BLOCK_FAIL_TEST(textblock_fail_opt_missing_e -e)
+ADD_TEXT_BLOCK_FAIL_TEST(textblock_fail_opt_missing_t -t)
+ADD_TEXT_BLOCK_FAIL_TEST(textblock_fail_opt_missing_m -m)
+ADD_TEXT_BLOCK_FAIL_TEST(textblock_fail_opt_missing_M -M)
+ADD_TEXT_BLOCK_FAIL_TEST(textblock_fail_opt_missing_i -i)
+ADD_TEXT_BLOCK_FAIL_TEST(textblock_fail_opt_missing_o -o)
 
 # Extraneous unrecognized positional parameters after options
 ADD_TEXT_BLOCK_FAIL_TEST(textblock_fail_extraneous_positional_args
