@@ -2551,8 +2551,8 @@ SET_TESTS_PROPERTIES(textblock_long_select_mixed_pos3_neg3 PROPERTIES
 )
 
 # Test mixed positive and negative indexing covering rows 5 to 10 (-s 5 -1)
-ADD_TEXT_BLOCK_TEST(textblock_select_mixed_pos5_neg1 -i "${MOCK_LONG_FILE}" -s 5 -1 -X)
-SET_TESTS_PROPERTIES(textblock_select_mixed_pos5_neg1 PROPERTIES
+ADD_TEXT_BLOCK_TEST(textblock_long_select_mixed_pos5_neg1 -i "${MOCK_LONG_FILE}" -s 5 -1 -X)
+SET_TESTS_PROPERTIES(textblock_long_select_mixed_pos5_neg1 PROPERTIES
    PASS_REGULAR_EXPRESSION "Row 05.*Row 10"
    FAIL_REGULAR_EXPRESSION "Row 01|Row 04"
    LABELS "text-block;select"
