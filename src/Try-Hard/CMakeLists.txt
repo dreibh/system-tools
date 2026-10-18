@@ -41,3 +41,12 @@ INSTALL(FILES try-hard.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 INSTALL(FILES       try-hard.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      try-hard)
+
+
+#############################################################################
+#### TESTING                                                             ####
+#############################################################################
+
+IF (BUILD_TESTING)
+   ADD_SUBDIRECTORY(tests)
+ENDIF()
