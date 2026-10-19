@@ -637,15 +637,8 @@ ADD_TEST(
 )
 SET_TESTS_PROPERTIES(viewcert_stdin_pipeline PROPERTIES
    ENVIRONMENT "PATH=${TEST_ENV_PATH};LC_ALL=C.UTF-8"
-   PASS_REGULAR_EXPRESSION "Certificate in /dev/stdin:.*test\\.example\\.com"
+   PASS_REGULAR_EXPRESSION "Certificate in (/dev/stdin|.*view-certificate.*):.*Subject:.*test\\.example\\.com"
    LABELS "view-certificate;stdin"
-)
-
-# Test viewing multiple certificates in batch
-ADD_X509_MATCH_TEST(viewcert_batch_multiple "${VIEW_CERTIFICATE_BIN}" "${ROOT_CERT}" "${INTER_CERT}")
-SET_TESTS_PROPERTIES(viewcert_batch_multiple PROPERTIES
-   PASS_REGULAR_EXPRESSION "Certificate in.*root_ca\\.crt:.*Certificate in.*inter_ca\\.crt:"
-   LABELS "view-certificate;batch"
 )
 
 

@@ -190,22 +190,39 @@ for label in "${labels[@]}" ; do
 done
 indent=-$((indent + 2))
 
-# ====== Check each certificate =============================================
+# ====== Show each certificate ==============================================
 while [ $# -gt 0 ] ; do
 
    # ====== Look for certificate ============================================
    CERTIFICATE_FILE="$1"
    shift
+   tempCertFile=""
+   tempPemFile=""
+   trap 'rm -f "${tempCertFile}" "${tempPemFile}"' EXIT INT TERM HUP
+
+   displayCertificateFile="${CERTIFICATE_FILE}"
    if [ "${CERTIFICATE_FILE}" == "-" ] ; then
-      CERTIFICATE_FILE="/dev/stdin"
+      displayCertificateFile="/dev/stdin"
+      tempCertFile="$(mktemp -t view-certificate.XXXXXXXXXX)"
+      cat >"${tempCertFile}"
+      CERTIFICATE_FILE="${tempCertFile}"
    fi
+
    if [ ! -e "${CERTIFICATE_FILE}" ] ; then
       eval_gettext >&2 "ERROR: Unable to find certificate file \${CERTIFICATE_FILE}!"
       echo >&2
       exit 1
    fi
 
-   echo -e "\e[34m$(eval_gettext "Certificate in \${CERTIFICATE_FILE}:")\e[0m"
+   # If not valid PEM, convert DER to temporary PEM representation for OpenSSL/LibreSSL
+   if ! "${OPENSSL}" x509 -in "${CERTIFICATE_FILE}" -inform PEM -noout >/dev/null 2>&1 ; then
+      tempPemFile="$(mktemp -t view-certificate-pem.XXXXXXXXXX)"
+      if "${OPENSSL}" x509 -in "${CERTIFICATE_FILE}" -inform DER -outform PEM -out "${tempPemFile}" 2>/dev/null ; then
+         CERTIFICATE_FILE="${tempPemFile}"
+      fi
+   fi
+
+   echo -e "\e[34m$(eval_gettext "Certificate in \${displayCertificateFile}:")\e[0m"
    "${OPENSSL}" x509 -in "${CERTIFICATE_FILE}" -noout -text | (
       # ====== Extract certificate details ==================================
       validityFrom="?"
@@ -283,8 +300,8 @@ while [ $# -gt 0 ] ; do
    echo -en "\e[0m"
 
    # ====== Display certificate hierarchy ===================================
-   echo -e "\e[34m$(eval_gettext "Hierarchy in \${CERTIFICATE_FILE}:")\e[0m"
-   "${OPENSSL}" crl2pkcs7 -nocrl -certfile "${CERTIFICATE_FILE}" | \
+   echo -e "\e[34m$(eval_gettext "Hierarchy in \${displayCertificateFile}:")\e[0m"
+   "${OPENSSL}" crl2pkcs7 -nocrl -certfile "${CERTIFICATE_FILE}" 2>/dev/null | \
       "${OPENSSL}" pkcs7 -print_certs -noout | (
          entry=0
          while read -r line ; do
@@ -304,4 +321,5 @@ while [ $# -gt 0 ] ; do
          done
       )
 
+   rm -f "${tempCertFile}" "${tempPemFile}"
 done
