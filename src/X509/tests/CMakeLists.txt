@@ -104,9 +104,16 @@ SET(MOCK_CRL_NO_EXT "${PKI_DIR}/crl_no_extension.pem")
 SET(UNTRUSTED_KEY   "${PKI_DIR}/untrusted.key")
 SET(UNTRUSTED_CERT  "${PKI_DIR}/untrusted.crt")
 
-# OpenSSL configuration for extensions
+# OpenSSL configuration for extensions and non-interactive CSR/cert generation
 SET(OPENSSL_CONFIG "${PKI_DIR}/openssl.cnf")
 FILE(WRITE "${OPENSSL_CONFIG}"
+"[ req ]\n"
+"default_bits = 2048\n"
+"default_md = sha256\n"
+"prompt = no\n"
+"distinguished_name = req_distinguished_name\n"
+"[ req_distinguished_name ]\n"
+"CN = dummy\n"
 "[ ca ]\n"
 "default_ca = CA_default\n"
 "[ CA_default ]\n"
@@ -150,6 +157,7 @@ EXECUTE_PROCESS(
    COMMAND ${OPENSSL_EXECUTABLE} req -new -newkey rsa:2048 -nodes
       -keyout "${INTER_KEY}" -out "${INTER_CSR}"
       -subj "/CN=SystemTools Intermediate CA/O=Test PKI/C=NO"
+      -config "${OPENSSL_CONFIG}"
    ERROR_QUIET
 )
 EXECUTE_PROCESS(
@@ -164,6 +172,7 @@ EXECUTE_PROCESS(
    COMMAND ${OPENSSL_EXECUTABLE} req -new -newkey rsa:2048 -nodes
       -keyout "${SERVER_KEY}" -out "${SERVER_CSR}"
       -subj "/CN=test.example.com/O=Test Server/C=NO"
+      -config "${OPENSSL_CONFIG}"
    ERROR_QUIET
 )
 EXECUTE_PROCESS(
@@ -217,6 +226,7 @@ EXECUTE_PROCESS(
    COMMAND ${OPENSSL_EXECUTABLE} req -x509 -new -newkey rsa:2048 -nodes -days 30
       -keyout "${UNTRUSTED_KEY}" -out "${UNTRUSTED_CERT}"
       -subj "/CN=Untrusted Entity/O=Rogue Corp/C=NO"
+      -config "${OPENSSL_CONFIG}"
    ERROR_QUIET
 )
 
