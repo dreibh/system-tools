@@ -1,1 +1,1 @@
---language=C src/Unix-Timestamp/time2unixts.c
+--language=C++ src/Unix-Timestamp/time2unixts.cc

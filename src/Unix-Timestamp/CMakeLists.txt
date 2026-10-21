@@ -32,8 +32,7 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
-ADD_EXECUTABLE(time2unixts time2unixts.c)
-# SET_PROPERTY(TARGET time2unixts PROPERTY C_STANDARD 23)
+ADD_EXECUTABLE(time2unixts time2unixts.cc)
 TARGET_COMPILE_DEFINITIONS(time2unixts PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
 TARGET_INCLUDE_DIRECTORIES(time2unixts PRIVATE ${Intl_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES(time2unixts ${Intl_LIBRARIES} ${GETOPT_LIBRARY})
