@@ -794,6 +794,7 @@ ADD_X509_MATCH_TEST(testtls_online_ietf_verify
 SET_TESTS_PROPERTIES(testtls_online_ietf_verify PROPERTIES
    PASS_REGULAR_EXPRESSION "Connecting to www\\.ietf\\.org:443"
    SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   TIMEOUT 30
    LABELS "test-tls-connection;network;online"
 )
 
@@ -804,6 +805,7 @@ ADD_X509_MATCH_TEST(testtls_online_heise_verify
 SET_TESTS_PROPERTIES(testtls_online_heise_verify PROPERTIES
    PASS_REGULAR_EXPRESSION "Connecting to www\\.heise\\.de:443"
    SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   TIMEOUT 30
    LABELS "test-tls-connection;network;online"
 )
 
@@ -814,6 +816,7 @@ ADD_X509_MATCH_TEST(testtls_online_ietf_default_port
 SET_TESTS_PROPERTIES(testtls_online_ietf_default_port PROPERTIES
    PASS_REGULAR_EXPRESSION "Connecting to www\\.ietf\\.org:443"
    SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   TIMEOUT 30
    LABELS "test-tls-connection;network;online"
 )
 
@@ -824,6 +827,7 @@ ADD_X509_MATCH_TEST(testtls_online_heise_default_port
 SET_TESTS_PROPERTIES(testtls_online_heise_default_port PROPERTIES
    PASS_REGULAR_EXPRESSION "Connecting to www\\.heise\\.de:443"
    SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   TIMEOUT 30
    LABELS "test-tls-connection;network;online"
 )
 
@@ -835,6 +839,7 @@ ADD_X509_MATCH_TEST(testtls_online_ietf_save_cert
 SET_TESTS_PROPERTIES(testtls_online_ietf_save_cert PROPERTIES
    PASS_REGULAR_EXPRESSION "Connecting to www\\.ietf\\.org:443"
    SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   TIMEOUT 30
    LABELS "test-tls-connection;network;online"
 )
 
@@ -846,6 +851,7 @@ ADD_X509_MATCH_TEST(testtls_online_heise_save_cert
 SET_TESTS_PROPERTIES(testtls_online_heise_save_cert PROPERTIES
    PASS_REGULAR_EXPRESSION "Connecting to www\\.heise\\.de:443"
    SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   TIMEOUT 30
    LABELS "test-tls-connection;network;online"
 )
 
@@ -856,6 +862,7 @@ ADD_X509_MATCH_TEST(testtls_online_ietf_view
 SET_TESTS_PROPERTIES(testtls_online_ietf_view PROPERTIES
    PASS_REGULAR_EXPRESSION "Connecting to www\\.ietf\\.org:443.*Subject:.*ietf\\.org"
    SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   TIMEOUT 30
    LABELS "test-tls-connection;network;online"
 )
 
@@ -866,6 +873,7 @@ ADD_X509_MATCH_TEST(testtls_online_heise_view
 SET_TESTS_PROPERTIES(testtls_online_heise_view PROPERTIES
    PASS_REGULAR_EXPRESSION "Connecting to www\\.heise\\.de:443.*Subject:.*heise\\.de"
    SKIP_REGULAR_EXPRESSION "${NETWORK_SKIP_REGEX}"
+   TIMEOUT 30
    LABELS "test-tls-connection;network;online"
 )
 
