@@ -64,7 +64,7 @@ static std::tm timepoint_to_tm(const int64_t unixSeconds) noexcept
    const std::chrono::sys_days       dp = std::chrono::floor<std::chrono::days>(tp);
    const std::chrono::year_month_day yearMonthDay { dp };
    const std::chrono::weekday        weekday { dp };
-   const std::chrono::hh_mm_ss       time{tp - dp};
+   const std::chrono::hh_mm_ss<std::chrono::seconds> time {tp - dp };
 
    std::tm result { };
    result.tm_sec  = static_cast<int>(time.seconds().count());
@@ -257,19 +257,15 @@ int main(int argc, char** argv)
       // ====== Use current time, if no timestamp is given ==================
       if(i == argc) {
          if(optind == argc) {
-            struct timespec ts;
-            if(timespec_get(&ts, TIME_UTC) != TIME_UTC) {
-               // TRANSLATORS: Error message prefix when obtaining current time
-               // via timespec_get() fails (system error message appended by perror).
-               std::perror(gettext("timespec_get() failed"));
-               std::exit(1);
-            }
+            const auto now = std::chrono::system_clock::now();
+            const auto ns  =
+               std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch()).count();
 #if (defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
-            unixTS = ((_BitInt(128))1000000000LL * ts.tv_sec) + ts.tv_nsec;
+            unixTS = static_cast<_BitInt(128)>(ns);
 #elif defined(__SIZEOF_INT128__)
-            unixTS = (static_cast<__int128_t>(1000000000LL) * ts.tv_sec) + ts.tv_nsec;
+            unixTS = static_cast<__int128_t>(ns);
 #else
-            unixTS = (1000000000LL * ts.tv_sec) + ts.tv_nsec;
+            unixTS = static_cast<long long>(ns);
 #endif
             if(divideBy == 0) {
                divideBy = 1;
@@ -345,7 +341,7 @@ int main(int argc, char** argv)
       }
 
       // ------ Time in seconds-granularity via std::chrono -----------------
-      const struct tm t = timepoint_to_tm(ts.tv_sec);
+      const std::tm t = timepoint_to_tm(ts.tv_sec);
 
       // ====== Prepare date/time string ====================================
       char frontTimeString[1024]        = { 0 };
