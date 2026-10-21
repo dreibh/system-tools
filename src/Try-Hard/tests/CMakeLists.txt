@@ -29,18 +29,25 @@
 
 SET(TEST_LOCALE_DIR "${CMAKE_BINARY_DIR}/po")
 
+# Find bash interpreter for cross-platform script execution (required on Windows)
+FIND_PROGRAM(BASH_EXECUTABLE NAMES bash bash.exe REQUIRED)
+
 # Determine try-hard executable path
 IF(TARGET try-hard)
    GET_TARGET_PROPERTY(TRY_HARD_TYPE try-hard TYPE)
    IF(TRY_HARD_TYPE STREQUAL "EXECUTABLE")
       SET(TRY_HARD_BIN "$<TARGET_FILE:try-hard>")
    ELSE()
-      SET(TRY_HARD_BIN "${CMAKE_CURRENT_BINARY_DIR}/../try-hard")
+      SET(TRY_HARD_BIN "${CMAKE_CURRENT_BINARY_DIR}/../try-hard.versioned")
    ENDIF()
+ELSEIF(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/../try-hard.versioned")
+   SET(TRY_HARD_BIN "${CMAKE_CURRENT_BINARY_DIR}/../try-hard.versioned")
 ELSEIF(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/../try-hard")
    SET(TRY_HARD_BIN "${CMAKE_CURRENT_BINARY_DIR}/../try-hard")
 ELSEIF(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/bin/try-hard")
    SET(TRY_HARD_BIN "${CMAKE_CURRENT_BINARY_DIR}/bin/try-hard")
+ELSEIF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../try-hard")
+   SET(TRY_HARD_BIN "${CMAKE_CURRENT_SOURCE_DIR}/../try-hard")
 ELSE()
    SET(TRY_HARD_BIN "try-hard")
 ENDIF()
@@ -54,7 +61,7 @@ ENDIF()
 FUNCTION(ADD_TRY_HARD_TEST TEST_NAME)
    ADD_TEST(
       NAME ${TEST_NAME}
-      COMMAND ${TRY_HARD_BIN} ${ARGN}
+      COMMAND ${BASH_EXECUTABLE} "${TRY_HARD_BIN}" ${ARGN}
    )
    SET_TESTS_PROPERTIES(${TEST_NAME} PROPERTIES
       ENVIRONMENT "LC_ALL=C.UTF-8;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
@@ -67,7 +74,7 @@ ENDFUNCTION()
 FUNCTION(ADD_TRY_HARD_MATCH_TEST TEST_NAME)
    ADD_TEST(
       NAME ${TEST_NAME}
-      COMMAND ${TRY_HARD_BIN} ${ARGN}
+      COMMAND ${BASH_EXECUTABLE} "${TRY_HARD_BIN}" ${ARGN}
    )
    SET_TESTS_PROPERTIES(${TEST_NAME} PROPERTIES
       ENVIRONMENT "LC_ALL=C.UTF-8;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
@@ -80,7 +87,7 @@ ENDFUNCTION()
 FUNCTION(ADD_TRY_HARD_FAIL_TEST TEST_NAME)
    ADD_TEST(
       NAME ${TEST_NAME}
-      COMMAND ${TRY_HARD_BIN} ${ARGN}
+      COMMAND ${BASH_EXECUTABLE} "${TRY_HARD_BIN}" ${ARGN}
    )
    SET_TESTS_PROPERTIES(${TEST_NAME} PROPERTIES
       WILL_FAIL TRUE
@@ -94,7 +101,7 @@ ENDFUNCTION()
 FUNCTION(ADD_TRY_HARD_EXIT_CODE_TEST TEST_NAME EXPECTED_CODE)
    ADD_TEST(
       NAME ${TEST_NAME}
-      COMMAND ${TRY_HARD_BIN} ${ARGN}
+      COMMAND ${BASH_EXECUTABLE} "${TRY_HARD_BIN}" ${ARGN}
    )
    SET_TESTS_PROPERTIES(${TEST_NAME} PROPERTIES
       ENVIRONMENT "LC_ALL=C.UTF-8;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
@@ -138,7 +145,7 @@ SET_TESTS_PROPERTIES(tryhard_cli_help_short tryhard_cli_help_long PROPERTIES
 # Test localized help in German (de)
 ADD_TRY_HARD_TEST(tryhard_cli_help_i18n_de -h)
 SET_TESTS_PROPERTIES(tryhard_cli_help_i18n_de PROPERTIES
-   ENVIRONMENT "LANGUAGE=de;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=de_DE.UTF-8;LANGUAGE=de;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "Aufruf:"
    LABELS "try-hard;cli;i18n;locale_de"
 )
@@ -146,7 +153,7 @@ SET_TESTS_PROPERTIES(tryhard_cli_help_i18n_de PROPERTIES
 # Test localized help in Norwegian Bokmål (nb)
 ADD_TRY_HARD_TEST(tryhard_cli_help_i18n_nb -h)
 SET_TESTS_PROPERTIES(tryhard_cli_help_i18n_nb PROPERTIES
-   ENVIRONMENT "LANGUAGE=nb;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=nb_NO.UTF-8;LANGUAGE=nb;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "Bruk:"
    LABELS "try-hard;cli;i18n;locale_nb"
 )
@@ -264,7 +271,7 @@ ADD_TEST(
 )
 ADD_TEST(
    NAME tryhard_transient_recovery_trial_2_execute
-   COMMAND ${TRY_HARD_BIN} 3 0 -D -- sh -c "if [ -f \"${RECOVERY_STATE_FILE_2}\" ]; then rm -f \"${RECOVERY_STATE_FILE_2}\"; exit 0; else touch \"${RECOVERY_STATE_FILE_2}\"; exit 1; fi"
+   COMMAND ${BASH_EXECUTABLE} "${TRY_HARD_BIN}" 3 0 -D -- sh -c "if [ -f \"${RECOVERY_STATE_FILE_2}\" ]; then rm -f \"${RECOVERY_STATE_FILE_2}\"; exit 0; else touch \"${RECOVERY_STATE_FILE_2}\"; exit 1; fi"
 )
 SET_TESTS_PROPERTIES(tryhard_transient_recovery_trial_2_execute PROPERTIES
    DEPENDS tryhard_transient_recovery_trial_2_cleanup
@@ -281,7 +288,7 @@ ADD_TEST(
 )
 ADD_TEST(
    NAME tryhard_transient_recovery_trial_3_execute
-   COMMAND ${TRY_HARD_BIN} 4 0 -D -- sh -c "CNT=0; [ -f \"${RECOVERY_STATE_FILE_3}\" ] && CNT=\$(cat \"${RECOVERY_STATE_FILE_3}\"); CNT=\$((CNT + 1)); echo \$CNT > \"${RECOVERY_STATE_FILE_3}\"; if [ \$CNT -ge 3 ]; then rm -f \"${RECOVERY_STATE_FILE_3}\"; exit 0; else exit 1; fi"
+   COMMAND ${BASH_EXECUTABLE} "${TRY_HARD_BIN}" 4 0 -D -- sh -c "CNT=0; [ -f \"${RECOVERY_STATE_FILE_3}\" ] && CNT=\$(cat \"${RECOVERY_STATE_FILE_3}\"); CNT=\$((CNT + 1)); echo \$CNT > \"${RECOVERY_STATE_FILE_3}\"; if [ \$CNT -ge 3 ]; then rm -f \"${RECOVERY_STATE_FILE_3}\"; exit 0; else exit 1; fi"
 )
 SET_TESTS_PROPERTIES(tryhard_transient_recovery_trial_3_execute PROPERTIES
    DEPENDS tryhard_transient_recovery_trial_3_cleanup
@@ -298,7 +305,7 @@ ADD_TEST(
 )
 ADD_TEST(
    NAME tryhard_transient_recovery_trial_4_execute
-   COMMAND ${TRY_HARD_BIN} 5 0 -D -- sh -c "CNT=0; [ -f \"${RECOVERY_STATE_FILE_4}\" ] && CNT=\$(cat \"${RECOVERY_STATE_FILE_4}\"); CNT=\$((CNT + 1)); echo \$CNT > \"${RECOVERY_STATE_FILE_4}\"; if [ \$CNT -ge 4 ]; then rm -f \"${RECOVERY_STATE_FILE_4}\"; exit 0; else exit 1; fi"
+   COMMAND ${BASH_EXECUTABLE} "${TRY_HARD_BIN}" 5 0 -D -- sh -c "CNT=0; [ -f \"${RECOVERY_STATE_FILE_4}\" ] && CNT=\$(cat \"${RECOVERY_STATE_FILE_4}\"); CNT=\$((CNT + 1)); echo \$CNT > \"${RECOVERY_STATE_FILE_4}\"; if [ \$CNT -ge 4 ]; then rm -f \"${RECOVERY_STATE_FILE_4}\"; exit 0; else exit 1; fi"
 )
 SET_TESTS_PROPERTIES(tryhard_transient_recovery_trial_4_execute PROPERTIES
    DEPENDS tryhard_transient_recovery_trial_4_cleanup
@@ -315,7 +322,7 @@ ADD_TEST(
 )
 ADD_TEST(
    NAME tryhard_transient_exhausted_execute
-   COMMAND ${TRY_HARD_BIN} 2 0 -D -- sh -c "CNT=0; [ -f \"${RECOVERY_STATE_FILE_FAIL}\" ] && CNT=\$(cat \"${RECOVERY_STATE_FILE_FAIL}\"); CNT=\$((CNT + 1)); echo \$CNT > \"${RECOVERY_STATE_FILE_FAIL}\"; if [ \$CNT -ge 3 ]; then exit 0; else exit 1; fi"
+   COMMAND ${BASH_EXECUTABLE} "${TRY_HARD_BIN}" 2 0 -D -- sh -c "CNT=0; [ -f \"${RECOVERY_STATE_FILE_FAIL}\" ] && CNT=\$(cat \"${RECOVERY_STATE_FILE_FAIL}\"); CNT=\$((CNT + 1)); echo \$CNT > \"${RECOVERY_STATE_FILE_FAIL}\"; if [ \$CNT -ge 3 ]; then exit 0; else exit 1; fi"
 )
 SET_TESTS_PROPERTIES(tryhard_transient_exhausted_execute PROPERTIES
    WILL_FAIL TRUE
