@@ -60,8 +60,6 @@
 #else
 #define gettext(string)                   (string)
 #define ngettext(singular, plural, count) (((count) == 1) ? (singular) : (plural))
-#define bindtextdomain(domain, directory) (directory)
-#define textdomain(domain)                (domain)
 #endif
 
 #include "package-version.h"

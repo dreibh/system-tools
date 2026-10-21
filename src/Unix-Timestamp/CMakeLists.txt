@@ -48,8 +48,7 @@ INSTALL(FILES       time2unixts.bash-completion
         DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
         RENAME      time2unixts)
 
-ADD_EXECUTABLE(unixts2time unixts2time.c)
-# SET_PROPERTY(TARGET unixts2time PROPERTY C_STANDARD 23)
+ADD_EXECUTABLE(unixts2time unixts2time.cc)
 TARGET_COMPILE_DEFINITIONS(unixts2time PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
 TARGET_INCLUDE_DIRECTORIES(unixts2time PRIVATE ${Intl_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES(unixts2time ${Intl_LIBRARIES} ${GETOPT_LIBRARY})
