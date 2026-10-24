@@ -240,25 +240,25 @@ ADD_SYSTEMINFO_TEST(systeminfo_cli_help_i18n_ar  -h)
 ADD_SYSTEMINFO_TEST(systeminfo_cli_help_i18n_he  -h)
 
 SET_TESTS_PROPERTIES(systeminfo_cli_help_i18n_de PROPERTIES
-   ENVIRONMENT "LANGUAGE=de;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=de;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "Aufruf:"
    LABELS "system-info;cli;i18n;locale_de"
 )
 
 SET_TESTS_PROPERTIES(systeminfo_cli_help_i18n_nb PROPERTIES
-   ENVIRONMENT "LANGUAGE=nb;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=nb;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "Bruk:"
    LABELS "system-info;cli;i18n;locale_nb"
 )
 
 SET_TESTS_PROPERTIES(systeminfo_cli_help_i18n_ar PROPERTIES
-   ENVIRONMENT "LANGUAGE=ar;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=ar;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "(الاستخدام|الاستعمال|طريقة الاستخدام)"
    LABELS "system-info;cli;i18n;locale_ar;rtl"
 )
 
 SET_TESTS_PROPERTIES(systeminfo_cli_help_i18n_he PROPERTIES
-   ENVIRONMENT "LANGUAGE=he;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=he;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "שימוש:"
    LABELS "system-info;cli;i18n;locale_he;rtl"
 )
@@ -293,7 +293,7 @@ ADD_SYSTEMINFO_TEST(systeminfo_mock_deterministic_ar
    -Y "${MOCK_SYSTEM_INFO_FILE}"
 )
 SET_TESTS_PROPERTIES(systeminfo_mock_deterministic_ar PROPERTIES
-   ENVIRONMENT "LANGUAGE=ar;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=ar;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "nordmarka\\.nntb\\.no.*Ubuntu.*192\\.168\\.1\\.100.*2001:db8::1"
    LABELS "system-info;mock;i18n;locale_ar;rtl"
 )
@@ -304,7 +304,7 @@ ADD_SYSTEMINFO_TEST(systeminfo_mock_deterministic_he
    -Y "${MOCK_SYSTEM_INFO_FILE}"
 )
 SET_TESTS_PROPERTIES(systeminfo_mock_deterministic_he PROPERTIES
-   ENVIRONMENT "LANGUAGE=he;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=he;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "nordmarka\\.nntb\\.no.*Ubuntu.*192\\.168\\.1\\.100.*2001:db8::1"
    LABELS "system-info;mock;i18n;locale_he;rtl"
 )
