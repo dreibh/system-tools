@@ -123,7 +123,7 @@ SET_TESTS_PROPERTIES(unixts2time_cli_help_short unixts2time_cli_help_long PROPER
 # Test unixts2time localized help in German (de)
 ADD_UNIXTS2TIME_TEST(unixts2time_cli_help_i18n_de -h)
 SET_TESTS_PROPERTIES(unixts2time_cli_help_i18n_de PROPERTIES
-   ENVIRONMENT "LANGUAGE=de;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=de;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "Aufruf:"
    LABELS "unixts2time;cli;i18n;locale_de"
 )
@@ -131,7 +131,7 @@ SET_TESTS_PROPERTIES(unixts2time_cli_help_i18n_de PROPERTIES
 # Test unixts2time localized help in Norwegian Bokmål (nb)
 ADD_UNIXTS2TIME_TEST(unixts2time_cli_help_i18n_nb -h)
 SET_TESTS_PROPERTIES(unixts2time_cli_help_i18n_nb PROPERTIES
-   ENVIRONMENT "LANGUAGE=nb;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=nb;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "Bruk:"
    LABELS "unixts2time;cli;i18n;locale_nb"
 )
@@ -157,7 +157,7 @@ SET_TESTS_PROPERTIES(time2unixts_cli_help_short time2unixts_cli_help_long PROPER
 # Test time2unixts localized help in German (de)
 ADD_TIME2UNIXTS_TEST(time2unixts_cli_help_i18n_de -h)
 SET_TESTS_PROPERTIES(time2unixts_cli_help_i18n_de PROPERTIES
-   ENVIRONMENT "LANGUAGE=de;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=de;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "Aufruf:"
    LABELS "time2unixts;cli;i18n;locale_de"
 )
@@ -165,7 +165,7 @@ SET_TESTS_PROPERTIES(time2unixts_cli_help_i18n_de PROPERTIES
 # Test time2unixts localized help in Norwegian Bokmål (nb)
 ADD_TIME2UNIXTS_TEST(time2unixts_cli_help_i18n_nb -h)
 SET_TESTS_PROPERTIES(time2unixts_cli_help_i18n_nb PROPERTIES
-   ENVIRONMENT "LANGUAGE=nb;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=nb;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "Bruk:"
    LABELS "time2unixts;cli;i18n;locale_nb"
 )

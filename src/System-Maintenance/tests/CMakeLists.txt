@@ -114,7 +114,7 @@ SET_TESTS_PROPERTIES(sysmaint_cli_help_short sysmaint_cli_help_long PROPERTIES
 # Test localized help in German (de)
 ADD_SYSMAINT_MATCH_TEST(sysmaint_cli_help_i18n_de -h)
 SET_TESTS_PROPERTIES(sysmaint_cli_help_i18n_de PROPERTIES
-   ENVIRONMENT "LANGUAGE=de;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=de;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "Aufruf:"
    LABELS "System-Maintenance;cli;i18n;locale_de"
 )
@@ -122,7 +122,7 @@ SET_TESTS_PROPERTIES(sysmaint_cli_help_i18n_de PROPERTIES
 # Test localized help in Norwegian Bokmål (nb)
 ADD_SYSMAINT_MATCH_TEST(sysmaint_cli_help_i18n_nb -h)
 SET_TESTS_PROPERTIES(sysmaint_cli_help_i18n_nb PROPERTIES
-   ENVIRONMENT "LANGUAGE=nb;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=nb;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "Bruk:"
    LABELS "System-Maintenance;cli;i18n;locale_nb"
 )
