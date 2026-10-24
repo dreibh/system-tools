@@ -941,7 +941,7 @@ static std::string getCurrentTimeString()
 // ###### Version ############################################################
 [[noreturn]] static void version()
 {
-   std::cout << "System-Info " << SYSTEMTOOLS_VERSION << '\n';
+   std::cout << "System-Info " << PROJECT_VERSION << '\n';
    std::exit(0);
 }
 
@@ -1015,7 +1015,7 @@ int main(int argc, char** argv)
 #endif
    bindtextdomain("System-Info",
                   ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
-                       textdomaindir : SYSTEMTOOLS_LOCALEDIR ));
+                       textdomaindir : PROJECT_LOCALEDIR ));
 #if defined(_WIN32)
    if(textdomaindir) {
        free(textdomaindir);

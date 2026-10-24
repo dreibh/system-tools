@@ -78,8 +78,8 @@ IF (WITH_LIBSYSTEMINFO)
          SET_TARGET_PROPERTIES(libsysteminfo-${TYPE} PROPERTIES
             OUTPUT_NAME                systeminfo
             CLEAN_DIRECT_OUTPUT        1
-            VERSION                    ${BUILD_VERSION}
-            SOVERSION                  ${BUILD_MAJOR}
+            VERSION                    ${PROJECT_VERSION}
+            SOVERSION                  ${PROJECT_VERSION_MAJOR}
             WINDOWS_EXPORT_ALL_SYMBOLS ON
          )
          TARGET_COMPILE_DEFINITIONS(libsysteminfo-${TYPE} PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)

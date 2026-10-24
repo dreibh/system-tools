@@ -72,7 +72,7 @@ inline std::locale disableThousandsSeparator(const std::locale& base) {
 // ###### Version ###########################################################
 [[noreturn]] static void version()
 {
-   std::cout << "get-system-info " << SYSTEMTOOLS_VERSION << '\n';
+   std::cout << "get-system-info " << PROJECT_VERSION << '\n';
    std::exit(0);
 }
 

@@ -112,7 +112,7 @@ static const char* findSecondsPlaceholder(const char* formatString) noexcept
 // ###### Version ###########################################################
 [[noreturn]] static void version() noexcept
 {
-   std::printf("unixts2time %s\n", SYSTEMTOOLS_VERSION);
+   std::printf("unixts2time %s\n", PROJECT_VERSION);
    std::exit(0);
 }
 
@@ -170,7 +170,7 @@ int main(int argc, char** argv)
 #endif
    bindtextdomain("unixts2time",
                   ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
-                       textdomaindir : SYSTEMTOOLS_LOCALEDIR ));
+                       textdomaindir : PROJECT_LOCALEDIR ));
 #if defined(_WIN32)
    if(textdomaindir) {
        free(textdomaindir);

@@ -72,7 +72,7 @@ static std::string formatText(const char* messageIdentifier,
 // ###### Version ###########################################################
 [[noreturn]] static void version()
 {
-   std::cout << "random-sleep " << SYSTEMTOOLS_VERSION << '\n';
+   std::cout << "random-sleep " << PROJECT_VERSION << '\n';
    std::exit(0);
 }
 
@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 #endif
    bindtextdomain("random-sleep",
                   ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
-                       textdomaindir : SYSTEMTOOLS_LOCALEDIR ));
+                       textdomaindir : PROJECT_LOCALEDIR ));
 #if defined(_WIN32)
    if(textdomaindir) {
        free(textdomaindir);

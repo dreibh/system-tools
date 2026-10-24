@@ -386,7 +386,7 @@ static void processMarked(std::string_view text,
 // ###### Version ###########################################################
 [[noreturn]] static void version()
 {
-   std::cout << "text-block " << SYSTEMTOOLS_VERSION << '\n';
+   std::cout << "text-block " << PROJECT_VERSION << '\n';
    std::exit(0);
 }
 
@@ -539,7 +539,7 @@ int main(int argc, char** argv)
 #endif
    bindtextdomain("text-block",
                   ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
-                       textdomaindir : SYSTEMTOOLS_LOCALEDIR ));
+                       textdomaindir : PROJECT_LOCALEDIR ));
 #if defined(_WIN32)
    if(textdomaindir) {
        free(textdomaindir);

@@ -280,7 +280,7 @@ static const char* strptime(const char* buffer,
 // ###### Version ###########################################################
 [[noreturn]] static void version() noexcept
 {
-   std::printf("time2unixts %s\n", SYSTEMTOOLS_VERSION);
+   std::printf("time2unixts %s\n", PROJECT_VERSION);
    std::exit(0);
 }
 
@@ -342,7 +342,7 @@ int main(int argc, char** argv)
 #endif
    bindtextdomain("time2unixts",
                   ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
-                       textdomaindir : SYSTEMTOOLS_LOCALEDIR ));
+                       textdomaindir : PROJECT_LOCALEDIR ));
 #if defined(_WIN32)
    if(textdomaindir) {
        free(textdomaindir);

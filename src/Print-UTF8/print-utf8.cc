@@ -633,7 +633,7 @@ static void doMultiLineIndentOrCenter(std::string_view borderLeft,
 // ###### Version ###########################################################
 [[noreturn]] static void version()
 {
-   std::cout << "print-utf8 " << SYSTEMTOOLS_VERSION << '\n';
+   std::cout << "print-utf8 " << PROJECT_VERSION << '\n';
    std::exit(0);
 }
 
@@ -767,7 +767,7 @@ int main(int argc, char** argv)
 #endif
    bindtextdomain("print-utf8",
                   ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
-                       textdomaindir : SYSTEMTOOLS_LOCALEDIR ));
+                       textdomaindir : PROJECT_LOCALEDIR ));
 #if defined(_WIN32)
    if(textdomaindir) {
        free(textdomaindir);
