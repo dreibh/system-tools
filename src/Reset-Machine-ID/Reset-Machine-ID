@@ -179,7 +179,7 @@ EOF
 
 # ###### Version ############################################################
 version () {
-   echo "Reset-Machine-ID @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   echo "Reset-Machine-ID @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
    exit 0
 }
 

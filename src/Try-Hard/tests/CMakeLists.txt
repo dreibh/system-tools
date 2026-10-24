@@ -130,7 +130,7 @@ ADD_TRY_HARD_MATCH_TEST(tryhard_cli_version_short -v)
 # Test version flag (long option --version)
 ADD_TRY_HARD_MATCH_TEST(tryhard_cli_version_long --version)
 SET_TESTS_PROPERTIES(tryhard_cli_version_short tryhard_cli_version_long PROPERTIES
-   PASS_REGULAR_EXPRESSION "try-hard (@BUILD_MAJOR@|[0-9]+)"
+   PASS_REGULAR_EXPRESSION "try-hard (@PROJECT_VERSION_MAJOR@|[0-9]+)"
 )
 
 # Test help flag (short option -h)

@@ -46,7 +46,7 @@ colordiff ()
 
 # ###### Version ############################################################
 version () {
-   echo "configure-grub @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   echo "configure-grub @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
    exit 0
 }
 

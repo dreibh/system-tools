@@ -5,7 +5,7 @@ includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
 
 Name: libsysteminfo
 Description: Cross-platform C++ system information library
-Version: @BUILD_VERSION@
+Version: @PROJECT_VERSION@
 
 Libs: -L${libdir} -lsysteminfo
 Libs.private: @PC_LIBS_PRIVATE@

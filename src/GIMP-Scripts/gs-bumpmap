@@ -34,7 +34,7 @@ set -euo pipefail
 
 # ###### Version ############################################################
 version () {
-   echo "gs-bumpmap @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   echo "gs-bumpmap @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
    exit 0
 }
 

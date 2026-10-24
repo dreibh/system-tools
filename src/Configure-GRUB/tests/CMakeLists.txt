@@ -159,7 +159,7 @@ ADD_CONFIG_GRUB_MATCH_TEST(configgrub_cli_version_short -v)
 # Test version flag (long option --version)
 ADD_CONFIG_GRUB_MATCH_TEST(configgrub_cli_version_long --version)
 SET_TESTS_PROPERTIES(configgrub_cli_version_short configgrub_cli_version_long PROPERTIES
-   PASS_REGULAR_EXPRESSION "configure-grub (@BUILD_MAJOR@|[0-9]+)"
+   PASS_REGULAR_EXPRESSION "configure-grub (@PROJECT_VERSION_MAJOR@|[0-9]+)"
 )
 
 # Test help flag (short option -h)

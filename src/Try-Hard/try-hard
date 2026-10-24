@@ -41,7 +41,7 @@ export TEXTDOMAIN="try-hard"
 
 # ###### Version ############################################################
 version () {
-   echo "try-hard @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   echo "try-hard @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
    exit 0
 }
 

@@ -51,7 +51,7 @@ print-date ()
 
 # ###### Version ############################################################
 version () {
-   echo "view-crl @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   echo "view-crl @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
    exit 0
 }
 

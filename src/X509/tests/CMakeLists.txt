@@ -282,7 +282,7 @@ ADD_X509_MATCH_TEST(checkcert_cli_version_short "${CHECK_CERTIFICATE_BIN}" -v)
 # Test check-certificate version flag (long option --version)
 ADD_X509_MATCH_TEST(checkcert_cli_version_long  "${CHECK_CERTIFICATE_BIN}" --version)
 SET_TESTS_PROPERTIES(checkcert_cli_version_short checkcert_cli_version_long PROPERTIES
-   PASS_REGULAR_EXPRESSION "check-certificate (@BUILD_MAJOR@|[0-9]+)"
+   PASS_REGULAR_EXPRESSION "check-certificate (@PROJECT_VERSION_MAJOR@|[0-9]+)"
 )
 
 # Test check-certificate help flag (short option -h)
@@ -308,7 +308,7 @@ ADD_X509_MATCH_TEST(extractpem_cli_version_short "${EXTRACT_PEM_BIN}" -v)
 # Test extract-pem version flag (long option --version)
 ADD_X509_MATCH_TEST(extractpem_cli_version_long  "${EXTRACT_PEM_BIN}" --version)
 SET_TESTS_PROPERTIES(extractpem_cli_version_short extractpem_cli_version_long PROPERTIES
-   PASS_REGULAR_EXPRESSION "extract-pem (@BUILD_MAJOR@|[0-9]+)"
+   PASS_REGULAR_EXPRESSION "extract-pem (@PROJECT_VERSION_MAJOR@|[0-9]+)"
 )
 
 # Test extract-pem help flag (short option -h)
@@ -334,7 +334,7 @@ ADD_X509_MATCH_TEST(viewcert_cli_version_short "${VIEW_CERTIFICATE_BIN}" -v)
 # Test view-certificate version flag (long option --version)
 ADD_X509_MATCH_TEST(viewcert_cli_version_long  "${VIEW_CERTIFICATE_BIN}" --version)
 SET_TESTS_PROPERTIES(viewcert_cli_version_short viewcert_cli_version_long PROPERTIES
-   PASS_REGULAR_EXPRESSION "view-certificate (@BUILD_MAJOR@|[0-9]+)"
+   PASS_REGULAR_EXPRESSION "view-certificate (@PROJECT_VERSION_MAJOR@|[0-9]+)"
 )
 
 # Test view-certificate help flag (short option -h)
@@ -352,7 +352,7 @@ ADD_X509_MATCH_TEST(viewcrl_cli_version_short "${VIEW_CRL_BIN}" -v)
 # Test view-crl version flag (long option --version)
 ADD_X509_MATCH_TEST(viewcrl_cli_version_long  "${VIEW_CRL_BIN}" --version)
 SET_TESTS_PROPERTIES(viewcrl_cli_version_short viewcrl_cli_version_long PROPERTIES
-   PASS_REGULAR_EXPRESSION "view-crl (@BUILD_MAJOR@|[0-9]+)"
+   PASS_REGULAR_EXPRESSION "view-crl (@PROJECT_VERSION_MAJOR@|[0-9]+)"
 )
 
 # Test view-crl help flag (short option -h)
@@ -370,7 +370,7 @@ ADD_X509_MATCH_TEST(pem2der_cli_version_short "${PEM2DER_BIN}" -v)
 # Test pem2der version flag (long option --version)
 ADD_X509_MATCH_TEST(pem2der_cli_version_long  "${PEM2DER_BIN}" --version)
 SET_TESTS_PROPERTIES(pem2der_cli_version_short pem2der_cli_version_long PROPERTIES
-   PASS_REGULAR_EXPRESSION "pem2der (@BUILD_MAJOR@|[0-9]+)"
+   PASS_REGULAR_EXPRESSION "pem2der (@PROJECT_VERSION_MAJOR@|[0-9]+)"
 )
 
 # Test pem2der help flag (short option -h)
@@ -388,7 +388,7 @@ ADD_X509_MATCH_TEST(der2pem_cli_version_short "${DER2PEM_BIN}" -v)
 # Test der2pem version flag (long option --version)
 ADD_X509_MATCH_TEST(der2pem_cli_version_long  "${DER2PEM_BIN}" --version)
 SET_TESTS_PROPERTIES(der2pem_cli_version_short der2pem_cli_version_long PROPERTIES
-   PASS_REGULAR_EXPRESSION "der2pem (@BUILD_MAJOR@|[0-9]+)"
+   PASS_REGULAR_EXPRESSION "der2pem (@PROJECT_VERSION_MAJOR@|[0-9]+)"
 )
 
 # Test der2pem help flag (short option -h)
@@ -406,7 +406,7 @@ ADD_X509_MATCH_TEST(testtls_cli_version_short "${TEST_TLS_CONNECTION_BIN}" -v)
 # Test test-tls-connection version flag (long option --version)
 ADD_X509_MATCH_TEST(testtls_cli_version_long  "${TEST_TLS_CONNECTION_BIN}" --version)
 SET_TESTS_PROPERTIES(testtls_cli_version_short testtls_cli_version_long PROPERTIES
-   PASS_REGULAR_EXPRESSION "test-tls-connection (@BUILD_MAJOR@|[0-9]+)"
+   PASS_REGULAR_EXPRESSION "test-tls-connection (@PROJECT_VERSION_MAJOR@|[0-9]+)"
 )
 
 # Test test-tls-connection help flag (short option -h)

@@ -38,7 +38,7 @@ set -euo pipefail
 
 # ###### Version ############################################################
 version () {
-   echo "gs-glossytext @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   echo "gs-glossytext @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
    exit 0
 }
 

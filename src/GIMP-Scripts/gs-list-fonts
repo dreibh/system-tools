@@ -34,7 +34,7 @@ set -euo pipefail
 
 # ###### Version ############################################################
 version () {
-   echo "gs-list-fonts @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   echo "gs-list-fonts @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
    exit 0
 }
 

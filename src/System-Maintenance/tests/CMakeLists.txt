@@ -99,7 +99,7 @@ ADD_SYSMAINT_MATCH_TEST(sysmaint_cli_version_short -v)
 # Test version flag (long option --version)
 ADD_SYSMAINT_MATCH_TEST(sysmaint_cli_version_long --version)
 SET_TESTS_PROPERTIES(sysmaint_cli_version_short sysmaint_cli_version_long PROPERTIES
-   PASS_REGULAR_EXPRESSION "System-Maintenance (@BUILD_MAJOR@|[0-9]+)"
+   PASS_REGULAR_EXPRESSION "System-Maintenance (@PROJECT_VERSION_MAJOR@|[0-9]+)"
 )
 
 # Test help flag (short option -h)
@@ -147,13 +147,13 @@ SET_TESTS_PROPERTIES(sysmaint_precedence_h_then_k PROPERTIES
 # Test version taking precedence when combined with short -k (-k -v)
 ADD_SYSMAINT_MATCH_TEST(sysmaint_precedence_k_then_v -k -v)
 SET_TESTS_PROPERTIES(sysmaint_precedence_k_then_v PROPERTIES
-   PASS_REGULAR_EXPRESSION "System-Maintenance (@BUILD_MAJOR@|[0-9]+)"
+   PASS_REGULAR_EXPRESSION "System-Maintenance (@PROJECT_VERSION_MAJOR@|[0-9]+)"
 )
 
 # Test version taking precedence when specified before -k (-v -k)
 ADD_SYSMAINT_MATCH_TEST(sysmaint_precedence_v_then_k -v -k)
 SET_TESTS_PROPERTIES(sysmaint_precedence_v_then_k PROPERTIES
-   PASS_REGULAR_EXPRESSION "System-Maintenance (@BUILD_MAJOR@|[0-9]+)"
+   PASS_REGULAR_EXPRESSION "System-Maintenance (@PROJECT_VERSION_MAJOR@|[0-9]+)"
 )
 
 # Test help taking precedence with long options (--interactive-kernel-removal --help)
@@ -165,7 +165,7 @@ SET_TESTS_PROPERTIES(sysmaint_precedence_long_k_then_help PROPERTIES
 # Test version taking precedence with long options (--interactive-kernel-removal --version)
 ADD_SYSMAINT_MATCH_TEST(sysmaint_precedence_long_k_then_version --interactive-kernel-removal --version)
 SET_TESTS_PROPERTIES(sysmaint_precedence_long_k_then_version PROPERTIES
-   PASS_REGULAR_EXPRESSION "System-Maintenance (@BUILD_MAJOR@|[0-9]+)"
+   PASS_REGULAR_EXPRESSION "System-Maintenance (@PROJECT_VERSION_MAJOR@|[0-9]+)"
 )
 
 

@@ -41,7 +41,7 @@ export TEXTDOMAIN="Fingerprint-SSH-Keys"
 
 # ###### Version ############################################################
 version () {
-   echo "Fingerprint-SSH-Keys @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   echo "Fingerprint-SSH-Keys @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
    exit 0
 }
 

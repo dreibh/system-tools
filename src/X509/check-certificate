@@ -41,7 +41,7 @@ export TEXTDOMAIN="check-certificate"
 
 # ###### Version ############################################################
 version () {
-   echo "check-certificate @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   echo "check-certificate @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
    exit 0
 }
 
