@@ -87,14 +87,64 @@ done
 %files
 
 
+%package -n libsysteminfo2
+Summary: ystem information helper library for System-Info
+Group: System/Libraries
+Provides: %{name}-libsysteminfo = %{version}-%{release}
+
+%description -n libsysteminfo2
+ libsysteminfo obtains information about the system, including:
+ * CPU and load,
+ * Operating system and kernel,
+ * Network interface and status,
+ * Memory and swap status,
+ * Disk space on /, /home, and /tmp.
+ The obtained information can be queried by the API.
+ This package contains the shared runtime library.
+
+%post -n libsysteminfo2 -p /sbin/ldconfig
+%postun -n libsysteminfo2 -p /sbin/ldconfig
+
+%files -n libsysteminfo2
+%{_libdir}/libsysteminfo.so.*
+
+
+%package -n libsysteminfo-devel
+Summary: System information helper library for System-Info (development files)
+Group: Development/Libraries/C and C++
+Requires: libsysteminfo2 = %{version}-%{release}
+Requires: (bzip2-devel or libbz2-devel)
+Requires: (xz-devel or liblzma-devel)
+Requires: (zlib-devel or libz-devel)
+Requires: libzstd-devel
+Provides: %{name}-libsysteminfo-devel = %{version}-%{release}
+
+%description -n libsysteminfo-devel
+libsysteminfo obtains information about the system, including:
+* CPU and load,
+* Operating system and kernel,
+* Network interface and status,
+* Memory and swap status,
+* Disk space on /, /home, and /tmp.
+The obtained information can be queried by the API.
+This package contains development headers and library symlinks.
+
+%files -n libsysteminfo-devel
+%{_includedir}/systeminfo/systeminfo.h
+%{_includedir}/systeminfo/inputfile.h
+%{_includedir}/systeminfo/outputfile.h
+%{_libdir}/libsysteminfo*.so
+%{_libdir}/libsysteminfo.a
+%{_libdir}/pkgconfig/libsysteminfo.pc
+
+
 %package system-info
 Summary: Print basic system information and banners
-BuildArch: noarch
 Requires: %{name}-get-system-info = %{version}-%{release}
 Requires: %{name}-print-utf8 = %{version}-%{release}
+Requires: libsysteminfo2 = %{version}-%{release}
 Requires: (figlet or toilet)
 Requires: gettext-runtime
-Requires: (mbuffer or buffer)
 Requires: util-linux
 Recommends: subnetcalc
 
@@ -129,6 +179,7 @@ in, providing the user an up-to-date overview of the system.
 
 %package get-system-info
 Summary: Obtain basic system information
+Requires: libsysteminfo2 = %{version}-%{release}
 
 %description get-system-info
 This small program obtains basic status information about the system:

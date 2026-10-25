@@ -29,13 +29,12 @@
 
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
-PROJECT(td-system-tools)
 SET(BUILD_MAJOR "2")
 SET(BUILD_MINOR "7")
 SET(BUILD_PATCH "15")
-PROJECT(system-tools
+PROJECT(td-system-tools
         VERSION      "${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH}"
-        LANGUAGES    CXX
+        LANGUAGES    C CXX
         HOMEPAGE_URL "https://www.nntb.no/~dreibh/system-tools")
 SET(PROJECT_SOURCE_URL "https://github.com/dreibh/system-tools")
 
@@ -70,7 +69,7 @@ INCLUDE(CTest)
 
 SET(CPACK_SOURCE_GENERATOR "TXZ")
 SET(CPACK_SOURCE_PACKAGE_FILE_NAME
-    "${CMAKE_PROJECT_NAME}-${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH}")
+    "${CMAKE_PROJECT_NAME}-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 SET(CPACK_SOURCE_IGNORE_FILES "\\\\.git;\\\\.swp$;~$;\\\\.\\\\#;/\\\\#")
 LIST(APPEND CPACK_SOURCE_IGNORE_FILES "^${PROJECT_SOURCE_DIR}/${CMAKE_PROJECT_NAME}[_-]")
 LIST(APPEND CPACK_SOURCE_IGNORE_FILES "\\\\.make$|\\\\.log$")
@@ -146,49 +145,33 @@ ENDIF()
 #### OPTIONS                                                             ####
 #############################################################################
 
-OPTION(WITH_STATIC_LIBRARIES "Build static libraries"              OFF)
-OPTION(WITH_SHARED_LIBRARIES "Build shared libraries"              ON)
-OPTION(STATIC_BUILD          "Build statically-linked executables" OFF)
+OPTION(WITH_STATIC_LIBRARIES           "Build static libraries"              ON)
+OPTION(WITH_SHARED_LIBRARIES           "Build shared libraries"              ON)
+OPTION(STATIC_BUILD                    "Build statically-linked executables" OFF)
 
-IF ((NOT WITH_STATIC_LIBRARIES) AND (NOT WITH_SHARED_LIBRARIES))
-   MESSAGE(FATAL_ERROR "Static (WITH_STATIC_LIBRARIES) or shared (WITH_SHARED_LIBRARIES) libraries must be enabled!")
-ENDIF()
+OPTION(WITH_I18N "Build with Internationalization (i18n) support"            ON)
 
-IF (STATIC_BUILD)
-   IF (WITH_SHARED_LIBRARIES)
-      MESSAGE(FATAL_ERROR "WITH_STATIC_LIBRARIES=ON cannot be used with WITH_SHARED_LIBRARIES=ON!")
-   ENDIF()
-   MESSAGE("Building static executables")
-   SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-   SET(CMAKE_EXE_LINKER_FLAGS      "-static")
-ELSE()
-   IF (NOT WITH_SHARED_LIBRARIES)
-      MESSAGE(FATAL_ERROR "STATIC_BUILD=OFF cannot be used with WITH_SHARED_LIBRARIES=OFF!")
-   ENDIF()
-ENDIF()
+OPTION(WITH_SYSTEM_INFO                "Include System-Info"                 ON)
+OPTION(WITH_SYSTEM_INFO_DEFAULT_BANNER "Include System-Info Default Banner"  ON)
+OPTION(WITH_SYSTEM_INFO_IN_PROFILES    "Include System-Info in Profiles"     ON)
+OPTION(WITH_SYSTEM_INFO_EXAMPLES       "Include System-Info Examples"        ON)
 
-OPTION(WITH_I18N "Build with Internationalization (i18n) support"           ON)
-
-OPTION(WITH_SYSTEM_INFO                "Include System-Info"                ON)
-OPTION(WITH_SYSTEM_INFO_DEFAULT_BANNER "Include System-Info Default Banner" ON)
-OPTION(WITH_SYSTEM_INFO_IN_PROFILES    "Include System-Info in Profiles"    ON)
-OPTION(WITH_SYSTEM_INFO_EXAMPLES       "Include System-Info Examples"       ON)
-
-OPTION(WITH_GET_SYSTEM_INFO            "Include get-system-info"            ON)
-OPTION(WITH_SYSTEM_MAINTENANCE         "Include System-Maintenance"         ON)
-OPTION(WITH_PRINT_UTF8                 "Include Print-UTF8"                 ON)
-OPTION(WITH_TEXT_BLOCK                 "Include Text-Block"                 ON)
-OPTION(WITH_FINGERPRINT_SSH_KEYS       "Include Fingerprint-SSH-Keys"       ON)
-OPTION(WITH_CONFIGURE_GRUB             "Include Configure-GRUB"             ON)
-OPTION(WITH_RESET_MACHINE_ID           "Include Reset-Machine-ID"           ON)
-OPTION(WITH_TRY_HARD                   "Include Try-Hard"                   ON)
-OPTION(WITH_RANDOM_SLEEP               "Include Random-Sleep"               ON)
-OPTION(WITH_UNIX_TIMESTAMP_TOOLS       "Include Unix-Timestamp Tools"       ON)
-OPTION(WITH_X509_TOOLS                 "Include X.509 Tools"                ON)
-OPTION(WITH_GIMP_SCRIPTS               "Include GIMP-Scripts"               ON)
-OPTION(WITH_GIMP_SCRIPTS_EXAMPLES      "Include GIMP-Scripts Examples"      ON)
+OPTION(WITH_GET_SYSTEM_INFO            "Include get-system-info"             ON)
+OPTION(WITH_SYSTEM_MAINTENANCE         "Include System-Maintenance"          ON)
+OPTION(WITH_PRINT_UTF8                 "Include Print-UTF8"                  ON)
+OPTION(WITH_TEXT_BLOCK                 "Include Text-Block"                  ON)
+OPTION(WITH_FINGERPRINT_SSH_KEYS       "Include Fingerprint-SSH-Keys"        ON)
+OPTION(WITH_CONFIGURE_GRUB             "Include Configure-GRUB"              ON)
+OPTION(WITH_RESET_MACHINE_ID           "Include Reset-Machine-ID"            ON)
+OPTION(WITH_TRY_HARD                   "Include Try-Hard"                    ON)
+OPTION(WITH_RANDOM_SLEEP               "Include Random-Sleep"                ON)
+OPTION(WITH_UNIX_TIMESTAMP_TOOLS       "Include Unix-Timestamp Tools"        ON)
+OPTION(WITH_X509_TOOLS                 "Include X.509 Tools"                 ON)
+OPTION(WITH_GIMP_SCRIPTS               "Include GIMP-Scripts"                ON)
+OPTION(WITH_GIMP_SCRIPTS_EXAMPLES      "Include GIMP-Scripts Examples"       ON)
 
 OPTION(WITH_LIBSYSTEMINFO              "Build System-Info Library (libsysteminfo)" OFF)
+
 
 IF (WITH_SYSTEM_INFO AND NOT (WITH_GET_SYSTEM_INFO AND WITH_PRINT_UTF8))
    MESSAGE(FATAL_ERROR "WITH_SYSTEM_INFO requires WITH_GET_SYSTEM_INFO and WITH_PRINT_UTF8!")
@@ -204,6 +187,11 @@ IF (WITH_SYSTEM_INFO_EXAMPLES AND NOT WITH_SYSTEM_INFO)
 ENDIF()
 IF (WITH_GET_SYSTEM_INFO)
    SET(WITH_LIBSYSTEMINFO ON)
+ENDIF()
+IF (WITH_LIBSYSTEMINFO)
+   IF ((NOT WITH_STATIC_LIBRARIES) AND (NOT WITH_SHARED_LIBRARIES))
+      MESSAGE(FATAL_ERROR "Static (WITH_STATIC_LIBRARIES) or shared (WITH_SHARED_LIBRARIES) libraries must be enabled!")
+   ENDIF()
 ENDIF()
 
 IF (WITH_TRY_HARD AND NOT WITH_RANDOM_SLEEP)

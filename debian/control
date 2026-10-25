@@ -19,7 +19,7 @@ Architecture: any
 Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends}
-Description: Library for obtaining system information
+Description: System information helper library for System-Info
  libsysteminfo obtains information about the system, including:
  * CPU and load,
  * Operating system and kernel,
@@ -40,7 +40,7 @@ Depends: libbz2-dev,
          libzstd-dev,
          zlib1g-dev,
          ${misc:Depends}
-Description: Library for obtaining system information (development files)
+Description: System information helper library for System-Info (development files)
  libsysteminfo obtains information about the system, including:
  * CPU and load,
  * Operating system and kernel,
@@ -52,10 +52,8 @@ Description: Library for obtaining system information (development files)
  This package contains development headers and library symlinks.
 
 Package: td-system-info
-Architecture: all
+Architecture: any
 Depends: figlet | toilet,
-         gettext-base,
-         mbuffer | buffer,
          td-get-system-info (>= ${source:Version}),
          td-print-utf8 (>= ${source:Version}),
          ${misc:Depends}
