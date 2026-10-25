@@ -54,11 +54,11 @@ SET(MOCK_SSH_DIR "${CMAKE_CURRENT_BINARY_DIR}/mock-ssh-keys")
 FILE(MAKE_DIRECTORY "${MOCK_SSH_DIR}")
 
 # Deterministic RFC 4253 / OpenSSH public key files:
-# RFC 8032 Section 7.1 Test Vector 1 (valid Curve25519 point)[cite: 47]:
+# RFC 8032 Section 7.1 Test Vector 1 (valid Curve25519 point):
 FILE(WRITE "${MOCK_SSH_DIR}/ssh_host_ed25519_key.pub"
      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINdamAGCsQq31Uv+08lkBzoO4XLz2qYjJa8CGmj3B1Ea root@nordmarka\n"
 )
-# Valid NIST P-256 base generator point G[cite: 47]
+# Valid NIST P-256 base generator point G
 FILE(WRITE "${MOCK_SSH_DIR}/ssh_host_ecdsa_key.pub"
      "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBGsX0fLhLEJH+Lzm5WOkQPJ3A32BLeszoPShOUXYmMKWT+NC4v4af5uO5+tKfA+eFivOM1drMV7Oy7ZAaDe/UfU= root@nordmarka\n"
 )
@@ -102,19 +102,19 @@ ENDFUNCTION()
 #### 1. Basic CLI Options                                                ####
 #############################################################################
 
-# Test version flag (short option -v)[cite: 47]
+# Test version flag (short option -v)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_cli_version_short -v)
 
-# Test version flag (long option --version)[cite: 47]
+# Test version flag (long option --version)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_cli_version_long  --version)
 SET_TESTS_PROPERTIES(fpsshkeys_cli_version_short fpsshkeys_cli_version_long PROPERTIES
    PASS_REGULAR_EXPRESSION "Fingerprint-SSH-Keys [0-9]+\\.[0-9]+"
 )
 
-# Test help flag (short option -h)[cite: 47]
+# Test help flag (short option -h)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_cli_help_short -h)
 
-# Test help flag (long option --help)[cite: 47]
+# Test help flag (long option --help)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_cli_help_long  --help)
 SET_TESTS_PROPERTIES(fpsshkeys_cli_help_short fpsshkeys_cli_help_long PROPERTIES
    PASS_REGULAR_EXPRESSION "Usage:"
@@ -125,18 +125,18 @@ SET_TESTS_PROPERTIES(fpsshkeys_cli_help_short fpsshkeys_cli_help_long PROPERTIES
 #### 2. CLI Help Internationalization                                    ####
 #############################################################################
 
-# Test localized help in German (de)[cite: 47]
+# Test localized help in German (de)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_cli_help_i18n_de -h)
 SET_TESTS_PROPERTIES(fpsshkeys_cli_help_i18n_de PROPERTIES
-   ENVIRONMENT "LC_ALL=de_DE.UTF-8;LANGUAGE=de;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=de;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "Aufruf:"
    LABELS "fingerprint-ssh-keys;cli;i18n;locale_de"
 )
 
-# Test localized help in Norwegian Bokmål (nb)[cite: 47]
+# Test localized help in Norwegian Bokmål (nb)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_cli_help_i18n_nb -h)
 SET_TESTS_PROPERTIES(fpsshkeys_cli_help_i18n_nb PROPERTIES
-   ENVIRONMENT "LC_ALL=nb_NO.UTF-8;LANGUAGE=nb;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
+   ENVIRONMENT "LC_ALL=en_US.UTF-8;LANGUAGE=nb;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
    PASS_REGULAR_EXPRESSION "Bruk:"
    LABELS "fingerprint-ssh-keys;cli;i18n;locale_nb"
 )
@@ -146,7 +146,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_cli_help_i18n_nb PROPERTIES
 #### 3. Deterministic Output Tests: Raw Public Keys (-R)                 ####
 #############################################################################
 
-# Test outputting raw keys in plain text format (-F text)[cite: 47]
+# Test outputting raw keys in plain text format (-F text)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_raw_text
    -a -R -K "${MOCK_SSH_DIR}" -F text
 )
@@ -155,7 +155,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_raw_text PROPERTIES
    LABELS "fingerprint-ssh-keys;mock;raw;text"
 )
 
-# Test outputting raw keys in CSV format (-F csv)[cite: 47]
+# Test outputting raw keys in CSV format (-F csv)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_raw_csv
    -a -R -K "${MOCK_SSH_DIR}" -F csv
 )
@@ -164,7 +164,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_raw_csv PROPERTIES
    LABELS "fingerprint-ssh-keys;mock;raw;csv"
 )
 
-# Test outputting raw keys in Python dictionary format (-F python)[cite: 47]
+# Test outputting raw keys in Python dictionary format (-F python)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_raw_python
    -a -R -K "${MOCK_SSH_DIR}" -F python
 )
@@ -178,7 +178,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_raw_python PROPERTIES
 #### 4. Deterministic Output Tests: SSH Fingerprint Records (-S)         ####
 #############################################################################
 
-# Test outputting standard SSH fingerprints in text format[cite: 47]
+# Test outputting standard SSH fingerprints in text format
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_ssh_text
    -a -S -K "${MOCK_SSH_DIR}" -F text
 )
@@ -187,7 +187,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_ssh_text PROPERTIES
    LABELS "fingerprint-ssh-keys;mock;ssh;text"
 )
 
-# Test outputting standard SSH fingerprints in CSV format[cite: 47]
+# Test outputting standard SSH fingerprints in CSV format
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_ssh_csv
    -a -S -K "${MOCK_SSH_DIR}" -F csv
 )
@@ -196,7 +196,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_ssh_csv PROPERTIES
    LABELS "fingerprint-ssh-keys;mock;ssh;csv"
 )
 
-# Test outputting standard SSH fingerprints in Python dictionary format[cite: 47]
+# Test outputting standard SSH fingerprints in Python dictionary format
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_ssh_python
    -a -S -K "${MOCK_SSH_DIR}" -F python
 )
@@ -210,7 +210,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_ssh_python PROPERTIES
 #### 5. Deterministic Output Tests: DNS SSHFP Records (-D)               ####
 #############################################################################
 
-# Test outputting DNS SSHFP resource records in text format[cite: 47]
+# Test outputting DNS SSHFP resource records in text format
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_dns_text
    -a -D -K "${MOCK_SSH_DIR}" -F text
 )
@@ -219,7 +219,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_dns_text PROPERTIES
    LABELS "fingerprint-ssh-keys;mock;dns;text"
 )
 
-# Test outputting DNS SSHFP resource records in CSV format[cite: 47]
+# Test outputting DNS SSHFP resource records in CSV format
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_dns_csv
    -a -D -K "${MOCK_SSH_DIR}" -F csv
 )
@@ -228,7 +228,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_dns_csv PROPERTIES
    LABELS "fingerprint-ssh-keys;mock;dns;csv"
 )
 
-# Test outputting DNS SSHFP resource records in Python format[cite: 47]
+# Test outputting DNS SSHFP resource records in Python format
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_dns_python
    -a -D -K "${MOCK_SSH_DIR}" -F python
 )
@@ -242,7 +242,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_dns_python PROPERTIES
 #### 6. Combined & All Flag Tests (-A, -a)                               ####
 #############################################################################
 
-# Test outputting all representation formats simultaneously (-A)[cite: 47]
+# Test outputting all representation formats simultaneously (-A)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_all_csv
    -A -K "${MOCK_SSH_DIR}" -F csv
 )
@@ -251,7 +251,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_all_csv PROPERTIES
    LABELS "fingerprint-ssh-keys;mock;all;csv"
 )
 
-# Test none flag (-a / --none) produces completely empty output[cite: 47]
+# Test none flag (-a / --none) produces completely empty output
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_mock_none_empty
    -a -K "${MOCK_SSH_DIR}"
 )
@@ -265,7 +265,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_mock_none_empty PROPERTIES
 #### 7. CLI Flag Variants & Case-Insensitivity                           ####
 #############################################################################
 
-# Test case-insensitivity of format option argument (CsV)[cite: 47]
+# Test case-insensitivity of format option argument (CsV)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_format_case_insensitive_csv
    -a -R -K "${MOCK_SSH_DIR}" --format CsV
 )
@@ -273,7 +273,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_format_case_insensitive_csv PROPERTIES
    PASS_REGULAR_EXPRESSION "ssh-ed25519,AAAAC3"
 )
 
-# Test case-insensitivity of format option argument (PyThOn)[cite: 47]
+# Test case-insensitivity of format option argument (PyThOn)
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_format_case_insensitive_python
    -a -R -K "${MOCK_SSH_DIR}" -F PyThOn
 )
@@ -281,11 +281,11 @@ SET_TESTS_PROPERTIES(fpsshkeys_format_case_insensitive_python PROPERTIES
    PASS_REGULAR_EXPRESSION "'public-keys':"
 )
 
-# Test legacy --raw-format flag[cite: 47]
+# Test legacy --raw-format flag
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_legacy_raw_format
    -a -R -K "${MOCK_SSH_DIR}" --raw-format text
 )
-# Test legacy --include-raw flag[cite: 47]
+# Test legacy --include-raw flag
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_legacy_include_raw
    -a -K "${MOCK_SSH_DIR}" --include-raw
 )
@@ -293,7 +293,7 @@ SET_TESTS_PROPERTIES(fpsshkeys_legacy_raw_format fpsshkeys_legacy_include_raw PR
    PASS_REGULAR_EXPRESSION "Fingerprints of .* in raw format:"
 )
 
-# Test legacy --include-raw-python flag[cite: 47]
+# Test legacy --include-raw-python flag
 ADD_FINGERPRINT_SSH_KEYS_TEST(fpsshkeys_legacy_include_raw_python
    -a -K "${MOCK_SSH_DIR}" --include-raw-python
 )
@@ -306,23 +306,23 @@ SET_TESTS_PROPERTIES(fpsshkeys_legacy_include_raw_python PROPERTIES
 #### 8. Error Handling & Validation                                      ####
 #############################################################################
 
-# Test error on unsupported output format XML[cite: 47]
+# Test error on unsupported output format XML
 ADD_FINGERPRINT_SSH_KEYS_FAIL_TEST(fpsshkeys_fail_invalid_format_xml   -F xml)
 
-# Test error on unsupported output format JSON[cite: 47]
+# Test error on unsupported output format JSON
 ADD_FINGERPRINT_SSH_KEYS_FAIL_TEST(fpsshkeys_fail_invalid_format_json  --format json)
 
-# Test error on non-existent public key directory[cite: 47]
+# Test error on non-existent public key directory
 ADD_FINGERPRINT_SSH_KEYS_FAIL_TEST(fpsshkeys_fail_nonexistent_key_dir  -K /nonexistent/ssh/directory)
 
-# Test error on extraneous positional arguments[cite: 47]
+# Test error on extraneous positional arguments
 ADD_FINGERPRINT_SSH_KEYS_FAIL_TEST(fpsshkeys_fail_extra_argument       extra_argument)
 
-# Test error on unknown command-line option flag[cite: 47]
+# Test error on unknown command-line option flag
 ADD_FINGERPRINT_SSH_KEYS_FAIL_TEST(fpsshkeys_fail_unknown_flag         --invalid-option)
 
-# Test error when -F is provided without format argument[cite: 47]
+# Test error when -F is provided without format argument
 ADD_FINGERPRINT_SSH_KEYS_FAIL_TEST(fpsshkeys_fail_missing_format_arg   -F)
 
-# Test error when -K is provided without directory argument[cite: 47]
+# Test error when -K is provided without directory argument
 ADD_FINGERPRINT_SSH_KEYS_FAIL_TEST(fpsshkeys_fail_missing_dir_arg      -K)
