@@ -7,9 +7,49 @@ Vcs-Git: https://github.com/dreibh/system-tools.git
 Vcs-Browser: https://github.com/dreibh/system-tools
 Build-Depends: cmake,
                debhelper-compat (= 13),
-               libsystemd-dev
+               gettext,
+               libsystemd-dev,
+               locales-all
 Standards-Version: 4.7.4
 Rules-Requires-Root: no
+
+Package: libsysteminfo2
+Section: libs
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Library for obtaining system information
+ libsysteminfo obtains information about the system, including:
+ * CPU and load,
+ * Operating system and kernel,
+ * Network interface and status,
+ * Memory and swap status,
+ * Disk space on /, /home, and /tmp.
+ The obtained information can be queried by the API.
+ .
+ This package contains the shared runtime library.
+
+Package: libsysteminfo-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: libbz2-dev,
+         liblzma-dev,
+         libsysteminfo2 (= ${binary:Version}),
+         libzstd-dev,
+         zlib1g-dev,
+         ${misc:Depends}
+Description: Library for obtaining system information (development files)
+ libsysteminfo obtains information about the system, including:
+ * CPU and load,
+ * Operating system and kernel,
+ * Network interface and status,
+ * Memory and swap status,
+ * Disk space on /, /home, and /tmp.
+ The obtained information can be queried by the API.
+ .
+ This package contains development headers and library symlinks.
 
 Package: td-system-info
 Architecture: all
