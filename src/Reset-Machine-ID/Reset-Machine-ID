@@ -355,23 +355,28 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
    colordiff /etc/hosts /etc/hosts.updated || differences=$((differences + 1))
 
 
-   # ====== Update /etc/hostname or /etc/rc.conf =========================
+   # ====== Update hostname =================================================
    if [ -e /etc/hostname ] ; then
       echo "${NEW_HOSTNAME_FQDN}" >/etc/hostname.updated
       echo "/etc/hostname:"
       colordiff /etc/hostname /etc/hostname.updated || differences=$((differences + 1))
+   elif [ -e /etc/myname ] ; then
+      echo "${NEW_HOSTNAME_FQDN}" >/etc/myname.updated
+      echo "/etc/myname:"
+      colordiff /etc/myname /etc/myname.updated || differences=$((differences + 1))
+   elif [ -e /etc/nodename ] ; then
+      echo "${NEW_HOSTNAME_FQDN}" >/etc/nodename.updated
+      echo "/etc/nodename:"
+      colordiff /etc/nodename /etc/nodename.updated || differences=$((differences + 1))
    elif [ -e /etc/rc.conf ] ; then
       echo "/etc/rc.conf:"
       sed -e "s/^hostname=.*$/hostname=\"${NEW_HOSTNAME_FQDN}\"/g" \
          </etc/rc.conf >/etc/rc.conf.updated
       colordiff /etc/rc.conf /etc/rc.conf.updated || differences=$((differences + 1))
-   elif [ -e /etc/nodename ] ; then
-      echo "${NEW_HOSTNAME_FQDN}" >/etc/nodename.updated
-      echo "/etc/nodename:"
-      colordiff /etc/nodename /etc/nodename.updated || differences=$((differences + 1))
    else
       echo >&2 "ERROR: Missing case!"
    fi
+
 
    # ====== Apply changes ================================================
    if [ "${differences}" -gt 0 ] ; then
@@ -383,10 +388,12 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
          mv /etc/hosts.updated /etc/hosts
          if [ -e /etc/hostname ] ; then
             mv /etc/hostname.updated /etc/hostname
-         elif [ -e /etc/rc.conf ] ; then
-            mv /etc/rc.conf.updated /etc/rc.conf
+         elif [ -e /etc/myname ] ; then
+            mv /etc/myname.updated /etc/myname
          elif [ -e /etc/nodename ] ; then
             mv /etc/nodename.updated /etc/nodename
+         elif [ -e /etc/rc.conf ] ; then
+            mv /etc/rc.conf.updated /etc/rc.conf
          fi
          if [ -x /usr/bin/hostnamectl ] ; then
             /usr/bin/hostnamectl hostname "${NEW_HOSTNAME_FQDN}"
