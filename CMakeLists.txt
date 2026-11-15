@@ -36,7 +36,9 @@ PROJECT(td-system-tools
         VERSION      "${CMAKE_COMPAT_VERSION}"
         LANGUAGES    C CXX
         HOMEPAGE_URL "https://www.nntb.no/~dreibh/system-tools")
-SET(PROJECT_SOURCE_URL "https://github.com/dreibh/system-tools")
+SET(PROJECT_SOURCE_URL     "https://github.com/dreibh/system-tools")
+SET(PROJECT_BUGTRACKER_URL "https://github.com/dreibh/system-tools/issues")
+SET(PROJECT_COPYRIGHT      "Copyright (C) 2013-2026 by Thomas Dreibholz")
 
 SET(CMAKE_CXX_STANDARD          20)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
