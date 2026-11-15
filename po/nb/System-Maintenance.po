@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-13 21:17+0200\n"
+"POT-Creation-Date: 2026-11-15 11:34+0100\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,157 +43,155 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#. TRANSLATORS: Command-line syntax message prefix:
-#. "Usage: <program> [options]".
-#: src/System-Maintenance/System-Maintenance:47
+#: src/System-Maintenance/System-Maintenance:63
 msgid "Usage:"
 msgstr "Bruk:"
 
 #. TRANSLATORS: Error message when installed Bash version is older than 4.4.
-#: src/System-Maintenance/System-Maintenance:65
+#: src/System-Maintenance/System-Maintenance:82
 msgid "ERROR: Bash 4.4 or higher is required!"
 msgstr "FEIL: Bash 4.4 eller høyere er nødvendig!"
 
 #. TRANSLATORS: Error message when enhanced/GNU getopt is not found or is
 #. incompatible.
-#: src/System-Maintenance/System-Maintenance:93
+#: src/System-Maintenance/System-Maintenance:110
 msgid "ERROR: Enhanced/GNU getopt is required!"
 msgstr "FEIL: Enhanced/GNU getopt er nødvendig!"
 
 #. TRANSLATORS: Error message when script is executed without root/superuser
 #. privileges.
-#: src/System-Maintenance/System-Maintenance:137
+#: src/System-Maintenance/System-Maintenance:154
 msgid "ERROR: System-Maintenance requires superuser permissions!"
 msgstr "FEIL: System-Maintenance krever superbrukerrettigheter!"
 
 #. TRANSLATORS: Progress notification when stopping the AutoFS service
 #. before maintenance.
-#: src/System-Maintenance/System-Maintenance:158
+#: src/System-Maintenance/System-Maintenance:175
 msgid "Stopping AutoFS service ..."
 msgstr "Stopper AutoFS-tjenesten ..."
 
 #. TRANSLATORS: Progress notification when updating software package
 #. repository indices.
-#: src/System-Maintenance/System-Maintenance:176
+#: src/System-Maintenance/System-Maintenance:193
 msgid "Updating package repositories ..."
 msgstr "Oppdaterer pakkelager ..."
 
 #. TRANSLATORS: Progress notification when checking and repairing broken
 #. package configurations.
-#: src/System-Maintenance/System-Maintenance:224
+#: src/System-Maintenance/System-Maintenance:241
 msgid "Applying package fixes, if necessary ..."
 msgstr "Reparerer pakker, om nødvendig ..."
 
 #. TRANSLATORS: Progress notification when attempting to resolve and
 #. install missing package dependencies.
-#: src/System-Maintenance/System-Maintenance:234
+#: src/System-Maintenance/System-Maintenance:251
 msgid "Installing missing dependencies, if necessary ..."
 msgstr "Installerer manglende avhengigheter, om nødvendig ..."
 
 #. TRANSLATORS: Progress notification when installing available system
 #. package updates.
-#: src/System-Maintenance/System-Maintenance:249
+#: src/System-Maintenance/System-Maintenance:266
 msgid "Installing updates ..."
 msgstr "Installerer oppdateringer ..."
 
 #. TRANSLATORS: Progress notification when running autoremove and purging
 #. obsolete package caches.
-#: src/System-Maintenance/System-Maintenance:345
+#: src/System-Maintenance/System-Maintenance:362
 msgid "Cleaning up ..."
 msgstr "Rydder opp ..."
 
 #. TRANSLATORS: Progress notification when identifying and purging
 #. outdated kernel packages.
-#: src/System-Maintenance/System-Maintenance:402
+#: src/System-Maintenance/System-Maintenance:419
 msgid "Removing obsolete kernels ..."
 msgstr "Fjerner utdaterte kjerner ..."
 
 #. TRANSLATORS: Header label showing the kernel flavor/type
 #. (e.g. generic, server).
 #. Note the trailing spaces used for fixed-width column alignment.
-#: src/System-Maintenance/System-Maintenance:411
+#: src/System-Maintenance/System-Maintenance:428
 msgid "Kernel Type:        "
 msgstr "Kjernetype:                 "
 
 #. TRANSLATORS: Header label showing currently running booted kernel version.
-#: src/System-Maintenance/System-Maintenance:413
+#: src/System-Maintenance/System-Maintenance:430
 msgid "Kernel Boot Version:"
 msgstr "Oppstartsversjon av kjernen:"
 
 #. TRANSLATORS: Header label showing newest kernel version found
 #. installed on disk.
-#: src/System-Maintenance/System-Maintenance:416
+#: src/System-Maintenance/System-Maintenance:433
 msgid "Kernel Disk Version:"
 msgstr "Kjerneversjon på disken:    "
 
 #. TRANSLATORS: Section heading for list of obsolete kernel packages
 #. marked for deletion.
-#: src/System-Maintenance/System-Maintenance:494
+#: src/System-Maintenance/System-Maintenance:511
 msgid "To be removed:"
 msgstr "Å bli fjernet:"
 
 #. TRANSLATORS: Section heading for list of active/installed kernel
 #. packages preserved on disk.
-#: src/System-Maintenance/System-Maintenance:499
+#: src/System-Maintenance/System-Maintenance:516
 msgid "To be kept:"
 msgstr "Skal beholdes:"
 
 #. TRANSLATORS: Progress notification when updating snap packages.
-#: src/System-Maintenance/System-Maintenance:527
+#: src/System-Maintenance/System-Maintenance:544
 msgid "Refreshing snaps ..."
 msgstr "Oppdaterer snap-pakker ..."
 
 #. TRANSLATORS: Progress notification when checking fwupd for device
 #. firmware updates.
-#: src/System-Maintenance/System-Maintenance:536
+#: src/System-Maintenance/System-Maintenance:553
 msgid "Checking for firmware updates ..."
 msgstr "Ser etter fastvareoppdateringer ..."
 
 #. TRANSLATORS: Progress notification when rebuilding search indices
 #. (locate, geoip, apt-file).
-#: src/System-Maintenance/System-Maintenance:545
+#: src/System-Maintenance/System-Maintenance:562
 msgid "Updating caches ..."
 msgstr "Oppdaterer cacher ..."
 
 #. TRANSLATORS: Progress notification when restarting AutoFS service
 #. after maintenance.
-#: src/System-Maintenance/System-Maintenance:576
+#: src/System-Maintenance/System-Maintenance:593
 msgid "Starting AutoFS service ..."
 msgstr "Starter AutoFS-tjenesten ..."
 
 #. TRANSLATORS: Progress notification when synchronizing clock with
 #. external NTP time servers.
-#: src/System-Maintenance/System-Maintenance:584
+#: src/System-Maintenance/System-Maintenance:601
 msgid "Synchronising system time ..."
 msgstr "Synkroniserer systemtid ..."
 
 #. TRANSLATORS: Status message upon successful NTP time synchronization:
 #. ${now} = formatted current date and time string
-#: src/System-Maintenance/System-Maintenance:655
+#: src/System-Maintenance/System-Maintenance:672
 #, sh-format
 msgid "Updated system time to ${now}."
 msgstr "Oppdaterte systemtiden til ${now}."
 
 #. TRANSLATORS: Status message when NTP time synchronization fails on
 #. all configured servers.
-#: src/System-Maintenance/System-Maintenance:671
+#: src/System-Maintenance/System-Maintenance:688
 msgid "No system time update possible."
 msgstr "Ingen systemtidsoppdatering mulig."
 
 #. TRANSLATORS: Progress notification when running fstrim to discard
 #. unused blocks on SSD storage.
-#: src/System-Maintenance/System-Maintenance:680
+#: src/System-Maintenance/System-Maintenance:697
 msgid "Running fstrim ..."
 msgstr "Kjører fstrim ..."
 
 #. TRANSLATORS: Progress notification when issuing trim operations on ZFS
 #. storage pools.
-#: src/System-Maintenance/System-Maintenance:688
+#: src/System-Maintenance/System-Maintenance:705
 msgid "Running zpool trim ..."
 msgstr "Kjører zpool trim ..."
 
 #. TRANSLATORS: Final notification indicating completion of all
 #. maintenance routines.
-#: src/System-Maintenance/System-Maintenance:700
+#: src/System-Maintenance/System-Maintenance:717
 msgid "Done!"
 msgstr "Ferdig!"

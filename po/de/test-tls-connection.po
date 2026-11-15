@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-07-28 14:34+0200\n"
+"POT-Creation-Date: 2026-11-15 11:34+0100\n"
 "PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,28 +43,28 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/X509/test-tls-connection:45
+#: src/X509/test-tls-connection:63
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/X509/test-tls-connection:61
+#: src/X509/test-tls-connection:84
 msgid "ERROR: Bash 4.4 or higher is required!"
 msgstr "FEHLER: Bash 4.4 oder höher ist erforderlich!"
 
-#: src/X509/test-tls-connection:88
+#: src/X509/test-tls-connection:111
 msgid "ERROR: Enhanced/GNU getopt is required!"
 msgstr "FEHLER: Enhanced/GNU getopt ist erforderlich!"
 
-#: src/X509/test-tls-connection:142
+#: src/X509/test-tls-connection:165
 #, sh-format
 msgid "ERROR: Unable to find CA certificate file ${CA_FILE}!"
 msgstr "FEHLER: CA-Zertifikatsdatei ${CA_FILE} wurde nicht gefunden!"
 
-#: src/X509/test-tls-connection:160
+#: src/X509/test-tls-connection:183
 msgid "ERROR: OpenSSL is not installed!"
 msgstr "FEHLER: OpenSSL ist nicht installiert!"
 
-#: src/X509/test-tls-connection:166
+#: src/X509/test-tls-connection:189
 #, sh-format
 msgid "Connecting to ${ENDPOINT} ..."
 msgstr "Verbindung zu ${ENDPOINT} wird hergestellt ..."

@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-13 21:17+0200\n"
+"POT-Creation-Date: 2026-11-15 11:34+0100\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,20 +43,18 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#. TRANSLATORS: Command-line syntax message prefix:
-#. "Usage: <program> [options]".
-#: src/Reset-Machine-ID/Reset-Machine-ID:185
+#: src/Reset-Machine-ID/Reset-Machine-ID:201
 msgid "Usage:"
 msgstr "Bruk:"
 
 #. TRANSLATORS: Error message when installed Bash version is older than 4.4.
-#: src/Reset-Machine-ID/Reset-Machine-ID:203
+#: src/Reset-Machine-ID/Reset-Machine-ID:226
 msgid "ERROR: Bash 4.4 or higher is required!"
 msgstr "FEIL: Bash 4.4 eller høyere er nødvendig!"
 
 #. TRANSLATORS: Error message when enhanced/GNU getopt is not found or is
 #. incompatible.
-#: src/Reset-Machine-ID/Reset-Machine-ID:231
+#: src/Reset-Machine-ID/Reset-Machine-ID:254
 msgid "ERROR: Enhanced/GNU getopt is required!"
 msgstr "FEIL: Enhanced/GNU getopt er nødvendig!"
 
@@ -64,129 +62,129 @@ msgstr "FEIL: Enhanced/GNU getopt er nødvendig!"
 #. domain/hostname syntax validation:
 #. ${hostname} = invalid hostname string
 #. shellcheck disable=SC2005
-#: src/Reset-Machine-ID/Reset-Machine-ID:262
+#: src/Reset-Machine-ID/Reset-Machine-ID:285
 #, sh-format
 msgid "ERROR: Invalid hostname ${hostname}!"
 msgstr "FEIL: Ugyldig vertsnavn ${hostname}!"
 
 #. TRANSLATORS: Error message when script is executed without root/superuser
 #. privileges.
-#: src/Reset-Machine-ID/Reset-Machine-ID:315
+#: src/Reset-Machine-ID/Reset-Machine-ID:338
 msgid "ERROR: Reset-Machine-ID requires superuser permissions!"
 msgstr "FEIL: Reset-Machine-ID krever superbrukerrettigheter!"
 
 #. TRANSLATORS: Prompt asking user whether to apply hostname changes.
-#: src/Reset-Machine-ID/Reset-Machine-ID:386
+#: src/Reset-Machine-ID/Reset-Machine-ID:409
 msgid "Update hostname?"
 msgstr "Oppdatere vertsnavn?"
 
 #. TRANSLATORS: Prompt asking whether to reset system machine ID:
 #. ${machineID} = current machine ID string
-#: src/Reset-Machine-ID/Reset-Machine-ID:414
+#: src/Reset-Machine-ID/Reset-Machine-ID:437
 #, sh-format
 msgid "The current machine ID is ${machineID}. Reset it?"
 msgstr "Den gjeldende maskin-ID-en er ${machineID}. Tilbakestille den?"
 
 #. TRANSLATORS: Status message displaying newly generated machine ID:
 #. ${machineID} = new machine ID string
-#: src/Reset-Machine-ID/Reset-Machine-ID:435
+#: src/Reset-Machine-ID/Reset-Machine-ID:458
 #, sh-format
 msgid "The new machine ID is ${machineID}."
 msgstr "Den nye maskin-ID-en er ${machineID}."
 
 #. TRANSLATORS: Prompt asking user whether to install Zabbix agent.
-#: src/Reset-Machine-ID/Reset-Machine-ID:467
+#: src/Reset-Machine-ID/Reset-Machine-ID:490
 msgid "Install Zabbix agent?"
 msgstr "Installere Zabbix-agenten?"
 
 #. TRANSLATORS: Prompt asking whether to write suggested Zabbix agent
 #. configuration:
 #. ${zabbixConfig} = path to Zabbix configuration file
-#: src/Reset-Machine-ID/Reset-Machine-ID:502
+#: src/Reset-Machine-ID/Reset-Machine-ID:525
 #, sh-format
 msgid "Apply suggested Zabbix Agent changes in ${zabbixConfig}?"
 msgstr "Bruk foreslåtte Zabbix Agent-endringer i ${zabbixConfig}?"
 
 #. TRANSLATORS: Status message shown when user chooses not to apply changes.
-#: src/Reset-Machine-ID/Reset-Machine-ID:516
-#: src/Reset-Machine-ID/Reset-Machine-ID:595
-#: src/Reset-Machine-ID/Reset-Machine-ID:702
-#: src/Reset-Machine-ID/Reset-Machine-ID:770
+#: src/Reset-Machine-ID/Reset-Machine-ID:539
+#: src/Reset-Machine-ID/Reset-Machine-ID:618
+#: src/Reset-Machine-ID/Reset-Machine-ID:725
+#: src/Reset-Machine-ID/Reset-Machine-ID:793
 msgid "Skipped!"
 msgstr "Hoppet over!"
 
 #. TRANSLATORS: Progress notification when verifying SSH client and daemon
 #. configuration.
-#: src/Reset-Machine-ID/Reset-Machine-ID:554
+#: src/Reset-Machine-ID/Reset-Machine-ID:577
 msgid "Checking SSH configuration ..."
 msgstr "Sjekker SSH-konfigurasjon ..."
 
 #. TRANSLATORS: Header introducing diff of proposed changes to ssh_config.
-#: src/Reset-Machine-ID/Reset-Machine-ID:581
+#: src/Reset-Machine-ID/Reset-Machine-ID:604
 msgid "Suggested ssh_config changes:"
 msgstr "Foreslåtte ssh_config endringer:"
 
 #. TRANSLATORS: Prompt asking user whether to apply suggested
 #. ssh_config modifications.
-#: src/Reset-Machine-ID/Reset-Machine-ID:587
+#: src/Reset-Machine-ID/Reset-Machine-ID:610
 msgid "Apply suggested ssh_config changes?"
 msgstr "Vil du bruke foreslåtte ssh_config-endringer?"
 
 #. TRANSLATORS: Notification indicating proposal to remove cloud-init
 #. sshd configuration override.
-#: src/Reset-Machine-ID/Reset-Machine-ID:664
+#: src/Reset-Machine-ID/Reset-Machine-ID:687
 msgid "Suggested removal of sshd_config.d/50-cloud-init.conf:"
 msgstr "Foreslått fjerning av sshd_config.d/50-cloud-init.conf:"
 
 #. TRANSLATORS: Header introducing diff of proposed changes to sshd_config.
-#: src/Reset-Machine-ID/Reset-Machine-ID:673
+#: src/Reset-Machine-ID/Reset-Machine-ID:696
 msgid "Suggested sshd_config changes:"
 msgstr "Foreslåtte sshd_config endringer:"
 
 #. TRANSLATORS: Prompt asking user whether to apply suggested
 #. sshd_config modifications.
-#: src/Reset-Machine-ID/Reset-Machine-ID:682
+#: src/Reset-Machine-ID/Reset-Machine-ID:705
 msgid "Apply suggested sshd_config changes?"
 msgstr "Vil du bruke foreslåtte sshd_config-endringer?"
 
 #. TRANSLATORS: Status message when attempting to restart the SSH
 #. server daemon.
-#: src/Reset-Machine-ID/Reset-Machine-ID:692
-#: src/Reset-Machine-ID/Reset-Machine-ID:762
+#: src/Reset-Machine-ID/Reset-Machine-ID:715
+#: src/Reset-Machine-ID/Reset-Machine-ID:785
 msgid "Trying to restart SSH daemon ..."
 msgstr "Prøver å starte SSH-demonen på nytt ..."
 
 #. TRANSLATORS: Prompt asking whether to purge existing SSH host keys
 #. and generate new ones.
-#: src/Reset-Machine-ID/Reset-Machine-ID:718
+#: src/Reset-Machine-ID/Reset-Machine-ID:741
 msgid "Remove existing SSH host keys and generate new ones?"
 msgstr "Vil du fjerne eksisterende SSH-vertsnøkler og generere nye?"
 
 #. TRANSLATORS: Status message when backing up existing SSH host keys:
 #. ${backupDirectory} = path to directory where keys are archived
-#: src/Reset-Machine-ID/Reset-Machine-ID:726
+#: src/Reset-Machine-ID/Reset-Machine-ID:749
 #, sh-format
 msgid "Making backup of current keys in ${backupDirectory} ..."
 msgstr "Ta sikkerhetskopi av gjeldende nøkler i ${backupDirectory} ..."
 
 #. TRANSLATORS: Progress notification when generating an ED25519 SSH host key.
-#: src/Reset-Machine-ID/Reset-Machine-ID:745
+#: src/Reset-Machine-ID/Reset-Machine-ID:768
 msgid "Generating new ED25519 key ..."
 msgstr "Genererer ny ED25519 nøkkel ..."
 
 #. TRANSLATORS: Progress notification when generating an ECDSA SSH host key.
-#: src/Reset-Machine-ID/Reset-Machine-ID:748
+#: src/Reset-Machine-ID/Reset-Machine-ID:771
 msgid "Generating new ECDSA key ..."
 msgstr "Genererer ny ECDSA nøkkel ..."
 
 #. TRANSLATORS: Progress notification when generating an RSA SSH host key;
 #. this may take some time ...
-#: src/Reset-Machine-ID/Reset-Machine-ID:752
+#: src/Reset-Machine-ID/Reset-Machine-ID:775
 msgid "Generating new RSA key; this may take some time ..."
 msgstr "Genererer ny RSA-nøkkel; dette kan ta litt tid ..."
 
 #. TRANSLATORS: Completion message after successfully generating new SSH
 #. host keys.
-#: src/Reset-Machine-ID/Reset-Machine-ID:757
+#: src/Reset-Machine-ID/Reset-Machine-ID:780
 msgid "Done!"
 msgstr "Ferdig!"

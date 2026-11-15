@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-16 19:05+0200\n"
+"POT-Creation-Date: 2026-11-15 11:34+0100\n"
 "PO-Revision-Date: 2026-10-16 21:35+0200\n"
 "Last-Translator: AI Translation <ai@noreply.localhost>\n"
 "Language-Team: none\n"
@@ -51,7 +51,7 @@ msgstr ""
 #. -C/--config cannot be found:
 #. {0} = file path
 #: src/System-Info/System-Info.cc:248
-#, no-c-format
+#, no-c-format, c++-format
 msgid "ERROR: Unable to find configuration file {0}!\n"
 msgstr "שגיאה: קובץ התצורה {0} לא נמצא!\n"
 
@@ -64,7 +64,7 @@ msgstr "מפתחות SSH:"
 #. {0} = key index (#1)
 #. {1} = fingerprint and key type details
 #: src/System-Info/System-Info.cc:519
-#, no-c-format
+#, no-c-format, c++-format
 msgid "#{0} {1}"
 msgstr "#{0} {1}"
 
@@ -72,7 +72,7 @@ msgstr "#{0} {1}"
 #. -Y/--test-system-info cannot be found:
 #. {0} = file path
 #: src/System-Info/System-Info.cc:535
-#, no-c-format
+#, no-c-format, c++-format
 msgid "ERROR: Unable to find input file {0}!\n"
 msgstr "שגיאה: קובץ הקלט {0} לא נמצא!\n"
 
@@ -127,7 +127,7 @@ msgid "Uptime:"
 msgstr "זמן פעילות:"
 
 #: src/System-Info/System-Info.cc:628
-#, no-c-format
+#, no-c-format, c++-format
 msgid "{0}, {1}, {2}, and {3}"
 msgstr "{0}, {1}, {2} ו־{3}"
 
@@ -144,7 +144,7 @@ msgid "Operating System:"
 msgstr "מערכת הפעלה:"
 
 #: src/System-Info/System-Info.cc:654
-#, no-c-format
+#, no-c-format, c++-format
 msgid "{0} with kernel {1}"
 msgstr "{0} עם ליבה {1}"
 
@@ -173,7 +173,7 @@ msgid "Processor:"
 msgstr "מעבד:"
 
 #: src/System-Info/System-Info.cc:678
-#, no-c-format
+#, no-c-format, c++-format
 msgid "{0} cores ({1}); {2}; {3}"
 msgstr "{0} ליבות ({1}); {2}; {3}"
 
@@ -217,7 +217,7 @@ msgstr "מתרוקן"
 #. {1} = charging status (e.g. charging, discharging)
 #. {2} = capacity percentage
 #: src/System-Info/System-Info.cc:748
-#, no-c-format
+#, no-c-format, c++-format
 msgid "#{0} {1}, {2} %"
 msgstr "#{0} {1}, {2} %"
 
@@ -275,19 +275,19 @@ msgstr "(אין IPv4)"
 
 #. TRANSLATORS: Command-line syntax message prefix:
 #. "Usage: <program> [options]".
-#: src/System-Info/System-Info.cc:947
+#: src/System-Info/System-Info.cc:964
 msgid "Usage:"
 msgstr "שימוש:"
 
 #. TRANSLATORS: "LTR" stands for Left-to-Right layout direction.
 #. Translators of Right-to-Left languages (such as Arabic, Hebrew, Persian)
 #. must translate this string to "RTL".
-#: src/System-Info/System-Info.cc:1014
+#: src/System-Info/System-Info.cc:1031
 msgid "LTR"
 msgstr "RTL"
 
-#: src/System-Info/System-Info.cc:1100
-#, no-c-format
+#: src/System-Info/System-Info.cc:1117
+#, no-c-format, c++-format
 msgid "System information on {0}"
 msgstr "מידע מערכת נכון ל־{0}"
 

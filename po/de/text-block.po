@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-13 21:27+0200\n"
+"POT-Creation-Date: 2026-11-15 11:34+0100\n"
 "PO-Revision-Date: 2026-10-13 21:25+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -47,7 +47,7 @@ msgstr ""
 #. {0} = output file path
 #. {1} = system error message (std::strerror)
 #: src/Text-Block/text-block.cc:168
-#, no-c-format
+#, no-c-format, c++-format
 msgid "ERROR: Unable to open output file {0}: {1}!"
 msgstr "FEHLER: Ausgabedatei {0} kann nicht geöffnet werden: {1}!"
 
@@ -56,7 +56,7 @@ msgstr "FEHLER: Ausgabedatei {0} kann nicht geöffnet werden: {1}!"
 #. {0} = broken file path
 #. {1} = system error message (std::strerror)
 #: src/Text-Block/text-block.cc:183
-#, no-c-format
+#, no-c-format, c++-format
 msgid "ERROR: Unable to delete broken output file {0}: {1}!"
 msgstr "FEHLER: Unvollständige Ausgabedatei {0} kann nicht gelöscht werden: {1}!"
 
@@ -65,7 +65,7 @@ msgstr "FEHLER: Unvollständige Ausgabedatei {0} kann nicht gelöscht werden: {1
 #. {0} = input file path
 #. {1} = system error message (std::strerror)
 #: src/Text-Block/text-block.cc:199
-#, no-c-format
+#, no-c-format, c++-format
 msgid "WARNING: Unable to restore file permissions for {0}: {1}!"
 msgstr "WARNUNG: Dateirechte für {0} können nicht wiederhergestellt werden: {1}!"
 
@@ -75,7 +75,7 @@ msgstr "WARNUNG: Dateirechte für {0} können nicht wiederhergestellt werden: {1
 #. {1} = target input file path
 #. {2} = system error message (std::strerror)
 #: src/Text-Block/text-block.cc:213
-#, no-c-format
+#, no-c-format, c++-format
 msgid "ERROR: Unable to change name of temporary output file from {0} to {1}: {2}!"
 msgstr "FEHLER: Der Name der temporären Ausgabedatei kann nicht von {0} in {1} geändert werden: {2}!"
 
@@ -83,56 +83,56 @@ msgstr "FEHLER: Der Name der temporären Ausgabedatei kann nicht von {0} in {1} 
 #. {0} = output file path
 #. {1} = system error message (std::strerror)
 #: src/Text-Block/text-block.cc:234
-#, no-c-format
+#, no-c-format, c++-format
 msgid "ERROR: Unable to write to output file {0}: {1}!"
 msgstr "FEHLER: Ausgabedatei {0} kann nicht beschrieben werden: {1}!"
 
 #. TRANSLATORS: Command-line syntax message prefix:
 #. "Usage: <program> [options]".
-#: src/Text-Block/text-block.cc:400
+#: src/Text-Block/text-block.cc:409
 msgid "Usage:"
 msgstr "Aufruf:"
 
 #. TRANSLATORS: Error message when line selection (--select|-s)
 #. is missing the to_line parameter.
-#: src/Text-Block/text-block.cc:596
+#: src/Text-Block/text-block.cc:664
 msgid "ERROR: Too few arguments for line selection (--select|-s)!"
 msgstr "FEHLER: Zu wenige Argumente für Zeilenauswahl (--select|-s)!"
 
 #. TRANSLATORS: Error message when format string for line
 #. numbering contains invalid characters.
-#: src/Text-Block/text-block.cc:632
+#: src/Text-Block/text-block.cc:700
 msgid "ERROR: Invalid value for enumeration format (--enumerate-format)!"
 msgstr "FEHLER: Ungültiger Wert für das Nummerierungsformat (--enumerate-format)!"
 
 #. TRANSLATORS: Error message when --highlight-params is given
 #. fewer than the required 6 arguments.
-#: src/Text-Block/text-block.cc:675
+#: src/Text-Block/text-block.cc:743
 msgid "ERROR: Too few arguments for highlight parameters (--highlight-params)!"
 msgstr "FEHLER: Zu wenige Argumente für Highlight-Parameter (--highlight-params)!"
 
 #. TRANSLATORS: Error message when --min-actions exceeds
 #. --max-actions.
-#: src/Text-Block/text-block.cc:699
+#: src/Text-Block/text-block.cc:767
 msgid "ERROR: Invalid min/max settings (--min-actions/-m/--max-actions/-M)!"
 msgstr "FEHLER: Ungültige Min/Max-Einstellungen (--min-actions/-m/--max-actions/-M)!"
 
 #. TRANSLATORS: Error message when line selection and tag matching
 #. options are specified together.
-#: src/Text-Block/text-block.cc:708
+#: src/Text-Block/text-block.cc:779
 msgid "ERROR: Line selection (--select|-s) and tags (--begin-tag/-b/--end-tag/-e/--tag/-t) are mutually exclusive!"
 msgstr "FEHLER: Zeilenauswahl (--select|-s) und Tags (--begin-tag/-b/--end-tag/-e/--tag/-t) schließen sich gegenseitig aus!"
 
 #. TRANSLATORS: Warning message when begin/end tags are provided
 #. in modes that do not support tags (Cat, Discard, Enumerate).
-#: src/Text-Block/text-block.cc:719
+#: src/Text-Block/text-block.cc:790
 msgid "WARNING: Begin/end tags (--begin-tag/-b/--end-tag/-e/--tag/-t) have no effect for Cat, Discard, or Enumerate!"
 msgstr "WARNUNG: Beginn-/End-Tags (--begin-tag/-b/--end-tag/-e/--tag/-t) haben keine Wirkung bei Cat, Discard oder Enumerate!"
 
 #. TRANSLATORS: Warning message when identical begin/end tags
 #. are used with excluded tags in Extract, Remove, or Replace
 #. mode.
-#: src/Text-Block/text-block.cc:731
+#: src/Text-Block/text-block.cc:802
 msgid "WARNING: Identical begin/end tags (--tag/-t) with excluded tags (--exclude-tags/-x) are not useful for Extract, Remove, or Replace!"
 msgstr "WARNUNG: Identische Beginn/End-Tags (--tag/-t) mit ausgeschlossenen Tags (--exclude-tags/-x) sind nicht sinnvoll für Extract, Remove oder Replace!"
 
@@ -140,16 +140,16 @@ msgstr "WARNUNG: Identische Beginn/End-Tags (--tag/-t) mit ausgeschlossenen Tags
 #. file fails during in-place update:
 #. {0} = input file path
 #. {1} = system error message (std::strerror)
-#: src/Text-Block/text-block.cc:751
-#, no-c-format
+#: src/Text-Block/text-block.cc:822
+#, no-c-format, c++-format
 msgid "ERROR: Unable to resolve absolute path for input file {0}: {1}!"
 msgstr "FEHLER: Absoluter Pfad für Eingabedatei {0} kann nicht aufgelöst werden: {1}!"
 
 #. TRANSLATORS: Error message when opening input file fails:
 #. {0} = input file path
 #. {1} = system error message (std::strerror)
-#: src/Text-Block/text-block.cc:763
-#, no-c-format
+#: src/Text-Block/text-block.cc:834
+#, no-c-format, c++-format
 msgid "ERROR: Unable to open input file {0}: {1}!"
 msgstr "FEHLER: Eingabedatei {0} kann nicht geöffnet werden: {1}!"
 
@@ -157,26 +157,26 @@ msgstr "FEHLER: Eingabedatei {0} kann nicht geöffnet werden: {1}!"
 #. inverted (start line exceeds end line):
 #. {0} = start line number
 #. {1} = end line number
-#: src/Text-Block/text-block.cc:786
-#, no-c-format
+#: src/Text-Block/text-block.cc:857
+#, no-c-format, c++-format
 msgid "WARNING: Line selection range ({0} — {1}) is not useful. Input file too short?"
 msgstr "WARNUNG: Zeilenauswahlbereich ({0} — {1}) ist nicht sinnvoll. Eingabedatei zu kurz?"
 
 #. TRANSLATORS: Error message when negative line offset is used
 #. without a file input source.
-#: src/Text-Block/text-block.cc:794
+#: src/Text-Block/text-block.cc:865
 msgid "ERROR: Select from end of file (negative line number) is only possible with input file!"
 msgstr "FEHLER: Zeilenauswahl vom Ende der Datei (negative Zeilennummer) ist nur mit Eingabedatei möglich!"
 
 #. TRANSLATORS: Error message when in-place update is requested
 #. without specifying an input file.
-#: src/Text-Block/text-block.cc:800
+#: src/Text-Block/text-block.cc:871
 msgid "ERROR: In-place update (--in-place|-p) requires an input file (--input/-i)!"
 msgstr "FEHLER: Für die direkte Aktualisierung (--in-place|-p) ist eine Eingabedatei (--input/-i) erforderlich!"
 
 #. TRANSLATORS: Error message when in-place update and output file
 #. are specified simultaneously.
-#: src/Text-Block/text-block.cc:814
+#: src/Text-Block/text-block.cc:885
 msgid "ERROR: In-place update (--in-place|-p) and output file (--output/-o) are mutually exclusive!"
 msgstr "FEHLER: Direkte Aktualisierung (--in-place|-p) und Ausgabedatei (--output/-o) schließen sich gegenseitig aus!"
 
@@ -184,56 +184,56 @@ msgstr "FEHLER: Direkte Aktualisierung (--in-place|-p) und Ausgabedatei (--outpu
 #. fails:
 #. {0} = output file path
 #. {1} = system error message (std::strerror)
-#: src/Text-Block/text-block.cc:828
-#, no-c-format
+#: src/Text-Block/text-block.cc:899
+#, no-c-format, c++-format
 msgid "ERROR: Unable to create output file {0}: {1}!"
 msgstr "FEHLER: Ausgabedatei {0} kann nicht erstellt werden: {1}!"
 
 #. TRANSLATORS: Error message when reading insert content from stdin
 #. while main input is also stdin.
-#: src/Text-Block/text-block.cc:844
+#: src/Text-Block/text-block.cc:915
 msgid "ERROR: Insert from standard input requires an input file!"
 msgstr "FEHLER: Einfügen von der Standardeingabe erfordert eine Eingabedatei!"
 
 #. TRANSLATORS: Error message when creating temporary buffer file for
 #. insertion fails:
 #. {0} = system error message (std::strerror)
-#: src/Text-Block/text-block.cc:852
-#, no-c-format
+#: src/Text-Block/text-block.cc:923
+#, no-c-format, c++-format
 msgid "ERROR: Unable to create temporary file for insertion: {0}!"
 msgstr "FEHLER: Temporäre Datei für Einfügung kann nicht erstellt werden: {0}!"
 
 #. TRANSLATORS: Error message when writing stdin to temporary
 #. insert file fails:
 #. {0} = system error message (std::strerror)
-#: src/Text-Block/text-block.cc:863
-#, no-c-format
+#: src/Text-Block/text-block.cc:934
+#, no-c-format, c++-format
 msgid "ERROR: Failed to write to temporary file: {0}!"
 msgstr "FEHLER: Temporäre Datei kann nicht beschrieben werden: {0}!"
 
 #. TRANSLATORS: Error message when opening insert file fails:
 #. {0} = insert file path
 #. {1} = system error message (std::strerror)
-#: src/Text-Block/text-block.cc:877
-#, no-c-format
+#: src/Text-Block/text-block.cc:948
+#, no-c-format, c++-format
 msgid "ERROR: Unable to open insert file {0}: {1}!"
 msgstr "FEHLER: Einfügedatei {0} läßt sich nicht öffnen: {1}!"
 
 #. TRANSLATORS: Error message when an insert or replace mode is
 #. selected but no insert file was provided.
-#: src/Text-Block/text-block.cc:894
+#: src/Text-Block/text-block.cc:965
 msgid "ERROR: No insert file provided!"
 msgstr "FEHLER: Keine Einfügedatei angegeben!"
 
 #. TRANSLATORS: Error message when reading from input file fails:
 #. {0} = system error message (std::strerror)
-#: src/Text-Block/text-block.cc:1024
-#, no-c-format
+#: src/Text-Block/text-block.cc:1095
+#, no-c-format, c++-format
 msgid "ERROR: Read error: {0}!"
 msgstr "FEHLER: Lesefehler: {0}!"
 
 #. TRANSLATORS: Error message when the number of performed actions is
 #. outside of configured min/max limits.
-#: src/Text-Block/text-block.cc:1039
+#: src/Text-Block/text-block.cc:1110
 msgid "ERROR: Number of actions outside of set limits (--min-actions/-m/--max-actions/-M)!"
 msgstr "FEHLER: Anzahl der Aktionen liegt außerhalb der festgelegten Grenzen (--min-actions/-m/--max-actions/-M)!"

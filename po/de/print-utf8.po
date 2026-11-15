@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-13 21:30+0200\n"
+"POT-Creation-Date: 2026-11-15 11:34+0100\n"
 "PO-Revision-Date: 2026-10-13 21:32+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -46,56 +46,56 @@ msgstr ""
 #. TRANSLATORS: Error message when an invalid hexadecimal character is
 #. encountered in escape sequence:
 #. {0} = invalid character
-#: src/Print-UTF8/print-utf8.cc:196
-#, no-c-format
+#: src/Print-UTF8/print-utf8.cc:194
+#, no-c-format, c++-format
 msgid "ERROR: Invalid hexadecimal digit {0}!"
 msgstr "FEHLER: Ungültige Hexadezimalziffer {0}!"
 
 #. TRANSLATORS: Error message when an invalid octal character is
 #. encountered in escape sequence:
 #. {0} = invalid character
-#: src/Print-UTF8/print-utf8.cc:210
-#, no-c-format
+#: src/Print-UTF8/print-utf8.cc:208
+#, no-c-format, c++-format
 msgid "ERROR: Invalid octal digit {0}!"
 msgstr "FEHLER: Ungültige Oktalziffer {0}!"
 
 #. TRANSLATORS: Command-line syntax message prefix:
 #. "Usage: <program> [options]".
-#: src/Print-UTF8/print-utf8.cc:649
+#: src/Print-UTF8/print-utf8.cc:656
 msgid "Usage:"
 msgstr "Aufruf:"
 
 #. TRANSLATORS: Error message when --multiline-indent/-I is given
 #. fewer than the required arguments (indentation, left, right).
-#: src/Print-UTF8/print-utf8.cc:770
+#: src/Print-UTF8/print-utf8.cc:830
 msgid "ERROR: Invalid arguments for multiline-indent!"
 msgstr "FEHLER: Ungültige Argumente für Multiline-Indent!"
 
 #. TRANSLATORS: Error message when --multiline-center/-C is given
 #. fewer than the required arguments (left, right).
-#: src/Print-UTF8/print-utf8.cc:784
+#: src/Print-UTF8/print-utf8.cc:844
 msgid "ERROR: Invalid arguments for multiline-center!"
 msgstr "FEHLER: Ungültige Argumente für Multiline-Center!"
 
 #. TRANSLATORS: Error message when --separator/-s is given
 #. fewer than the required arguments (border_left, separator,
 #. border_right).
-#: src/Print-UTF8/print-utf8.cc:800
+#: src/Print-UTF8/print-utf8.cc:860
 msgid "ERROR: Invalid separator setting!"
 msgstr "FEHLER: Ungültige Trennzeichen-Einstellung!"
 
 #. TRANSLATORS: Error message when console width exceeds
 #. maximum permitted width of 4096 columns:
 #. {0} = specified console width
-#: src/Print-UTF8/print-utf8.cc:813
-#, no-c-format
+#: src/Print-UTF8/print-utf8.cc:873
+#, no-c-format, c++-format
 msgid "ERROR: Invalid console width {0}!"
 msgstr "FEHLER: Ungültige Konsolenbreite {0}!"
 
 #. TRANSLATORS: Warning message when extraneous unrecognized command
 #. line parameters are encountered:
 #. {0} = unhandled parameter argument
-#: src/Print-UTF8/print-utf8.cc:857
-#, no-c-format
+#: src/Print-UTF8/print-utf8.cc:917
+#, no-c-format, c++-format
 msgid "WARNING: Unhandled parameter {0}!"
 msgstr "WARNUNG: Unbehandelter Parameter {0}!"

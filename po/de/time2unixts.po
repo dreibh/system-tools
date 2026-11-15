@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.2.5\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-12 16:51+0200\n"
+"POT-Creation-Date: 2026-11-15 11:34+0100\n"
 "PO-Revision-Date: 2026-07-05 17:56+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -41,26 +41,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/Unix-Timestamp/time2unixts.c:242
+#: src/Unix-Timestamp/time2unixts.cc:319
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/Unix-Timestamp/time2unixts.c:345
-#, fuzzy
-msgid "timespec_get() failed"
-msgstr "clock_gettime() fehlgeschlagen"
-
-#: src/Unix-Timestamp/time2unixts.c:367
-#, c-format
-msgid "ERROR: malloc() failed: %s!"
-msgstr "FEHLER: malloc() ist fehlgeschlagen: %s!"
-
-#: src/Unix-Timestamp/time2unixts.c:408
-#, c-format
-msgid "ERROR: Unable to parse time string \"%s\" with format template \"%s\"!"
+#. TRANSLATORS: Error message when parsing time string fails:
+#. 1st %s = input time string
+#. 2nd %s = time format template
+#: src/Unix-Timestamp/time2unixts.cc:501
+#, fuzzy, c-format
+msgid "ERROR: Unable to parse time string \"%s\" with format template \"%s\"!\n"
 msgstr "FEHLER: Zeitzeichenfolge \"%s\" konnte mit Formatvorlage \"%s\" nicht gelesen werden!"
 
-#: src/Unix-Timestamp/time2unixts.c:450
+#. TRANSLATORS: Suffix appended to human-readable timestamp output:
+#. %s = time unit (e.g. s, ms, µs, ns)
+#: src/Unix-Timestamp/time2unixts.cc:539
 #, c-format
 msgid " %s since the Unix Epoch"
 msgstr " %s seit der Unix-Epoche"
+
+#, fuzzy
+#~ msgid "timespec_get() failed"
+#~ msgstr "clock_gettime() fehlgeschlagen"
+
+#, c-format
+#~ msgid "ERROR: malloc() failed: %s!"
+#~ msgstr "FEHLER: malloc() ist fehlgeschlagen: %s!"

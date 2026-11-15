@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-02 16:48+0200\n"
+"POT-Creation-Date: 2026-11-15 11:34+0100\n"
 "PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,42 +43,42 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/X509/extract-pem:45
+#: src/X509/extract-pem:63
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/X509/extract-pem:61
+#: src/X509/extract-pem:85
 msgid "ERROR: Bash 4.4 or higher is required!"
 msgstr "FEHLER: Bash 4.4 oder höher ist erforderlich!"
 
-#: src/X509/extract-pem:87
+#: src/X509/extract-pem:111
 msgid "ERROR: Enhanced/GNU getopt is required!"
 msgstr "FEHLER: Enhanced/GNU getopt ist erforderlich!"
 
-#: src/X509/extract-pem:144
+#: src/X509/extract-pem:168
 msgid "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
 msgstr "FEHLER: --only-first-entry und --skip-first-entry/--skip-last-entry schließen sich gegenseitig aus!"
 
-#: src/X509/extract-pem:159
+#: src/X509/extract-pem:183
 #, sh-format
 msgid "ERROR: Unable to find PEM file ${PEM_FILE}!"
 msgstr "FEHLER: PEM-Datei ${PEM_FILE} wurde nicht gefunden!"
 
-#: src/X509/extract-pem:165
+#: src/X509/extract-pem:189
 #, sh-format
 msgid "Extracting ${PEM_FILE} ..."
 msgstr "Extrahiere ${PEM_FILE} ..."
 
-#: src/X509/extract-pem:196
+#: src/X509/extract-pem:220
 #, sh-format
 msgid "ERROR: Unexpected type ${type} in ${PEM_FILE}!"
 msgstr "FEHLER: Unerwarteter Typ ${type} in ${PEM_FILE}!"
 
-#: src/X509/extract-pem:214 src/X509/extract-pem:229
+#: src/X509/extract-pem:238 src/X509/extract-pem:253
 msgid "SKIPPING"
 msgstr "ÜBERSPRINGE"
 
-#: src/X509/extract-pem:240
+#: src/X509/extract-pem:264
 #, sh-format
 msgid "Done: ${certificate} certificates, ${csr} CSRs, ${crl} CRLs, ${key} keys"
 msgstr "Erledigt: ${certificate} Zertifikate, ${csr} CSRs, ${crl} CRLs, ${key} Schlüssel"

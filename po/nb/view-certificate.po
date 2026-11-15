@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-12 16:51+0200\n"
+"POT-Creation-Date: 2026-11-15 11:35+0100\n"
 "PO-Revision-Date: 2026-16-05 14:36+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,78 +43,86 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/X509/view-certificate:45
+#: src/X509/view-certificate:73
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/X509/view-certificate:72
+#: src/X509/view-certificate:90
 msgid "ERROR: Bash 4.4 or higher is required!"
 msgstr "FEIL: Bash 4.4 eller høyere er nødvendig!"
 
-#: src/X509/view-certificate:98
+#: src/X509/view-certificate:116
 msgid "ERROR: Enhanced/GNU getopt is required!"
 msgstr "FEIL: Enhanced/GNU getopt er nødvendig!"
 
-#: src/X509/view-certificate:146
+#: src/X509/view-certificate:164
 msgid "ERROR: OpenSSL is not installed!"
 msgstr "FEIL: OpenSSL er ikke installert!"
 
-#: src/X509/view-certificate:153
+#: src/X509/view-certificate:171
 msgid "Subject:"
 msgstr "Innehaver:"
 
-#: src/X509/view-certificate:154
+#: src/X509/view-certificate:172
 msgid "Subject Alternative Name:"
 msgstr "Alternativt innehavernavn:"
 
-#: src/X509/view-certificate:155
+#: src/X509/view-certificate:173
 msgid "Public Key Algorithm:"
 msgstr "Algoritme for offentlig nøkkel:"
 
-#: src/X509/view-certificate:156
+#: src/X509/view-certificate:174
 msgid "Signature Algorithm:"
 msgstr "Signaturalgoritme:"
 
-#: src/X509/view-certificate:157
+#: src/X509/view-certificate:175
 msgid "Validity:"
 msgstr "Gyldighet:"
 
-#: src/X509/view-certificate:158
+#: src/X509/view-certificate:176
 msgid "Basic Constraints:"
 msgstr "Grunnleggende begrensninger:"
 
-#: src/X509/view-certificate:159
+#: src/X509/view-certificate:177
 msgid "Key Usage:"
 msgstr "Nøkkelbruk:"
 
-#: src/X509/view-certificate:160
+#: src/X509/view-certificate:178
 msgid "Extended Key Usage:"
 msgstr "Utvidet nøkkelbruk:"
 
-#: src/X509/view-certificate:161
+#: src/X509/view-certificate:179
 msgid "Subject Key Identifier:"
 msgstr "Innehaver-nøkkelidentifikator:"
 
-#: src/X509/view-certificate:162
+#: src/X509/view-certificate:180
 msgid "Authority Key Identifier:"
 msgstr "Utsteder-nøkkelidentifikator:"
 
-#: src/X509/view-certificate:185
+#: src/X509/view-certificate:212
 #, sh-format
 msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
 msgstr "FEIL: Finner ikke sertifikatfilen ${CERTIFICATE_FILE}!"
 
-#: src/X509/view-certificate:190
+#: src/X509/view-certificate:225
 #, sh-format
-msgid "Certificate in ${CERTIFICATE_FILE}:"
-msgstr "Sertifikat i ${CERTIFICATE_FILE}:"
+msgid "Certificate in ${displayCertificateFile}:"
+msgstr ""
 
-#: src/X509/view-certificate:268
+#: src/X509/view-certificate:303
 #, sh-format
-msgid "Hierarchy in ${CERTIFICATE_FILE}:"
-msgstr "Hierarki i ${CERTIFICATE_FILE}:"
+msgid "Hierarchy in ${displayCertificateFile}:"
+msgstr ""
 
-#: src/X509/view-certificate:279
+#: src/X509/view-certificate:314
 #, sh-format
 msgid "#${entry}."
 msgstr "№${entry}"
+
+#, sh-format
+#~ msgid "Certificate in ${CERTIFICATE_FILE}:"
+#~ msgstr "Sertifikat i ${CERTIFICATE_FILE}:"
+
+#, sh-format
+#~ msgid "Hierarchy in ${CERTIFICATE_FILE}:"
+#~ msgstr "Hierarki i ${CERTIFICATE_FILE}:"

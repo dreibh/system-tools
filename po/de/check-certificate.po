@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.7\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-02 16:48+0200\n"
+"POT-Creation-Date: 2026-11-15 11:34+0100\n"
 "PO-Revision-Date: 2026-07-05 16:38+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,68 +43,68 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/X509/check-certificate:45
+#: src/X509/check-certificate:63
 msgid "Usage:"
 msgstr "Aufruf:"
 
-#: src/X509/check-certificate:61
+#: src/X509/check-certificate:82
 msgid "ERROR: Bash 4.4 or higher is required!"
 msgstr "FEHLER: Bash 4.4 oder höher ist erforderlich!"
 
-#: src/X509/check-certificate:88
+#: src/X509/check-certificate:109
 msgid "ERROR: Enhanced/GNU getopt is required!"
 msgstr "FEHLER: Enhanced/GNU getopt ist erforderlich!"
 
-#: src/X509/check-certificate:150
+#: src/X509/check-certificate:171
 msgid "ERROR: OpenSSL is not installed!"
 msgstr "FEHLER: OpenSSL ist nicht installiert!"
 
-#: src/X509/check-certificate:159
+#: src/X509/check-certificate:180
 #, sh-format
 msgid "ERROR: Unable to find CA certificate file ${CA_FILE}!"
 msgstr "FEHLER: CA-Zertifikatsdatei ${CA_FILE} wurde nicht gefunden!"
 
-#: src/X509/check-certificate:166
+#: src/X509/check-certificate:187
 #, sh-format
 msgid "ERROR: Unable to find CRL file ${CRL}!"
 msgstr "FEHLER: CRL-Datei ${CRL} wurde nicht gefunden!"
 
-#: src/X509/check-certificate:180
+#: src/X509/check-certificate:201
 #, sh-format
 msgid "ERROR: Unable to find certificate file ${CERTIFICATE_FILE}!"
 msgstr "FEHLER: Zertifikatsdatei ${CERTIFICATE_FILE} wurde nicht gefunden!"
 
-#: src/X509/check-certificate:192
+#: src/X509/check-certificate:213
 #, sh-format
 msgid "Verifying ${CERTIFICATE_FILE} with CA ${CA_FILE} ..."
 msgstr "Verifiziere ${CERTIFICATE_FILE} mit CA ${CA_FILE} ..."
 
-#: src/X509/check-certificate:194
+#: src/X509/check-certificate:215
 msgid "WARNING: Only checking self-signature!"
 msgstr "WARNUNG: Es wird nur die Eigensignatur überprüft!"
 
-#: src/X509/check-certificate:211 src/X509/check-certificate:250
-#: src/X509/check-certificate:349
+#: src/X509/check-certificate:232 src/X509/check-certificate:271
+#: src/X509/check-certificate:370
 msgid "✓OKAY"
 msgstr "✓IN ORDNUNG"
 
-#: src/X509/check-certificate:214 src/X509/check-certificate:255
-#: src/X509/check-certificate:354
+#: src/X509/check-certificate:235 src/X509/check-certificate:276
+#: src/X509/check-certificate:375
 msgid "❌FAILED!"
 msgstr "❌FEHLGESCHLAGEN!"
 
-#: src/X509/check-certificate:220
+#: src/X509/check-certificate:241
 msgid "(OpenSSL is not installed)"
 msgstr "(OpenSSL ist nicht installiert)"
 
-#: src/X509/check-certificate:266
+#: src/X509/check-certificate:287
 msgid "(GnuTLS CertTool is not installed)"
 msgstr "(GnuTLS CertTool ist nicht installiert)"
 
-#: src/X509/check-certificate:364
+#: src/X509/check-certificate:385
 msgid "(NSS CertUtil is not installed)"
 msgstr "(NSS CertUtil ist nicht installiert)"
 
-#: src/X509/check-certificate:372
+#: src/X509/check-certificate:393
 msgid "CERTIFICATE VERIFICATIONS FAILED!"
 msgstr "ZERTIFIKATSVERIFIZIERUNG FEHLGESCHLAGEN!"

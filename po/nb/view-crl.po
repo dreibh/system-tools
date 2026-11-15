@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.2.5\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-12 16:51+0200\n"
+"POT-Creation-Date: 2026-11-15 11:35+0100\n"
 "PO-Revision-Date: 2026-07-05 16:39+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,46 +43,46 @@ msgstr ""
 "X-Language: nb\n"
 "X-Source-Language: en_GB\n"
 
-#: src/X509/view-crl:45
+#: src/X509/view-crl:73
 msgid "Usage:"
 msgstr "Bruk:"
 
-#: src/X509/view-crl:72
+#: src/X509/view-crl:90
 msgid "ERROR: Bash 4.4 or higher is required!"
 msgstr "FEIL: Bash 4.4 eller høyere er nødvendig!"
 
-#: src/X509/view-crl:98
+#: src/X509/view-crl:116
 msgid "ERROR: Enhanced/GNU getopt is required!"
 msgstr "FEIL: Enhanced/GNU getopt er nødvendig!"
 
-#: src/X509/view-crl:146
+#: src/X509/view-crl:164
 msgid "ERROR: OpenSSL is not installed!"
 msgstr "FEIL: OpenSSL er ikke installert!"
 
-#: src/X509/view-crl:153
+#: src/X509/view-crl:171
 msgid "Issuer:"
 msgstr "Utsteder:"
 
-#: src/X509/view-crl:154
+#: src/X509/view-crl:172
 msgid "Validity:"
 msgstr "Gyldighet:"
 
-#: src/X509/view-crl:182
+#: src/X509/view-crl:200
 #, sh-format
 msgid "ERROR: Unable to find CRL file ${CRL_FILE}!"
 msgstr "FEIL: Finner ikke CRL-filen ${CRL_FILE}!"
 
-#: src/X509/view-crl:188
+#: src/X509/view-crl:206
 #, sh-format
 msgid "CRL in ${CRL_FILE}:"
 msgstr "CRL i ${CRL_FILE}:"
 
-#: src/X509/view-crl:241
+#: src/X509/view-crl:259
 #, sh-format
 msgid "#${entry}."
 msgstr "№${entry}"
 
-#: src/X509/view-crl:242
+#: src/X509/view-crl:260
 #, sh-format
 msgid "Certificate ${serialNumber} revoked on ${revocationDate}"
 msgstr "Sertifikat ${serialNumber} ble tilbakekalt ${revocationDate}"

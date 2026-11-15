@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \"td-system-tools\" \"2.1.0\"\n"
 "Report-Msgid-Bugs-To: \"https://github.com/dreibh/system-tools/issues\"\n"
-"POT-Creation-Date: 2026-10-13 21:17+0200\n"
+"POT-Creation-Date: 2026-11-15 11:34+0100\n"
 "PO-Revision-Date: 2026-16-05 14:36+0200\n"
 "Last-Translator: Thomas Dreibholz <thomas.dreibholz@gmail.com>\n"
 "Language-Team:\n"
@@ -43,25 +43,27 @@ msgstr ""
 "X-Language: de\n"
 "X-Source-Language: en_GB\n"
 
-#: src/Random-Sleep/random-sleep.c:112
+#. TRANSLATORS: Command-line syntax message prefix:
+#. "Usage: <program> [options]".
+#: src/Random-Sleep/random-sleep.cc:95
 msgid "Usage:"
 msgstr "Aufruf:"
 
 #. TRANSLATORS: Error message when min_delay or max_delay are negative,
 #. non-numeric, or min_delay > max_delay.
-#: src/Random-Sleep/random-sleep.c:182
+#: src/Random-Sleep/random-sleep.cc:200
 msgid "ERROR: Invalid min_delay/max_delay!"
 msgstr "FEHLER: Ungültiges min_delay/max_delay!"
 
 #. TRANSLATORS: Verbose status message before entering sleep:
-#. %1.6f = sleep duration in seconds (fractional floating point)
-#: src/Random-Sleep/random-sleep.c:202
-#, c-format
-msgid "Sleeping for %1.6f s ..."
+#. {0:1.6f} = sleep duration in seconds (fractional floating point)
+#: src/Random-Sleep/random-sleep.cc:224
+#, fuzzy, no-c-format, c++-format
+msgid "Sleeping for {0:1.6f} s ..."
 msgstr "Schlafe %1.6f s ..."
 
 #. TRANSLATORS: Verbose status message displayed after sleep duration
 #. completes.
-#: src/Random-Sleep/random-sleep.c:218
+#: src/Random-Sleep/random-sleep.cc:233
 msgid "Woke up!"
 msgstr "Aufgewacht!"
