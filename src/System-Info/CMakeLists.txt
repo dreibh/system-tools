@@ -32,6 +32,15 @@
 #### LIBRARIES                                                           ####
 #############################################################################
 
+# ====== libpropertyformatter ===============================================
+ADD_LIBRARY(libpropertyformatter STATIC
+            displaywidth.cc
+            propertyformatter.cc)
+TARGET_INCLUDE_DIRECTORIES(libpropertyformatter
+                           PRIVATE ${Intl_INCLUDE_DIRS})
+TARGET_LINK_LIBRARIES(libpropertyformatter PRIVATE
+                      ${Intl_LIBRARIES})
+
 # ====== libsysteminfo ======================================================
 IF (WITH_LIBSYSTEMINFO)
    LIST(APPEND libsysteminfo_headers libsysteminfo.h)
@@ -142,6 +151,7 @@ IF (WITH_SYSTEM_INFO)
                               ${SYSTEMD_INCLUDE_DIRS}
                               ${Intl_INCLUDE_DIRS})
    TARGET_LINK_LIBRARIES(System-Info PRIVATE
+                         libpropertyformatter
                          libsysteminfo-${libraryType}
                          ${Intl_LIBRARIES}
                          ${GETOPT_LIBRARY})

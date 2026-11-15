@@ -60,18 +60,12 @@
 #include <windows.h>
 #else
 #include <unistd.h>
-#include <wchar.h>
 #endif
 
 #include <libsysteminfo.h>
 
 #include "package-version.h"
-
-
-// ###### Global settings and formatting constants ##########################
-static bool        isRTL { false };
-static std::string rlm;
-static std::string lrm;
+#include "propertyformatter.h"
 
 
 // ###### Helper to trim whitespace from strings ############################
@@ -233,7 +227,7 @@ static std::string formatText(const char* messageIdentifier,
 }
 
 
-// ###### Read configuration file with fallbackLocale discovery ##################
+// ###### Read configuration file with fallback locale discovery ############
 static void readConfiguration(const std::string&              customConfigurationFile,
                               const std::vector<std::string>& scriptDirectories)
 {
@@ -301,146 +295,6 @@ static std::string formatPercentage5_1(const double percentage)
 }
 
 
-// ###### UTF-8 visual column display width calculation ######################
-static size_t utf8DisplayWidth(std::string_view stringView)
-{
-   size_t width = 0;
-   size_t index = 0;
-
-   while(index < stringView.size()) {
-      // Skip ANSI escape sequences: \033[ ... [a-zA-Z]
-      if((stringView[index] == '\033') && (index + 1 < stringView.size()) && (stringView[index + 1] == '[')) {
-         index += 2;
-         while((index < stringView.size()) && !std::isalpha(static_cast<unsigned char>(stringView[index]))) {
-            ++index;
-         }
-         if(index < stringView.size()) {
-            ++index;
-         }
-         continue;
-      }
-
-      // Decode UTF-8 code point
-      const uint32_t firstByte = static_cast<unsigned char>(stringView[index]);
-      char32_t       codePoint = 0x00;
-      size_t         charBytes = 0;
-
-      const auto continuationByte = [&](const size_t offset) noexcept -> uint32_t {
-         return static_cast<unsigned char>(stringView[index + offset]) & 0x3fu;
-      };
-
-      if(firstByte < 0x80u) {
-         codePoint = static_cast<char32_t>(firstByte);
-         charBytes = 1;
-      }
-      else if((firstByte & 0xe0u) == 0xc0u) {
-         if(index + 1 >= stringView.size()) {
-            break;
-         }
-         codePoint = static_cast<char32_t>(((firstByte & 0x1fu) << 6u) | continuationByte(1));
-         charBytes = 2;
-      }
-      else if((firstByte & 0xf0u) == 0xe0u) {
-         if(index + 2 >= stringView.size()) {
-            break;
-         }
-         codePoint = static_cast<char32_t>(((firstByte & 0x0fu) << 12u) |
-                                           (continuationByte(1) << 6u) |
-                                           continuationByte(2));
-         charBytes = 3;
-      }
-      else if((firstByte & 0xf8u) == 0xf0u) {
-         if(index + 3 >= stringView.size()) {
-            break;
-         }
-         codePoint = static_cast<char32_t>(((firstByte & 0x07u) << 18u) |
-                                           (continuationByte(1) << 12u) |
-                                           (continuationByte(2) << 6u) |
-                                           continuationByte(3));
-         charBytes = 4;
-      }
-      else {
-         ++index;
-         continue;
-      }
-      index += charBytes;
-
-      // Skip zero-width control code points
-      if((codePoint == 0x200eu) || (codePoint == 0x200fu) || (codePoint == 0x200bu) ||
-         (codePoint == 0xfeffu) || ((codePoint >= 0x200bu) && (codePoint <= 0x200fu))) {
-         continue;
-      }
-
-#if !defined(_WIN32)
-      const int characterWidth = wcwidth(static_cast<wchar_t>(codePoint));
-      if(characterWidth > 0) {
-         width += static_cast<size_t>(characterWidth);
-      }
-#else
-      if(((codePoint >= 0x1100u)  && (codePoint <= 0x115fu))  ||
-         ((codePoint >= 0x2e80u)  && (codePoint <= 0xa4cfu))  ||
-         ((codePoint >= 0xac00u)  && (codePoint <= 0xd7a3u))  ||
-         ((codePoint >= 0xf900u)  && (codePoint <= 0xfaffu))  ||
-         ((codePoint >= 0xfe10u)  && (codePoint <= 0xfe19u))  ||
-         ((codePoint >= 0xfe30u)  && (codePoint <= 0xfe6fu))  ||
-         ((codePoint >= 0xff00u)  && (codePoint <= 0xff60u))  ||
-         ((codePoint >= 0xffe0u)  && (codePoint <= 0xffe6u))  ||
-         ((codePoint >= 0x20000u) && (codePoint <= 0x3fffdu))) {
-         width += 2;
-      }
-      else {
-         width += 1;
-      }
-#endif
-   }
-   return width;
-}
-
-
-// ###### Table representation ##############################################
-struct TableRow {
-   std::string Label;
-   std::string Value;
-};
-
-static std::vector<TableRow> tableRows;
-
-static void addTableRow(std::string_view label,
-                        std::string_view value)
-{
-   tableRows.push_back(TableRow {
-      .Label = std::string(label),
-      .Value = std::string(value)
-   });
-}
-
-static void finishTable(std::ostream& outputStream)
-{
-   size_t maxLabelWidth = 0;
-   for(const auto& row : tableRows) {
-      const size_t rowWidth = utf8DisplayWidth(row.Label);
-      if(rowWidth > maxLabelWidth) {
-         maxLabelWidth = rowWidth;
-      }
-   }
-   const size_t columnWidth = maxLabelWidth + 1;
-
-   for(const auto& row : tableRows) {
-      const size_t labelWidth   = utf8DisplayWidth(row.Label);
-      const size_t padding      = (columnWidth > labelWidth) ? (columnWidth - labelWidth) : 0;
-      const std::string paddedLabel = row.Label + std::string(padding, ' ');
-
-      if(!isRTL) {
-         outputStream << paddedLabel << row.Value << '\n';
-      }
-      else {
-         outputStream << rlm << paddedLabel << rlm << row.Value << '\n';
-      }
-   }
-   tableRows.clear();
-}
-
-
 // ###### Print banner scripts ##############################################
 static void printBanners(const std::vector<std::string>& directories)
 {
@@ -476,8 +330,9 @@ static void printBanners(const std::vector<std::string>& directories)
 }
 
 
-// ###### Print SSH public key fingerprints ##################################
-static void printSshKeyFingerprints(const SystemInfo& systemInfo)
+// ###### Add SSH public key fingerprints ###################################
+static void addSshKeyFingerprints(const SystemInfo&  systemInfo,
+                                  PropertyFormatter& formatter)
 {
    const std::string sshKeyList = systemInfo.getString("ssh_key_list");
    if(sshKeyList.empty()) {
@@ -486,6 +341,7 @@ static void printSshKeyFingerprints(const SystemInfo& systemInfo)
 
    std::istringstream stringStream(sshKeyList);
    std::string        keyIndex;
+   std::string        sshKeysValue;
    unsigned int       keyNumber = 1;
 
    while(stringStream >> keyIndex) {
@@ -511,14 +367,20 @@ static void printSshKeyFingerprints(const SystemInfo& systemInfo)
             }
          }
 
-         // TRANSLATORS: Table row label for SSH host key fingerprints section.
-         const std::string label = (keyNumber == 1) ? gettext("SSH Keys:") : "";
+         if(!sshKeysValue.empty()) {
+            sshKeysValue += '\n';
+         }
          // TRANSLATORS: SSH host key entry:
          // {0} = key index (#1)
          // {1} = fingerprint and key type details
-         addTableRow(label, formatText("#{0} {1}", keyNumber, keyInfo));
+         sshKeysValue += formatText("#{0} {1}", keyNumber, keyInfo);
          keyNumber++;
       }
+   }
+
+   if(!sshKeysValue.empty()) {
+      // TRANSLATORS: Table row label for SSH host key fingerprints section.
+      formatter.add(gettext("SSH Keys:"), sshKeysValue);
    }
 }
 
@@ -582,11 +444,18 @@ static void loadTestSystemInfo(std::string_view filePath,
 // ###### Print formatted system information ################################
 static void printSystemInformation(const SystemInfo& systemInfo)
 {
-   std::cout << colors.Basic;
+   // TRANSLATORS: "LTR" stands for Left-to-Right layout direction.
+   // Translators of Right-to-Left languages (such as Arabic, Hebrew, Persian)
+   // must translate this string to "RTL".
+   const bool        isRtl = (std::strcmp(gettext("LTR"), "RTL") == 0);
+   const std::string rlm   = isRtl ? "\u200f" : "";
+   const std::string lrm   = isRtl ? "\u200e" : "";
+
+   PropertyFormatter formatter("   ", { "", "", "" }, "", isRtl);
 
    // ====== Hostname =======================================================
    // TRANSLATORS: Table row label for system hostname.
-   addTableRow(gettext("Host:"), systemInfo.getString("hostname_long"));
+   formatter.add(gettext("Host:"), systemInfo.getString("hostname_long"));
 
    // ====== Uptime =========================================================
    const uint32_t uptimeDays  = systemInfo.getUInt32("uptime_days");
@@ -624,9 +493,9 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    // {1} = hours
    // {2} = minutes
    // {3} = seconds
-   addTableRow(gettext("Uptime:"),
-               formatText("{0}, {1}, {2}, and {3}",
-                          uptimeInDays, uptimeInHours, uptimeInMinutes, uptimeInSeconds));
+   formatter.add(gettext("Uptime:"),
+                 formatText("{0}, {1}, {2}, and {3}",
+                            uptimeInDays, uptimeInHours, uptimeInMinutes, uptimeInSeconds));
 
    // ====== Operating System ===============================================
    std::string osName = systemInfo.getString("os_name");
@@ -650,9 +519,9 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    // TRANSLATORS: Operating system details:
    // {0} = OS distribution, version, and codename
    // {1} = kernel release
-   addTableRow(gettext("Operating System:"),
-               formatText("{0} with kernel {1}",
-                          osLabel, systemInfo.getString("system_release")));
+   formatter.add(gettext("Operating System:"),
+                 formatText("{0} with kernel {1}",
+                            osLabel, systemInfo.getString("system_release")));
 
    // ====== Processor ======================================================
    const uint32_t procs = systemInfo.getUInt32("system_procs");
@@ -674,12 +543,12 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    // {1} = CPU machine architecture (e.g. x86_64, aarch64)
    // {2} = formatted processes count string
    // {3} = formatted users count string
-   addTableRow(gettext("Processor:"),
-               formatText("{0} cores ({1}); {2}; {3}",
-                          formatLocaleNumber(cores),
-                          systemInfo.getString("system_machine"),
-                          processesString,
-                          usersString));
+   formatter.add(gettext("Processor:"),
+                 formatText("{0} cores ({1}); {2}; {3}",
+                            formatLocaleNumber(cores),
+                            systemInfo.getString("system_machine"),
+                            processesString,
+                            usersString));
 
    // ====== Load ===========================================================
 #if !defined(_WIN32)
@@ -693,7 +562,7 @@ static void printSystemInformation(const SystemInfo& systemInfo)
                  systemInfo.getDouble("system_load_avg5min"),
                  systemInfo.getDouble("system_load_avg15min"));
    // TRANSLATORS: Table row label for system load averages.
-   addTableRow(gettext("Load (1/5/15 min):"), buffer);
+   formatter.add(gettext("Load (1/5/15 min):"), buffer);
 #endif
 
    // ====== Battery ========================================================
@@ -749,7 +618,7 @@ static void printSystemInformation(const SystemInfo& systemInfo)
          batterySummary += colors.Basic;
       }
       // TRANSLATORS: Table row label for battery section.
-      addTableRow(gettext("Battery:"), batterySummary);
+      formatter.add(gettext("Battery:"), batterySummary);
    }
 
    // ====== Memory =========================================================
@@ -765,7 +634,7 @@ static void printSystemInformation(const SystemInfo& systemInfo)
                  formatMemoryMiB(systemInfo.getUInt64("system_mem_free")).c_str(),
                  formatPercentage5_1(systemInfo.getDouble("system_mem_freepct")).c_str());
    // TRANSLATORS: Table row label for physical RAM utilization.
-   addTableRow(gettext("Used Memory:"), buffer);
+   formatter.add(gettext("Used Memory:"), buffer);
 
    if(systemInfo.getUInt64("system_swap_total") > 0) {
       std::snprintf(buffer, sizeof(buffer), memoryFormat,
@@ -774,13 +643,13 @@ static void printSystemInformation(const SystemInfo& systemInfo)
                     formatMemoryMiB(systemInfo.getUInt64("system_swap_free")).c_str(),
                     formatPercentage5_1(systemInfo.getDouble("system_swap_freepct")).c_str());
       // TRANSLATORS: Table row label for swap space utilization.
-      addTableRow(gettext("Used Swap:"), buffer);
+      formatter.add(gettext("Used Swap:"), buffer);
    }
    else {
       // TRANSLATORS: Table row label for swap, and message when no swap space
       // is configured.
-      addTableRow(gettext("Used Swap:"),
-                  colors.Inactive + gettext("no swap available!") + colors.Basic);
+      formatter.add(gettext("Used Swap:"),
+                    colors.Inactive + gettext("no swap available!") + colors.Basic);
    }
 
    // ====== Storage =========================================================
@@ -822,15 +691,15 @@ static void printSystemInformation(const SystemInfo& systemInfo)
          }
       }
       // TRANSLATORS: Table row label for storage diskspace utilization.
-      addTableRow(gettext("Used Diskspace:"), diskSummary);
+      formatter.add(gettext("Used Diskspace:"), diskSummary);
    }
 
    // ====== SSH Key Fingerprints ============================================
-   printSshKeyFingerprints(systemInfo);
+   addSshKeyFingerprints(systemInfo, formatter);
 
    // ====== Network =========================================================
    // TRANSLATORS: Table row label for network interfaces section.
-   addTableRow(gettext("Network:"), "");
+   formatter.addLine(0, gettext("Network:"));
 
    const std::string netifList = systemInfo.getString("netif_list");
    if(!netifList.empty()) {
@@ -881,44 +750,35 @@ static void printSystemInformation(const SystemInfo& systemInfo)
                formattedIpv4 = gettext("(No IPv4)");
             }
 
-            std::string networkLabel = "   ";
-            networkLabel += rlm;
-            networkLabel += colorA;
-            networkLabel += ifName;
-            networkLabel += ":";
-
-            std::string networkValue = lrm;
-            networkValue += formattedIpv4;
-            networkValue += colorA;
-
-            addTableRow(networkLabel, networkValue);
+            std::string networkLabel = std::string(colorA) + ifName + ":";
+            std::string networkValue = std::string(colorA) + formattedIpv4;
 
             if(hasIpv6) {
                std::istringstream ipv6Stream(systemInfo.getString(ipv6Key));
                std::string        ipAddress;
                while(ipv6Stream >> ipAddress) {
-                  std::string formattedV6;
+                  networkValue += '\n';
+                  networkValue += colorA;
                   const auto slashPosition = ipAddress.find('/');
                   if(slashPosition != std::string::npos) {
-                     formattedV6 += ipAddress.substr(0, slashPosition);
-                     formattedV6 += colorP;
-                     formattedV6 += " / ";
-                     formattedV6 += ipAddress.substr(slashPosition + 1);
-                     formattedV6 += colorA;
+                     networkValue += ipAddress.substr(0, slashPosition);
+                     networkValue += colorP;
+                     networkValue += " / ";
+                     networkValue += ipAddress.substr(slashPosition + 1);
+                     networkValue += colorA;
                   }
                   else {
-                     formattedV6 += ipAddress;
-                     formattedV6 += colorA;
+                     networkValue += ipAddress;
                   }
-                  addTableRow("", formattedV6);
                }
             }
+
+            formatter.add(1, std::move(networkLabel), std::move(networkValue));
          }
       }
    }
 
-   finishTable(std::cout);
-   std::cout << colors.None;
+   std::cout << colors.Basic << formatter << colors.None;
 }
 
 
@@ -1024,15 +884,6 @@ int main(int argc, char** argv)
    bind_textdomain_codeset("System-Info", "UTF-8");
    textdomain("System-Info");
 #endif
-
-   // TRANSLATORS: "LTR" stands for Left-to-Right layout direction.
-   // Translators of Right-to-Left languages (such as Arabic, Hebrew, Persian)
-   // must translate this string to "RTL".
-   isRTL = (std::strcmp(gettext("LTR"), "RTL") == 0);
-   if(isRTL) {
-      rlm = "\u200f";   // Right-to-Left Marker (RLM)
-      lrm = "\u200e";   // Left-to-Right Marker (LRM)
-   }
 
    std::vector<std::string> scriptDirectories = {
       "/etc/system-info.d",
