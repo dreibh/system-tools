@@ -1,0 +1,482 @@
+#!/usr/bin/env bash
+# ==========================================================================
+#         ____            _                     _____           _
+#        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
+#        \___ \| | | / __| __/ _ \ '_ ` _ \ _____| |/ _ \ / _ \| / __|
+#         ___) | |_| \__ \ ||  __/ | | | | |_____| | (_) | (_) | \__ \
+#        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
+#               |___/
+#                             --- System-Tools ---
+#                  https://www.nntb.no/~dreibh/system-tools/
+# ==========================================================================
+#
+# An interface byte counter, with Print-UTF8 and Figlet
+# Copyright (C) 2026 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -euo pipefail
+
+
+MODE="bytes"
+UNIT="B"
+RELATIVE=0
+FONT="future"
+INTERVAL="1"
+RX="Recv"
+TX="Send"
+
+
+# ###### Version ############################################################
+version () {
+   echo "byte-counter 1.0.0"
+   exit 0
+}
+
+
+# ------ BEGIN-OF-USAGE-BLOCK ------
+# ###### Usage ##############################################################
+usage () {
+   local program="$1"
+   local exitCode="$2"
+   local header=$'\x1b[4m'
+   local cmd=$'\x1b[1m'
+   local opt=$'\x1b[1m'
+   local arg=$'\x1b[4m'
+   local syn=$'\x1b[1m'
+   local reset=$'\x1b[0m'
+   cat >&2 <<EOF
+${header}Usage:${reset}
+${cmd}${program}${reset}
+	${syn}[${reset}${opt}-b${reset} ${opt}|${reset} ${opt}--bytes${reset} ${opt}|${reset} ${opt}-p${reset} ${opt}|${reset} ${opt}--packets${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-a${reset} ${opt}|${reset} ${opt}--absolute${reset} ${opt}|${reset} ${opt}-r${reset} ${opt}|${reset} ${opt}--relative${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-f${reset} ${arg}font${reset} ${opt}|${reset} ${opt}--font${reset} ${arg}font${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-i${reset} ${arg}interval${reset} ${opt}|${reset} ${opt}--interval${reset} ${arg}interval${reset}${syn}]${reset}
+	${syn}[${reset}${arg}interface${reset} ...${syn}]${reset}
+${cmd}${program}${reset}
+	${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
+${cmd}${program}${reset}
+	${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
+EOF
+   exit "${exitCode}"
+}
+# ------ END-OF-USAGE-BLOCK ------
+
+
+# ###### Get default interfaces from routing table ##########################
+get-default-interfaces ()
+{
+   case "${UNAME}" in
+      Linux)
+         {
+            ip -o route show 2>/dev/null || true
+            ip -6 -o route show 2>/dev/null || true
+         } | awk '
+            !/linkdown/ && $1 !~ /^fe80:/ {
+               for (i = 1; i < NF; i++) {
+                  if ($i == "dev" && $(i + 1) != "lo") {
+                     if (!seen[$(i + 1)]++) {
+                        print $(i + 1)
+                     }
+                  }
+               }
+            }'
+         ;;
+      FreeBSD | NetBSD | OpenBSD | Darwin | SunOS)
+         netstat -rn 2>/dev/null | awk '
+            $1 == "Destination" {
+               flagsCol = 0
+               ifaceCol = 0
+               for (i = 1; i <= NF; i++) {
+                  if ($i == "Flags") {
+                     flagsCol = i
+                  } else if ($i == "Netif" || $i == "Interface" || $i == "Iface") {
+                     ifaceCol = i
+                  }
+               }
+               next
+            }
+            flagsCol > 0 && ifaceCol > 0 && $flagsCol ~ /^U/ && $1 !~ /^fe80:/ {
+               iface = $ifaceCol
+               if (iface != "" && iface !~ /^lo[0-9]*$/ && iface !~ /^---/) {
+                  if (!seen[iface]++) {
+                     print iface
+                  }
+               }
+            }'
+         ;;
+      GNU)
+         {
+            for sock in /servers/socket/2 /servers/socket/26 ; do
+               if [ -e "${sock}" ] ; then
+                  fsysopts "${sock}" 2>/dev/null || true
+               fi
+            done
+         } | awk '
+            {
+               for (i = 1; i <= NF; i++) {
+                  if ($i ~ /^--interface=/) {
+                     iface = $i
+                     sub(/^--interface=(\/dev\/)?/, "", iface)
+                     if (iface != "" && iface != "lo" && !seen[iface]++) {
+                        print iface
+                     }
+                  }
+               }
+            }'
+         ;;
+      *)
+         ;;
+   esac
+}
+
+
+# ###### Get RX and TX counters #############################################
+get-counters ()
+{
+   local interface="$1"
+   local rx=""
+   local tx=""
+
+   case "${UNAME}" in
+      Linux)
+         local statType="bytes"
+         if [ "${MODE}" = "packets" ] ; then
+            statType="packets"
+         fi
+         if [ -f "/sys/class/net/${interface}/statistics/rx_${statType}" ] ; then
+            rx="$(cat "/sys/class/net/${interface}/statistics/rx_${statType}" || true)"
+            tx="$(cat "/sys/class/net/${interface}/statistics/tx_${statType}" || true)"
+         fi
+         ;;
+      FreeBSD | NetBSD | OpenBSD | Darwin)
+         local -a netstatArgs=( -i -n -I "${interface}" )
+         local rxColName="Ipkts"
+         local txColName="Opkts"
+         if [ "${MODE}" = "bytes" ] ; then
+            netstatArgs=( -i -b -n -I "${interface}" )
+            rxColName="Ibytes"
+            txColName="Obytes"
+         fi
+         read -r rx tx < <(
+            netstat "${netstatArgs[@]}" 2>/dev/null | awk -v rxCol="${rxColName}" -v txCol="${txColName}" '
+               $1 == "Name" {
+                  rxFromEnd = -1
+                  txFromEnd = -1
+                  for (i = 1; i <= NF; i++) {
+                     if ($i == rxCol) {
+                        rxFromEnd = NF - i
+                     } else if ($i == txCol) {
+                        txFromEnd = NF - i
+                     }
+                  }
+                  next
+               }
+               rxFromEnd >= 0 && txFromEnd >= 0 && $3 ~ /^<Link/ {
+                  print $(NF - rxFromEnd), $(NF - txFromEnd)
+                  exit
+               }'
+         ) || true
+         ;;
+      SunOS)
+         local kstatPattern="*bytes*"
+         if [ "${MODE}" = "packets" ] ; then
+            kstatPattern="*packets*"
+         fi
+         read -r rx tx < <(
+            kstat -p -c net "::${interface}:${kstatPattern}" 2>/dev/null | awk -v mode="${MODE}" '
+               mode == "bytes" && /:rbytes64[[:space:]]/   { rx64 = $2 }
+               mode == "bytes" && /:obytes64[[:space:]]/   { tx64 = $2 }
+               mode == "bytes" && /:rbytes[[:space:]]/     { rx32 = $2 }
+               mode == "bytes" && /:obytes[[:space:]]/     { tx32 = $2 }
+               mode == "packets" && /:ipackets64[[:space:]]/ { rx64 = $2 }
+               mode == "packets" && /:opackets64[[:space:]]/ { tx64 = $2 }
+               mode == "packets" && /:ipackets[[:space:]]/   { rx32 = $2 }
+               mode == "packets" && /:opackets[[:space:]]/   { tx32 = $2 }
+               END {
+                  rx = (rx64 != "" ? rx64 : rx32)
+                  tx = (tx64 != "" ? tx64 : tx32)
+                  if (rx != "" && tx != "") {
+                     print rx, tx
+                  }
+               }'
+         ) || true
+         ;;
+      GNU)
+         if [ -r "/proc/net/dev" ] ; then
+            read -r rx tx < <(
+               awk -v iface="${interface}" -v mode="${MODE}" '
+                  $0 ~ "^[[:space:]]*" iface ":" {
+                     sub(/^[[:space:]]*[^:]+:[[:space:]]*/, "")
+                     if (mode == "packets") {
+                        print $2, $10
+                     } else {
+                        print $1, $9
+                     }
+                     exit
+                  }' /proc/net/dev 2>/dev/null
+            ) || true
+         fi
+         if [ -z "${rx}" ] || [ -z "${tx}" ] ; then
+            read -r rx tx < <(
+               ifconfig "${interface}" 2>/dev/null | awk -v mode="${MODE}" '
+                  /RX bytes:/ {
+                     match($0, /RX bytes:[0-9]+/)
+                     rxBytes = substr($0, RSTART + 9, RLENGTH - 9)
+                  }
+                  /TX bytes:/ {
+                     match($0, /TX bytes:[0-9]+/)
+                     txBytes = substr($0, RSTART + 9, RLENGTH - 9)
+                  }
+                  /RX packets:[0-9]+/ {
+                     match($0, /RX packets:[0-9]+/)
+                     rxPkts = substr($0, RSTART + 11, RLENGTH - 11)
+                  }
+                  /TX packets:[0-9]+/ {
+                     match($0, /TX packets:[0-9]+/)
+                     txPkts = substr($0, RSTART + 11, RLENGTH - 11)
+                  }
+                  /RX packets [0-9]+.*bytes [0-9]+/ {
+                     match($0, /RX packets [0-9]+/)
+                     rxPkts = substr($0, RSTART + 11, RLENGTH - 11)
+                     match($0, /bytes [0-9]+/)
+                     rxBytes = substr($0, RSTART + 6, RLENGTH - 6)
+                  }
+                  /TX packets [0-9]+.*bytes [0-9]+/ {
+                     match($0, /TX packets [0-9]+/)
+                     txPkts = substr($0, RSTART + 11, RLENGTH - 11)
+                     match($0, /bytes [0-9]+/)
+                     txBytes = substr($0, RSTART + 6, RLENGTH - 6)
+                  }
+                  END {
+                     if (mode == "packets" && rxPkts != "" && txPkts != "") {
+                        print rxPkts, txPkts
+                     } else if (mode == "bytes" && rxBytes != "" && txBytes != "") {
+                        print rxBytes, txBytes
+                     }
+                  }'
+            ) || true
+         fi
+         ;;
+      *)
+         ;;
+   esac
+   echo "${rx} ${tx}"
+}
+
+
+# ###### Format counter #####################################################
+format-counter ()
+{
+   local label="$1"
+   local value="$2"
+
+   if [ -n "${value}" ] ; then
+      LC_NUMERIC=en_US.UTF-8 printf "%s: %'16u %s\n" "${label}" "${value}" "${UNIT}"
+   else
+      printf "%s: N/A\n" "${label}"
+   fi
+}
+
+
+
+# ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
+if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
+   echo >&2 "ERROR: Bash 4.4 or higher is required!"
+   exit 1
+fi
+UNAME="$(uname)"
+case "${UNAME}" in
+   FreeBSD)
+      GETOPT="$(PATH="/usr/local/bin:${PATH}" command -v getopt || true)"
+      ;;
+   NetBSD)
+      GETOPT="$(PATH="/usr/pkg/bin:${PATH}" command -v getopt || true)"
+      ;;
+   OpenBSD)
+      GETOPT="$(command -v gnugetopt || true)"
+      ;;
+   SunOS)
+      GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
+      ;;
+   Darwin)
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:/usr/local/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      ;;
+   *)
+      GETOPT="$(command -v getopt || true)"
+      ;;
+esac
+if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+   echo >&2 "ERROR: Enhanced/GNU getopt is required!"
+   exit 1
+fi
+if ! options="$(${GETOPT} -o bparf:i:hv --long bytes,packets,absolute,absolete,relative,font:,interval:,help,version -a -- "$@")" ; then
+   usage "$0" 1
+fi
+eval set -- "${options}"
+
+while [ $# -gt 0 ] ; do
+   case "$1" in
+      -b | --bytes)
+         MODE="bytes"
+         UNIT="B"
+         ;;
+      -p | --packets)
+         MODE="packets"
+         UNIT="P"
+         ;;
+      -a | --absolute | --absolete)
+         RELATIVE=0
+         ;;
+      -r | --relative)
+         RELATIVE=1
+         ;;
+      -f | --font)
+         FONT="$2"
+         shift
+         ;;
+      -i | --interval)
+         intervalValue="$2"
+         shift
+         if [[ ! "${intervalValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+            echo >&2 "ERROR: Invalid interval value ${intervalValue}!"
+            exit 1
+         fi
+         INTERVAL="${intervalValue}"
+         ;;
+      -h | --help)
+         usage "$0" 0
+         ;;
+      -v | --version)
+         version
+         ;;
+      --)
+         shift
+         break
+         ;;
+      *)
+         # This should not happen: wrong getopt parameters, or missing case?
+         echo >&2 "INTERNAL ERROR: Unhandled option $1!"
+         exit 1
+         ;;
+   esac
+   shift
+done
+
+if [ $# -gt 0 ] ; then
+   INTERFACES=( "$@" )
+else
+   mapfile -t INTERFACES < <(get-default-interfaces)
+fi
+
+if [ ${#INTERFACES[@]} -eq 0 ] ; then
+   echo >&2 "ERROR: No routed network interfaces found, and none specified!"
+   exit 1
+fi
+
+
+# ====== Store initial counters for relative mode ===========================
+declare -A START_RX=()
+declare -A START_TX=()
+if [ "${RELATIVE}" -eq 1 ] ; then
+   for interface in "${INTERFACES[@]}" ; do
+      read -r rx tx < <(get-counters "${interface}")
+      if [ -n "${rx}" ] ; then
+         START_RX["${interface}"]="${rx}"
+      fi
+      if [ -n "${tx}" ] ; then
+         START_TX["${interface}"]="${tx}"
+      fi
+   done
+fi
+
+
+# ====== Display loop =======================================================
+trap 'tput cnorm 2>/dev/null || true' EXIT INT TERM
+tput civis 2>/dev/null || true
+
+while true ; do
+   declare -a CUR_RX=()
+   declare -a CUR_TX=()
+   for interface in "${INTERFACES[@]}" ; do
+      read -r rx tx < <(get-counters "${interface}")
+      if [ "${RELATIVE}" -eq 1 ] ; then
+         if [ -n "${rx}" ] ; then
+            if [ -z "${START_RX[${interface}]+x}" ] ; then
+               START_RX["${interface}"]="${rx}"
+            elif (( rx < START_RX["${interface}"] )) ; then
+               START_RX["${interface}"]="${rx}"
+            fi
+            rx=$(( rx - START_RX["${interface}"] ))
+         fi
+         if [ -n "${tx}" ] ; then
+            if [ -z "${START_TX[${interface}]+x}" ] ; then
+               START_TX["${interface}"]="${tx}"
+            elif (( tx < START_TX["${interface}"] )) ; then
+               START_TX["${interface}"]="${tx}"
+            fi
+            tx=$(( tx - START_TX["${interface}"] ))
+         fi
+      fi
+      CUR_RX+=( "${rx}" )
+      CUR_TX+=( "${tx}" )
+   done
+
+   frame="$(
+      # ====== Clear screen =================================================
+      printf '\x1b[H\x1b[2J'
+
+      # shellcheck disable=SC2034
+      read -r columns rows < <(print-utf8 -t)
+      cols=$((columns - 8))
+
+      # ====== Print the interface counters =================================
+      n=0
+      for interface in "${INTERFACES[@]}" ; do
+         icon="🌐"
+         if [[ "${interface}" =~ ^(starlink|oneweb|ow|viasat) ]] ; then
+            icon="📡"
+         elif [[ "${interface}" =~ ^(w) ]] ; then
+            icon="🛜"
+         fi
+
+         rx="${CUR_RX[${n}]}"
+         tx="${CUR_TX[${n}]}"
+
+         if [ ${n} -eq 0 ] ; then
+            print-utf8 -n -s "\e[1;34m╔═ ${icon}${interface} " "═" " $(date +"%Y-%m-%d %H:%M:%S") ═╗\e[0m"
+         else
+            print-utf8 -n -s "\e[1;34m╠═ ${icon}${interface} " "═" "╣\e[0m"
+         fi
+         (
+            format-counter "${RX}" "${rx}"
+            format-counter "${TX}" "${tx}"
+         ) | figlet -w "${cols}" -f "${FONT}" \
+           | print-utf8 -n -C "\e[1;34m║\e[1;31m" "\e[1;34m║\e[0m"
+
+         n=$((n + 1))
+      done
+      if [ ${n} -gt 0 ] ; then
+         print-utf8 -n -s "\e[1;34m╚" "═" "╝\e[0m"
+      fi
+   )"
+
+   printf '%s\n' "${frame}"
+   sleep "${INTERVAL}"
+done
