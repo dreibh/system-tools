@@ -701,7 +701,7 @@ int main(int argc, char** argv)
          case 'C':
             mode = PrintMode::MultiLineCenter;
             if(optind < argc) {
-               borderLeft  = unescape(argv[optind]);
+               borderLeft  = unescape(optarg);
                borderRight = unescape(argv[optind]);
                optind++;
             }
@@ -715,7 +715,7 @@ int main(int argc, char** argv)
          case 's':
             mode = PrintMode::Separator;
             if(optind + 1 < argc) {
-               borderLeft  = unescape(argv[optind + 0]);
+               borderLeft  = unescape(optarg);
                utf8String  = unescape(argv[optind + 0]);
                borderRight = unescape(argv[optind + 1]);
                optind += 2;
