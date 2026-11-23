@@ -88,7 +88,7 @@ done
 
 
 %package -n libsysteminfo2
-Summary: ystem information helper library for System-Info
+Summary: System information helper library for System-Info
 Group: System/Libraries
 Provides: %{name}-libsysteminfo = %{version}-%{release}
 
@@ -113,10 +113,6 @@ Provides: %{name}-libsysteminfo = %{version}-%{release}
 Summary: System information helper library for System-Info (development files)
 Group: Development/Libraries/C and C++
 Requires: libsysteminfo2 = %{version}-%{release}
-Requires: (bzip2-devel or libbz2-devel)
-Requires: (xz-devel or liblzma-devel)
-Requires: (zlib-devel or libz-devel)
-Requires: libzstd-devel
 Provides: %{name}-libsysteminfo-devel = %{version}-%{release}
 
 %description -n libsysteminfo-devel
@@ -130,9 +126,7 @@ The obtained information can be queried by the API.
 This package contains development headers and library symlinks.
 
 %files -n libsysteminfo-devel
-%{_includedir}/systeminfo/systeminfo.h
-%{_includedir}/systeminfo/inputfile.h
-%{_includedir}/systeminfo/outputfile.h
+%{_includedir}/libsysteminfo.h
 %{_libdir}/libsysteminfo*.so
 %{_libdir}/libsysteminfo.a
 %{_libdir}/pkgconfig/libsysteminfo.pc
@@ -171,6 +165,7 @@ in, providing the user an up-to-date overview of the system.
 %config(noreplace) %{_sysconfdir}/profile.d/system-info.csh
 %{_sysconfdir}/profile.d/system-info.csh
 %dir %attr(0755, root, root) %{_sysconfdir}/system-info.d
+%config(noreplace) %{_sysconfdir}/system-info.conf
 %config(noreplace) %{_sysconfdir}/system-info.d/banner-helper
 %{_sysconfdir}/system-info.d/banner-helper
 %config(noreplace) %{_sysconfdir}/system-info.d/01-example

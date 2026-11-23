@@ -36,10 +36,6 @@
 ADD_LIBRARY(libpropertyformatter STATIC
             displaywidth.cc
             propertyformatter.cc)
-TARGET_INCLUDE_DIRECTORIES(libpropertyformatter
-                           PRIVATE ${Intl_INCLUDE_DIRS})
-TARGET_LINK_LIBRARIES(libpropertyformatter PRIVATE
-                      ${Intl_LIBRARIES})
 
 # ====== libsysteminfo ======================================================
 IF (WITH_LIBSYSTEMINFO)
@@ -55,7 +51,7 @@ IF (WITH_LIBSYSTEMINFO)
       libsysteminfo-user.cc
    )
    INSTALL(FILES       ${libsysteminfo_headers}
-           DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hipercontracer)
+           DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
    # --- Assemble library dependencies --------------------------------------
    SET(libsysteminfo_dependencies

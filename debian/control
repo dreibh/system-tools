@@ -56,7 +56,8 @@ Architecture: any
 Depends: figlet | toilet,
          td-get-system-info (>= ${source:Version}),
          td-print-utf8 (>= ${source:Version}),
-         ${misc:Depends}
+         ${misc:Depends},
+         ${shlibs:Depends}
 Recommends: subnetcalc
 Description: Print basic system information and banners
  This program displays basic status information about the system:
