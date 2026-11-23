@@ -29,111 +29,10 @@
 
 
 #############################################################################
-#### LIBRARIES                                                           ####
-#############################################################################
-
-# ====== libpropertyformatter ===============================================
-ADD_LIBRARY(libpropertyformatter STATIC
-            displaywidth.cc
-            propertyformatter.cc)
-
-# ====== libsysteminfo ======================================================
-IF (WITH_LIBSYSTEMINFO)
-   LIST(APPEND libsysteminfo_headers libsysteminfo.h)
-   LIST(APPEND libsysteminfo_sources
-      libsysteminfo-battery.cc
-      libsysteminfo-management.cc
-      libsysteminfo-memory.cc
-      libsysteminfo-network.cc
-      libsysteminfo-os.cc
-      libsysteminfo-storage.cc
-      libsysteminfo-system.cc
-      libsysteminfo-user.cc
-   )
-   INSTALL(FILES       ${libsysteminfo_headers}
-           DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-
-   # --- Assemble library dependencies --------------------------------------
-   SET(libsysteminfo_dependencies
-      ${SYSTEMD_LIBRARY}
-      ${Intl_LIBRARIES}
-      ${SOCKET_LIBRARY}
-      ${NSL_LIBRARY}
-      ${KSTAT_LIBRARY}
-   )
-   IF (APPLE)
-      LIST(APPEND libsysteminfo_dependencies
-           "-framework IOKit"
-           "-framework CoreFoundation")
-   ELSEIF (WIN32)
-      LIST(APPEND libsysteminfo_dependencies ws2_32 iphlpapi wtsapi32 psapi)
-   ENDIF()
-
-   # --- Library targets ----------------------------------------------------
-   IF (WITH_STATIC_LIBRARIES)
-      ADD_LIBRARY(libsysteminfo-static STATIC ${libsysteminfo_sources})
-   ENDIF()
-   IF (WITH_SHARED_LIBRARIES)
-      ADD_LIBRARY(libsysteminfo-shared SHARED ${libsysteminfo_sources})
-   ENDIF()
-
-   FOREACH(TYPE shared;static)
-      IF ( (("${TYPE}" STREQUAL "static") AND (WITH_STATIC_LIBRARIES)) OR
-           (("${TYPE}" STREQUAL "shared") AND (WITH_SHARED_LIBRARIES)) )
-         SET_TARGET_PROPERTIES(libsysteminfo-${TYPE} PROPERTIES
-            OUTPUT_NAME                systeminfo
-            CLEAN_DIRECT_OUTPUT        1
-            VERSION                    ${PROJECT_VERSION}
-            SOVERSION                  ${PROJECT_VERSION_MAJOR}
-            WINDOWS_EXPORT_ALL_SYMBOLS ON
-         )
-         TARGET_COMPILE_DEFINITIONS(libsysteminfo-${TYPE} PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
-         TARGET_INCLUDE_DIRECTORIES(libsysteminfo-${TYPE} PRIVATE
-                                    ${CMAKE_CURRENT_SOURCE_DIR}
-                                    ${SYSTEMD_INCLUDE_DIRS})
-         IF (NOT MSVC)
-            TARGET_COMPILE_OPTIONS(libsysteminfo-${TYPE} PRIVATE -Wall -Wextra -Wpedantic -Wsign-conversion)
-         ELSE()
-            TARGET_COMPILE_OPTIONS(libsysteminfo-${TYPE} PRIVATE /W4)
-         ENDIF()
-
-         TARGET_LINK_LIBRARIES(libsysteminfo-${TYPE} PRIVATE ${libsysteminfo_dependencies})
-
-         INSTALL(TARGETS             libsysteminfo-${TYPE}
-                 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-      ENDIF()
-   ENDFOREACH()
-
-   # --- Generate pkg-config metadata ---------------------------------------
-   SET(PC_LIBS_PRIVATE "")
-   FOREACH(dependency ${libsysteminfo_dependencies})
-      IF (dependency MATCHES "^-")
-         STRING(APPEND PC_LIBS_PRIVATE " ${dependency}")
-      ELSEIF (IS_ABSOLUTE "${dependency}")
-         STRING(APPEND PC_LIBS_PRIVATE " ${dependency}")
-      ELSE()
-         STRING(APPEND PC_LIBS_PRIVATE " -l${dependency}")
-      ENDIF()
-   ENDFOREACH()
-   STRING(STRIP "${PC_LIBS_PRIVATE}" PC_LIBS_PRIVATE)
-
-   CONFIGURE_FILE(
-      ${CMAKE_CURRENT_SOURCE_DIR}/libsysteminfo.pc.in
-      ${CMAKE_CURRENT_BINARY_DIR}/libsysteminfo.pc
-      @ONLY
-   )
-   INSTALL(FILES       ${CMAKE_CURRENT_BINARY_DIR}/libsysteminfo.pc
-           DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-ENDIF()
-
-
-#############################################################################
 #### PROGRAMS                                                            ####
 #############################################################################
 
-IF (STATIC_BUILD)
+IF (STATIC_BUILD OR NOT WITH_SHARED_LIBRARIES)
    SET(libraryType static)
 ELSE()
    SET(libraryType shared)
@@ -144,10 +43,10 @@ IF (WITH_SYSTEM_INFO)
    TARGET_COMPILE_DEFINITIONS(System-Info PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
    TARGET_INCLUDE_DIRECTORIES(System-Info PRIVATE
                               ${CMAKE_CURRENT_SOURCE_DIR}
-                              ${SYSTEMD_INCLUDE_DIRS}
+                              ${SYSTEMD_INCLUDE_DIR}
                               ${Intl_INCLUDE_DIRS})
    TARGET_LINK_LIBRARIES(System-Info PRIVATE
-                         libpropertyformatter
+                         libpropertyformatter-${libraryType}
                          libsysteminfo-${libraryType}
                          ${Intl_LIBRARIES}
                          ${GETOPT_LIBRARY})
@@ -171,7 +70,10 @@ ENDIF()
 IF (WITH_GET_SYSTEM_INFO)
    ADD_EXECUTABLE(get-system-info get-system-info.cc)
    TARGET_COMPILE_DEFINITIONS(get-system-info PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
-   TARGET_INCLUDE_DIRECTORIES(get-system-info PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${SYSTEMD_INCLUDE_DIRS} ${Intl_INCLUDE_DIRS})
+   TARGET_INCLUDE_DIRECTORIES(get-system-info PRIVATE
+                              ${CMAKE_CURRENT_SOURCE_DIR}
+                              ${SYSTEMD_INCLUDE_DIR}
+                              ${Intl_INCLUDE_DIRS})
    TARGET_LINK_LIBRARIES(get-system-info PRIVATE
                          libsysteminfo-${libraryType}
                          ${Intl_LIBRARIES}

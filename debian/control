@@ -13,6 +13,59 @@ Build-Depends: cmake,
 Standards-Version: 4.7.4
 Rules-Requires-Root: no
 
+Package: libdisplaywidth2
+Section: libs
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: UTF-8 and ANSI terminal display width calculation library
+ libdisplaywidth computes terminal column widths for UTF-8 strings,
+ handling ANSI escape sequences, zero-width combining marks, bidirectional
+ control characters, and wide CJK/Emoji glyphs.
+ .
+ This package contains the shared runtime library.
+
+Package: libdisplaywidth-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: libdisplaywidth2 (= ${binary:Version}),
+         ${misc:Depends}
+Description: UTF-8 and ANSI terminal display width calculation library (development files)
+ libdisplaywidth computes terminal column widths for UTF-8 strings,
+ handling ANSI escape sequences, zero-width combining marks, bidirectional
+ control characters, and wide CJK/Emoji glyphs.
+ .
+ This package contains development headers and library symlinks.
+
+Package: libpropertyformatter2
+Section: libs
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Terminal key-value property formatting library
+ libpropertyformatter formats aligned, multi-level key-value properties
+ and section headers for terminal output with support for ANSI color
+ sequences, multi-line values, and bidirectional (LTR/RTL) text.
+ .
+ This package contains the shared runtime library.
+
+Package: libpropertyformatter-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: libdisplaywidth-dev (= ${binary:Version}),
+         libpropertyformatter2 (= ${binary:Version}),
+         ${misc:Depends}
+Description: Terminal key-value property formatting library (development files)
+ libpropertyformatter formats aligned, multi-level key-value properties
+ and section headers for terminal output with support for ANSI color
+ sequences, multi-line values, and bidirectional (LTR/RTL) text.
+ .
+ This package contains development headers and library symlinks.
+
 Package: libsysteminfo2
 Section: libs
 Architecture: any
@@ -34,11 +87,7 @@ Package: libsysteminfo-dev
 Section: libdevel
 Architecture: any
 Multi-Arch: same
-Depends: libbz2-dev,
-         liblzma-dev,
-         libsysteminfo2 (= ${binary:Version}),
-         libzstd-dev,
-         zlib1g-dev,
+Depends: libsysteminfo2 (= ${binary:Version}),
          ${misc:Depends}
 Description: System information helper library for System-Info (development files)
  libsysteminfo obtains information about the system, including:

@@ -40,6 +40,8 @@
 #include <getopt.h>
 #include <iostream>
 #include <locale>
+#include <libsysteminfo.h>
+#include <propertyformatter.h>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -62,10 +64,7 @@
 #include <unistd.h>
 #endif
 
-#include <libsysteminfo.h>
-
 #include "package-version.h"
-#include "propertyformatter.h"
 
 
 // ###### Helper to trim whitespace from strings ############################

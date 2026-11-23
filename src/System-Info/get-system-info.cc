@@ -31,12 +31,11 @@
 #include <cstdlib>
 #include <getopt.h>
 #include <iostream>
+#include <libsysteminfo.h>
 
 #if defined(_WIN32)
 #include <winsock2.h>
 #endif
-
-#include <libsysteminfo.h>
 
 #include "package-version.h"
 

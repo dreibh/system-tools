@@ -1,0 +1,4 @@
+usr/include/propertyformatter.h
+usr/lib/${DEB_HOST_MULTIARCH}/libpropertyformatter*.so
+usr/lib/${DEB_HOST_MULTIARCH}/libpropertyformatter.a
+usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/libpropertyformatter.pc

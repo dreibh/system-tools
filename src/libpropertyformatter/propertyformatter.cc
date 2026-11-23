@@ -25,7 +25,7 @@
 // Contact: thomas.dreibholz@gmail.com
 
 #include "propertyformatter.h"
-#include "displaywidth.h"
+#include <displaywidth.h>
 
 #include <algorithm>
 #include <sstream>

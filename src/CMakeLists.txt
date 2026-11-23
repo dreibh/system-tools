@@ -44,6 +44,18 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 #### SUBDIRECTORIES                                                      ####
 #############################################################################
 
+IF (WITH_LIBDISPLAYWIDTH)
+   ADD_SUBDIRECTORY(libdisplaywidth)
+ENDIF()
+
+IF (WITH_LIBPROPERTYFORMATTER)
+   ADD_SUBDIRECTORY(libpropertyformatter)
+ENDIF()
+
+IF (WITH_LIBSYSTEMINFO)
+   ADD_SUBDIRECTORY(libsysteminfo)
+ENDIF()
+
 IF (WITH_SYSTEM_INFO OR WITH_GET_SYSTEM_INFO)
    ADD_SUBDIRECTORY(System-Info)
 ENDIF()

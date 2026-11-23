@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: libdisplaywidth
+Description: Cross-platform C++ UTF-8 and ANSI terminal display width library
+Version: @PROJECT_VERSION@
+
+Libs: -L${libdir} -ldisplaywidth
+Cflags: -I${includedir}

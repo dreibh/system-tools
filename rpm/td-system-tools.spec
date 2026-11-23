@@ -87,6 +87,82 @@ done
 %files
 
 
+%package -n libdisplaywidth2
+Summary: UTF-8 and ANSI terminal display width calculation library
+Group: System/Libraries
+Provides: %{name}-libdisplaywidth = %{version}-%{release}
+
+%description -n libdisplaywidth2
+libdisplaywidth computes terminal column widths for UTF-8 strings,
+handling ANSI escape sequences, zero-width combining marks, bidirectional
+control characters, and wide CJK/Emoji glyphs.
+This package contains the shared runtime library.
+
+%post -n libdisplaywidth2 -p /sbin/ldconfig
+%postun -n libdisplaywidth2 -p /sbin/ldconfig
+
+%files -n libdisplaywidth2
+%{_libdir}/libdisplaywidth.so.*
+
+
+%package -n libdisplaywidth-devel
+Summary: UTF-8 and ANSI terminal display width calculation library (development files)
+Group: Development/Libraries/C and C++
+Requires: libdisplaywidth2 = %{version}-%{release}
+Provides: %{name}-libdisplaywidth-devel = %{version}-%{release}
+
+%description -n libdisplaywidth-devel
+libdisplaywidth computes terminal column widths for UTF-8 strings,
+handling ANSI escape sequences, zero-width combining marks, bidirectional
+control characters, and wide CJK/Emoji glyphs.
+This package contains development headers and library symlinks.
+
+%files -n libdisplaywidth-devel
+%{_includedir}/displaywidth.h
+%{_libdir}/libdisplaywidth*.so
+%{_libdir}/libdisplaywidth.a
+%{_libdir}/pkgconfig/libdisplaywidth.pc
+
+
+%package -n libpropertyformatter2
+Summary: Terminal key-value property formatting library
+Group: System/Libraries
+Requires: libdisplaywidth2 = %{version}-%{release}
+Provides: %{name}-libpropertyformatter = %{version}-%{release}
+
+%description -n libpropertyformatter2
+libpropertyformatter formats aligned, multi-level key-value properties
+and section headers for terminal output with support for ANSI color
+sequences, multi-line values, and bidirectional (LTR/RTL) text.
+This package contains the shared runtime library.
+
+%post -n libpropertyformatter2 -p /sbin/ldconfig
+%postun -n libpropertyformatter2 -p /sbin/ldconfig
+
+%files -n libpropertyformatter2
+%{_libdir}/libpropertyformatter.so.*
+
+
+%package -n libpropertyformatter-devel
+Summary: Terminal key-value property formatting library (development files)
+Group: Development/Libraries/C and C++
+Requires: libdisplaywidth-devel = %{version}-%{release}
+Requires: libpropertyformatter2 = %{version}-%{release}
+Provides: %{name}-libpropertyformatter-devel = %{version}-%{release}
+
+%description -n libpropertyformatter-devel
+libpropertyformatter formats aligned, multi-level key-value properties
+and section headers for terminal output with support for ANSI color
+sequences, multi-line values, and bidirectional (LTR/RTL) text.
+This package contains development headers and library symlinks.
+
+%files -n libpropertyformatter-devel
+%{_includedir}/propertyformatter.h
+%{_libdir}/libpropertyformatter*.so
+%{_libdir}/libpropertyformatter.a
+%{_libdir}/pkgconfig/libpropertyformatter.pc
+
+
 %package -n libsysteminfo2
 Summary: System information helper library for System-Info
 Group: System/Libraries
@@ -136,6 +212,7 @@ This package contains development headers and library symlinks.
 Summary: Print basic system information and banners
 Requires: %{name}-get-system-info = %{version}-%{release}
 Requires: %{name}-print-utf8 = %{version}-%{release}
+Requires: libpropertyformatter2 = %{version}-%{release}
 Requires: libsysteminfo2 = %{version}-%{release}
 Requires: (figlet or toilet)
 Requires: gettext-runtime
@@ -160,16 +237,12 @@ in, providing the user an up-to-date overview of the system.
 %{_datadir}/System-Info/10-company-logo-example
 %{_datadir}/System-Info/banner-helper
 %{_mandir}/man1/System-Info.1.gz
-%config(noreplace) %{_sysconfdir}/profile.d/system-info.sh
-%{_sysconfdir}/profile.d/system-info.sh
-%config(noreplace) %{_sysconfdir}/profile.d/system-info.csh
-%{_sysconfdir}/profile.d/system-info.csh
-%dir %attr(0755, root, root) %{_sysconfdir}/system-info.d
 %config(noreplace) %{_sysconfdir}/system-info.conf
+%config(noreplace) %{_sysconfdir}/profile.d/system-info.sh
+%config(noreplace) %{_sysconfdir}/profile.d/system-info.csh
+%dir %attr(0755, root, root) %{_sysconfdir}/system-info.d
 %config(noreplace) %{_sysconfdir}/system-info.d/banner-helper
-%{_sysconfdir}/system-info.d/banner-helper
 %config(noreplace) %{_sysconfdir}/system-info.d/01-example
-%{_sysconfdir}/system-info.d/01-example
 
 
 %package get-system-info
@@ -210,7 +283,6 @@ unused storage.
 %{_mandir}/man1/System-Maintenance.1.gz
 %dir %attr(0755, root, root) %{_sysconfdir}/system-maintenance.d
 %config(noreplace) %{_sysconfdir}/system-maintenance.d/XX-example
-%{_sysconfdir}/system-maintenance.d/XX-example
 
 
 %package reset-machine-id
