@@ -210,7 +210,6 @@ This package contains development headers and library symlinks.
 
 %package system-info
 Summary: Print basic system information and banners
-Requires: %{name}-get-system-info = %{version}-%{release}
 Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: libpropertyformatter2 = %{version}-%{release}
 Requires: libsysteminfo2 = %{version}-%{release}

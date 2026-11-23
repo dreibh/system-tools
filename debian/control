@@ -103,7 +103,6 @@ Description: System information helper library for System-Info (development file
 Package: td-system-info
 Architecture: any
 Depends: figlet | toilet,
-         td-get-system-info (>= ${source:Version}),
          td-print-utf8 (>= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
