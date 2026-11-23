@@ -352,6 +352,7 @@ a rescue medium to fix a broken configuration!
 
 %package print-utf8
 Summary: Print UTF-8 strings and obtain size/length/width information
+Requires: libdisplaywidth2 = %{version}-%{release}
 
 %description print-utf8
 The print-utf8 tool is a simple program to print UTF-8 strings in the

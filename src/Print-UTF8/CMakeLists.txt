@@ -32,10 +32,19 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
+IF (STATIC_BUILD OR NOT WITH_SHARED_LIBRARIES)
+   SET(libraryType static)
+ELSE()
+   SET(libraryType shared)
+ENDIF()
+
 ADD_EXECUTABLE(print-utf8 print-utf8.cc)
 TARGET_COMPILE_DEFINITIONS(print-utf8 PRIVATE _FILE_OFFSET_BITS=64 _TIME_BITS=64)
 TARGET_INCLUDE_DIRECTORIES(print-utf8 PRIVATE ${Intl_INCLUDE_DIRS})
-TARGET_LINK_LIBRARIES(print-utf8 ${Intl_LIBRARIES} ${GETOPT_LIBRARY})
+TARGET_LINK_LIBRARIES(print-utf8 PRIVATE
+                      libdisplaywidth-${libraryType}
+                      ${Intl_LIBRARIES}
+                      ${GETOPT_LIBRARY})
 IF(NOT MSVC)
    TARGET_COMPILE_OPTIONS(print-utf8 PRIVATE -Wall -Wextra -Wpedantic -Wsign-conversion)
 ELSE()

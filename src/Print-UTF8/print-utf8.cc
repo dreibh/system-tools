@@ -32,7 +32,6 @@
 #endif
 
 #include <algorithm>
-#include <cctype>
 #include <clocale>
 #include <cstdint>
 #include <cstdlib>
@@ -61,6 +60,8 @@
 #define gettext(string)                   (string)
 #define ngettext(singular, plural, count) (((count) == 1) ? (singular) : (plural))
 #endif
+
+#include <displaywidth.h>
 
 #include "package-version.h"
 
@@ -340,166 +341,32 @@ static std::string unescape(std::string_view originalString)
 }
 
 
-// ###### Decode UTF-8 string directly to UTF-32 without ANSI ###############
-static std::vector<char32_t> convertUtf8ToUtf32WithoutANSI(std::string_view originalString,
-                                                           const bool       removeANSISequences,
-                                                           size_t*          utf8ByteSize = nullptr)
-{
-   std::string filtered;
-   filtered.reserve(originalString.size());
-
-   bool inANSI = false;
-   for(size_t i = 0; i < originalString.size(); ++i) {
-      if(!inANSI) {
-         if((originalString[i] == '\x1b') && removeANSISequences) {
-            inANSI = true;
-         }
-         else {
-            filtered.push_back(originalString[i]);
-         }
-      }
-      else if(std::isalpha(static_cast<unsigned char>(originalString[i]))) {
-         inANSI = false;
-      }
-   }
-
-   if(utf8ByteSize != nullptr) {
-      *utf8ByteSize = filtered.size();
-   }
-
-   std::vector<char32_t> utf32;
-   utf32.reserve(filtered.size());
-
-   size_t i = 0;
-   while(i < filtered.size()) {
-      const auto firstByte = static_cast<unsigned char>(filtered[i]);
-      char32_t   codepoint = 0;
-      size_t     bytes     = 1;
-
-      if(firstByte < 0x80u) {
-         codepoint = firstByte;
-         bytes     = 1;
-      }
-      else if(((firstByte & 0xe0u) == 0xc0u) && (i + 1 < filtered.size())) {
-         codepoint = ((firstByte & 0x1fu) << 6u) |
-                     (static_cast<unsigned char>(filtered[i + 1]) & 0x3fu);
-         bytes     = 2;
-      }
-      else if(((firstByte & 0xf0u) == 0xe0u) && (i + 2 < filtered.size())) {
-         codepoint = ((firstByte & 0x0fu) << 12u) |
-                     ((static_cast<unsigned char>(filtered[i + 1]) & 0x3fu) << 6u) |
-                     (static_cast<unsigned char>(filtered[i + 2]) & 0x3fu);
-         bytes     = 3;
-      }
-      else if(((firstByte & 0xf8u) == 0xf0u) && (i + 3 < filtered.size())) {
-         codepoint = ((firstByte & 0x07u) << 18u) |
-                     ((static_cast<unsigned char>(filtered[i + 1]) & 0x3fu) << 12u) |
-                     ((static_cast<unsigned char>(filtered[i + 2]) & 0x3fu) << 6u) |
-                     (static_cast<unsigned char>(filtered[i + 3]) & 0x3fu);
-         bytes     = 4;
-      }
-      else {
-         codepoint = 0xfffdu;
-         bytes     = 1;
-      }
-
-      utf32.push_back(codepoint);
-      i += bytes;
-   }
-
-   return utf32;
-}
-
-
-// ###### Calculate column width for UTF-32 codepoints ######################
-static int utf32DisplayWidth(const std::vector<char32_t>& codepoints)
-{
-   int width = 0;
-   for(size_t i = 0; i < codepoints.size(); ++i) {
-      const char32_t code = codepoints[i];
-
-      // Zero-width characters (combining marks, variation selectors, ZWJ):
-      if(((code >= 0x0300u) && (code <= 0x036fu)) ||
-         ((code >= 0x1ab0u) && (code <= 0x1affu)) ||
-         ((code >= 0x1dc0u) && (code <= 0x1dffu)) ||
-         ((code >= 0x20d0u) && (code <= 0x20ffu)) ||
-         ((code >= 0xfe00u) && (code <= 0xfe0fu)) ||
-         ((code >= 0xfe20u) && (code <= 0xfe2fu)) ||
-         ((code >= 0xe0100u) && (code <= 0xe01efu)) ||
-         (code == 0x200bu) || (code == 0x200cu) || (code == 0x200du) ||
-         (code == 0xfeffu) || (code == 0x00adu)) {
-         continue;
-      }
-
-      // Regional Indicator pairs (e.g. flag emojis) -> total width 2:
-      if((code >= 0x1f1e6u) && (code <= 0x1f1ffu)) {
-         if((i + 1 < codepoints.size()) &&
-            (codepoints[i + 1] >= 0x1f1e6u) && (codepoints[i + 1] <= 0x1f1ffu)) {
-            width += 2;
-            i++;
-            continue;
-         }
-      }
-
-      // East Asian Wide & Emoji Presentation characters -> width 2:
-      if(((code >= 0x1100u) && (code <= 0x115fu)) ||
-         ((code >= 0x2e80u) && (code <= 0xa4cfu && code != 0x3030u)) ||
-         ((code >= 0xac00u) && (code <= 0xd7a3u)) ||
-         ((code >= 0xf900u) && (code <= 0xfaffu)) ||
-         ((code >= 0xfe10u) && (code <= 0xfe19u)) ||
-         ((code >= 0xff01u) && (code <= 0xff60u)) ||
-         ((code >= 0xffe0u) && (code <= 0xffe6u)) ||
-         ((code >= 0x1f300u) && (code <= 0x1f6ffu)) ||
-         ((code >= 0x1f900u) && (code <= 0x1f9ffu)) ||
-         ((code >= 0x1fa70u) && (code <= 0x1faffu)) ||
-         ((code >= 0x20000u) && (code <= 0x3fffdu))) {
-         width += 2;
-      }
-      else {
-         width += 1;
-      }
-   }
-   return width;
-}
-
-
-// ###### Obtain console printing width of UTF-8 string ######################
-static int stringWidth(std::string_view originalString,
-                       const bool       removeANSISequences)
-{
-   const std::vector<char32_t> utf32 =
-      convertUtf8ToUtf32WithoutANSI(originalString, removeANSISequences);
-   const int width = utf32DisplayWidth(utf32);
-   return (width >= 0) ? width : 0;
-}
-
-
 // ###### Print Size / Length / Width #######################################
 static void printStringSizeLengthWidth(std::string_view originalString,
-                                       const bool       removeANSISequences,
                                        const bool       showSize,
                                        const bool       showLength,
                                        const bool       showWidth)
 {
-   size_t utf8ByteSize = 0;
-   const std::vector<char32_t> utf32 =
-      convertUtf8ToUtf32WithoutANSI(originalString, removeANSISequences, &utf8ByteSize);
+   size_t displayWidth   = 0;
+   size_t codePointCount = 0;
+   size_t byteCount      = 0;
+   computeStringWidth(originalString, displayWidth, codePointCount, &byteCount);
 
    std::string output;
    if(showSize) {
-      output += std::to_string(utf8ByteSize);
+      output += std::to_string(byteCount);
    }
    if(showLength) {
       if(!output.empty()) {
          output += ' ';
       }
-      output += std::to_string(utf32.size());
+      output += std::to_string(codePointCount);
    }
    if(showWidth) {
       if(!output.empty()) {
          output += ' ';
       }
-      output += std::to_string(utf32DisplayWidth(utf32));
+      output += std::to_string(displayWidth);
    }
    std::cout << output << '\n';
 }
@@ -531,11 +398,11 @@ static void printIndented(std::string_view utf8String,
                           const int        totalIndent)
 {
    if(totalIndent > 0) {
-      printIndentSpaces(totalIndent - stringWidth(utf8String, true));
+      printIndentSpaces(totalIndent - static_cast<int>(computeDisplayWidth(utf8String)));
    }
    std::cout << utf8String;
    if(totalIndent < 0) {
-      printIndentSpaces((-totalIndent) - stringWidth(utf8String, true));
+      printIndentSpaces((-totalIndent) - static_cast<int>(computeDisplayWidth(utf8String)));
    }
 }
 
@@ -545,7 +412,7 @@ static void printCentered(std::string_view utf8String,
                           const int        consoleWidth,
                           const bool       padding)
 {
-   const int additionalSpacing = consoleWidth - stringWidth(utf8String, true);
+   const int additionalSpacing = consoleWidth - static_cast<int>(computeDisplayWidth(utf8String));
    const int indentation       = additionalSpacing / 2;
 
    printIndentSpaces(indentation);
@@ -562,9 +429,9 @@ static void printSeparator(std::string_view borderLeft,
                            std::string_view borderRight,
                            const int        consoleWidth)
 {
-   const int borderLeftWidth  = stringWidth(borderLeft, true);
-   const int borderRightWidth = stringWidth(borderRight, true);
-   int       separatorWidth   = stringWidth(separatorString, true);
+   const int borderLeftWidth  = static_cast<int>(computeDisplayWidth(borderLeft));
+   const int borderRightWidth = static_cast<int>(computeDisplayWidth(borderRight));
+   int       separatorWidth   = static_cast<int>(computeDisplayWidth(separatorString));
 
    if(separatorWidth < 1) {
       separatorString = " ";
@@ -602,13 +469,13 @@ static void doMultiLineIndentOrCenter(std::string_view borderLeft,
    }
 
    if(!borderLeft.empty()) {
-      const int leftWidth = stringWidth(borderLeft, true);
+      const int leftWidth = static_cast<int>(computeDisplayWidth(borderLeft));
       if(leftWidth > 0) {
          consoleWidth -= leftWidth;
       }
    }
    if(!borderRight.empty()) {
-      const int rightWidth = stringWidth(borderRight, true);
+      const int rightWidth = static_cast<int>(computeDisplayWidth(borderRight));
       if(rightWidth > 0) {
          consoleWidth -= rightWidth;
       }
@@ -834,7 +701,7 @@ int main(int argc, char** argv)
          case 'C':
             mode = PrintMode::MultiLineCenter;
             if(optind < argc) {
-               borderLeft  = unescape(optarg);
+               borderLeft  = unescape(argv[optind]);
                borderRight = unescape(argv[optind]);
                optind++;
             }
@@ -848,7 +715,7 @@ int main(int argc, char** argv)
          case 's':
             mode = PrintMode::Separator;
             if(optind + 1 < argc) {
-               borderLeft  = unescape(optarg);
+               borderLeft  = unescape(argv[optind + 0]);
                utf8String  = unescape(argv[optind + 0]);
                borderRight = unescape(argv[optind + 1]);
                optind += 2;
@@ -941,16 +808,16 @@ int main(int argc, char** argv)
          }
          break;
       case PrintMode::Width:
-         printStringSizeLengthWidth(utf8String, true, false, false, true);
+         printStringSizeLengthWidth(utf8String, false, false, true);
          break;
       case PrintMode::Length:
-         printStringSizeLengthWidth(utf8String, true, false, true, false);
+         printStringSizeLengthWidth(utf8String, false, true, false);
          break;
       case PrintMode::Size:
-         printStringSizeLengthWidth(utf8String, true, true, false, false);
+         printStringSizeLengthWidth(utf8String, true, false, false);
          break;
       case PrintMode::SizeLengthWidth:
-         printStringSizeLengthWidth(utf8String, true, true, true, true);
+         printStringSizeLengthWidth(utf8String, true, true, true);
          break;
       case PrintMode::TerminalInfo:
          printTerminalInfo();
