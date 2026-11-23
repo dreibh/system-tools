@@ -13,6 +13,9 @@ class TdSystemTools < Formula
   # Options ON by default (matching OPTIONS_DEFAULT in FreeBSD)
   option "without-fingerprint-ssh-keys", "Build without Fingerprint-SSH-Keys"
   option "without-get-system-info", "Build without get-system-info"
+  option "without-libdisplaywidth", "Build without Display Width Library (libdisplaywidth)"
+  option "without-libpropertyformatter", "Build without Property Formatter Library (libpropertyformatter)"
+  option "without-libsysteminfo", "Build without System-Info Library (libsysteminfo)"
   option "without-nls", "Build without Internationalization (i18n) support"
   option "without-print-utf8", "Build without Print-UTF8"
   option "without-random-sleep", "Build without Random-Sleep"
@@ -58,12 +61,16 @@ class TdSystemTools < Formula
                   build.with?("system-info-examples") ||
                   build.with?("system-info-in-profiles")
 
-    get_system_info = build.with?("get-system-info") || system_info
+    get_system_info = build.with?("get-system-info")
     random_sleep = build.with?("random-sleep") || build.with?("try-hard")
     x509_tools = build.with?("x509-tools")
     print_utf8 = build.with?("print-utf8") || system_info || x509_tools
     text_block = build.with?("text-block") || x509_tools
     unix_timestamp_tools = build.with?("unix-timestamp-tools") || x509_tools
+
+    libsysteminfo = build.with?("libsysteminfo") || get_system_info || system_info
+    libpropertyformatter = build.with?("libpropertyformatter") || system_info
+    libdisplaywidth = build.with?("libdisplaywidth") || libpropertyformatter || print_utf8
 
     args = std_cmake_args + %W[
       -GNinja
@@ -77,6 +84,9 @@ class TdSystemTools < Formula
       -DWITH_GIMP_SCRIPTS=#{gimp_scripts ? "ON" : "OFF"}
       -DWITH_GIMP_SCRIPTS_EXAMPLES=#{build.with?("gimp-scripts-examples") ? "ON" : "OFF"}
       -DWITH_I18N=#{build.with?("nls") ? "ON" : "OFF"}
+      -DWITH_LIBDISPLAYWIDTH=#{libdisplaywidth ? "ON" : "OFF"}
+      -DWITH_LIBPROPERTYFORMATTER=#{libpropertyformatter ? "ON" : "OFF"}
+      -DWITH_LIBSYSTEMINFO=#{libsysteminfo ? "ON" : "OFF"}
       -DWITH_PRINT_UTF8=#{print_utf8 ? "ON" : "OFF"}
       -DWITH_RANDOM_SLEEP=#{random_sleep ? "ON" : "OFF"}
       -DWITH_RESET_MACHINE_ID=#{build.with?("reset-machine-id") ? "ON" : "OFF"}
@@ -97,6 +107,10 @@ class TdSystemTools < Formula
   end
 
   test do
-    assert_path_exists bin/"get-system-info" if build.with?("get-system-info") || build.with?("system-info")
+    assert_path_exists bin/"get-system-info" if build.with?("get-system-info")
+    assert_path_exists bin/"System-Info" if build.with?("system-info") ||
+                                            build.with?("system-info-default-banner") ||
+                                            build.with?("system-info-examples") ||
+                                            build.with?("system-info-in-profiles")
   end
 end

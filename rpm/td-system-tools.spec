@@ -87,28 +87,28 @@ done
 %files
 
 
-%package -n libdisplaywidth2
+%package -n libdisplaywidth3
 Summary: UTF-8 and ANSI terminal display width calculation library
 Group: System/Libraries
 Provides: %{name}-libdisplaywidth = %{version}-%{release}
 
-%description -n libdisplaywidth2
+%description -n libdisplaywidth3
 libdisplaywidth computes terminal column widths for UTF-8 strings,
 handling ANSI escape sequences, zero-width combining marks, bidirectional
 control characters, and wide CJK/Emoji glyphs.
 This package contains the shared runtime library.
 
-%post -n libdisplaywidth2 -p /sbin/ldconfig
-%postun -n libdisplaywidth2 -p /sbin/ldconfig
+%post -n libdisplaywidth3 -p /sbin/ldconfig
+%postun -n libdisplaywidth3 -p /sbin/ldconfig
 
-%files -n libdisplaywidth2
+%files -n libdisplaywidth3
 %{_libdir}/libdisplaywidth.so.*
 
 
 %package -n libdisplaywidth-devel
 Summary: UTF-8 and ANSI terminal display width calculation library (development files)
 Group: Development/Libraries/C and C++
-Requires: libdisplaywidth2 = %{version}-%{release}
+Requires: libdisplaywidth3 = %{version}-%{release}
 Provides: %{name}-libdisplaywidth-devel = %{version}-%{release}
 
 %description -n libdisplaywidth-devel
@@ -124,22 +124,22 @@ This package contains development headers and library symlinks.
 %{_libdir}/pkgconfig/libdisplaywidth.pc
 
 
-%package -n libpropertyformatter2
+%package -n libpropertyformatter3
 Summary: Terminal key-value property formatting library
 Group: System/Libraries
-Requires: libdisplaywidth2 = %{version}-%{release}
+Requires: libdisplaywidth3 = %{version}-%{release}
 Provides: %{name}-libpropertyformatter = %{version}-%{release}
 
-%description -n libpropertyformatter2
+%description -n libpropertyformatter3
 libpropertyformatter formats aligned, multi-level key-value properties
 and section headers for terminal output with support for ANSI color
 sequences, multi-line values, and bidirectional (LTR/RTL) text.
 This package contains the shared runtime library.
 
-%post -n libpropertyformatter2 -p /sbin/ldconfig
-%postun -n libpropertyformatter2 -p /sbin/ldconfig
+%post -n libpropertyformatter3 -p /sbin/ldconfig
+%postun -n libpropertyformatter3 -p /sbin/ldconfig
 
-%files -n libpropertyformatter2
+%files -n libpropertyformatter3
 %{_libdir}/libpropertyformatter.so.*
 
 
@@ -147,7 +147,7 @@ This package contains the shared runtime library.
 Summary: Terminal key-value property formatting library (development files)
 Group: Development/Libraries/C and C++
 Requires: libdisplaywidth-devel = %{version}-%{release}
-Requires: libpropertyformatter2 = %{version}-%{release}
+Requires: libpropertyformatter3 = %{version}-%{release}
 Provides: %{name}-libpropertyformatter-devel = %{version}-%{release}
 
 %description -n libpropertyformatter-devel
@@ -163,12 +163,12 @@ This package contains development headers and library symlinks.
 %{_libdir}/pkgconfig/libpropertyformatter.pc
 
 
-%package -n libsysteminfo2
+%package -n libsysteminfo3
 Summary: System information helper library for System-Info
 Group: System/Libraries
 Provides: %{name}-libsysteminfo = %{version}-%{release}
 
-%description -n libsysteminfo2
+%description -n libsysteminfo3
  libsysteminfo obtains information about the system, including:
  * CPU and load,
  * Operating system and kernel,
@@ -178,17 +178,17 @@ Provides: %{name}-libsysteminfo = %{version}-%{release}
  The obtained information can be queried by the API.
  This package contains the shared runtime library.
 
-%post -n libsysteminfo2 -p /sbin/ldconfig
-%postun -n libsysteminfo2 -p /sbin/ldconfig
+%post -n libsysteminfo3 -p /sbin/ldconfig
+%postun -n libsysteminfo3 -p /sbin/ldconfig
 
-%files -n libsysteminfo2
+%files -n libsysteminfo3
 %{_libdir}/libsysteminfo.so.*
 
 
 %package -n libsysteminfo-devel
 Summary: System information helper library for System-Info (development files)
 Group: Development/Libraries/C and C++
-Requires: libsysteminfo2 = %{version}-%{release}
+Requires: libsysteminfo3 = %{version}-%{release}
 Provides: %{name}-libsysteminfo-devel = %{version}-%{release}
 
 %description -n libsysteminfo-devel
@@ -211,8 +211,8 @@ This package contains development headers and library symlinks.
 %package system-info
 Summary: Print basic system information and banners
 Requires: %{name}-print-utf8 = %{version}-%{release}
-Requires: libpropertyformatter2 = %{version}-%{release}
-Requires: libsysteminfo2 = %{version}-%{release}
+Requires: libpropertyformatter3 = %{version}-%{release}
+Requires: libsysteminfo3 = %{version}-%{release}
 Requires: (figlet or toilet)
 Requires: gettext-runtime
 Requires: util-linux
@@ -246,7 +246,7 @@ in, providing the user an up-to-date overview of the system.
 
 %package get-system-info
 Summary: Obtain basic system information
-Requires: libsysteminfo2 = %{version}-%{release}
+Requires: libsysteminfo3 = %{version}-%{release}
 
 %description get-system-info
 This small program obtains basic status information about the system:
@@ -352,7 +352,7 @@ a rescue medium to fix a broken configuration!
 
 %package print-utf8
 Summary: Print UTF-8 strings and obtain size/length/width information
-Requires: libdisplaywidth2 = %{version}-%{release}
+Requires: libdisplaywidth3 = %{version}-%{release}
 
 %description print-utf8
 The print-utf8 tool is a simple program to print UTF-8 strings in the

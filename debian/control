@@ -13,7 +13,7 @@ Build-Depends: cmake,
 Standards-Version: 4.7.4
 Rules-Requires-Root: no
 
-Package: libdisplaywidth2
+Package: libdisplaywidth3
 Section: libs
 Architecture: any
 Multi-Arch: same
@@ -30,7 +30,7 @@ Package: libdisplaywidth-dev
 Section: libdevel
 Architecture: any
 Multi-Arch: same
-Depends: libdisplaywidth2 (= ${binary:Version}),
+Depends: libdisplaywidth3 (= ${binary:Version}),
          ${misc:Depends}
 Description: UTF-8 and ANSI terminal display width calculation library (development files)
  libdisplaywidth computes terminal column widths for UTF-8 strings,
@@ -39,7 +39,7 @@ Description: UTF-8 and ANSI terminal display width calculation library (developm
  .
  This package contains development headers and library symlinks.
 
-Package: libpropertyformatter2
+Package: libpropertyformatter3
 Section: libs
 Architecture: any
 Multi-Arch: same
@@ -57,7 +57,7 @@ Section: libdevel
 Architecture: any
 Multi-Arch: same
 Depends: libdisplaywidth-dev (= ${binary:Version}),
-         libpropertyformatter2 (= ${binary:Version}),
+         libpropertyformatter3 (= ${binary:Version}),
          ${misc:Depends}
 Description: Terminal key-value property formatting library (development files)
  libpropertyformatter formats aligned, multi-level key-value properties
@@ -66,7 +66,7 @@ Description: Terminal key-value property formatting library (development files)
  .
  This package contains development headers and library symlinks.
 
-Package: libsysteminfo2
+Package: libsysteminfo3
 Section: libs
 Architecture: any
 Multi-Arch: same
@@ -87,7 +87,7 @@ Package: libsysteminfo-dev
 Section: libdevel
 Architecture: any
 Multi-Arch: same
-Depends: libsysteminfo2 (= ${binary:Version}),
+Depends: libsysteminfo3 (= ${binary:Version}),
          ${misc:Depends}
 Description: System information helper library for System-Info (development files)
  libsysteminfo obtains information about the system, including:

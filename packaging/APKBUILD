@@ -9,13 +9,18 @@ license="GPL-3.0-or-later"
 depends=""
 makedepends="
 	cmake
+	g++
 	gcc
 	gettext-dev
 	linux-headers
 	ninja
 "
 subpackages="
-	$pkgname-system-info:_system_info:noarch
+	libdisplaywidth:_libdisplaywidth
+	libpropertyformatter:_libpropertyformatter
+	libsysteminfo:_libsysteminfo
+	$pkgname-dev
+	$pkgname-system-info:_system_info
 	$pkgname-get-system-info:_get_system_info
 	$pkgname-system-maintenance:_system_maintenance:noarch
 	$pkgname-reset-machine-id:_reset_machine_id:noarch
@@ -67,14 +72,36 @@ package() {
 	done
 }
 
+_libdisplaywidth() {
+	pkgdesc="UTF-8 and ANSI terminal display width calculation library"
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libdisplaywidth.so.* "$subpkgdir"/usr/lib/
+}
+
+_libpropertyformatter() {
+	pkgdesc="Terminal key-value property formatting library"
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libpropertyformatter.so.* "$subpkgdir"/usr/lib/
+}
+
+_libsysteminfo() {
+	pkgdesc="System information helper library for System-Info"
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libsysteminfo.so.* "$subpkgdir"/usr/lib/
+}
+
 _system_info() {
 	pkgdesc="Print basic system information and banners"
-	depends="$pkgname-get-system-info=$pkgver-r$pkgrel $pkgname-print-utf8=$pkgver-r$pkgrel bash figlet gettext mbuffer"
+	depends="$pkgname-print-utf8=$pkgver-r$pkgrel bash figlet gettext mbuffer"
 
 	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share "$subpkgdir"/etc
 	mv "$pkgdir"/usr/bin/System-Info "$subpkgdir"/usr/bin/
 	mv "$pkgdir"/usr/share/System-Info "$subpkgdir"/usr/share/
 	mv "$pkgdir"/etc/profile.d "$subpkgdir"/etc/
+	mv "$pkgdir"/etc/system-info.conf "$subpkgdir"/etc/
 	mv "$pkgdir"/etc/system-info.d "$subpkgdir"/etc/
 }
 
