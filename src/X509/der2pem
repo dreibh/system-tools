@@ -31,6 +31,16 @@
 # Bash options:
 set -euo pipefail
 
+# gettext options:
+export TEXTDOMAIN="der2pem"
+[[ "@CMAKE_INSTALL_FULL_DATADIR@" != @* ]] && export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
+if command -v gettext.sh >/dev/null 2>&1 ; then
+   # shellcheck disable=SC1091
+   . gettext.sh
+else
+   gettext () { printf "%s" "$1"; }
+fi
+
 
 # ###### Version ############################################################
 version () {
@@ -52,10 +62,19 @@ usage () {
    local reset=$'\x1b[0m'
    local progname="${program##*/}"
    local manpage="${cmd}${progname%.*}${reset}"
-   local homepage=$'[\x1b[1m\x1b]8;;@PROJECT_HOMEPAGE_URL@\a@PROJECT_HOMEPAGE_URL@\a\x1b]8;;\a\x1b[0m]'
-   local repository=$'[\x1b[1m\x1b]8;;@PROJECT_SOURCE_URL@\a@PROJECT_SOURCE_URL@\a\x1b]8;;\a\x1b[0m]'
+   local lrm=""
+   local rlm=""
+   # TRANSLATORS: Text direction: LTR (Left-to-Right) or RTL (Right-to-Left)
+   if [ "$(gettext "LTR")" = "RTL" ] ; then
+      lrm=$'\xe2\x80\x8e'
+      rlm=$'\xe2\x80\x8f'
+   fi
+   local homepage="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_HOMEPAGE_URL@\a@PROJECT_HOMEPAGE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
+   local repository="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_SOURCE_URL@\a@PROJECT_SOURCE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
+   # TRANSLATORS: Command-line syntax message prefix:
+   # "Usage: <program> [options]".
    cat >&2 <<EOF
-${header}Usage:${reset}
+${header}$(gettext "Usage:")${reset}
 ${cmd}${program}${reset} ${arg}der_file${reset} ${arg}pem_file${reset}
 ${cmd}${program}${reset}
 	${syn}[${reset}${opt}-h${reset} ${syn}|${reset} ${opt}--help${reset}${syn}]${reset}
@@ -63,7 +82,10 @@ ${cmd}${program}${reset}
 	${syn}[${reset}${opt}-v${reset} ${syn}|${reset} ${opt}--version${reset}${syn}]${reset}
 
 EOF
-   printf >&2 "For further information, see the man page for %s, read the documentation at %s, examine the source code at %s, or consult your favourite LLM.\n" \
+   # TRANSLATORS: Informational message at the end of usage:
+   # "For further information, see the man page for <manpage>, read the documentation at <url>, examine the source code at <url>, or consult your favourite LLM.".
+   # shellcheck disable=SC2059
+   printf >&2 "$(gettext "For further information, see the man page for %s, read the documentation at %s, examine the source code at %s, or consult your favourite LLM.")\n" \
       "${manpage}" "${homepage}" "${repository}"
    exit "${exitCode}"
 }
@@ -75,7 +97,8 @@ EOF
 
 # ====== Handle arguments ===================================================
 if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
-   echo >&2 "ERROR: Bash 4.4 or higher is required!"
+   gettext >&2 "ERROR: Bash 4.4 or higher is required!"
+   echo >&2
    exit 1
 fi
 UNAME="$(uname)"
@@ -93,19 +116,18 @@ case "${UNAME}" in
       GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
       ;;
    Darwin)
-      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:/usr/local/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
       ;;
    *)
       GETOPT="$(command -v getopt || true)"
       ;;
 esac
-if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
-   echo >&2 "ERROR: Enhanced/GNU getopt is required!"
+if [[ -z "${GETOPT}" ]] || "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]] ; then
+   gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
+   echo >&2
    exit 1
 fi
-options="$(${GETOPT} -o hv --long help,version -a -- "$@")"
-# shellcheck disable=SC2181
-if [[ $? -ne 0 ]]; then
+if ! options="$("${GETOPT}" -o hv --long help,version -a -- "$@")" ; then
    usage "$0" 1
 fi
 eval set -- "${options}"
@@ -127,26 +149,75 @@ while [ $# -gt 0 ] ; do
          echo >&2 "INTERNAL ERROR: Unhandled option $1!"
          exit 1
          ;;
-  esac
-  shift
+   esac
+   shift
 done
 if [ $# -ne 2 ] ; then
    usage "$0" 1
 fi
 
-INPUT="$1"
-if [ ! -e "${INPUT}" ] ; then
-   echo >&2 "ERROR: DER file ${INPUT} does not exist!"
+# ====== Check availability of OpenSSL ======================================
+case "${UNAME}" in
+   Darwin)
+      OPENSSL="$(env PATH="/opt/homebrew/opt/openssl/bin:/usr/local/opt/openssl/bin:${PATH}" command -v openssl || true)"
+      ;;
+   SunOS)
+      OPENSSL="$(env PATH="/usr/openssl/3/bin:${PATH}" command -v openssl || true)"
+      ;;
+   *)
+      OPENSSL="$(command -v openssl || true)"
+      ;;
+esac
+if [ -z "${OPENSSL}" ] ; then
+   gettext >&2 "ERROR: OpenSSL is not installed!"
+   echo >&2
    exit 1
 fi
-OUTPUT="$2"
 
-TYPE="x509"
-if [[ "$(basename "${INPUT}")" =~ \.[Cc][Rr][Ll]$ ]] ; then
-   TYPE="crl"
+# ====== Prepare input and output ===========================================
+INPUT="$1"
+OUTPUT="$2"
+tempInputFile=""
+trap 'rm -f "${tempInputFile}"' EXIT INT TERM HUP
+
+if [ "${INPUT}" = "-" ] ; then
+   tempInputFile="$(mktemp -t der2pem.XXXXXXXXXX)"
+   cat >"${tempInputFile}"
+   INPUT="${tempInputFile}"
+elif [ ! -e "${INPUT}" ] ; then
+   # TRANSLATORS: Error message when input DER file cannot be found:
+   # %s = file path
+   # shellcheck disable=SC2059
+   printf >&2 "$(gettext "ERROR: DER file %s does not exist!")\n" "${INPUT}"
+   exit 1
+fi
+
+# ====== Detect DER type (certificate, CRL, or CSR) =========================
+if [[ "${INPUT##*/}" =~ \.[Cc][Rr][Ll]$ ]] || [[ "${OUTPUT##*/}" =~ \.[Cc][Rr][Ll]$ ]] ; then
+   PROBE_ORDER=( "crl" "x509" "req" )
+elif [[ "${INPUT##*/}" =~ \.[Cc][Ss][Rr]$ ]] || [[ "${OUTPUT##*/}" =~ \.[Cc][Ss][Rr]$ ]] ; then
+   PROBE_ORDER=( "req" "x509" "crl" )
+else
+   PROBE_ORDER=( "x509" "crl" "req" )
+fi
+
+TYPE=""
+for candidate in "${PROBE_ORDER[@]}" ; do
+   if "${OPENSSL}" "${candidate}" -inform der -in "${INPUT}" -noout >/dev/null 2>&1 ; then
+      TYPE="${candidate}"
+      break
+   fi
+done
+if [ -z "${TYPE}" ] ; then
+   TYPE="${PROBE_ORDER[0]}"
+fi
+
+outArgs=( -out "${OUTPUT}" )
+if [ "${OUTPUT}" = "-" ] ; then
+   outArgs=()
 fi
 
 # ====== Convert DER to PEM =================================================
-openssl "${TYPE}" \
+"${OPENSSL}" "${TYPE}" \
    -inform der -in "${INPUT}" \
-   -outform pem -out "${OUTPUT}"
+   -outform pem "${outArgs[@]}"
