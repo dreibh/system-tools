@@ -28,13 +28,13 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 26, 2026
 .Dt check\-certificate 1
 .Os check\-certificate
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm check\-certificate
-.Nd checks and verifies X.509 certificates in PEM format
+.Nd checks and verifies X.509 certificates in PEM or DER format
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm check\-certificate
@@ -43,6 +43,8 @@
 .Op Fl C Ar crl\_file | Fl \-crl Ar crl\_file
 .br
 .Op Fl n | Fl \-no\-view\-certificate
+.br
+.Op Fl c | Fl \-no\-color | Fl \-no\-colour
 .Nm check\-certificate
 .Op Fl h | Fl \-help
 .Nm check\-certificate
@@ -50,19 +52,31 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm check\-certificate
-verifies X.509 certificates against a Certification Authority (CA) certificate and optionally a Certificate Revocation List (CRL). The verification is made using OpenSSL, and if available GnuTLS and NSS, to ensure the certificates are working properly with all three TLS implementations.
+verifies X.509 certificates (in PEM or DER format) against a Certification Authority (CA) certificate and optionally a Certificate Revocation List (CRL).
+Unless
+.Fl n
+or
+.Fl \-no\-view\-certificate
+is specified, each certificate is first displayed using
+.Xr view\-certificate 1 .
+The verification is performed using OpenSSL, and if available GnuTLS and Mozilla NSS, to ensure the certificates work properly across all three TLS implementations.
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following arguments and options are available:
 .Bl -tag -width indent
 .It Ar ca\_certificate\_file
-Specifies the CA certificate file to verify certificates.
+Specifies the CA certificate file (in PEM or DER format) used to verify certificates.
 .It Ar certificate\_file ...
-Specifies one or more certificate files to be verified.
+Specifies one or more certificate files (in PEM or DER format) to be verified.
+"\-" is a shortcut for
+.Pa /dev/stdin ,
+i.e. reading the certificate from standard input.
 .It Fl C Ar crl\_file | Fl \-crl Ar crl\_file
-Specifies a CRL file.
+Specifies a Certificate Revocation List (CRL) file (in PEM or DER format).
 .It Fl n | Fl \-no\-view\-certificate
 Do not display a certificate before verification.
+.It Fl c | Fl \-no\-color | Fl \-no\-colour
+Disables ANSI color and underline formatting in the output.
 .It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl \-version
@@ -85,6 +99,10 @@ check\-certificate /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt www.nn
 .It
 check\-certificate /etc/ssl/certs/DigiCert\_Global\_Root\_G2.pem www.dnb.no.crt
 .It
+check\-certificate \-\-no\-color My\-CA\-Certificate.crt My\-Server\-Certificate.der
+.It
+cat www.nntb.no.crt | check\-certificate /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt \-
+.It
 check\-certificate \-\-help
 .It
 check\-certificate \-h
@@ -98,6 +116,7 @@ check\-certificate \-v
 .Xr der2pem 1 ,
 .Xr extract\-pem 1 ,
 .Xr pem2der 1 ,
+.Xr print\-utf8 1 ,
 .Xr test\-tls\-connection 1 ,
 .Xr view\-certificate 1 ,
 .Xr view\-crl 1 ,
