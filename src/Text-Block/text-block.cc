@@ -404,6 +404,24 @@ static void processMarked(std::string_view text,
 [[ noreturn ]]
 static void usage(const char* program, const int exitCode)
 {
+   // TRANSLATORS: Text direction: LTR (Left-to-Right) or RTL (Right-to-Left)
+   const bool rtl = (std::string(gettext("LTR")) == "RTL");
+   const std::string manpage(std::string("\x1b[1m") +
+                             std::filesystem::path(program).stem().string() +
+                             std::string("\x1b[0m"));
+   const std::string homepage((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
+                              std::string("[\x1b[1m\x1b]8;;") +
+                              std::string(PROJECT_HOMEPAGE_URL) +
+                              "\a" + std::string(PROJECT_HOMEPAGE_URL) + "\a" +
+                              std::string("\x1b]8;;\a\x1b[0m]") +
+                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+   const std::string repository((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
+                                std::string("[\x1b[1m\x1b]8;;") +
+                                std::string(PROJECT_SOURCE_URL) +
+                                "\a" + std::string(PROJECT_SOURCE_URL) + "\a" +
+                                std::string("\x1b]8;;\a\x1b[0m]") +
+                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
    std::cerr << HEADER(gettext("Usage:")) << "\n"
@@ -464,8 +482,13 @@ static void usage(const char* program, const int exitCode)
                    ENTRY(OPT("--highlight-unmarked2") " " ARG("string"))
                    ENTRY(OPT("--highlight-marked1") " " ARG("string"))
                    ENTRY(OPT("--highlight-marked2") " " ARG("string"))
-                   ENTRY(OPT("--highlight-param") " " ARG("begin_label") " " ARG("end_label") " " ARG("unmarked1_label") " " ARG("unmarked2_label") " " ARG("marked1_label") " " ARG("marked2_label"));
-   exit(exitCode);
+                   ENTRY(OPT("--highlight-param") " " ARG("begin_label") " " ARG("end_label") " " ARG("unmarked1_label") " " ARG("unmarked2_label") " " ARG("marked1_label") " " ARG("marked2_label"))
+             << "\n"
+             // TRANSLATORS: Informational message at the end of usage:
+             // {0} = manpage name, {1} = documentation URL, {2} = repository URL
+             << formatText(gettext("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM."),
+                           manpage, homepage, repository) << "\n";
+   std::exit(exitCode);
 }
 // ------ END-OF-USAGE-BLOCK ------
 

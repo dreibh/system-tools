@@ -50,27 +50,34 @@ usage () {
    local arg=$'\x1b[4m'
    local syn=$'\x1b[1m'
    local reset=$'\x1b[0m'
+   local progname="${program##*/}"
+   local manpage="${cmd}${progname%.*}${reset}"
+   local homepage=$'[\x1b[1m\x1b]8;;@PROJECT_HOMEPAGE_URL@\a@PROJECT_HOMEPAGE_URL@\a\x1b]8;;\a\x1b[0m]'
+   local repository=$'[\x1b[1m\x1b]8;;@PROJECT_SOURCE_URL@\a@PROJECT_SOURCE_URL@\a\x1b]8;;\a\x1b[0m]'
    cat >&2 <<EOF
 ${header}Usage:${reset}
 ${cmd}${program}${reset} ${arg}input_filename${reset} ${arg}output_filename${reset}
-	${syn}[${reset}${opt}-T${reset} ${arg}triangles|squares|hexagons|octagons${reset} ${opt}|${reset} ${opt}--tile-type${reset} ${arg}triangles|squares|hexagons|octagons${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-S${reset} ${arg}size${reset} ${opt}|${reset} ${opt}--tile-size${reset} ${arg}size${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-H${reset} ${arg}height${reset} ${opt}|${reset} ${opt}--tile-height${reset} ${arg}height${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-N${reset} ${arg}neatness${reset} ${opt}|${reset} ${opt}--tile-neatness${reset} ${arg}neatness${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-F${reset} ${arg}rough|smooth${reset} ${opt}|${reset} ${opt}--tile-surface${reset} ${arg}rough|smooth${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-X${reset} ${arg}spacing${reset} ${opt}|${reset} ${opt}--tile-spacing${reset} ${arg}spacing${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-I${reset} ${arg}on|off${reset} ${opt}|${reset} ${opt}--tile-allow-split${reset} ${arg}on|off${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-C${reset} ${arg}variation${reset} ${opt}|${reset} ${opt}--color-variation${reset} ${arg}variation${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-G${reset} ${arg}on|off${reset} ${opt}|${reset} ${opt}--color-averaging${reset} ${arg}on|off${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-A${reset} ${arg}on|off${reset} ${opt}|${reset} ${opt}--antialiasing${reset} ${arg}on|off${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-L${reset} ${arg}degrees${reset} ${opt}|${reset} ${opt}--light-direction${reset} ${arg}degrees${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-q${reset} ${opt}|${reset} ${opt}--quiet${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-w${reset} ${opt}|${reset} ${opt}--verbose${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-T${reset} ${arg}triangles|squares|hexagons|octagons${reset} ${syn}|${reset} ${opt}--tile-type${reset} ${arg}triangles|squares|hexagons|octagons${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-S${reset} ${arg}size${reset} ${syn}|${reset} ${opt}--tile-size${reset} ${arg}size${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-H${reset} ${arg}height${reset} ${syn}|${reset} ${opt}--tile-height${reset} ${arg}height${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-N${reset} ${arg}neatness${reset} ${syn}|${reset} ${opt}--tile-neatness${reset} ${arg}neatness${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-F${reset} ${arg}rough|smooth${reset} ${syn}|${reset} ${opt}--tile-surface${reset} ${arg}rough|smooth${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-X${reset} ${arg}spacing${reset} ${syn}|${reset} ${opt}--tile-spacing${reset} ${arg}spacing${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-I${reset} ${arg}on|off${reset} ${syn}|${reset} ${opt}--tile-allow-split${reset} ${arg}on|off${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-C${reset} ${arg}variation${reset} ${syn}|${reset} ${opt}--color-variation${reset} ${arg}variation${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-G${reset} ${arg}on|off${reset} ${syn}|${reset} ${opt}--color-averaging${reset} ${arg}on|off${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-A${reset} ${arg}on|off${reset} ${syn}|${reset} ${opt}--antialiasing${reset} ${arg}on|off${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-L${reset} ${arg}degrees${reset} ${syn}|${reset} ${opt}--light-direction${reset} ${arg}degrees${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-q${reset} ${syn}|${reset} ${opt}--quiet${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-w${reset} ${syn}|${reset} ${opt}--verbose${reset}${syn}]${reset}
 ${cmd}${program}${reset}
-	${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-h${reset} ${syn}|${reset} ${opt}--help${reset}${syn}]${reset}
 ${cmd}${program}${reset}
-	${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-v${reset} ${syn}|${reset} ${opt}--version${reset}${syn}]${reset}
+
 EOF
+   printf >&2 "For further information, see the man page for %s, read the documentation at %s, examine the source code at %s, or consult your favourite LLM.\n" \
+      "${manpage}" "${homepage}" "${repository}"
    exit "${exitCode}"
 }
 # ------ END-OF-USAGE-BLOCK ------

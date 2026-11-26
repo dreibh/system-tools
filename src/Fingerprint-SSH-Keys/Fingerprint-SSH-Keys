@@ -57,27 +57,44 @@ usage () {
    local arg=$'\x1b[4m'
    local syn=$'\x1b[1m'
    local reset=$'\x1b[0m'
+   local progname="${program##*/}"
+   local manpage="${cmd}${progname%.*}${reset}"
+   local lrm=""
+   local rlm=""
+   # TRANSLATORS: Text direction: LTR (Left-to-Right) or RTL (Right-to-Left)
+   if [ "$(gettext "LTR")" = "RTL" ] ; then
+      lrm=$'\xe2\x80\x8e'
+      rlm=$'\xe2\x80\x8f'
+   fi
+   local homepage="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_HOMEPAGE_URL@\a@PROJECT_HOMEPAGE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
+   local repository="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_SOURCE_URL@\a@PROJECT_SOURCE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
    # TRANSLATORS: Command-line syntax message prefix:
    # "Usage: <program> [options]".
    cat >&2 <<EOF
 ${header}$(gettext "Usage:")${reset}
 ${cmd}${program}${reset}
-	${syn}[${reset}${opt}-A${reset} ${opt}|${reset} ${opt}--all${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-a${reset} ${opt}|${reset} ${opt}--none${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-R${reset} ${opt}|${reset} ${opt}--with-raw${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-r${reset} ${opt}|${reset} ${opt}--without-raw${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-D${reset} ${opt}|${reset} ${opt}--with-dns${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-d${reset} ${opt}|${reset} ${opt}--without-dns${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-S${reset} ${opt}|${reset} ${opt}--with-ssh${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-s${reset} ${opt}|${reset} ${opt}--without-ssh${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-F${reset} ${arg}text|python|csv${reset} ${opt}|${reset} ${opt}--format${reset} ${arg}text|python|csv${reset}${syn}]${reset}
-	${syn}[${reset}${opt}-K${reset} ${arg}directory${reset} ${opt}|${reset} ${opt}--key-directory${reset} ${arg}directory${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-A${reset} ${syn}|${reset} ${opt}--all${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-a${reset} ${syn}|${reset} ${opt}--none${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-R${reset} ${syn}|${reset} ${opt}--with-raw${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-r${reset} ${syn}|${reset} ${opt}--without-raw${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-D${reset} ${syn}|${reset} ${opt}--with-dns${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-d${reset} ${syn}|${reset} ${opt}--without-dns${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-S${reset} ${syn}|${reset} ${opt}--with-ssh${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-s${reset} ${syn}|${reset} ${opt}--without-ssh${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-F${reset} ${arg}text|python|csv${reset} ${syn}|${reset} ${opt}--format${reset} ${arg}text|python|csv${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-K${reset} ${arg}directory${reset} ${syn}|${reset} ${opt}--key-directory${reset} ${arg}directory${reset}${syn}]${reset}
 	${syn}[${reset}${opt}--include-deprecated${reset}${syn}]${reset}
 ${cmd}${program}${reset}
-	${syn}[${reset}${opt}-h${reset} ${opt}|${reset} ${opt}--help${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-h${reset} ${syn}|${reset} ${opt}--help${reset}${syn}]${reset}
 ${cmd}${program}${reset}
-	${syn}[${reset}${opt}-v${reset} ${opt}|${reset} ${opt}--version${reset}${syn}]${reset}
+	${syn}[${reset}${opt}-v${reset} ${syn}|${reset} ${opt}--version${reset}${syn}]${reset}
+
 EOF
+   # TRANSLATORS: Informational message at the end of usage:
+   # "For further information, see the man page for <manpage>, read the documentation at <url>, examine the source code at <url>, or consult your favourite LLM.".
+   # shellcheck disable=SC2059
+   printf >&2 "$(gettext "For further information, see the man page for %s, read the documentation at %s, examine the source code at %s, or consult your favourite LLM.")\n" \
+      "${manpage}" "${homepage}" "${repository}"
    exit "${exitCode}"
 }
 # ------ END-OF-USAGE-BLOCK ------

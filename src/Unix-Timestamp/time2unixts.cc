@@ -42,6 +42,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <filesystem>
+#include <format>
+#include <iostream>
 #include <string>
 #include <string_view>
 
@@ -63,6 +66,21 @@ using int128_type = __int128_t;
 #else
 using int128_type = long long;
 #endif
+
+
+// ###### C++20 gettext runtime format helper ################################
+template<typename... Args>
+static std::string formatText(const char* messageIdentifier,
+                              const Args&... arguments)
+{
+   try {
+      return std::vformat(gettext(messageIdentifier),
+                          std::make_format_args(arguments...));
+   }
+   catch(const std::format_error&) {
+      return gettext(messageIdentifier);
+   }
+}
 
 
 // ###### Convert tm to Unix timestamp in seconds via std::chrono ###########
@@ -287,36 +305,59 @@ static const char* strptime(const char* buffer,
 
 // ------ BEGIN-OF-USAGE-BLOCK ------
 // ###### Usage #############################################################
-#define HEADER(s)    "\x1b[4m" s "\x1b[0m"
-#define CMD(s)       "\x1b[1m" s "\x1b[0m"
+#define HEADER(s)    "\x1b[4m" << (s) << "\x1b[0m"
+#define CMD(s)       "\x1b[1m" << (s) << "\x1b[0m"
 #define OPT(s)       "\x1b[1m" s "\x1b[0m"
 #define ARG(s)       "\x1b[4m" s "\x1b[0m"
 #define SYN(s)       "\x1b[1m" s "\x1b[0m"
 #define PIPE         SYN(" | ")
 #define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
 
-[[noreturn]] static void usage(const char* program, const int exitCode) noexcept
+[[ noreturn ]]
+static void usage(const char* program, const int exitCode)
 {
+   // TRANSLATORS: Text direction: LTR (Left-to-Right) or RTL (Right-to-Left)
+   const bool rtl = (std::string(gettext("LTR")) == "RTL");
+   const std::string manpage(std::string("\x1b[1m") +
+                             std::filesystem::path(program).stem().string() +
+                             std::string("\x1b[0m"));
+   const std::string homepage((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
+                              std::string("[\x1b[1m\x1b]8;;") +
+                              std::string(PROJECT_HOMEPAGE_URL) +
+                              "\a" + std::string(PROJECT_HOMEPAGE_URL) + "\a" +
+                              std::string("\x1b]8;;\a\x1b[0m]") +
+                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+   const std::string repository((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
+                                std::string("[\x1b[1m\x1b]8;;") +
+                                std::string(PROJECT_SOURCE_URL) +
+                                "\a" + std::string(PROJECT_SOURCE_URL) + "\a" +
+                                std::string("\x1b]8;;\a\x1b[0m]") +
+                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
-   std::fprintf(stderr, HEADER("%s") "\n"
-           CMD("%s\n")
-              ENTRY(OPT("-T") " " ARG("time_format_template") PIPE OPT("--template") " " ARG("time_format_template"))
-              ENTRY(OPT("-F") PIPE OPT("--float"))
-              ENTRY(OPT("-I") PIPE OPT("--integer-decimal"))
-              ENTRY(OPT("-X") PIPE OPT("--integer-hexadecimal"))
-              ENTRY(OPT("-0") PIPE OPT("--integer-0x-hexadecimal"))
-              ENTRY(OPT("-H") PIPE OPT("--human-readable"))
-              ENTRY(OPT("-s") PIPE OPT("--seconds"))
-              ENTRY(OPT("-m") PIPE OPT("--milliseconds"))
-              ENTRY(OPT("-u") PIPE OPT("--microseconds"))
-              ENTRY(OPT("-n") PIPE OPT("--nanoseconds"))
-              ENTRY(ARG("time_string") " " "...")
-           CMD("%s\n")
-              ENTRY(OPT("-h") PIPE OPT("--help"))
-           CMD("%s\n")
-              ENTRY(OPT("-v") PIPE OPT("--version")),
-           gettext("Usage:"), program, program, program);
+   std::cerr << HEADER(gettext("Usage:")) << "\n"
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-T") " " ARG("time_format_template") PIPE OPT("--template") " " ARG("time_format_template"))
+                   ENTRY(OPT("-F") PIPE OPT("--float"))
+                   ENTRY(OPT("-I") PIPE OPT("--integer-decimal"))
+                   ENTRY(OPT("-X") PIPE OPT("--integer-hexadecimal"))
+                   ENTRY(OPT("-0") PIPE OPT("--integer-0x-hexadecimal"))
+                   ENTRY(OPT("-H") PIPE OPT("--human-readable"))
+                   ENTRY(OPT("-s") PIPE OPT("--seconds"))
+                   ENTRY(OPT("-m") PIPE OPT("--milliseconds"))
+                   ENTRY(OPT("-u") PIPE OPT("--microseconds"))
+                   ENTRY(OPT("-n") PIPE OPT("--nanoseconds"))
+                   ENTRY(ARG("time_string") " " "...")
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-h") PIPE OPT("--help"))
+             << CMD(program) << "\n"
+                   ENTRY(OPT("-v") PIPE OPT("--version"))
+             << "\n"
+             // TRANSLATORS: Informational message at the end of usage:
+             // {0} = manpage name, {1} = documentation URL, {2} = repository URL
+             << formatText(gettext("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM."),
+                           manpage, homepage, repository) << "\n";
    std::exit(exitCode);
 }
 // ------ END-OF-USAGE-BLOCK ------
