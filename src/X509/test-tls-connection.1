@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 26, 2026
 .Dt test\-tls\-connection 1
 .Os test\-tls\-connection
 .\" ###### Name #############################################################
@@ -55,22 +55,29 @@
 .Sh DESCRIPTION
 .Nm test\-tls\-connection
 tests the TLS connection to a remote endpoint.
-The certificate provided by the remote endpoint can be verified (by calling
+The certificate chain provided by the remote endpoint can be verified (by calling
 .Xr check\-certificate 1 )
 or only displayed (by using
-.Xr view\-certificate 1 ).
+.Xr view\-certificate 1 ) .
 Optionally, it can also be saved as a PEM file.
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following arguments and options are available:
 .Bl -tag -width indent
 .It Ar host:port
-Specifies hostname or IP address, and TCP port number of the remote endpoint to connect to.
+Specifies hostname, IPv4 address, or IPv6 address (e.g.
+.Li [2001:db8::1]:443
+or
+.Li 2001:db8::1 ) ,
+and optional TCP port number or service name of the remote endpoint to connect to.
 If no port number is provided, 443 (HTTPS) is used.
 .It Ar ca\_certificate\_file
-Specifies the CA certificate to verify the certificate of the remote endpoint.
+Specifies the CA certificate file to verify the certificate of the remote endpoint.
 .It Fl s Ar certificate\_file | Fl \-save\-certificate Ar certificate\_file
-Specifies a file name to store the certificate of the remote endpoint (as a PEM file).
+Specifies a file name to store the certificate chain of the remote endpoint (as a PEM file).
+"\-" is a shortcut for
+.Pa /dev/stdout ,
+i.e. writing the received PEM certificate chain to standard output.
 .It Fl n | Fl \-no\-view\-certificate
 Do not run
 .Xr view\-certificate 1
@@ -80,10 +87,13 @@ Do not run
 .Xr check\-certificate 1
 on the received certificate of the remote endpoint.
 .It No \-\- Ar openssl\_args ...
-Specifies optional OpenSSL arguments.
+Specifies optional OpenSSL
+.Cm s\_client
+arguments.
 All arguments after
 .No \-\-
-are passed to OpenSSL.
+are passed directly to
+.Xr openssl\-s\_client 1 .
 .It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl \-version
@@ -114,6 +124,8 @@ test\-tls\-connection www.simula.no /usr/share/ca\-certificates/mozilla/ISRG\_Ro
 .It
 test\-tls\-connection www.dnb.no /etc/ssl/certs/DigiCert\_Global\_Root\_G2.pem \-s www.dnb.no.crt
 .It
+test\-tls\-connection www.nntb.no:443 /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt \-\- \-tls1\_3 \-servername www.nntb.no
+.It
 test\-tls\-connection \-\-help
 .It
 test\-tls\-connection \-h
@@ -128,6 +140,7 @@ test\-tls\-connection \-v
 .Xr der2pem 1 ,
 .Xr extract\-pem 1 ,
 .Xr pem2der 1 ,
+.Xr text\-block 1 ,
 .Xr view\-certificate 1 ,
 .Xr view\-crl 1 ,
 .Xr openssl 1

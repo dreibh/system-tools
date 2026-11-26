@@ -34,14 +34,18 @@ set -euo pipefail
 # gettext options:
 export TEXTDOMAIN="test-tls-connection"
 [[ "@CMAKE_INSTALL_FULL_DATADIR@" != @* ]] && export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
-
-# shellcheck disable=SC1091
-. gettext.sh
+if command -v gettext.sh >/dev/null 2>&1 ; then
+   # shellcheck disable=SC1091
+   . gettext.sh
+else
+   gettext () { printf "%s" "$1"; }
+   eval_gettext () { eval "printf '%s' \"$1\""; }
+fi
 
 
 # ###### Version ############################################################
 version () {
-   echo "test-tls-connection 2.6.1"
+   echo "test-tls-connection @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
    exit 0
 }
 
@@ -103,6 +107,7 @@ if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1]
    exit 1
 fi
 DIRNAME="$(dirname "$0")"
+export PATH="${DIRNAME}:${PATH}"
 UNAME="$(uname)"
 case "${UNAME}" in
    FreeBSD)
@@ -118,31 +123,29 @@ case "${UNAME}" in
       GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
       ;;
    Darwin)
-      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:/usr/local/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
       ;;
    *)
       GETOPT="$(command -v getopt || true)"
       ;;
 esac
-if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+if [[ -z "${GETOPT}" ]] || "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]] ; then
    gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
    echo >&2
    exit 1
 fi
-options="$(${GETOPT} -o s:nchv --long save-certificate:,no-view-certificate,no-check-certificate,help,version -a -- "$@")"
-# shellcheck disable=SC2181
-if [[ $? -ne 0 ]]; then
+if ! options="$("${GETOPT}" -o s:nchv --long save-certificate:,no-view-certificate,no-check-certificate,help,version -a -- "$@")" ; then
    usage "$0" 1
 fi
 eval set -- "${options}"
 
 VIEW_CERTIFICATE=1
 CHECK_CERTIFICATE=1
-CERTIFICATE_FILE=""
+SAVE_CERTIFICATE_FILE=""
 while [ $# -gt 0 ] ; do
    case "$1" in
       -s | --save-certificate)
-         CERTIFICATE_FILE="$2"
+         SAVE_CERTIFICATE_FILE="$2"
          shift
          ;;
       -n | --no-view-certificate)
@@ -166,16 +169,27 @@ while [ $# -gt 0 ] ; do
          echo >&2 "INTERNAL ERROR: Unhandled option $1!"
          exit 1
          ;;
-  esac
-  shift
+   esac
+   shift
 done
 if [ $# -lt 2 ] ; then
    usage "$0" 1
 fi
+
 ENDPOINT="$1"
-if [[ ! "${ENDPOINT}" =~ :[a-zA-Z0-9]+$ ]] ; then
+if [[ "${ENDPOINT}" == \[* ]] ; then
+   # Bracketed IPv6 address: [addr] or [addr]:port
+   if [[ "${ENDPOINT}" == *\] ]] ; then
+      ENDPOINT="${ENDPOINT}:443"
+   fi
+elif [[ "${ENDPOINT}" == *:*:* ]] ; then
+   # Unbracketed IPv6 address without port:
+   ENDPOINT="[${ENDPOINT}]:443"
+elif [[ ! "${ENDPOINT}" =~ :[a-zA-Z0-9_-]+$ ]] ; then
+   # Hostname or IPv4 address without port:
    ENDPOINT="${ENDPOINT}:443"
 fi
+
 CA_FILE="$2"
 shift 2
 if [ ! -e "${CA_FILE}" ] ; then
@@ -187,7 +201,7 @@ fi
 # ====== Check availability of tools ========================================
 case "${UNAME}" in
    Darwin)
-      OPENSSL="$(env PATH="/opt/homebrew/opt/openssl/bin:${PATH}" command -v openssl || true)"
+      OPENSSL="$(env PATH="/opt/homebrew/opt/openssl/bin:/usr/local/opt/openssl/bin:${PATH}" command -v openssl || true)"
       ;;
    SunOS)
       OPENSSL="$(env PATH="/usr/openssl/3/bin:${PATH}" command -v openssl || true)"
@@ -196,35 +210,66 @@ case "${UNAME}" in
       OPENSSL="$(command -v openssl || true)"
       ;;
 esac
-if [ "${OPENSSL}" == "" ] ; then
+if [ -z "${OPENSSL}" ] ; then
    gettext >&2 "ERROR: OpenSSL is not installed!"
    echo >&2
    exit 1
 fi
 
-# ====== Connect to endpoint ================================================
-echo -e "\e[34m$(eval_gettext "Connecting to \${ENDPOINT} ...")\e[0m"
-tempCertFile=""
-trap 'rm -f "${tempCertFile}"' EXIT INT TERM HUP
-if [ "${CERTIFICATE_FILE}" == "" ] ; then
-   tempCertFile="$(mktemp -t test-tls-connection.XXXXXXXXXX)"
-   CERTIFICATE_FILE="${tempCertFile}"
+TEXT_BLOCK="$(command -v text-block || true)"
+if [ -z "${TEXT_BLOCK}" ] ; then
+   gettext >&2 "ERROR: text-block is not installed!"
+   echo >&2
+   exit 1
 fi
 
-echo "" | "${OPENSSL}" s_client -showcerts -connect "${ENDPOINT}" -CAfile "${CA_FILE}" "$@" | \
-   text-block \
+CHECK_CERT_CMD=""
+VIEW_CERT_CMD=""
+if [ "${CHECK_CERTIFICATE}" -eq 1 ] ; then
+   CHECK_CERT_CMD="$(command -v check-certificate || true)"
+   if [ -z "${CHECK_CERT_CMD}" ] ; then
+      gettext >&2 "ERROR: check-certificate is not installed!"
+      echo >&2
+      exit 1
+   fi
+elif [ "${VIEW_CERTIFICATE}" -eq 1 ] ; then
+   VIEW_CERT_CMD="$(command -v view-certificate || true)"
+   if [ -z "${VIEW_CERT_CMD}" ] ; then
+      gettext >&2 "ERROR: view-certificate is not installed!"
+      echo >&2
+      exit 1
+   fi
+fi
+
+# ====== Connect to endpoint ================================================
+printf '\x1b[34m%s\x1b[0m\n' "$(eval_gettext "Connecting to \${ENDPOINT} ...")"
+tempCertFile="$(mktemp -t test-tls-connection.XXXXXXXXXX)"
+trap 'rm -f -- "${tempCertFile}"' EXIT INT TERM HUP
+
+"${OPENSSL}" s_client -showcerts -connect "${ENDPOINT}" -CAfile "${CA_FILE}" "$@" </dev/null | \
+   "${TEXT_BLOCK}" \
       --extract \
-      --begin-tag '-----BEGIN CERTIFICATE-----'  \
+      --begin-tag '-----BEGIN CERTIFICATE-----' \
       --end-tag '-----END CERTIFICATE-----' \
       --full-tag-lines --include-tags --min-actions 1 \
       --input - \
-      --output "${CERTIFICATE_FILE}"
+      --output "${tempCertFile}"
+
+targetCertFile="${tempCertFile}"
+if [ -n "${SAVE_CERTIFICATE_FILE}" ] ; then
+   if [ "${SAVE_CERTIFICATE_FILE}" = "-" ] ; then
+      cat "${tempCertFile}"
+   else
+      cat "${tempCertFile}" > "${SAVE_CERTIFICATE_FILE}"
+      targetCertFile="${SAVE_CERTIFICATE_FILE}"
+   fi
+fi
 
 # ====== Display and verify certificate using check-certificate =============
-if [ ${VIEW_CERTIFICATE} -eq 1 ] && [ ${CHECK_CERTIFICATE} -eq 1 ] ; then
-   "${DIRNAME}/check-certificate" "${CA_FILE}" "${CERTIFICATE_FILE}"
-elif [ ${VIEW_CERTIFICATE} -eq 0 ] && [ ${CHECK_CERTIFICATE} -eq 1 ] ; then
-   "${DIRNAME}/check-certificate" "${CA_FILE}" "${CERTIFICATE_FILE}" --no-view-certificate
-elif [ ${VIEW_CERTIFICATE} -eq 1 ] && [ ${CHECK_CERTIFICATE} -eq 0 ] ; then
-   "${DIRNAME}/view-certificate" "${CERTIFICATE_FILE}"
+if [ "${VIEW_CERTIFICATE}" -eq 1 ] && [ "${CHECK_CERTIFICATE}" -eq 1 ] ; then
+   "${CHECK_CERT_CMD}" "${CA_FILE}" "${targetCertFile}"
+elif [ "${VIEW_CERTIFICATE}" -eq 0 ] && [ "${CHECK_CERTIFICATE}" -eq 1 ] ; then
+   "${CHECK_CERT_CMD}" "${CA_FILE}" "${targetCertFile}" --no-view-certificate
+elif [ "${VIEW_CERTIFICATE}" -eq 1 ] && [ "${CHECK_CERTIFICATE}" -eq 0 ] ; then
+   "${VIEW_CERT_CMD}" "${targetCertFile}"
 fi

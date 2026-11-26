@@ -1,4 +1,5 @@
 # shellcheck shell=bash
+# kate: syntax Bash;
 # ==========================================================================
 #         ____            _                     _____           _
 #        / ___| _   _ ___| |_ ___ _ __ ___     |_   _|__   ___ | |___
@@ -29,68 +30,122 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for test-tls-connection ###############################
+# ###### Bash completion for test-tls-connection ############################
 _test_tls_connection()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
-      _init_completion || return
+   # shellcheck disable=SC2034
+   local cur prev words cword split comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -s -n : -- "$@" || return
    else
-      # Manual initialization for older bash completion versions:
-      COMPREPLY=()
-      cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
-      prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
-      cword="${COMP_CWORD}"
+      _init_completion -s -n : || return
    fi
 
-   # ====== Handle the ":" in host:port =====================================
-   local real_cword=0
-   local i=1
-   while [ $i -le "${COMP_CWORD}" ] ; do
-      if [[ "${COMP_WORDS[i]}" == ":" ]] ; then
-         true   # Ignore a colon
-      elif [ $i -gt 1 ] && [[ "${COMP_WORDS[i-1]}" == ":" ]] && [[ "${COMP_WORDS[i]}" != "" ]] ; then
-         true    # Ignore text after the colon
-      else
-         real_cword=$((real_cword + 1))   # New word
+   # ====== Scan previous words for '--', options, and positional count =====
+   local i endOfOptions=0 expectSaveArg=0 positionalCount=0
+   for (( i = 1; i < cword; i++ )) ; do
+      if (( endOfOptions )) ; then
+         positionalCount=$((positionalCount + 1))
+         continue
       fi
-      i=$((i + 1))
+      if (( expectSaveArg )) ; then
+         expectSaveArg=0
+         continue
+      fi
+      case "${words[i]}" in
+         --)
+            endOfOptions=1
+            ;;
+         -h|--help|-v|--version)
+            return 0
+            ;;
+         -s|--save-certificate)
+            expectSaveArg=1
+            ;;
+         --save-certificate=*)
+            ;;
+         -*)
+            ;;
+         *)
+            positionalCount=$((positionalCount + 1))
+            ;;
+      esac
    done
 
-   if [[ "${cur}" != -* ]] ; then
-      # ====== Suggest hostname:port ========================================
-      if [ "${real_cword}" -eq 1 ] ; then
-         local hostname
-         hostname="$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")"
-         mapfile -t COMPREPLY < <(compgen -W "${hostname}:443 www.heise.de:443 www.ietf.org:443 www.nntb.no:443 www.simula.no:443" -- "${cur}")
-         # NOTE: Block before colon may be duplicated -> need to truncate:
-         if [[ ${cur} == *:* ]] ; then
+   local localHost endpoints
+   localHost="$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")"
+   endpoints="${localHost}:443 [::1]:443 www.heise.de:443 www.ietf.org:443 www.nntb.no:443 www.simula.no:443"
+   if [[ "${localHost}" != "localhost" ]] ; then
+      endpoints="localhost:443 ${endpoints}"
+   fi
+
+   # ====== Arguments after '--' (positional or openssl s_client options) ===
+   if (( endOfOptions )) ; then
+      cur="${words[cword]}"
+      if (( positionalCount == 0 )) ; then
+         mapfile -t COMPREPLY < <(compgen -W "${endpoints}" -- "${cur}")
+         if type -t _comp_ltrim_colon_completions >/dev/null ; then
+            _comp_ltrim_colon_completions "${cur}"
+         elif type -t __ltrim_colon_completions >/dev/null ; then
             __ltrim_colon_completions "${cur}"
          fi
-         return
-      # ====== Suggest CA certificate file ==================================
-      elif [ "${real_cword}" -eq 2 ] ; then
-         _filedir '@(cert|crt|pem)'
-         return
+      elif (( positionalCount == 1 )) ; then
+         if type -t _comp_compgen_filedir >/dev/null ; then
+            _comp_compgen_filedir '@(cer|cert|crt|pem)'
+         else
+            _filedir '@(cer|cert|crt|pem)'
+         fi
+      elif [[ "${cur}" == -* ]] ; then
+         local sclientOpts
+         sclientOpts="$(
+            PATH="/opt/homebrew/opt/openssl/bin:/usr/local/opt/openssl/bin:/usr/openssl/3/bin:${PATH}" \
+               command openssl s_client -help 2>&1 | awk '/^[[:space:]]*-[a-zA-Z0-9_]+/ { print $1 }'
+         )"
+         mapfile -t COMPREPLY < <(compgen -W "${sclientOpts}" -- "${cur}")
+      else
+         if type -t _comp_compgen_filedir >/dev/null ; then
+            _comp_compgen_filedir
+         else
+            _filedir
+         fi
+      fi
+      return 0
+   fi
+
+   # ====== Option value for -s / --save-certificate ========================
+   if (( expectSaveArg )) || \
+      [[ "${split-}" == true && "${prev}" == "--save-certificate" ]] ; then
+      if type -t _comp_compgen_filedir >/dev/null ; then
+         _comp_compgen_filedir '@(cer|cert|crt|pem)'
+      else
+         _filedir '@(cer|cert|crt|pem)'
+      fi
+      return 0
+   fi
+
+   [[ "${split-}" == true ]] && return 0
+
+   # ====== Positional arguments (host:port and ca_certificate_file) ========
+   if [[ "${cur}" != -* ]] ; then
+      if (( positionalCount == 0 )) ; then
+         mapfile -t COMPREPLY < <(compgen -W "${endpoints}" -- "${cur}")
+         if type -t _comp_ltrim_colon_completions >/dev/null ; then
+            _comp_ltrim_colon_completions "${cur}"
+         elif type -t __ltrim_colon_completions >/dev/null ; then
+            __ltrim_colon_completions "${cur}"
+         fi
+         return 0
+      elif (( positionalCount == 1 )) ; then
+         if type -t _comp_compgen_filedir >/dev/null ; then
+            _comp_compgen_filedir '@(cer|cert|crt|pem)'
+         else
+            _filedir '@(cer|cert|crt|pem)'
+         fi
+         return 0
       fi
    fi
 
-   case "${prev}" in
-      #  ====== Special case: certificate file ==============================
-      -s | --save-certificate)
-         _filedir '@(crt|cert|pem)'
-         return
-         ;;
-   esac
-
-   # ====== All options =====================================================
+   # ====== Options =========================================================
    local opts="
 -s
 --save-certificate
@@ -98,12 +153,17 @@ _test_tls_connection()
 --no-view-certificate
 -c
 --no-check-certificate
+--
+"
+   if (( positionalCount == 0 && cword == 1 )) ; then
+      opts+="
 -h
 --help
 -v
 --version
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+   fi
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
    return 0
 }
 
