@@ -135,9 +135,9 @@ static void displaySingleCrl(const X509_CRL*    crl,
    const std::string authorityKeyId     = formatCrlExtensionByNid(crl, NID_authority_key_identifier);
 
    // ====== CRL details ====================================================
-   // TRANSLATORS: Header line for CRL properties:
-   // {0} = CRL file path
    std::cout << colors.Header
+             // TRANSLATORS: Header line for CRL properties:
+             // {0} = CRL file path
              << formatText("CRL in {0}:", displayPath)
              << colors.Reset << '\n';
 
@@ -287,7 +287,9 @@ static bool displayCrlFile(const std::string& crlFile,
 [[noreturn]]
 static void usage(const char* program, const int exitCode)
 {
-   // TRANSLATORS: Text direction: LTR (Left-to-Right) or RTL (Right-to-Left)
+   // TRANSLATORS: "LTR" stands for Left-to-Right layout direction.
+   // Translators of Right-to-Left languages (such as Arabic, Hebrew, Persian)
+   // must translate this string to "RTL".
    const bool rtl = (std::string(gettext("LTR")) == "RTL");
    const std::string manpage(std::string("\x1b[1m") +
                              std::filesystem::path(program).stem().string() +

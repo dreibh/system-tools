@@ -72,10 +72,12 @@ usage () {
    fi
    local homepage="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_HOMEPAGE_URL@\a@PROJECT_HOMEPAGE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
    local repository="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_SOURCE_URL@\a@PROJECT_SOURCE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
+   local usageHeader
    # TRANSLATORS: Command-line syntax message prefix:
    # "Usage: <program> [options]".
+   usageHeader="$(gettext "Usage:")"
    cat >&2 <<EOF
-${header}$(gettext "Usage:")${reset}
+${header}${usageHeader}${reset}
 ${cmd}${program}${reset} ${arg}ca_certificate_file${reset} ${arg}certificate_file${reset} ...
 	${syn}[${reset}${opt}-C${reset} ${arg}crl_file${reset} ${syn}|${reset} ${opt}--crl${reset} ${arg}crl_file${reset}${syn}]${reset}
 	${syn}[${reset}${opt}-n${reset} ${syn}|${reset} ${opt}--no-view-certificate${reset}${syn}]${reset}
@@ -86,9 +88,9 @@ ${cmd}${program}${reset}
 	${syn}[${reset}${opt}-v${reset} ${syn}|${reset} ${opt}--version${reset}${syn}]${reset}
 
 EOF
-   # TRANSLATORS: Informational message at the end of usage:
-   # "For further information, see the man page for <manpage>, read the documentation at <url>, examine the source code at <url>, or consult your favourite LLM.".
    # shellcheck disable=SC2059
+   # TRANSLATORS: Informational message at the end of usage:
+   # 1st %s = manpage name, 2nd %s = documentation URL, 3rd %s = repository URL
    printf >&2 "$(gettext "For further information, see the man page for %s, read the documentation at %s, examine the source code at %s, or consult your favourite LLM.")\n" \
       "${manpage}" "${homepage}" "${repository}"
    exit "${exitCode}"
@@ -162,6 +164,7 @@ prepare_pem_file () {
 
 # ====== Handle arguments ===================================================
 if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
+   # TRANSLATORS: Error message when Bash version is older than 4.4.
    gettext >&2 "ERROR: Bash 4.4 or higher is required!"
    echo >&2
    exit 1
@@ -190,6 +193,7 @@ case "${UNAME}" in
       ;;
 esac
 if [[ -z "${GETOPT}" ]] || "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]] ; then
+   # TRANSLATORS: Error message when enhanced/GNU getopt is not available.
    gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
    echo >&2
    exit 1
@@ -279,6 +283,7 @@ case "${UNAME}" in
       ;;
 esac
 if [ -z "${OPENSSL}" ] ; then
+   # TRANSLATORS: Error message when OpenSSL is not installed.
    gettext >&2 "ERROR: OpenSSL is not installed!"
    echo >&2
    exit 1
@@ -288,6 +293,7 @@ VIEW_CERT_CMD=""
 if [ "${VIEW_CERTIFICATE}" -eq 1 ] ; then
    VIEW_CERT_CMD="$(command -v view-certificate || true)"
    if [ -z "${VIEW_CERT_CMD}" ] ; then
+      # TRANSLATORS: Error message when view-certificate utility is not installed.
       gettext >&2 "ERROR: view-certificate is not installed!"
       echo >&2
       exit 1
@@ -296,6 +302,7 @@ fi
 
 EXTRACT_PEM_CMD="$(command -v extract-pem || true)"
 if [ -n "${CERTUTIL}" ] && [ -n "${CRLUTIL}" ] && [ -z "${EXTRACT_PEM_CMD}" ] ; then
+   # TRANSLATORS: Error message when extract-pem utility is not installed.
    gettext >&2 "ERROR: extract-pem is not installed!"
    echo >&2
    exit 1
@@ -314,6 +321,8 @@ done
 
 # ====== Look for CA certificate ============================================
 if [ ! -e "${CA_FILE}" ] ; then
+   # TRANSLATORS: Error message when CA certificate file cannot be found:
+   # ${CA_FILE} = CA certificate file path
    eval_gettext >&2 "ERROR: Unable to find CA certificate file \${CA_FILE}!"
    echo >&2
    exit 1
@@ -328,6 +337,8 @@ fi
 workCrlFile=""
 if [ -n "${CRL}" ] ; then
    if [ ! -e "${CRL}" ] ; then
+      # TRANSLATORS: Error message when CRL file cannot be found:
+      # ${CRL} = CRL file path
       eval_gettext >&2 "ERROR: Unable to find CRL file \${CRL}!"
       echo >&2
       exit 1
@@ -352,6 +363,7 @@ while [ $# -gt 0 ] ; do
 
    if [ "${CERTIFICATE_FILE}" = "-" ] ; then
       if [ "${stdinConsumed}" -ne 0 ] ; then
+         # TRANSLATORS: Error message when '-' (standard input) is passed more than once.
          gettext >&2 "ERROR: Standard input (-) can only be read once!"
          echo >&2
          exit 1
@@ -367,6 +379,8 @@ while [ $# -gt 0 ] ; do
       tempCertPem="${workCertFile}"
    else
       if [ ! -e "${CERTIFICATE_FILE}" ] ; then
+         # TRANSLATORS: Error message when certificate file cannot be found:
+         # ${CERTIFICATE_FILE} = certificate file path
          eval_gettext >&2 "ERROR: Unable to find certificate file \${CERTIFICATE_FILE}!"
          echo >&2
          exit 1
@@ -392,8 +406,11 @@ while [ $# -gt 0 ] ; do
 
 
    # ====== Verify certificate with CA certificate ==========================
+   # TRANSLATORS: Status header when starting verification of a certificate against a CA:
+   # ${CERTIFICATE_FILE} = certificate file path, ${CA_FILE} = CA certificate file path
    printf '%s%s%s\n' "${COLOR_BLUE}" "$(eval_gettext "Verifying \${CERTIFICATE_FILE} with CA \${CA_FILE} ...")" "${COLOR_RESET}"
    if [ "${CA_FILE}" = "${CERTIFICATE_FILE}" ] ; then
+      # TRANSLATORS: Warning printed when the certificate file and CA file are identical.
       gettext >&2 "WARNING: Only checking self-signature!"
       echo >&2
    fi
@@ -408,15 +425,18 @@ while [ $# -gt 0 ] ; do
       opensslCmd+=( -untrusted "${workCertFile}" "${workCertFile}" )
 
       if "${opensslCmd[@]}" >/dev/null 2>&1 ; then
+         # TRANSLATORS: Verification status indicator for a passed check.
          printf '%s%s%s\n' "${COLOR_GREEN_BOLD}" "$(gettext "✓OKAY")" "${COLOR_RESET}"
       else
          errors=$((errors + 1))
+         # TRANSLATORS: Verification status indicator for a failed check.
          printf '%s%s%s\n' "${COLOR_RED_BOLD}" "$(gettext "❌FAILED!")" "${COLOR_RESET}"
          print_separator_header "OpenSSL"
          "${opensslCmd[@]}" || true
          print_separator_footer
       fi
    else
+      # TRANSLATORS: Informational notice when OpenSSL is not installed on the system.
       gettext "(OpenSSL is not installed)"
       echo
    fi
@@ -455,6 +475,7 @@ while [ $# -gt 0 ] ; do
          if "${gnutlsCmd[@]}" >/dev/null 2>&1 ; then
             good=$((good + 1))
             if [ "${good}" -eq 1 ] ; then
+               # TRANSLATORS: Verification status indicator for a passed check.
                printf '%s%s%s' "${COLOR_GREEN_BOLD}" "$(gettext "✓OKAY")" "${COLOR_RESET}"
             fi
             printf '   %s%s%s' "${COLOR_GREEN}" "${profile}" "${COLOR_RESET}"
@@ -463,6 +484,7 @@ while [ $# -gt 0 ] ; do
 
       if [ "${good}" -eq 0 ] ; then
          errors=$((errors + 1))
+         # TRANSLATORS: Verification status indicator for a failed check.
          printf '%s%s%s\n' "${COLOR_RED_BOLD}" "$(gettext "❌FAILED!")" "${COLOR_RESET}"
          print_separator_header "GnuTLS"
          # Re-run with 'low' profile so key-size limits from 'future' do not mask root causes:
@@ -490,6 +512,7 @@ while [ $# -gt 0 ] ; do
          tempSolarisChain=""
       fi
    else
+      # TRANSLATORS: Informational notice when GnuTLS CertTool is not installed on the system.
       gettext "(GnuTLS CertTool is not installed)"
       echo
    fi
@@ -609,6 +632,7 @@ while [ $# -gt 0 ] ; do
             if "${nssCmd[@]}" >/dev/null 2>&1 ; then
                good=$((good + 1))
                if [ "${good}" -eq 1 ] ; then
+                  # TRANSLATORS: Verification status indicator for a passed check.
                   printf '%s%s%s' "${COLOR_GREEN_BOLD}" "$(gettext "✓OKAY")" "${COLOR_RESET}"
                fi
                printf '   %s%s%s' "${COLOR_CYAN}" "${certUsageLabels["${certUsage}"]}" "${COLOR_RESET}"
@@ -618,6 +642,7 @@ while [ $# -gt 0 ] ; do
 
       if [ "${good}" -eq 0 ] ; then
          errors=$((errors + 1))
+         # TRANSLATORS: Verification status indicator for a failed check.
          printf '%s%s%s\n' "${COLOR_RED_BOLD}" "$(gettext "❌FAILED!")" "${COLOR_RESET}"
          print_separator_header "NSS"
          if [ "${nssSetupOk}" -eq 0 ] && [ -n "${nssImportError}" ] ; then
@@ -633,6 +658,7 @@ while [ $# -gt 0 ] ; do
       rm -rf -- "${nssDb}"
       nssDb=""
    else
+      # TRANSLATORS: Informational notice when Mozilla NSS CertUtil/CrlUtil is not installed.
       gettext "(NSS CertUtil is not installed)"
       echo
    fi
@@ -641,6 +667,7 @@ done
 
 # ====== Check for errors ===================================================
 if [ "${errors}" -gt 0 ] ; then
+   # TRANSLATORS: Final error banner printed when one or more certificate verifications fail.
    printf '%s***** %s *****%s\n' "${COLOR_BANNER_FAIL}" "$(gettext "CERTIFICATE VERIFICATIONS FAILED!")" "${COLOR_RESET}"
    exit 1
 fi

@@ -48,15 +48,33 @@ MACRO(RESOLVE_SCRIPT_PATH VAR_NAME SCRIPT_NAME)
    ENDIF()
 ENDMACRO()
 
+# Resolve paths to shell scripts
 RESOLVE_SCRIPT_PATH(CHECK_CERTIFICATE_BIN   check-certificate)
 RESOLVE_SCRIPT_PATH(EXTRACT_PEM_BIN         extract-pem)
-RESOLVE_SCRIPT_PATH(VIEW_CERTIFICATE_BIN    view-certificate)
-RESOLVE_SCRIPT_PATH(VIEW_CRL_BIN            view-crl)
 RESOLVE_SCRIPT_PATH(DER2PEM_BIN             der2pem)
 RESOLVE_SCRIPT_PATH(PEM2DER_BIN             pem2der)
 RESOLVE_SCRIPT_PATH(TEST_TLS_CONNECTION_BIN test-tls-connection)
 
-# Construct runtime PATH so scripts can call companion tools (print-utf8, unixts2time, time2unixts, text-block)
+# Resolve paths to compiled C++ executables
+IF(TARGET view-certificate)
+   SET(VIEW_CERTIFICATE_BIN "$<TARGET_FILE:view-certificate>")
+ELSE()
+   FIND_PROGRAM(VIEW_CERTIFICATE_BIN view-certificate
+      PATHS "${CMAKE_CURRENT_BINARY_DIR}/.." "${CMAKE_BINARY_DIR}/bin"
+      REQUIRED
+   )
+ENDIF()
+
+IF(TARGET view-crl)
+   SET(VIEW_CRL_BIN "$<TARGET_FILE:view-crl>")
+ELSE()
+   FIND_PROGRAM(VIEW_CRL_BIN view-crl
+      PATHS "${CMAKE_CURRENT_BINARY_DIR}/.." "${CMAKE_BINARY_DIR}/bin"
+      REQUIRED
+   )
+ENDIF()
+
+# Construct runtime PATH so scripts can call companion tools (view-certificate, view-crl, print-utf8, unixts2time, time2unixts, text-block)
 SET(DEP_PATHS
    "${CMAKE_CURRENT_BINARY_DIR}/.."
    "${CMAKE_CURRENT_BINARY_DIR}/../../print-utf8"
@@ -65,6 +83,12 @@ SET(DEP_PATHS
    "${CMAKE_BINARY_DIR}/bin"
    "$ENV{PATH}"
 )
+IF(TARGET view-certificate)
+   LIST(INSERT DEP_PATHS 0 "$<TARGET_FILE_DIR:view-certificate>")
+ENDIF()
+IF(TARGET view-crl)
+   LIST(INSERT DEP_PATHS 0 "$<TARGET_FILE_DIR:view-crl>")
+ENDIF()
 IF(TARGET print-utf8)
    LIST(INSERT DEP_PATHS 0 "$<TARGET_FILE_DIR:print-utf8>")
 ENDIF()
@@ -234,9 +258,9 @@ EXECUTE_PROCESS(
 # 8. Create PEM fixture with an unsupported block header
 SET(MOCK_BAD_PEM_FILE "${CMAKE_CURRENT_BINARY_DIR}/mock_bad_type.pem")
 FILE(WRITE "${MOCK_BAD_PEM_FILE}"
-"-----BEGIN RSA PRIVATE KEY-----\n"
+"-----BEGIN UNSUPPORTED BLOCK-----\n"
 "MIIEowIBAAKCAQEA0Y3...\n"
-"-----END RSA PRIVATE KEY-----\n"
+"-----END UNSUPPORTED BLOCK-----\n"
 )
 
 
@@ -246,10 +270,18 @@ FILE(WRITE "${MOCK_BAD_PEM_FILE}"
 
 # Helper for test execution with output regex matching
 FUNCTION(ADD_X509_MATCH_TEST TEST_NAME BINARY)
-   ADD_TEST(
-      NAME ${TEST_NAME}
-      COMMAND ${BASH_EXECUTABLE} "${BINARY}" ${ARGN}
-   )
+   IF("${BINARY}" STREQUAL "${VIEW_CERTIFICATE_BIN}" OR "${BINARY}" STREQUAL "${VIEW_CRL_BIN}"
+      OR TARGET "${BINARY}" OR "${BINARY}" MATCHES "^\\$<TARGET_FILE:")
+      ADD_TEST(
+         NAME ${TEST_NAME}
+         COMMAND ${BINARY} ${ARGN}
+      )
+   ELSE()
+      ADD_TEST(
+         NAME ${TEST_NAME}
+         COMMAND ${BASH_EXECUTABLE} "${BINARY}" ${ARGN}
+      )
+   ENDIF()
    SET_TESTS_PROPERTIES(${TEST_NAME} PROPERTIES
       ENVIRONMENT "PATH=${TEST_ENV_PATH};LC_ALL=C.UTF-8;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
       FAIL_REGULAR_EXPRESSION "INTERNAL ERROR"
@@ -259,10 +291,18 @@ ENDFUNCTION()
 
 # Helper for commands asserting non-zero exit code without matching specific output
 FUNCTION(ADD_X509_FAIL_TEST TEST_NAME BINARY)
-   ADD_TEST(
-      NAME ${TEST_NAME}
-      COMMAND ${BASH_EXECUTABLE} "${BINARY}" ${ARGN}
-   )
+   IF("${BINARY}" STREQUAL "${VIEW_CERTIFICATE_BIN}" OR "${BINARY}" STREQUAL "${VIEW_CRL_BIN}"
+      OR TARGET "${BINARY}" OR "${BINARY}" MATCHES "^\\$<TARGET_FILE:")
+      ADD_TEST(
+         NAME ${TEST_NAME}
+         COMMAND ${BINARY} ${ARGN}
+      )
+   ELSE()
+      ADD_TEST(
+         NAME ${TEST_NAME}
+         COMMAND ${BASH_EXECUTABLE} "${BINARY}" ${ARGN}
+      )
+   ENDIF()
    SET_TESTS_PROPERTIES(${TEST_NAME} PROPERTIES
       WILL_FAIL TRUE
       ENVIRONMENT "PATH=${TEST_ENV_PATH};LC_ALL=C.UTF-8;TEXTDOMAINDIR=${TEST_LOCALE_DIR}"
@@ -490,10 +530,10 @@ SET_TESTS_PROPERTIES(extractpem_quiet_mode PROPERTIES
 
 # Test error when PEM file contains an unhandled block type
 ADD_X509_MATCH_TEST(extractpem_fail_unsupported_block_type
-   "${EXTRACT_PEM_BIN}" "${MOCK_BAD_PEM_FILE}"
+   "${EXTRACT_PEM_BIN}" -o "${EXTRACT_WORKDIR}/bad-" "${MOCK_BAD_PEM_FILE}"
 )
 SET_TESTS_PROPERTIES(extractpem_fail_unsupported_block_type PROPERTIES
-   PASS_REGULAR_EXPRESSION "ERROR: Unexpected type RSA PRIVATE KEY in"
+   PASS_REGULAR_EXPRESSION "ERROR: Unexpected type UNSUPPORTED BLOCK in"
    LABELS "extract-pem;negative"
 )
 
@@ -637,7 +677,7 @@ ADD_TEST(
 )
 SET_TESTS_PROPERTIES(viewcert_stdin_pipeline PROPERTIES
    ENVIRONMENT "PATH=${TEST_ENV_PATH};LC_ALL=C.UTF-8"
-   PASS_REGULAR_EXPRESSION "Certificate in (/dev/stdin|.*view-certificate.*):.*Subject:.*test\\.example\\.com"
+   PASS_REGULAR_EXPRESSION "Certificate in /dev/stdin:.*Subject:.*test\\.example\\.com"
    LABELS "view-certificate;stdin"
 )
 
@@ -667,7 +707,7 @@ ADD_TEST(
 )
 SET_TESTS_PROPERTIES(viewcrl_stdin_pipeline PROPERTIES
    ENVIRONMENT "PATH=${TEST_ENV_PATH};LC_ALL=C.UTF-8"
-   PASS_REGULAR_EXPRESSION "Issuer:.*SystemTools Root CA"
+   PASS_REGULAR_EXPRESSION "CRL in /dev/stdin:.*Issuer:.*SystemTools Root CA"
    LABELS "view-crl;stdin"
 )
 
@@ -1009,7 +1049,7 @@ ADD_X509_MATCH_TEST(pem2der_fail_nonexistent_file
    "${PEM2DER_BIN}" "/nonexistent/file.pem" out.der
 )
 SET_TESTS_PROPERTIES(pem2der_fail_nonexistent_file PROPERTIES
-   PASS_REGULAR_EXPRESSION "ERROR: PEM file /nonexistent/file\\.pem does not exist!"
+   PASS_REGULAR_EXPRESSION "ERROR: Unable to find PEM file /nonexistent/file\\.pem!"
 )
 
 # Test der2pem with non-existent input file
@@ -1017,7 +1057,7 @@ ADD_X509_MATCH_TEST(der2pem_fail_nonexistent_file
    "${DER2PEM_BIN}" "/nonexistent/file.der" out.pem
 )
 SET_TESTS_PROPERTIES(der2pem_fail_nonexistent_file PROPERTIES
-   PASS_REGULAR_EXPRESSION "ERROR: DER file /nonexistent/file\\.der does not exist!"
+   PASS_REGULAR_EXPRESSION "ERROR: Unable to find DER file /nonexistent/file\\.der!"
 )
 
 # Test test-tls-connection with non-existent CA certificate file

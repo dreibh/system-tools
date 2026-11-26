@@ -72,10 +72,12 @@ usage () {
    fi
    local homepage="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_HOMEPAGE_URL@\a@PROJECT_HOMEPAGE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
    local repository="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_SOURCE_URL@\a@PROJECT_SOURCE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
+   local usageHeader
    # TRANSLATORS: Command-line syntax message prefix:
    # "Usage: <program> [options]".
+   usageHeader="$(gettext "Usage:")"
    cat >&2 <<EOF
-${header}$(gettext "Usage:")${reset}
+${header}${usageHeader}${reset}
 ${cmd}${program}${reset} ${arg}host:port${reset} ${arg}ca_certificate_file${reset}
 	${syn}[${reset}${opt}-s${reset} ${arg}certificate_file${reset} ${syn}|${reset} ${opt}--save-certificate${reset} ${arg}certificate_file${reset}${syn}]${reset}
 	${syn}[${reset}${opt}-n${reset} ${syn}|${reset} ${opt}--no-view-certificate${reset}${syn}]${reset}
@@ -87,9 +89,9 @@ ${cmd}${program}${reset}
 	${syn}[${reset}${opt}-v${reset} ${syn}|${reset} ${opt}--version${reset}${syn}]${reset}
 
 EOF
-   # TRANSLATORS: Informational message at the end of usage:
-   # "For further information, see the man page for <manpage>, read the documentation at <url>, examine the source code at <url>, or consult your favourite LLM.".
    # shellcheck disable=SC2059
+   # TRANSLATORS: Informational message at the end of usage:
+   # 1st %s = manpage name, 2nd %s = documentation URL, 3rd %s = repository URL
    printf >&2 "$(gettext "For further information, see the man page for %s, read the documentation at %s, examine the source code at %s, or consult your favourite LLM.")\n" \
       "${manpage}" "${homepage}" "${repository}"
    exit "${exitCode}"
@@ -102,6 +104,7 @@ EOF
 
 # ====== Handle arguments ===================================================
 if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
+   # TRANSLATORS: Error message when Bash version is older than 4.4.
    gettext >&2 "ERROR: Bash 4.4 or higher is required!"
    echo >&2
    exit 1
@@ -130,6 +133,7 @@ case "${UNAME}" in
       ;;
 esac
 if [[ -z "${GETOPT}" ]] || "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]] ; then
+   # TRANSLATORS: Error message when enhanced/GNU getopt is not available.
    gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
    echo >&2
    exit 1
@@ -193,6 +197,8 @@ fi
 CA_FILE="$2"
 shift 2
 if [ ! -e "${CA_FILE}" ] ; then
+   # TRANSLATORS: Error message when CA certificate file cannot be found:
+   # ${CA_FILE} = CA certificate file path
    eval_gettext >&2 "ERROR: Unable to find CA certificate file \${CA_FILE}!"
    echo >&2
    exit 1
@@ -211,6 +217,7 @@ case "${UNAME}" in
       ;;
 esac
 if [ -z "${OPENSSL}" ] ; then
+   # TRANSLATORS: Error message when OpenSSL is not installed.
    gettext >&2 "ERROR: OpenSSL is not installed!"
    echo >&2
    exit 1
@@ -218,6 +225,7 @@ fi
 
 TEXT_BLOCK="$(command -v text-block || true)"
 if [ -z "${TEXT_BLOCK}" ] ; then
+   # TRANSLATORS: Error message when text-block utility is not installed.
    gettext >&2 "ERROR: text-block is not installed!"
    echo >&2
    exit 1
@@ -228,6 +236,7 @@ VIEW_CERT_CMD=""
 if [ "${CHECK_CERTIFICATE}" -eq 1 ] ; then
    CHECK_CERT_CMD="$(command -v check-certificate || true)"
    if [ -z "${CHECK_CERT_CMD}" ] ; then
+      # TRANSLATORS: Error message when check-certificate utility is not installed.
       gettext >&2 "ERROR: check-certificate is not installed!"
       echo >&2
       exit 1
@@ -235,6 +244,7 @@ if [ "${CHECK_CERTIFICATE}" -eq 1 ] ; then
 elif [ "${VIEW_CERTIFICATE}" -eq 1 ] ; then
    VIEW_CERT_CMD="$(command -v view-certificate || true)"
    if [ -z "${VIEW_CERT_CMD}" ] ; then
+      # TRANSLATORS: Error message when view-certificate utility is not installed.
       gettext >&2 "ERROR: view-certificate is not installed!"
       echo >&2
       exit 1
@@ -242,6 +252,8 @@ elif [ "${VIEW_CERTIFICATE}" -eq 1 ] ; then
 fi
 
 # ====== Connect to endpoint ================================================
+# TRANSLATORS: Progress message when initiating a TLS connection:
+# ${ENDPOINT} = target host:port endpoint
 printf '\x1b[34m%s\x1b[0m\n' "$(eval_gettext "Connecting to \${ENDPOINT} ...")"
 tempCertFile="$(mktemp -t test-tls-connection.XXXXXXXXXX)"
 trap 'rm -f -- "${tempCertFile}"' EXIT INT TERM HUP

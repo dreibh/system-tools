@@ -223,9 +223,9 @@ static bool displayCertificateFile(const std::string& certificateFile,
    const std::string authorityKeyId     = formatCertExtensionByNid(leafCert, NID_authority_key_identifier);
 
    // ====== Certificate details ============================================
-   // TRANSLATORS: Header line for certificate properties:
-   // {0} = certificate file path
    std::cout << colors.Header
+             // TRANSLATORS: Header line for certificate properties:
+             // {0} = certificate file path
              << formatText("Certificate in {0}:", displayPath)
              << colors.Reset << '\n';
 
@@ -265,9 +265,9 @@ static bool displayCertificateFile(const std::string& certificateFile,
    std::cout << detailsFormatter;
 
    // ====== Certificate hierarchy ==========================================
-   // TRANSLATORS: Header line for certificate chain hierarchy:
-   // {0} = certificate file path
    std::cout << colors.Header
+             // TRANSLATORS: Header line for certificate chain hierarchy:
+             // {0} = certificate file path
              << formatText("Hierarchy in {0}:", displayPath)
              << colors.Reset << '\n';
 
@@ -308,7 +308,9 @@ static bool displayCertificateFile(const std::string& certificateFile,
 [[noreturn]]
 static void usage(const char* program, const int exitCode)
 {
-   // TRANSLATORS: Text direction: LTR (Left-to-Right) or RTL (Right-to-Left)
+   // TRANSLATORS: "LTR" stands for Left-to-Right layout direction.
+   // Translators of Right-to-Left languages (such as Arabic, Hebrew, Persian)
+   // must translate this string to "RTL".
    const bool rtl = (std::string(gettext("LTR")) == "RTL");
    const std::string manpage(std::string("\x1b[1m") +
                              std::filesystem::path(program).stem().string() +

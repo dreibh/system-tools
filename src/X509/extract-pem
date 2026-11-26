@@ -72,10 +72,12 @@ usage () {
    fi
    local homepage="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_HOMEPAGE_URL@\a@PROJECT_HOMEPAGE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
    local repository="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_SOURCE_URL@\a@PROJECT_SOURCE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
+   local usageHeader
    # TRANSLATORS: Command-line syntax message prefix:
    # "Usage: <program> [options]".
+   usageHeader="$(gettext "Usage:")"
    cat >&2 <<EOF
-${header}$(gettext "Usage:")${reset}
+${header}${usageHeader}${reset}
 ${cmd}${program}${reset} ${arg}pem_file${reset} ...
 	${syn}[${reset}${opt}-o${reset} ${arg}file_name_prefix${reset} ${syn}|${reset} ${opt}--output-prefix${reset} ${arg}file_name_prefix${reset}${syn}]${reset}
 	${syn}[${reset}${opt}-1${reset} ${syn}|${reset} ${opt}--only-first-entry${reset}${syn}]${reset}
@@ -89,9 +91,9 @@ ${cmd}${program}${reset}
 	${syn}[${reset}${opt}-v${reset} ${syn}|${reset} ${opt}--version${reset}${syn}]${reset}
 
 EOF
-   # TRANSLATORS: Informational message at the end of usage:
-   # "For further information, see the man page for <manpage>, read the documentation at <url>, examine the source code at <url>, or consult your favourite LLM.".
    # shellcheck disable=SC2059
+   # TRANSLATORS: Informational message at the end of usage:
+   # 1st %s = manpage name, 2nd %s = documentation URL, 3rd %s = repository URL
    printf >&2 "$(gettext "For further information, see the man page for %s, read the documentation at %s, examine the source code at %s, or consult your favourite LLM.")\n" \
       "${manpage}" "${homepage}" "${repository}"
    exit "${exitCode}"
@@ -119,6 +121,7 @@ commit_pending_entry () {
    if [ "${skipEntry}" -ne 0 ] ; then
       rm -f -- "${pendingTmp}"
       if [ "${QUIET}" -eq 0 ] ; then
+         # TRANSLATORS: Status label printed when an extracted PEM entry is skipped due to -f or -l.
          printf '=> %s %s\n' "$(gettext "SKIPPING")" "${pendingOutputFile}"
       fi
    else
@@ -166,6 +169,7 @@ extract_stream () {
          if [[ "${line}" =~ ^-----BEGIN\ ([^-]+(-[^-]+)*)-----[[:space:]]*$ ]] ; then
             commit_pending_entry 0
 
+            # shellcheck disable=SC2034
             type="${BASH_REMATCH[1]}"
             case "${type}" in
                "CERTIFICATE" | "TRUSTED CERTIFICATE" | "X509 CERTIFICATE")
@@ -191,7 +195,8 @@ extract_stream () {
                   currentOutputFile="${OUTPUT_PREFIX}${keyIndex}.key"
                   ;;
                *)
-                  # shellcheck disable=SC2034
+                  # TRANSLATORS: Error message when an unsupported PEM block type is encountered:
+                  # ${type} = PEM block label, ${PEM_FILE} = PEM file path
                   eval_gettext >&2 "ERROR: Unexpected type \${type} in \${PEM_FILE}!"
                   echo >&2
                   exit 1
@@ -204,10 +209,10 @@ extract_stream () {
                [[ -z "${outputDir}" ]] && outputDir="/"
             fi
             if [ ! -d "${outputDir}" ] ; then
-               # TRANSLATORS: Error message when target output directory does not exist:
-               # %s = directory path
-               # shellcheck disable=SC2059
-               printf >&2 "$(gettext "ERROR: Output directory %s does not exist!")\n" "${outputDir}"
+               # TRANSLATORS: Error message when target output directory cannot be found:
+               # ${outputDir} = directory path
+               eval_gettext >&2 "ERROR: Unable to find output directory \${outputDir}!"
+               echo >&2
                exit 1
             fi
 
@@ -222,10 +227,9 @@ extract_stream () {
             local endType="${BASH_REMATCH[1]}"
             if [ "${endType}" != "${currentType}" ] ; then
                # TRANSLATORS: Error message when PEM END marker does not match BEGIN marker:
-               # 1st %s = END marker type, 2nd %s = BEGIN marker type, 3rd %s = PEM file path
-               # shellcheck disable=SC2059
-               printf >&2 "$(gettext "ERROR: Mismatched END %s for BEGIN %s in %s!")\n" \
-                  "${endType}" "${currentType}" "${PEM_FILE}"
+               # ${endType} = END marker type, ${currentType} = BEGIN marker type, ${PEM_FILE} = PEM file path
+               eval_gettext >&2 "ERROR: Mismatched END \${endType} for BEGIN \${currentType} in \${PEM_FILE}!"
+               echo >&2
                exit 1
             fi
 
@@ -248,11 +252,10 @@ extract_stream () {
                fi
             fi
          elif [[ "${line}" =~ ^-----BEGIN\ ([^-]+(-[^-]+)*)-----[[:space:]]*$ ]] ; then
-            # TRANSLATORS: Error message when a new BEGIN marker appears before END marker:
-            # 1st %s = unclosed BEGIN marker type, 2nd %s = PEM file path
-            # shellcheck disable=SC2059
-            printf >&2 "$(gettext "ERROR: Unclosed BEGIN %s block in %s!")\n" \
-               "${currentType}" "${PEM_FILE}"
+            # TRANSLATORS: Error message when a PEM BEGIN block is not closed by a matching END marker:
+            # ${currentType} = unclosed BEGIN marker type, ${PEM_FILE} = PEM file path
+            eval_gettext >&2 "ERROR: Unclosed BEGIN \${currentType} block in \${PEM_FILE}!"
+            echo >&2
             exit 1
          else
             printf '%s\n' "${line}" >&3
@@ -261,11 +264,10 @@ extract_stream () {
    done
 
    if [ -n "${currentOutputFile}" ] ; then
-      # TRANSLATORS: Error message when EOF is reached inside an unclosed PEM block:
-      # 1st %s = unclosed BEGIN marker type, 2nd %s = PEM file path
-      # shellcheck disable=SC2059
-      printf >&2 "$(gettext "ERROR: Unclosed BEGIN %s block in %s!")\n" \
-         "${currentType}" "${PEM_FILE}"
+      # TRANSLATORS: Error message when a PEM BEGIN block is not closed by a matching END marker:
+      # ${currentType} = unclosed BEGIN marker type, ${PEM_FILE} = PEM file path
+      eval_gettext >&2 "ERROR: Unclosed BEGIN \${currentType} block in \${PEM_FILE}!"
+      echo >&2
       exit 1
    fi
 
@@ -278,6 +280,7 @@ extract_stream () {
 
 # ====== Handle arguments ===================================================
 if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
+   # TRANSLATORS: Error message when Bash version is older than 4.4.
    gettext >&2 "ERROR: Bash 4.4 or higher is required!"
    echo >&2
    exit 1
@@ -304,6 +307,7 @@ case "${UNAME}" in
       ;;
 esac
 if [[ -z "${GETOPT}" ]] || "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]] ; then
+   # TRANSLATORS: Error message when enhanced/GNU getopt is not available.
    gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
    echo >&2
    exit 1
@@ -365,6 +369,7 @@ if [ $# -lt 1 ] ; then
 fi
 if [ "${ONLY_FIRST_ENTRY}" -eq 1 ] ; then
    if [ "${SKIP_FIRST_ENTRY}" -ne 0 ] || [ "${SKIP_LAST_ENTRY}" -ne 0 ] ; then
+      # TRANSLATORS: Error message when conflicting entry selection flags are combined.
       gettext >&2 "ERROR: --only-first-entry and --skip-first-entry/--skip-last-entry are mutually exclusive!"
       echo >&2
       exit 1
@@ -392,16 +397,22 @@ while [ $# -gt 0 ] ; do
    if [ "${PEM_FILE}" = "-" ] ; then
       PEM_FILE="/dev/stdin"
       if [ "${QUIET}" -eq 0 ] ; then
+         # TRANSLATORS: Progress message when starting extraction from a PEM input:
+         # ${PEM_FILE} = file path or /dev/stdin
          printf '%s%s%s\n' "${COLOR_HEADER}" "$(eval_gettext "Extracting \${PEM_FILE} ...")" "${COLOR_RESET}"
       fi
       extract_stream
    else
       if [ ! -e "${PEM_FILE}" ] ; then
+         # TRANSLATORS: Error message when input PEM file cannot be found:
+         # ${PEM_FILE} = file path
          eval_gettext >&2 "ERROR: Unable to find PEM file \${PEM_FILE}!"
          echo >&2
          exit 1
       fi
       if [ "${QUIET}" -eq 0 ] ; then
+         # TRANSLATORS: Progress message when starting extraction from a PEM input:
+         # ${PEM_FILE} = file path or /dev/stdin
          printf '%s%s%s\n' "${COLOR_HEADER}" "$(eval_gettext "Extracting \${PEM_FILE} ...")" "${COLOR_RESET}"
       fi
       extract_stream < "${PEM_FILE}"
@@ -409,5 +420,7 @@ while [ $# -gt 0 ] ; do
 done
 
 if [ "${QUIET}" -eq 0 ] ; then
+   # TRANSLATORS: Summary message after PEM extraction completes:
+   # ${certificate} = certificate count, ${csr} = CSR count, ${crl} = CRL count, ${key} = private key count
    printf '%s%s%s\n' "${COLOR_HEADER}" "$(eval_gettext "Done: \${certificate} certificates, \${csr} CSRs, \${crl} CRLs, \${key} keys")" "${COLOR_RESET}"
 fi
