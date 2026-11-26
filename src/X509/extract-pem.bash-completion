@@ -31,57 +31,108 @@
 
 
 # ###### Bash completion for extract-pem ####################################
-_extract_pem ()
+_extract_pem()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
-      _init_completion || return
+   # shellcheck disable=SC2034
+   local cur prev words cword split comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -s -- "$@" || return
    else
-      # Manual initialization for older bash completion versions:
-      COMPREPLY=()
-      cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
-      prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
-      cword="${COMP_CWORD}"
+      _init_completion -s || return
    fi
 
-   if [[ "${cur}" != -* ]] ; then
-      _filedir '@(cert|crt|crl|pem)'
-      return
+   # ====== Check previous arguments for '--' and option state ==============
+   local i endOfOptions=0 expectPrefixArg=0 hasOnlyFirst=0 hasSkipEntry=0
+   for (( i = 1; i < cword; i++ )) ; do
+      if (( expectPrefixArg )) ; then
+         expectPrefixArg=0
+         continue
+      fi
+      case "${words[i]}" in
+         --)
+            endOfOptions=1
+            break
+            ;;
+         -h|--help|-v|--version)
+            return 0
+            ;;
+         -1|--only-first-entry)
+            hasOnlyFirst=1
+            ;;
+         -f|--skip-first-entry|-l|--skip-last-entry)
+            hasSkipEntry=1
+            ;;
+         -o|--output-prefix)
+            expectPrefixArg=1
+            ;;
+      esac
+   done
+
+   if (( endOfOptions )) ; then
+      cur="${words[cword]}"
+      if type -t _comp_compgen_filedir >/dev/null ; then
+         _comp_compgen_filedir '@(cer|cert|crl|crt|csr|key|pem)'
+      else
+         _filedir '@(cer|cert|crl|crt|csr|key|pem)'
+      fi
+      return 0
    fi
 
-   case "${prev}" in
-      #  ====== Special case: output file prefix ============================
-      -o | --output-prefix)
+   # ====== Special case: output file prefix (-o / --output-prefix) =========
+   if (( expectPrefixArg )) || \
+      [[ "${split-}" == true && "${prev}" == "--output-prefix" ]] ; then
+      if type -t _comp_compgen_filedir >/dev/null ; then
+         _comp_compgen_filedir
+      else
          _filedir
-         return
-         ;;
-   esac
+      fi
+      return 0
+   fi
+
+   [[ "${split-}" == true ]] && return 0
+
+   # ====== Complete PEM files ==============================================
+   if [[ "${cur}" != -* ]] ; then
+      if type -t _comp_compgen_filedir >/dev/null ; then
+         _comp_compgen_filedir '@(cer|cert|crl|crt|csr|key|pem)'
+      else
+         _filedir '@(cer|cert|crl|crt|csr|key|pem)'
+      fi
+      return 0
+   fi
 
    # ====== All options =====================================================
    local opts="
+-
 -o
 --output-prefix
--1
---only-first-entry
--f
---skip-first-entry
--l
---skip-last-entry
 -q
 --quiet
+-c
+--no-color
+--no-colour
 -h
 --help
 -v
 --version
+--
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+   if (( ! hasSkipEntry )) ; then
+      opts+="
+-1
+--only-first-entry
+"
+   fi
+   if (( ! hasOnlyFirst )) ; then
+      opts+="
+-f
+--skip-first-entry
+-l
+--skip-last-entry
+"
+   fi
+
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
    return 0
 }
 
