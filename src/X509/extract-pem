@@ -33,7 +33,9 @@ set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="extract-pem"
-[[ "@CMAKE_INSTALL_FULL_DATADIR@" != @* ]] && export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
+if [ -z "${TEXTDOMAINDIR:-}" ] && [[ "@CMAKE_INSTALL_FULL_DATADIR@" != @* ]] ; then
+   export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
+fi
 if command -v gettext.sh >/dev/null 2>&1 ; then
    # shellcheck disable=SC1091
    . gettext.sh

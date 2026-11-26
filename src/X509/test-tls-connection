@@ -33,7 +33,9 @@ set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="test-tls-connection"
-[[ "@CMAKE_INSTALL_FULL_DATADIR@" != @* ]] && export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
+if [ -z "${TEXTDOMAINDIR:-}" ] && [[ "@CMAKE_INSTALL_FULL_DATADIR@" != @* ]] ; then
+   export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
+fi
 if command -v gettext.sh >/dev/null 2>&1 ; then
    # shellcheck disable=SC1091
    . gettext.sh
@@ -181,9 +183,9 @@ if [ $# -lt 2 ] ; then
 fi
 
 ENDPOINT="$1"
-if [[ "${ENDPOINT}" == \[* ]] ; then
+if [[ "${ENDPOINT}" == "["* ]] ; then
    # Bracketed IPv6 address: [addr] or [addr]:port
-   if [[ "${ENDPOINT}" == *\] ]] ; then
+   if [[ "${ENDPOINT}" == *"]" ]] ; then
       ENDPOINT="${ENDPOINT}:443"
    fi
 elif [[ "${ENDPOINT}" == *:*:* ]] ; then
