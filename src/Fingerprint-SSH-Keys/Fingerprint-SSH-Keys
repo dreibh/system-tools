@@ -33,7 +33,9 @@ set -euo pipefail
 
 # gettext options:
 export TEXTDOMAIN="Fingerprint-SSH-Keys"
-[[ "@CMAKE_INSTALL_FULL_DATADIR@" != @* ]] && export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
+if [ -z "${TEXTDOMAINDIR:-}" ] && [[ "@CMAKE_INSTALL_FULL_DATADIR@" != @* ]] ; then
+   export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
+fi
 
 # shellcheck disable=SC1091
 . gettext.sh
