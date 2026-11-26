@@ -667,7 +667,7 @@ static bool displayCertificateFile(const std::string& certificateFile,
 #define PIPE         SYN(" | ")
 #define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
 
-[[noreturn]]
+[[ noreturn ]]
 static void usage(const char* program, const int exitCode)
 {
    // TRANSLATORS: Text direction: LTR (Left-to-Right) or RTL (Right-to-Left)
@@ -691,8 +691,9 @@ static void usage(const char* program, const int exitCode)
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
    std::cerr << HEADER(gettext("Usage:")) << "\n"
-             << CMD(program) << " " << ARG("certificate_file") << " ...\n"
+             << CMD(program) << "\n"
                    ENTRY(OPT("-c") PIPE OPT("--no-color") PIPE OPT("--no-colour"))
+                   "\t" ARG("certificate_file") " " "..." "\n"
              << CMD(program) << "\n"
                    ENTRY(OPT("-h") PIPE OPT("--help"))
              << CMD(program) << "\n"
