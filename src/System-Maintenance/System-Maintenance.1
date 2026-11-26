@@ -6,7 +6,7 @@
 .\"        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 .\"               |___/
 .\"                             --- System-Tools ---
-.\"                  https://www.nntb.no/~dreibh/system-tools/
+.\"                  https://www.nntb.no/~dreibh/system\-tools/
 .\" ==========================================================================
 .\"
 .\" System\-Maintenance
@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 26, 2026
 .Dt System\-Maintenance 1
 .Os System\-Maintenance
 .\" ###### Name #############################################################
@@ -46,37 +46,48 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm System\-Maintenance
-runs some system maintenance tasks to keep the system clean and up to date.
-These tasks are:
+runs automated system maintenance tasks to keep an operating system installation clean and up to date.
+Executing maintenance tasks requires superuser (root) privileges.
+These tasks include:
 .Bl -bullet -compact
 .It
-Ensuring that all packages are configured
+Updating package repository indices
 .It
-Updating the package repositories
+Repairing interrupted package configurations and missing dependencies
 .It
-Removing obsolete kernels
+Installing all available system package updates
 .It
-Installing all available package updates
+Auto\-removing unused dependencies, purging residual configurations, and cleaning package caches
 .It
-Auto\-removing unused packages
+Removing obsolete kernel packages (on Debian/Ubuntu systems)
 .It
-Updating package and file search caches
+Refreshing Snap packages and installing device firmware updates, if supported
 .It
-Updating firmware
+Updating file, GeoIP, and package search caches
 .It
-Trimming SSDs and virtual storage
+Synchronising the system clock via NTP and updating the hardware clock
+.It
+Trimming SSD filesystems and ZFS storage pools
+.It
+Running custom package\-version filter scripts from
+.Pa /etc/system\-maintenance.d/
 .El
-.Pp
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
 .It Fl k | Fl \-interactive\-kernel\-removal
-Remove obsolete kernels interactively.
+Prompts interactively before removing obsolete kernel packages (applicable on Debian/Ubuntu systems).
 .It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl \-version
 Prints the program version and exits.
+.El
+.\" ###### Files ############################################################
+.Sh FILES
+.Bl -tag -width indent
+.It Pa /etc/system\-maintenance.d/[0\-9][0\-9]*
+Optional filter scripts executed at the end of maintenance with the path to a temporary file listing installed packages and versions.
 .El
 .\" ###### Exit status ######################################################
 .Sh EXIT STATUS
@@ -91,12 +102,19 @@ sudo System\-Maintenance
 .It
 sudo System\-Maintenance \-\-interactive\-kernel\-removal
 .It
-System\-Maintenance \-\-version
+sudo System\-Maintenance \-k
 .It
 System\-Maintenance \-\-help
+.It
+System\-Maintenance \-h
+.It
+System\-Maintenance \-\-version
+.It
+System\-Maintenance \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
+.Xr configure\-grub 1 ,
 .Xr Fingerprint\-SSH\-Keys 1 ,
 .Xr Reset\-Machine\-ID 1 ,
 .Xr System\-Info 1

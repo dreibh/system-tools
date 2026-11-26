@@ -36,9 +36,13 @@ export TEXTDOMAIN="System-Maintenance"
 if [ -z "${TEXTDOMAINDIR:-}" ] && [[ "@CMAKE_INSTALL_FULL_DATADIR@" != @* ]] ; then
    export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
 fi
-
-# shellcheck disable=SC1091
-. gettext.sh
+if command -v gettext.sh >/dev/null 2>&1 ; then
+   # shellcheck disable=SC1091
+   . gettext.sh
+else
+   gettext () { printf "%s" "$1"; }
+   eval_gettext () { eval "printf '%s' \"$1\""; }
+fi
 
 
 # ###### Version ############################################################
@@ -70,10 +74,12 @@ usage () {
    fi
    local homepage="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_HOMEPAGE_URL@\a@PROJECT_HOMEPAGE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
    local repository="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_SOURCE_URL@\a@PROJECT_SOURCE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
+   local usageHeader
    # TRANSLATORS: Command-line syntax message prefix:
    # "Usage: <program> [options]".
+   usageHeader="$(gettext "Usage:")"
    cat >&2 <<EOF
-${header}$(gettext "Usage:")${reset}
+${header}${usageHeader}${reset}
 ${cmd}${program}${reset}
 	${syn}[${reset}${opt}-k${reset} ${syn}|${reset} ${opt}--interactive-kernel-removal${reset}${syn}]${reset}
 ${cmd}${program}${reset}
@@ -82,14 +88,30 @@ ${cmd}${program}${reset}
 	${syn}[${reset}${opt}-v${reset} ${syn}|${reset} ${opt}--version${reset}${syn}]${reset}
 
 EOF
-   # TRANSLATORS: Informational message at the end of usage:
-   # "For further information, see the man page for <manpage>, read the documentation at <url>, examine the source code at <url>, or consult your favourite LLM.".
    # shellcheck disable=SC2059
+   # TRANSLATORS: Informational message at the end of usage:
+   # 1st %s = manpage name, 2nd %s = documentation URL, 3rd %s = repository URL
    printf >&2 "$(gettext "For further information, see the man page for %s, read the documentation at %s, examine the source code at %s, or consult your favourite LLM.")\n" \
       "${manpage}" "${homepage}" "${repository}"
    exit "${exitCode}"
 }
 # ------ END-OF-USAGE-BLOCK ------
+
+
+# ###### Run Homebrew as non-root owner on macOS ############################
+run_brew () {
+   local brewBin
+   brewBin="$(env PATH="/opt/homebrew/bin:/usr/local/bin:${PATH}" command -v brew || true)"
+   if [ -z "${brewBin}" ] ; then
+      echo >&2 "ERROR: Homebrew (brew) is not installed!"
+      exit 1
+   fi
+   local brewUser="${SUDO_USER:-}"
+   if [ -z "${brewUser}" ] || [ "${brewUser}" = "root" ] ; then
+      brewUser="$(stat -f '%Su' "${brewBin}")"
+   fi
+   sudo -u "${brewUser}" "${brewBin}" "$@"
+}
 
 
 
@@ -117,22 +139,20 @@ case "${UNAME}" in
       GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
       ;;
    Darwin)
-      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:/usr/local/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
       ;;
    *)
       GETOPT="$(command -v getopt || true)"
       ;;
 esac
-if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+if [[ -z "${GETOPT}" ]] || "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]] ; then
    # TRANSLATORS: Error message when enhanced/GNU getopt is not found or is
    # incompatible.
    gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
    echo >&2
    exit 1
 fi
-options="$(${GETOPT} -o khv --long interactive-kernel-removal,help,version -a -- "$@")"
-# shellcheck disable=SC2181
-if [[ $? -ne 0 ]]; then
+if ! options="$("${GETOPT}" -o khv --long interactive-kernel-removal,help,version -a -- "$@")" ; then
    usage "$0" 1
 fi
 eval set -- "${options}"
@@ -158,8 +178,8 @@ while [ $# -gt 0 ] ; do
          echo >&2 "INTERNAL ERROR: Unhandled option $1!"
          exit 1
          ;;
-  esac
-  shift
+   esac
+   shift
 done
 if [ $# -ne 0 ] ; then
    usage "$0" 1
@@ -177,10 +197,8 @@ fi
 
 # ====== Obtain system details ==============================================
 UNAME="$(uname)"
-# NAME="${UNAME}"
 ID="${UNAME,,}"
-# VERSION="$(uname -r)"
-# VERSION_ID="${VERSION/_*/}"
+PRETTY_NAME=""
 if [ -f /etc/os-release ] ; then
    # shellcheck disable=SC1091
    . /etc/os-release
@@ -191,7 +209,7 @@ fi
 if [ -e /etc/init.d/autofs ] ; then
    # TRANSLATORS: Progress notification when stopping the AutoFS service
    # before maintenance.
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Stopping AutoFS service ...")\x1b[0m"
+   printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Stopping AutoFS service ...")"
    service autofs stop >/dev/null 2>&1 || true
 fi
 
@@ -199,17 +217,17 @@ fi
 # ====== Temporary file handling ============================================
 fullPackageList=""
 packageVersionsFile=""
-installOutputFile=""
-trap 'echo ; echo "Aborted." ; rm -f "${installOutputFile}" "${fullPackageList}" "${packageVersionsFile}" ; exit' INT
-trap 'rm -f "${installOutputFile}" "${fullPackageList}" "${packageVersionsFile}"' EXIT TERM HUP
-
-installOutputFile="$(mktemp -t SystemMaintenance.install.XXXXXXXXXX)"
+cleanup () {
+   rm -f -- "${fullPackageList}" "${packageVersionsFile}"
+}
+trap 'echo ; echo "Aborted." ; cleanup ; exit 130' INT
+trap 'cleanup' EXIT TERM HUP
 
 
 # ====== Update package repositories ========================================
 # TRANSLATORS: Progress notification when updating software package
 # repository indices.
-echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating package repositories ...")\x1b[0m"
+printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Updating package repositories ...")"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    DEBIAN_FRONTEND=noninteractive apt-get update -qq
 
@@ -225,7 +243,7 @@ elif [ "${ID}" == "alpine" ] ; then
 elif [ "${ID}" == "freebsd" ] ; then
    env PAGER=cat freebsd-update fetch || true
    env ASSUME_ALWAYS_YES=yes pkg-static update
-   if [ -x /usr/ports/.git ] ; then
+   if [ -e /usr/ports/.git ] ; then
       pushd /usr/ports >/dev/null
       git fetch --all
       git pull
@@ -239,10 +257,10 @@ elif [ "${ID}" == "openbsd" ] ; then
    syspatch -c || true
 
 elif [ "${ID}" == "sunos" ] ; then
-    pkg refresh
+   pkg refresh
 
 elif [ "${ID}" == "darwin" ] ; then
-   sudo -u "${SUDO_USER}" brew update
+   run_brew update
 
 else
    echo >&2 "ERROR: Missing repository update case for ${ID}!"
@@ -257,24 +275,21 @@ if [ "${ID}" == "debian" ] || \
 
    # TRANSLATORS: Progress notification when checking and repairing broken
    # package configurations.
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Applying package fixes, if necessary ...")\x1b[0m"
+   printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Applying package fixes, if necessary ...")"
 
    if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
-      # ====== dpkg package fixes ==============================================
-      DEBIAN_FRONTEND=noninteractive dpkg --configure -a | tee "${installOutputFile}" || true
-      cat "${installOutputFile}"
+      # ====== dpkg package fixes ===========================================
+      DEBIAN_FRONTEND=noninteractive dpkg --configure -a || true
 
-      # ====== apt-get package fixes ===========================================
+      # ====== apt-get package fixes ========================================
       # TRANSLATORS: Progress notification when attempting to resolve and
       # install missing package dependencies.
-      echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing missing dependencies, if necessary ...")\x1b[0m"
+      printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Installing missing dependencies, if necessary ...")"
       DEBIAN_FRONTEND=noninteractive nohup apt-get install -f -y -q \
-         -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
-      cat "${installOutputFile}"
+         -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | cat
 
    elif [ "${ID}" == "alpine" ] ; then
-      nohup apk fix </dev/null 2>&1 | tee "${installOutputFile}"
-      cat "${installOutputFile}"
+      nohup apk fix </dev/null 2>&1 | cat
    fi
 fi
 
@@ -282,92 +297,50 @@ fi
 # ====== Install updates ====================================================
 # TRANSLATORS: Progress notification when installing available system
 # package updates.
-echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Installing updates ...")\x1b[0m"
+printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Installing updates ...")"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ------ Download --------------------------------------------------------
    DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -yd -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
-
-   # ------ Update special packages -----------------------------------------
-   # NOTE: This block is likely obsolete, and therefore commented out!
-   # for package in nornet-server nornet-tunnelbox ; do
-   #    if dpkg -l ${package} >/dev/null 2>&1 ; then
-   #       if [ "$(find /var/cache/apt/archives/ -name "${package}*.deb")" != "" ] ; then
-   #          echo "Updating ${package} package ..."
-   #          # Do not restart the service on update, in order to avoid
-   #          # unnecessary downtime. Then, a manual restart can be made.
-   #          (
-   #             echo "#!/bin/sh"
-   #             echo "exit 101"
-   #          ) | tee /usr/sbin/policy-rc.d >/dev/null
-   #          chmod +x /usr/sbin/policy-rc.d
-   #          DEBIAN_FRONTEND=noninteractive nohup apt-get install --only-upgrade \
-   #             -o APT::Get::Always-Include-Phased-Updates=true \
-   #             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-   #            ${package} -y -q </dev/null 2>&1 | tee "${installOutputFile}"
-   #          echo "Updated ${package} package."
-   #       fi
-   #    fi
-   # done
-   #
-   # # Ensure to remove modified policy-rc.d!
-   # rm -f /usr/sbin/policy-rc.d
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | cat
 
    # ------ Update the rest -------------------------------------------------
    DEBIAN_FRONTEND=noninteractive nohup apt-get dist-upgrade -y -q \
       -o APT::Get::Always-Include-Phased-Updates=true \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
-   cat "${installOutputFile}"
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | cat
 
 elif [ "${ID}" == "fedora" ] ; then
-   dnf upgrade -y 2>&1 | tee "${installOutputFile}"
-   cat "${installOutputFile}"
+   nohup dnf upgrade -y </dev/null 2>&1 | cat
 
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
-   if [[ "${PRETTY_NAME}" =~ "Tumbleweed" ]]; then
-      nohup zypper --non-interactive dist-upgrade -y </dev/null 2>&1 | tee "${installOutputFile}"
+   if [[ "${ID}" == "opensuse-tumbleweed" ]] || [[ "${PRETTY_NAME:-}" == *Tumbleweed* ]] ; then
+      nohup zypper --non-interactive dist-upgrade -y </dev/null 2>&1 | cat
    else
-      nohup zypper --non-interactive update -y </dev/null 2>&1 | tee "${installOutputFile}"
+      nohup zypper --non-interactive update -y </dev/null 2>&1 | cat
    fi
-   cat "${installOutputFile}"
 
 elif [ "${ID}" == "alpine" ] ; then
-   nohup apk upgrade </dev/null 2>&1 | tee "${installOutputFile}"
-   cat "${installOutputFile}"
+   nohup apk upgrade </dev/null 2>&1 | cat
 
 elif [ "${ID}" == "freebsd" ] ; then
-   (
-     freebsd-update install || true
-     env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y
-     if [ -x /usr/sbin/portsnap ] ; then
-        /usr/sbin/portsnap -I update
-     fi
-   ) 2>&1 | tee "${installOutputFile}"
-   cat "${installOutputFile}"
+   freebsd-update install || true
+   env ASSUME_ALWAYS_YES=yes pkg-static upgrade -y
+   if [ -x /usr/sbin/portsnap ] ; then
+      /usr/sbin/portsnap -I update
+   fi
 
 elif [ "${ID}" == "netbsd" ] ; then
-   nohup pkgin -y upgrade </dev/null 2>&1 | tee "${installOutputFile}"
-   cat "${installOutputFile}"
+   nohup pkgin -y upgrade </dev/null 2>&1 | cat
 
 elif [ "${ID}" == "openbsd" ] ; then
-   (
-      syspatch || true
-      pkg_add -u -I
-   ) 2>&1 | tee "${installOutputFile}"
-   cat "${installOutputFile}"
+   syspatch || true
+   pkg_add -u -I
 
 elif [ "${ID}" == "sunos" ] ; then
-   (
-      pkg update || true
-   ) 2>&1 | tee "${installOutputFile}"
-   cat "${installOutputFile}"
+   pkg update || true
 
 elif [ "${ID}" == "darwin" ] ; then
-   (
-      sudo -u "${SUDO_USER}" brew upgrade
-   ) 2>&1 | tee "${installOutputFile}"
-   cat "${installOutputFile}"
+   run_brew upgrade
 
 else
    echo >&2 "ERROR: Missing package update case for ${ID}!"
@@ -378,29 +351,27 @@ fi
 # ====== Auto-remove ========================================================
 # TRANSLATORS: Progress notification when running autoremove and purging
 # obsolete package caches.
-echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Cleaning up ...")\x1b[0m"
+printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Cleaning up ...")"
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # ------ Remove unnecessary dependencies ---------------
    DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -q \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | tee "${installOutputFile}"
-   cat "${installOutputFile}"
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" </dev/null 2>&1 | cat
 
    # ------ Purge all previously-removed packages ---------
-   dpkg --get-selections | awk '$2=="deinstall" { print $1 }' | DEBIAN_FRONTEND=noninteractive xargs --no-run-if-empty apt-get purge -y \
-      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 2>&1 | tee "${installOutputFile}"
-   cat "${installOutputFile}"
+   dpkg --get-selections | awk '$2=="deinstall" { print $1 }' | \
+      DEBIAN_FRONTEND=noninteractive xargs --no-run-if-empty apt-get purge -y \
+         -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef"
 
    # ------ Clean up the package cache --------------------
    DEBIAN_FRONTEND=noninteractive apt-get clean
 
    # ------ Clean up /var/crash ---------------------------
    if [ -d /var/crash/ ] ; then
-      find /var/crash/ -name "*.crash" -exec rm -f {} \;
+      find /var/crash/ -name "*.crash" -delete
    fi
 
 elif [ "${ID}" == "fedora" ] ; then
-   nohup dnf autoremove -y </dev/null 2>&1 | tee "${installOutputFile}"
-   cat "${installOutputFile}"
+   nohup dnf autoremove -y </dev/null 2>&1 | cat
    dnf clean all
 
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
@@ -423,7 +394,7 @@ elif [ "${ID}" == "sunos" ] ; then
    true
 
 elif [ "${ID}" == "darwin" ] ; then
-   sudo -u "${SUDO_USER}" brew cleanup
+   run_brew cleanup
 
 else
    echo >&2 "ERROR: Missing clean-up case for ${ID}!"
@@ -435,11 +406,14 @@ fi
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # TRANSLATORS: Progress notification when identifying and purging
    # outdated kernel packages.
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Removing obsolete kernels ...")\x1b[0m"
+   printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Removing obsolete kernels ...")"
 
-   kernelType=$(uname -r | sed 's/^\([0-9]*\.[0-9]*\.[0-9]*\|[0-9]*\.[0-9]*\.[0-9]*[-+][^-]*\)-\([a-zA-Z0-9\.+]*\)/\2/')
-   kernelBootVersion=$(uname -r | sed "s/-${kernelType}$//")
-   kernelDiskVersion=$(find /boot -name "vmlinuz-*-${kernelType}" | sort -rV | head -n1 | sed -e "s/^\/boot\/vmlinuz-//" -e "s/-${kernelType}$//")
+   kernelType="$(uname -r | sed 's/^\([0-9]*\.[0-9]*\.[0-9]*\|[0-9]*\.[0-9]*\.[0-9]*[-+][^-]*\)-\([a-zA-Z0-9.+]*\)/\2/')"
+   kernelBootVersion="$(uname -r | sed "s/-${kernelType}$//")"
+   kernelDiskVersion=""
+   if [ -d /boot ] ; then
+      kernelDiskVersion="$({ find /boot -name "vmlinuz-*-${kernelType}" 2>/dev/null || true ; } | sort -rV | sed -n "1{s|^/boot/vmlinuz-||;s|-${kernelType}\$||;p;q;}")"
+   fi
 
    # TRANSLATORS: Header label showing the kernel flavor/type
    # (e.g. generic, server).
@@ -451,12 +425,18 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    # installed on disk.
    echo "$(gettext "Kernel Disk Version:") ${kernelDiskVersion}"
 
-   # The version will be used in regexp: "+" => "\\+"!
-   kernelBootVersion="${kernelBootVersion/+/\\+}"
-   kernelDiskVersion="${kernelDiskVersion/+/\\+}"
+   # Escape "." and "+" for ERE matching:
+   kernelTypeRegex="${kernelType//./\\.}"
+   kernelTypeRegex="${kernelTypeRegex//+/\\+}"
+   kernelBootRegex="${kernelBootVersion//./\\.}"
+   kernelBootRegex="${kernelBootRegex//+/\\+}"
 
    packageVersionsFile="$(mktemp -t SystemMaintenance.XXXXXXXXXX)"
-   apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | sort >"${packageVersionsFile}"
+   if command -v apt-show-versions >/dev/null ; then
+      apt-show-versions | awk '{ print $1 }' | sed -e 's/:.*$//g' -e 's/\/.*$//g' | sort >"${packageVersionsFile}"
+   else
+      dpkg-query -W -f='${Package}\t${db:Status-Abbrev}\n' | awk '$2 ~ /^.i/ { print $1 }' | sort >"${packageVersionsFile}"
+   fi
 
    packagesToRemove="
       nornet-
@@ -468,99 +448,102 @@ if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    packagesToKeep="
       nornet-
 
-      linux-headers-${kernelBootVersion}
-      linux-image-${kernelBootVersion}-${kernelType}
-      linux-image-extra-${kernelBootVersion}-${kernelType}
-      linux-modules-${kernelBootVersion}-${kernelType}
-      linux-modules-.*-${kernelBootVersion}-${kernelType}
-      linux-objects-.*-${kernelBootVersion}-${kernelType}
+      linux-headers-${kernelBootRegex}
+      linux-image-${kernelBootRegex}-${kernelTypeRegex}
+      linux-image-extra-${kernelBootRegex}-${kernelTypeRegex}
+      linux-modules-${kernelBootRegex}-${kernelTypeRegex}
+      linux-modules-.*-${kernelBootRegex}-${kernelTypeRegex}
+      linux-objects-.*-${kernelBootRegex}-${kernelTypeRegex}
 
-      linux-headers-${kernelDiskVersion}
-      linux-image-${kernelDiskVersion}-${kernelType}
-      linux-image-extra-${kernelDiskVersion}-${kernelType}
-      linux-modules-${kernelDiskVersion}-${kernelType}
-      linux-modules-.*-${kernelDiskVersion}-${kernelType}
-      linux-objects-.*-${kernelDiskVersion}-${kernelType}
-
-      linux-headers-${kernelType}
-      linux-image-${kernelType}
-      linux-image-extra-${kernelType}
-      linux-modules-nvidia-.*-${kernelType}
+      linux-headers-${kernelTypeRegex}
+      linux-image-${kernelTypeRegex}
+      linux-image-extra-${kernelTypeRegex}
+      linux-modules-nvidia-.*-${kernelTypeRegex}
 
       linux-headers-virtual
       linux-image-virtual
       linux-image-extra-virtual
 "
+   if [ -n "${kernelDiskVersion}" ] ; then
+      kernelDiskRegex="${kernelDiskVersion//./\\.}"
+      kernelDiskRegex="${kernelDiskRegex//+/\\+}"
+      packagesToKeep+="
+      linux-headers-${kernelDiskRegex}
+      linux-image-${kernelDiskRegex}-${kernelTypeRegex}
+      linux-image-extra-${kernelDiskRegex}-${kernelTypeRegex}
+      linux-modules-${kernelDiskRegex}-${kernelTypeRegex}
+      linux-modules-.*-${kernelDiskRegex}-${kernelTypeRegex}
+      linux-objects-.*-${kernelDiskRegex}-${kernelTypeRegex}
+"
+   fi
 
-   # Create a list of packages to be removed. Packets to keep get a "+"
-   # suffix, so apt-get ensures to keep them:
-   toBeRemoved="$(
-      while read -r line ; do
-         mayBeRemoved=0
-         for packageToRemove in ${packagesToRemove} ; do
-            if [[ ${line} =~ ^${packageToRemove}.*$ ]] ; then
-               mayBeRemoved=1
+   # Create a list of packages to be removed. Packages to keep get a "+"
+   # suffix, so apt-get ensures they are kept:
+   toBeRemoved=()
+   onlyRemove=()
+   onlyKeep=()
+   while read -r line ; do
+      [ -z "${line}" ] && continue
+      mayBeRemoved=0
+      for packageToRemove in ${packagesToRemove} ; do
+         if [[ "${line}" =~ ^${packageToRemove}.*$ ]] ; then
+            mayBeRemoved=1
+            break
+         fi
+      done
+      if [ "${mayBeRemoved}" -eq 1 ] ; then
+         toBeKept=0
+         for packageToKeep in ${packagesToKeep} ; do
+            if [[ "${line}" =~ ^${packageToKeep}.*$ ]] ; then
+               toBeRemoved+=( "${line}+" )
+               onlyKeep+=( "${line}" )
+               toBeKept=1
                break
             fi
          done
-         if [ ${mayBeRemoved} -eq 1 ] ; then
-            toBeKept=0
-            for packageToKeep in ${packagesToKeep} ; do
-               if [[ ${line} =~ ^${packageToKeep}.*$ ]] ; then
-                  # echo >&2 "Keep: ${line}"
-                  echo -n "${line}+ "   # Ensure that this package is KEPT!
-                  toBeKept=1
-                  break
-               fi
-            done
-            if [ ${toBeKept} -eq 0 ] ; then
-               # echo >&2 "Remove: ${line}"
-               echo -n "${line} "
-            fi
-        fi
-      done <"${packageVersionsFile}"
-   )"
+         if [ "${toBeKept}" -eq 0 ] ; then
+            toBeRemoved+=( "${line}" )
+            onlyRemove+=( "${line}" )
+         fi
+      fi
+   done <"${packageVersionsFile}"
 
-   rm -f "${packageVersionsFile}"
+   rm -f -- "${packageVersionsFile}"
+   packageVersionsFile=""
 
-   if [ "$(echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$" || true)" != "" ] ; then
-
+   if [ "${#onlyRemove[@]}" -gt 0 ] ; then
       # TRANSLATORS: Section heading for list of obsolete kernel packages
       # marked for deletion.
-      echo -e "$(gettext "To be removed:")\x1b[31m"
-      echo "${toBeRemoved}" | xargs -n1 | grep -v ".*+$" || true
-      echo -en "\x1b[0m"
+      printf '%s\x1b[31m\n' "$(gettext "To be removed:")"
+      printf '%s\n' "${onlyRemove[@]}"
+      printf '\x1b[0m'
       # TRANSLATORS: Section heading for list of active/installed kernel
       # packages preserved on disk.
-      echo -e "$(gettext "To be kept:")\x1b[32m"
-      echo "${toBeRemoved}" | xargs -n1 | grep ".*+$" | sed -e "s/+$//g" || true
-      echo -en "\x1b[0m"
+      printf '%s\x1b[32m\n' "$(gettext "To be kept:")"
+      if [ "${#onlyKeep[@]}" -gt 0 ] ; then
+         printf '%s\n' "${onlyKeep[@]}"
+      fi
+      printf '\x1b[0m'
 
-      if [ $INTERACTIVE_KERNEL_REMOVAL -eq 0 ] ; then
-         # shellcheck disable=SC2086
+      if [ "${INTERACTIVE_KERNEL_REMOVAL}" -eq 0 ] ; then
          DEBIAN_FRONTEND=noninteractive nohup apt-get autoremove -y -qq --purge \
             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-            ${toBeRemoved} </dev/null 2>&1 | tee "${installOutputFile}"
-         cat "${installOutputFile}"
+            "${toBeRemoved[@]}" </dev/null 2>&1 | cat
       else
-         # shellcheck disable=SC2086
          apt-get autoremove --purge \
             -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-            ${toBeRemoved}
+            "${toBeRemoved[@]}"
       fi
-
    else
       echo "Nothing to do!"
    fi
 fi
 
-rm -f "${installOutputFile}"
-
 
 # ====== Refresh snaps ======================================================
 if command -v snap >/dev/null ; then
    # TRANSLATORS: Progress notification when updating snap packages.
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Refreshing snaps ...")\x1b[0m"
+   printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Refreshing snaps ...")"
    snap refresh || true
 fi
 
@@ -569,7 +552,7 @@ fi
 if command -v fwupdmgr >/dev/null ; then
    # TRANSLATORS: Progress notification when checking fwupd for device
    # firmware updates.
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Checking for firmware updates ...")\x1b[0m"
+   printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Checking for firmware updates ...")"
    fwupdmgr refresh || true
    fwupdmgr update  || true
 fi
@@ -578,7 +561,7 @@ fi
 # ====== apt-file cache update ==============================================
 # TRANSLATORS: Progress notification when rebuilding search indices
 # (locate, geoip, apt-file).
-echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Updating caches ...")\x1b[0m"
+printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Updating caches ...")"
 
 # ------ locate -------------------------------------------------------------
 if [ -x /etc/periodic/weekly/310.locate ] ; then
@@ -600,6 +583,8 @@ fi
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
    if command -v apt-file >/dev/null ; then
       apt-file update >/dev/null
+   fi
+   if command -v apt-show-versions >/dev/null ; then
       apt-show-versions -i
    fi
 fi
@@ -609,7 +594,7 @@ fi
 if [ -e /etc/init.d/autofs ] ; then
    # TRANSLATORS: Progress notification when restarting AutoFS service
    # after maintenance.
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Starting AutoFS service ...")\x1b[0m"
+   printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Starting AutoFS service ...")"
    service autofs start >/dev/null 2>&1 || true
 fi
 
@@ -617,9 +602,9 @@ fi
 # ====== Fix time ===========================================================
 # TRANSLATORS: Progress notification when synchronizing clock with
 # external NTP time servers.
-echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Synchronising system time ...")\x1b[0m"
+printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Synchronising system time ...")"
 
-# Sychronise time from a reliable NTP servers:
+# Synchronise time from reliable NTP servers:
 # 1. Try Universitetet i Oslo (UiO) NTP servers.
 # 2. Try Physikalisch-Technische Bundesanstalt (PTB) NTP servers.
 # 3. Try ISC NTP server (clock.isc.org).
@@ -635,21 +620,21 @@ NTP_SERVERS=(
 updatedTime=0
 
 # ------ Try systemd-timesyncd (modern Debian/Ubuntu) -----------------------
-if [ ${updatedTime} -eq 0 ] && command -v timedatectl >/dev/null ; then
-   if timedatectl set-ntp false && timedatectl set-ntp true >/dev/null 2>&1 ; then
+if [ "${updatedTime}" -eq 0 ] && command -v timedatectl >/dev/null ; then
+   if timedatectl set-ntp false >/dev/null 2>&1 && timedatectl set-ntp true >/dev/null 2>&1 ; then
       updatedTime=1
    fi
 fi
 
 # ------ Try chronyd (Fedora, RHEL, newer Debian/Ubuntu) --------------------
-if [ ${updatedTime} -eq 0 ] && command -v chronyc >/dev/null ; then
+if [ "${updatedTime}" -eq 0 ] && command -v chronyc >/dev/null ; then
    if chronyc makestep >/dev/null 2>&1 ; then
       updatedTime=1
    fi
 fi
 
 # ------ Try BusyBox ntpd (Alpine) ------------------------------------------
-if [ ${updatedTime} -eq 0 ] && command -v busybox >/dev/null ; then
+if [ "${updatedTime}" -eq 0 ] && command -v busybox >/dev/null ; then
    for server in "${NTP_SERVERS[@]}" ; do
       if busybox ntpd -q -n -p "${server}" ; then
          updatedTime=1
@@ -659,9 +644,9 @@ if [ ${updatedTime} -eq 0 ] && command -v busybox >/dev/null ; then
 fi
 
 # ------ Try ntpdate (FreeBSD) ----------------------------------------------
-if [ ${updatedTime} -eq 0 ] && command -v ntpdate >/dev/null ; then
+if [ "${updatedTime}" -eq 0 ] && command -v ntpdate >/dev/null ; then
    for ntpServiceName in ntpd ntp ; do
-      service ${ntpServiceName} stop >/dev/null 2>&1 || true
+      service "${ntpServiceName}" stop >/dev/null 2>&1 || true
    done
    for server in "${NTP_SERVERS[@]}" ; do
       if ntpdate "${server}" ; then
@@ -670,20 +655,20 @@ if [ ${updatedTime} -eq 0 ] && command -v ntpdate >/dev/null ; then
       fi
    done
    for ntpServiceName in ntpd ntp ; do
-      service ${ntpServiceName} start >/dev/null 2>&1 || true
+      service "${ntpServiceName}" start >/dev/null 2>&1 || true
    done
 fi
 
 # ------ Try OpenNTPD (OpenBSD) ---------------------------------------------
-if [ ${updatedTime} -eq 0 ] && command -v rcctl >/dev/null ; then
+if [ "${updatedTime}" -eq 0 ] && command -v rcctl >/dev/null ; then
    rcctl stop ntpd || true
-   rcctl set ntpd flags -s
-   rcctl start ntpd || true
-   updatedTime=1
+   if rcctl set ntpd flags -s >/dev/null 2>&1 && rcctl start ntpd ; then
+      updatedTime=1
+   fi
 fi
 
 # ------ Write updated time to hardware clock -------------------------------
-if [ ${updatedTime} -eq 1 ] ; then
+if [ "${updatedTime}" -eq 1 ] ; then
    # shellcheck disable=SC2034
    now="$(date)"
    # TRANSLATORS: Status message upon successful NTP time synchronization:
@@ -713,7 +698,7 @@ fi
 if command -v fstrim >/dev/null ; then
    # TRANSLATORS: Progress notification when running fstrim to discard
    # unused blocks on SSD storage.
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Running fstrim ...")\x1b[0m"
+   printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Running fstrim ...")"
    fstrim -a -v 2>/dev/null || ( fstrim -v / && fstrim -v /home ) || true
 fi
 if command -v zpool >/dev/null ; then
@@ -721,7 +706,7 @@ if command -v zpool >/dev/null ; then
    if [ -n "${zpools}" ] ; then
       # TRANSLATORS: Progress notification when issuing trim operations on ZFS
       # storage pools.
-      echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Running zpool trim ...")\x1b[0m"
+      printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Running zpool trim ...")"
       for zpool in ${zpools} ; do
          echo "${zpool}"
          zpool trim "${zpool}" || true
@@ -733,7 +718,7 @@ fi
 # ====== Done! ==============================================================
 # TRANSLATORS: Final notification indicating completion of all
 # maintenance routines.
-echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Done!")\x1b[0m"
+printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Done!")"
 
 
 # ====== Finally, show project package versions =============================
@@ -762,23 +747,27 @@ for directory in "${scriptDirectories[@]}" ; do
    fi
 done
 
-if [ ${#filterScripts[@]} -gt 0 ] ; then
+if [ "${#filterScripts[@]}" -gt 0 ] ; then
    fullPackageList="$(mktemp -t SystemMaintenance.XXXXXXXXXX)"
 
    if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
       if command -v apt-show-versions >/dev/null ; then
          apt-show-versions | grep -v "not installed$" >"${fullPackageList}" || true
+      else
+         dpkg-query -W -f='${Package} ${Version}\n' | sort >"${fullPackageList}" || true
       fi
    elif [ "${ID}" == "fedora" ] || [[ "${ID}" =~ ^opensuse- ]] ; then
       rpm -qa | sort >"${fullPackageList}" || true
    elif [ "${ID}" == "alpine" ] ; then
       apk info -v | sort >"${fullPackageList}" || true
    elif [ "${ID}" == "freebsd" ] ; then
-      pkg info --all | sort  >"${fullPackageList}" || true
+      pkg info --all | sort >"${fullPackageList}" || true
    elif [ "${ID}" == "netbsd" ] || [ "${ID}" == "openbsd" ] ; then
       pkg_info | awk '{ print $1 }' | sort >"${fullPackageList}" || true
+   elif [ "${ID}" == "sunos" ] ; then
+      pkg list -H | awk '{ print $1 " " $2 }' | sort >"${fullPackageList}" || true
    elif [ "${ID}" == "darwin" ] ; then
-      sudo -u "${SUDO_USER}" brew list
+      run_brew list --versions | sort >"${fullPackageList}" || true
    else
       echo >&2 "ERROR: Missing project package versions case for ${ID}!"
       exit 1
@@ -788,7 +777,8 @@ if [ ${#filterScripts[@]} -gt 0 ] ; then
       for filterScript in "${filterScripts[@]}" ; do
          "${filterScript}" "${fullPackageList}"
       done
-      rm -f "${fullPackageList}"
+      rm -f -- "${fullPackageList}"
+      fullPackageList=""
       echo "=============================================================================="
    fi
 fi
