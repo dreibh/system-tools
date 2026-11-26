@@ -28,13 +28,13 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 26, 2026
 .Dt der2pem 1
 .Os der2pem
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm der2pem
-.Nd converts a certificate or CRL from DER to PEM format
+.Nd converts an X.509 certificate, CRL, or CSR from DER to PEM format
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm der2pem
@@ -46,15 +46,21 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm der2pem
-converts a given certificate or CRL file from DER to PEM format.
+converts a given X.509 certificate, Certificate Revocation List (CRL), or Certificate Signing Request (CSR) file from DER to PEM format.
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following arguments and options are available:
 .Bl -tag -width indent
 .It Ar der\_file
-The certificate or CRL file in DER format to be converted.
+The certificate, CRL, or CSR file in DER format to be converted.
+"\-" is a shortcut for
+.Pa /dev/stdin ,
+i.e. reading the DER data from standard input.
 .It Ar pem\_file
-The certificate or CRL file in PEM format to be written.
+The certificate, CRL, or CSR file in PEM format to be written.
+"\-" is a shortcut for
+.Pa /dev/stdout ,
+i.e. writing the PEM data to standard output.
 .It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl \-version
@@ -74,6 +80,8 @@ der2pem my\-server\-certificate.der my\-server\-certificate.crt
 der2pem my\-crl.der my\-crl.crl
 .It
 curl \-o google\-crl.der.crl http://c.pki.goog/wr2/GSyT1N4PBrg.crl && der2pem google\-crl.der.crl google\-crl.pem
+.It
+curl \-\-output \- http://c.pki.goog/wr2/GSyT1N4PBrg.crl | der2pem \- google\-crl.pem
 .It
 der2pem \-\-help
 .It
