@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 26, 2026
 .Dt configure\-grub 1
 .Os configure\-grub
 .\" ###### Name #############################################################
@@ -54,20 +54,25 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm configure\-grub
-adjusts a GRUB configuration file by applying a configuration
-from a template, and merging the existing configuration settings with
-additional customisations. It can for example be used to set a custom
+adjusts a GRUB defaults configuration file by applying settings from a template
+while preserving existing kernel command\-line and encrypted\-disk settings
+.Pq Ev GRUB_CMDLINE_LINUX , Ev GRUB_CMDLINE_LINUX_DEFAULT , No and Ev GRUB_ENABLE_CRYPTODISK
+and merging optional customisations. It can for example be used to set a custom
 screen resolution
-.Pq the Ev GRUB_GFXMODE option
+.Pq the Ev GRUB_GFXMODE No option
 or startup tune
-.Pq the Ev GRUB_INIT_TUNE option
-.
+.Pq the Ev GRUB_INIT_TUNE No option .
+After writing an updated
+.Pa /etc/default/grub
+file, regenerate the active boot configuration (for example with
+.Xr update\-grub 8
+or
+.Xr grub\-mkconfig 8 ) .
 .Pp
 .Sy WARNING :
 This program is meant to be used by expert users! Do not modify
 a working GRUB configuration without knowing how to boot the system from
-a rescue media to fix a broken setup!
-.Pp
+a rescue medium to fix a broken setup!
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following arguments and options are available:
@@ -76,7 +81,10 @@ The following arguments and options are available:
 The GRUB defaults template file to apply.
 .It Fl i Ar input\-grub\-defaults\-file | Fl \-input Ar input\-grub\-defaults\-file
 Set name of input GRUB file (default:
-.Pa /etc/default/grub ) .
+.Pa /etc/default/grub ,
+or
+.Pa /dev/null
+if not present).
 .It Fl o Ar output\-grub\-defaults\-file | Fl \-output Ar output\-grub\-defaults\-file
 Set name of output GRUB file to write (default:
 .Pa grub\-defaults.new ) .
@@ -93,6 +101,18 @@ Prints the program's command\-line parameters and exits.
 .It Fl v | Fl \-version
 Prints the program version and exits.
 .El
+.\" ###### Files ############################################################
+.Sh FILES
+.Bl -tag -width indent
+.It Pa /etc/default/grub
+Default system GRUB configuration file read when
+.Fl i
+is not specified.
+.It Pa /usr/share/configure\-grub/grub\-defaults\-standard
+Standard GRUB defaults template shipped with System\-Tools.
+.It Pa /usr/share/configure\-grub/grub\-defaults\-nornet
+NorNet GRUB defaults template shipped with System\-Tools.
+.El
 .\" ###### Exit status ######################################################
 .Sh EXIT STATUS
 The
@@ -102,28 +122,26 @@ tool exits with 0 on success, and >0 in case of an error.
 .Sh EXAMPLES
 .Bl -bullet
 .It
-configure\-grub /usr/share/configure\-grub/grub\-defaults\-standard \
-   \-V 'auto,1920x1080,1024x768' \
-   \-T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192'
+configure\-grub /usr/share/configure\-grub/grub\-defaults\-standard \-V 'auto,1920x1080,1024x768' \-T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192'
 .It
-sudo configure\-grub /usr/share/configure\-grub/grub\-defaults\-nornet \
-   \-V 'auto,1024x768' \
-   \-o /etc/default/grub
+sudo configure\-grub /usr/share/configure\-grub/grub\-defaults\-nornet \-V 'auto,1024x768' \-o /etc/default/grub
 .It
-sudo configure\-grub /usr/share/configure\-grub/grub\-defaults\-nornet \
-   \-i /etc/default/grub \
-   \-V 'auto,1920x1080,1024x768' \
-   \-T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192' \
-   \-o /etc/default/grub
+sudo configure\-grub /usr/share/configure\-grub/grub\-defaults\-nornet \-i /etc/default/grub \-V 'auto,1920x1080,1024x768' \-T '20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192' \-o /etc/default/grub
+.It
+configure\-grub \-\-help
+.It
+configure\-grub \-h
 .It
 configure\-grub \-\-version
 .It
-configure\-grub \-\-help
+configure\-grub \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
 .Xr Reset\-Machine\-ID 1 ,
-.Xr System\-Maintenance 1
+.Xr System\-Maintenance 1 ,
+.Xr grub\-mkconfig 8 ,
+.Xr update\-grub 8
 .\" ###### Notes ############################################################
 .Sh NOTES
 This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at

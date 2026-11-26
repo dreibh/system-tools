@@ -28,7 +28,21 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
+# Bash options:
 set -euo pipefail
+
+# gettext options:
+export TEXTDOMAIN="configure-grub"
+if [ -z "${TEXTDOMAINDIR:-}" ] && [[ "@CMAKE_INSTALL_FULL_DATADIR@" != @* ]] ; then
+   export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
+fi
+if command -v gettext.sh >/dev/null 2>&1 ; then
+   # shellcheck disable=SC1091
+   . gettext.sh
+else
+   gettext () { printf "%s" "$1"; }
+   eval_gettext () { eval "printf '%s' \"$1\""; }
+fi
 
 
 # ###### Diff with colourised output, if possible ###########################
@@ -64,10 +78,21 @@ usage () {
    local reset=$'\x1b[0m'
    local progname="${program##*/}"
    local manpage="${cmd}${progname%.*}${reset}"
-   local homepage=$'[\x1b[1m\x1b]8;;@PROJECT_HOMEPAGE_URL@\a@PROJECT_HOMEPAGE_URL@\a\x1b]8;;\a\x1b[0m]'
-   local repository=$'[\x1b[1m\x1b]8;;@PROJECT_SOURCE_URL@\a@PROJECT_SOURCE_URL@\a\x1b]8;;\a\x1b[0m]'
+   local lrm=""
+   local rlm=""
+   # TRANSLATORS: Text direction: LTR (Left-to-Right) or RTL (Right-to-Left)
+   if [ "$(gettext "LTR")" = "RTL" ] ; then
+      lrm=$'\xe2\x80\x8e'
+      rlm=$'\xe2\x80\x8f'
+   fi
+   local homepage="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_HOMEPAGE_URL@\a@PROJECT_HOMEPAGE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
+   local repository="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_SOURCE_URL@\a@PROJECT_SOURCE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
+   local usageHeader
+   # TRANSLATORS: Command-line syntax message prefix:
+   # "Usage: <program> [options]".
+   usageHeader="$(gettext "Usage:")"
    cat >&2 <<EOF
-${header}Usage:${reset}
+${header}${usageHeader}${reset}
 ${cmd}${program}${reset} ${arg}grub-defaults-template-file${reset}
 	${syn}[${reset}${opt}-i${reset} ${arg}input-grub-defaults-file${reset} ${syn}|${reset} ${opt}--input${reset} ${arg}input-grub-defaults-file${reset}${syn}]${reset}
 	${syn}[${reset}${opt}-o${reset} ${arg}output-grub-defaults-file${reset} ${syn}|${reset} ${opt}--output${reset} ${arg}output-grub-defaults-file${reset}${syn}]${reset}
@@ -79,11 +104,22 @@ ${cmd}${program}${reset}
 	${syn}[${reset}${opt}-v${reset} ${syn}|${reset} ${opt}--version${reset}${syn}]${reset}
 
 EOF
-   printf >&2 "For further information, see the man page for %s, read the documentation at %s, examine the source code at %s, or consult your favourite LLM.\n" \
+   # shellcheck disable=SC2059
+   # TRANSLATORS: Informational message at the end of usage:
+   # 1st %s = manpage name, 2nd %s = documentation URL, 3rd %s = repository URL
+   printf >&2 "$(gettext "For further information, see the man page for %s, read the documentation at %s, examine the source code at %s, or consult your favourite LLM.")\n" \
       "${manpage}" "${homepage}" "${repository}"
    exit "${exitCode}"
 }
 # ------ END-OF-USAGE-BLOCK ------
+
+
+# ###### Clean up temporary file on exit or signal ##########################
+tempOutput=""
+cleanup () {
+   rm -f -- "${tempOutput}"
+}
+trap cleanup EXIT INT TERM HUP
 
 
 
@@ -91,7 +127,9 @@ EOF
 
 # ====== Handle arguments ===================================================
 if (( BASH_VERSINFO[0] < 4 )) || (( (BASH_VERSINFO[0] == 4) && (BASH_VERSINFO[1] < 4) )) ; then
-   echo >&2 "ERROR: Bash 4.4 or higher is required!"
+   # TRANSLATORS: Error message when installed Bash version is older than 4.4.
+   gettext >&2 "ERROR: Bash 4.4 or higher is required!"
+   echo >&2
    exit 1
 fi
 UNAME="$(uname)"
@@ -109,19 +147,19 @@ case "${UNAME}" in
       GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
       ;;
    Darwin)
-      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:/usr/local/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
       ;;
    *)
       GETOPT="$(command -v getopt || true)"
       ;;
 esac
-if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
-   echo >&2 "ERROR: Enhanced/GNU getopt is required!"
+if [[ -z "${GETOPT}" ]] || "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]] ; then
+   # TRANSLATORS: Error message when enhanced/GNU getopt is not available.
+   gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
+   echo >&2
    exit 1
 fi
-options="$(${GETOPT} -o i:o:V:T:hv --long input:,output:,video:,tune:,help,version -a -- "$@")"
-# shellcheck disable=SC2181
-if [[ $? -ne 0 ]]; then
+if ! options="$("${GETOPT}" -o i:o:V:T:hv --long input:,output:,video:,tune:,help,version -a -- "$@")" ; then
    usage "$0" 1
 fi
 eval set -- "${options}"
@@ -163,15 +201,16 @@ while [ $# -gt 0 ] ; do
          echo >&2 "INTERNAL ERROR: Unhandled option $1!"
          exit 1
          ;;
-  esac
-  shift
+   esac
+   shift
 done
 if [ $# -ne 1 ] ; then
    usage "$0" 1
 fi
 
+# shellcheck disable=SC2034
 TEMPLATE_CONFIGURATION="$1"
-if [ "${INPUT_CONFIGURATION}" == "" ] ; then
+if [ -z "${INPUT_CONFIGURATION}" ] ; then
    if [ -e "/etc/default/grub" ] ; then
       # Use existing configuration as input:
       INPUT_CONFIGURATION="/etc/default/grub"
@@ -181,58 +220,97 @@ if [ "${INPUT_CONFIGURATION}" == "" ] ; then
    fi
 fi
 if [ ! -e "${INPUT_CONFIGURATION}" ] ; then
-   echo >&2 "ERROR: Input configuration ${INPUT_CONFIGURATION} not found!"
+   # TRANSLATORS: Error message when input GRUB configuration file cannot be found:
+   # ${INPUT_CONFIGURATION} = input file path
+   eval_gettext >&2 "ERROR: Input configuration \${INPUT_CONFIGURATION} not found!"
+   echo >&2
    exit 1
 fi
 if [ ! -e "${TEMPLATE_CONFIGURATION}" ] ; then
-   echo >&2 "ERROR: Template configuration ${TEMPLATE_CONFIGURATION} not found!"
+   # TRANSLATORS: Error message when GRUB template file cannot be found:
+   # ${TEMPLATE_CONFIGURATION} = template file path
+   eval_gettext >&2 "ERROR: Template configuration \${TEMPLATE_CONFIGURATION} not found!"
+   echo >&2
    exit 1
 fi
-if [ "${OUTPUT_CONFIGURATION}" == "" ] ; then
+if [ -z "${OUTPUT_CONFIGURATION}" ] ; then
    OUTPUT_CONFIGURATION="grub-defaults.new"
+fi
+
+outputDir="."
+if [[ "${OUTPUT_CONFIGURATION}" == */* ]] ; then
+   outputDir="${OUTPUT_CONFIGURATION%/*}"
+   [[ -z "${outputDir}" ]] && outputDir="/"
+fi
+if [ ! -d "${outputDir}" ] ; then
+   # shellcheck disable=SC2034
+   OUTPUT_DIRECTORY="${outputDir}"
+   # TRANSLATORS: Error message when output directory cannot be found:
+   # ${OUTPUT_DIRECTORY} = output directory path
+   eval_gettext >&2 "ERROR: Output directory \${OUTPUT_DIRECTORY} not found!"
+   echo >&2
+   exit 1
 fi
 
 
 # ====== Get options ========================================================
 OPTION_DISABLE_BIOSDEVNAME=0
-if grep -q "biosdevname=0" /proc/cmdline ; then
+if [ -r /proc/cmdline ] && grep -q "biosdevname=0" /proc/cmdline ; then
    OPTION_DISABLE_BIOSDEVNAME=1
 fi
 OPTION_DISABLE_NETIFNAMES=0
-if grep -q "net.ifnames=0" /proc/cmdline ; then
+if [ -r /proc/cmdline ] && grep -q 'net\.ifnames=0' /proc/cmdline ; then
    OPTION_DISABLE_NETIFNAMES=1
 fi
-OPTION_CMDLINE=$(grep "^GRUB_CMDLINE_LINUX=" "${INPUT_CONFIGURATION}" | sed -e "s/biosdevname=0[ ]*//g" -e "s/net.ifnames=0[ ]*//g" || echo 'GRUB_CMDLINE_LINUX=""')
-OPTION_CMDLINE_DEFAULT=$(grep "^GRUB_CMDLINE_LINUX_DEFAULT=" "${INPUT_CONFIGURATION}" | sed -e "s/biosdevname=0[ ]*//g" -e "s/net.ifnames=0[ ]*//g" || echo 'GRUB_CMDLINE_LINUX_DEFAULT=""')
-if [ ${OPTION_DISABLE_BIOSDEVNAME} -eq 1 ] ; then
-   # shellcheck disable=SC2001
-   OPTION_CMDLINE=$(echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"biosdevname=0 /g")
-   # shellcheck disable=SC2001
-   OPTION_CMDLINE_DEFAULT=$(echo "${OPTION_CMDLINE_DEFAULT}" | sed -e "s/^GRUB_CMDLINE_LINUX_DEFAULT=\"/GRUB_CMDLINE_LINUX_DEFAULT=\"biosdevname=0 /g")
+
+OPTION_CMDLINE="$( { grep "^GRUB_CMDLINE_LINUX=" "${INPUT_CONFIGURATION}" || true ; } | tail -n 1 | sed -e 's/biosdevname=0[ ]*//g' -e 's/net\.ifnames=0[ ]*//g' )"
+if [ -z "${OPTION_CMDLINE}" ] ; then
+   OPTION_CMDLINE='GRUB_CMDLINE_LINUX=""'
 fi
-if [ ${OPTION_DISABLE_NETIFNAMES} -eq 1 ] ; then
-   # shellcheck disable=SC2001
-   OPTION_CMDLINE=$(echo "${OPTION_CMDLINE}" | sed -e "s/^GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"net.ifnames=0 /g")
-   # shellcheck disable=SC2001
-   OPTION_CMDLINE_DEFAULT=$(echo "${OPTION_CMDLINE_DEFAULT}" | sed -e "s/^GRUB_CMDLINE_LINUX_DEFAULT=\"/GRUB_CMDLINE_LINUX_DEFAULT=\"net.ifnames=0 /g")
+OPTION_CMDLINE_DEFAULT="$( { grep "^GRUB_CMDLINE_LINUX_DEFAULT=" "${INPUT_CONFIGURATION}" || true ; } | tail -n 1 | sed -e 's/biosdevname=0[ ]*//g' -e 's/net\.ifnames=0[ ]*//g' )"
+if [ -z "${OPTION_CMDLINE_DEFAULT}" ] ; then
+   OPTION_CMDLINE_DEFAULT='GRUB_CMDLINE_LINUX_DEFAULT=""'
 fi
 
-OPTION_ENABLE_CRYPTODISK=$(grep "^GRUB_ENABLE_CRYPTODISK=" "${INPUT_CONFIGURATION}" || true)
-if [ "${REPLACE_GRUB_GFXMODE}" == "" ] ; then
-   OPTION_GFXMODE=$(grep -E "^[#[:space:]]*GRUB_GFXMODE=" "${INPUT_CONFIGURATION}" | sed -e "s/#[ ]*GRUB/# GRUB/g" || echo '# GRUB_GFXMODE=""')
+if [ "${OPTION_DISABLE_BIOSDEVNAME}" -eq 1 ] ; then
+   OPTION_CMDLINE="${OPTION_CMDLINE/#GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"biosdevname=0 }"
+   OPTION_CMDLINE_DEFAULT="${OPTION_CMDLINE_DEFAULT/#GRUB_CMDLINE_LINUX_DEFAULT=\"/GRUB_CMDLINE_LINUX_DEFAULT=\"biosdevname=0 }"
+fi
+if [ "${OPTION_DISABLE_NETIFNAMES}" -eq 1 ] ; then
+   OPTION_CMDLINE="${OPTION_CMDLINE/#GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"net.ifnames=0 }"
+   OPTION_CMDLINE_DEFAULT="${OPTION_CMDLINE_DEFAULT/#GRUB_CMDLINE_LINUX_DEFAULT=\"/GRUB_CMDLINE_LINUX_DEFAULT=\"net.ifnames=0 }"
+fi
+
+OPTION_ENABLE_CRYPTODISK="$( { grep "^GRUB_ENABLE_CRYPTODISK=" "${INPUT_CONFIGURATION}" || true ; } | tail -n 1 )"
+
+if [ -z "${REPLACE_GRUB_GFXMODE}" ] ; then
+   OPTION_GFXMODE="$( { grep -E "^[[:space:]]*GRUB_GFXMODE=" "${INPUT_CONFIGURATION}" || true ; } | tail -n 1 | sed -e 's/^[[:space:]]*//' )"
+   if [ -z "${OPTION_GFXMODE}" ] ; then
+      OPTION_GFXMODE="$( { grep -E "^[#[:space:]]*GRUB_GFXMODE=" "${INPUT_CONFIGURATION}" || true ; } | tail -n 1 | sed -e 's/^[[:space:]]*#[[:space:]]*GRUB/# GRUB/' )"
+   fi
+   if [ -z "${OPTION_GFXMODE}" ] ; then
+      OPTION_GFXMODE='# GRUB_GFXMODE=""'
+   fi
 else
    OPTION_GFXMODE="GRUB_GFXMODE=\"${REPLACE_GRUB_GFXMODE}\""
 fi
-if [ "${REPLACE_GRUB_INIT_TUNE}" == "" ] ; then
-   OPTION_INIT_TUNE=$(grep -E "^[#[:space:]]*GRUB_INIT_TUNE=" "${INPUT_CONFIGURATION}" | sed -e "s/#[ ]*GRUB/# GRUB/g" || echo '# GRUB_INIT_TUNE=""')
-   echo >&2 "X-2"
+
+if [ -z "${REPLACE_GRUB_INIT_TUNE}" ] ; then
+   OPTION_INIT_TUNE="$( { grep -E "^[[:space:]]*GRUB_INIT_TUNE=" "${INPUT_CONFIGURATION}" || true ; } | tail -n 1 | sed -e 's/^[[:space:]]*//' )"
+   if [ -z "${OPTION_INIT_TUNE}" ] ; then
+      OPTION_INIT_TUNE="$( { grep -E "^[#[:space:]]*GRUB_INIT_TUNE=" "${INPUT_CONFIGURATION}" || true ; } | tail -n 1 | sed -e 's/^[[:space:]]*#[[:space:]]*GRUB/# GRUB/' )"
+   fi
+   if [ -z "${OPTION_INIT_TUNE}" ] ; then
+      OPTION_INIT_TUNE='# GRUB_INIT_TUNE=""'
+   fi
 else
    OPTION_INIT_TUNE="GRUB_INIT_TUNE=\"${REPLACE_GRUB_INIT_TUNE}\""
 fi
 
 
 # ====== Print configuration ================================================
-echo "Configuration:"
+# TRANSLATORS: Header for the summary of resolved GRUB configuration settings.
+echo "$(gettext "Configuration:")"
 echo "* Input file:                 ${INPUT_CONFIGURATION}"
 echo "* Template file:              ${TEMPLATE_CONFIGURATION}"
 echo "* Output file:                ${OUTPUT_CONFIGURATION}"
@@ -246,14 +324,31 @@ echo "* OPTION_GFXMODE:             ${OPTION_GFXMODE}"
 
 
 # ====== Set configuration ==================================================
-awk \
-   -v OPTION_CMDLINE="${OPTION_CMDLINE}"                     \
-   -v OPTION_CMDLINE_DEFAULT="${OPTION_CMDLINE_DEFAULT}"     \
-   -v OPTION_GFXMODE="${OPTION_GFXMODE}"                     \
-   -v OPTION_INIT_TUNE="${OPTION_INIT_TUNE}"                 \
-   -v OPTION_ENABLE_CRYPTODISK="${OPTION_ENABLE_CRYPTODISK}" \
-'
+currentUmask="$(umask)"
+targetMode="$(printf '%04o' $(( 0666 & ~(8#${currentUmask}) )))"
+if [ -f "${OUTPUT_CONFIGURATION}" ] ; then
+   if existingMode="$(stat -c '%a' "${OUTPUT_CONFIGURATION}" 2>/dev/null)" || \
+      existingMode="$(stat -f '%Lp' "${OUTPUT_CONFIGURATION}" 2>/dev/null)" ; then
+      targetMode="${existingMode}"
+   fi
+fi
+
+tempOutput="$(umask 077 && mktemp "${outputDir%/}/.configure-grub.XXXXXXXXXX")"
+chmod "${targetMode}" "${tempOutput}"
+
+OPTION_CMDLINE="${OPTION_CMDLINE}"                     \
+OPTION_CMDLINE_DEFAULT="${OPTION_CMDLINE_DEFAULT}"     \
+OPTION_GFXMODE="${OPTION_GFXMODE}"                     \
+OPTION_INIT_TUNE="${OPTION_INIT_TUNE}"                 \
+OPTION_ENABLE_CRYPTODISK="${OPTION_ENABLE_CRYPTODISK}" \
+awk '
    BEGIN {
+      OPTION_CMDLINE           = ENVIRON["OPTION_CMDLINE"];
+      OPTION_CMDLINE_DEFAULT   = ENVIRON["OPTION_CMDLINE_DEFAULT"];
+      OPTION_GFXMODE           = ENVIRON["OPTION_GFXMODE"];
+      OPTION_INIT_TUNE         = ENVIRON["OPTION_INIT_TUNE"];
+      OPTION_ENABLE_CRYPTODISK = ENVIRON["OPTION_ENABLE_CRYPTODISK"];
+
       wroteCmdlineOption=0;
       wroteCmdlineDefaultOption=0;
       wroteGfxModeOption=0;
@@ -286,34 +381,40 @@ awk \
    }
 
    /^GRUB_ENABLE_CRYPTODISK=/ {
-      print OPTION_ENABLE_CRYPTODISK;
+      if(OPTION_ENABLE_CRYPTODISK != "") {
+         print OPTION_ENABLE_CRYPTODISK;
+      }
       wroteCryptodiskOption=1;
       next;
    }
 
-   /^.*$/ {
+   {
       print $0;
    }
 
    END {
-      if( (!wroteCmdlineOption) && (OPTION_CMDLINE != "")) {
+      if((!wroteCmdlineOption) && (OPTION_CMDLINE != "")) {
          print OPTION_CMDLINE;
       }
-      if( (!wroteCmdlineDefaultOption) && (OPTION_CMDLINE_DEFAULT != "")) {
+      if((!wroteCmdlineDefaultOption) && (OPTION_CMDLINE_DEFAULT != "")) {
          print OPTION_CMDLINE_DEFAULT;
       }
-      if( (!wroteGfxModeOption) && (OPTION_GFXMODE != "")) {
+      if((!wroteGfxModeOption) && (OPTION_GFXMODE != "")) {
          print OPTION_GFXMODE;
       }
-      if( (!wroteInitTuneOption) && (OPTION_INIT_TUNE != "")) {
+      if((!wroteInitTuneOption) && (OPTION_INIT_TUNE != "")) {
          print OPTION_INIT_TUNE;
       }
-      if( (!wroteCryptodiskOption) && (OPTION_ENABLE_CRYPTODISK != "")) {
+      if((!wroteCryptodiskOption) && (OPTION_ENABLE_CRYPTODISK != "")) {
          print OPTION_ENABLE_CRYPTODISK;
       }
    }
-' <"${TEMPLATE_CONFIGURATION}" >"${OUTPUT_CONFIGURATION}.new"
+' <"${TEMPLATE_CONFIGURATION}" >"${tempOutput}"
 
-echo "Differences between ${INPUT_CONFIGURATION} and ${OUTPUT_CONFIGURATION}:"
-colordiff "${INPUT_CONFIGURATION}" "${OUTPUT_CONFIGURATION}.new" || true
-mv "${OUTPUT_CONFIGURATION}.new" "${OUTPUT_CONFIGURATION}"
+# TRANSLATORS: Header printed before showing the diff between old and new GRUB files:
+# ${INPUT_CONFIGURATION} = input file path, ${OUTPUT_CONFIGURATION} = output file path
+eval_gettext "Differences between \${INPUT_CONFIGURATION} and \${OUTPUT_CONFIGURATION}:"
+echo
+colordiff "${INPUT_CONFIGURATION}" "${tempOutput}" || true
+mv -f -- "${tempOutput}" "${OUTPUT_CONFIGURATION}"
+tempOutput=""
