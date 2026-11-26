@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 26, 2026
 .Dt view\-certificate 1
 .Os view\-certificate
 .\" ###### Name #############################################################
@@ -38,6 +38,7 @@
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm view\-certificate
+.Op Fl c | Fl \-no\-color | Fl \-no\-colour
 .Ar certificate\_file ...
 .Nm view\-certificate
 .Op Fl h | Fl \-help
@@ -49,15 +50,17 @@
 displays important details of an X.509 certificate in PEM or DER format, including:
 .Bl -bullet -compact
 .It
-Common Name (CN),
+Subject Distinguished Name (DN) with highlighted Common Name (CN),
+.It
+Subject Alternative Name (SAN),
 .It
 Validity Range,
 .It
-Key Usage and Extended Usage,
+Public Key Algorithm and Signature Algorithm,
 .It
 Basic Constraints,
 .It
-Subject Alternative Name (SAN),
+Key Usage and Extended Key Usage,
 .It
 Subject Key Identifier (SKID) and Authority Key Identifier (AKID), as well as
 .It
@@ -68,10 +71,12 @@ the contained certificate chain (from the certificate up to the root CA).
 The following arguments and options are available:
 .Bl -tag -width indent
 .It Ar certificate\_file ...
-Specifies one or more certificate files to be displayed.
+Specifies one or more certificate files (in PEM or DER format) to be displayed.
 "\-" is a shortcut for
 .Pa /dev/stdin ,
 i.e. reading the certificate from standard input.
+.It Fl c | Fl \-no\-color | Fl \-no\-colour
+Disables ANSI color and underline formatting in the output.
 .It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl \-version
@@ -93,6 +98,10 @@ view\-certificate /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt
 cat /usr/share/ca\-certificates/mozilla/ISRG\_Root\_X1.crt | view\-certificate \-
 .It
 view\-certificate www\-nntb\-no\-chain.pem
+.It
+view\-certificate \-\-no\-color www\-nntb\-no\-chain.pem
+.It
+view\-certificate \-c My\-Server\-Certificate.der
 .It
 view\-certificate \-\-help
 .It
