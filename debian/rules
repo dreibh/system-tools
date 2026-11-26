@@ -11,7 +11,7 @@ override_dh_auto_configure:
 
 # Exclude tests requiring external DNS/Internet connectivity (Debian Policy §4.9):
 override_dh_auto_test:
-	DEB_BUILD_OPTIONS="$(DEB_BUILD_OPTIONS) terse" dh_auto_test -- ARGS+="-E network"
+	DEB_BUILD_OPTIONS="$(DEB_BUILD_OPTIONS) terse" dh_auto_test -- ARGS+="-LE network"
 
 # Use upstream ChangeLog for installation
 override_dh_installchangelogs:

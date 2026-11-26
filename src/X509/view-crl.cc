@@ -145,19 +145,19 @@ static void displaySingleCrl(const X509_CRL*    crl,
 
    // TRANSLATORS: Table row label for CRL Issuer DN.
    detailsFormatter.add(colors.Label + gettext("Issuer:"),
-                        colorizeLines(issuer, colors.Subject, colors.Reset));
+                        coloriseLines(issuer, colors.Subject, colors.Reset));
    // TRANSLATORS: Table row label for CRL validity period (Last Update to Next Update).
    detailsFormatter.add(colors.Label + gettext("Validity:"),
                         colors.Value + validityFrom + colors.Label + " — " + colors.Value + validityTo + colors.Reset);
    // TRANSLATORS: Table row label for signature algorithm.
    detailsFormatter.add(colors.Label + gettext("Signature Algorithm:"),
-                        colorizeLines(signatureAlgorithm, colors.Value, colors.Reset));
+                        coloriseLines(signatureAlgorithm, colors.Value, colors.Reset));
    // TRANSLATORS: Table row label for CRL Number extension.
    detailsFormatter.add(colors.Label + gettext("CRL Number:"),
-                        colorizeLines(crlNumber, colors.Label, colors.Reset));
+                        coloriseLines(crlNumber, colors.Label, colors.Reset));
    // TRANSLATORS: Table row label for Authority Key Identifier extension.
    detailsFormatter.add(colors.Label + gettext("Authority Key Identifier:"),
-                        colorizeLines(authorityKeyId, colors.Label, colors.Reset));
+                        coloriseLines(authorityKeyId, colors.Label, colors.Reset));
 
    std::cout << detailsFormatter;
 
@@ -220,7 +220,7 @@ static void displaySingleCrl(const X509_CRL*    crl,
       }
 
       revocationsFormatter.add(colors.Revoked + formatTranslatedText(indexPattern, i + 1),
-                               colorizeLines(entryValue, colors.Revoked, colors.Reset));
+                               coloriseLines(entryValue, colors.Revoked, colors.Reset));
    }
 
    std::cout << revocationsFormatter;

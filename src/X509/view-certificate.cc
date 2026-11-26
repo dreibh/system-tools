@@ -233,34 +233,34 @@ static bool displayCertificateFile(const std::string& certificateFile,
 
    // TRANSLATORS: Table row label for certificate Subject DN.
    detailsFormatter.add(colors.Label + gettext("Subject:"),
-                        colorizeLines(subject, colors.Subject, colors.Reset));
+                        coloriseLines(subject, colors.Subject, colors.Reset));
    // TRANSLATORS: Table row label for Subject Alternative Name extension.
    detailsFormatter.add(colors.Label + gettext("Subject Alternative Name:"),
-                        colorizeLines(san, colors.Subject, colors.Reset));
+                        coloriseLines(san, colors.Subject, colors.Reset));
    // TRANSLATORS: Table row label for certificate validity period.
    detailsFormatter.add(colors.Label + gettext("Validity:"),
                         colors.Value + validityFrom + colors.Label + " — " + colors.Value + validityTo + colors.Reset);
    // TRANSLATORS: Table row label for public key algorithm.
    detailsFormatter.add(colors.Label + gettext("Public Key Algorithm:"),
-                        colorizeLines(publicKeyAlgorithm, colors.Value, colors.Reset));
+                        coloriseLines(publicKeyAlgorithm, colors.Value, colors.Reset));
    // TRANSLATORS: Table row label for signature algorithm.
    detailsFormatter.add(colors.Label + gettext("Signature Algorithm:"),
-                        colorizeLines(signatureAlgorithm, colors.Value, colors.Reset));
+                        coloriseLines(signatureAlgorithm, colors.Value, colors.Reset));
    // TRANSLATORS: Table row label for Basic Constraints extension.
    detailsFormatter.add(colors.Label + gettext("Basic Constraints:"),
-                        colorizeLines(basicConstraints, colors.Label, colors.Reset));
+                        coloriseLines(basicConstraints, colors.Label, colors.Reset));
    // TRANSLATORS: Table row label for Key Usage extension.
    detailsFormatter.add(colors.Label + gettext("Key Usage:"),
-                        colorizeLines(keyUsage, colors.Label, colors.Reset));
+                        coloriseLines(keyUsage, colors.Label, colors.Reset));
    // TRANSLATORS: Table row label for Extended Key Usage extension.
    detailsFormatter.add(colors.Label + gettext("Extended Key Usage:"),
-                        colorizeLines(extKeyUsage, colors.Label, colors.Reset));
+                        coloriseLines(extKeyUsage, colors.Label, colors.Reset));
    // TRANSLATORS: Table row label for Subject Key Identifier extension.
    detailsFormatter.add(colors.Label + gettext("Subject Key Identifier:"),
-                        colorizeLines(subjectKeyId, colors.Label, colors.Reset));
+                        coloriseLines(subjectKeyId, colors.Label, colors.Reset));
    // TRANSLATORS: Table row label for Authority Key Identifier extension.
    detailsFormatter.add(colors.Label + gettext("Authority Key Identifier:"),
-                        colorizeLines(authorityKeyId, colors.Label, colors.Reset));
+                        coloriseLines(authorityKeyId, colors.Label, colors.Reset));
 
    std::cout << detailsFormatter;
 
@@ -279,7 +279,7 @@ static bool displayCertificateFile(const std::string& certificateFile,
       // TRANSLATORS: Certificate chain entry index:
       // {0} = 1-based position in certificate hierarchy (#1.)
       hierarchyFormatter.add(colors.Label + formatText("#{0}.", i + 1),
-                             colorizeLines(entrySubject, entryColor, colors.Reset));
+                             coloriseLines(entrySubject, entryColor, colors.Reset));
    }
 
    std::cout << hierarchyFormatter;

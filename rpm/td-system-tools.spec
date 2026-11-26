@@ -1,5 +1,5 @@
 Name: td-system-tools
-Version: 2.7.15
+Version: 3.0.0~alpha0
 Release: 1
 Summary: Tools for basic system management
 License: GPL-3.0-or-later

@@ -116,7 +116,7 @@ std::string trimTrailingWhitespace(std::string_view sv)
 
 
 // ###### Wrap each line of a (possibly multiline) value in ANSI colors #####
-std::string colorizeLines(const std::string& text,
+std::string coloriseLines(const std::string& text,
                           const std::string& color,
                           const std::string& reset)
 {

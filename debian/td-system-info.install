@@ -1,5 +1,6 @@
 etc/profile.d/system-info.csh
 etc/profile.d/system-info.sh
+etc/system-info.conf
 etc/system-info.d/01-example
 etc/system-info.d/banner-helper
 usr/bin/System-Info

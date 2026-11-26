@@ -118,7 +118,7 @@ inline std::string formatText(const char*    messageIdentifier,
 void initialiseLocaleAndI18n(const char* domain);
 
 std::string trimTrailingWhitespace(std::string_view sv);
-std::string colorizeLines(const std::string& text,
+std::string coloriseLines(const std::string& text,
                           const std::string& color,
                           const std::string& reset);
 
