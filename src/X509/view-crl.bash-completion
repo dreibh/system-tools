@@ -32,37 +32,51 @@
 # ###### Bash completion for view-crl #######################################
 _view_crl()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
-      _init_completion || return
+   # shellcheck disable=SC2034
+   local cur prev words cword comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -- "$@" || return
    else
-      # Manual initialization for older bash completion versions:
-      COMPREPLY=()
-      cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
-      prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
-      cword="${COMP_CWORD}"
+      _init_completion || return
    fi
 
-   if [[ "${cur}" != -* ]] ; then
-      _filedir '@(crl|der|pem)'
-      return
+   # ====== Check previous arguments for '--' or terminal options ===========
+   local i endOfOptions=0
+   for (( i = 1; i < cword; i++ )) ; do
+      case "${words[i]}" in
+         --)
+            endOfOptions=1
+            break
+            ;;
+         -h|--help|-v|--version)
+            return 0
+            ;;
+      esac
+   done
+
+   # ====== Complete CRL files ==============================================
+   if (( endOfOptions )) || [[ "${cur}" != -* ]] ; then
+      if type -t _comp_compgen_filedir >/dev/null ; then
+         _comp_compgen_filedir '@(crl|der|pem)'
+      else
+         _filedir '@(crl|der|pem)'
+      fi
+      return 0
    fi
 
    # ====== All options =====================================================
    local opts="
+-
+-c
+--no-color
+--no-colour
 -h
 --help
 -v
 --version
+--
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
    return 0
 }
 

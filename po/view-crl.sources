@@ -1,1 +1,1 @@
---language=Shell src/X509/view-crl
+--language=C++ src/X509/view-crl.cc

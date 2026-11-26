@@ -32,13 +32,13 @@
 #### PROGRAMS                                                            ####
 #############################################################################
 
+# ====== Shell / Python scripts =============================================
 SET(SCRIPTS
    check-certificate
    der2pem
    extract-pem
    pem2der
    test-tls-connection
-   view-crl
 )
 
 FOREACH(script IN LISTS SCRIPTS)
@@ -53,33 +53,50 @@ FOREACH(script IN LISTS SCRIPTS)
            RENAME      ${script})
 ENDFOREACH()
 
-# ====== view-certificate ===================================================
-ADD_EXECUTABLE(view-certificate view-certificate.cc)
-TARGET_INCLUDE_DIRECTORIES(view-certificate PRIVATE
+# ====== Shared X.509 C++ helper object library =============================
+ADD_LIBRARY(x509-helpers OBJECT x509-helpers.cc)
+TARGET_INCLUDE_DIRECTORIES(x509-helpers PRIVATE
    ${CMAKE_SOURCE_DIR}/src/libdisplaywidth
    ${CMAKE_SOURCE_DIR}/src/libpropertyformatter
    ${CMAKE_BINARY_DIR}/src
    ${Intl_INCLUDE_DIRS}
 )
-TARGET_LINK_LIBRARIES(view-certificate PRIVATE
-   OpenSSL::Crypto
-   ${Intl_LIBRARIES}
-)
-IF(STATIC_BUILD)
-   TARGET_LINK_LIBRARIES(view-certificate PRIVATE libpropertyformatter-static)
-ELSE()
-   TARGET_LINK_LIBRARIES(view-certificate PRIVATE libpropertyformatter-shared)
-ENDIF()
-IF(WIN32)
-   TARGET_INCLUDE_DIRECTORIES(view-certificate PRIVATE ${GETOPT_INCLUDE_DIR})
-   TARGET_LINK_LIBRARIES(view-certificate PRIVATE ${GETOPT_LIBRARY})
-ENDIF()
+TARGET_LINK_LIBRARIES(x509-helpers PRIVATE OpenSSL::Crypto)
 
-INSTALL(TARGETS view-certificate DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(FILES view-certificate.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-INSTALL(FILES       view-certificate.bash-completion
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
-        RENAME      view-certificate)
+# ====== Compiled C++ programs ==============================================
+SET(CXX_PROGRAMS
+   view-certificate
+   view-crl
+)
+
+FOREACH(program IN LISTS CXX_PROGRAMS)
+   ADD_EXECUTABLE(${program} ${program}.cc $<TARGET_OBJECTS:x509-helpers>)
+   TARGET_INCLUDE_DIRECTORIES(${program} PRIVATE
+      ${CMAKE_SOURCE_DIR}/src/libdisplaywidth
+      ${CMAKE_SOURCE_DIR}/src/libpropertyformatter
+      ${CMAKE_BINARY_DIR}/src
+      ${Intl_INCLUDE_DIRS}
+   )
+   TARGET_LINK_LIBRARIES(${program} PRIVATE
+      OpenSSL::Crypto
+      ${Intl_LIBRARIES}
+   )
+   IF(STATIC_BUILD)
+      TARGET_LINK_LIBRARIES(${program} PRIVATE libpropertyformatter-static)
+   ELSE()
+      TARGET_LINK_LIBRARIES(${program} PRIVATE libpropertyformatter-shared)
+   ENDIF()
+   IF(WIN32)
+      TARGET_INCLUDE_DIRECTORIES(${program} PRIVATE ${GETOPT_INCLUDE_DIR})
+      TARGET_LINK_LIBRARIES(${program} PRIVATE ${GETOPT_LIBRARY})
+   ENDIF()
+
+   INSTALL(TARGETS ${program} DESTINATION ${CMAKE_INSTALL_BINDIR})
+   INSTALL(FILES ${program}.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+   INSTALL(FILES       ${program}.bash-completion
+           DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+           RENAME      ${program})
+ENDFOREACH()
 
 
 #############################################################################

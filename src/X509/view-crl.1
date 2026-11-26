@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 26, 2026
 .Dt view\-crl 1
 .Os view\-crl
 .\" ###### Name #############################################################
@@ -38,6 +38,7 @@
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm view\-crl
+.Op Fl c | Fl \-no\-color | Fl \-no\-colour
 .Ar crl\_file ...
 .Nm view\-crl
 .Op Fl h | Fl \-help
@@ -46,16 +47,30 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm view\-crl
-displays important details of an X.509 CRL in PEM or DER format, including the serial numbers and dates of revoked certificates.
+displays important details of an X.509 Certificate Revocation List (CRL) in PEM or DER format, including:
+.Bl -bullet -compact
+.It
+Issuer Distinguished Name (DN) with highlighted Common Name (CN),
+.It
+Validity Range (Last Update and Next Update),
+.It
+Signature Algorithm,
+.It
+CRL Number and Authority Key Identifier (AKID), as well as
+.It
+revoked certificates (serial numbers, revocation dates, and optional revocation reasons).
+.El
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following arguments and options are available:
 .Bl -tag -width indent
 .It Ar crl\_file ...
-Specifies one or more CRL files to be displayed.
+Specifies one or more CRL files (in PEM or DER format) to be displayed.
 "\-" is a shortcut for
 .Pa /dev/stdin ,
 i.e. reading the CRL from standard input.
+.It Fl c | Fl \-no\-color | Fl \-no\-colour
+Disables ANSI color and underline formatting in the output.
 .It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl \-version
@@ -78,6 +93,10 @@ curl \-o google\-crl.der.crl http://c.pki.goog/wr2/GSyT1N4PBrg.crl && \
 view\-crl google\-crl.der.crl
 .It
 curl \-\-output \- http://c.pki.goog/wr2/GSyT1N4PBrg.crl | view\-crl \-
+.It
+view\-crl \-\-no\-color My\-CA\-CRL.crl
+.It
+view\-crl \-c google\-crl.der.crl
 .It
 view\-crl \-\-help
 .It
