@@ -48,8 +48,7 @@ class TdSystemTools < Formula
   depends_on "mbuffer" if build.with?("system-info") ||
                           build.with?("system-info-default-banner") ||
                           build.with?("system-info-examples") ||
-                          build.with?("system-info-in-profiles") ||
-                          build.with?("x509-tools")
+                          build.with?("system-info-in-profiles")
   depends_on "openssl@3" if build.with?("x509-tools")
   depends_on "python@3.12" if build.with?("x509-tools")
 
@@ -66,10 +65,10 @@ class TdSystemTools < Formula
     x509_tools = build.with?("x509-tools")
     print_utf8 = build.with?("print-utf8") || system_info || x509_tools
     text_block = build.with?("text-block") || x509_tools
-    unix_timestamp_tools = build.with?("unix-timestamp-tools") || x509_tools
+    unix_timestamp_tools = build.with?("unix-timestamp-tools")
 
     libsysteminfo = build.with?("libsysteminfo") || get_system_info || system_info
-    libpropertyformatter = build.with?("libpropertyformatter") || system_info
+    libpropertyformatter = build.with?("libpropertyformatter") || system_info || x509_tools
     libdisplaywidth = build.with?("libdisplaywidth") || libpropertyformatter || print_utf8
 
     args = std_cmake_args + %W[
@@ -100,6 +99,7 @@ class TdSystemTools < Formula
       -DWITH_UNIX_TIMESTAMP_TOOLS=#{unix_timestamp_tools ? "ON" : "OFF"}
       -DWITH_X509_TOOLS=#{x509_tools ? "ON" : "OFF"}
     ]
+    args << "-DOPENSSL_ROOT_DIR=#{Formula["openssl@3"].opt_prefix}" if x509_tools
 
     system "cmake", "-S", ".", "-B", "build", *args
     system "cmake", "--build", "build"
@@ -112,5 +112,9 @@ class TdSystemTools < Formula
                                             build.with?("system-info-default-banner") ||
                                             build.with?("system-info-examples") ||
                                             build.with?("system-info-in-profiles")
+    if build.with?("x509-tools")
+      assert_match "view-certificate", shell_output("#{bin}/view-certificate --version")
+      assert_match "view-crl", shell_output("#{bin}/view-crl --version")
+    end
   end
 end

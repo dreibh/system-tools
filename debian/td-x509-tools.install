@@ -13,7 +13,9 @@ usr/share/bash-completion/completions/test-tls-connection
 usr/share/bash-completion/completions/view-certificate
 usr/share/bash-completion/completions/view-crl
 usr/share/locale/*/LC_MESSAGES/check-certificate.mo
+usr/share/locale/*/LC_MESSAGES/der2pem.mo
 usr/share/locale/*/LC_MESSAGES/extract-pem.mo
+usr/share/locale/*/LC_MESSAGES/pem2der.mo
 usr/share/locale/*/LC_MESSAGES/test-tls-connection.mo
 usr/share/locale/*/LC_MESSAGES/view-certificate.mo
 usr/share/locale/*/LC_MESSAGES/view-crl.mo

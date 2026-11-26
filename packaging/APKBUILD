@@ -14,6 +14,7 @@ makedepends="
 	gettext-dev
 	linux-headers
 	ninja
+	openssl-dev
 "
 subpackages="
 	libdisplaywidth:_libdisplaywidth
@@ -31,7 +32,7 @@ subpackages="
 	$pkgname-unixtimestamp-tools:_unixtimestamp_tools
 	$pkgname-try-hard:_try_hard:noarch
 	$pkgname-random-sleep:_random_sleep
-	$pkgname-x509-tools:_x509_tools:noarch
+	$pkgname-x509-tools:_x509_tools
 	$pkgname-gimp-scripts:_gimp_scripts:noarch
 	$pkgname-gimp-scripts-examples:_gimp_scripts_examples:noarch
 	$pkgname-basic:_basic:noarch
@@ -56,18 +57,24 @@ package() {
 	cd "$builddir"
 	DESTDIR="$pkgdir" cmake --install build
 
-	# Apply shebang fix for scripts matching Alpine's environment paths
+	# Apply shebang fix for scripts matching Alpine's environment paths (skip ELF binaries)
 	for directory in usr/bin \
 	                 usr/share/System-Info \
 	                 usr/share/system-tools \
 	                 etc/system-info.d \
 	                 etc/system-maintenance.d ; do
 		if [ -d "$pkgdir/$directory" ]; then
-			find "$pkgdir/$directory" -type f -exec sed -i \
-				-e 's|^#!/usr/bin/env bash|#!/bin/bash|' \
-				-e 's|^#!/usr/bin/env python3|#!/bin/python3|' \
-				-e 's|^#!/usr/bin/env Rscript|#!/usr/bin/Rscript|' \
-				{} +
+			find "$pkgdir/$directory" -type f -exec sh -c '
+				for f in "$@" ; do
+					if [ "$(head -c 2 "$f" 2>/dev/null | tr -d "\0")" = "#!" ] ; then
+						sed -i \
+							-e "s|^#!/usr/bin/env bash|#!/bin/bash|" \
+							-e "s|^#!/usr/bin/env python3|#!/bin/python3|" \
+							-e "s|^#!/usr/bin/env Rscript|#!/bin/Rscript|" \
+							"$f"
+					fi
+				done
+			' _ {} +
 		fi
 	done
 }
@@ -186,8 +193,7 @@ _random_sleep() {
 
 _x509_tools() {
 	pkgdesc="X.509 certificate handling tools"
-	# NOTE: GNU date from coreutils is needed.
-	depends="$pkgname-print-utf8=$pkgver-r$pkgrel $pkgname-text-block=$pkgver-r$pkgrel $pkgname-unixtimestamp-tools=$pkgver-r$pkgrel bash coreutils gettext mbuffer openssl"
+	depends="$pkgname-print-utf8=$pkgver-r$pkgrel $pkgname-text-block=$pkgver-r$pkgrel bash gettext openssl util-linux"
 
 	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share/system-tools
 	mv "$pkgdir"/usr/bin/check-certificate "$subpkgdir"/usr/bin/

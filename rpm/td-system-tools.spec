@@ -10,6 +10,7 @@ BuildRequires: cmake
 BuildRequires: gcc
 BuildRequires: gcc-c++
 BuildRequires: gettext
+BuildRequires: openssl-devel
 BuildRequires: systemd-devel
 
 Requires: %{name}-basic = %{version}-%{release}
@@ -58,7 +59,9 @@ feature native internationalization support via GNU gettext.
 %find_lang System-Info
 %find_lang System-Maintenance
 %find_lang check-certificate
+%find_lang der2pem
 %find_lang extract-pem
+%find_lang pem2der
 %find_lang print-utf8
 %find_lang random-sleep
 %find_lang test-tls-connection
@@ -69,18 +72,24 @@ feature native internationalization support via GNU gettext.
 %find_lang view-certificate
 %find_lang view-crl
 
-# ====== Apply shebang fix for scripts ======================================
+# ====== Apply shebang fix for scripts (skip ELF binaries) ==================
 for directory in %{_bindir} \
                  %{_datadir}/System-Info/ \
                  %{_datadir}/system-tools/ \
                  %{_sysconfdir}/system-info.d/ \
                  %{_sysconfdir}/system-maintenance.d/ \
                  ; do
-   find "%{buildroot}/$directory" -type f -exec sed -i \
-      -e 's|^#!/usr/bin/env bash|#!/usr/bin/bash|' \
-      -e 's|^#!/usr/bin/env python3|#!/usr/bin/python3|' \
-      -e 's|^#!/usr/bin/env Rscript|#!/usr/bin/Rscript|' \
-      {} +
+   find "%{buildroot}/$directory" -type f -exec sh -c '
+      for f in "$@" ; do
+         if [ "$(head -c 2 "$f" 2>/dev/null | tr -d "\0")" = "#!" ] ; then
+            sed -i \
+               -e "s|^#!/usr/bin/env bash|#!/usr/bin/bash|" \
+               -e "s|^#!/usr/bin/env python3|#!/usr/bin/python3|" \
+               -e "s|^#!/usr/bin/env Rscript|#!/usr/bin/Rscript|" \
+               "$f"
+         fi
+      done
+   ' _ {} +
 done
 # ===========================================================================
 
@@ -438,13 +447,10 @@ interval, with support for fractional seconds.
 
 %package x509-tools
 Summary: X.509 certificate handling tools
-BuildArch: noarch
 Requires: %{name}-print-utf8 = %{version}-%{release}
 Requires: %{name}-text-block = %{version}-%{release}
-Requires: %{name}-unixtimestamp-tools = %{version}-%{release}
-Requires: findutils
+Requires: libpropertyformatter3 = %{version}-%{release}
 Requires: gettext-runtime
-Requires: (mbuffer or buffer)
 Requires: openssl
 Requires: util-linux
 # Fedora has the GnuTLS tools in a separate package:
@@ -464,11 +470,11 @@ This package contains X.509 certificate handling tools:
 * The check-certificate tool verifies an X.509 certificate using a CA
   certificate and optionally a revocation list.
 * The extract-pem tool extracts a PEM file.
-* The der2pem tool converts a certificate or CRL in DER format to PEM format.
-* The pem2der tool converts a certificate or CRL in PEM format to DER format.
+* The der2pem tool converts a certificate, CRL, or CSR in DER format to PEM format.
+* The pem2der tool converts a certificate, CRL, or CSR in PEM format to DER format.
 * The test-tls-connection tool tests a TCP TLS connection to a remote endpoint.
 
-%files x509-tools -f check-certificate.lang -f extract-pem.lang -f test-tls-connection.lang -f view-certificate.lang -f view-crl.lang
+%files x509-tools -f check-certificate.lang -f der2pem.lang -f extract-pem.lang -f pem2der.lang -f test-tls-connection.lang -f view-certificate.lang -f view-crl.lang
 %{_bindir}/check-certificate
 %{_bindir}/der2pem
 %{_bindir}/extract-pem

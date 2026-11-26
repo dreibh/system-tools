@@ -8,8 +8,10 @@ Vcs-Browser: https://github.com/dreibh/system-tools
 Build-Depends: cmake,
                debhelper-compat (= 13),
                gettext,
+               libssl-dev,
                libsystemd-dev,
-               locales-all
+               locales-all,
+               openssl
 Standards-Version: 4.7.4
 Rules-Requires-Root: no
 
@@ -232,15 +234,13 @@ Description: Wait for a random time span
  interval, with support for fractional seconds.
 
 Package: td-x509-tools
-Architecture: all
-Depends: file,
-         gettext-base,
-         mbuffer | buffer,
+Architecture: any
+Depends: gettext-base,
          openssl,
-         td-print-utf8,
-         td-text-block,
-         td-unixtimestamp-tools,
-         ${misc:Depends}
+         td-print-utf8 (>= ${source:Version}),
+         td-text-block (>= ${source:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
 Provides: td-x509
 Replaces: td-x509 (<< 2.2.0)
 Breaks: td-x509 (<< 2.2.0)
@@ -256,8 +256,10 @@ Description: X.509 certificate handling tools
   * The check-certificate tool verifies an X.509 certificate using a CA
     certificate and optionally a revocation list.
   * The extract-pem tool extracts a PEM file.
-  * The der2pem tool converts a certificate or CRL in DER format to PEM format.
-  * The pem2der tool converts a certificate or CRL in PEM format to DER format.
+  * The der2pem tool converts a certificate, CRL, or CSR in DER format to PEM
+    format.
+  * The pem2der tool converts a certificate, CRL, or CSR in PEM format to DER
+    format.
   * The test-tls-connection tool tests a TCP TLS connection to a remote
     endpoint.
 
