@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 26, 2026
 .Dt Fingerprint\-SSH\-Keys 1
 .Os Fingerprint\-SSH\-Keys
 .\" ###### Name #############################################################
@@ -104,11 +104,12 @@ or
 .Cm csv .
 .It Fl K Ar directory | Fl \-key\-directory Ar directory
 Specify the directory containing the SSH host public keys (defaults to
-.Pa /etc/ssh
-or Windows
-.Pa %PROGRAMDATA%/ssh ) .
+.Pa /etc/ssh ,
+or
+.Pa %PROGRAMDATA%/ssh
+on Windows).
 .It Fl \-include\-deprecated
-Also include deprecated key types and hash algorithms in DNS SSHFP RR output.
+Also include deprecated key types and hash algorithms (such as DSA and SHA\-1) in DNS SSHFP RR output.
 .It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl \-version
@@ -140,7 +141,8 @@ Displays usage instructions.
 .\" ###### See also #########################################################
 .Sh SEE ALSO
 .Xr Reset\-Machine\-ID 1 ,
-.Xr System\-Info 1
+.Xr System\-Info 1 ,
+.Xr ssh\-keygen 1
 .\" ###### Notes ############################################################
 .Sh NOTES
 This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at

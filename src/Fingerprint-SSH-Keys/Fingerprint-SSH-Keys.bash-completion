@@ -32,33 +32,39 @@
 # ###### Bash completion for Fingerprint-SSH-Keys ###########################
 _Fingerprint_SSH_Keys()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
+   # shellcheck disable=SC2034
+   local cur prev words cword comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -- "$@" || return
+   elif type -t _init_completion >/dev/null ; then
       _init_completion || return
    else
-      # Manual initialization for older bash completion versions:
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
       prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
+      words=("${COMP_WORDS[@]}")
       cword="${COMP_CWORD}"
    fi
 
+   # ====== Stop completion after terminal options or '--' ==================
+   local i
+   for (( i = 1; i < cword; i++ )) ; do
+      case "${words[i]}" in
+         -- | -h | --help | -v | --version)
+            return 0
+            ;;
+      esac
+   done
+
    case "${prev}" in
-      # ====== Output format types ========================================
-      -F | --format)
-         mapfile -t COMPREPLY < <(compgen -W "text python csv" -- "${cur}")
+      # ====== Output format types ==========================================
+      -F | --format | --raw-format)
+         mapfile -t COMPREPLY < <(compgen -W "text python csv" -- "${cur,,}")
          return 0
          ;;
-      # ====== Key directory ==============================================
+      # ====== Key directory ================================================
       -K | --key-directory)
-         if type -t _filedir >/dev/null; then
+         if type -t _filedir >/dev/null ; then
             _filedir -d
          else
             mapfile -t COMPREPLY < <(compgen -d -- "${cur}")
@@ -67,7 +73,7 @@ _Fingerprint_SSH_Keys()
          ;;
    esac
 
-   # ====== All options =====================================================
+   # ====== All options (no positional filename arguments accepted) =========
    local opts="
 -A
 --all
@@ -95,7 +101,7 @@ _Fingerprint_SSH_Keys()
 -v
 --version
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
    return 0
 }
 
