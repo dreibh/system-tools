@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 26, 2026
 .Dt Reset\-Machine\-ID 1
 .Os Reset\-Machine\-ID
 .\" ###### Name #############################################################
@@ -59,59 +59,70 @@
 .Sh DESCRIPTION
 .Nm Reset\-Machine\-ID
 resets the machine identity state, particularly for a cloned VM, to make it appear as a new machine.
+Executing identity changes requires superuser (root) privileges.
 It performs the following tasks:
 .Bl -bullet -compact
 .It
-Reset
-.Pa /etc/machine\-id
-
+Change the system hostname, if a new one is provided
+.Pq the Fl \-hostname No option
 .It
 Reset
+.Pa /etc/machine\-id
+and update
 .Pa /var/lib/dbus/machine\-id
 (symlink to
 .Pa /etc/machine\-id )
-
 .It
-Reset host ID in Debian Popularity Contest configuration file (if installed)
+Reset the host ID in the Debian Popularity Contest configuration file, if installed
 .It
-Change hostname, if a new one is provided
-.Pq the Fl \-hostname option
-
+Optionally install and configure Zabbix Agent for a given Zabbix server
 .It
-Provide hardened settings for SSH client and server
+Provide hardened settings for the SSH client and server
 .It
-Create new SSH key pair
+Back up existing SSH host keys and generate a new ED25519, ECDSA, and RSA key set
 .El
-The changes are made interactively on request, unless the option
-.Fl \-yes\-to\-all\-i\-am\-really\-sure
-is used.
 .Pp
+All modifications are confirmed interactively unless
+.Fl \-yes\-to\-all\-i\-am\-really\-sure
+is specified.
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
 .It Fl H Ar hostname | Fl \-hostname Ar hostname
-Set the given hostname.
+Set the given hostname (FQDN or short hostname) and update
+.Pa /etc/hosts
+accordingly.
 .It Fl M | Fl \-skip\-machine\-id
 Do not reset the machine ID.
 .It Fl S | Fl \-skip\-ssh\-configuration
 Do not make SSH configuration changes.
 .It Fl K | Fl \-skip\-ssh\-key\-replacement
-Do not replace SSH keys.
+Do not replace SSH host keys.
 .It Fl Z Ar zabbix\_server | Fl \-zabbix Ar zabbix\_server
-Configure an already\-installed Zabbix Agent for a given Zabbix server.
+Configure Zabbix Agent for the specified Zabbix server.
 .It Fl A | Fl \-install\-zabbix\-agent
-Try to install Zabbix Agent, if necessary, when a Zabbix server is given but no Zabbix Agent is installed. This will add the current Zabbix PPA on Debian/Ubuntu/Fedora systems. Note that a Zabbix PPA may not be available for the used distribution! On FreeBSD, the Zabbix Agent is installed from the FreeBSD Ports Collection.
+Install Zabbix Agent if no Zabbix Agent configuration is found when
+.Fl Z
+is given. On Debian and Ubuntu systems, this adds the official Zabbix APT repository (note that an official repository may not be available for every distribution release); on Fedora, openSUSE, Alpine, FreeBSD, NetBSD, and OpenBSD, the system package manager is used.
 .It Fl \-yes\-to\-all\-i\-am\-really\-sure
-Create new keys (delete old ones) as well as replace
-.Pa sshd_config
-and
-.Pa ssh_config
-without interactively asking for confirmation.
+Apply all requested hostname, machine\-ID, Zabbix Agent, SSH configuration, and SSH host\-key changes without interactive confirmation.
 .It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl \-version
 Prints the program version and exits.
+.El
+.\" ###### Files ############################################################
+.Sh FILES
+.Bl -tag -width indent
+.It Pa /etc/machine\-id , /var/lib/dbus/machine\-id
+System and D\-Bus machine identifier files.
+.It Pa /etc/hosts , /etc/hostname , /etc/rc.conf , /etc/nodename
+Hostname and local name\-resolution configuration files.
+.It Pa /etc/ssh/ssh_config , /etc/ssh/sshd_config
+OpenSSH client and daemon configuration files.
+.It Pa /etc/zabbix/zabbix_agentd.conf , /etc/zabbix_agentd.conf
+Zabbix Agent configuration files.
 .El
 .\" ###### Exit status ######################################################
 .Sh EXIT STATUS
@@ -134,14 +145,22 @@ sudo Reset\-Machine\-ID \-H server.domain.example \-\-zabbix zabbix.domain.examp
 .It
 sudo Reset\-Machine\-ID \-\-skip\-ssh\-configuration \-\-skip\-ssh\-key\-replacement
 .It
+Reset\-Machine\-ID \-\-help
+.It
+Reset\-Machine\-ID \-h
+.It
 Reset\-Machine\-ID \-\-version
 .It
-Reset\-Machine\-ID \-\-help
+Reset\-Machine\-ID \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
+.Xr Fingerprint\-SSH\-Keys 1 ,
 .Xr System\-Info 1 ,
-.Xr System\-Maintenance 1
+.Xr System\-Maintenance 1 ,
+.Xr ssh 1 ,
+.Xr ssh\-keygen 1 ,
+.Xr sshd 8
 .\" ###### Notes ############################################################
 .Sh NOTES
 This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at
@@ -150,4 +169,3 @@ This program is part of System\-Tools. The latest version of System\-Tools can b
 .Sh AUTHORS
 Thomas Dreibholz,
 .Lk https://www.nntb.no/\(tidreibh "Homepage"
-

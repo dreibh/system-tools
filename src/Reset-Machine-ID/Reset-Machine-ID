@@ -36,15 +36,35 @@ export TEXTDOMAIN="Reset-Machine-ID"
 if [ -z "${TEXTDOMAINDIR:-}" ] && [[ "@CMAKE_INSTALL_FULL_DATADIR@" != @* ]] ; then
    export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
 fi
-
-# shellcheck disable=SC1091
-. gettext.sh
+if command -v gettext.sh >/dev/null 2>&1 ; then
+   # shellcheck disable=SC1091
+   . gettext.sh
+else
+   gettext () { printf "%s" "$1"; }
+   eval_gettext () { eval "printf '%s' \"$1\""; }
+fi
 
 
 # SSH key settings:
 ECDSA_BITS=521
 RSA_BITS=16384
 # MODULI_BITS=8192
+
+
+# ###### Clean up temporary staging files on exit or signal #################
+zabbixNewConfig=""
+cleanup ()
+{
+   rm -f -- \
+      /etc/hosts.updated \
+      /etc/hostname.updated \
+      /etc/rc.conf.updated \
+      /etc/nodename.updated \
+      /etc/ssh/ssh_config.suggested \
+      /etc/ssh/sshd_config.suggested \
+      "${zabbixNewConfig}"
+}
+trap cleanup EXIT INT TERM HUP
 
 
 # ###### Test SSH options and select supported choices in preferred order ###
@@ -54,23 +74,22 @@ select-ssh-options ()
    local optionAlt="$2"
    shift 2
 
-   valueString=$(
+   local valueString
+   valueString="$(
       ( ssh -Q "${option}" 2>/dev/null || if [ "${optionAlt}" != "${option}" ] ; then ssh -Q "${optionAlt}" 2>/dev/null ; fi ) | \
-      while read -r value ; do
-         echo -n ":${value}"
+      while IFS= read -r value ; do
+         printf ':%s' "${value}"
       done
-      echo ":"
-   )
-   # echo >&2 -e "${option}:\t${valueString}"
+      printf ':'
+   )"
 
-   selectedOptions=""
+   local selectedOptions=""
    while [ $# -gt 0 ] ; do
       local choice="$1"
       shift
 
-      if [[ "${valueString}" =~ :${choice}: ]] ; then
-         # echo >&2 "OK ${choice}"
-         if [ "${selectedOptions}" == "" ] ; then
+      if [[ "${valueString}" == *":${choice}:"* ]] ; then
+         if [ -z "${selectedOptions}" ] ; then
             selectedOptions="${choice}"
          else
             selectedOptions="${selectedOptions},${choice}"
@@ -94,16 +113,36 @@ colordiff ()
 }
 
 
-# ###### Install Zabbix Agent ###############################################
-install-zabbix-agent()
+# ###### Restart SSH server daemon across supported init systems ############
+restart-ssh-daemon ()
 {
+   if command -v service >/dev/null ; then
+      # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
+      service sshd restart 2>/dev/null || \
+         service ssh restart 2>/dev/null || true
+   elif command -v systemctl >/dev/null ; then
+      systemctl restart sshd 2>/dev/null || \
+         systemctl restart ssh 2>/dev/null || true
+   elif command -v rc-service >/dev/null ; then
+      rc-service sshd restart 2>/dev/null || true
+   elif command -v rcctl >/dev/null ; then
+      rcctl restart sshd 2>/dev/null || true
+   fi
+}
+
+
+# ###### Install Zabbix Agent ###############################################
+install-zabbix-agent ()
+{
+   local -a packages
    if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
       # ------ Add Zabbix Official Repository -------------------------------
       local zabbixVersion="7.0"
+      local codename="${VERSION_CODENAME:-sid}"
       cat >/etc/apt/sources.list.d/zabbix.list <<EOF
-deb https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${VERSION_CODENAME} main
-# deb-src https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${VERSION_CODENAME} main
+deb https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${codename} main
+# deb-src https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${codename} main
 EOF
       rm -f /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
       curl -fsSL https://repo.zabbix.com/zabbix-official-repo.key | \
@@ -154,7 +193,7 @@ EOF
       sysrc zabbix_agentd_enable="YES"
       service zabbix_agentd start
 
-   # ------ NetBSD -------------------------------------------------------------
+   # ------ NetBSD ----------------------------------------------------------
    elif [ "${ID}" == "netbsd" ] ; then
 
       packages=( "zabbix-agent" )
@@ -163,10 +202,14 @@ EOF
       if [ -e /usr/pkg/share/examples/rc.d/zabbix_agentd ] ; then
          cp /usr/pkg/share/examples/rc.d/zabbix_agentd /etc/rc.d/
       fi
-      echo 'zabbix_agentd=YES' >>/etc/rc.conf
+      if grep -q '^zabbix_agentd=' /etc/rc.conf 2>/dev/null ; then
+         sed -i 's/^zabbix_agentd=.*$/zabbix_agentd=YES/' /etc/rc.conf
+      else
+         echo 'zabbix_agentd=YES' >>/etc/rc.conf
+      fi
       /etc/rc.d/zabbix_agentd start
 
-   # ------ OpenBSD ------------------------------------------------------------
+   # ------ OpenBSD ---------------------------------------------------------
    elif [ "${ID}" == "openbsd" ] ; then
 
       packages=( "zabbix-agent" )
@@ -208,10 +251,12 @@ usage () {
    fi
    local homepage="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_HOMEPAGE_URL@\a@PROJECT_HOMEPAGE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
    local repository="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_SOURCE_URL@\a@PROJECT_SOURCE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
+   local usageHeader
    # TRANSLATORS: Command-line syntax message prefix:
    # "Usage: <program> [options]".
+   usageHeader="$(gettext "Usage:")"
    cat >&2 <<EOF
-${header}$(gettext "Usage:")${reset}
+${header}${usageHeader}${reset}
 ${cmd}${program}${reset}
 	${syn}[${reset}${opt}-H${reset} ${arg}hostname${reset} ${syn}|${reset} ${opt}--hostname${reset} ${arg}hostname${reset}${syn}]${reset}
 	${syn}[${reset}${opt}-M${reset} ${syn}|${reset} ${opt}--skip-machine-id${reset}${syn}]${reset}
@@ -226,9 +271,9 @@ ${cmd}${program}${reset}
 	${syn}[${reset}${opt}-v${reset} ${syn}|${reset} ${opt}--version${reset}${syn}]${reset}
 
 EOF
-   # TRANSLATORS: Informational message at the end of usage:
-   # "For further information, see the man page for <manpage>, read the documentation at <url>, examine the source code at <url>, or consult your favourite LLM.".
    # shellcheck disable=SC2059
+   # TRANSLATORS: Informational message at the end of usage:
+   # 1st %s = manpage name, 2nd %s = documentation URL, 3rd %s = repository URL
    printf >&2 "$(gettext "For further information, see the man page for %s, read the documentation at %s, examine the source code at %s, or consult your favourite LLM.")\n" \
       "${manpage}" "${homepage}" "${repository}"
    exit "${exitCode}"
@@ -261,22 +306,20 @@ case "${UNAME}" in
       GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
       ;;
    Darwin)
-      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:/usr/local/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
       ;;
    *)
       GETOPT="$(command -v getopt || true)"
       ;;
 esac
-if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+if [[ -z "${GETOPT}" ]] || "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]] ; then
    # TRANSLATORS: Error message when enhanced/GNU getopt is not found or is
    # incompatible.
    gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
    echo >&2
    exit 1
 fi
-options="$(${GETOPT} -o H:MSKZ:Ahv --long hostname:,skip-machine-id,skip-ssh-configuration,skip-ssh-key-replacement,zabbix:,install-zabbix-agent,yes-to-all-i-am-really-sure,help,version -a -- "$@")"
-# shellcheck disable=SC2181
-if [[ $? -ne 0 ]]; then
+if ! options="$("${GETOPT}" -o H:MSKZ:Ahv --long hostname:,skip-machine-id,skip-ssh-configuration,skip-ssh-key-replacement,zabbix:,install-zabbix-agent,yes-to-all-i-am-really-sure,help,version -a -- "$@")" ; then
    usage "$0" 1
 fi
 eval set -- "${options}"
@@ -286,26 +329,29 @@ SKIP_MACHINE_ID=0
 SKIP_SSH_CONFIGURATION=0
 SKIP_SSH_KEY_REPLACEMENT=0
 OLD_HOSTNAME_FQDN="$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")"
-OLD_HOSTNAME="${OLD_HOSTNAME_FQDN//.*/}"
+OLD_HOSTNAME="${OLD_HOSTNAME_FQDN%%.*}"
 NEW_HOSTNAME_FQDN="${OLD_HOSTNAME_FQDN}"
+NEW_HOSTNAME="${OLD_HOSTNAME}"
 ZABBIX_SERVER=""
 INSTALL_ZABBIX_AGENT=0
 applyChanges=""
 while [ $# -gt 0 ] ; do
    case "$1" in
       -H | --hostname)
+         # shellcheck disable=SC2034
          hostname="$2"
          shift
-         if [[ ! "${hostname}" =~ ^([a-zA-Z][a-zA-Z0-9-]+\.)*[a-zA-Z][a-zA-Z0-9-]*$ ]] ; then
+         if (( ${#hostname} > 253 )) || \
+            [[ ! "${hostname}" =~ ^([a-zA-Z]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$ ]] ; then
             # TRANSLATORS: Error message when the specified hostname fails
             # domain/hostname syntax validation:
             # ${hostname} = invalid hostname string
-            # shellcheck disable=SC2005
-            echo >&2 "$(eval_gettext "ERROR: Invalid hostname \${hostname}!")"
+            eval_gettext >&2 "ERROR: Invalid hostname \${hostname}!"
+            echo >&2
             exit 1
          fi
          NEW_HOSTNAME_FQDN="${hostname}"
-         NEW_HOSTNAME="${NEW_HOSTNAME_FQDN//.*/}"
+         NEW_HOSTNAME="${NEW_HOSTNAME_FQDN%%.*}"
          ;;
       -M | --skip-machine-id)
          SKIP_MACHINE_ID=1
@@ -342,8 +388,8 @@ while [ $# -gt 0 ] ; do
          echo >&2 "INTERNAL ERROR: Unhandled option $1!"
          exit 1
          ;;
-  esac
-  shift
+   esac
+   shift
 done
 if [ $# -ne 0 ] ; then
    usage "$0" 1
@@ -361,11 +407,10 @@ fi
 
 # ====== Obtain system details ==============================================
 UNAME="$(uname)"
-NAME="${UNAME}"
 ID="${UNAME,,}"
-VERSION="$(uname -r)"
-VERSION_ID="${VERSION/_*/}"
+VERSION_CODENAME=""
 if [ -f /etc/os-release ] ; then
+   # shellcheck disable=SC1091
    . /etc/os-release
 fi
 
@@ -373,12 +418,15 @@ fi
 # ====== Change hostname ====================================================
 if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
 
-   # ====== Update /etc/hosts ============================================
+   # ====== Update /etc/hosts ===============================================
    differences=0
-   while read -r line ; do
+   oldFqdnRegex="${OLD_HOSTNAME_FQDN//./\\.}"
+   oldHostRegex="${OLD_HOSTNAME//./\\.}"
 
-      if [[ "${line}" =~ ^(127\.0.\0.1|127\.0\.1\.1|::1)[[:blank:]] ]] ; then
-         currentNames="$(echo "${line}" | sed -e 's/^[0-9a-fA-F\.:]*[[:blank:]]*//g' -e 's/[[:blank:]][[:blank:]]*/\n/g' | sort -u)"
+   while IFS= read -r line || [[ -n "${line}" ]] ; do
+
+      if [[ "${line}" =~ ^(127\.0\.0\.1|127\.0\.1\.1|::1)[[:blank:]] ]] ; then
+         currentNames="$(printf '%s\n' "${line}" | sed -e 's/^[0-9a-fA-F.:]*[[:blank:]]*//' -e 's/[[:blank:]][[:blank:]]*/\n/g' | sort -u)"
          newNames="${NEW_HOSTNAME_FQDN}"
          if [ "${NEW_HOSTNAME}" != "${NEW_HOSTNAME_FQDN}" ] ; then
             newNames="${newNames} ${NEW_HOSTNAME}"
@@ -389,21 +437,25 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
             fi
          done
          # shellcheck disable=SC2001
-         line="$(echo "${line}" | sed -e "s/\([[:blank:]][[:blank:]]*\).*$/\1${newNames}/g")"
+         line="$(printf '%s\n' "${line}" | sed -e "s/\([[:blank:]][[:blank:]]*\).*$/\1${newNames}/")"
 
       elif [[ "${line}" =~ ^(([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})|((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:)))(%.+)?)[[:blank:]] ]] ; then
-         # shellcheck disable=SC2001
-         line="$(echo "${line}" | sed -e "s/\([[:blank:]]\)\(${OLD_HOSTNAME_FQDN}\)\([[:blank:]]\|$\)/\1${NEW_HOSTNAME_FQDN}\3/g" -e "s/\([[:blank:]]\)\(${OLD_HOSTNAME}\)\([[:blank:]]\|$\)/\1${NEW_HOSTNAME}\3/g")"
+         if [ -n "${OLD_HOSTNAME_FQDN}" ] && [ "${OLD_HOSTNAME_FQDN}" != "localhost" ] ; then
+            line="$(printf '%s\n' "${line}" | sed -e "s/\([[:blank:]]\)\(${oldFqdnRegex}\)\([[:blank:]]\|$\)/\1${NEW_HOSTNAME_FQDN}\3/g")"
+         fi
+         if [ -n "${OLD_HOSTNAME}" ] && [ "${OLD_HOSTNAME}" != "localhost" ] ; then
+            line="$(printf '%s\n' "${line}" | sed -e "s/\([[:blank:]]\)\(${oldHostRegex}\)\([[:blank:]]\|$\)/\1${NEW_HOSTNAME}\3/g")"
+         fi
       fi
 
-      echo "${line}"
+      printf '%s\n' "${line}"
 
    done </etc/hosts >/etc/hosts.updated
    echo "/etc/hosts:"
    colordiff /etc/hosts /etc/hosts.updated || differences=$((differences + 1))
 
 
-   # ====== Update /etc/hostname or /etc/rc.conf =========================
+   # ====== Update /etc/hostname or /etc/rc.conf ============================
    if [ -e /etc/hostname ] ; then
       echo "${NEW_HOSTNAME_FQDN}" >/etc/hostname.updated
       echo "/etc/hostname:"
@@ -421,11 +473,11 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
       echo >&2 "ERROR: Missing case!"
    fi
 
-   # ====== Apply changes ================================================
+   # ====== Apply changes ===================================================
    if [ "${differences}" -gt 0 ] ; then
-      if [ ${YES_TO_ALL} -ne 1 ] ; then
+      if [ "${YES_TO_ALL}" -ne 1 ] ; then
          # TRANSLATORS: Prompt asking user whether to apply hostname changes.
-         echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Update hostname?") [yes/no]\x1b[0m "
+         printf '\x1b[34m%s: %s [yes/no]\x1b[0m ' "$(date +%FT%H:%M:%S)" "$(gettext "Update hostname?")"
          read -er applyChanges
       fi
       if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
@@ -437,28 +489,39 @@ if [ "${OLD_HOSTNAME_FQDN}" != "${NEW_HOSTNAME_FQDN}" ] ; then
          elif [ -e /etc/nodename ] ; then
             mv /etc/nodename.updated /etc/nodename
          fi
-         if [ -x /usr/bin/hostnamectl ] ; then
-            /usr/bin/hostnamectl hostname "${NEW_HOSTNAME_FQDN}"
+         if command -v hostnamectl >/dev/null ; then
+            hostnamectl hostname "${NEW_HOSTNAME_FQDN}" 2>/dev/null || hostname "${NEW_HOSTNAME_FQDN}"
          else
             hostname "${NEW_HOSTNAME_FQDN}"
          fi
+      else
+         rm -f -- /etc/hosts.updated /etc/hostname.updated /etc/rc.conf.updated /etc/nodename.updated
+         # TRANSLATORS: Status message shown when user chooses not to apply changes.
+         gettext "Skipped!"
+         echo
       fi
+   else
+      rm -f -- /etc/hosts.updated /etc/hostname.updated /etc/rc.conf.updated /etc/nodename.updated
    fi
 fi
 
 
 # ====== Reset machine ID ===================================================
-if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
-   if [ ${YES_TO_ALL} -ne 1 ] ; then
+if [ "${SKIP_MACHINE_ID}" -eq 0 ] && [ -e /etc/machine-id ] ; then
+   if [ "${YES_TO_ALL}" -ne 1 ] ; then
+      # shellcheck disable=SC2034
       machineID="$(cat /etc/machine-id)"
       # TRANSLATORS: Prompt asking whether to reset system machine ID:
       # ${machineID} = current machine ID string
-      echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "The current machine ID is \${machineID}. Reset it?") [yes/no]\x1b[0m "
+      printf '\x1b[34m%s: %s [yes/no]\x1b[0m ' "$(date +%FT%H:%M:%S)" "$(eval_gettext "The current machine ID is \${machineID}. Reset it?")"
       read -er applyChanges
    fi
    if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
       # ------ Set new machine ID -------------------------------------------
-      if command -v dbus-uuidgen >/dev/null ; then
+      if command -v systemd-machine-id-setup >/dev/null ; then
+         rm -f /etc/machine-id
+         systemd-machine-id-setup >/dev/null
+      elif command -v dbus-uuidgen >/dev/null ; then
          # Generate new ID already now:
          rm -f /etc/machine-id
          dbus-uuidgen --ensure=/etc/machine-id
@@ -466,9 +529,8 @@ if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
          # The ID should be reset during the next boot:
          truncate -s 0 /etc/machine-id
       fi
-      if [ -e /var/lib/dbus/machine-id ] ; then
-         rm /var/lib/dbus/machine-id
-         ln -s /etc/machine-id /var/lib/dbus/machine-id
+      if [ -e /var/lib/dbus/machine-id ] || [ -L /var/lib/dbus/machine-id ] ; then
+         ln -sf /etc/machine-id /var/lib/dbus/machine-id
       fi
       # shellcheck disable=SC2034
       machineID="$(cat /etc/machine-id)"
@@ -479,17 +541,22 @@ if [ ${SKIP_MACHINE_ID} -eq 0 ] && [ -e /etc/machine-id ] ; then
 
       # ------ Set new ID in Debian Popularity Contest configuration --------
       if [ -e /etc/popularity-contest.conf ] ; then
-         hostID="$( ( uuid 2>/dev/null || uuidgen) | tr -d '-' )"
+         hostID="$(( uuid 2>/dev/null || uuidgen ) | tr -d '-')"
          sed -e "s/^MY_HOSTID=.*$/MY_HOSTID=\"${hostID}\"/" -i /etc/popularity-contest.conf
          rm -f /var/lib/popularity-contest/lastsub /var/log/popularity-contest
       fi
+   else
+      # TRANSLATORS: Status message shown when user chooses not to apply changes.
+      gettext "Skipped!"
+      echo
    fi
 fi
 
 
 # ====== Zabbix configuration ===============================================
-if [ "${ZABBIX_SERVER}" != "" ] ; then
+if [ -n "${ZABBIX_SERVER}" ] ; then
    # ------ Prepare configuration -------------------------------------------
+   zabbixSkipped=0
    for stage in 1 2 ; do
       for zabbixConfig in                          \
          /etc/zabbix_agentd.conf                   \
@@ -502,14 +569,22 @@ if [ "${ZABBIX_SERVER}" != "" ] ; then
          fi
       done
       if [ ! -e "${zabbixConfig}" ] ; then
-         if [ ${stage} -eq 1 ] ; then
-            if [ ${INSTALL_ZABBIX_AGENT} -eq 1 ] ; then
-               if [ ${YES_TO_ALL} -ne 1 ] ; then
+         if [ "${stage}" -eq 1 ] ; then
+            if [ "${INSTALL_ZABBIX_AGENT}" -eq 1 ] ; then
+               if [ "${YES_TO_ALL}" -ne 1 ] ; then
                   # TRANSLATORS: Prompt asking user whether to install Zabbix agent.
-                  echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Install Zabbix agent?") [yes/no]\x1b[0m "
+                  printf '\x1b[34m%s: %s [yes/no]\x1b[0m ' "$(date +%FT%H:%M:%S)" "$(gettext "Install Zabbix agent?")"
                   read -er applyChanges
                fi
-               install-zabbix-agent
+               if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
+                  install-zabbix-agent
+               else
+                  # TRANSLATORS: Status message shown when user chooses not to apply changes.
+                  gettext "Skipped!"
+                  echo
+                  zabbixSkipped=1
+                  break
+               fi
             fi
          else
             echo >&2 "ERROR: Tried to configure Zabbix Agent, but no configuration file found! Check Zabbix Agent installation!"
@@ -517,16 +592,19 @@ if [ "${ZABBIX_SERVER}" != "" ] ; then
          fi
       fi
    done
-   echo "Trying to reach Zabbix server ${ZABBIX_SERVER} ..."
-   if ! ping -c3 -i0.2 "${ZABBIX_SERVER}" ; then
-      echo >&2 "ERROR: Unable to reach Zabbix server ${ZABBIX_SERVER}!"
-      exit 1
-   fi
-   if [ ! -e "${zabbixConfig}.orig" ] ; then
-      cp "${zabbixConfig}" "${zabbixConfig}.orig"
-   fi
-   zabbixOptions="$(grep -E "^(LogFile|PidFile=)" "${zabbixConfig}" || true)"
-   cat >"${zabbixConfig}.new" <<EOF
+
+   if [ "${zabbixSkipped}" -eq 0 ] ; then
+      echo "Trying to reach Zabbix server ${ZABBIX_SERVER} ..."
+      if ! ping -c3 -i0.2 "${ZABBIX_SERVER}" ; then
+         echo >&2 "ERROR: Unable to reach Zabbix server ${ZABBIX_SERVER}!"
+         exit 1
+      fi
+      if [ ! -e "${zabbixConfig}.orig" ] ; then
+         cp "${zabbixConfig}" "${zabbixConfig}.orig"
+      fi
+      zabbixOptions="$(grep -E "^(LogFile(Size)?=|PidFile=)" "${zabbixConfig}" || true)"
+      zabbixNewConfig="${zabbixConfig}.new"
+      cat >"${zabbixNewConfig}" <<EOF
 # Hostname=$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")
 HostnameItem=system.hostname
 Server=${ZABBIX_SERVER}
@@ -535,57 +613,70 @@ StartAgents=10
 ${zabbixOptions}
 EOF
 
-   # ------ Apply configuration ---------------------------------------------
-   if ! colordiff "${zabbixConfig}" "${zabbixConfig}.new" ; then
-      if [ ${YES_TO_ALL} -ne 1 ] ; then
-         # TRANSLATORS: Prompt asking whether to write suggested Zabbix agent
-         # configuration:
-         # ${zabbixConfig} = path to Zabbix configuration file
-         echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Apply suggested Zabbix Agent changes in \${zabbixConfig}?") [yes/no]\x1b[0m "
-         read -er applyChanges
-      fi
-      if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
-         cp "${zabbixConfig}" "${zabbixConfig}.old"
-         mv "${zabbixConfig}.new" "${zabbixConfig}"
-         if command -v service >/dev/null ; then
-            for mode in enable restart start ; do
-               service zabbix-agent  ${mode} 2>/dev/null || true
-               service zabbix_agentd ${mode} 2>/dev/null || true
-            done
+      # ------ Apply configuration ------------------------------------------
+      if ! colordiff "${zabbixConfig}" "${zabbixNewConfig}" ; then
+         if [ "${YES_TO_ALL}" -ne 1 ] ; then
+            # TRANSLATORS: Prompt asking whether to write suggested Zabbix agent
+            # configuration:
+            # ${zabbixConfig} = path to Zabbix configuration file
+            printf '\x1b[34m%s: %s [yes/no]\x1b[0m ' "$(date +%FT%H:%M:%S)" "$(eval_gettext "Apply suggested Zabbix Agent changes in \${zabbixConfig}?")"
+            read -er applyChanges
+         fi
+         if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
+            cp "${zabbixConfig}" "${zabbixConfig}.old"
+            mv "${zabbixNewConfig}" "${zabbixConfig}"
+            zabbixNewConfig=""
+            if command -v service >/dev/null ; then
+               for mode in enable restart start ; do
+                  service zabbix-agent  "${mode}" 2>/dev/null || true
+                  service zabbix_agentd "${mode}" 2>/dev/null || true
+               done
+            elif command -v systemctl >/dev/null ; then
+               systemctl enable zabbix-agent 2>/dev/null || true
+               systemctl restart zabbix-agent 2>/dev/null || true
+            elif command -v rcctl >/dev/null ; then
+               rcctl enable zabbix_agentd 2>/dev/null || true
+               rcctl restart zabbix_agentd 2>/dev/null || true
+            fi
+         else
+            rm -f -- "${zabbixNewConfig}"
+            zabbixNewConfig=""
+            # TRANSLATORS: Status message shown when user chooses not to apply changes.
+            gettext "Skipped!"
+            echo
          fi
       else
-         # TRANSLATORS: Status message shown when user chooses not to apply changes.
-         gettext "Skipped!"
-         echo
+         rm -f -- "${zabbixNewConfig}"
+         zabbixNewConfig=""
       fi
    fi
 fi
 
 
 # ====== SSH configuration ==================================================
-if [ ${SKIP_SSH_CONFIGURATION} -eq 0 ] && [ -d /etc/ssh ] && [ -x "$(command -v ssh)" ] ; then
+if [ "${SKIP_SSH_CONFIGURATION}" -eq 0 ] && [ -d /etc/ssh ] && command -v ssh >/dev/null ; then
 
-   sshCiphers=$(select-ssh-options       Ciphers       cipher   aes256-gcm@openssh.com chacha20-poly1305@openssh.com)
-   sshMACs=$(select-ssh-options          MACs          mac      hmac-sha2-512-etm@openssh.com hmac-sha2-256-etm@openssh.com)
-   sshKexAlgorithms=$(select-ssh-options KexAlgorithms kex      sntrup761x25519-sha512 sntrup761x25519-sha512@openssh.com diffie-hellman-group16-sha512 diffie-hellman-group18-sha512 curve25519-sha256@libssh.org)
-   sshPubkeyAcceptedKeyTypes=$(select-ssh-options       PubkeyAcceptedKeyTypes    PubkeyAcceptedKeyTypes    ssh-ed25519-cert-v01@openssh.com ssh-ed25519 rsa-sha2-512-cert-v01@openssh.com ssh-rsa-cert-v01@openssh.com rsa-sha2-512)
-   sshHostbasedAcceptedKeyTypes=$(select-ssh-options    HostbasedAcceptedKeyTypes HostbasedAcceptedKeyTypes ssh-ed25519-cert-v01@openssh.com ssh-ed25519 ssh-rsa-cert-v01@openssh.com ssh-rsa)
-   sshHostKeyAlgorithms=$(select-ssh-options            HostKeyAlgorithms         HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com ssh-ed25519 ssh-rsa-cert-v01@openssh.com ssh-rsa)
-   if [ "${sshPubkeyAcceptedKeyTypes}" != "" ] ; then
+   sshCiphers="$(select-ssh-options       Ciphers       cipher   aes256-gcm@openssh.com chacha20-poly1305@openssh.com)"
+   sshMACs="$(select-ssh-options          MACs          mac      hmac-sha2-512-etm@openssh.com hmac-sha2-256-etm@openssh.com)"
+   sshKexAlgorithms="$(select-ssh-options KexAlgorithms kex      sntrup761x25519-sha512 sntrup761x25519-sha512@openssh.com diffie-hellman-group16-sha512 diffie-hellman-group18-sha512 curve25519-sha256@libssh.org)"
+   sshPubkeyAcceptedKeyTypes="$(select-ssh-options       PubkeyAcceptedKeyTypes    PubkeyAcceptedKeyTypes    ssh-ed25519-cert-v01@openssh.com ssh-ed25519 rsa-sha2-512-cert-v01@openssh.com ssh-rsa-cert-v01@openssh.com rsa-sha2-512)"
+   sshHostbasedAcceptedKeyTypes="$(select-ssh-options    HostbasedAcceptedKeyTypes HostbasedAcceptedKeyTypes ssh-ed25519-cert-v01@openssh.com ssh-ed25519 ssh-rsa-cert-v01@openssh.com ssh-rsa)"
+   sshHostKeyAlgorithms="$(select-ssh-options            HostKeyAlgorithms         HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com ssh-ed25519 ssh-rsa-cert-v01@openssh.com ssh-rsa)"
+   if [ -n "${sshPubkeyAcceptedKeyTypes}" ] ; then
       newSSH=""
    else
       newSSH="# "   # SSH version is too old!
    fi
-   if [ "${sshCiphers}" == "" ] || \
-      [ "${sshMACs}" == "" ] || \
-      [ "${sshKexAlgorithms}" == "" ] ; then
+   if [ -z "${sshCiphers}" ] || \
+      [ -z "${sshMACs}" ] || \
+      [ -z "${sshKexAlgorithms}" ] ; then
       echo >&2 "ERROR: Something seems to be wrong!"
       echo >&2 "sshCiphers=${sshCiphers}"
       echo >&2 "sshMACs=${sshMACs}"
       echo >&2 "sshKexAlgorithms=${sshKexAlgorithms}"
       for option in cipher mac kex ; do
          echo >&2 "ssh -Q ${option}:"
-         ssh -Q ${option} >&2
+         ssh -Q "${option}" >&2
       done
       exit 1
    fi
@@ -593,7 +684,7 @@ if [ ${SKIP_SSH_CONFIGURATION} -eq 0 ] && [ -d /etc/ssh ] && [ -x "$(command -v 
    cd /etc/ssh || exit
    # TRANSLATORS: Progress notification when verifying SSH client and daemon
    # configuration.
-   echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Checking SSH configuration ...")\x1b[0m"
+   printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Checking SSH configuration ...")"
 
    # ====== Suggest ssh_config updates ======================================
    cat >ssh_config.suggested <<EOF
@@ -623,36 +714,41 @@ EOF
       gettext "Suggested ssh_config changes:"
       echo
       if ! colordiff ssh_config ssh_config.suggested ; then
-         if [ ${YES_TO_ALL} -ne 1 ] ; then
+         if [ "${YES_TO_ALL}" -ne 1 ] ; then
             # TRANSLATORS: Prompt asking user whether to apply suggested
             # ssh_config modifications.
-            echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested ssh_config changes?") [yes/no]\x1b[0m "
+            printf '\x1b[34m%s: %s [yes/no]\x1b[0m ' "$(date +%FT%H:%M:%S)" "$(gettext "Apply suggested ssh_config changes?")"
             read -er applyChanges
          fi
          if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
             cp ssh_config ssh_config.old
             mv ssh_config.suggested ssh_config
          else
+            rm -f -- ssh_config.suggested
             # TRANSLATORS: Status message shown when user chooses not to apply changes.
             gettext "Skipped!"
             echo
          fi
+      else
+         rm -f -- ssh_config.suggested
       fi
+   else
+      rm -f -- ssh_config.suggested
    fi
 
 
    # ====== Suggest sshd_config updates =====================================
    if [ -e sshd_config ] ; then
-      port="$(grep "^Port[[:blank:]]" sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2 || true)"
-      p1="$(grep "^PasswordAuthentication[[:blank:]]" sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2 || true)"
-      p2="$(grep "^KbdInteractiveAuthentication[[:blank:]]" sshd_config | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2 || true)"
+      port="$({ grep "^Port[[:blank:]]" sshd_config || true ; } | head -n 1 | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)"
+      p1="$({ grep "^PasswordAuthentication[[:blank:]]" sshd_config || true ; } | head -n 1 | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)"
+      p2="$({ grep "^KbdInteractiveAuthentication[[:blank:]]" sshd_config || true ; } | head -n 1 | tr '\t' ' ' | tr -s ' ' | cut -d' ' -f2)"
       if [[ ! "${port}" =~ ^[0-9]+$ ]] ; then
          port="22"
       fi
-      if [ "${p1}" != "yes" ] && [ "${p1}" != "no" ]  ; then
+      if [ "${p1}" != "yes" ] && [ "${p1}" != "no" ] ; then
          p1="yes"
       fi
-      if [ "${p2}" != "yes" ] && [ "${p2}" != "no" ]  ; then
+      if [ "${p2}" != "yes" ] && [ "${p2}" != "no" ] ; then
          p2="yes"
       fi
       if [ "${ID}" == "alpine" ] || [ "${ID}" == "openbsd" ] || [ "${ID}" == "sunos" ] ; then
@@ -665,7 +761,7 @@ Protocol 2
 
 Port ${port}
 
-# Check supported algorithms with "ssh -Q cipher|mac|kex|key|PubkeyAcceptedAlgorithms|HostbasedAcceptedKeyTypes|HostbasedAcceptedKeyTypes"!
+# Check supported algorithms with "ssh -Q cipher|mac|kex|key|PubkeyAcceptedAlgorithms|HostbasedAcceptedKeyTypes|HostKeyAlgorithms"!
 Ciphers                      ${sshCiphers}
 MACs                         ${sshMACs}
 KexAlgorithms                ${sshKexAlgorithms}
@@ -687,12 +783,17 @@ KbdInteractiveAuthentication ${p2}
 
 AcceptEnv                    LANG LC_*
 EOF
-      for sftp in /usr/lib/openssh/sftp-server /usr/libexec/sftp-server ; do
-         if [ -e "$sftp" ] ; then
-            (
+      for sftp in \
+         /usr/lib/openssh/sftp-server \
+         /usr/libexec/openssh/sftp-server \
+         /usr/libexec/sftp-server \
+         /usr/lib/ssh/sftp-server \
+         /usr/libexec/ssh/sftp-server ; do
+         if [ -e "${sftp}" ] ; then
+            {
                echo
-               echo "Subsystem sftp $sftp"
-            ) >>sshd_config.suggested
+               echo "Subsystem sftp ${sftp}"
+            } >>sshd_config.suggested
             break
          fi
       done
@@ -715,13 +816,21 @@ EOF
       gettext "Suggested sshd_config changes:"
       echo
       colordiff sshd_config sshd_config.suggested || differences=$((differences + 1))
-      # Check the configuration file, to ensure it is valid:
-      sshd -f sshd_config.suggested -T >/dev/null
-      if [ ${differences} -gt 0 ] ; then
-         if [ ${YES_TO_ALL} -ne 1 ] ; then
+
+      # Check the configuration file, if sshd and host keys are present:
+      SSHD_BIN="$(PATH="${PATH}:/usr/sbin:/sbin:/usr/local/sbin" command -v sshd || true)"
+      if [ -n "${SSHD_BIN}" ] && compgen -G "/etc/ssh/ssh_host_*_key" >/dev/null ; then
+         if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
+            [ -d /run ] && mkdir -p /run/sshd
+         fi
+         "${SSHD_BIN}" -f sshd_config.suggested -T >/dev/null
+      fi
+
+      if [ "${differences}" -gt 0 ] ; then
+         if [ "${YES_TO_ALL}" -ne 1 ] ; then
             # TRANSLATORS: Prompt asking user whether to apply suggested
             # sshd_config modifications.
-            echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Apply suggested sshd_config changes?") [yes/no]\x1b[0m "
+            printf '\x1b[34m%s: %s [yes/no]\x1b[0m ' "$(date +%FT%H:%M:%S)" "$(gettext "Apply suggested sshd_config changes?")"
             read -er applyChanges
          fi
          if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
@@ -731,42 +840,40 @@ EOF
 
             # TRANSLATORS: Status message when attempting to restart the SSH
             # server daemon.
-            echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
-            if command -v service >/dev/null ; then
-               # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
-               service sshd restart 2>/dev/null || \
-                  service ssh restart 2>/dev/null
-            elif command -v rcctl >/dev/null ; then
-               rcctl restart sshd
-            fi
+            printf '\x1b[32m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Trying to restart SSH daemon ...")"
+            restart-ssh-daemon
          else
+            rm -f -- sshd_config.suggested
             # TRANSLATORS: Status message shown when user chooses not to apply changes.
             gettext "Skipped!"
             echo
          fi
+      else
+         rm -f -- sshd_config.suggested
       fi
    fi
 fi
 
 
 # ====== Generate new SSH key pair ==========================================
-if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
+if [ "${SKIP_SSH_KEY_REPLACEMENT}" -eq 0 ] && [ -d /etc/ssh ] && command -v ssh-keygen >/dev/null ; then
 
    cd /etc/ssh || exit
 
-   if [ ${YES_TO_ALL} -ne 1 ] ; then
+   if [ "${YES_TO_ALL}" -ne 1 ] ; then
       # TRANSLATORS: Prompt asking whether to purge existing SSH host keys
       # and generate new ones.
-      echo -en "\x1b[34m$(date +%FT%H:%M:%S): $(gettext "Remove existing SSH host keys and generate new ones?") [yes/no]\x1b[0m "
+      printf '\x1b[34m%s: %s [yes/no]\x1b[0m ' "$(date +%FT%H:%M:%S)" "$(gettext "Remove existing SSH host keys and generate new ones?")"
       read -er applyChanges
    fi
    if [ "${applyChanges}" == "yes" ] || [ "${applyChanges}" == "y" ] ; then
+      # shellcheck disable=SC2034
       backupDirectory="backup-$(date "+%FT%H:%M:%S")"
 
       # TRANSLATORS: Status message when backing up existing SSH host keys:
       # ${backupDirectory} = path to directory where keys are archived
-      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(eval_gettext "Making backup of current keys in \${backupDirectory} ...")\x1b[0m"
-      mkdir "${backupDirectory}/"
+      printf '\x1b[32m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(eval_gettext "Making backup of current keys in \${backupDirectory} ...")"
+      mkdir -m 0700 -p -- "${backupDirectory}"
       find . -maxdepth 1 -name "ssh_host_*_key*" -exec mv {} "${backupDirectory}/" \;
       find . -maxdepth 1 -name "ssh_host_key*" -exec mv {} "${backupDirectory}/" \;
       find . -maxdepth 1 -name "moduli*" -exec mv {} "${backupDirectory}/" \;
@@ -777,35 +884,25 @@ if [ ${SKIP_SSH_KEY_REPLACEMENT} -eq 0 ] && [ -d /etc/ssh ] && command -v ssh-ke
          cp sshd_config "${backupDirectory}/"
       fi
 
-      # rm -f moduli.candidates moduli
-      # echo "Generating moduli, step 1 ..."
-      # time ssh-keygen -G moduli.candidates -b ${MODULI_BITS}
-      # echo "Generating moduli, step 2 ..."
-      # time ssh-keygen -T moduli -f moduli.candidates
-
       # TRANSLATORS: Progress notification when generating an ED25519 SSH host key.
-      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Generating new ED25519 key ...")\x1b[0m"
+      printf '\x1b[32m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Generating new ED25519 key ...")"
       time ssh-keygen -N "" -t ed25519 -f ssh_host_ed25519_key
       # TRANSLATORS: Progress notification when generating an ECDSA SSH host key.
-      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Generating new ECDSA key ...")\x1b[0m"
-      time ssh-keygen -N "" -t ecdsa -b ${ECDSA_BITS} -f ssh_host_ecdsa_key
+      printf '\x1b[32m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Generating new ECDSA key ...")"
+      time ssh-keygen -N "" -t ecdsa -b "${ECDSA_BITS}" -f ssh_host_ecdsa_key
       # TRANSLATORS: Progress notification when generating an RSA SSH host key;
       # this may take some time ...
-      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Generating new RSA key; this may take some time ...")\x1b[0m"
-      time ssh-keygen -N "" -t rsa -b ${RSA_BITS} -f ssh_host_rsa_key
+      printf '\x1b[32m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Generating new RSA key; this may take some time ...")"
+      time ssh-keygen -N "" -t rsa -b "${RSA_BITS}" -f ssh_host_rsa_key
 
       # TRANSLATORS: Completion message after successfully generating new SSH
       # host keys.
-      echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Done!")\x1b[0m"
+      printf '\x1b[32m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Done!")"
 
-      if command -v service >/dev/null ; then
-         # TRANSLATORS: Status message when attempting to restart the SSH
-         # server daemon.
-         echo -e "\x1b[32m$(date +%FT%H:%M:%S): $(gettext "Trying to restart SSH daemon ...")\x1b[0m"
-         # The daemon is named "ssh" under Ubuntu/Debian, but "sshd" on other systems:
-         service sshd restart 2>/dev/null || \
-            service ssh restart 2>/dev/null || true
-      fi
+      # TRANSLATORS: Status message when attempting to restart the SSH
+      # server daemon.
+      printf '\x1b[32m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(gettext "Trying to restart SSH daemon ...")"
+      restart-ssh-daemon
 
    else
       # TRANSLATORS: Status message shown when user chooses not to apply changes.

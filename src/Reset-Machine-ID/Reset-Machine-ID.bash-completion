@@ -29,36 +29,50 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for Reset-Machine-ID #####################################
+# ###### Bash completion for Reset-Machine-ID ###############################
 _Reset_Machine_ID()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
+   # shellcheck disable=SC2034
+   local cur prev words cword comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -- "$@" || return
+   elif type -t _init_completion >/dev/null ; then
       _init_completion || return
    else
-      # Manual initialization for older bash completion versions:
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
       prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
+      words=("${COMP_WORDS[@]}")
       cword="${COMP_CWORD}"
    fi
 
+   # ====== Stop completion after terminal options or '--' ==================
+   local i
+   for (( i = 1; i < cword; i++ )) ; do
+      case "${words[i]}" in
+         -- | -h | --help | -v | --version)
+            return 0
+            ;;
+      esac
+   done
+
    case "${prev}" in
-      #  ====== Generic value ===============================================
-      -H | --hostname | \
+      # ====== New hostname =================================================
+      -H | --hostname)
+         return 0
+         ;;
+      # ====== Zabbix server hostname =======================================
       -Z | --zabbix)
-         return
+         if type -t _known_hosts_real >/dev/null ; then
+            _known_hosts_real -- "${cur}"
+         else
+            mapfile -t COMPREPLY < <(compgen -A hostname -- "${cur}")
+         fi
+         return 0
          ;;
    esac
 
-   # ====== All options =====================================================
+   # ====== All options (no positional arguments accepted) ==================
    local opts="
 -H
 --hostname
@@ -78,7 +92,7 @@ _Reset_Machine_ID()
 -v
 --version
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
    return 0
 }
 
