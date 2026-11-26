@@ -201,6 +201,9 @@ ENDIF()
 IF (WITH_PRINT_UTF8)
    SET(WITH_LIBDISPLAYWIDTH ON)
 ENDIF()
+IF (WITH_X509_TOOLS)
+   SET(WITH_LIBPROPERTYFORMATTER ON)
+ENDIF()
 
 IF (WITH_TRY_HARD AND NOT WITH_RANDOM_SLEEP)
    MESSAGE(FATAL_ERROR "WITH_TRY_HARD requires WITH_RANDOM_SLEEP!")
@@ -252,7 +255,7 @@ IF (CMAKE_SYSTEM_NAME MATCHES "SunOS")
    FIND_LIBRARY(KSTAT_LIBRARY  kstat  REQUIRED)
 ENDIF()
 
-# ====== SystemD support on Linux ===========================================
+# ====== Linux: SystemD support =============================================
 IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
    FIND_LIBRARY(SYSTEMD_LIBRARY systemd)
    FIND_PATH(SYSTEMD_INCLUDE_DIR NAMES systemd/sd-login.h)
@@ -289,6 +292,30 @@ IF (WIN32)
       MESSAGE(FATAL_ERROR
               "Cannot find Getopt library! Try:\n"
               " * Windows: vcpkg install getopt:x64-windows")
+   ENDIF()
+ENDIF()
+
+# ====== OpenSSL support for X.509 Tools ====================================
+IF (WITH_X509_TOOLS)
+   FIND_PACKAGE(OpenSSL)
+   IF (OPENSSL_FOUND)
+      MESSAGE(STATUS "OpenSSL support found:")
+      MESSAGE(STATUS " OPENSSL_INCLUDE_DIR:     ${OPENSSL_INCLUDE_DIR}")
+      MESSAGE(STATUS " OPENSSL_CRYPTO_LIBRARY:  ${OPENSSL_CRYPTO_LIBRARY}")
+      MESSAGE(STATUS " Version:                 ${OPENSSL_VERSION}")
+   ELSE()
+      MESSAGE(FATAL_ERROR
+              "Cannot find OpenSSL support! Try:\n"
+              " * Ubuntu/Debian: sudo apt install -y libssl-dev\n"
+              " * Fedora:        sudo dnf install -y openssl-devel\n"
+              " * OpenSUSE:      sudo zypper install -y libopenssl-devel\n"
+              " * Alpine:        sudo apk add openssl-dev\n"
+              " * FreeBSD:       (included in base system)\n"
+              " * NetBSD:        (included in base system)\n"
+              " * OpenBSD:       (included in base system — LibreSSL)\n"
+              " * Solaris:       sudo pkg install library/security/openssl\n"
+              " * Apple:         brew install openssl@3\n"
+              " * Windows:       vcpkg install openssl:x64-windows\n")
    ENDIF()
 ENDIF()
 

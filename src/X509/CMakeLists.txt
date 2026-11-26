@@ -12,18 +12,18 @@
 # System-Tools
 # Copyright (C) 2013-2026 by Thomas Dreibholz
 #
-# This script is free software: you can redistribute it and/or modify
+# This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# This script is distributed in the hope that it will be useful,
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this script.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Contact: thomas.dreibholz@gmail.com
 
@@ -38,7 +38,6 @@ SET(SCRIPTS
    extract-pem
    pem2der
    test-tls-connection
-   view-certificate
    view-crl
 )
 
@@ -53,6 +52,34 @@ FOREACH(script IN LISTS SCRIPTS)
            DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
            RENAME      ${script})
 ENDFOREACH()
+
+# ====== view-certificate ===================================================
+ADD_EXECUTABLE(view-certificate view-certificate.cc)
+TARGET_INCLUDE_DIRECTORIES(view-certificate PRIVATE
+   ${CMAKE_SOURCE_DIR}/src/libdisplaywidth
+   ${CMAKE_SOURCE_DIR}/src/libpropertyformatter
+   ${CMAKE_BINARY_DIR}/src
+   ${Intl_INCLUDE_DIRS}
+)
+TARGET_LINK_LIBRARIES(view-certificate PRIVATE
+   OpenSSL::Crypto
+   ${Intl_LIBRARIES}
+)
+IF(STATIC_BUILD)
+   TARGET_LINK_LIBRARIES(view-certificate PRIVATE libpropertyformatter-static)
+ELSE()
+   TARGET_LINK_LIBRARIES(view-certificate PRIVATE libpropertyformatter-shared)
+ENDIF()
+IF(WIN32)
+   TARGET_INCLUDE_DIRECTORIES(view-certificate PRIVATE ${GETOPT_INCLUDE_DIR})
+   TARGET_LINK_LIBRARIES(view-certificate PRIVATE ${GETOPT_LIBRARY})
+ENDIF()
+
+INSTALL(TARGETS view-certificate DESTINATION ${CMAKE_INSTALL_BINDIR})
+INSTALL(FILES view-certificate.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+INSTALL(FILES       view-certificate.bash-completion
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/bash-completion/completions
+        RENAME      view-certificate)
 
 
 #############################################################################

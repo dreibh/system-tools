@@ -1,1 +1,1 @@
---language=Shell src/X509/view-certificate
+--language=C++ src/X509/view-certificate.cc
