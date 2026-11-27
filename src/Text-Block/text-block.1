@@ -28,13 +28,13 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 27, 2026
 .Dt text\-block 1
 .Os text\-block
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm text\-block
-.Nd processes text blocks
+.Nd applies modifications to text blocks
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm text\-block
@@ -74,9 +74,9 @@
 .Op Fl b Ar begin\_tag | Fl \-begin\-tag Ar begin\_tag
 .Op Fl e Ar end\_tag | Fl \-end\-tag Ar end\_tag
 .br
-.Op Fl i | Fl \-input Ar input\_file
+.Op Fl i Ar input\_file | Fl \-input Ar input\_file
 .br
-.Op Fl o | Fl \-output Ar output\_file
+.Op Fl o Ar output\_file | Fl \-output Ar output\_file
 .br
 .Op Fl a | Fl \-append
 .br
@@ -84,12 +84,12 @@
 .br
 .Op Fl k | Fl \-keep\-broken
 .br
-.Op Fl m | Fl \-min\-actions
-.Op Fl M | Fl \-max\-actions
+.Op Fl m Ar min\_actions | Fl \-min\-actions Ar min\_actions
+.Op Fl M Ar max\_actions | Fl \-max\-actions Ar max\_actions
 .br
-.Op Fl s | Fl \-select Ar from\_line Ar to\_line
+.Op Fl s Ar from\_line Ar to\_line | Fl \-select Ar from\_line Ar to\_line
 .br
-.Op Fl t | Fl \-tag Ar tag
+.Op Fl t Ar tag | Fl \-tag Ar tag
 .br
 .Op Fl y | Fl \-include\-tags
 .Op Fl x | Fl \-exclude\-tags
@@ -113,58 +113,64 @@
 .Op Fl \-highlight\-marked1 Ar string
 .Op Fl \-highlight\-marked2 Ar string
 .br
-.Op Fl \-highlight\-param Ar begin\_label Ar end\_label Ar un\%mar\%ked1\_la\%bel Ar un\%mar\%ked2\_la\%bel Ar mar\%ked1\_la\%bel Ar mar\%ked2\_la\%bel
+.Op Fl \-highlight\-param Ar begin\_label Ar end\_label Ar un\%mar\%ked1\_la\%bel Ar un\%mar\%ked2\_la\%bel Ar mar\%ked1\_la\%bel Ar mar\%ked2\_la\%bel | Fl \-highlight\-params Ar begin\_label Ar end\_label Ar un\%mar\%ked1\_la\%bel Ar un\%mar\%ked2\_la\%bel Ar mar\%ked1\_la\%bel Ar mar\%ked2\_la\%bel
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm text\-block
-reads text from standard input or a given file, and writes it to standard output or a given file. To the text, various modifications can be applied, according to the operation mode:
+reads text from standard input or a given file, and writes it to standard output or a given file. Various modifications can be applied according to the selected operation mode:
 .Bl -bullet
 .It
 Cat: copy the input text as\-is.
 .It
-Discard: do nothing (i.e. just discard the input).
+Discard: discard the input without producing output.
 .It
-Enumerate: add line numbers. The format of the enumeration is configurable.
+Enumerate: prepend configurable line numbers to each line.
 .It
-Extract: only output the text between markers, discarding everything else.
+Extract: output only the text inside marked blocks, discarding everything else.
 .It
-Highlight: visually highlight text block between markers. The format of the marking is configurable, e.g. to apply ANSI colouring, etc.
+Highlight: visually highlight marked and unmarked text fragments (for example using ANSI colours and start/end symbols).
 .It
-Delete: remove text between markers.
+Delete: remove text inside marked blocks.
 .It
-Insert Front: insert text from a file at the front of marked blocks.
+Insert Front: insert text from a file at the beginning of each marked block.
 .It
-Insert Back: insert text from a file at the back of marked blocks.
+Insert Back: insert text from a file at the end of each marked block.
 .It
-Replace: replace text of marked blocks by text from a file.
+Replace: replace the contents of each marked block with text from a file.
 .El
 .Pp
-The marking used for the operation modes is based on configurable begin and end tags, e.g. <BEGIN\-OF\-BLOCK> and <END\-OF\-BLOCK>, or BEGIN and END. The handling of tags is configurable:
+Marked blocks are selected via configurable begin and end tags (for example
+.Ql <BEGIN\-OF\-BLOCK>
+and
+.Ql <END\-OF\-BLOCK> ) .
+Tag line scope is configurable:
 .Bl -bullet
 .It
-tags\-only: only the text between the marker tags belongs to a block. That is, multiple blocks can appear on the same line. This is the default.
+tags\-only: only the text between the marker tags belongs to a block, allowing multiple blocks on the same line (default).
 .It
-full\-tag\-lines: a marker includes the full line of its begin and end tags. That is, a line containing a begin/end tag is handled like being the begin/end tag. This also means that only the
+full\-tag\-lines: a marker spans the entire line containing its begin or end tag. Consequently, only the
 .Sy first
-tag in a line is handled. All further tags in the same line are ignored!
-Hint: Use Highlight mode to visualise the behaviour.
+tag on a line is processed and any additional tags on the same line are ignored.
+Hint: use Highlight mode to visualise this behaviour.
 .El
 .Pp
-Furthermore, the handling of begin/end tags is configurable as well:
+Inclusion of the marker tags themselves is also configurable:
 .Bl -bullet
 .It
-exclude\-tags: marked text does not include the begin/end tags. This is the default.
+exclude\-tags: marked text excludes the begin and end tags (default).
 .It
-include\-tags: marked text includes the begin/end tags.
+include\-tags: marked text includes the begin and end tags.
 .El
 .Pp
-A special case is to have identical begin/end tags, e.g. <MARKER>. The text block "inside" this tag is therefore always empty. A use case for such a marker is e.g. to mark where to insert the contents of a file.
+Identical begin and end tags (for example via
+.Fl t Ql <MARKER> )
+define a zero\-width block at each occurrence, which is useful as an insertion anchor.
 .Pp
-Alternatively to marking by tags, the marking can be based on a line number
-range selection. Negative line numbers denote counting backwards from the end
-of the file, which in this case needs to be line\-counted first. That is, input
-from standard input is not possible in this case.
-.Pp
+Alternatively, blocks can be selected by a 1\-based line\-number range
+.Pq Fl s Ar from\_line Ar to\_line .
+Negative line numbers count backwards from the end of the file, which requires a seekable input file
+.Pq Fl i Ar input\_file
+rather than standard input.
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
@@ -183,96 +189,134 @@ Run in Extract mode.
 Run in Delete mode.
 .It Fl F Ar insert\_file | Fl \-insert\-front Ar insert\_file
 Run in Insert\-Front mode.
-"\-" is placeholder for inserting from standard input.
-In this case, an input file is required.
+.Ql \-
+reads the insertion text from standard input (requires an input file via
+.Fl i ) .
 .It Fl B Ar insert\_file | Fl \-insert\-back Ar insert\_file
 Run in Insert\-Back mode.
-"\-" is placeholder for inserting from standard input.
-In this case, an input file is required.
+.Ql \-
+reads the insertion text from standard input (requires an input file via
+.Fl i ) .
 .It Fl R Ar insert\_file | Fl \-replace Ar insert\_file
 Run in Replace mode.
-"\-" is placeholder for replacing from standard input.
-In this case, an input file is required.
+.Ql \-
+reads the replacement text from standard input (requires an input file via
+.Fl i ) .
 .It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl \-version
 Prints the program version and exits.
-.It Fl s | Fl \-select Ar from\_line Ar to\_line
-Select a line range, ranging from line from\_line to line to\_line.
-A from\_line of one (1) denotes marking from start of the file.
-A to\_line of zero (0) denotes marking until end of the file.
-If a line number is negative, it is counted backwards from the end of the
-file. This requires an input file (\-\-input|\-i), which is line\-counted
-first. Line range selection is mutually exclusive with tags
-(\-\-begin\-tag|\-b|\-\-end\-tag|\-\-tag|\-t).
+.It Fl s Ar from\_line Ar to\_line | Fl \-select Ar from\_line Ar to\_line
+Select a line range from
+.Ar from\_line
+to
+.Ar to\_line .
+.Ar from\_line
+= 1 starts at the first line of the file;
+.Ar to\_line
+= 0 extends to the end of the file.
+Negative line numbers count backwards from the end of the file and require an input file
+.Pq Fl i | Fl \-input .
+Line selection is mutually exclusive with tag options
+.Pq Fl b , Fl e , Fl t .
 .It Fl b Ar begin\_tag | Fl \-begin\-tag Ar begin\_tag
-Sets the begin tag.
-Tags are mutually exclusive with line selection (\-\-select|\-s).
+Sets the begin tag. Mutually exclusive with
+.Fl s | Fl \-select .
 .It Fl e Ar end\_tag | Fl \-end\-tag Ar end\_tag
-Sets the end tag.
-Tags are mutually exclusive with line selection (\-\-select|\-s).
+Sets the end tag. Mutually exclusive with
+.Fl s | Fl \-select .
 .It Fl t Ar tag | Fl \-tag Ar tag
-Sets a combined begin/end tag, i.e. the tag marks begin and end.
-Tags are mutually exclusive with line selection (\-\-select|\-s).
-.It Fl i | Fl \-input Ar input\_file
+Sets an identical begin and end tag. Mutually exclusive with
+.Fl s | Fl \-select .
+.It Fl i Ar input\_file | Fl \-input Ar input\_file
 Sets the input file.
-"\-" is placeholder for reading from standard input (default).
-.It Fl o | Fl \-output Ar output\_file
-Sets the output file. By default, an existing output file will be overwritten.
-"\-" is placeholder for writing to standard output (default)
+.Ql \-
+reads from standard input (default).
+.It Fl o Ar output\_file | Fl \-output Ar output\_file
+Sets the output file (overwriting an existing file unless
+.Fl a
+is given).
+.Ql \-
+writes to standard output (default).
 .It Fl a | Fl \-append
-Opens the output file in append mode, appending new output instead of overwriting an existing file.
+Opens the output file in append mode instead of truncating it.
 .It Fl p | Fl \-in\-place
-In\-place update into the input file. The output is written to a temporary file with extension "~" first, which replaces the input file on success.
+Updates the input file in place by writing to a temporary file suffixed with
+.Ql ~
+and atomically replacing the input file on success.
 .It Fl k | Fl \-keep\-broken
-Keep broken output in case of error (default: off).
-.It Fl m | Fl \-min\-actions
-Set lower limit for number of marking actions. If the number of applied markings falls below this limit, an error is returned.
-.It Fl M | Fl \-max\-actions
-Set upper limit for number of marking actions. If the number of applied markings exceeds this limit, an error is returned.
+Retains partial output files on error instead of deleting them (default: off).
+.It Fl m Ar min\_actions | Fl \-min\-actions Ar min\_actions
+Sets the minimum required number of marked\-block actions; exits with an error if fewer blocks match.
+.It Fl M Ar max\_actions | Fl \-max\-actions Ar max\_actions
+Sets the maximum permitted number of marked\-block actions; exits with an error if more blocks match.
 .It Fl y | Fl \-include\-tags
-Include the marker tags in the marking.
-Hint: Use Highlight mode to visualise the behaviour.
+Include the marker tags in the marked block.
 .It Fl x | Fl \-exclude\-tags
-Exclude the marker tags from the marking.
-Hint: Use Highlight mode to visualise the behaviour.
+Exclude the marker tags from the marked block (default).
 .It Fl f | Fl \-full\-tag\-lines
-Include full marker tag lines in the marking.
-Hint: Use Highlight mode to visualise the behaviour.
+Include full marker tag lines in the marked block.
 .It Fl g | Fl \-tags\-only
-Exclude the marker tag lines from the marking.
-Hint: Use Highlight mode to visualise the behaviour.
+Restrict marking to the tags themselves rather than full lines (default).
 .It Fl q | Fl \-suppress\-warnings
-Suppress warnings on useless input parameters. Useful for debugging.
+Suppresses warnings about ineffective parameter combinations.
 .It Fl \-enumerate\-format Ar format
-In Enumerate mode, sets the format of the line number output according to printf formatting. However, only the number format specification is allowed here. Examples:
-.Bl -bullet
+In Enumerate mode, sets the
+.Xr printf 3
+flag and field\-width specification for line numbers (without a leading
+.Ql %
+or conversion specifier). Examples:
+.Bl -bullet -compact
 .It
-06 \-> add leading zero to get a 6\-digit output (e.g. "000001", etc.). This is the default.
+.Ql 06
+\(-> 6\-digit zero\-padded numbers such as
+.Ql 000001
+(default).
 .It
-4 \-> 4\-digit line numbers, prepended with space when necessary (e.g. "   2", etc.).
+.Ql 4
+\(-> 4\-digit space\-padded numbers such as
+.Ql "   2" .
 .It
-\-4 \-> left\-adjusted 4\-digit number (e.g. "3   ").
+.Ql \-4
+\(-> left\-aligned 4\-digit numbers such as
+.Ql "3   " .
 .El
 .It Fl \-enumerate\-label1 Ar string
-For Enumerate mode: prepends the given string before the line number output. Default: $\[aq]\ex1b[36m\[aq] (enables cyan colour output).
+For Enumerate mode: string prepended before the line number. Default:
+.Ql $\[aq]\[rs]x1b[36m\[aq]
+(cyan colour).
 .It Fl \-enumerate\-label2 Ar string
-For Enumerate mode: appends the given string before the line number output. Default: $\[aq]\ex1b[0m \[aq] (disables colour output, and add a space).
+For Enumerate mode: string appended after the line number. Default:
+.Ql $\[aq]\[rs]x1b[0m \[aq]
+(colour reset followed by a space).
 .It Fl \-highlight\-begin Ar string
-For Highlight mode: Sets string to visualise the begin of a marked block. Default: ⭐.
+For Highlight mode: marker printed at the start of a marked block. Default: ⭐.
 .It Fl \-highlight\-end Ar string
-For Highlight mode: Sets string to visualise the end of a marked block. Default: 🛑.
+For Highlight mode: marker printed at the end of a marked block. Default: 🛑.
 .It Fl \-highlight\-unmarked1 Ar string
-For Highlight mode: Sets string to visualise the begin of an unmarked text fragment. Default: $\[aq]\ex1b[34m\[aq] (enables blue colour output).
+For Highlight mode: prefix printed before unmarked text fragments. Default:
+.Ql $\[aq]\[rs]x1b[34m\[aq]
+(blue colour).
 .It Fl \-highlight\-unmarked2 Ar string
-For Highlight mode: Sets string to visualise the end of an unmarked text fragment. Default: $\[aq]\ex1b[0m \[aq] (disables colour output).
+For Highlight mode: suffix printed after unmarked text fragments. Default:
+.Ql $\[aq]\[rs]x1b[0m\[aq]
+(colour reset).
 .It Fl \-highlight\-marked1 Ar string
-For Highlight mode: Sets string to visualise the begin of a marked text fragment. Default: $\[aq]\ex1b[31m\[aq]
-(enables red colour output).
+For Highlight mode: prefix printed before marked text fragments. Default:
+.Ql $\[aq]\[rs]x1b[31m\[aq]
+(red colour).
 .It Fl \-highlight\-marked2 Ar string
-For Highlight mode: Sets string to visualise the end of a marked text fragment. Default: $\[aq]\ex1b[0m \[aq] (disables colour output).
-.It Fl \-highlight\-param Ar begin\_label Ar end\_label Ar un\%mar\%ked1\_la\%bel Ar un\%mar\%ked2\_la\%bel Ar mar\%ked1\_la\%bel Ar mar\%ked2\_la\%bel
-A shortcut to set all 6 highlight parameters at once.
+For Highlight mode: suffix printed after marked text fragments. Default:
+.Ql $\[aq]\[rs]x1b[0m\[aq]
+(colour reset).
+.It Fl \-highlight\-param Ar begin\_label Ar end\_label Ar un\%mar\%ked1\_la\%bel Ar un\%mar\%ked2\_la\%bel Ar mar\%ked1\_la\%bel Ar mar\%ked2\_la\%bel | Fl \-highlight\-params Ar begin\_label Ar end\_label Ar un\%mar\%ked1\_la\%bel Ar un\%mar\%ked2\_la\%bel Ar mar\%ked1\_la\%bel Ar mar\%ked2\_la\%bel
+Shortcut to set all 6 highlight parameters at once.
+.El
+.\" ###### Files ############################################################
+.Sh FILES
+.Bl -tag -width indent
+.It Pa /usr/share/text\-block/example1.txt , example2.txt , insert.txt , numbers.txt
+Example input and insertion files installed with System\-Tools.
 .El
 .\" ###### Exit status ######################################################
 .Sh EXIT STATUS
@@ -281,13 +325,16 @@ The
 tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-Note: the example input files example1.txt, example2.txt, insert.txt, and
-numbers.txt, referred to in the following command\-line examples, are usually
-installed under
-.Pa /usr/share/text\-block
+Note: the example input files
+.Pa example1.txt ,
+.Pa example2.txt ,
+.Pa insert.txt ,
+and
+.Pa numbers.txt
+referenced below are typically installed under
+.Pa /usr/share/text\-block/
 or
-.Pa /usr/local/share/text\-block/
-.
+.Pa /usr/local/share/text\-block/ .
 .Ss Cat Mode
 .Bl -bullet
 .It
@@ -306,30 +353,39 @@ figlet \[dq]Test!\[dq] | text\-block \-E
 .It
 text\-block \-i /etc/system\-info.d/01\-example \-E
 .It
-text\-block \-i /etc/system\-info.d/01\-example \-\-enumerate \-\-enumerate\-format \[dq]6\[dq] \-\-enumerate\-label1 $\[aq]\ex1b[37m<\[aq] \-\-enumerate\-label2 $\[aq]>\ex1b[0m \[aq]
+text\-block \-i /etc/system\-info.d/01\-example \-\-enumerate \-\-enumerate\-format \[dq]6\[dq] \-\-enumerate\-label1 $\[aq]\[rs]x1b[37m<\[aq] \-\-enumerate\-label2 $\[aq]>\[rs]x1b[0m \[aq]
+.El
+.Ss Extract Mode
+.Bl -bullet
+.It
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-\-extract
+.It
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-X \-\-include\-tags \-\-full\-tag\-lines
+.It
+text\-block \-i numbers.txt \-\-select 2 4 \-X
 .El
 .Ss Highlight Mode
 .Bl -bullet
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-highlight
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-\-highlight
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-H \-\-exclude\-tags \-\-tags\-only
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-H \-\-exclude\-tags \-\-tags\-only
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-H \-\-include\-tags \-\-tags\-only
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-H \-\-include\-tags \-\-tags\-only
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-H \-\-include\-tags \-\-full\-tag\-lines
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-H \-\-include\-tags \-\-full\-tag\-lines
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-H \-\-exclude\-tags \-\-full\-tag\-lines
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-H \-\-exclude\-tags \-\-full\-tag\-lines
 .It
-text\-block \-i example2.txt \-b '<MARKER>' \-H \-\-exclude\-tags \-\-tags\-only
+text\-block \-i example2.txt \-b \[aq]<MARKER>\[aq] \-H \-\-exclude\-tags \-\-tags\-only
 .It
-text\-block \-i example2.txt \-b '<MARKER>' \-H \-\-include\-tags \-\-tags\-only
+text\-block \-i example2.txt \-b \[aq]<MARKER>\[aq] \-H \-\-include\-tags \-\-tags\-only
 .It
-text\-block \-i example2.txt \-b '<MARKER>' \-H \-\-include\-tags \-\-full\-tag\-lines
+text\-block \-i example2.txt \-b \[aq]<MARKER>\[aq] \-H \-\-include\-tags \-\-full\-tag\-lines
 .It
-text\-block \-i example2.txt \-b '<MARKER>' \-H \-\-exclude\-tags \-\-full\-tag\-lines
+text\-block \-i example2.txt \-b \[aq]<MARKER>\[aq] \-H \-\-exclude\-tags \-\-full\-tag\-lines
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-highlight \-\-highlight\-param "☀" "🌙" $\[aq]\e[32m' $\[aq]\e[0m' $\[aq]\e[31;5m' $\[aq]\e[0m'
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-\-highlight \-\-highlight\-params \[dq]☀\[dq] \[dq]🌙\[dq] $\[aq]\[rs]e[32m\[aq] $\[aq]\[rs]e[0m\[aq] $\[aq]\[rs]e[31;5m\[aq] $\[aq]\[rs]e[0m\[aq]
 .It
 text\-block \-i numbers.txt \-\-select 1 3 \-H
 .It
@@ -340,9 +396,9 @@ text\-block \-i numbers.txt \-\-select \-5 0 \-H
 .Ss Delete Mode
 .Bl -bullet
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-delete
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-\-delete
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-D
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-D
 .It
 text\-block \-i numbers.txt \-\-select 2 4 \-D
 .It
@@ -353,15 +409,15 @@ text\-block \-i numbers.txt \-s \-7 0 \-D
 .Ss Insert Front Mode
 .Bl -bullet
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-insert\-front insert.txt
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-\-insert\-front insert.txt
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-F insert.txt
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-F insert.txt
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-F insert.txt \-f
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-F insert.txt \-f
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-F insert.txt \-\-min\-actions 1 \-\-max\-actions 1
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-F insert.txt \-\-min\-actions 1 \-\-max\-actions 1
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-F insert.txt \-m 1 \-M 1
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-F insert.txt \-m 1 \-M 1
 .It
 text\-block \-i numbers.txt \-F insert.txt \-\-select 4 7
 .It
@@ -372,15 +428,15 @@ text\-block \-i numbers.txt \-F insert.txt \-s 4 0
 .Ss Insert Back Mode
 .Bl -bullet
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-insert\-back insert.txt
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-\-insert\-back insert.txt
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-B insert.txt
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-B insert.txt
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-B insert.txt \-f
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-B insert.txt \-f
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-B insert.txt \-\-min\-actions 1 \-\-max\-actions 1
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-B insert.txt \-\-min\-actions 1 \-\-max\-actions 1
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-B insert.txt \-m 1 \-M 1
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-B insert.txt \-m 1 \-M 1
 .It
 text\-block \-i numbers.txt \-B insert.txt \-\-select 4 7
 .It
@@ -391,13 +447,13 @@ text\-block \-i numbers.txt \-B insert.txt \-s 4 0
 .Ss Replace Mode
 .Bl -bullet
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-replace insert.txt
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-\-replace insert.txt
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-replace insert.txt \-\-include\-tags
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-\-replace insert.txt \-\-include\-tags
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-\-replace insert.txt \-\-include\-tags \-\-full\-tag\-lines
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-\-replace insert.txt \-\-include\-tags \-\-full\-tag\-lines
 .It
-text\-block \-i example1.txt \-b '<BEGIN\-BLOCK>' \-e '<END\-BLOCK>' \-R insert.txt \-gy
+text\-block \-i example1.txt \-b \[aq]<BEGIN\-BLOCK>\[aq] \-e \[aq]<END\-BLOCK>\[aq] \-R insert.txt \-gy
 .It
 text\-block \-i numbers.txt \-R insert.txt \-\-select 4 7
 .It
@@ -410,13 +466,15 @@ text\-block \-i numbers.txt \-R insert.txt \-s 4 0
 .It
 text\-block \-\-help
 .It
+text\-block \-h
+.It
 text\-block \-\-version
 .It
 text\-block \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
-.Xr print\-utf8 1,
+.Xr print\-utf8 1 ,
 .Xr System\-Info 1
 .\" ###### Notes ############################################################
 .Sh NOTES

@@ -29,61 +29,155 @@
 # Contact: thomas.dreibholz@gmail.com
 
 
-# ###### Bash completion for text-block #######################################
+# ###### Bash completion for text-block #####################################
 _text_block()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
-      _init_completion || return
+   # shellcheck disable=SC2034
+   local cur prev words cword split=false comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -s -- "$@" || return
+   elif type -t _init_completion >/dev/null ; then
+      _init_completion -s || return
    else
-      # Manual initialization for older bash completion versions:
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
       prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
+      words=("${COMP_WORDS[@]}")
       cword="${COMP_CWORD}"
    fi
 
-   # ====== Options =========================================================
-   case "${prev}" in
-      #  ====== Generic value ===============================================
-      -b | --begin-tag      | \
-      -e | --end-tag        | \
-      -t | --tag            | \
-      --enumerate-format    | \
-      --enumerate-label1    | \
-      --enumerate-label2    | \
-      --highlight-begin     | \
-      --highlight-end       | \
-      --highlight-unmarked1 | \
-      --highlight-unmarked2 | \
-      --highlight-marked1   | \
-      --highlight-marked2   | \
-      --highlight-param     | \
-      -m | --min-actions    | \
-      -M | --max-actions    | \
-      -s | --select)
-         return
-         ;;
-      # ====== Special case: file ===========================================
-      -F | --insert-front | \
-      -B | --insert-back  | \
-      -R | --replace      | \
-      -i | --input        | \
-      -o | --output)
-         # Arbitrary file names:
-         _filedir
-         return
-         ;;
-   esac
+   # ====== Track multi-argument options across prior words =================
+   local i activeOpt="" remainingArgs=0
+   for (( i = 1; i < cword; i++ )) ; do
+      if (( remainingArgs > 0 )) ; then
+         remainingArgs=$((remainingArgs - 1))
+         if (( remainingArgs == 0 )) ; then
+            activeOpt=""
+         fi
+         continue
+      fi
 
-   # ====== All options =====================================================
+      case "${words[i]}" in
+         -- | -h | --help | -v | --version)
+            return 0
+            ;;
+         -s | --select)
+            activeOpt="-s"
+            remainingArgs=2
+            ;;
+         --select=*)
+            activeOpt="-s"
+            remainingArgs=1
+            ;;
+         --highlight-param | --highlight-params)
+            activeOpt="--highlight-params"
+            remainingArgs=6
+            ;;
+         --highlight-param=* | --highlight-params=*)
+            activeOpt="--highlight-params"
+            remainingArgs=5
+            ;;
+         -b | --begin-tag | -e | --end-tag | -t | --tag | \
+         -m | --min-actions | -M | --max-actions | \
+         --enumerate-format | --enumerate-label1 | --enumerate-label2 | \
+         --highlight-begin | --highlight-end | \
+         --highlight-unmarked1 | --highlight-unmarked2 | \
+         --highlight-marked1 | --highlight-marked2)
+            activeOpt="${words[i]}"
+            remainingArgs=1
+            ;;
+         -F | --insert-front | -B | --insert-back | -R | --replace | \
+         -i | --input | -o | --output)
+            activeOpt="file"
+            remainingArgs=1
+            ;;
+         -[C0HEXDFapkyxfgq]*[FBReiotbmsM])
+            case "${words[i]: -1}" in
+               s)
+                  activeOpt="-s"
+                  remainingArgs=2
+                  ;;
+               F | B | R | i | o)
+                  activeOpt="file"
+                  remainingArgs=1
+                  ;;
+               *)
+                  activeOpt="-${words[i]: -1}"
+                  remainingArgs=1
+                  ;;
+            esac
+            ;;
+      esac
+   done
+
+   # Handle inline --option=value split by _comp_initialize -s / _init_completion -s:
+   if [[ "${split}" == "true" ]] && (( remainingArgs == 0 )) ; then
+      case "${prev}" in
+         --insert-front | --insert-back | --replace | --input | --output)
+            activeOpt="file"
+            remainingArgs=1
+            ;;
+         --select)
+            activeOpt="-s"
+            remainingArgs=2
+            ;;
+         --highlight-param | --highlight-params)
+            activeOpt="--highlight-params"
+            remainingArgs=6
+            ;;
+         --begin-tag | --end-tag | --tag | --min-actions | --max-actions | \
+         --enumerate-format | --enumerate-label1 | --enumerate-label2 | \
+         --highlight-begin | --highlight-end | \
+         --highlight-unmarked1 | --highlight-unmarked2 | \
+         --highlight-marked1 | --highlight-marked2)
+            activeOpt="${prev}"
+            remainingArgs=1
+            ;;
+      esac
+   fi
+
+   # ====== Handle active option arguments ==================================
+   if (( remainingArgs > 0 )) ; then
+      case "${activeOpt}" in
+         file)
+            if type -t _filedir >/dev/null ; then
+               _filedir
+            else
+               mapfile -t COMPREPLY < <(compgen -f -- "${cur}")
+            fi
+            if [[ "-" == "${cur}"* ]] && [[ "${split}" != "true" ]] ; then
+               COMPREPLY+=( "-" )
+            fi
+            return 0
+            ;;
+         -s)
+            compopt -o nosort 2>/dev/null || true
+            if (( remainingArgs == 2 )) ; then
+               mapfile -t COMPREPLY < <(compgen -W "1 2 5 10 -1 -2 -5 -10" -- "${cur}")
+            else
+               mapfile -t COMPREPLY < <(compgen -W "0 1 2 5 10 -1 -2 -5 -10" -- "${cur}")
+            fi
+            return 0
+            ;;
+         --enumerate-format)
+            compopt -o nosort 2>/dev/null || true
+            mapfile -t COMPREPLY < <(compgen -W "02 04 06 08 2 4 6 8 -4 -6" -- "${cur}")
+            return 0
+            ;;
+         -m | --min-actions | -M | --max-actions)
+            compopt -o nosort 2>/dev/null || true
+            mapfile -t COMPREPLY < <(compgen -W "0 1 2 3 5 10" -- "${cur}")
+            return 0
+            ;;
+         *)
+            return 0
+            ;;
+      esac
+   fi
+
+   [[ "${split}" == "true" ]] && return 0
+
+   # ====== All options (no positional arguments accepted) ==================
    local opts="
 -C
 --cat
@@ -150,8 +244,9 @@ _text_block()
 --highlight-marked1
 --highlight-marked2
 --highlight-param
+--highlight-params
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
    return 0
 }
 

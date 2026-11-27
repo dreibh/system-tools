@@ -34,6 +34,7 @@
 #include <cassert>
 #include <cctype>
 #include <cerrno>
+#include <climits>
 #include <clocale>
 #include <cstdio>
 #include <cstdlib>
@@ -42,8 +43,12 @@
 #include <format>
 #include <getopt.h>
 #include <iostream>
+#include <locale>
+#include <stdexcept>
 #include <string>
 #include <string_view>
+#include <system_error>
+#include <utility>
 #include <vector>
 
 #if !defined(_WIN32)
@@ -63,10 +68,11 @@
 #if defined(ENABLE_NLS)
 #include <libintl.h>
 #else
-#define gettext(string)                   (string)
-#define ngettext(singular, plural, count) (((count) == 1) ? (singular) : (plural))
-#define bindtextdomain(domain, directory) (directory)
-#define textdomain(domain)                (domain)
+#define gettext(string)                          (string)
+#define ngettext(singular, plural, count)        (((count) == 1) ? (singular) : (plural))
+#define bindtextdomain(domain, directory)        (directory)
+#define bind_textdomain_codeset(domain, codeset) (codeset)
+#define textdomain(domain)                       (domain)
 #endif
 
 #include "package-version.h"
@@ -137,6 +143,77 @@ static std::string formatText(const char* messageIdentifier,
 }
 
 
+// ###### Parse signed integer arguments safely ##############################
+static bool parseSignedLongLong(const char* argument, long long& value)
+{
+   if((argument == nullptr) || (argument[0] == '\0') ||
+      (std::isspace(static_cast<unsigned char>(argument[0])) != 0)) {
+      return false;
+   }
+
+   char* endptr = nullptr;
+   errno = 0;
+   const long long parsed = std::strtoll(argument, &endptr, 10);
+   if((errno == ERANGE) || (endptr == argument) || (*endptr != '\0')) {
+      return false;
+   }
+
+   value = parsed;
+   return true;
+}
+
+static bool parseNonNegativeInt(const char* argument, int& value)
+{
+   long long parsed = 0;
+   if(!parseSignedLongLong(argument, parsed) || (parsed < 0) || (parsed > INT_MAX)) {
+      return false;
+   }
+   value = static_cast<int>(parsed);
+   return true;
+}
+
+
+// ###### Validate printf integer flag/width specification ###################
+static bool isValidEnumerateFormatSpec(const char* spec)
+{
+   if(spec == nullptr) {
+      return false;
+   }
+
+   size_t i = 0;
+   while((spec[i] == '-') || (spec[i] == '0') || (spec[i] == '\'')) {
+      ++i;
+   }
+
+   unsigned long width  = 0;
+   size_t        digits = 0;
+   while(std::isdigit(static_cast<unsigned char>(spec[i])) != 0) {
+      width = width * 10ul + static_cast<unsigned long>(spec[i] - '0');
+      ++digits;
+      if((digits > 3) || (width > 256ul)) {
+         return false;
+      }
+      ++i;
+   }
+
+   return (spec[i] == '\0');
+}
+
+
+// ###### Active output path for diagnostics #################################
+static const std::string& activeOutputDisplayName()
+{
+   static const std::string stdoutLabel("-");
+   if(!OutputTempFileName.empty()) {
+      return OutputTempFileName;
+   }
+   if(!OutputFileName.empty()) {
+      return OutputFileName;
+   }
+   return stdoutLabel;
+}
+
+
 // ###### Clean up ##########################################################
 [[noreturn]] static void cleanUp(int exitCode)
 {
@@ -166,26 +243,11 @@ static std::string formatText(const char* messageIdentifier,
             // {0} = output file path
             // {1} = system error message (std::strerror)
             std::cerr << formatText("ERROR: Unable to open output file {0}: {1}!",
-                                    OutputFileName, std::strerror(errno)) << '\n';
+                                    activeOutputDisplayName(), std::strerror(errno)) << '\n';
             exitCode = 1;
          }
       }
-      if((exitCode != 0) && OutputDeleteOnError) {
-         const std::string& brokenFileName = !OutputTempFileName.empty() ?
-                                                OutputTempFileName : OutputFileName;
-         if(!brokenFileName.empty()) {
-            std::error_code errorCode;
-            if(!std::filesystem::remove(brokenFileName, errorCode) && errorCode) {
-               // TRANSLATORS: Error message when deleting broken output file
-               // fails:
-               // {0} = broken file path
-               // {1} = system error message (std::strerror)
-               std::cerr << formatText("ERROR: Unable to delete broken output file {0}: {1}!",
-                                       brokenFileName, errorCode.message()) << '\n';
-            }
-         }
-      }
-      else if((exitCode == 0) && !OutputTempFileName.empty()) {
+      if((exitCode == 0) && !OutputTempFileName.empty()) {
          // ------ Restore original file permissions and ownership ----------
          struct stat fileInfo { };
          if(stat(InputFileName.c_str(), &fileInfo) == 0) {
@@ -212,9 +274,35 @@ static std::string formatText(const char* messageIdentifier,
             // {2} = system error message (std::strerror)
             std::cerr << formatText("ERROR: Unable to change name of temporary output file from {0} to {1}: {2}!",
                                     OutputTempFileName, InputFileName, errorCode.message()) << '\n';
+            exitCode = 1;
+         }
+      }
+      if((exitCode != 0) && OutputDeleteOnError) {
+         const std::string& brokenFileName = !OutputTempFileName.empty() ?
+                                                OutputTempFileName : OutputFileName;
+         if(!brokenFileName.empty()) {
+            std::error_code errorCode;
+            if(!std::filesystem::remove(brokenFileName, errorCode) && errorCode) {
+               // TRANSLATORS: Error message when deleting broken output file
+               // fails:
+               // {0} = broken file path
+               // {1} = system error message (std::strerror)
+               std::cerr << formatText("ERROR: Unable to delete broken output file {0}: {1}!",
+                                       brokenFileName, errorCode.message()) << '\n';
+            }
          }
       }
       OpenOutputFile = false;
+   }
+   else if((OutputFile == stdout) && (exitCode == 0)) {
+      if(std::fflush(stdout) != 0) {
+         // TRANSLATORS: Error message when writing to output file fails:
+         // {0} = output file path
+         // {1} = system error message (std::strerror)
+         std::cerr << formatText("ERROR: Unable to write to output file {0}: {1}!",
+                                 activeOutputDisplayName(), std::strerror(errno)) << '\n';
+         exitCode = 1;
+      }
    }
    OutputFile = nullptr;
 
@@ -232,7 +320,7 @@ static void writeToOutputFile(const char*  data,
          // {0} = output file path
          // {1} = system error message (std::strerror)
          std::cerr << formatText("ERROR: Unable to write to output file {0}: {1}!",
-                                 OutputFileName, std::strerror(errno)) << '\n';
+                                 activeOutputDisplayName(), std::strerror(errno)) << '\n';
          cleanUp(1);
       }
    }
@@ -244,15 +332,19 @@ static inline void writeToOutputFile(std::string_view text)
 }
 
 
-// ###### Read line preserving trailing newline character ##################
+// ###### Read line preserving trailing newline and NUL bytes ###############
 static bool readLine(FILE*        inputFile,
                      std::string& line)
 {
    line.clear();
-   char buffer[4096];
-   while(std::fgets(buffer, sizeof(buffer), inputFile) != nullptr) {
-      line.append(buffer);
-      if(!line.empty() && (line.back() == '\n')) {
+   int ch = EOF;
+#if !defined(_WIN32)
+   while((ch = getc_unlocked(inputFile)) != EOF) {
+#else
+   while((ch = std::fgetc(inputFile)) != EOF) {
+#endif
+      line.push_back(static_cast<char>(static_cast<unsigned char>(ch)));
+      if(ch == '\n') {
          return true;
       }
    }
@@ -269,6 +361,12 @@ static long long countLines(FILE* inputFile)
    while(readLine(inputFile, buffer)) {
       lines++;
    }
+   if(std::ferror(inputFile) != 0) {
+      // TRANSLATORS: Error message when reading from input file fails:
+      // {0} = system error message (std::strerror)
+      std::cerr << formatText("ERROR: Read error: {0}!", std::strerror(errno)) << '\n';
+      cleanUp(1);
+   }
    if(inputFile != stdin) {
       std::rewind(inputFile);
    }
@@ -284,6 +382,12 @@ static void copyInsertFileIntoOutputFile()
    size_t bytesRead = 0;
    while((bytesRead = std::fread(buffer, 1, sizeof(buffer), InsertFile)) > 0) {
       writeToOutputFile(buffer, bytesRead);
+   }
+   if(std::ferror(InsertFile) != 0) {
+      // TRANSLATORS: Error message when reading from input file fails:
+      // {0} = system error message (std::strerror)
+      std::cerr << formatText("ERROR: Read error: {0}!", std::strerror(errno)) << '\n';
+      cleanUp(1);
    }
    if(InsertFile != stdin) {
       std::rewind(InsertFile);
@@ -312,20 +416,30 @@ static void processUnmarked(std::string_view text,
       case TextBlockMode::InsertBack:
          writeToOutputFile(text);
          break;
-      case TextBlockMode::Enumerate:
-         std::fputs(Enumerate1.c_str(), OutputFile);
-         std::fprintf(OutputFile, EnumerateFormat.c_str(), LineNo);
-         std::fputs(Enumerate2.c_str(), OutputFile);
+      case TextBlockMode::Enumerate: {
+         char numberBuffer[320];
+         const int formattedLen = std::snprintf(numberBuffer, sizeof(numberBuffer),
+                                                EnumerateFormat.c_str(),
+                                                static_cast<unsigned long long>(LineNo));
+         writeToOutputFile(Enumerate1);
+         if(formattedLen > 0) {
+            const size_t writeLen =
+               (static_cast<size_t>(formattedLen) < sizeof(numberBuffer)) ?
+                  static_cast<size_t>(formattedLen) : (sizeof(numberBuffer) - 1);
+            writeToOutputFile(numberBuffer, writeLen);
+         }
+         writeToOutputFile(Enumerate2);
          writeToOutputFile(text);
          break;
+      }
       case TextBlockMode::Highlight:
          if(!text.empty()) {
-            std::fputs(HighlightUnmarked1.c_str(), OutputFile);
+            writeToOutputFile(HighlightUnmarked1);
             writeToOutputFile(text);
-            std::fputs(HighlightUnmarked2.c_str(), OutputFile);
+            writeToOutputFile(HighlightUnmarked2);
          }
          if(beginOfMarking) {
-            std::fputs(HighlightBegin.c_str(), OutputFile);
+            writeToOutputFile(HighlightBegin);
          }
          break;
       default:
@@ -365,12 +479,12 @@ static void processMarked(std::string_view text,
          break;
       case TextBlockMode::Highlight:
          if(!text.empty()) {
-            std::fputs(HighlightMarked1.c_str(), OutputFile);
+            writeToOutputFile(HighlightMarked1);
             writeToOutputFile(text);
-            std::fputs(HighlightMarked2.c_str(), OutputFile);
+            writeToOutputFile(HighlightMarked2);
          }
          if(endOfMarking) {
-            std::fputs(HighlightEnd.c_str(), OutputFile);
+            writeToOutputFile(HighlightEnd);
          }
          break;
       default:
@@ -414,13 +528,13 @@ static void usage(const char* program, const int exitCode)
                               std::string(PROJECT_HOMEPAGE_URL) +
                               "\a" + std::string(PROJECT_HOMEPAGE_URL) + "\a" +
                               std::string("\x1b]8;;\a\x1b[0m]") +
-                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")));
    const std::string repository((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
                                 std::string("[\x1b[1m\x1b]8;;") +
                                 std::string(PROJECT_SOURCE_URL) +
                                 "\a" + std::string(PROJECT_SOURCE_URL) + "\a" +
                                 std::string("\x1b]8;;\a\x1b[0m]") +
-                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")));
 
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
@@ -459,15 +573,15 @@ static void usage(const char* program, const int exitCode)
              << CMD("OPTIONS:") << "\n"
                    ENTRY(OPT("-b") " " ARG("begin_tag") PIPE OPT("--begin-tag") " " ARG("begin_tag"))
                    ENTRY(OPT("-e") " " ARG("end_tag") PIPE OPT("--end-tag") " " ARG("end_tag"))
-                   ENTRY(OPT("-i") PIPE OPT("--input") " " ARG("input_file"))
-                   ENTRY(OPT("-o") PIPE OPT("--output") " " ARG("output_file"))
+                   ENTRY(OPT("-i") " " ARG("input_file") PIPE OPT("--input") " " ARG("input_file"))
+                   ENTRY(OPT("-o") " " ARG("output_file") PIPE OPT("--output") " " ARG("output_file"))
                    ENTRY(OPT("-a") PIPE OPT("--append"))
                    ENTRY(OPT("-p") PIPE OPT("--in-place"))
                    ENTRY(OPT("-k") PIPE OPT("--keep-broken"))
-                   ENTRY(OPT("-m") PIPE OPT("--min-actions"))
-                   ENTRY(OPT("-M") PIPE OPT("--max-actions"))
-                   ENTRY(OPT("-s") PIPE OPT("--select") " " ARG("from_line") " " ARG("to_line"))
-                   ENTRY(OPT("-t") PIPE OPT("--tag") " " ARG("tag"))
+                   ENTRY(OPT("-m") " " ARG("min_actions") PIPE OPT("--min-actions") " " ARG("min_actions"))
+                   ENTRY(OPT("-M") " " ARG("max_actions") PIPE OPT("--max-actions") " " ARG("max_actions"))
+                   ENTRY(OPT("-s") " " ARG("from_line") " " ARG("to_line") PIPE OPT("--select") " " ARG("from_line") " " ARG("to_line"))
+                   ENTRY(OPT("-t") " " ARG("tag") PIPE OPT("--tag") " " ARG("tag"))
                    ENTRY(OPT("-y") PIPE OPT("--include-tags"))
                    ENTRY(OPT("-x") PIPE OPT("--exclude-tags"))
                    ENTRY(OPT("-f") PIPE OPT("--full-tag-lines"))
@@ -482,11 +596,11 @@ static void usage(const char* program, const int exitCode)
                    ENTRY(OPT("--highlight-unmarked2") " " ARG("string"))
                    ENTRY(OPT("--highlight-marked1") " " ARG("string"))
                    ENTRY(OPT("--highlight-marked2") " " ARG("string"))
-                   ENTRY(OPT("--highlight-param") " " ARG("begin_label") " " ARG("end_label") " " ARG("unmarked1_label") " " ARG("unmarked2_label") " " ARG("marked1_label") " " ARG("marked2_label"))
+                   ENTRY(OPT("--highlight-param") " " ARG("begin_label") " " ARG("end_label") " " ARG("unmarked1_label") " " ARG("unmarked2_label") " " ARG("marked1_label") " " ARG("marked2_label") PIPE OPT("--highlight-params") " " ARG("begin_label") " " ARG("end_label") " " ARG("unmarked1_label") " " ARG("unmarked2_label") " " ARG("marked1_label") " " ARG("marked2_label"))
              << "\n"
              // TRANSLATORS: Informational message at the end of usage:
              // {0} = manpage name, {1} = documentation URL, {2} = repository URL
-             << formatText(gettext("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM."),
+             << formatText("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM.",
                            manpage, homepage, repository) << "\n";
    std::exit(exitCode);
 }
@@ -538,18 +652,19 @@ int main(int argc, char** argv)
       std::setlocale(LC_ALL, "C.UTF-8");
    }
    try {
-      std::locale userLocale("");
+      const std::locale userLocale(std::locale(""), std::locale::classic(), std::locale::numeric);
       std::cout.imbue(userLocale);
       std::cerr.imbue(userLocale);
-   } catch (const std::runtime_error&) {
+   } catch(const std::runtime_error&) {
       try {
-         std::locale fallbackLocale("C.UTF-8");
+         const std::locale fallbackLocale(std::locale("C.UTF-8"), std::locale::classic(), std::locale::numeric);
          std::cout.imbue(fallbackLocale);
          std::cerr.imbue(fallbackLocale);
-      } catch (const std::runtime_error&) {
+      } catch(const std::runtime_error&) {
          // Defaults to std::locale::classic() if C.UTF-8 is unavailable
       }
    }
+   std::setlocale(LC_NUMERIC, "C");
 
    // ====== Initialise i18n support ========================================
 #if defined(ENABLE_NLS)
@@ -561,11 +676,11 @@ int main(int argc, char** argv)
    _dupenv_s(&textdomaindir, &textdomaindirsize, "TEXTDOMAINDIR");
 #endif
    bindtextdomain("text-block",
-                  ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
+                  ( ((textdomaindir != nullptr) && (textdomaindir[0] != '\0')) ?
                        textdomaindir : PROJECT_LOCALEDIR ));
 #if defined(_WIN32)
-   if(textdomaindir) {
-       free(textdomaindir);
+   if(textdomaindir != nullptr) {
+      free(textdomaindir);
    }
 #endif
    bind_textdomain_codeset("text-block", "UTF-8");
@@ -612,6 +727,7 @@ int main(int argc, char** argv)
       { "highlight-unmarked2", required_argument, nullptr, 0x2003 },
       { "highlight-marked1",   required_argument, nullptr, 0x2004 },
       { "highlight-marked2",   required_argument, nullptr, 0x2005 },
+      { "highlight-param",     required_argument, nullptr, 0x2006 },
       { "highlight-params",    required_argument, nullptr, 0x2006 },
 
       { "suppress-warnings",   no_argument,       nullptr, 'q' },
@@ -670,15 +786,27 @@ int main(int argc, char** argv)
             OutputDeleteOnError = false;
             break;
          case 'm':
-            MinActions = std::atoi(optarg);
+            if(!parseNonNegativeInt(optarg, MinActions)) {
+               // TRANSLATORS: Error message when --min-actions exceeds
+               // --max-actions.
+               std::cerr << gettext("ERROR: Invalid min/max settings (--min-actions/-m/--max-actions/-M)!") << '\n';
+               return 1;
+            }
             break;
          case 'M':
-            MaxActions = std::atoi(optarg);
+            if(!parseNonNegativeInt(optarg, MaxActions)) {
+               // TRANSLATORS: Error message when --min-actions exceeds
+               // --max-actions.
+               std::cerr << gettext("ERROR: Invalid min/max settings (--min-actions/-m/--max-actions/-M)!") << '\n';
+               return 1;
+            }
             break;
          case 's':
             if(optind < argc) {
-               SelectBegin = std::atoll(optarg);
-               SelectEnd   = std::atoll(argv[optind]);
+               if(!parseSignedLongLong(optarg, SelectBegin) ||
+                  !parseSignedLongLong(argv[optind], SelectEnd)) {
+                  usage(argv[0], 1);
+               }
                optind++;
             }
             else {
@@ -714,15 +842,11 @@ int main(int argc, char** argv)
             showWarnings = false;
             break;
          case 0x1000:
-            for(size_t i = 0; i < std::strlen(optarg); ++i) {
-               if((optarg[i] == '%') ||
-                  (!std::isalnum(static_cast<unsigned char>(optarg[i])) &&
-                   (optarg[i] != '-') && (optarg[i] != '\''))) {
-                  // TRANSLATORS: Error message when format string for line
-                  // numbering contains invalid characters.
-                  std::cerr << gettext("ERROR: Invalid value for enumeration format (--enumerate-format)!") << '\n';
-                  return 1;
-               }
+            if(!isValidEnumerateFormatSpec(optarg)) {
+               // TRANSLATORS: Error message when format string for line
+               // numbering contains invalid characters.
+               std::cerr << gettext("ERROR: Invalid value for enumeration format (--enumerate-format)!") << '\n';
+               return 1;
             }
             EnumerateFormat = std::format("%{}llu", optarg);
             break;
@@ -913,7 +1037,8 @@ int main(int argc, char** argv)
    if(!OutputFileName.empty() || !OutputTempFileName.empty()) {
       const std::string& destinationFile = !OutputTempFileName.empty() ?
                                               OutputTempFileName : OutputFileName;
-      OutputFile = std::fopen(destinationFile.c_str(), !OpenOutputAppend ? "w" : "a");
+      OutputFile = std::fopen(destinationFile.c_str(),
+                              (!OpenOutputAppend || InPlaceUpdate) ? "w" : "a");
       if(OutputFile == nullptr) {
          // TRANSLATORS: Error message when opening or creating output file
          // fails:
@@ -958,6 +1083,12 @@ int main(int argc, char** argv)
                                     std::strerror(errno)) << '\n';
             cleanUp(1);
          }
+      }
+      if(std::ferror(stdin) != 0) {
+         // TRANSLATORS: Error message when reading from input file fails:
+         // {0} = system error message (std::strerror)
+         std::cerr << formatText("ERROR: Read error: {0}!", std::strerror(errno)) << '\n';
+         cleanUp(1);
       }
       std::rewind(InsertFile);
       OpenInsertFile = true;
