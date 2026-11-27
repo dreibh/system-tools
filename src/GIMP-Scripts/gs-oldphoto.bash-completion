@@ -33,48 +33,85 @@
 # ###### Bash completion for gs-oldphoto ####################################
 _gs_oldphoto()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
-      _init_completion || return
+   # shellcheck disable=SC2034
+   local cur prev words cword split=false comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -s -- "$@" || return
+   elif type -t _init_completion >/dev/null ; then
+      _init_completion -s || return
    else
-      # Manual initialization for older bash completion versions:
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
       prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
+      words=("${COMP_WORDS[@]}")
       cword="${COMP_CWORD}"
    fi
 
-   if [ "${cword}" -eq 1 ] ; then
-      _filedir '@(jpeg|jpg|JPG|png|PNG|dng|DNG|cr2|CR2|gif|GIF|webp|pdf)'
-      return
-   elif [ "${cword}" -eq 2 ] ; then
-      _filedir
-      return
-   else
-      case "${prev}" in
-         #  ====== On or off ================================================
-         -D | --defocus    | \
-         -S | --sepia      | \
-         -M | --mottle)
-            mapfile -t COMPREPLY < <(compgen -W "on off" --  "${cur}")
-            return
+   # ====== Track options and positional arguments across prior words =======
+   local i afterDashDash=0 activeOpt="" positionalCount=0
+   for (( i = 1; i < cword; i++ )) ; do
+      if (( afterDashDash )) ; then
+         positionalCount=$((positionalCount + 1))
+         continue
+      fi
+      if [[ -n "${activeOpt}" ]] ; then
+         activeOpt=""
+         continue
+      fi
+      case "${words[i]}" in
+         --)
+            afterDashDash=1
             ;;
-         #  ====== Generic value ============================================
+         -h | --help | -v | --version)
+            return 0
+            ;;
+         -D | --defocus | -S | --sepia | -M | --mottle)
+            activeOpt="bool"
+            ;;
          -B | --border-size)
-            return
+            activeOpt="border"
             ;;
+         --defocus=* | --sepia=* | --mottle=* | --border-size=*)
+            ;;
+         -[qw]*[DBSM])
+            case "${words[i]: -1}" in
+               B) activeOpt="border" ;;
+               *) activeOpt="bool"   ;;
+            esac
+            ;;
+         -*)
+            ;;
+         *)
+            positionalCount=$((positionalCount + 1))
+            ;;
+      esac
+   done
+
+   if [[ "${split}" == "true" ]] && [[ -z "${activeOpt}" ]] ; then
+      case "${prev}" in
+         --defocus | --sepia | --mottle) activeOpt="bool"   ;;
+         --border-size)                  activeOpt="border" ;;
       esac
    fi
 
-   # ====== All options =====================================================
-   local opts="
+   case "${activeOpt}" in
+      bool)
+         compopt -o nosort 2>/dev/null || true
+         mapfile -t COMPREPLY < <(compgen -W "on off" -- "${cur}")
+         return 0
+         ;;
+      border)
+         compopt -o nosort 2>/dev/null || true
+         mapfile -t COMPREPLY < <(compgen -W "0 5 10 15 20 30 40 50" -- "${cur}")
+         return 0
+         ;;
+   esac
+
+   [[ "${split}" == "true" ]] && return 0
+
+   # ====== Options vs. positional file arguments ===========================
+   if (( ! afterDashDash )) && [[ "${cur}" == -* ]] ; then
+      local opts="
 -D
 --defocus
 -B
@@ -91,8 +128,41 @@ _gs_oldphoto()
 --help
 -v
 --version
+--
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+      mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
+      return 0
+   fi
+
+   if (( positionalCount == 0 )) ; then
+      if type -t _filedir >/dev/null ; then
+         _filedir '@(jpeg|JPEG|jpg|JPG|png|PNG|dng|DNG|cr2|CR2|gif|GIF|webp|WEBP|tif|TIF|tiff|TIFF|bmp|BMP|pdf|PDF|xcf|XCF)'
+      else
+         mapfile -t COMPREPLY < <(compgen -f -- "${cur}")
+      fi
+   elif (( positionalCount == 1 )) ; then
+      if type -t _filedir >/dev/null ; then
+         _filedir
+      else
+         mapfile -t COMPREPLY < <(compgen -f -- "${cur}")
+      fi
+   elif (( ! afterDashDash )) ; then
+      local opts="
+-D
+--defocus
+-B
+--border-size
+-S
+--sepia
+-M
+--mottle
+-q
+--quiet
+-w
+--verbose
+"
+      mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
+   fi
    return 0
 }
 
