@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 27, 2026
 .Dt gs\-oilify 1
 .Os gs\-oilify
 .\" ###### Name #############################################################
@@ -67,14 +67,16 @@ The input image.
 Any format supported by GIMP can be used.
 The format will be detected automatically.
 .It Ar output\_filename
-The name for the output image to be written.
-Any format supported by GIMP can be used.
-The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...).
+The name for the output image to be written (saved in PNG format).
 An existing output file will be overwritten.
 .It Fl S Ar masksize | Fl \-mask\-size Ar masksize
 Specifies the mask size. Range: 2\-200. Default: 8.
 .It Fl I Ar on|off | Fl \-intensity\-mode Ar on|off
-Turns intensity mode on or off. Default: on.
+Turns intensity mode on or off (accepts
+.Ql on , true , yes , 1
+or
+.Ql off , false , no , 0 ) .
+Default: on.
 .It Fl q | Fl \-quiet
 Quiet mode: suppress GIMP console output. This is the default.
 .It Fl w | Fl \-verbose
@@ -95,7 +97,7 @@ tool exits with 0 on success, and >0 in case of an error.
 .It
 gs\-oilify Bergen.jpeg Bergen\-Oilify.png \-S 12 \-I off
 .It
-gs\-oilify Bergen.jpeg Bergen\-Oilify.webp \-\-mask\-size 10 \-\-verbose
+gs\-oilify Bergen.jpeg Bergen\-Oilify\-10.png \-\-mask\-size 10 \-\-verbose
 .It
 gs\-oilify \-\-help
 .It

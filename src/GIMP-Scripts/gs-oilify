@@ -74,6 +74,34 @@ EOF
 # ------ END-OF-USAGE-BLOCK ------
 
 
+# ###### Parse boolean option into Script-Fu TRUE/FALSE #####################
+parse_bool () {
+   local optionName="$1"
+   local rawValue="$2"
+   case "${rawValue,,}" in
+      on | true | yes | 1)
+         printf '%s' "TRUE"
+         ;;
+      off | false | no | 0)
+         printf '%s' "FALSE"
+         ;;
+      *)
+         echo >&2 "ERROR: Invalid value ${rawValue} for ${optionName}!"
+         return 1
+         ;;
+   esac
+}
+
+
+# ###### Escape string for TinyScheme double-quoted literal #################
+scheme_escape () {
+   local value="$1"
+   value="${value//\\/\\\\}"
+   value="${value//\"/\\\"}"
+   printf '%s' "${value}"
+}
+
+
 
 # ###### Main program #######################################################
 
@@ -97,19 +125,17 @@ case "${UNAME}" in
       GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
       ;;
    Darwin)
-      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:/usr/local/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
       ;;
    *)
       GETOPT="$(command -v getopt || true)"
       ;;
 esac
-if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+if [[ -z "${GETOPT}" ]] || "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]] ; then
    echo >&2 "ERROR: Enhanced/GNU getopt is required!"
    exit 1
 fi
-options="$(${GETOPT} -o S:I:wqhv --long mask-size:,intensity-mode:,verbose,quiet,help,version -a -- "$@")"
-# shellcheck disable=SC2181
-if [[ $? -ne 0 ]]; then
+if ! options="$("${GETOPT}" -o S:I:wqhv --long mask-size:,intensity-mode:,verbose,quiet,help,version -a -- "$@")" ; then
    usage "$0" 1
 fi
 eval set -- "${options}"
@@ -122,22 +148,15 @@ while [ $# -gt 0 ] ; do
       -S | --mask-size)
          MASK_SIZE="$2"
          shift
-         if [[ ! "${MASK_SIZE}" =~ ^([0-9]+)$ ]] ; then
+         if [[ ! "${MASK_SIZE}" =~ ^[0-9]+$ ]] || (( 10#${MASK_SIZE} < 2 )) || (( 10#${MASK_SIZE} > 200 )) ; then
             echo >&2 "ERROR: Invalid value ${MASK_SIZE} for -S|--mask-size!"
             exit 1
          fi
+         MASK_SIZE=$((10#${MASK_SIZE}))
          ;;
       -I | --intensity-mode)
-         INTENSITY_MODE="$2"
+         INTENSITY_MODE="$(parse_bool "-I|--intensity-mode" "$2")"
          shift
-         if [[ "${INTENSITY_MODE}" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
-            INTENSITY_MODE="TRUE"
-         elif [[ "${INTENSITY_MODE}" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
-            INTENSITY_MODE="FALSE"
-         else
-            echo >&2 "ERROR: Invalid value ${INTENSITY_MODE} for -I|--intensity-mode!"
-            exit 1
-         fi
          ;;
       -w | --verbose)
          VERBOSE=1
@@ -160,8 +179,8 @@ while [ $# -gt 0 ] ; do
          echo >&2 "INTERNAL ERROR: Unhandled option $1!"
          exit 1
          ;;
-  esac
-  shift
+   esac
+   shift
 done
 
 if [ $# -ne 2 ] ; then
@@ -177,6 +196,7 @@ fi
 
 
 # ====== Detect GIMP, and determine version-specific call options ===========
+GIMP_CONSOLE=""
 case "${UNAME}" in
    OpenBSD)
       for version in 3.6 3.4 3.2 3.0 2.8 2.6 ; do
@@ -187,12 +207,13 @@ case "${UNAME}" in
       done
       ;;
    Darwin)
-      GIMP_CONSOLE="$(command -v gimp-console || command -v /Applications/GIMP.app/Contents/MacOS/gimp-console-3 || true)"
+      GIMP_CONSOLE="$(command -v gimp-console || command -v /Applications/GIMP.app/Contents/MacOS/gimp-console-3 || command -v /Applications/GIMP.app/Contents/MacOS/gimp-console || true)"
       ;;
    *)
       GIMP_CONSOLE="$(command -v gimp-console || true)"
+      ;;
 esac
-if [ "${GIMP_CONSOLE}" = "" ] ; then
+if [ -z "${GIMP_CONSOLE}" ] ; then
    echo >&2 "ERROR: GIMP is not installed! Try:"
    echo >&2 " * Ubuntu/Debian: sudo apt install -y gimp"
    echo >&2 " * Fedora:        sudo dnf install -y gimp"
@@ -201,31 +222,46 @@ if [ "${GIMP_CONSOLE}" = "" ] ; then
    echo >&2 " * FreeBSD:       sudo pkg install -y gimp3-app"
    echo >&2 " * NetBSD:        sudo pkgin -y install gimp"
    echo >&2 " * OpenBSD:       sudo pkg_add \"\$(pkg_info -z \"gimp->=3\")\""
-   echo >&2 " * Solaris        sudo pkg install gimp"
+   echo >&2 " * Solaris:       sudo pkg install gimp"
    echo >&2 " * Apple:         brew install gimp"
    exit 1
 fi
-GIMP_VERSION="$(LC_ALL=C.UTF-8 "${GIMP_CONSOLE}" --version | sed -e 's/GNU Image Manipulation Program version //')"
+GIMP_VERSION="$(LC_ALL=C "${GIMP_CONSOLE}" --version | sed -e 's/GNU Image Manipulation Program version //')"
 if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
    # GIMP 2.x:
-   GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+   GIMP_OPTIONS=(--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -)
 else
    # GIMP 3.x:
-   GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+   GIMP_OPTIONS=(--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -)
 fi
 
 # This script does not use fonts, or gradients/palettes/brushes:
-GIMP_OPTIONS="${GIMP_OPTIONS} --no-fonts"
+GIMP_OPTIONS+=( --no-fonts )
+
+
+# ====== Prepare output path (protect in-place overwrite) ===================
+TARGET_OUTPUT="${OUTPUT_FILENAME}"
+TEMP_DIR=""
+if [ "${INPUT_FILENAME}" -ef "${OUTPUT_FILENAME}" ] ; then
+   outputDir="$(dirname -- "${OUTPUT_FILENAME}")"
+   outputBase="$(basename -- "${OUTPUT_FILENAME}")"
+   TEMP_DIR="$(mktemp -d "${outputDir}/.gs-oilify-XXXXXX")"
+   trap 'rm -rf "${TEMP_DIR}"' EXIT
+   TARGET_OUTPUT="${TEMP_DIR}/${outputBase}"
+else
+   rm -f "${OUTPUT_FILENAME}"
+fi
+
+SCHEME_INPUT="$(scheme_escape "${INPUT_FILENAME}")"
+SCHEME_OUTPUT="$(scheme_escape "${TARGET_OUTPUT}")"
 
 
 # ====== Call GIMP ==========================================================
-rm -f "${OUTPUT_FILENAME}"
-# shellcheck disable=SC2086
 ( cat <<EOF
 (let*
    ; ------ Initialise and load image ---------------------------------------
-   ((inputFileName    "${INPUT_FILENAME}")
-    (outputFileName   "${OUTPUT_FILENAME}")
+   ((inputFileName    "${SCHEME_INPUT}")
+    (outputFileName   "${SCHEME_OUTPUT}")
     (maskSize         ${MASK_SIZE})
     (intensityMode    ${INTENSITY_MODE})
     (image            (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
@@ -252,19 +288,20 @@ rm -f "${OUTPUT_FILENAME}"
    ; GEGL Oilify options: https://gegl.org/operations/gegl-oilify.html
    ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   (cond( (not(defined? 'plug-in-oilify))
-      ; New GIMP 3.0 API:
-      (gimp-drawable-merge-new-filter layer "gegl:oilify" 0 LAYER-MODE-REPLACE 1.0
-          "mask-radius" (max 1 (/ maskSize 2))
-          "use-inten"   intensityMode
-          "intensities" 128
+   (cond
+      ((not (defined? 'plug-in-oilify))
+         ; New GIMP 3.0 API:
+         (gimp-drawable-merge-new-filter layer "gegl:oilify" 0 LAYER-MODE-REPLACE 1.0
+             "mask-radius" (max 1 (quotient maskSize 2))
+             "use-inten"   intensityMode
+             "intensities" 128
+         )
+      )
+      (else
+         ; Old GIMP 2.x API:
+         (plug-in-oilify RUN-NONINTERACTIVE image layer maskSize intensityMode)
       )
    )
-   (else
-      ; Old GIMP 2.x API:
-      (display maskSize) (newline)
-      (plug-in-oilify RUN-NONINTERACTIVE image layer maskSize intensityMode)
-   ))
 
    ; ------ Save result -----------------------------------------------------
    (if (defined? 'gimp-drawable-merge-new-filter)
@@ -301,18 +338,23 @@ rm -f "${OUTPUT_FILENAME}"
 )
 (gimp-quit TRUE)
 EOF
-) | env LC_ALL=C.UTF-8 HOME=/tmp "${GIMP_CONSOLE}" ${GIMP_OPTIONS} 2>&1 | \
+) | env LC_ALL=C.UTF-8 HOME=/tmp "${GIMP_CONSOLE}" "${GIMP_OPTIONS[@]}" 2>&1 | \
 (
-   if [ ${VERBOSE} -ne 0 ] ; then
+   if [ "${VERBOSE}" -ne 0 ] ; then
       cat
    else
-      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|^gimp_color_transform_new: using babl|scriptfu-WARNING|-WARNING|^Warning: Unknown input_id|^Failed to parse tag cache|^Please use named arguments:|^script quit with code:|^GIMP is started|^$" || true
+      grep -vE "^ts>|^\(#t\)$|^#t$|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|^gimp_color_transform_new: using babl|-WARNING|^Warning: Unknown input_id|^Failed to parse tag cache|^Please use named arguments:|^script quit with code:|^GIMP is started|^$" || true
    fi
 )
 
 
 # ====== Check result =======================================================
-if [ ! -e "${OUTPUT_FILENAME}" ] ; then
+if [ ! -e "${TARGET_OUTPUT}" ] ; then
    echo >&2 "ERROR: ${OUTPUT_FILENAME} has not been produced. Something went wrong!"
    exit 1
+fi
+if [ -n "${TEMP_DIR}" ] ; then
+   mv -f "${TARGET_OUTPUT}" "${OUTPUT_FILENAME}"
+   rm -rf "${TEMP_DIR}"
+   trap - EXIT
 fi
