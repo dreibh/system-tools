@@ -33,60 +33,124 @@
 # ###### Bash completion for System-Info ####################################
 _System_Info()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
-      _init_completion || return
+   # shellcheck disable=SC2034
+   local cur prev words cword split=false comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -s -n : -- "$@" || return
+   elif type -t _init_completion >/dev/null ; then
+      _init_completion -s -n : || return
    else
-      # Manual initialization for older bash completion versions:
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
       prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
+      words=("${COMP_WORDS[@]}")
       cword="${COMP_CWORD}"
    fi
 
-   case "${prev}" in
-      #  ====== Special case: configuration file ============================
-      -C | --config)
-         _filedir '@(conf)'
-         return
+   local rawCur="${COMP_WORDS[COMP_CWORD]:-}"
+   local isQuoted=0
+   if [[ "${rawCur}" == \'* ]] || [[ "${rawCur}" == \"* ]] ; then
+      isQuoted=1
+   fi
+
+   # ====== Scan prior words for '--', terminal flags, and active option ====
+   local i activeOpt=""
+   for (( i = 1; i < cword; i++ )) ; do
+      if [[ -n "${activeOpt}" ]] ; then
+         activeOpt=""
+         continue
+      fi
+      case "${words[i]}" in
+         -- | -h | --help | -v | --version)
+            return 0
+            ;;
+         -C | --config)
+            activeOpt="conf"
+            ;;
+         -S | --scripts)
+            activeOpt="dir"
+            ;;
+         -X | --test-date)
+            activeOpt="date"
+            ;;
+         -Y | --test-system-info)
+            activeOpt="file"
+            ;;
+      esac
+   done
+
+   if [[ "${split}" == "true" ]] && [[ -z "${activeOpt}" ]] ; then
+      case "${prev}" in
+         --config)           activeOpt="conf" ;;
+         --scripts)          activeOpt="dir"  ;;
+         --test-date)        activeOpt="date" ;;
+         --test-system-info) activeOpt="file" ;;
+      esac
+   fi
+
+   case "${activeOpt}" in
+      # ====== Special case: configuration file =============================
+      conf)
+         if type -t _filedir >/dev/null ; then
+            _filedir '@(conf)'
+         else
+            mapfile -t COMPREPLY < <(compgen -f -X '!*.conf' -- "${cur}")
+            local dirs
+            mapfile -t dirs < <(compgen -d -- "${cur}")
+            COMPREPLY+=( "${dirs[@]/%//}" )
+         fi
+         return 0
          ;;
-      #  ====== Special case: directory =====================================
-      -S | --scripts)
-         _filedir -d
-         return
+      # ====== Special case: directory ======================================
+      dir)
+         if type -t _filedir >/dev/null ; then
+            _filedir -d
+         else
+            mapfile -t COMPREPLY < <(compgen -d -- "${cur}")
+         fi
+         return 0
          ;;
-      #  ====== Special case: test date =====================================
-      -X | --test-date)
-         local dateOptions=( "$(env LC_TIME=C.UTF-8 date)"
-                             "Sat Nov  5 06:15:00 PST 1955"
-                             "Thu Jan  1 00:00:00 UTC 1970"
-                             "Sat Oct 26 01:35:00 PDT 1985"
-                             "Wed Oct 21 16:29:00 PDT 2015"
-                             "Tue Sep 29 13:10:00 CEST 2026" )
+      # ====== Special case: test date ======================================
+      date)
+         local dateOptions=(
+            "$(env LC_TIME=C.UTF-8 date 2>/dev/null || date)"
+            "Sat Nov  5 06:15:00 PST 1955"
+            "Thu Jan  1 00:00:00 UTC 1970"
+            "Sat Oct 26 01:35:00 PDT 1985"
+            "Wed Oct 21 16:29:00 PDT 2015"
+            "Tue Sep 29 13:10:00 CEST 2026"
+         )
+         local search="${cur//\\/}" item
+         compopt -o nosort 2>/dev/null || true
          COMPREPLY=()
-         local search="${cur//\\/}"   # The strings contain spaces!
          for item in "${dateOptions[@]}" ; do
             if [[ "${item}" == "${search}"* ]] ; then
-               COMPREPLY+=( "${item// /\\ }" )   # The strings contain spaces!
+               if (( isQuoted )) ; then
+                  COMPREPLY+=( "${item}" )
+               else
+                  COMPREPLY+=( "${item// /\\ }" )
+               fi
             fi
          done
-         return
+         if type -t __ltrim_colon_completions >/dev/null ; then
+            __ltrim_colon_completions "${cur}"
+         fi
+         return 0
          ;;
-      #  ====== Special case: test input file ===============================
-      -Y | --test-system-info)
-         _filedir
-         return
+      # ====== Special case: test input file ================================
+      file)
+         if type -t _filedir >/dev/null ; then
+            _filedir
+         else
+            mapfile -t COMPREPLY < <(compgen -f -- "${cur}")
+         fi
+         return 0
          ;;
    esac
 
-   # ====== All options =====================================================
+   [[ "${split}" == "true" ]] && return 0
+
+   # ====== All options (no positional arguments accepted) ==================
    local opts="
 -C
 --config
@@ -101,7 +165,7 @@ _System_Info()
 -v
 --version
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
    return 0
 }
 

@@ -29,7 +29,9 @@
 
 #include <algorithm>
 #include <cctype>
+#include <cerrno>
 #include <clocale>
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -39,13 +41,22 @@
 #include <fstream>
 #include <getopt.h>
 #include <iostream>
-#include <locale>
 #include <libsysteminfo.h>
+#include <locale>
 #include <propertyformatter.h>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
+
+#if defined(_WIN32)
+#include <winsock2.h>
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
 
 #if defined(ENABLE_NLS)
 #include <libintl.h>
@@ -55,13 +66,6 @@
 #define bindtextdomain(domain, directory)        (directory)
 #define textdomain(domain)                       (domain)
 #define bind_textdomain_codeset(domain, codeset) (codeset)
-#endif
-
-#if defined(_WIN32)
-#include <winsock2.h>
-#include <windows.h>
-#else
-#include <unistd.h>
 #endif
 
 #include "package-version.h"
@@ -238,7 +242,7 @@ static void readConfiguration(const std::string&              customConfiguratio
          // TRANSLATORS: Error message when configuration file specified via
          // -C/--config cannot be found:
          // {0} = file path
-         std::cerr << formatText("ERROR: Unable to find configuration file {0}!\n", customConfigurationFile);
+         std::cerr << formatText("ERROR: Unable to find configuration file {0}!", customConfigurationFile) << '\n';
          std::exit(1);
       }
       parseConfigurationFile(customPath);
@@ -258,7 +262,7 @@ static void readConfiguration(const std::string&              customConfiguratio
 
 
 // ###### Locale thousands formatting helper ################################
-static std::string formatLocaleNumber(const uint64_t value)
+static std::string formatLocaleNumber(const uintmax_t value)
 {
    try {
       static const std::locale environmentLocale("");
@@ -277,7 +281,7 @@ static std::string formatLocaleNumber(const uint64_t value)
 static std::string formatMemoryMiB(const uint64_t bytes)
 {
    const uint64_t mebibytes = bytes / 1048576ULL;
-   std::string formattedString = formatLocaleNumber(mebibytes);
+   std::string formattedString = formatLocaleNumber(static_cast<uintmax_t>(mebibytes));
    if(formattedString.length() < 6) {
       formattedString = std::string(6 - formattedString.length(), ' ') + formattedString;
    }
@@ -288,8 +292,9 @@ static std::string formatMemoryMiB(const uint64_t bytes)
 // ###### Percentage string formatting helper ###############################
 static std::string formatPercentage5_1(const double percentage)
 {
+   const double safePct = std::isfinite(percentage) ? percentage : 0.0;
    char buffer[32];
-   std::snprintf(buffer, sizeof(buffer), "%5.1f", percentage);
+   std::snprintf(buffer, sizeof(buffer), "%5.1f", safePct);
    return buffer;
 }
 
@@ -321,6 +326,17 @@ static void printBanners(const std::vector<std::string>& directories)
       std::sort(bannerScripts.rbegin(), bannerScripts.rend());
 
       for(const auto& script : bannerScripts) {
+#if !defined(_WIN32)
+         std::error_code permEc;
+         const auto perms = std::filesystem::symlink_status(script, permEc).permissions();
+         if(!permEc &&
+            ((perms & (std::filesystem::perms::owner_exec |
+                       std::filesystem::perms::group_exec |
+                       std::filesystem::perms::others_exec)) == std::filesystem::perms::none)) {
+            continue;
+         }
+#endif
+         std::cout.flush();
          if(std::system(script.c_str()) != 0) {
             break;
          }
@@ -393,12 +409,15 @@ static void loadTestSystemInfo(std::string_view filePath,
       // TRANSLATORS: Error message when test input file specified via
       // -Y/--test-system-info cannot be found:
       // {0} = file path
-      std::cerr << formatText("ERROR: Unable to find input file {0}!\n", filePath);
+      std::cerr << formatText("ERROR: Unable to find input file {0}!", filePath) << '\n';
       std::exit(1);
    }
 
    std::string line;
    while(std::getline(fileStream, line)) {
+      if(!line.empty() && (line.back() == '\r')) {
+         line.pop_back();
+      }
       const auto delimiterPosition = line.find('=');
       if(delimiterPosition == std::string::npos) {
          continue;
@@ -413,13 +432,25 @@ static void loadTestSystemInfo(std::string_view filePath,
       if((value.length() >= 2) && (value.front() == '"') && (value.back() == '"')) {
          systemInfo.addString(key, value.substr(1, value.length() - 2));
       }
-      else if(value.find('.') != std::string::npos) {
-         systemInfo.addDouble(key, std::strtod(value.c_str(), nullptr));
+      else if((value.find('.') != std::string::npos) ||
+              (value.find('e') != std::string::npos) ||
+              (value.find('E') != std::string::npos)) {
+         char* endPointer = nullptr;
+         errno            = 0;
+         const double parsedDouble = std::strtod(value.c_str(), &endPointer);
+         if((errno != ERANGE) && (endPointer != value.c_str()) && (*endPointer == '\0') &&
+            std::isfinite(parsedDouble)) {
+            systemInfo.addDouble(key, parsedDouble);
+         }
+         else {
+            systemInfo.addString(key, value);
+         }
       }
       else {
          char* endPointer = nullptr;
+         errno            = 0;
          const unsigned long long number = std::strtoull(value.c_str(), &endPointer, 10);
-         if((endPointer != value.c_str()) && (*endPointer == 0x00)) {
+         if((errno != ERANGE) && (endPointer != value.c_str()) && (*endPointer == '\0')) {
             if((key.find("mem") != std::string::npos) ||
                (key.find("swap") != std::string::npos) ||
                (key.find("total") != std::string::npos) ||
@@ -462,11 +493,11 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    const uint32_t uptimeMins  = systemInfo.getUInt32("uptime_mins");
    const uint32_t uptimeSecs  = systemInfo.getUInt32("uptime_secs");
 
-   char buffer[128];
+   char buffer[256];
    // TRANSLATORS: Number of days in system uptime (singular and plural).
    std::snprintf(buffer, sizeof(buffer),
                  ngettext("%s day", "%s days", static_cast<unsigned long>(uptimeDays)),
-                 formatLocaleNumber(uptimeDays).c_str());
+                 formatLocaleNumber(static_cast<uintmax_t>(uptimeDays)).c_str());
    const std::string uptimeInDays = buffer;
 
    // TRANSLATORS: Number of hours in system uptime (singular and plural).
@@ -528,13 +559,14 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    const uint32_t cores = systemInfo.getUInt32("system_cores");
 
    // TRANSLATORS: Number of active processes running on the system.
-   std::snprintf(buffer, sizeof(buffer), gettext("%s processes"), formatLocaleNumber(procs).c_str());
+   std::snprintf(buffer, sizeof(buffer), gettext("%s processes"),
+                 formatLocaleNumber(static_cast<uintmax_t>(procs)).c_str());
    const std::string processesString = buffer;
 
    // TRANSLATORS: Number of logged-in users (singular and plural).
    std::snprintf(buffer, sizeof(buffer),
                  ngettext("%s user", "%s users", static_cast<unsigned long>(users)),
-                 formatLocaleNumber(users).c_str());
+                 formatLocaleNumber(static_cast<uintmax_t>(users)).c_str());
    const std::string usersString = buffer;
 
    // TRANSLATORS: Processor details:
@@ -544,7 +576,7 @@ static void printSystemInformation(const SystemInfo& systemInfo)
    // {3} = formatted users count string
    formatter.add(gettext("Processor:"),
                  formatText("{0} cores ({1}); {2}; {3}",
-                            formatLocaleNumber(cores),
+                            formatLocaleNumber(static_cast<uintmax_t>(cores)),
                             systemInfo.getString("system_machine"),
                             processesString,
                             usersString));
@@ -828,13 +860,13 @@ static void usage(const char* program, const int exitCode)
                               std::string(PROJECT_HOMEPAGE_URL) +
                               "\a" + std::string(PROJECT_HOMEPAGE_URL) + "\a" +
                               std::string("\x1b]8;;\a\x1b[0m]") +
-                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")));
    const std::string repository((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
                                 std::string("[\x1b[1m\x1b]8;;") +
                                 std::string(PROJECT_SOURCE_URL) +
                                 "\a" + std::string(PROJECT_SOURCE_URL) + "\a" +
                                 std::string("\x1b]8;;\a\x1b[0m]") +
-                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")));
 
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
@@ -851,7 +883,7 @@ static void usage(const char* program, const int exitCode)
              << "\n"
              // TRANSLATORS: Informational message at the end of usage:
              // {0} = manpage name, {1} = documentation URL, {2} = repository URL
-             << formatText(gettext("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM."),
+             << formatText("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM.",
                            manpage, homepage, repository) << "\n";
    std::exit(exitCode);
 }
@@ -876,12 +908,12 @@ int main(int argc, char** argv)
       std::locale userLocale("");
       std::cout.imbue(userLocale);
       std::cerr.imbue(userLocale);
-   } catch (const std::runtime_error&) {
+   } catch(const std::runtime_error&) {
       try {
          std::locale fallbackLocale("C.UTF-8");
          std::cout.imbue(fallbackLocale);
          std::cerr.imbue(fallbackLocale);
-      } catch (const std::runtime_error&) {
+      } catch(const std::runtime_error&) {
          // Defaults to std::locale::classic() if C.UTF-8 is unavailable
       }
    }
@@ -968,9 +1000,6 @@ int main(int argc, char** argv)
       usage(argv[0], 1);
    }
 
-   // ====== Read configuration =============================================
-   readConfiguration(customConfigurationFile, scriptDirectories);
-
 #if defined(_WIN32)
    struct WinSockScope {
       WSADATA Data { };
@@ -978,6 +1007,9 @@ int main(int argc, char** argv)
       ~WinSockScope() { WSACleanup(); }
    } winSockScope;
 #endif
+
+   // ====== Read configuration =============================================
+   readConfiguration(customConfigurationFile, scriptDirectories);
 
    std::string nowString = testDate;
    if(nowString.empty()) {
@@ -1001,6 +1033,11 @@ int main(int argc, char** argv)
          SystemInfo systemInfo(LSI_COMPATIBILITY_VERSION, 0);
          loadTestSystemInfo(testSystemInfoInput, systemInfo);
          printSystemInformation(systemInfo);
+      }
+      std::cout.flush();
+      if(!std::cout) {
+         std::cerr << "ERROR: Failed to write output!\n";
+         return 1;
       }
    }
    catch(const std::exception& exception) {

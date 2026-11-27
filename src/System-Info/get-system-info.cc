@@ -116,13 +116,11 @@ static bool parseUnsignedVersion(const char* argument, unsigned long& value) noe
 #define PIPE         SYN(" | ")
 #define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
 
-[[noreturn]]
+[[ noreturn ]]
 static void usage(const char* program, const int exitCode)
 {
-   const char* safeProgram = (program != nullptr) ? program : "get-system-info";
-
    const std::string manpage(std::string("\x1b[1m") +
-                             std::filesystem::path(safeProgram).stem().string() +
+                             std::filesystem::path(program).stem().string() +
                              std::string("\x1b[0m"));
    const std::string homepage(std::string("[\x1b[1m\x1b]8;;") +
                               std::string(PROJECT_HOMEPAGE_URL) +
@@ -134,7 +132,7 @@ static void usage(const char* program, const int exitCode)
                                 std::string("\x1b]8;;\a\x1b[0m]"));
 
    std::cerr << HEADER("Usage:") << "\n"
-             << CMD(safeProgram) << "\n"
+             << CMD(program) << "\n"
                    ENTRY(OPT("-c") " " ARG("version") PIPE OPT("--compatibility") " " ARG("version"))
                    ENTRY(OPT("-A") PIPE OPT("--all"))
                    ENTRY(OPT("-a") PIPE OPT("--none"))
@@ -160,9 +158,9 @@ static void usage(const char* program, const int exitCode)
                    ENTRY(OPT("-t") PIPE OPT("--without-uptime"))
                    ENTRY(OPT("-U") PIPE OPT("--with-user"))
                    ENTRY(OPT("-u") PIPE OPT("--without-user"))
-             << CMD(safeProgram) << "\n"
+             << CMD(program) << "\n"
                    ENTRY(OPT("-h") PIPE OPT("--help"))
-             << CMD(safeProgram) << "\n"
+             << CMD(program) << "\n"
                    ENTRY(OPT("-v") PIPE OPT("--version"))
              << "\n"
              << std::format("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM.",

@@ -9,7 +9,7 @@
 .\"                  https://www.nntb.no/~dreibh/system-tools/
 .\" ==========================================================================
 .\"
-.\" System\-Info
+.\" System-Info
 .\" Copyright (C) 2013-2026 by Thomas Dreibholz
 .\"
 .\" This program is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 27, 2026
 .Dt System\-Info 1
 .Os System\-Info
 .\" ###### Name #############################################################
@@ -38,20 +38,23 @@
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm System\-Info
-.Op Fl C Ar config_file | Fl Fl config Ar config_file
-.Op Fl S Ar scripts_directory | Fl Fl scripts Ar scripts_directory
+.Op Fl C Ar config\_file | Fl \-config Ar config\_file
+.Op Fl S Ar scripts\_directory | Fl \-scripts Ar scripts\_directory
 .br
-.Op Fl X Ar date\_string | Fl Fl test\-date Ar date\_string
-.Op Fl Y Ar input\_file | Fl Fl test\-system\-info Ar input\_file
+.Op Fl X Ar date\_string | Fl \-test\-date Ar date\_string
+.Op Fl Y Ar input\_file | Fl \-test\-system\-info Ar input\_file
 .Nm System\-Info
-.Op Fl h | Fl Fl help
+.Op Fl h | Fl \-help
 .Nm System\-Info
-.Op Fl v | Fl Fl version
+.Op Fl v | Fl \-version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
-System\-Info displays basic status information about the system: hostname, uptime, CPU, memory statistics, disk space statistics, SSH public key hashes, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name). System\-Info can be configured to be automatically run when logging in, providing the user an up\-to\-date overview of the system.
+.Nm System\-Info
+displays basic status information about the system: hostname, uptime, operating system and kernel, CPU and load, battery, memory statistics, disk space statistics, SSH public key fingerprints, and networking information. Furthermore, it can be configured to show one or more banners (for example, a project name).
+.Nm System\-Info
+can be configured to be automatically run when logging in, providing the user an up\-to\-date overview of the system.
 .Pp
-Console colors and thresholds can be configured via
+Console colors can be configured via
 .Pa system\-info.conf ,
 which is automatically discovered in the parent directory of the banner scripts directory (such as
 .Pa /etc/system\-info.conf
@@ -61,11 +64,15 @@ or explicitly provided with the
 .Fl C
 option.
 .Pp
-One main purpose of System\-Info is to run on login, to particularly show a nice login banner (for example, a project or company logo) and then present the basic system information. For this purpose, System\-Info can be configured with banner scripts (by default looked up in
+One main purpose of
+.Nm System\-Info
+is to run on login, to particularly show a nice login banner (for example, a project or company logo) and then present the basic system information. For this purpose,
+.Nm System\-Info
+can be configured with banner scripts (by default looked up in
 .Pa /etc/system\-info.d
 or
-.Pa /usr/local/etc/system\-info.d ) ,
-which are processed in alphabetically descending order by file name, like:
+.Pa /usr/local/etc/system\-info.d ,
+as well as platform\-specific package directories), which are processed in alphabetically descending order by file name, like:
 .Bl -bullet -compact
 .It
 .Pa 95\-application\-logo
@@ -78,32 +85,41 @@ which are processed in alphabetically descending order by file name, like:
 .It
 .Pa 01\-example
 .El
-The names of all scripts MUST begin with two decimal numbers. That is, scripts must be named [0\-9][0\-9]... to be processed by System\-Info!
-If one of the scripts exits with non\-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script
-.Pa 95\-application\-logo
-).
 .Pp
+The names of all scripts MUST begin with two decimal digits (i.e.
+.Ql [0\-9][0\-9]... ) ,
+must be executable, and must not end with
+.Ql ~
+to be processed by
+.Nm System\-Info .
+If one of the scripts exits with a non\-zero exit code, the processing of further banner scripts is stopped. This can be used for preconfiguring a system for example with a department and company logo, where the company logo script terminates further processing. A modified system for a certain project can add a project logo as well. The project logo script may terminate further processing, not showing department and company logos. This may be combined with packaging scripts, for example adding an application logo as part of the application's install package (like adding a script
+.Pa 95\-application\-logo ) .
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
-.It Fl C Ar config_file | Fl Fl config Ar config_file
-Sets the configuration file to read color and formatting settings from.
-If not specified, System\-Info searches for
+.It Fl C Ar config\_file | Fl \-config Ar config\_file
+Sets the configuration file to read color settings from.
+If not specified,
+.Nm System\-Info
+searches for
 .Pa system\-info.conf
 in the parent directory of the script directory.
-.It Fl S Ar scripts_directory | Fl Fl scripts Ar scripts_directory
-Sets the directory to look for scripts, for example to test own scripts. Default:
+.It Fl S Ar scripts\_directory | Fl \-scripts Ar scripts\_directory
+Sets the directory to look for banner scripts, for example to test custom scripts. Default:
 .Pa /etc/system\-info.d
-.Pa or /usr/local/etc/system\-info.d .
-.It Fl h | Fl Fl help
-Prints the program's command\-line parameters and exits.
-.It Fl v | Fl Fl version
-Prints the program version and exits.
-.It Fl X Ar date\_string | Fl Fl test\-date Ar date\_string
+or
+.Pa /usr/local/etc/system\-info.d .
+.It Fl X Ar date\_string | Fl \-test\-date Ar date\_string
 Test option: instead of obtaining the current system date, use the given date string, to make the output deterministic for testing.
-.It Fl Y Ar input\_file | Fl Fl test\-system\-info Ar input\_file
-Test option: instead of querying the system directly via libsysteminfo, read system information from a given file (in get\-system\-info key-value format), to make the output deterministic for testing.
+.It Fl Y Ar input\_file | Fl \-test\-system\-info Ar input\_file
+Test option: instead of querying the system directly via libsysteminfo, read system information from a given file (in
+.Xr get\-system\-info 1
+key\-value format), to make the output deterministic for testing.
+.It Fl h | Fl \-help
+Prints the program's command\-line parameters and exits.
+.It Fl v | Fl \-version
+Prints the program version and exits.
 .El
 .\" ###### Exit status ######################################################
 .Sh EXIT STATUS
@@ -124,18 +140,33 @@ Fallback directory for banner scripts.
 .El
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-.Bl -tag -width indent
-.It System\-Info
-.It System\-Info \-C /etc/system\-info.conf
-.It System\-Info \-\-config ~/my\-system\-info.conf
-.It System\-Info \-S /usr/share/System\-Info
-.It System\-Info \-S ~/src/system\-tools/src/System\-Info/system\-info.d
-.It System\-Info \-\-scripts ~/my-system\-info-scripts
-.It LANGUAGE=nb System\-Info
-.It LANGUAGE=de_AT System\-Info
-.It LANGUAGE=nb System\-Info \-S /usr/share/System\-Info
-.It System\-Info \-\-version
-.It System\-Info \-\-help
+.Bl -bullet
+.It
+System\-Info
+.It
+System\-Info \-C /etc/system\-info.conf
+.It
+System\-Info \-\-config ~/my\-system\-info.conf
+.It
+System\-Info \-S /usr/share/System\-Info
+.It
+System\-Info \-S ~/src/system\-tools/src/System\-Info/system\-info.d
+.It
+System\-Info \-\-scripts ~/my\-system\-info\-scripts
+.It
+LANGUAGE=nb System\-Info
+.It
+LANGUAGE=de\_AT System\-Info
+.It
+LANGUAGE=nb System\-Info \-S /usr/share/System\-Info
+.It
+System\-Info \-\-help
+.It
+System\-Info \-h
+.It
+System\-Info \-\-version
+.It
+System\-Info \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
