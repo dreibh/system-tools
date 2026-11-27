@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 27, 2026
 .Dt gs\-resize\-with\-cropping 1
 .Os gs\-resize\-with\-cropping
 .\" ###### Name #############################################################
@@ -61,7 +61,8 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs\-resize\-with\-cropping
-resizes an image, including cropping to fit a changed aspect ratio.
+center\-crops an image to match a requested aspect ratio and optionally resizes
+it to a target width or height using GraphicsMagick.
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following arguments and options are available:
@@ -76,20 +77,24 @@ Any format supported by GraphicsMagick can be used.
 The format will be detected by the provided file name extension (e.g. .jpeg, .png, .webp, .pdf, ...).
 An existing output file will be overwritten.
 .It Fl A Ar aspect\_ratio | Fl \-aspect Ar aspect\_ratio
-Specifies the aspect ratio directly as value (e.g. 1.414214).
+Specifies the aspect ratio directly as a positive value (e.g. 1.414214).
 .It Fl A Ar H:V|HxV | Fl \-aspect Ar H:V|HxV
 Specifies the aspect ratio as H:V or HxV (e.g. 16:9 or 16x9).
 .It Fl A Ar A0|...|A9|An | Fl \-aspect Ar A0|...|A9|An
-Specifies the aspect ratio as DIN An format ratio (A1, A2, ..., A9, or An; i.e. sqrt(2):1 ≈ 1.414213562373).
+Specifies the aspect ratio as DIN An landscape format ratio (A0, A1, ..., A9, or An; i.e. sqrt(2):1 ≈ 1.414213562373).
 .It Fl A Ar keep | Fl \-aspect Ar keep
 Leaves the aspect ratio unchanged.
 This is the default.
 .It Fl W Ar new\_width | Fl \-width Ar new\_width
-Specifies the new width.
-Then, the new height is calculated based on the configured aspect ratio.
+Specifies the new width in pixels (positive integer).
+The new height is calculated from the configured aspect ratio.
+Mutually exclusive with
+.Fl H | Fl \-height .
 .It Fl H Ar new\_height | Fl \-height Ar new\_height
-Specifies the new height.
-Then, the new width is calculated based on the configured aspect ratio.
+Specifies the new height in pixels (positive integer).
+The new width is calculated from the configured aspect ratio.
+Mutually exclusive with
+.Fl W | Fl \-width .
 .It Fl q | Fl \-quiet
 Quiet mode: suppress status output.
 This is the default.
@@ -113,11 +118,13 @@ gs\-resize\-with\-cropping Bergen.jpeg Bergen\-1920\-4:3.webp \-\-aspect 4:3 \-\
 .It
 gs\-resize\-with\-cropping Bergen.jpeg Bergen\-1920\-16:9.png \-A 16x9 \-W 1920
 .It
-gs\-resize\-with\-cropping Bergen.jpeg Bergen\-3860\-A3.pdf \-\-aspect A3 \-\-width 3840
+gs\-resize\-with\-cropping Bergen.jpeg Bergen\-1080\-16:9.png \-A 16:9 \-\-height 1080
+.It
+gs\-resize\-with\-cropping Bergen.jpeg Bergen\-3840\-A3.pdf \-\-aspect A3 \-\-width 3840
 .It
 gs\-resize\-with\-cropping Bergen.jpeg Bergen\-1024\-An.jpeg \-A 1.414214 \-W 1024
 .It
-gs\-resize\-with\-cropping Portobello.jpeg Portobello\-2048\-16:9.jpeg \-A 16:9 \-\-width 2048 \-v
+gs\-resize\-with\-cropping Portobello.jpeg Portobello\-2048\-16:9.jpeg \-A 16:9 \-\-width 2048 \-w
 .It
 gs\-resize\-with\-cropping \-\-help
 .It
