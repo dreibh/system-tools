@@ -36,9 +36,13 @@ export TEXTDOMAIN="try-hard"
 if [ -z "${TEXTDOMAINDIR:-}" ] && [[ "@CMAKE_INSTALL_FULL_DATADIR@" != @* ]] ; then
    export TEXTDOMAINDIR="@CMAKE_INSTALL_FULL_DATADIR@/locale"
 fi
-
-# shellcheck disable=SC1091
-. gettext.sh
+if command -v gettext.sh >/dev/null 2>&1 ; then
+   # shellcheck disable=SC1091
+   . gettext.sh
+else
+   gettext () { printf "%s" "$1"; }
+   eval_gettext () { eval "printf '%s' \"$1\""; }
+fi
 
 
 # ###### Version ############################################################
@@ -70,10 +74,12 @@ usage () {
    fi
    local homepage="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_HOMEPAGE_URL@\a@PROJECT_HOMEPAGE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
    local repository="${lrm}"$'[\x1b[1m\x1b]8;;@PROJECT_SOURCE_URL@\a@PROJECT_SOURCE_URL@\a\x1b]8;;\a\x1b[0m]'"${rlm}"
+   local usageHeader
    # TRANSLATORS: Command-line syntax message prefix:
    # "Usage: <program> [options]".
+   usageHeader="$(gettext "Usage:")"
    cat >&2 <<EOF
-${header}$(gettext "Usage:")${reset}
+${header}${usageHeader}${reset}
 ${cmd}${program}${reset} ${arg}max_trials${reset} ${arg}max_delay${reset}
 	${syn}[${reset}${opt}-m${reset} ${arg}min_delay${reset} ${syn}|${reset} ${opt}--min-delay${reset} ${arg}min_delay${reset}${syn}]${reset}
 	${syn}[${reset}${opt}-A${reset} ${arg}delay_increment${reset} ${syn}|${reset} ${opt}--additive-increase${reset} ${arg}delay_increment${reset}${syn}]${reset}
@@ -89,9 +95,9 @@ ${cmd}${program}${reset}
 	${syn}[${reset}${opt}-v${reset} ${syn}|${reset} ${opt}--version${reset}${syn}]${reset}
 
 EOF
-   # TRANSLATORS: Informational message at the end of usage:
-   # "For further information, see the man page for <manpage>, read the documentation at <url>, examine the source code at <url>, or consult your favourite LLM.".
    # shellcheck disable=SC2059
+   # TRANSLATORS: Informational message at the end of usage:
+   # 1st %s = manpage name, 2nd %s = documentation URL, 3rd %s = repository URL
    printf >&2 "$(gettext "For further information, see the man page for %s, read the documentation at %s, examine the source code at %s, or consult your favourite LLM.")\n" \
       "${manpage}" "${homepage}" "${repository}"
    exit "${exitCode}"
@@ -124,22 +130,20 @@ case "${UNAME}" in
       GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
       ;;
    Darwin)
-      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:/usr/local/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
       ;;
    *)
       GETOPT="$(command -v getopt || true)"
       ;;
 esac
-if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+if [[ -z "${GETOPT}" ]] || "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]] ; then
    # TRANSLATORS: Error message when enhanced/GNU getopt is not found or is
    # incompatible.
    gettext >&2 "ERROR: Enhanced/GNU getopt is required!"
    echo >&2
    exit 1
 fi
-options="$(${GETOPT} -o m:A:M:T:Dqwhv --long min-delay:,additive-increase:,multiplicative-increase:,truncate-delay:,deterministic,quiet,verbose,help,version -a -- "$@")"
-# shellcheck disable=SC2181
-if [[ $? -ne 0 ]]; then
+if ! options="$("${GETOPT}" -o m:A:M:T:Dqwhv --long min-delay:,additive-increase:,multiplicative-increase:,truncate-delay:,deterministic,quiet,verbose,help,version -a -- "$@")" ; then
    usage "$0" 1
 fi
 eval set -- "${options}"
@@ -153,6 +157,7 @@ DETERMINISTIC=0
 while [ $# -gt 0 ] ; do
    case "$1" in
       -m | --min-delay)
+         # shellcheck disable=SC2034
          delayValue="$2"
          shift
          if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
@@ -166,6 +171,7 @@ while [ $# -gt 0 ] ; do
          MIN_DELAY="${delayValue}"
          ;;
       -A | --additive-increase)
+         # shellcheck disable=SC2034
          delayValue="$2"
          shift
          if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
@@ -179,6 +185,7 @@ while [ $# -gt 0 ] ; do
          ADDITIVE_INCREASE="${delayValue}"
          ;;
       -M | --multiplicative-increase)
+         # shellcheck disable=SC2034
          delayValue="$2"
          shift
          if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
@@ -192,6 +199,7 @@ while [ $# -gt 0 ] ; do
          MULTIPLICATIVE_INCREASE="${delayValue}"
          ;;
       -T | --truncate-delay)
+         # shellcheck disable=SC2034
          delayValue="$2"
          shift
          if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
@@ -228,15 +236,16 @@ while [ $# -gt 0 ] ; do
          echo >&2 "INTERNAL ERROR: Unhandled option $1!"
          exit 1
          ;;
-  esac
-  shift
+   esac
+   shift
 done
 if [ $# -lt 3 ] ; then
    usage "$0" 1
 fi
 
+# shellcheck disable=SC2034
 MAX_TRIALS="$1"
-if [[ ! "${MAX_TRIALS}" =~ ^[0-9]*$ ]] || [ "${MAX_TRIALS}" -lt 1 ] ; then
+if [[ ! "${MAX_TRIALS}" =~ ^[0-9]+$ ]] || [ "${MAX_TRIALS}" -lt 1 ] ; then
    # TRANSLATORS: Error message when the maximum trial count parameter
    # is invalid:
    # ${MAX_TRIALS} = specified trial count value
@@ -244,6 +253,7 @@ if [[ ! "${MAX_TRIALS}" =~ ^[0-9]*$ ]] || [ "${MAX_TRIALS}" -lt 1 ] ; then
    echo >&2
    exit 1
 fi
+# shellcheck disable=SC2034
 delayValue="$2"
 if [[ ! "${delayValue}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
    # TRANSLATORS: Error message when the initial maximum delay value
@@ -264,15 +274,15 @@ MAX_DELAY="${delayValue}"
 shift 2
 
 
-# ====== Ensure that min delay < max delay ==================================
-read -r minDelay maxDelay <<<"$(awk \
+# ====== Ensure that min delay <= max delay =================================
+read -r minDelay maxDelay <<<"$(LC_ALL=C awk \
    -v minDelayArgument="${MIN_DELAY}" \
-   -v maxDelayArgument="${MAX_DELAY}" '\
-function min(a, b) { return (a < b ? a : b); }
-function max(a, b) { return (a > b ? a : b); }
+   -v maxDelayArgument="${MAX_DELAY}" '
+function min(a, b) { a += 0.0; b += 0.0; return (a < b ? a : b); }
+function max(a, b) { a += 0.0; b += 0.0; return (a > b ? a : b); }
 BEGIN {
-   minDelay    = min(minDelayArgument, maxDelayArgument);
-   maxDelay    = max(minDelayArgument, maxDelayArgument);
+   minDelay = min(minDelayArgument, maxDelayArgument);
+   maxDelay = max(minDelayArgument, maxDelayArgument);
    printf("%g %g\n", minDelay, maxDelay);
 }
 '
@@ -283,46 +293,55 @@ BEGIN {
 trial=0
 while true ; do
    # ====== Start next trial ================================================
-   trial=$(( trial+1 ))
+   trial=$((trial + 1))
    if [ "${VERBOSE}" -eq 1 ] ; then
       # TRANSLATORS: Progress notification before running a command trial:
       # ${trial} = current trial attempt index
       # ${MAX_TRIALS} = maximum configured number of trials
-      echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS}:") \x1b[37m$*\x1b[0m"
+      printf '\x1b[34m%s: %s \x1b[37m%s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(eval_gettext "Trial \${trial}/\${MAX_TRIALS}:")" "$*"
    fi
 
    # ====== Run the command =================================================
-   "$@" && exit 0 || exitStatus=$?
+   exitStatus=0
+   if "$@" ; then
+      exit 0
+   else
+      exitStatus=$?
+   fi
 
    # ====== Check whether trial limit has been reached ======================
-   if [ ${trial} -ge "${MAX_TRIALS}" ] ; then
+   if [ "${trial}" -ge "${MAX_TRIALS}" ] ; then
       if [ "${VERBOSE}" -eq 1 ] ; then
          # TRANSLATORS: Notification when retry limit has been exceeded
          # without success:
          # ${MAX_TRIALS} = total number of attempts executed
-         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Tried \${MAX_TRIALS} times -> giving up now!")\x1b[0m"
+         printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(eval_gettext "Tried \${MAX_TRIALS} times -> giving up now!")"
       fi
       exit "${exitStatus}"
    fi
 
    # ====== Increase delay for next trial ===================================
-   if [ ${trial} -gt 1 ] ; then
-      read -r minDelay maxDelay <<<"$(awk \
+   if [ "${trial}" -gt 1 ] ; then
+      read -r minDelay maxDelay <<<"$(LC_ALL=C awk \
          -v minDelayArgument="${minDelay}" \
          -v maxDelayArgument="${maxDelay}" \
          -v additiveIncrease="${ADDITIVE_INCREASE}" \
          -v multiplicativeIncrease="${MULTIPLICATIVE_INCREASE}" \
          -v minDelayBoundary="${MIN_DELAY}" \
-         -v maxDelayBoundary="${TRUNCATE_DELAY}" '\
-function min(a, b) { return (a < b ? a : b); }
-function max(a, b) { return (a > b ? a : b); }
+         -v maxDelayBoundary="${TRUNCATE_DELAY}" '
+function min(a, b) { a += 0.0; b += 0.0; return (a < b ? a : b); }
+function max(a, b) { a += 0.0; b += 0.0; return (a > b ? a : b); }
 BEGIN {
-   minDelay    = min(minDelayArgument, maxDelayArgument);
-   maxDelay    = max(minDelayArgument, maxDelayArgument);
+   minDelay  = min(minDelayArgument, maxDelayArgument);
+   maxDelay  = max(minDelayArgument, maxDelayArgument);
+   addInc    = additiveIncrease + 0.0;
+   multInc   = multiplicativeIncrease + 0.0;
+   minBound  = minDelayBoundary + 0.0;
+   maxBound  = maxDelayBoundary + 0.0;
 
-   newMinDelay = max(min(minDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
-   newMaxDelay = max(min(maxDelay*multiplicativeIncrease + additiveIncrease, maxDelayBoundary), minDelayBoundary);
-   printf("%g %g\n", min(newMinDelay, newMaxDelay),max(newMinDelay, newMaxDelay));
+   newMinDelay = max(min(minDelay * multInc + addInc, maxBound), minBound);
+   newMaxDelay = max(min(maxDelay * multInc + addInc, maxBound), minBound);
+   printf("%g %g\n", min(newMinDelay, newMaxDelay), max(newMinDelay, newMaxDelay));
 }
 '
 )"
@@ -338,7 +357,7 @@ BEGIN {
          # ${exitStatus} = command exit return code
          # ${minDelay} = lower bound of random sleep interval in seconds
          # ${maxDelay} = upper bound of random sleep interval in seconds
-         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS} failed (exit code \${exitStatus}) -> waiting random time from [\${minDelay}, \${maxDelay}] s ...")\x1b[0m"
+         printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(eval_gettext "Trial \${trial}/\${MAX_TRIALS} failed (exit code \${exitStatus}) -> waiting random time from [\${minDelay}, \${maxDelay}] s ...")"
          random-sleep -w "${minDelay}" "${maxDelay}"
       else
          random-sleep "${minDelay}" "${maxDelay}"
@@ -350,8 +369,8 @@ BEGIN {
          # ${trial} = current trial attempt index
          # ${MAX_TRIALS} = maximum configured number of trials
          # ${maxDelay} = sleep duration in seconds
-         echo -e "\x1b[34m$(date +%FT%H:%M:%S): $(eval_gettext "Trial \${trial}/\${MAX_TRIALS} failed -> waiting for \${maxDelay} s ...")\x1b[0m"
+         printf '\x1b[34m%s: %s\x1b[0m\n' "$(date +%FT%H:%M:%S)" "$(eval_gettext "Trial \${trial}/\${MAX_TRIALS} failed -> waiting for \${maxDelay} s ...")"
       fi
-      sleep "${maxDelay}"
+      LC_ALL=C sleep "${maxDelay}"
    fi
 done

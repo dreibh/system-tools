@@ -32,67 +32,83 @@
 # ###### Bash completion for try-hard #######################################
 _try_hard()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
+   # shellcheck disable=SC2034
+   local cur prev words cword comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -- "$@" || return
+   elif type -t _init_completion >/dev/null ; then
       _init_completion || return
    else
-      # Manual initialization for older bash completion versions:
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
       prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
+      words=("${COMP_WORDS[@]}")
       cword="${COMP_CWORD}"
    fi
 
-   if [ "${cword}" -eq 1 ] ; then
-      compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
-      mapfile -t COMPREPLY < <(compgen -W "{1..20}" -- "${cur}")
-      return
-   elif [ "${cword}" -eq 2 ] ; then
-      compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
-      mapfile -t COMPREPLY < <(compgen -W "1 2 5 10 30 60 120 300 900 1800 3600 86400" -- "${cur}")
-      return
-   else
-      case "${prev}" in
-         -m | --min-delay)
-            compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
-            mapfile -t COMPREPLY < <(compgen -W "0 0.1 0.333 0.5 10 30 60 120 300 900 3600" -- "${cur}")
-            return
+   # ====== Delegate completion for subcommand after '--' ===================
+   local i
+   for (( i = 1; i < COMP_CWORD; i++ )) ; do
+      if [ "${COMP_WORDS[i]}" = "--" ] ; then
+         if type -t _command_offset >/dev/null ; then
+            _command_offset $((i + 1))
+         elif (( COMP_CWORD == i + 1 )) ; then
+            mapfile -t COMPREPLY < <(compgen -c -- "${cur}")
+         else
+            mapfile -t COMPREPLY < <(compgen -f -- "${cur}")
+         fi
+         return 0
+      fi
+   done
+
+   # ====== Scan prior arguments before '--' ================================
+   local positionalCount=0
+   for (( i = 1; i < cword; i++ )) ; do
+      case "${words[i]}" in
+         -h | --help | -v | --version)
+            return 0
             ;;
-         -A | --additive-increase)
-            compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
-            mapfile -t COMPREPLY < <(compgen -W "0 1 2 10 60" -- "${cur}")
-            return
+         -m | --min-delay | -A | --additive-increase | \
+         -M | --multiplicative-increase | -T | --truncate-delay)
+            # Skip option argument:
+            i=$((i + 1))
             ;;
-         -M | --multiplicative-increase)
-            compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
-            mapfile -t COMPREPLY < <(compgen -W "1.0 1.1 1.25 1.5 2" -- "${cur}")
-            return
+         --min-delay=* | --additive-increase=* | \
+         --multiplicative-increase=* | --truncate-delay=*)
             ;;
-         -T | --truncate-delay)
-            compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
-            mapfile -t COMPREPLY < <(compgen -W "30 60 120 300 900 1800 3600 86400" -- "${cur}")
-            return
+         -*)
+            ;;
+         *)
+            positionalCount=$((positionalCount + 1))
             ;;
       esac
+   done
 
-      local i
-      for (( i=3; i<cword; i++ )) ; do
-         if [ "${COMP_WORDS[${i}]}" == "--" ] ; then
-            # Completion for next command:
-            _command_offset $((i+1))
-            return
-         fi
-      done
-   fi
+   # ====== Option-specific arguments =======================================
+   case "${prev}" in
+      -m | --min-delay)
+         compopt -o nosort 2>/dev/null || true
+         mapfile -t COMPREPLY < <(compgen -W "0 0.1 0.333 0.5 1 2 5 10 30 60 120 300 900 3600" -- "${cur}")
+         return 0
+         ;;
+      -A | --additive-increase)
+         compopt -o nosort 2>/dev/null || true
+         mapfile -t COMPREPLY < <(compgen -W "0 1 2 5 10 60" -- "${cur}")
+         return 0
+         ;;
+      -M | --multiplicative-increase)
+         compopt -o nosort 2>/dev/null || true
+         mapfile -t COMPREPLY < <(compgen -W "1.0 1.1 1.25 1.5 2.0" -- "${cur}")
+         return 0
+         ;;
+      -T | --truncate-delay)
+         compopt -o nosort 2>/dev/null || true
+         mapfile -t COMPREPLY < <(compgen -W "30 60 120 300 900 1800 3600 86400" -- "${cur}")
+         return 0
+         ;;
+   esac
 
-   # ====== All options =====================================================
+   # ====== Options vs. positional arguments ================================
    local opts="
 -m
 --min-delay
@@ -114,7 +130,17 @@ _try_hard()
 --version
 --
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+   if [[ "${cur}" == -* ]] ; then
+      mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
+   elif (( positionalCount == 0 )) ; then
+      compopt -o nosort 2>/dev/null || true
+      mapfile -t COMPREPLY < <(compgen -W "{1..20}" -- "${cur}")
+   elif (( positionalCount == 1 )) ; then
+      compopt -o nosort 2>/dev/null || true
+      mapfile -t COMPREPLY < <(compgen -W "1 2 5 10 30 60 120 300 900 1800 3600 86400" -- "${cur}")
+   else
+      mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
+   fi
    return 0
 }
 
