@@ -32,31 +32,21 @@
 # ###### Bash completion for random-sleep ###################################
 _random_sleep()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
+   # shellcheck disable=SC2034
+   local cur prev words cword comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -- "$@" || return
+   elif type -t _init_completion >/dev/null ; then
       _init_completion || return
    else
-      # Manual initialization for older bash completion versions:
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
       prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
+      words=("${COMP_WORDS[@]}")
       cword="${COMP_CWORD}"
    fi
 
-   if [ "${cword}" -lt 3 ] ; then
-      compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
-      mapfile -t COMPREPLY < <(compgen -W "0 0.5 1.0 2.0 5.0 10 30 60 120 300 900 1800 3600 21600 43200 86400" -- "${cur}")
-      return
-   fi
-
-   # ====== All options =====================================================
+   local delayCandidates="0 0.5 1.0 2.0 5.0 10 30 60 120 300 900 1800 3600 21600 43200 86400"
    local opts="
 -q
 --quiet
@@ -66,8 +56,78 @@ _random_sleep()
 --help
 -v
 --version
+--
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+
+   # ====== Scan prior words for '--', terminal flags, and delay args =======
+   local i afterDashDash=0 positionalCount=0 firstDelay=""
+   for (( i = 1; i < cword; i++ )) ; do
+      if (( afterDashDash )) ; then
+         if (( positionalCount == 0 )) ; then
+            firstDelay="${words[i]}"
+         fi
+         positionalCount=$((positionalCount + 1))
+         continue
+      fi
+      case "${words[i]}" in
+         --)
+            afterDashDash=1
+            ;;
+         -h | --help | -v | --version)
+            return 0
+            ;;
+         -*)
+            ;;
+         *)
+            if (( positionalCount == 0 )) ; then
+               firstDelay="${words[i]}"
+            fi
+            positionalCount=$((positionalCount + 1))
+            ;;
+      esac
+   done
+
+   # Filter max_delay candidates >= min_delay when min_delay is numeric:
+   local maxDelayCandidates="${delayCandidates}"
+   if (( positionalCount == 1 )) && [[ "${firstDelay}" =~ ^([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$ ]] ; then
+      maxDelayCandidates="$(LC_ALL=C awk -v minVal="${firstDelay}" -v list="${delayCandidates}" '
+         BEGIN {
+            minNum = minVal + 0.0;
+            n = split(list, arr, " ");
+            out = "";
+            for(i = 1; i <= n; i++) {
+               if((arr[i] + 0.0) >= minNum) {
+                  out = (out == "" ? arr[i] : out " " arr[i]);
+               }
+            }
+            print (out != "" ? out : firstDelay);
+         }
+      ')"
+   fi
+
+   if (( afterDashDash )) ; then
+      if (( positionalCount == 0 )) ; then
+         compopt -o nosort 2>/dev/null || true
+         mapfile -t COMPREPLY < <(compgen -W "${delayCandidates}" -- "${cur}")
+      elif (( positionalCount == 1 )) ; then
+         compopt -o nosort 2>/dev/null || true
+         mapfile -t COMPREPLY < <(compgen -W "${maxDelayCandidates}" -- "${cur}")
+      fi
+      return 0
+   fi
+
+   # ====== Options vs. positional delay arguments ==========================
+   if [[ "${cur}" == -* ]] ; then
+      mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
+   elif (( positionalCount == 0 )) ; then
+      compopt -o nosort 2>/dev/null || true
+      mapfile -t COMPREPLY < <(compgen -W "${delayCandidates}" -- "${cur}")
+   elif (( positionalCount == 1 )) ; then
+      compopt -o nosort 2>/dev/null || true
+      mapfile -t COMPREPLY < <(compgen -W "${maxDelayCandidates}" -- "${cur}")
+   else
+      mapfile -t COMPREPLY < <(compgen -W "-q --quiet -w --verbose" -- "${cur}")
+   fi
    return 0
 }
 

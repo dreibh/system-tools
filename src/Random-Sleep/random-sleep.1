@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 27, 2026
 .Dt random\-sleep 1
 .Os random\-sleep
 .\" ###### Name #############################################################
@@ -37,35 +37,46 @@
 .Nd waits for a randomly selected time
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
-.Nm random\-sleep Ar min_delay Ar max_delay
-.Op Fl q | Fl Fl quiet
-.Op Fl w | Fl Fl verbose
 .Nm random\-sleep
-.Op Fl h | Fl Fl help
+.Ar min\_delay
+.Ar max\_delay
+.br
+.Op Fl q | Fl \-quiet
+.Op Fl w | Fl \-verbose
 .Nm random\-sleep
-.Op Fl v | Fl Fl version
+.Op Fl h | Fl \-help
+.Nm random\-sleep
+.Op Fl v | Fl \-version
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm random\-sleep
-waits for a randomly selected time. The sleep time is chosen from the interval
-.Bq Ar min_delay , Ar max_delay
-given in seconds. Fractional seconds are supported.
-.Pp
+waits for a randomly selected time span chosen uniformly from the interval
+.Bq Ar min\_delay , Ar max\_delay
+in seconds, where
+.No 0.0 <= Ar min\_delay No <= Ar max\_delay .
+Fractional seconds are supported. By default,
+.Nm
+operates quietly unless
+.Fl w
+or
+.Fl \-verbose
+is specified.
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
-The following options are available:
+The following arguments and options are available:
 .Bl -tag -width indent
-.It Ar min_delay
-The minimum delay.
-.It Ar max_delay
-The maximum delay.
-.It Fl q | Fl Fl quiet
-Quiet mode: no output is made.
-.It Fl w | Fl Fl verbose
-Verbose mode: print selected delay and wake\-up.
-.It Fl h | Fl Fl help
+.It Ar min\_delay
+The minimum delay in seconds (finite floating\-point value >= 0.0).
+.It Ar max\_delay
+The maximum delay in seconds (finite floating\-point value >=
+.Ar min\_delay ) .
+.It Fl q | Fl \-quiet
+Quiet mode: suppresses status output (default).
+.It Fl w | Fl \-verbose
+Verbose mode: prints the selected sleep duration and a wake\-up message.
+.It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
-.It Fl v | Fl Fl version
+.It Fl v | Fl \-version
 Prints the program version and exits.
 .El
 .\" ###### Exit status ######################################################
@@ -75,16 +86,27 @@ The
 tool exits with 0 on success, and >0 in case of an error.
 .\" ###### Examples #########################################################
 .Sh EXAMPLES
-.Bl -tag -width indent
-.It random\-sleep 0 3600
-.It random\-sleep 0 300 \-\-verbose
-.It random\-sleep 60.0 120.5 \-w
-.It random\-sleep 0.10 0.50 \-\-verbose
-.It random\-sleep \-\-version
-.It random\-sleep \-\-help
+.Bl -bullet
+.It
+random\-sleep 0 3600
+.It
+random\-sleep 0 300 \-\-verbose
+.It
+random\-sleep 60.0 120.5 \-w
+.It
+random\-sleep 0.10 0.50 \-q
+.It
+random\-sleep \-\-help
+.It
+random\-sleep \-h
+.It
+random\-sleep \-\-version
+.It
+random\-sleep \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
+.Xr sleep 1 ,
 .Xr try\-hard 1
 .\" ###### Notes ############################################################
 .Sh NOTES

@@ -31,6 +31,9 @@
 #define __EXTENSIONS__ 1
 #endif
 
+#include <algorithm>
+#include <cctype>
+#include <cerrno>
 #include <chrono>
 #include <clocale>
 #include <cmath>
@@ -39,17 +42,20 @@
 #include <format>
 #include <getopt.h>
 #include <iostream>
+#include <locale>
 #include <random>
+#include <stdexcept>
 #include <string>
 #include <thread>
 
 #if defined(ENABLE_NLS)
 #include <libintl.h>
 #else
-#define gettext(string)                   (string)
-#define ngettext(singular, plural, count) (((count) == 1) ? (singular) : (plural))
-#define bindtextdomain(domain, directory) (directory)
-#define textdomain(domain)                (domain)
+#define gettext(string)                          (string)
+#define ngettext(singular, plural, count)        (((count) == 1) ? (singular) : (plural))
+#define bindtextdomain(domain, directory)        (directory)
+#define bind_textdomain_codeset(domain, codeset) (codeset)
+#define textdomain(domain)                       (domain)
 #endif
 
 #include "package-version.h"
@@ -67,6 +73,27 @@ static std::string formatText(const char* messageIdentifier,
    catch(const std::format_error&) {
       return gettext(messageIdentifier);
    }
+}
+
+
+// ###### Parse a non-negative finite floating-point delay argument ##########
+static bool parseDelayValue(const char* argument, double& value)
+{
+   if((argument == nullptr) || (argument[0] == '\0') ||
+      (std::isspace(static_cast<unsigned char>(argument[0])) != 0)) {
+      return false;
+   }
+
+   char* endptr = nullptr;
+   errno = 0;
+   const double parsed = std::strtod(argument, &endptr);
+   if((errno == ERANGE) || (endptr == argument) || (*endptr != '\0') ||
+      !std::isfinite(parsed) || (parsed < 0.0)) {
+      return false;
+   }
+
+   value = (parsed <= 0.0) ? 0.0 : parsed;
+   return true;
 }
 
 
@@ -88,42 +115,44 @@ static std::string formatText(const char* messageIdentifier,
 #define PIPE         SYN(" | ")
 #define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
 
-[[ noreturn ]]
+[[noreturn]]
 static void usage(const char* program, const int exitCode)
 {
+   const char* safeProgram = (program != nullptr) ? program : "random-sleep";
+
    // TRANSLATORS: Text direction: LTR (Left-to-Right) or RTL (Right-to-Left)
    const bool rtl = (std::string(gettext("LTR")) == "RTL");
    const std::string manpage(std::string("\x1b[1m") +
-                             std::filesystem::path(program).stem().string() +
+                             std::filesystem::path(safeProgram).stem().string() +
                              std::string("\x1b[0m"));
    const std::string homepage((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
                               std::string("[\x1b[1m\x1b]8;;") +
                               std::string(PROJECT_HOMEPAGE_URL) +
                               "\a" + std::string(PROJECT_HOMEPAGE_URL) + "\a" +
                               std::string("\x1b]8;;\a\x1b[0m]") +
-                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")));
    const std::string repository((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
                                 std::string("[\x1b[1m\x1b]8;;") +
                                 std::string(PROJECT_SOURCE_URL) +
                                 "\a" + std::string(PROJECT_SOURCE_URL) + "\a" +
                                 std::string("\x1b]8;;\a\x1b[0m]") +
-                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")));
 
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
    std::cerr << HEADER(gettext("Usage:")) << "\n"
-             << CMD(program) << " "
+             << CMD(safeProgram) << " "
                 ARG("min_delay") " " ARG("max_delay") "\n"
                    ENTRY(OPT("-q") PIPE OPT("--quiet"))
                    ENTRY(OPT("-w") PIPE OPT("--verbose"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-h") PIPE OPT("--help"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-v") PIPE OPT("--version"))
              << "\n"
              // TRANSLATORS: Informational message at the end of usage:
              // {0} = manpage name, {1} = documentation URL, {2} = repository URL
-             << formatText(gettext("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM."),
+             << formatText("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM.",
                            manpage, homepage, repository) << "\n";
    std::exit(exitCode);
 }
@@ -139,15 +168,15 @@ int main(int argc, char** argv)
       std::setlocale(LC_ALL, "C.UTF-8");
    }
    try {
-      std::locale userLocale("");
+      const std::locale userLocale(std::locale(""), std::locale::classic(), std::locale::numeric);
       std::cout.imbue(userLocale);
       std::cerr.imbue(userLocale);
-   } catch (const std::runtime_error&) {
+   } catch(const std::runtime_error&) {
       try {
-         std::locale fallbackLocale("C.UTF-8");
+         const std::locale fallbackLocale(std::locale("C.UTF-8"), std::locale::classic(), std::locale::numeric);
          std::cout.imbue(fallbackLocale);
          std::cerr.imbue(fallbackLocale);
-      } catch (const std::runtime_error&) {
+      } catch(const std::runtime_error&) {
          // Defaults to std::locale::classic() if C.UTF-8 is unavailable
       }
    }
@@ -163,11 +192,11 @@ int main(int argc, char** argv)
    _dupenv_s(&textdomaindir, &textdomaindirsize, "TEXTDOMAINDIR");
 #endif
    bindtextdomain("random-sleep",
-                  ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
+                  ( ((textdomaindir != nullptr) && (textdomaindir[0] != '\0')) ?
                        textdomaindir : PROJECT_LOCALEDIR ));
 #if defined(_WIN32)
-   if(textdomaindir) {
-       free(textdomaindir);
+   if(textdomaindir != nullptr) {
+      free(textdomaindir);
    }
 #endif
    bind_textdomain_codeset("random-sleep", "UTF-8");
@@ -211,14 +240,12 @@ int main(int argc, char** argv)
    }
 
    // ====== Parse delay bounds =============================================
-   char*        endptrDelayMin { nullptr };
-   char*        endptrDelayMax { nullptr };
-   const double delayMin = std::strtod(argv[optind + 0], &endptrDelayMin);
-   const double delayMax = std::strtod(argv[optind + 1], &endptrDelayMax);
-   if((endptrDelayMin == argv[optind + 0]) || (*endptrDelayMin != '\0') ||
-      (endptrDelayMax == argv[optind + 1]) || (*endptrDelayMax != '\0') ||
-      (delayMin < 0.0) || (delayMin > delayMax) ||
-      std::isnan(delayMin) || std::isnan(delayMax)) {
+   double delayMin = 0.0;
+   double delayMax = 0.0;
+   if(!parseDelayValue(argv[optind + 0], delayMin) ||
+      !parseDelayValue(argv[optind + 1], delayMax) ||
+      (delayMin > delayMax) ||
+      !std::isfinite(delayMax - delayMin)) {
       // TRANSLATORS: Error message when min_delay or max_delay are negative,
       // non-numeric, or min_delay > max_delay.
       std::cerr << gettext("ERROR: Invalid min_delay/max_delay!") << '\n';
@@ -236,20 +263,23 @@ int main(int argc, char** argv)
       };
       std::mt19937_64 rng(seedSequence);
       std::uniform_real_distribution<double> distribution(delayMin, delayMax);
-      delay = distribution(rng);
-   }
-   if(delay < 0.0) {
-      delay = 0.0;
+      delay = std::clamp(distribution(rng), delayMin, delayMax);
    }
 
    if(verboseMode) {
       // TRANSLATORS: Verbose status message before entering sleep:
       // {0:1.6f} = sleep duration in seconds (fractional floating point)
-      std::cout << formatText("Sleeping for {0:1.6f} s ...", delay) << '\n';
+      std::cout << formatText("Sleeping for {0:1.6f} s ...", delay) << std::endl;
    }
 
-   // ====== Sleep ==========================================================
-   std::this_thread::sleep_for(std::chrono::duration<double>(delay));
+   // ====== Sleep (chunked to avoid std::chrono::nanoseconds overflow) =====
+   constexpr double maxSleepChunkSeconds = 86400.0 * 365.0; // 1 year per chunk
+   double remaining = delay;
+   while(remaining > 0.0) {
+      const double chunk = std::min(remaining, maxSleepChunkSeconds);
+      std::this_thread::sleep_for(std::chrono::duration<double>(chunk));
+      remaining -= chunk;
+   }
 
    if(verboseMode) {
       // TRANSLATORS: Verbose status message displayed after sleep duration
