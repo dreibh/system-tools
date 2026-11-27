@@ -32,80 +32,115 @@
 # ###### Bash completion for get-system-info ################################
 _get_system_info()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
-      _init_completion || return
+   # shellcheck disable=SC2034
+   local cur prev words cword split=false comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -s -- "$@" || return
+   elif type -t _init_completion >/dev/null ; then
+      _init_completion -s || return
    else
-      # Manual initialization for older bash completion versions:
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
       prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
+      words=("${COMP_WORDS[@]}")
       cword="${COMP_CWORD}"
    fi
 
-   case "${prev}" in
-      -c | --compatibility)
-         compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
-         mapfile -t COMPREPLY < <(compgen -W "0" -- "${cur}")
-         return
-         ;;
-   esac
+   # ====== Scan prior words for '--', terminal flags, and '-c' =============
+   local i expectingCompat=0
+   for (( i = 1; i < cword; i++ )) ; do
+      if (( expectingCompat )) ; then
+         expectingCompat=0
+         continue
+      fi
+      case "${words[i]}" in
+         -- | -h | --help | -v | --version)
+            return 0
+            ;;
+         -c | --compatibility | -[AaBbEeFfKkLlMmNnOoSsTtUu]*c)
+            expectingCompat=1
+            ;;
+      esac
+   done
 
-   # ====== All options =====================================================
+   if (( expectingCompat )) || { [[ "${split}" == "true" ]] && [[ "${prev}" == "--compatibility" ]] ; } ; then
+      local compatCandidates="0" probeOut="" v
+      if command -v "${words[0]}" >/dev/null 2>&1 ; then
+         probeOut="$("${words[0]}" -c 999999 2>&1 || true)"
+      elif command -v get-system-info >/dev/null 2>&1 ; then
+         probeOut="$(get-system-info -c 999999 2>&1 || true)"
+      fi
+      if [[ "${probeOut}" =~ ([0-9]+)!$ ]] && (( BASH_REMATCH[1] <= 64 )) ; then
+         compatCandidates=""
+         for (( v = 0; v <= BASH_REMATCH[1]; v++ )) ; do
+            compatCandidates+="${v} "
+         done
+      fi
+      compopt -o nosort 2>/dev/null || true
+      mapfile -t COMPREPLY < <(compgen -W "${compatCandidates}" -- "${cur}")
+      return 0
+   fi
+
+   [[ "${split}" == "true" ]] && return 0
+
+   # ====== All options (no positional arguments accepted) ==================
    local opts="
--c --compatibility
--A --all
--a --none
--B --with-battery
--b --without-battery
--K --with-kernel
--k --without-kernel
--L --with-load
--l --without-load
--M --with-memory
--m --without-memory
--N --with-network
--n --without-network
--O --with-hostname
--o --without-hostname
--S --with-storage
--s --without-storage
--U --with-uptime
--u --without-uptime
--h --help
--v --version
--c --compatibility
--A --all
--a --none
--B --with-battery
--b --without-battery
--K --with-kernel
--k --without-kernel
--L --with-load
--l --without-load
--M --with-memory
--m --without-memory
--N --with-network
--n --without-network
--O --with-hostname
--o --without-hostname
--S --with-storage
--s --without-storage
--T --with-uptime
--t --without-uptime
--U --with-user
--u --without-user
--h --help
--v --version
+-c
+--compatibility
+-A
+--all
+-a
+--none
+-B
+--with-battery
+-b
+--without-battery
+-E
+--with-os
+-e
+--without-os
+-F
+--with-ssh
+-f
+--without-ssh
+-K
+--with-kernel
+-k
+--without-kernel
+-L
+--with-load
+-l
+--without-load
+-M
+--with-memory
+-m
+--without-memory
+-N
+--with-network
+-n
+--without-network
+-O
+--with-hostname
+-o
+--without-hostname
+-S
+--with-storage
+-s
+--without-storage
+-T
+--with-uptime
+-t
+--without-uptime
+-U
+--with-user
+-u
+--without-user
+-h
+--help
+-v
+--version
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
    return 0
 }
 

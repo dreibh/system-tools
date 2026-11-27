@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 27, 2026
 .Dt get\-system\-info 1
 .Os get\-system\-info
 .\" ###### Name #############################################################
@@ -83,21 +83,32 @@
 .Sh DESCRIPTION
 .Nm get\-system\-info
 obtains system information in machine\-readable form.
-It is mainly intended for being used by
-.Xr System\-Info 1.
+It is primarily intended to be used by
+.Xr System\-Info 1 .
+.Pp
+Selection options are evaluated from left to right: all categories are enabled
+by default
+.Pq Fl A | Fl \-all ,
+individual categories can be excluded with
+.Fl \-without\-*
+options, or all categories can first be cleared with
+.Fl a | Fl \-none
+and selectively enabled with
+.Fl \-with\-*
+options.
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
 .Bl -tag -width indent
 .It Fl c Ar version | Fl \-compatibility Ar version
-Request a certain version for the output.
-This option is to allow for future changes of
-.Nm get\-system\-info .
-Currently, the only available version is 0.
+Request a specific output format compatibility version to allow for future
+changes of
+.Nm get\-system\-info
+(default: latest supported version, currently 0).
 .It Fl A | Fl \-all
-Query all system information (default).
+Query all system information categories (default).
 .It Fl a | Fl \-none
-Do not query any system information.
+Disable all system information categories.
 .It Fl B | Fl \-with\-battery
 Enable query of battery information.
 .It Fl b | Fl \-without\-battery
@@ -158,7 +169,11 @@ tool exits with 0 on success, and >0 in case of an error.
 .It
 get\-system\-info
 .It
+get\-system\-info \-c 0
+.It
 get\-system\-info \-a \-O \-T \-U
+.It
+get\-system\-info \-a \-E \-F
 .It
 get\-system\-info \-\-none \-\-with\-memory \-\-with\-load
 .It
@@ -168,16 +183,17 @@ LANGUAGE=de_AT get\-system\-info
 .It
 LANGUAGE=nb get\-system\-info
 .It
-get\-system\-info \-\-version
-.It
-get\-system\-info \-v
-.It
 get\-system\-info \-\-help
 .It
 get\-system\-info \-h
+.It
+get\-system\-info \-\-version
+.It
+get\-system\-info \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
+.Xr Fingerprint\-SSH\-Keys 1 ,
 .Xr System\-Info 1
 .\" ###### Notes ############################################################
 .Sh NOTES
