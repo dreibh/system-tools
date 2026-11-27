@@ -32,100 +32,181 @@
 # ###### Bash completion for print-utf8 #####################################
 _print_utf8()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
-      _init_completion || return
+   # shellcheck disable=SC2034
+   local cur prev words cword comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -n "=|" -- "$@" || return
+   elif type -t _init_completion >/dev/null ; then
+      _init_completion -n "=|" || return
    else
-      # Manual initialization for older bash completion versions:
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
       prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
+      words=("${COMP_WORDS[@]}")
       cword="${COMP_CWORD}"
    fi
 
-   # To handle multi-argument parameters:
-   local prev2="" prev3=""
-   [[ ${cword} -ge 2 ]] && prev2="${words[cword-2]}"
-   [[ ${cword} -ge 3 ]] && prev3="${words[cword-3]}"
+   local rawCur="${COMP_WORDS[COMP_CWORD]:-}"
+   local isQuoted=0
+   if [[ "${rawCur}" == \'* ]] || [[ "${rawCur}" == \"* ]] ; then
+      isQuoted=1
+   fi
 
-   # ====== Handle 1st argument =============================================
-   case "${prev}" in
-      # ====== Special case: terminal columns ===============================
-      -x | --columns)
-         local terminalColumns sortedColumnsList
-         terminalColumns="$(print-utf8 -t | awk '{ print $1 }')"
-         sortedColumnsList="$(printf "%s\n" "${terminalColumns}" 60 78 80 100 120 128 140 160 180 200 | sort -nu)"
-         compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
-         mapfile -t COMPREPLY < <(compgen -W "${sortedColumnsList}" -- "${cur}")
-         return
-         ;;
+   # ====== Parse prior tokens to track multi-argument option state =========
+   local i activeOpt="" remainingArgs=0
+   for (( i = 1; i < cword; i++ )) ; do
+      if (( remainingArgs > 0 )) ; then
+         remainingArgs=$((remainingArgs - 1))
+         if (( remainingArgs == 0 )) ; then
+            activeOpt=""
+         fi
+         continue
+      fi
 
-      # ====== Special case: indentation ====================================
-      -i | --indent | \
-      -I | --multiline-indent)
-         compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
-         mapfile -t COMPREPLY < <(compgen -W "-64 -48 -32 -24 -20 -16 -12 -10 0 10 12 16 20 24 32 48 64" -- "${cur}")
-         return
-         ;;
+      case "${words[i]}" in
+         --)
+            return 0
+            ;;
+         -h | --help | -v | --version)
+            return 0
+            ;;
+         -x | --columns)
+            activeOpt="-x"
+            remainingArgs=1
+            ;;
+         -i | --indent)
+            activeOpt="-i"
+            remainingArgs=1
+            ;;
+         -C | --multiline-center)
+            activeOpt="-C"
+            remainingArgs=2
+            ;;
+         -I | --multiline-indent)
+            activeOpt="-I"
+            remainingArgs=3
+            ;;
+         -s | --separator)
+            activeOpt="-s"
+            remainingArgs=3
+            ;;
+         --columns=* | --indent=*)
+            ;;
+         --multiline-center=*)
+            activeOpt="-C"
+            remainingArgs=1
+            ;;
+         --multiline-indent=*)
+            activeOpt="-I"
+            remainingArgs=2
+            ;;
+         --separator=*)
+            activeOpt="-s"
+            remainingArgs=2
+            ;;
+         -[ntwlbac]*[xiCIs])
+            case "${words[i]: -1}" in
+               x) activeOpt="-x" ; remainingArgs=1 ;;
+               i) activeOpt="-i" ; remainingArgs=1 ;;
+               C) activeOpt="-C" ; remainingArgs=2 ;;
+               I) activeOpt="-I" ; remainingArgs=3 ;;
+               s) activeOpt="-s" ; remainingArgs=3 ;;
+            esac
+            ;;
+      esac
+   done
 
-      # ====== Special case: border decoration ==============================
-      -s | --separator |\
-      -C | --multiline-center)
-         # Left border decorations:
-         local suggestions=("#" "=" "|" "║"   "▌" "▐"   "│" "┃" "┆" "┇" "┊" "┋" "😀")
-         local matches
-         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "${cur}")
-         COMPREPLY=( "${matches[@]@Q}" )
-         return
-         ;;
-   esac
+   # ====== Complete inline --option=value forms ============================
+   local replyPrefix=""
+   if (( remainingArgs == 0 )) && [[ "${cur}" == --*=* ]] ; then
+      local optPrefix="${cur%%=*}"
+      cur="${cur#*=}"
+      replyPrefix="${optPrefix}="
+      case "${optPrefix}" in
+         --columns)
+            activeOpt="-x"
+            remainingArgs=1
+            ;;
+         --indent)
+            activeOpt="-i"
+            remainingArgs=1
+            ;;
+         --multiline-indent)
+            activeOpt="-I"
+            remainingArgs=3
+            ;;
+         --multiline-center)
+            activeOpt="-C"
+            remainingArgs=2
+            ;;
+         --separator)
+            activeOpt="-s"
+            remainingArgs=3
+            ;;
+      esac
+   fi
 
-   # ====== Special case: multiline-indent, multiline-center, separator =====
-   # Handle 2nd argument
-   case "${prev2}" in
-      # ====== Special case: border decoration ==============================
-      -I | --multiline-indent | \
-      -C | --multiline-center)
-         # Left (multiline-indent) or right (multiline-center) border decorations:
-         local suggestions=("#" "=" "|" "║"   "▌" "▐"   "│" "┃" "┆" "┇" "┊" "┋" "😀")
-         local matches
-         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "${cur}")
-         COMPREPLY=( "${matches[@]@Q}" )
-         return
-         ;;
+   # ====== Handle active option arguments ==================================
+   if (( remainingArgs > 0 )) ; then
+      local borderSuggestions=("#" "=" "|" "║" "▌" "▐" "│" "┃" "┆" "┇" "┊" "┋" "😀")
+      local horizSuggestions=("#" "=" "-" "─" "═" "▀" "▄" "━")
+      local matches=() item
 
-      # ====== Generic value ================================================
-      -s | --separator)
-         # Horizontal border decorations:
-         local suggestions=("#" "=" "-" "─" "═"   "▀" "▄"   "━")
-         local matches
-         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "${cur}")
-         COMPREPLY=( "${matches[@]@Q}" )
-         return
-         ;;
-   esac
+      case "${activeOpt}:${remainingArgs}" in
+         -x:1)
+            compopt -o nosort 2>/dev/null || true
+            if [[ "${cur}" == -* ]] ; then
+               mapfile -t matches < <(compgen -W "-2 -4 -8 -12 -16 -20 -24 -32 -40" -- "${cur}")
+            else
+               local terminalColumns="" sortedColumnsList
+               if command -v "${words[0]}" >/dev/null 2>&1 ; then
+                  terminalColumns="$("${words[0]}" -t 2>/dev/null | awk '{ print $1 }')"
+               elif command -v print-utf8 >/dev/null 2>&1 ; then
+                  terminalColumns="$(print-utf8 -t 2>/dev/null | awk '{ print $1 }')"
+               fi
+               [[ "${terminalColumns}" =~ ^[0-9]+$ ]] || terminalColumns="${COLUMNS:-80}"
+               sortedColumnsList="$(printf '%s\n' 0 "${terminalColumns}" 60 78 80 100 120 128 140 160 180 200 | sort -nu)"
+               mapfile -t matches < <(compgen -W "${sortedColumnsList}" -- "${cur}")
+            fi
+            COMPREPLY=( "${matches[@]/#/${replyPrefix}}" )
+            return 0
+            ;;
 
-   # ====== Special case: multiline-indent, separator =======================
-   # Handle 3rd argument
-   case "${prev3}" in
-      # ====== Generic value ================================================
-      -I | --multiline-indent | \
-      -s | --separator)
-         # Right border decorations:
-         local suggestions=("#" "=" "|" "║"   "▌" "▐"   "│" "┃" "┆" "┇" "┊" "┋" "😀")
-         local matches
-         mapfile -t matches < <(compgen -W "${suggestions[*]}" -- "${cur}")
-         COMPREPLY=( "${matches[@]@Q}" )
-         return
-         ;;
-   esac
+         -i:1 | -I:3)
+            compopt -o nosort 2>/dev/null || true
+            mapfile -t matches < <(compgen -W "-64 -48 -32 -24 -20 -16 -12 -10 0 10 12 16 20 24 32 48 64" -- "${cur}")
+            COMPREPLY=( "${matches[@]/#/${replyPrefix}}" )
+            return 0
+            ;;
+
+         -s:2)
+            for item in "${horizSuggestions[@]}" ; do
+               if [[ "${item}" == "${cur}"* ]] ; then
+                  matches+=( "${item}" )
+               fi
+            done
+            ;;
+
+         *)
+            for item in "${borderSuggestions[@]}" ; do
+               if [[ "${item}" == "${cur}"* ]] ; then
+                  matches+=( "${item}" )
+               fi
+            done
+            ;;
+      esac
+
+      compopt -o nosort 2>/dev/null || true
+      COMPREPLY=()
+      for item in "${matches[@]}" ; do
+         if (( isQuoted )) ; then
+            COMPREPLY+=( "${replyPrefix}${item}" )
+         else
+            COMPREPLY+=( "${replyPrefix}'${item}'" )
+         fi
+      done
+      return 0
+   fi
 
    # ====== All options =====================================================
    local opts="
@@ -156,8 +237,10 @@ _print_utf8()
 -h
 --help
 -v
---version"
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+--version
+--
+"
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
    return 0
 }
 

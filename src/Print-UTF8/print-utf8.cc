@@ -32,16 +32,21 @@
 #endif
 
 #include <algorithm>
+#include <cctype>
+#include <cerrno>
+#include <climits>
 #include <clocale>
 #include <cstdint>
 #include <cstdlib>
-#include <cstring>
 #include <filesystem>
 #include <format>
 #include <getopt.h>
 #include <iostream>
+#include <locale>
+#include <stdexcept>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #if !defined(_WIN32)
@@ -58,8 +63,11 @@
 #if defined(ENABLE_NLS)
 #include <libintl.h>
 #else
-#define gettext(string)                   (string)
-#define ngettext(singular, plural, count) (((count) == 1) ? (singular) : (plural))
+#define gettext(string)                          (string)
+#define ngettext(singular, plural, count)        (((count) == 1) ? (singular) : (plural))
+#define bindtextdomain(domain, directory)        (directory)
+#define bind_textdomain_codeset(domain, codeset) (codeset)
+#define textdomain(domain)                       (domain)
 #endif
 
 #include <displaywidth.h>
@@ -101,6 +109,26 @@ static std::string formatText(const char* messageIdentifier,
 }
 
 
+// ###### Parse signed integer argument safely ###############################
+static bool parseSignedInt(const char* argument, long& value)
+{
+   if((argument == nullptr) || (argument[0] == '\0') ||
+      (std::isspace(static_cast<unsigned char>(argument[0])) != 0)) {
+      return false;
+   }
+
+   char* endptr = nullptr;
+   errno = 0;
+   const long parsed = std::strtol(argument, &endptr, 10);
+   if((errno == ERANGE) || (endptr == argument) || (*endptr != '\0')) {
+      return false;
+   }
+
+   value = parsed;
+   return true;
+}
+
+
 // ###### Obtain console dimensions #########################################
 static bool getConsoleDimensions(ConsoleDimensions& dimensions)
 {
@@ -108,17 +136,24 @@ static bool getConsoleDimensions(ConsoleDimensions& dimensions)
    struct winsize w { };
    if((ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0) && (w.ws_col > 0)) {
       dimensions.columns = w.ws_col;
-      dimensions.rows    = w.ws_row;
+      dimensions.rows    = (w.ws_row > 0) ? w.ws_row : 24;
       return true;
    }
 
-   const int fileDescriptor = open("/dev/tty", O_RDWR);
+   int openFlags = O_RDWR;
+#ifdef O_NOCTTY
+   openFlags |= O_NOCTTY;
+#endif
+#ifdef O_CLOEXEC
+   openFlags |= O_CLOEXEC;
+#endif
+   const int fileDescriptor = open("/dev/tty", openFlags);
    if(fileDescriptor >= 0) {
       const int result = ioctl(fileDescriptor, TIOCGWINSZ, &w);
       close(fileDescriptor);
       if((result == 0) && (w.ws_col > 0)) {
          dimensions.columns = w.ws_col;
-         dimensions.rows    = w.ws_row;
+         dimensions.rows    = (w.ws_row > 0) ? w.ws_row : 24;
          return true;
       }
    }
@@ -153,17 +188,19 @@ static bool getConsoleDimensions(ConsoleDimensions& dimensions)
 
    const char* columnsString = std::getenv("COLUMNS");
    const char* rowsString    = std::getenv("LINES");
-   if((columnsString != nullptr) && (rowsString != nullptr)) {
-      const int columns = std::atoi(columnsString);
-      const int rows    = std::atoi(rowsString);
-      if((columns > 0) && (rows > 0)) {
-         dimensions.columns = static_cast<unsigned short>(columns);
-         dimensions.rows    = static_cast<unsigned short>(rows);
-         return true;
-      }
+   bool        haveEnv       = false;
+   long        columns       = 0;
+   long        rows          = 0;
+   if(parseSignedInt(columnsString, columns) && (columns > 0) && (columns <= USHRT_MAX)) {
+      dimensions.columns = static_cast<unsigned short>(columns);
+      haveEnv            = true;
+   }
+   if(parseSignedInt(rowsString, rows) && (rows > 0) && (rows <= USHRT_MAX)) {
+      dimensions.rows = static_cast<unsigned short>(rows);
+      haveEnv         = true;
    }
 
-   return false;
+   return haveEnv;
 }
 
 
@@ -213,26 +250,31 @@ static unsigned int octDigitToNumber(const char digit)
 
 
 // ###### Encode UTF-32 codepoint directly to UTF-8 bytes ###################
-static void encodeCodepointToUtf8(const uint32_t codepoint,
-                                  std::string&   output)
+static void encodeCodepointToUtf8(uint32_t     codepoint,
+                                  std::string& output)
 {
+   // Replace UTF-16 surrogates or out-of-range values with U+FFFD:
+   if((codepoint > 0x10ffffu) || ((codepoint >= 0xd800u) && (codepoint <= 0xdfffu))) {
+      codepoint = 0xfffdu;
+   }
+
    if(codepoint <= 0x7fu) {
-      output.push_back(static_cast<char>(codepoint));
+      output.push_back(static_cast<char>(static_cast<unsigned char>(codepoint)));
    }
    else if(codepoint <= 0x7ffu) {
-      output.push_back(static_cast<char>(0xc0u | (codepoint >> 6u)));
-      output.push_back(static_cast<char>(0x80u | (codepoint & 0x3fu)));
+      output.push_back(static_cast<char>(static_cast<unsigned char>(0xc0u | (codepoint >> 6u))));
+      output.push_back(static_cast<char>(static_cast<unsigned char>(0x80u | (codepoint & 0x3fu))));
    }
    else if(codepoint <= 0xffffu) {
-      output.push_back(static_cast<char>(0xe0u | (codepoint >> 12u)));
-      output.push_back(static_cast<char>(0x80u | ((codepoint >> 6u) & 0x3fu)));
-      output.push_back(static_cast<char>(0x80u | (codepoint & 0x3fu)));
+      output.push_back(static_cast<char>(static_cast<unsigned char>(0xe0u | (codepoint >> 12u))));
+      output.push_back(static_cast<char>(static_cast<unsigned char>(0x80u | ((codepoint >> 6u) & 0x3fu))));
+      output.push_back(static_cast<char>(static_cast<unsigned char>(0x80u | (codepoint & 0x3fu))));
    }
-   else if(codepoint <= 0x10ffffu) {
-      output.push_back(static_cast<char>(0xf0u | (codepoint >> 18u)));
-      output.push_back(static_cast<char>(0x80u | ((codepoint >> 12u) & 0x3fu)));
-      output.push_back(static_cast<char>(0x80u | ((codepoint >> 6u) & 0x3fu)));
-      output.push_back(static_cast<char>(0x80u | (codepoint & 0x3fu)));
+   else {
+      output.push_back(static_cast<char>(static_cast<unsigned char>(0xf0u | (codepoint >> 18u))));
+      output.push_back(static_cast<char>(static_cast<unsigned char>(0x80u | ((codepoint >> 12u) & 0x3fu))));
+      output.push_back(static_cast<char>(static_cast<unsigned char>(0x80u | ((codepoint >> 6u) & 0x3fu))));
+      output.push_back(static_cast<char>(static_cast<unsigned char>(0x80u | (codepoint & 0x3fu))));
    }
 }
 
@@ -266,7 +308,7 @@ static std::string unescape(std::string_view originalString)
                      const unsigned int value =
                         (hexDigitToNumber(originalString[index + 1]) << 4u) +
                         hexDigitToNumber(originalString[index + 2]);
-                     unescaped.push_back(static_cast<char>(value));
+                     unescaped.push_back(static_cast<char>(static_cast<unsigned char>(value & 0xffu)));
                      index += 2;
                   }
                   break;
@@ -276,7 +318,7 @@ static std::string unescape(std::string_view originalString)
                         (octDigitToNumber(originalString[index + 1]) << 6u) +
                         (octDigitToNumber(originalString[index + 2]) << 3u) +
                         octDigitToNumber(originalString[index + 3]);
-                     unescaped.push_back(static_cast<char>(value));
+                     unescaped.push_back(static_cast<char>(static_cast<unsigned char>(value & 0xffu)));
                      index += 3;
                   }
                   break;
@@ -386,7 +428,7 @@ static void printTerminalInfo()
 
 
 // ###### Indent with given number of spaces ################################
-static void printIndentSpaces(const int indentWidth)
+static void printIndentSpaces(const int64_t indentWidth)
 {
    if(indentWidth > 0) {
       std::cout << std::string(static_cast<size_t>(indentWidth), ' ');
@@ -398,12 +440,14 @@ static void printIndentSpaces(const int indentWidth)
 static void printIndented(std::string_view utf8String,
                           const int        totalIndent)
 {
-   if(totalIndent > 0) {
-      printIndentSpaces(totalIndent - static_cast<int>(computeDisplayWidth(utf8String)));
+   const int64_t width  = static_cast<int64_t>(computeDisplayWidth(utf8String));
+   const int64_t indent = static_cast<int64_t>(totalIndent);
+   if(indent > 0) {
+      printIndentSpaces(indent - width);
    }
    std::cout << utf8String;
-   if(totalIndent < 0) {
-      printIndentSpaces((-totalIndent) - static_cast<int>(computeDisplayWidth(utf8String)));
+   if(indent < 0) {
+      printIndentSpaces((-indent) - width);
    }
 }
 
@@ -413,8 +457,9 @@ static void printCentered(std::string_view utf8String,
                           const int        consoleWidth,
                           const bool       padding)
 {
-   const int additionalSpacing = consoleWidth - static_cast<int>(computeDisplayWidth(utf8String));
-   const int indentation       = additionalSpacing / 2;
+   const int64_t additionalSpacing =
+      static_cast<int64_t>(consoleWidth) - static_cast<int64_t>(computeDisplayWidth(utf8String));
+   const int64_t indentation = additionalSpacing / 2;
 
    printIndentSpaces(indentation);
    std::cout << utf8String;
@@ -430,9 +475,9 @@ static void printSeparator(std::string_view borderLeft,
                            std::string_view borderRight,
                            const int        consoleWidth)
 {
-   const int borderLeftWidth  = static_cast<int>(computeDisplayWidth(borderLeft));
-   const int borderRightWidth = static_cast<int>(computeDisplayWidth(borderRight));
-   int       separatorWidth   = static_cast<int>(computeDisplayWidth(separatorString));
+   const int64_t borderLeftWidth  = static_cast<int64_t>(computeDisplayWidth(borderLeft));
+   const int64_t borderRightWidth = static_cast<int64_t>(computeDisplayWidth(borderRight));
+   int64_t       separatorWidth   = static_cast<int64_t>(computeDisplayWidth(separatorString));
 
    if(separatorWidth < 1) {
       separatorString = " ";
@@ -440,8 +485,8 @@ static void printSeparator(std::string_view borderLeft,
    }
 
    std::cout << borderLeft;
-   int currentWidth = borderLeftWidth + borderRightWidth;
-   while(currentWidth + separatorWidth <= consoleWidth) {
+   int64_t currentWidth = borderLeftWidth + borderRightWidth;
+   while(currentWidth + separatorWidth <= static_cast<int64_t>(consoleWidth)) {
       std::cout << separatorString;
       currentWidth += separatorWidth;
    }
@@ -463,7 +508,7 @@ static void doMultiLineIndentOrCenter(std::string_view borderLeft,
       if(!currentLine.empty() && (currentLine.back() == '\r')) {
          currentLine.pop_back();
       }
-      lines.push_back(currentLine);
+      lines.push_back(std::move(currentLine));
       if(lines.size() >= 1024) {
          break;
       }
@@ -516,73 +561,75 @@ static void doMultiLineIndentOrCenter(std::string_view borderLeft,
 #define PIPE         SYN(" | ")
 #define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
 
-[[ noreturn ]]
+[[noreturn]]
 static void usage(const char* program, const int exitCode)
 {
+   const char* safeProgram = (program != nullptr) ? program : "print-utf8";
+
    // TRANSLATORS: Text direction: LTR (Left-to-Right) or RTL (Right-to-Left)
    const bool rtl = (std::string(gettext("LTR")) == "RTL");
    const std::string manpage(std::string("\x1b[1m") +
-                             std::filesystem::path(program).stem().string() +
+                             std::filesystem::path(safeProgram).stem().string() +
                              std::string("\x1b[0m"));
    const std::string homepage((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
                               std::string("[\x1b[1m\x1b]8;;") +
                               std::string(PROJECT_HOMEPAGE_URL) +
                               "\a" + std::string(PROJECT_HOMEPAGE_URL) + "\a" +
                               std::string("\x1b]8;;\a\x1b[0m]") +
-                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")));
    const std::string repository((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
                                 std::string("[\x1b[1m\x1b]8;;") +
                                 std::string(PROJECT_SOURCE_URL) +
                                 "\a" + std::string(PROJECT_SOURCE_URL) + "\a" +
                                 std::string("\x1b]8;;\a\x1b[0m]") +
-                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")));
 
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
    std::cerr << HEADER(gettext("Usage:")) << "\n"
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-n") PIPE OPT("--newline"))
                    ENTRY(OPT("-i") " " ARG("indentation") PIPE OPT("--indent") " " ARG("indentation"))
                    ENTRY(ARG("string"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-n") PIPE OPT("--newline"))
                    ENTRY(OPT("-x") " " ARG("console_width") PIPE OPT("--columns") " " ARG("console_width"))
                    ENTRY(OPT("-c") PIPE OPT("--center"))
                    ENTRY(ARG("string"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-n") PIPE OPT("--newline"))
                    ENTRY(OPT("-x") " " ARG("console_width") PIPE OPT("--columns") " " ARG("console_width"))
                    ENTRY(OPT("-I") " " ARG("indentation") " " ARG("left") " " ARG("right") PIPE OPT("--multiline-indent") " " ARG("indentation") " " ARG("left") " " ARG("right"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-n") PIPE OPT("--newline"))
                    ENTRY(OPT("-x") " " ARG("console_width") PIPE OPT("--columns") " " ARG("console_width"))
                    ENTRY(OPT("-C") " " ARG("left") " " ARG("right") PIPE OPT("--multiline-center") " " ARG("left") " " ARG("right"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-n") PIPE OPT("--newline"))
                    ENTRY(OPT("-x") " " ARG("console_width") PIPE OPT("--columns") " " ARG("console_width"))
                    ENTRY(OPT("-s") " " ARG("left") " " ARG("separator") " " ARG("right") PIPE OPT("--separator") " " ARG("left") " " ARG("separator") " " ARG("right"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-b") PIPE OPT("--size"))
                    ENTRY(ARG("string"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-l") PIPE OPT("--length"))
                    ENTRY(ARG("string"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-w") PIPE OPT("--width"))
                    ENTRY(ARG("string"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-a") PIPE OPT("--size-length-width"))
                    ENTRY(ARG("string"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-t") PIPE OPT("--terminal-info"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-h") PIPE OPT("--help"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-v") PIPE OPT("--version"))
              << "\n"
              // TRANSLATORS: Informational message at the end of usage:
              // {0} = manpage name, {1} = documentation URL, {2} = repository URL
-             << formatText(gettext("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM."),
+             << formatText("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM.",
                            manpage, homepage, repository) << "\n";
    std::exit(exitCode);
 }
@@ -634,18 +681,19 @@ int main(int argc, char** argv)
       std::setlocale(LC_ALL, "C.UTF-8");
    }
    try {
-      std::locale userLocale("");
+      const std::locale userLocale(std::locale(""), std::locale::classic(), std::locale::numeric);
       std::cout.imbue(userLocale);
       std::cerr.imbue(userLocale);
-   } catch (const std::runtime_error&) {
+   } catch(const std::runtime_error&) {
       try {
-         std::locale fallbackLocale("C.UTF-8");
+         const std::locale fallbackLocale(std::locale("C.UTF-8"), std::locale::classic(), std::locale::numeric);
          std::cout.imbue(fallbackLocale);
          std::cerr.imbue(fallbackLocale);
-      } catch (const std::runtime_error&) {
+      } catch(const std::runtime_error&) {
          // Defaults to std::locale::classic() if C.UTF-8 is unavailable
       }
    }
+   std::setlocale(LC_NUMERIC, "C");
 
    // ====== Initialise i18n support ========================================
 #if defined(ENABLE_NLS)
@@ -657,11 +705,11 @@ int main(int argc, char** argv)
    _dupenv_s(&textdomaindir, &textdomaindirsize, "TEXTDOMAINDIR");
 #endif
    bindtextdomain("print-utf8",
-                  ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
+                  ( ((textdomaindir != nullptr) && (textdomaindir[0] != '\0')) ?
                        textdomaindir : PROJECT_LOCALEDIR ));
 #if defined(_WIN32)
-   if(textdomaindir) {
-       free(textdomaindir);
+   if(textdomaindir != nullptr) {
+      free(textdomaindir);
    }
 #endif
    bind_textdomain_codeset("print-utf8", "UTF-8");
@@ -700,17 +748,29 @@ int main(int argc, char** argv)
    int longIndex { 0 };
    while((option = getopt_long(argc, argv, "i:cI:C:s:ntwlbax:hv", longOptions, &longIndex)) != -1) {
       switch(option) {
-         case 'i':
-            mode        = PrintMode::Indent;
-            indentWidth = std::atoi(optarg);
+         case 'i': {
+            mode = PrintMode::Indent;
+            long parsedIndent = 0;
+            if(!parseSignedInt(optarg, parsedIndent) || (parsedIndent < -4096) || (parsedIndent > 4096)) {
+               usage(argv[0], 1);
+            }
+            indentWidth = static_cast<int>(parsedIndent);
             break;
+         }
          case 'c':
             mode = PrintMode::Center;
             break;
          case 'I':
             mode = PrintMode::MultiLineIndent;
             if(optind + 1 < argc) {
-               indentWidth = std::atoi(optarg);
+               long parsedIndent = 0;
+               if(!parseSignedInt(optarg, parsedIndent) || (parsedIndent < -4096) || (parsedIndent > 4096)) {
+                  // TRANSLATORS: Error message when --multiline-indent/-I is given
+                  // fewer than the required arguments (indentation, left, right).
+                  std::cerr << gettext("ERROR: Invalid arguments for multiline-indent!") << '\n';
+                  return 1;
+               }
+               indentWidth = static_cast<int>(parsedIndent);
                borderLeft  = unescape(argv[optind + 0]);
                borderRight = unescape(argv[optind + 1]);
                optind += 2;
@@ -752,19 +812,28 @@ int main(int argc, char** argv)
                return 1;
             }
             break;
-         case 'x':
-            consoleWidth = std::atoi(optarg);
-            if(consoleWidth <= 0) {
-               consoleWidth = defaultConsoleWidth + consoleWidth;
-            }
-            if(consoleWidth > 4096) {
+         case 'x': {
+            long parsedColumns = 0;
+            if(!parseSignedInt(optarg, parsedColumns)) {
                // TRANSLATORS: Error message when console width exceeds
                // maximum permitted width of 4096 columns:
                // {0} = specified console width
-               std::cerr << formatText("ERROR: Invalid console width {0}!", consoleWidth) << '\n';
+               std::cerr << formatText("ERROR: Invalid console width {0}!", optarg) << '\n';
                return 1;
             }
+            if(parsedColumns <= 0) {
+               parsedColumns = static_cast<long>(defaultConsoleWidth) + parsedColumns;
+            }
+            if(parsedColumns > 4096) {
+               // TRANSLATORS: Error message when console width exceeds
+               // maximum permitted width of 4096 columns:
+               // {0} = specified console width
+               std::cerr << formatText("ERROR: Invalid console width {0}!", parsedColumns) << '\n';
+               return 1;
+            }
+            consoleWidth = static_cast<int>(std::max<long>(parsedColumns, -4096));
             break;
+         }
          case 'n':
             newline = true;
             break;
@@ -797,7 +866,7 @@ int main(int argc, char** argv)
    }
 
    if(optind < argc) {
-      if(!utf8String.empty() && (mode == PrintMode::Separator)) {
+      if(mode == PrintMode::Separator) {
          usage(argv[0], 1);
       }
       utf8String = unescape(argv[optind++]);
@@ -827,9 +896,7 @@ int main(int argc, char** argv)
                                    consoleWidth, indentWidth, mode);
          break;
       case PrintMode::Separator:
-         if(!utf8String.empty()) {
-            printSeparator(borderLeft, utf8String, borderRight, consoleWidth);
-         }
+         printSeparator(borderLeft, utf8String, borderRight, consoleWidth);
          break;
       case PrintMode::Width:
          printStringSizeLengthWidth(utf8String, false, false, true);

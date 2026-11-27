@@ -28,13 +28,13 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 27, 2026
 .Dt print\-utf8 1
 .Os print\-utf8
 .\" ###### Name #############################################################
 .Sh NAME
 .Nm print\-utf8
-.Nd prints UTF\-8 strings
+.Nd prints UTF\-8 strings and obtains size/length/width information
 .\" ###### Synopsis #########################################################
 .Sh SYNOPSIS
 .Nm print\-utf8
@@ -94,53 +94,99 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm print\-utf8
-is a simple program to print UTF\-8 strings in the console with
-options for indentation, centering, separator as well as size/length/width
-information.
-If
-.Pa /dev/tty
-is not available to obtain the terminal width and height, the
-default of 80x24 is assumed.
+prints UTF\-8 strings in the console with options for indentation, centering,
+and horizontal separators, and queries byte size, code\-point length, and
+terminal display\-column width (ignoring ANSI escape sequences and accounting
+for combining marks and wide CJK/Emoji glyphs).
+.Pp
+String and border arguments support standard backslash escape sequences
+.Pq Ql \[rs]n , Ql \[rs]r , Ql \[rs]t , Ql \[rs]a , Ql \[rs]b , Ql \[rs]f , Ql \[rs]v , Ql \[rs]e , Ql \[rs]E , Ql \[rs]\[rs] , Ql \[rs]0ooo , Ql \[rs]xhh , Ql \[rs]uhhhh , No and Ql \[rs]Uhhhhhhhh .
+Terminal dimensions are obtained from standard output,
+.Pa /dev/tty ,
+or the
+.Ev COLUMNS
+and
+.Ev LINES
+environment variables, falling back to 80x24 if unavailable.
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following arguments and options are available:
 .Bl -tag -width indent
 .It Op Ar string
-The UTF\-8 string to process.
-If omitted, input is read from standard input.
+The UTF\-8 string to process (defaults to an empty string if omitted; multi\-line
+modes
+.Fl I
+and
+.Fl C
+read lines from standard input instead).
 .It Fl n | Fl \-newline
-Add a newline to the output. Default: off.
+Append a trailing newline to the output (default: off).
 .It Fl i Ar indentation | Fl \-indent Ar indentation
-Indent the string by the given number of characters (columns in the console). A negative number leads to left\-justified text, a positive number leads to right\-justified text.
+Pad the string with spaces to a field width of
+.No | Ns Ar indentation Ns |
+display columns. A negative value pads on the right (left\-justified text); a
+positive value pads on the left (right\-justified text).
 .It Fl c | Fl \-center
-Center the string, using indentation based on the current console width.
+Center the string within the console width.
 .It Fl I Ar indentation Ar left Ar right | Fl \-multiline\-indent Ar indentation Ar left Ar right
-Reads multiple lines from stdin, indent each line by given indentation, add a prefix left and a suffix right.
+Reads up to 1024 lines from standard input, indents each line according to
+.Ar indentation ,
+and wraps each line with
+.Ar left
+and
+.Ar right .
 .It Fl C Ar left Ar right | Fl \-multiline\-center Ar left Ar right
-Reads multiple lines from stdin, pads them to the same length, and prints them centered with given borders on left and right side.
+Reads up to 1024 lines from standard input, centers and pads each line within
+the console width (minus the display widths of
+.Ar left
+and
+.Ar right ) ,
+and wraps each line with
+.Ar left
+and
+.Ar right .
 .It Fl s Ar left Ar separator Ar right | Fl \-separator Ar left Ar separator Ar right
-Generates a separator, consisting of a left part, a variable number of separator string occurrences, as well as a right part.
-The separator string must have a width >= 1 to fill the line. Otherwise, a space (" ") is used instead.
+Generates a horizontal separator line consisting of
+.Ar left ,
+repeated occurrences of
+.Ar separator
+up to the target console width, and
+.Ar right .
+If
+.Ar separator
+has display width 0, a single space
+.Pq Ql " "
+is used instead.
 .It Fl x Ar console\_width | Fl \-columns Ar console\_width
-Set number of columns (console width) for "center", "multiline\-center", and
-"separator" functions (see above).
-For console\_width=0, the current console width (or from 80, if unknown) is used.
-For console\_width<0, the current console width (or from 80, if unknown) plus
-console\_width (subtraction, since it is negative!) is used.
-Default: 0, i.e. current console width.
+Set the target console width (up to 4096 columns) for
+.Fl c ,
+.Fl C ,
+and
+.Fl s .
+For
+.Ar console\_width Ns =0 ,
+the detected console width (or 80, if unknown) is used.
+For
+.Ar console\_width Ns <0 ,
+the detected console width (or 80, if unknown) plus
+.Ar console\_width
+(subtracting the offset) is used. Default: 0 (current console width).
 .It Fl b | Fl \-size
-Print the size (bytes) of the string without ANSI control sequences.
+Print the size in bytes of the string without ANSI control sequences.
 .It Fl l | Fl \-length
-Print the length (in UTF\-8 characters) of the string without ANSI control sequences.
+Print the length in Unicode code points of the string without ANSI control sequences.
 .It Fl w | Fl \-width
-Print the width (columns in the console) of the string without ANSI control sequences.
+Print the display width in terminal columns of the string without ANSI control sequences.
 .It Fl a | Fl \-size\-length\-width
-Print the size, length and width of the string without ANSI control sequences.
+Print the byte size, code\-point length, and display width of the string without ANSI control sequences.
 .It Fl t | Fl \-terminal\-info
-Print current width and height of the console.
-Note that if
-.Pa /dev/tty
-is not available, the default of 80x24 is returned!
+Print the current width and height of the console (checking standard output,
+.Pa /dev/tty ,
+and
+.Ev COLUMNS Ns / Ns Ev LINES ,
+or returning
+.Ql 80 24
+if unavailable).
 .It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl \-version
@@ -159,7 +205,7 @@ print\-utf8 \-\-newline \-\-center \[dq]This line is centered in console width!\
 .It
 print\-utf8 \-\-newline \-\-columns 80 \-\-center \[dq]This line is centered in 80 columns!\[dq]
 .It
-print\-utf8 \-\-newline \-\-center \[aq]\ex1b[38;2;241;71;29mThis line is centered!\ex1b[0m\[aq]
+print\-utf8 \-\-newline \-\-center \[aq]\[rs]x1b[38;2;241;71;29mThis line is centered!\[rs]x1b[0m\[aq]
 .It
 figlet \[dq]$(date +\[dq]%y\-%m\-%d\[dq])\[dq] | print\-utf8 \-\-newline \-\-multiline\-indent 64 \[dq]< \[dq] \[dq] >\[dq]
 .It
@@ -230,9 +276,9 @@ ls / | print\-utf8 \-n \-\-multiline\-indent \-42 \[dq]\[rs]e[1;32m│\[rs]e[34m
 .br
 print\-utf8 \-n \-x 44 \-s \[dq]\[rs]e[1;32m╘\[dq] \[dq]═\[dq] \[dq]╛\[rs]e[0m\[dq]
 .It
-print\-utf8 \-h
-.It
 print\-utf8 \-\-help
+.It
+print\-utf8 \-h
 .It
 print\-utf8 \-\-version
 .It
@@ -250,4 +296,3 @@ This program is part of System\-Tools. The latest version of System\-Tools can b
 .Sh AUTHORS
 Thomas Dreibholz,
 .Lk https://www.nntb.no/\(tidreibh "Homepage"
-
