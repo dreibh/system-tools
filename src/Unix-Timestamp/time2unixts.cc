@@ -36,6 +36,7 @@
 #include <chrono>
 #include <climits>
 #include <clocale>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -45,6 +46,8 @@
 #include <filesystem>
 #include <format>
 #include <iostream>
+#include <locale>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 
@@ -53,8 +56,11 @@
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #else
-#define gettext(string)                   (string)
-#define ngettext(singular, plural, count) (((count) == 1) ? (singular) : (plural))
+#define gettext(string)                          (string)
+#define ngettext(singular, plural, count)        (((count) == 1) ? (singular) : (plural))
+#define bindtextdomain(domain, directory)        (directory)
+#define bind_textdomain_codeset(domain, codeset) (codeset)
+#define textdomain(domain)                       (domain)
 #endif
 
 #include "package-version.h"
@@ -84,19 +90,37 @@ static std::string formatText(const char* messageIdentifier,
 
 
 // ###### Convert tm to Unix timestamp in seconds via std::chrono ###########
-static int64_t tm_to_timepoint(const std::tm& t) noexcept
+static bool tm_to_timepoint(const std::tm& t, int64_t& outSeconds) noexcept
 {
-   const std::chrono::year           year { t.tm_year + 1900 };
+   if((t.tm_mon < 0) || (t.tm_mon > 11) ||
+      (t.tm_mday < 1) || (t.tm_mday > 31) ||
+      (t.tm_hour < 0) || (t.tm_hour > 23) ||
+      (t.tm_min < 0) || (t.tm_min > 59) ||
+      (t.tm_sec < 0) || (t.tm_sec > 61)) {
+      return false;
+   }
+
+   const long long fullYear = static_cast<long long>(t.tm_year) + 1900LL;
+   if((fullYear < static_cast<int>(std::chrono::year::min())) ||
+      (fullYear > static_cast<int>(std::chrono::year::max()))) {
+      return false;
+   }
+
+   const std::chrono::year           year { static_cast<int>(fullYear) };
    const std::chrono::month          month { static_cast<unsigned>(t.tm_mon + 1) };
    const std::chrono::day            day { static_cast<unsigned>(t.tm_mday) };
    const std::chrono::year_month_day yearMonthDay { year, month, day };
-   const std::chrono::sys_days       days { yearMonthDay };
+   if(!yearMonthDay.ok()) {
+      return false;
+   }
 
-   const std::chrono::seconds totalSeconds = days.time_since_epoch() +
-                                                std::chrono::hours { t.tm_hour } +
-                                                std::chrono::minutes { t.tm_min } +
-                                                std::chrono::seconds { t.tm_sec };
-   return totalSeconds.count();
+   const std::chrono::sys_days days { yearMonthDay };
+   const std::chrono::seconds  totalSeconds = days.time_since_epoch() +
+                                              std::chrono::hours { t.tm_hour } +
+                                              std::chrono::minutes { t.tm_min } +
+                                              std::chrono::seconds { t.tm_sec };
+   outSeconds = totalSeconds.count();
+   return true;
 }
 
 
@@ -109,18 +133,65 @@ static const char* findSecondsPlaceholder(const char* formatString) noexcept
          switch(*(ptr + 1)) {
             case 0x00:
                ptr++;
-             break;
+               break;
             case 'S':
                return ptr;
             default:
                ptr += 2;
-             break;
+               break;
          }
       } else {
          ptr++;
       }
    }
    return nullptr;
+}
+
+
+// ###### Parse decimal seconds (00..60[.fraction]) at %S position ##########
+static const char* parseSecondsWithFraction(const char* input,
+                                            int&        wholeSeconds,
+                                            long long&  nanoseconds) noexcept
+{
+   if((input == nullptr) || !std::isdigit(static_cast<unsigned char>(input[0]))) {
+      return nullptr;
+   }
+
+   const char* p         = input;
+   size_t      intDigits = 0;
+   while((intDigits < 2) && std::isdigit(static_cast<unsigned char>(*p))) {
+      ++p;
+      ++intDigits;
+   }
+   if(std::isdigit(static_cast<unsigned char>(*p))) {
+      return nullptr;
+   }
+
+   if(*p == '.') {
+      ++p;
+      while(std::isdigit(static_cast<unsigned char>(*p))) {
+         ++p;
+      }
+   }
+
+   const std::string numberSlice(input, static_cast<size_t>(p - input));
+   char*             endptr  = nullptr;
+   errno                     = 0;
+   const double      seconds = std::strtod(numberSlice.c_str(), &endptr);
+   if((errno == ERANGE) || (endptr != numberSlice.c_str() + numberSlice.size()) ||
+      !std::isfinite(seconds) || (seconds < 0.0) || (seconds >= 61.0)) {
+      return nullptr;
+   }
+
+   wholeSeconds          = static_cast<int>(seconds);
+   const double fraction = seconds - static_cast<double>(wholeSeconds);
+   nanoseconds           = static_cast<long long>(fraction * 1e9 + 0.5);   // +0.5 for rounding safety
+   if(nanoseconds >= 1000000000LL) {
+      wholeSeconds += 1;
+      nanoseconds  -= 1000000000LL;
+   }
+
+   return p;
 }
 
 
@@ -169,7 +240,7 @@ static const char* strptime(const char* buffer,
                             const char* format,
                             std::tm*    tm) noexcept
 {
-   if( (!buffer) || (!format) || (!tm) ) {
+   if((!buffer) || (!format) || (!tm)) {
       return nullptr;
    }
    while(*format) {
@@ -192,8 +263,8 @@ static const char* strptime(const char* buffer,
          else if(*format == 'Y') {
             int year   = 0;
             int digits = 0;
-            while( (digits < 4) &&
-                   std::isdigit(static_cast<unsigned char>(*buffer)) ) {
+            while((digits < 4) &&
+                  std::isdigit(static_cast<unsigned char>(*buffer))) {
                year = year * 10 + (*buffer - '0');
                buffer++;
                digits++;
@@ -207,28 +278,31 @@ static const char* strptime(const char* buffer,
          else if(*format == 'm') {
             int mon    = 0;
             int digits = 0;
-            while( (digits < 2) &&
-                   std::isdigit(static_cast<unsigned char>(*buffer)) ) {
+            while((digits < 2) &&
+                  std::isdigit(static_cast<unsigned char>(*buffer))) {
                mon = mon * 10 + (*buffer - '0');
                buffer++;
                digits++;
             }
-            if(digits == 0) {
+            if((digits == 0) || (mon < 1) || (mon > 12)) {
                return nullptr;
             }
             tm->tm_mon = mon - 1;
             format++;
          }
          else if(*format == 'd' || *format == 'e') {
+            if(*format == 'e' && *buffer == ' ') {
+               buffer++;
+            }
             int day    = 0;
             int digits = 0;
-            while( (digits < 2) &&
-                   std::isdigit(static_cast<unsigned char>(*buffer)) ) {
+            while((digits < 2) &&
+                  std::isdigit(static_cast<unsigned char>(*buffer))) {
                day = day * 10 + (*buffer - '0');
                buffer++;
                digits++;
             }
-            if(digits == 0) {
+            if((digits == 0) || (day < 1) || (day > 31)) {
                return nullptr;
             }
             tm->tm_mday = day;
@@ -237,13 +311,13 @@ static const char* strptime(const char* buffer,
          else if(*format == 'H') {
             int hour   = 0;
             int digits = 0;
-            while( (digits < 2) &&
-                   std::isdigit(static_cast<unsigned char>(*buffer)) ) {
+            while((digits < 2) &&
+                  std::isdigit(static_cast<unsigned char>(*buffer))) {
                hour = hour * 10 + (*buffer - '0');
                buffer++;
                digits++;
             }
-            if(digits == 0) {
+            if((digits == 0) || (hour > 23)) {
                return nullptr;
             }
             tm->tm_hour = hour;
@@ -252,13 +326,13 @@ static const char* strptime(const char* buffer,
          else if(*format == 'M') {
             int min    = 0;
             int digits = 0;
-            while( (digits < 2) &&
-                   std::isdigit(static_cast<unsigned char>(*buffer)) ) {
+            while((digits < 2) &&
+                  std::isdigit(static_cast<unsigned char>(*buffer))) {
                min = min * 10 + (*buffer - '0');
                buffer++;
                digits++;
             }
-            if(digits == 0) {
+            if((digits == 0) || (min > 59)) {
                return nullptr;
             }
             tm->tm_min = min;
@@ -267,13 +341,13 @@ static const char* strptime(const char* buffer,
          else if(*format == 'S') {
             int sec    = 0;
             int digits = 0;
-            while( (digits < 2) &&
-                   std::isdigit(static_cast<unsigned char>(*buffer)) ) {
+            while((digits < 2) &&
+                  std::isdigit(static_cast<unsigned char>(*buffer))) {
                sec = sec * 10 + (*buffer - '0');
                buffer++;
                digits++;
             }
-            if(digits == 0) {
+            if((digits == 0) || (sec > 60)) {
                return nullptr;
             }
             tm->tm_sec = sec;
@@ -313,31 +387,33 @@ static const char* strptime(const char* buffer,
 #define PIPE         SYN(" | ")
 #define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
 
-[[ noreturn ]]
+[[noreturn]]
 static void usage(const char* program, const int exitCode)
 {
+   const char* safeProgram = (program != nullptr) ? program : "time2unixts";
+
    // TRANSLATORS: Text direction: LTR (Left-to-Right) or RTL (Right-to-Left)
    const bool rtl = (std::string(gettext("LTR")) == "RTL");
    const std::string manpage(std::string("\x1b[1m") +
-                             std::filesystem::path(program).stem().string() +
+                             std::filesystem::path(safeProgram).stem().string() +
                              std::string("\x1b[0m"));
    const std::string homepage((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
                               std::string("[\x1b[1m\x1b]8;;") +
                               std::string(PROJECT_HOMEPAGE_URL) +
                               "\a" + std::string(PROJECT_HOMEPAGE_URL) + "\a" +
                               std::string("\x1b]8;;\a\x1b[0m]") +
-                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")));
    const std::string repository((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
                                 std::string("[\x1b[1m\x1b]8;;") +
                                 std::string(PROJECT_SOURCE_URL) +
                                 "\a" + std::string(PROJECT_SOURCE_URL) + "\a" +
                                 std::string("\x1b]8;;\a\x1b[0m]") +
-                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")));
 
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
    std::cerr << HEADER(gettext("Usage:")) << "\n"
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-T") " " ARG("time_format_template") PIPE OPT("--template") " " ARG("time_format_template"))
                    ENTRY(OPT("-F") PIPE OPT("--float"))
                    ENTRY(OPT("-I") PIPE OPT("--integer-decimal"))
@@ -349,14 +425,14 @@ static void usage(const char* program, const int exitCode)
                    ENTRY(OPT("-u") PIPE OPT("--microseconds"))
                    ENTRY(OPT("-n") PIPE OPT("--nanoseconds"))
                    ENTRY(ARG("time_string") " " "...")
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-h") PIPE OPT("--help"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-v") PIPE OPT("--version"))
              << "\n"
              // TRANSLATORS: Informational message at the end of usage:
              // {0} = manpage name, {1} = documentation URL, {2} = repository URL
-             << formatText(gettext("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM."),
+             << formatText("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM.",
                            manpage, homepage, repository) << "\n";
    std::exit(exitCode);
 }
@@ -370,6 +446,19 @@ int main(int argc, char** argv)
    if(std::setlocale(LC_ALL, "") == nullptr) {
       std::setlocale(LC_ALL, "C.UTF-8");
    }
+   try {
+      const std::locale userLocale(std::locale(""), std::locale::classic(), std::locale::numeric);
+      std::cout.imbue(userLocale);
+      std::cerr.imbue(userLocale);
+   } catch(const std::runtime_error&) {
+      try {
+         const std::locale fallbackLocale(std::locale("C.UTF-8"), std::locale::classic(), std::locale::numeric);
+         std::cout.imbue(fallbackLocale);
+         std::cerr.imbue(fallbackLocale);
+      } catch(const std::runtime_error&) {
+         // Defaults to std::locale::classic() if C.UTF-8 is unavailable
+      }
+   }
    std::setlocale(LC_NUMERIC, "C");   // Use "." for fractional numbers!
 
    // ====== Initialise i18n support ========================================
@@ -382,11 +471,11 @@ int main(int argc, char** argv)
    _dupenv_s(&textdomaindir, &textdomaindirsize, "TEXTDOMAINDIR");
 #endif
    bindtextdomain("time2unixts",
-                  ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
+                  ( ((textdomaindir != nullptr) && (textdomaindir[0] != '\0')) ?
                        textdomaindir : PROJECT_LOCALEDIR ));
 #if defined(_WIN32)
-   if(textdomaindir) {
-       free(textdomaindir);
+   if(textdomaindir != nullptr) {
+      free(textdomaindir);
    }
 #endif
    bind_textdomain_codeset("time2unixts", "UTF-8");
@@ -407,66 +496,64 @@ int main(int argc, char** argv)
       { "nanoseconds",            no_argument,       nullptr, 'n' },
       { "help",                   no_argument,       nullptr, 'h' },
       { "version",                no_argument,       nullptr, 'v' },
-      {  nullptr,                 0,                 nullptr, 0   }
+      { nullptr,                  0,                 nullptr, 0   }
    };
 
-   int          option;
-   int          longIndex;
-   int          useInteger         = 10;
-   bool         humanReadable      = false;
-   unsigned int divideBy           = 1;
-   const char*  unit               = "ns";
+   int          option            = 0;
+   int          longIndex         = 0;
+   int          useInteger        = 10;
+   bool         humanReadable     = false;
+   unsigned int divideBy          = 1;
+   const char*  unit              = "ns";
    const char*  timeFormatTemplate = "%Y-%m-%d %H:%M:%S";
-   while( (option = getopt_long(argc, argv, "T:FIX0Hsmunvh", long_options, &longIndex)) != -1 ) {
+   while((option = getopt_long(argc, argv, "T:FIX0Hsmunvh", long_options, &longIndex)) != -1) {
       switch(option) {
          case 'T':
             timeFormatTemplate = optarg;
-          break;
+            break;
          case 'F':
             useInteger = 0;
-          break;
+            break;
          case 'I':
             useInteger = 10;
-          break;
+            break;
          case 'X':
             useInteger = 16;
-          break;
+            break;
          case '0':
             useInteger = -16;
-          break;
+            break;
          case 'H':
             humanReadable = true;
-          break;
+            break;
          case 'n':
             divideBy = 1;
             unit     = "ns";
-          break;
+            break;
          case 'u':
             divideBy = 1000;
             unit     = "µs";
-          break;
+            break;
          case 'm':
             divideBy = 1000000;
             unit     = "ms";
-          break;
+            break;
          case 's':
             divideBy = 1000000000;
             unit     = "s";
-          break;
+            break;
          case 'v':
             version();
-          break;
+            break;
          case 'h':
          case '?':
             // Exit with 0 on h/help, exit with 1 on '?' (unknown option):
             usage(argv[0], (option == 'h') ? 0 : 1);
-          break;
-         case '-':
-          break;
+            break;
          default:
             // This should not happen: wrong getopt parameters, or missing case?
-            std::fprintf(stderr, "INTERNAL ERROR: Unhandled option c=%c code=%x!\n",
-                         (std::isprint(option) ? static_cast<char>(option) : ' '), option);
+            std::fprintf(stderr, "INTERNAL ERROR: Unhandled option code=%x!\n",
+                         static_cast<unsigned int>(option));
             return 1;
       }
    }
@@ -489,53 +576,47 @@ int main(int argc, char** argv)
 
       // ====== Parse the next date/time string =============================
       else {
-         std::tm     t                  = { };
+         std::tm t { };
+         t.tm_year = 70;   // Default to Unix Epoch date (1970-01-01) for partial templates
+         t.tm_mon  = 0;
+         t.tm_mday = 1;
+
          const char* timeString         = argv[i];
          const char* remainder          = nullptr;
+         long long   nanoseconds        = 0;
          const char* secondsPlaceholder = findSecondsPlaceholder(timeFormatTemplate);
          if(secondsPlaceholder != nullptr) {
-            long long nanoseconds = 0;
-
             // ------ Parse front part (before seconds) ---------------------
-            const size_t frontLength = static_cast<size_t>(secondsPlaceholder - timeFormatTemplate);
+            const size_t      frontLength = static_cast<size_t>(secondsPlaceholder - timeFormatTemplate);
             const std::string frontFormatString(timeFormatTemplate, frontLength);
-
-            const char* remainder1 = strptime(timeString, frontFormatString.c_str(), &t);
+            const char*       remainder1 = frontFormatString.empty() ?
+                                              timeString :
+                                              strptime(timeString, frontFormatString.c_str(), &t);
 
             // ------ Parse the middle part (seconds) -----------------------
             if(remainder1 != nullptr) {
-               char*  remainder2 = nullptr;
-               double seconds    = std::strtod(remainder1, &remainder2);
-               if( (remainder2 != remainder1) && (seconds >= 0.0) ) {
-                  // Split seconds into integer seconds and nanoseconds:
-                  t.tm_sec = static_cast<int>(seconds);
-                  const double fraction = seconds - static_cast<double>(t.tm_sec);
-                  nanoseconds = static_cast<long long>(fraction * 1e9 + 0.5);   // +0.5 for rounding safety
-                  if(nanoseconds >= 1000000000LL) {
-                     t.tm_sec += 1;
-                     nanoseconds -= 1000000000LL;
-                  }
+               int         wholeSeconds = 0;
+               const char* remainder2   = parseSecondsWithFraction(remainder1, wholeSeconds, nanoseconds);
+               if(remainder2 != nullptr) {
+                  t.tm_sec = wholeSeconds;
 
                   // ------ Parse the back part (after seconds) -------------
                   const char* backFormatString = secondsPlaceholder + 2;
-                  if(backFormatString[0] != 0x00) {
+                  if(backFormatString[0] != '\0') {
                      remainder = strptime(remainder2, backFormatString, &t);
                   } else {
                      remainder = remainder2;
                   }
                }
             }
-
-            const int64_t secondsSinceEpoch = tm_to_timepoint(t);
-            unixTS = (static_cast<int128_type>(1000000000LL) * secondsSinceEpoch) + nanoseconds;
          }
          else {
-            remainder = strptime(argv[i], timeFormatTemplate, &t);
-            const int64_t secondsSinceEpoch = tm_to_timepoint(t);
-            unixTS = (static_cast<int128_type>(1000000000LL) * secondsSinceEpoch);
+            remainder = strptime(timeString, timeFormatTemplate, &t);
          }
 
-         if( (remainder == nullptr) || (*remainder != 0x00) ) {
+         int64_t secondsSinceEpoch = 0;
+         if((remainder == nullptr) || (*remainder != '\0') ||
+            !tm_to_timepoint(t, secondsSinceEpoch)) {
             // TRANSLATORS: Error message when parsing time string fails:
             // 1st %s = input time string
             // 2nd %s = time format template
@@ -543,6 +624,8 @@ int main(int argc, char** argv)
                          timeString, timeFormatTemplate);
             std::exit(1);
          }
+
+         unixTS = (static_cast<int128_type>(1000000000LL) * secondsSinceEpoch) + nanoseconds;
       }
 
       // ====== Convert timespec to Unix timestamp ==========================
@@ -553,9 +636,13 @@ int main(int argc, char** argv)
          printBigInteger(unixTS / divideBy, 16, true);
       }
       else {
-         printBigInteger(unixTS / divideBy, 10, false);
+         const int128_type wholeUnits = unixTS / divideBy;
+         if((useInteger == 0) && (unixTS < 0) && (wholeUnits == 0)) {
+            std::putchar('-');
+         }
+         printBigInteger(wholeUnits, 10, false);
          if(useInteger == 0) {
-            const int128_type rawFractional = unixTS - (unixTS / divideBy) * divideBy;
+            const int128_type  rawFractional    = unixTS - (wholeUnits * divideBy);
             const unsigned int fractionalUnixTS =
                static_cast<unsigned int>(rawFractional < 0 ? -rawFractional : rawFractional);
             const char* format;

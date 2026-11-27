@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 27, 2026
 .Dt time2unixts 1
 .Os time2unixts
 .\" ###### Name #############################################################
@@ -66,36 +66,51 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm time2unixts
-converts date/time strings in the format %Y\-%m\-%d %H:%M:%S in UTC to Unix timestamps, which is the time (nanoseconds, microseconds, milliseconds, or seconds) since the Unix Epoch, i.e. January 1, 1970, 00:00:00.000000000 UTC.
+converts UTC date/time strings (by default in the format
+.Ql %Y\-%m\-%d %H:%M:%S )
+to Unix timestamps, expressing the elapsed time in nanoseconds, microseconds,
+milliseconds, or seconds relative to the Unix Epoch
+(January 1, 1970, 00:00:00.000000000 UTC).
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following arguments and options are available:
 .Bl -tag -width indent
 .It Ar time\_string ...
-The date/time strings to be converted, as %Y\-%m\-%d %H:%M:%S[.SSSSSSSSS].
-The seconds part may be fractional; the fraction is optional.
-If no date/time string is provided, the current system time is used.
+One or more UTC date/time strings to convert (default format:
+.Ql %Y\-%m\-%d %H:%M:%S[.SSSSSSSSS] ) .
+When the format template contains
+.Ql %S ,
+an optional fractional seconds part is supported.
+If no
+.Ar time\_string
+is provided, the current system time is used.
 .It Fl T Ar time\_format\_template | Fl \-template Ar time\_format\_template
-Sets the template for parsing the date/time strings. Default is \[dq]%Y\-%m\-%d %H:%M:%S\[dq]. The formatting is according to
-.Xr strptime 3.
+Sets the template for parsing date/time strings (default:
+.Ql %Y\-%m\-%d %H:%M:%S )
+according to
+.Xr strptime 3 .
+Note that parsed date/time components are evaluated in UTC; timezone names matched by
+.Ql %Z
+do not apply timezone offsets.
 .It Fl F | Fl \-float
-Print the Unix timestamp as a floating\-point number.
+Print the Unix timestamp as a fixed\-point fractional number.
 .It Fl I | Fl \-integer\-decimal
-Print the Unix timestamp as a decimal integer number. This is the default.
+Print the Unix timestamp as a decimal integer (default).
 .It Fl X | Fl \-integer\-hexadecimal
-Print the Unix timestamp as a hexadecimal integer number.
+Print the Unix timestamp as a hexadecimal integer.
 .It Fl 0 | Fl \-integer\-0x\-hexadecimal
-Print the Unix timestamp as a hexadecimal integer number, prefixed by 0x.
+Print the Unix timestamp as a hexadecimal integer prefixed by
+.Ql 0x .
 .It Fl H | Fl \-human\-readable
-Provide the output in human\-readable form. Default: off.
+Append human\-readable unit information to the output (default: off).
 .It Fl s | Fl \-seconds
-The Unix timestamp is printed in seconds. Default is in nanoseconds.
+Print the Unix timestamp in seconds (default: nanoseconds).
 .It Fl m | Fl \-milliseconds
-The Unix timestamp is printed in milliseconds. Default is in nanoseconds.
+Print the Unix timestamp in milliseconds (default: nanoseconds).
 .It Fl u | Fl \-microseconds
-The Unix timestamp is printed in microseconds. Default is in nanoseconds.
+Print the Unix timestamp in microseconds (default: nanoseconds).
 .It Fl n | Fl \-nanoseconds
-The Unix timestamp is printed in nanoseconds. This is the default.
+Print the Unix timestamp in nanoseconds (default).
 .It Fl h | Fl \-help
 Prints the program's command\-line parameters and exits.
 .It Fl v | Fl \-version
@@ -128,20 +143,24 @@ time2unixts \[dq]2026\-03\-17 08:31:19\[dq] \-s
 .It
 time2unixts \[dq]1976\-09\-29 12:12:03.123\[dq] \-m
 .It
-time2unixts \-s \[dq]2026\-09\-04 19:30:14.7787085\[dq]
+time2unixts \-F \-s \[dq]2026\-09\-04 19:30:14.7787085\[dq]
 .It
 time2unixts \-T \[dq]%b %d %H:%M:%S %Y %Z\[dq] \[dq]Jun  4 19:01:25 2036 GMT\[dq]
 .It
-time2unixts \-T \[dq]%b %d %H:%M:%S %Y %Z\[dq] \[dq]Sep 29 13:10:12.567890123 1976 CET\[dq]
+time2unixts \-T \[dq]%b %d %H:%M:%S %Y %Z\[dq] \[dq]Sep 29 13:10:12.567890123 1976 GMT\[dq]
+.It
+time2unixts \-\-help
+.It
+time2unixts \-h
 .It
 time2unixts \-\-version
 .It
-time2unixts \-\-help
+time2unixts \-v
 .El
 .\" ###### See also #########################################################
 .Sh SEE ALSO
-.Xr strptime 3 ,
-.Xr unixts2time 1
+.Xr unixts2time 1 ,
+.Xr strptime 3
 .\" ###### Notes ############################################################
 .Sh NOTES
 This program is part of System\-Tools. The latest version of System\-Tools can be found on the System\-Tools Homepage at

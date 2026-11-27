@@ -32,52 +32,121 @@
 # ###### Bash completion for time2unixts ####################################
 _time2unixts()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
-      _init_completion || return
+   # shellcheck disable=SC2034
+   local cur prev words cword split=false comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -s -n : -- "$@" || return
+   elif type -t _init_completion >/dev/null ; then
+      _init_completion -s -n : || return
    else
-      # Manual initialization for older bash completion versions:
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
       prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
+      words=("${COMP_WORDS[@]}")
       cword="${COMP_CWORD}"
    fi
 
-   # ====== Suggest dates as first parameter ================================
-   if [[ "${cur}" != -* ]] ; then
-      local dateFormat="%Y-%m-%d %H:00:00.000000000"
-      local dateToday
-      local dateTomorrow
-      dateToday="$(date +"${dateFormat}")"
-      if date -d "tomorrow" +"${dateFormat}" >/dev/null 2>&1; then
-         dateTomorrow="$(date -d "tomorrow" +"${dateFormat}")"   # Linux
-      else
-         dateTomorrow="$(date -v+1d +"${dateFormat}")"           # FreeBSD
-      fi
-      local dateOptions=( "${dateToday}" "${dateTomorrow}" )
-
-      COMPREPLY=()
-      local search="${cur//\\/}"   # The strings contain spaces!
-      for item in "${dateOptions[@]}" ; do
-         if [[ "${item}" == "${search}"* ]] ; then
-            COMPREPLY+=( "${item// /\\ }" )   # The strings contain spaces!
-         fi
-      done
-      return
+   local rawCur="${COMP_WORDS[COMP_CWORD]:-}"
+   local isQuoted=0
+   if [[ "${rawCur}" == \'* ]] || [[ "${rawCur}" == \"* ]] ; then
+      isQuoted=1
    fi
 
-   case "${prev}" in
-      -T | --template)
-         return
-         ;;
-   esac
+   # ====== Scan prior words for '--', terminal flags, and '-T' =============
+   local i afterDashDash=0 expectingTemplate=0 customTemplate=""
+   for (( i = 1; i < cword; i++ )) ; do
+      if (( afterDashDash )) ; then
+         continue
+      fi
+      if (( expectingTemplate )) ; then
+         customTemplate="${words[i]}"
+         expectingTemplate=0
+         continue
+      fi
+      case "${words[i]}" in
+         --)
+            afterDashDash=1
+            ;;
+         -h | --help | -v | --version)
+            return 0
+            ;;
+         -T | --template | -[FIX0Hsmun]*T)
+            expectingTemplate=1
+            ;;
+         --template=*)
+            customTemplate="${words[i]#*=}"
+            ;;
+      esac
+   done
+
+   # ====== Handle -T / --template argument =================================
+   if (( expectingTemplate )) || { [[ "${split}" == "true" ]] && [[ "${prev}" == "--template" ]] ; } ; then
+      local templates=(
+         "%Y-%m-%d %H:%M:%S"
+         "%Y-%m-%dT%H:%M:%SZ"
+         "%Y-%m-%d"
+         "%H:%M:%S"
+      )
+      local search="${cur//\\/}" item
+      compopt -o nosort 2>/dev/null || true
+      COMPREPLY=()
+      for item in "${templates[@]}" ; do
+         if [[ "${item}" == "${search}"* ]] ; then
+            if (( isQuoted )) ; then
+               COMPREPLY+=( "${item}" )
+            else
+               COMPREPLY+=( "${item// /\\ }" )
+            fi
+         fi
+      done
+      if type -t __ltrim_colon_completions >/dev/null ; then
+         __ltrim_colon_completions "${cur}"
+      fi
+      return 0
+   fi
+
+   [[ "${split}" == "true" ]] && return 0
+
+   # ====== Suggest UTC dates for positional time_string arguments ==========
+   if (( afterDashDash )) || [[ "${cur}" != -* ]] ; then
+      local dateFormat="%Y-%m-%d %H:00:00.000000000"
+      if [[ -n "${customTemplate}" ]] ; then
+         customTemplate="${customTemplate#\"}"
+         customTemplate="${customTemplate%\"}"
+         customTemplate="${customTemplate#\'}"
+         customTemplate="${customTemplate%\'}"
+         dateFormat="${customTemplate//\\ / }"
+      fi
+
+      local dateOptions=() dateToday="" dateTomorrow=""
+      if dateToday="$(date -u +"${dateFormat}" 2>/dev/null)" && [[ -n "${dateToday}" ]] ; then
+         dateOptions+=( "${dateToday}" )
+      fi
+      if dateTomorrow="$(date -u -d "tomorrow" +"${dateFormat}" 2>/dev/null)" && [[ -n "${dateTomorrow}" ]] ; then
+         dateOptions+=( "${dateTomorrow}" )
+      elif dateTomorrow="$(date -u -v+1d +"${dateFormat}" 2>/dev/null)" && [[ -n "${dateTomorrow}" ]] ; then
+         dateOptions+=( "${dateTomorrow}" )
+      elif dateTomorrow="$(TZ=UTC-24 date +"${dateFormat}" 2>/dev/null)" && [[ -n "${dateTomorrow}" ]] ; then
+         dateOptions+=( "${dateTomorrow}" )
+      fi
+
+      compopt -o nosort 2>/dev/null || true
+      COMPREPLY=()
+      local search="${cur//\\/}" item
+      for item in "${dateOptions[@]}" ; do
+         if [[ "${item}" == "${search}"* ]] ; then
+            if (( isQuoted )) ; then
+               COMPREPLY+=( "${item}" )
+            else
+               COMPREPLY+=( "${item// /\\ }" )
+            fi
+         fi
+      done
+      if type -t __ltrim_colon_completions >/dev/null ; then
+         __ltrim_colon_completions "${cur}"
+      fi
+      return 0
+   fi
 
    # ====== All options =====================================================
    local opts="
@@ -107,7 +176,7 @@ _time2unixts()
 --version
 --
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
    return 0
 }
 

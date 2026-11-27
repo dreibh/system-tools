@@ -6,7 +6,7 @@
 //        |____/ \__, |___/\__\___|_| |_| |_|     |_|\___/ \___/|_|___/
 //               |___/
 //                             --- System-Tools ---
-//                  https://www.nntb.no/~dreibh/system-tools/
+//                  [https://www.nntb.no/~dreibh/system-tools/](https://www.nntb.no/~dreibh/system-tools/)
 // ==========================================================================
 //
 // Unix Timestamp to Time Conversion
@@ -23,7 +23,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
 //
 // Contact: thomas.dreibholz@gmail.com
 
@@ -43,7 +43,11 @@
 #include <cstring>
 #include <ctime>
 #include <filesystem>
+#include <format>
 #include <iostream>
+#include <limits>
+#include <locale>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 
@@ -52,11 +56,26 @@
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #else
-#define gettext(string)                   (string)
-#define ngettext(singular, plural, count) (((count) == 1) ? (singular) : (plural))
+#define gettext(string)                          (string)
+#define ngettext(singular, plural, count)        (((count) == 1) ? (singular) : (plural))
+#define bindtextdomain(domain, directory)        (directory)
+#define bind_textdomain_codeset(domain, codeset) (codeset)
+#define textdomain(domain)                       (domain)
 #endif
 
 #include "package-version.h"
+
+#if (defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
+using int128_type  = _BitInt(128);
+using uint128_type = unsigned _BitInt(128);
+#elif defined(__SIZEOF_INT128__)
+using int128_type  = __int128_t;
+using uint128_type = __uint128_t;
+#else
+// NOTE: A 64-bit signed long long will overflow on April 11, 2262!
+using int128_type  = long long;
+using uint128_type = unsigned long long;
+#endif
 
 
 // ###### C++20 gettext runtime format helper ################################
@@ -75,15 +94,21 @@ static std::string formatText(const char* messageIdentifier,
 
 
 // ###### Convert Unix timestamp in seconds to tm via std::chrono ###########
-static std::tm timepoint_to_tm(const int64_t unixSeconds) noexcept
+static bool timepoint_to_tm(const int64_t unixSeconds, std::tm& result) noexcept
 {
+   constexpr int64_t minValidSeconds = -1096193760000LL;   // -32767-01-01T00:00:00Z
+   constexpr int64_t maxValidSeconds =  1033446719999LL;   // +32767-12-31T23:59:59Z
+   if((unixSeconds < minValidSeconds) || (unixSeconds > maxValidSeconds)) {
+      return false;
+   }
+
    const std::chrono::sys_seconds    tp { std::chrono::seconds { unixSeconds } };
    const std::chrono::sys_days       dp = std::chrono::floor<std::chrono::days>(tp);
    const std::chrono::year_month_day yearMonthDay { dp };
    const std::chrono::weekday        weekday { dp };
-   const std::chrono::hh_mm_ss<std::chrono::seconds> time {tp - dp };
+   const std::chrono::hh_mm_ss<std::chrono::seconds> time { tp - dp };
 
-   std::tm result { };
+   result        = { };
    result.tm_sec  = static_cast<int>(time.seconds().count());
    result.tm_min  = static_cast<int>(time.minutes().count());
    result.tm_hour = static_cast<int>(time.hours().count());
@@ -98,7 +123,156 @@ static std::tm timepoint_to_tm(const int64_t unixSeconds) noexcept
    result.tm_yday  = static_cast<int>((dp - january1).count());
    result.tm_isdst = 0;
 
-   return result;
+   return true;
+}
+
+
+// ###### Parse integer/fractional Unix timestamp into nanoseconds ##########
+static bool parseUnixTimestamp(const char*   input,
+                               unsigned int& divideBy,
+                               const char*&  unit,
+                               unsigned int& inputFractionalDigits,
+                               int128_type&  unixTS) noexcept
+{
+   if((input == nullptr) || (input[0] == '\0') ||
+      (std::isspace(static_cast<unsigned char>(input[0])) != 0)) {
+      return false;
+   }
+
+   const char* p          = input;
+   bool        isNegative = false;
+   if(*p == '-') {
+      isNegative = true;
+      ++p;
+   }
+   else if(*p == '+') {
+      ++p;
+   }
+   if(*p == '\0') {
+      return false;
+   }
+
+   const uint128_type maxSignedMagnitude =
+      (static_cast<uint128_type>(1) << (sizeof(int128_type) * CHAR_BIT - 1)) -
+      (isNegative ? 0u : 1u);
+
+   int          base         = 10;
+   const bool   hasDot       = (std::strchr(p, '.') != nullptr);
+   size_t       intDigits    = 0;
+   uint128_type intMagnitude = 0;
+
+   if((p[0] == '0') && ((p[1] == 'x') || (p[1] == 'X'))) {
+      if(hasDot) {
+         return false;
+      }
+      base = 16;
+      p += 2;
+   }
+   else if(!hasDot && (p[0] == '0') && (p[1] != '\0')) {
+      base = 8;
+   }
+
+   while(*p != '\0') {
+      unsigned int digit = 0;
+      if((*p >= '0') && (*p <= '9')) {
+         digit = static_cast<unsigned int>(*p - '0');
+      }
+      else if((*p >= 'a') && (*p <= 'f')) {
+         digit = static_cast<unsigned int>(10 + (*p - 'a'));
+      }
+      else if((*p >= 'A') && (*p <= 'F')) {
+         digit = static_cast<unsigned int>(10 + (*p - 'A'));
+      }
+      else {
+         break;
+      }
+      if(digit >= static_cast<unsigned int>(base)) {
+         return false;
+      }
+      if(intMagnitude > (maxSignedMagnitude - digit) / static_cast<unsigned int>(base)) {
+         return false;
+      }
+      intMagnitude = intMagnitude * static_cast<unsigned int>(base) + digit;
+      ++intDigits;
+      ++p;
+   }
+
+   if(divideBy == 0) {
+      if(intMagnitude < 5000000000ULL) {
+         divideBy = 1000000000;
+         unit     = "s";
+      }
+      else if(intMagnitude < 5000000000000ULL) {
+         divideBy = 1000000;
+         unit     = "ms";
+      }
+      else if(intMagnitude < 5000000000000000ULL) {
+         divideBy = 1000;
+         unit     = "µs";
+      }
+      else {
+         divideBy = 1;
+         unit     = "ns";
+      }
+   }
+
+   unsigned int additionalNS = 0;
+   if(*p == '.') {
+      ++p;
+      if((*p < '0') || (*p > '9')) {
+         return false;
+      }
+
+      unsigned int maxFracDigits = 0;
+      if(divideBy == 1000000000) {
+         maxFracDigits = 9;
+      }
+      else if(divideBy == 1000000) {
+         maxFracDigits = 6;
+      }
+      else if(divideBy == 1000) {
+         maxFracDigits = 3;
+      }
+
+      unsigned int scaledDigits = 0;
+      while((*p >= '0') && (*p <= '9')) {
+         if(scaledDigits < maxFracDigits) {
+            additionalNS = additionalNS * 10u + static_cast<unsigned int>(*p - '0');
+            ++scaledDigits;
+         }
+         ++inputFractionalDigits;
+         ++p;
+      }
+      while(scaledDigits < maxFracDigits) {
+         additionalNS *= 10u;
+         ++scaledDigits;
+      }
+   }
+   else if(intDigits == 0) {
+      return false;
+   }
+
+   if(*p != '\0') {
+      return false;
+   }
+
+   if((intMagnitude > (maxSignedMagnitude - additionalNS) / divideBy)) {
+      return false;
+   }
+   const uint128_type totalMagnitude = intMagnitude * divideBy + additionalNS;
+   if(isNegative) {
+      if(totalMagnitude == (static_cast<uint128_type>(1) << (sizeof(int128_type) * CHAR_BIT - 1))) {
+         unixTS = -static_cast<int128_type>(totalMagnitude - 1u) - 1;
+      }
+      else {
+         unixTS = -static_cast<int128_type>(totalMagnitude);
+      }
+   }
+   else {
+      unixTS = static_cast<int128_type>(totalMagnitude);
+   }
+
+   return true;
 }
 
 
@@ -111,12 +285,12 @@ static const char* findSecondsPlaceholder(const char* formatString) noexcept
          switch(*(ptr + 1)) {
             case 0x00:
                ptr++;
-             break;
+               break;
             case 'S':
                return ptr;
             default:
                ptr += 2;
-             break;
+               break;
          }
       } else {
          ptr++;
@@ -144,31 +318,33 @@ static const char* findSecondsPlaceholder(const char* formatString) noexcept
 #define PIPE         SYN(" | ")
 #define ENTRY(s)     "\t" SYN("[") s SYN("]\n")
 
-[[ noreturn ]]
+[[noreturn]]
 static void usage(const char* program, const int exitCode)
 {
+   const char* safeProgram = (program != nullptr) ? program : "unixts2time";
+
    // TRANSLATORS: Text direction: LTR (Left-to-Right) or RTL (Right-to-Left)
    const bool rtl = (std::string(gettext("LTR")) == "RTL");
    const std::string manpage(std::string("\x1b[1m") +
-                             std::filesystem::path(program).stem().string() +
+                             std::filesystem::path(safeProgram).stem().string() +
                              std::string("\x1b[0m"));
    const std::string homepage((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
                               std::string("[\x1b[1m\x1b]8;;") +
                               std::string(PROJECT_HOMEPAGE_URL) +
                               "\a" + std::string(PROJECT_HOMEPAGE_URL) + "\a" +
                               std::string("\x1b]8;;\a\x1b[0m]") +
-                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+                              (rtl ? std::string("\xe2\x80\x8f") : std::string("")));
    const std::string repository((rtl ? std::string("\xe2\x80\x8e") : std::string("")) +
                                 std::string("[\x1b[1m\x1b]8;;") +
                                 std::string(PROJECT_SOURCE_URL) +
                                 "\a" + std::string(PROJECT_SOURCE_URL) + "\a" +
                                 std::string("\x1b]8;;\a\x1b[0m]") +
-                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")) );
+                                (rtl ? std::string("\xe2\x80\x8f") : std::string("")));
 
    // TRANSLATORS: Command-line syntax message prefix:
    // "Usage: <program> [options]".
    std::cerr << HEADER(gettext("Usage:")) << "\n"
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-T") " " ARG("time_format_template") PIPE OPT("--template") " " ARG("time_format_template"))
                    ENTRY(OPT("-H") PIPE OPT("--human-readable"))
                    ENTRY(OPT("-s") PIPE OPT("--seconds"))
@@ -176,14 +352,14 @@ static void usage(const char* program, const int exitCode)
                    ENTRY(OPT("-u") PIPE OPT("--microseconds"))
                    ENTRY(OPT("-n") PIPE OPT("--nanoseconds"))
                    ENTRY(ARG("unix_timestamp") " " "...")
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-h") PIPE OPT("--help"))
-             << CMD(program) << "\n"
+             << CMD(safeProgram) << "\n"
                    ENTRY(OPT("-v") PIPE OPT("--version"))
              << "\n"
              // TRANSLATORS: Informational message at the end of usage:
              // {0} = manpage name, {1} = documentation URL, {2} = repository URL
-             << formatText(gettext("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM."),
+             << formatText("For further information, see the man page for {0}, read the documentation at {1}, examine the source code at {2}, or consult your favourite LLM.",
                            manpage, homepage, repository) << "\n";
    std::exit(exitCode);
 }
@@ -197,6 +373,19 @@ int main(int argc, char** argv)
    if(std::setlocale(LC_ALL, "") == nullptr) {
       std::setlocale(LC_ALL, "C.UTF-8");
    }
+   try {
+      const std::locale userLocale(std::locale(""), std::locale::classic(), std::locale::numeric);
+      std::cout.imbue(userLocale);
+      std::cerr.imbue(userLocale);
+   } catch(const std::runtime_error&) {
+      try {
+         const std::locale fallbackLocale(std::locale("C.UTF-8"), std::locale::classic(), std::locale::numeric);
+         std::cout.imbue(fallbackLocale);
+         std::cerr.imbue(fallbackLocale);
+      } catch(const std::runtime_error&) {
+         // Defaults to std::locale::classic() if C.UTF-8 is unavailable
+      }
+   }
    std::setlocale(LC_NUMERIC, "C");   // Use "." for fractional numbers!
 
    // ====== Initialise i18n support ========================================
@@ -209,11 +398,11 @@ int main(int argc, char** argv)
    _dupenv_s(&textdomaindir, &textdomaindirsize, "TEXTDOMAINDIR");
 #endif
    bindtextdomain("unixts2time",
-                  ( ((textdomaindir) && (textdomaindir[0] != 0x00)) ?
+                  ( ((textdomaindir != nullptr) && (textdomaindir[0] != '\0')) ?
                        textdomaindir : PROJECT_LOCALEDIR ));
 #if defined(_WIN32)
-   if(textdomaindir) {
-       free(textdomaindir);
+   if(textdomaindir != nullptr) {
+      free(textdomaindir);
    }
 #endif
    bind_textdomain_codeset("unixts2time", "UTF-8");
@@ -230,68 +419,60 @@ int main(int argc, char** argv)
       { "nanoseconds",    no_argument,       nullptr, 'n' },
       { "help",           no_argument,       nullptr, 'h' },
       { "version",        no_argument,       nullptr, 'v' },
-      {  nullptr,         0,                 nullptr, 0   }
+      { nullptr,          0,                 nullptr, 0   }
    };
 
-   int          option;
-   int          longIndex;
+   int          option             = 0;
+   int          longIndex          = 0;
    bool         humanReadable      = false;
    unsigned int initialDivideBy    = 0;         // auto-detect later
    const char*  unit               = nullptr;   // auto-detect later
    const char*  timeFormatTemplate = "%Y-%m-%d %H:%M:%S";
-   while( (option = getopt_long(argc, argv, "T:Hsmunvh", long_options, &longIndex)) != -1 ) {
+   while((option = getopt_long(argc, argv, "T:Hsmunvh", long_options, &longIndex)) != -1) {
       switch(option) {
          case 'T':
             timeFormatTemplate = optarg;
-          break;
+            break;
          case 'H':
             humanReadable = true;
-          break;
+            break;
          case 'n':
             initialDivideBy = 1;
-            unit     = "ns";
-          break;
+            unit            = "ns";
+            break;
          case 'u':
             initialDivideBy = 1000;
-            unit     = "µs";
-          break;
+            unit            = "µs";
+            break;
          case 'm':
             initialDivideBy = 1000000;
-            unit     = "ms";
-          break;
+            unit            = "ms";
+            break;
          case 's':
             initialDivideBy = 1000000000;
-            unit     = "s";
-          break;
+            unit            = "s";
+            break;
          case 'v':
             version();
-          break;
+            break;
          case 'h':
          case '?':
             // Exit with 0 on h/help, exit with 1 on '?' (unknown option):
             usage(argv[0], (option == 'h') ? 0 : 1);
-          break;
-         case '-':
-          break;
+            break;
          default:
             // This should not happen: wrong getopt parameters, or missing case?
-            std::fprintf(stderr, "INTERNAL ERROR: Unhandled option c=%c code=%x!\n",
-                         (std::isprint(option) ? static_cast<char>(option) : ' '), option);
+            std::fprintf(stderr, "INTERNAL ERROR: Unhandled option code=%x!\n",
+                         static_cast<unsigned int>(option));
             return 1;
       }
    }
 
    // ====== Obtain Unix timestamp in ns ====================================
-#if (defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
-   _BitInt(128) unixTS;
-#elif defined(__SIZEOF_INT128__)
-   __int128_t   unixTS;
-#else
-   // NOTE: A 64-bit signed long long will overflow on April 11, 2262!
-   long long    unixTS;
-#endif
    for(int i = optind; i <= argc; i++) {
+      int128_type  unixTS                = 0;
       unsigned int divideBy              = initialDivideBy;
+      const char*  currentUnit           = unit;
       unsigned int inputFractionalDigits = 0;
 
       // ====== Use current time, if no timestamp is given ==================
@@ -300,16 +481,10 @@ int main(int argc, char** argv)
             const auto now = std::chrono::system_clock::now();
             const auto ns  =
                std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch()).count();
-#if (defined(__BITINT_MAXWIDTH__) && (__BITINT_MAXWIDTH__ >= 128))
-            unixTS = static_cast<_BitInt(128)>(ns);
-#elif defined(__SIZEOF_INT128__)
-            unixTS = static_cast<__int128_t>(ns);
-#else
-            unixTS = static_cast<long long>(ns);
-#endif
+            unixTS = static_cast<int128_type>(ns);
             if(divideBy == 0) {
-               divideBy = 1;
-               unit     = "ns";
+               divideBy    = 1;
+               currentUnit = "ns";
             }
          }
          else {
@@ -319,50 +494,7 @@ int main(int argc, char** argv)
 
       // ====== Parse the next Unix timestamp ===============================
       else {
-         // ------ Try to parse integer part --------------------------------
-         char* endptr = nullptr;
-         unixTS = std::strtoll(argv[i], &endptr, 0);
-         if(endptr != nullptr) {
-            if(divideBy == 0) {
-               if( (unixTS > -5000000000LL) && (unixTS < 5000000000LL) ) {
-                  divideBy = 1000000000;
-                  unit     = "s";
-               }
-               else if( (unixTS > -5000000000000LL) && (unixTS < 5000000000000LL) ) {
-                  divideBy = 1000000;
-                  unit     = "ms";
-               }
-               else if( (unixTS > -5000000000000000LL) && (unixTS < 5000000000000000LL) ) {
-                  divideBy = 1000;
-                  unit     = "µs";
-               }
-               else {
-                  divideBy = 1;
-                  unit     = "ns";
-               }
-            }
-            unixTS *= divideBy;   // convert to ns
-
-            // ------ Try to parse fractional part --------------------------
-            if(*endptr != 0x00) {
-               if(*endptr == '.') {
-                  const char* p = endptr + 1;
-                  while((*p >= '0') && (*p <= '9')) {
-                     inputFractionalDigits++;
-                     p++;
-                  }
-               }
-
-               const double fractionalUnixTS = std::strtod(endptr, &endptr);
-               if(endptr != nullptr) {
-                  const unsigned int additionalNS =
-                     static_cast<unsigned int>(fractionalUnixTS * divideBy);
-                  unixTS = (unixTS >= 0) ? (unixTS + additionalNS) :
-                                           (unixTS - additionalNS);
-               }
-            }
-         }
-         if( (endptr == nullptr) || (*endptr != 0x00) ) {
+         if(!parseUnixTimestamp(argv[i], divideBy, currentUnit, inputFractionalDigits, unixTS)) {
             // TRANSLATORS: Error message when input timestamp string is invalid.
             std::fputs(gettext("ERROR: Invalid Unix timestamp!"), stderr);
             std::fputs("\n", stderr);
@@ -371,17 +503,32 @@ int main(int argc, char** argv)
       }
 
       // ====== Convert Unix timestamp to time ==============================
-      struct timespec ts = {
-         static_cast<time_t>(unixTS / 1000000000),
-         static_cast<long>(unixTS % 1000000000)
-      };
-      if( (unixTS < 0) && (ts.tv_nsec < 0) ) {
-         ts.tv_sec--;
-         ts.tv_nsec = 1000000000 + ts.tv_nsec;
+      const int128_type rawSeconds = unixTS / 1000000000;
+      if((rawSeconds < std::numeric_limits<int64_t>::min() + 1) ||
+         (rawSeconds > std::numeric_limits<int64_t>::max())) {
+         // TRANSLATORS: Error message when input timestamp string is invalid.
+         std::fputs(gettext("ERROR: Invalid Unix timestamp!"), stderr);
+         std::fputs("\n", stderr);
+         std::exit(1);
       }
 
+      int64_t tvSec     = static_cast<int64_t>(rawSeconds);
+      long    rawTvNsec = static_cast<long>(unixTS % 1000000000);
+      if(rawTvNsec < 0) {
+         tvSec--;
+         rawTvNsec += 1000000000L;
+      }
+      const unsigned int subsecNanoseconds =
+         static_cast<unsigned int>(rawTvNsec % 1000000000L);
+
       // ------ Time in seconds-granularity via std::chrono -----------------
-      const std::tm t = timepoint_to_tm(ts.tv_sec);
+      std::tm t { };
+      if(!timepoint_to_tm(tvSec, t)) {
+         // TRANSLATORS: Error message when input timestamp string is invalid.
+         std::fputs(gettext("ERROR: Invalid Unix timestamp!"), stderr);
+         std::fputs("\n", stderr);
+         std::exit(1);
+      }
 
       // ====== Prepare date/time string ====================================
       char frontTimeString[1024]        = { 0 };
@@ -392,16 +539,18 @@ int main(int argc, char** argv)
       const char* secondsPlaceholder = findSecondsPlaceholder(timeFormatTemplate);
       if(secondsPlaceholder != nullptr) {
          // ------ Prepare front part (before seconds) ----------------------
-         const size_t frontLength = static_cast<size_t>(secondsPlaceholder - timeFormatTemplate);
-         std::string frontFormatString(timeFormatTemplate, frontLength);
+         const size_t      frontLength = static_cast<size_t>(secondsPlaceholder - timeFormatTemplate);
+         const std::string frontFormatString(timeFormatTemplate, frontLength);
 
-         if(std::strftime(frontTimeString, sizeof(frontTimeString), frontFormatString.c_str(), &t) == 0) {
-            // TRANSLATORS: Error message when date/time formatting with strftime() fails:
-            // %s = time format template
-            std::fprintf(stderr, gettext("ERROR: strftime() with format template \"%s\" failed!"),
-                         frontFormatString.c_str());
-            std::fputs("\n", stderr);
-            std::exit(1);
+         if(!frontFormatString.empty()) {
+            if(std::strftime(frontTimeString, sizeof(frontTimeString), frontFormatString.c_str(), &t) == 0) {
+               // TRANSLATORS: Error message when date/time formatting with strftime() fails:
+               // %s = time format template
+               std::fprintf(stderr, gettext("ERROR: strftime() with format template \"%s\" failed!"),
+                            frontFormatString.c_str());
+               std::fputs("\n", stderr);
+               std::exit(1);
+            }
          }
 
          // ------ Parse the middle part (seconds) --------------------------
@@ -430,16 +579,17 @@ int main(int argc, char** argv)
             precision = 9;
          }
 
-         char fractionalSecondsFormatString[32];
-         std::snprintf(fractionalSecondsFormatString, sizeof(fractionalSecondsFormatString),
-                       "%%1.%uf", precision);
-         std::snprintf(fractionalSecondsString, sizeof(fractionalSecondsString),
-                       fractionalSecondsFormatString,
-                       static_cast<double>(ts.tv_nsec) / 1000000000.0);
+         if(precision > 0) {
+            char nsDigits[32];
+            std::snprintf(nsDigits, sizeof(nsDigits), "%09u", subsecNanoseconds);
+            nsDigits[precision] = '\0';
+            std::snprintf(fractionalSecondsString, sizeof(fractionalSecondsString),
+                          "0.%s", nsDigits);
+         }
 
          // ------ Prepare the back part (after seconds) --------------------
          const char* backFormatString = secondsPlaceholder + 2;
-         if(backFormatString[0] != 0x00) {
+         if(backFormatString[0] != '\0') {
             if(std::strftime(backTimeString, sizeof(backTimeString), backFormatString, &t) == 0) {
                // TRANSLATORS: Error message when date/time formatting with strftime() fails:
                // %s = time format template
@@ -451,13 +601,15 @@ int main(int argc, char** argv)
          }
       }
       else {
-         if(std::strftime(frontTimeString, sizeof(frontTimeString), timeFormatTemplate, &t) == 0) {
-            // TRANSLATORS: Error message when date/time formatting with strftime() fails:
-            // %s = time format template
-            std::fprintf(stderr, gettext("ERROR: strftime() with format template \"%s\" failed!"),
-                         timeFormatTemplate);
-            std::fputs("\n", stderr);
-            std::exit(1);
+         if(timeFormatTemplate[0] != '\0') {
+            if(std::strftime(frontTimeString, sizeof(frontTimeString), timeFormatTemplate, &t) == 0) {
+               // TRANSLATORS: Error message when date/time formatting with strftime() fails:
+               // %s = time format template
+               std::fprintf(stderr, gettext("ERROR: strftime() with format template \"%s\" failed!"),
+                            timeFormatTemplate);
+               std::fputs("\n", stderr);
+               std::exit(1);
+            }
          }
       }
 
@@ -465,7 +617,7 @@ int main(int argc, char** argv)
       if(!humanReadable) {
          std::fputs(frontTimeString, stdout);
          std::fputs(secondsString, stdout);
-         if(fractionalSecondsString[0] != 0x00) {
+         if(fractionalSecondsString[0] != '\0') {
             std::fputs(&fractionalSecondsString[1], stdout);
          }
          std::fputs(backTimeString, stdout);
@@ -481,11 +633,11 @@ int main(int argc, char** argv)
          // 5th %s   = time unit (e.g. s, ms, µs, ns)
          std::fprintf(stdout, gettext("%s%s%s%s is %lld (0x%llx) %s since the Unix Epoch"),
                       frontTimeString,
-                      secondsString, (fractionalSecondsString[0] != 0x00) ? fractionalSecondsString + 1 : "",
+                      secondsString, (fractionalSecondsString[0] != '\0') ? fractionalSecondsString + 1 : "",
                       backTimeString,
                       static_cast<long long>(unixTS / divideBy),
                       static_cast<unsigned long long>(unixTS / divideBy),
-                      unit);
+                      currentUnit);
       }
       std::fputs("\n", stdout);
    }

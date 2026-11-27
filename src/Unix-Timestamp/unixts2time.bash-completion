@@ -32,47 +32,144 @@
 # ###### Bash completion for unixts2time ####################################
 _unixts2time()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
-      _init_completion || return
+   # shellcheck disable=SC2034
+   local cur prev words cword split=false comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -s -n : -- "$@" || return
+   elif type -t _init_completion >/dev/null ; then
+      _init_completion -s -n : || return
    else
-      # Manual initialization for older bash completion versions:
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
       prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
+      words=("${COMP_WORDS[@]}")
       cword="${COMP_CWORD}"
    fi
 
-   # ====== Suggest time stamps as first parameter ==========================
-   if [[ "${cur}" != -* ]] ; then
-      local today
-      # Suggested time stamp: today, 12:34:56.* in s, ms, µs, and ns.
-      today="$(date +%s)"
-      today="$(( ((today / 86400) * 86400) + (12*3600) + (34*60) + 56 ))"
-      local timestampOptions=( "${today}" "${today}.789" "${today}111" "${today}222333" "${today}444555666" )
+   local rawCur="${COMP_WORDS[COMP_CWORD]:-}"
+   local isQuoted=0
+   if [[ "${rawCur}" == \'* ]] || [[ "${rawCur}" == \"* ]] ; then
+      isQuoted=1
+   fi
 
-      compopt -o nosort 2>/dev/null || true   # No sorting (Bash >= 4.4)
+   # ====== Scan prior words for '--', terminal flags, '-T', and unit =======
+   local i afterDashDash=0 expectingTemplate=0 selectedUnit=""
+   for (( i = 1; i < cword; i++ )) ; do
+      if (( afterDashDash )) ; then
+         continue
+      fi
+      if (( expectingTemplate )) ; then
+         expectingTemplate=0
+         continue
+      fi
+      case "${words[i]}" in
+         --)
+            afterDashDash=1
+            ;;
+         -h | --help | -v | --version)
+            return 0
+            ;;
+         -T | --template | -[Hsmun]*T)
+            expectingTemplate=1
+            ;;
+         --template=*)
+            ;;
+         -s | --seconds | -[Hsmun]*s)
+            selectedUnit="s"
+            ;;
+         -m | --milliseconds | -[Hsmun]*m)
+            selectedUnit="ms"
+            ;;
+         -u | --microseconds | -[Hsmun]*u)
+            selectedUnit="us"
+            ;;
+         -n | --nanoseconds | -[Hsmun]*n)
+            selectedUnit="ns"
+            ;;
+      esac
+   done
+
+   # ====== Handle -T / --template argument =================================
+   if (( expectingTemplate )) || { [[ "${split}" == "true" ]] && [[ "${prev}" == "--template" ]] ; } ; then
+      local templates=(
+         "%Y-%m-%d %H:%M:%S"
+         "%Y-%m-%dT%H:%M:%SZ"
+         "%Y-%m-%d"
+         "%H:%M:%S"
+         "%x %X"
+      )
+      local search="${cur//\\/}" item
+      compopt -o nosort 2>/dev/null || true
       COMPREPLY=()
-      for item in "${timestampOptions[@]}"; do
+      for item in "${templates[@]}" ; do
+         if [[ "${item}" == "${search}"* ]] ; then
+            if (( isQuoted )) ; then
+               COMPREPLY+=( "${item}" )
+            else
+               COMPREPLY+=( "${item// /\\ }" )
+            fi
+         fi
+      done
+      if type -t __ltrim_colon_completions >/dev/null ; then
+         __ltrim_colon_completions "${cur}"
+      fi
+      return 0
+   fi
+
+   [[ "${split}" == "true" ]] && return 0
+
+   # ====== Suggest timestamps for positional arguments =====================
+   if (( afterDashDash )) || [[ "${cur}" != -* ]] ; then
+      local today hexToday item
+      # Suggested timestamp: today at 12:34:56 UTC in s, ms, µs, and ns:
+      today="$(date -u +%s)"
+      today="$(( ((today / 86400) * 86400) + (12 * 3600) + (34 * 60) + 56 ))"
+
+      local timestampOptions=()
+      case "${selectedUnit}" in
+         s)
+            printf -v hexToday '0x%x' "${today}"
+            timestampOptions=( "${today}" "${today}.789" "${hexToday}" )
+            ;;
+         ms)
+            timestampOptions=( "${today}111" "${today}111.222" )
+            ;;
+         us)
+            timestampOptions=( "${today}222333" "${today}222333.444" )
+            ;;
+         ns)
+            timestampOptions=( "${today}444555666" )
+            ;;
+         *)
+            printf -v hexToday '0x%x' "${today}"
+            timestampOptions=(
+               "${today}"
+               "${today}.789"
+               "${today}111"
+               "${today}222333"
+               "${today}444555666"
+               "${hexToday}"
+            )
+            ;;
+      esac
+
+      if (( afterDashDash )) && [[ "${cur}" == -* ]] ; then
+         local negOptions=()
+         for item in "${timestampOptions[@]}" ; do
+            [[ "${item}" == 0x* ]] || negOptions+=( "-${item}" )
+         done
+         timestampOptions=( "${negOptions[@]}" )
+      fi
+
+      compopt -o nosort 2>/dev/null || true
+      COMPREPLY=()
+      for item in "${timestampOptions[@]}" ; do
          if [[ "${item}" == "${cur}"* ]] ; then
             COMPREPLY+=( "${item}" )
          fi
       done
-      return
+      return 0
    fi
-
-   case "${prev}" in
-      -T | --template)
-         return
-         ;;
-   esac
 
    # ====== All options =====================================================
    local opts="
@@ -94,7 +191,7 @@ _unixts2time()
 --version
 --
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
    return 0
 }
 
