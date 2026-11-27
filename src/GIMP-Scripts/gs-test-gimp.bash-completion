@@ -33,25 +33,31 @@
 # ###### Bash completion for gs-test-gimp ###################################
 _gs_test_gimp()
 {
-   # Based on: https://www.benningtons.net/index.php/bash-completion/
-   local cur prev words cword
-   if type -t _comp_initialize >/dev/null; then
-      _comp_initialize || return
-   elif type -t _init_completion >/dev/null; then
+   # shellcheck disable=SC2034
+   local cur prev words cword comp_args
+   if type -t _comp_initialize >/dev/null ; then
+      _comp_initialize -- "$@" || return
+   elif type -t _init_completion >/dev/null ; then
       _init_completion || return
    else
-      # Manual initialization for older bash completion versions:
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
-      # shellcheck disable=SC2034
       prev="${COMP_WORDS[COMP_CWORD-1]}"
-      # shellcheck disable=SC2034,SC2124
-      words="${COMP_WORDS[@]}"
-      # shellcheck disable=SC2034
+      words=("${COMP_WORDS[@]}")
       cword="${COMP_CWORD}"
    fi
 
-   # ====== All options =====================================================
+   # ====== Stop completing after '--', help, or version ====================
+   local i
+   for (( i = 1; i < cword; i++ )) ; do
+      case "${words[i]}" in
+         -- | -h | --help | -v | --version)
+            return 0
+            ;;
+      esac
+   done
+
+   # ====== All options (no positional arguments accepted) ==================
    local opts="
 -q
 --quiet
@@ -62,7 +68,7 @@ _gs_test_gimp()
 -v
 --version
 "
-   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}" )
+   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
    return 0
 }
 

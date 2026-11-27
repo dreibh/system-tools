@@ -28,7 +28,7 @@
 .\" Contact: thomas.dreibholz@gmail.com
 .\"
 .\" ###### Setup ############################################################
-.Dd October 17, 2026
+.Dd November 27, 2026
 .Dt gs\-test\-gimp 1
 .Os gs\-test\-gimp
 .\" ###### Name #############################################################
@@ -47,13 +47,15 @@
 .\" ###### Description ######################################################
 .Sh DESCRIPTION
 .Nm gs\-test\-gimp
-runs a short test to verify that GIMP can run a GIMP script in non\-GUI mode.
-If not already initialised, GIMP will create the GIMP directory with configuration files on first startup.
-The storage location of this directory is provided to GIMP by its environment variables
-.Ev GIMP3_DIRECTORY
-(GIMP 3.x) and
-.Ev GIMP2_DIRECTORY
-(GIMP 2.x).
+runs a short test to verify that GIMP can execute a Script\-Fu batch command in non\-GUI mode.
+If
+.Ev GIMP3\_DIRECTORY
+is set to a non\-empty directory path,
+.Nm
+initialises its resource subdirectories and writes a minimal
+.Pa gimprc
+before starting
+.Nm gimp\-console .
 .\" ###### Arguments ########################################################
 .Sh ARGUMENTS
 The following options are available:
@@ -67,6 +69,17 @@ Prints the program's command\-line parameters and exits.
 .It Fl v | Fl \-version
 Prints the program version and exits.
 .El
+.\" ###### Environment ######################################################
+.Sh ENVIRONMENT
+.Bl -tag -width indent
+.It Ev GIMP3\_DIRECTORY
+Required environment variable specifying the GIMP 3.x configuration directory.
+If set to a non\-empty path, the directory and its
+.Pa gimprc
+file are created before launching GIMP; if set to an empty string, directory creation is skipped.
+.It Ev GIMP2\_DIRECTORY
+Optional configuration directory used by GIMP 2.x installations.
+.El
 .\" ###### Exit status ######################################################
 .Sh EXIT STATUS
 The
@@ -76,11 +89,11 @@ tool exits with 0 on success, and >0 in case of an error.
 .Sh EXAMPLES
 .Bl -bullet
 .It
-gs\-test\-gimp
+GIMP3\_DIRECTORY="" gs\-test\-gimp
 .It
-GIMP3_DIRECTORY=/tmp/gimp3.tmp gs\-test\-gimp
+GIMP3\_DIRECTORY=/tmp/gimp3.tmp gs\-test\-gimp
 .It
-GIMP3_DIRECTORY=/tmp/gimp3.tmp gs\-test\-gimp \-\-verbose
+GIMP3\_DIRECTORY=/tmp/gimp3.tmp gs\-test\-gimp \-\-verbose
 .It
 gs\-test\-gimp \-\-help
 .It

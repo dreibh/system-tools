@@ -95,19 +95,17 @@ case "${UNAME}" in
       GETOPT="$(PATH="/usr/gnu/bin:${PATH}" command -v getopt || true)"
       ;;
    Darwin)
-      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
+      GETOPT="$(env PATH="/opt/homebrew/opt/gnu-getopt/bin:/usr/local/opt/gnu-getopt/bin:${PATH}" command -v getopt || true)"
       ;;
    *)
       GETOPT="$(command -v getopt || true)"
       ;;
 esac
-if "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]]; then
+if [[ -z "${GETOPT}" ]] || "${GETOPT}" -T >/dev/null 2>&1 || [[ $? -ne 4 ]] ; then
    echo >&2 "ERROR: Enhanced/GNU getopt is required!"
    exit 1
 fi
-options="$(${GETOPT} -o wqhv --long verbose,quiet,help,version -a -- "$@")"
-# shellcheck disable=SC2181
-if [[ $? -ne 0 ]]; then
+if ! options="$("${GETOPT}" -o wqhv --long verbose,quiet,help,version -a -- "$@")" ; then
    usage "$0" 1
 fi
 
@@ -137,8 +135,8 @@ while [ $# -gt 0 ] ; do
          echo >&2 "INTERNAL ERROR: Unhandled option $1!"
          exit 1
          ;;
-  esac
-  shift
+   esac
+   shift
 done
 
 if [ $# -ne 0 ] ; then
@@ -152,7 +150,7 @@ fi
 
 
 # ====== Make sure that GIMP directory exists ===============================
-if [ "${GIMP3_DIRECTORY}" != "" ] ; then
+if [ -n "${GIMP3_DIRECTORY}" ] ; then
    echo "Creating GIMP directory ${GIMP3_DIRECTORY} ..."
    for subdir in brushes dynamics patterns gradients palettes ; do
       mkdir -p "${GIMP3_DIRECTORY}/${subdir}"
@@ -166,16 +164,17 @@ if [ "${GIMP3_DIRECTORY}" != "" ] ; then
       echo "(num-processors 1)"
 
       # Add global fonts directory to gimprc:
-      if [ "${UNAME}" == "NetBSD" ] ; then
+      if [ "${UNAME}" = "NetBSD" ] ; then
          echo "(font-path \"\${gimp_dir}/fonts:\${gimp_data_dir}/fonts:/usr/pkg/share/fonts/X11/TTF\")"
-      elif [ "${UNAME}" == "Darwin" ] ; then
-         echo "(font-path \"\${gimp_dir}/fonts:\${gimp_data_dir}/fonts:/Users/runner/Library/Fonts\")"
+      elif [ "${UNAME}" = "Darwin" ] ; then
+         echo "(font-path \"\${gimp_dir}/fonts:\${gimp_data_dir}/fonts:${HOME:-/Users/runner}/Library/Fonts:/Library/Fonts:/System/Library/Fonts\")"
       fi
    ) >"${GIMP3_DIRECTORY}/gimprc"
 fi
 
 
 # ====== Detect GIMP, and determine version-specific call options ===========
+GIMP_CONSOLE=""
 case "${UNAME}" in
    OpenBSD)
       for version in 3.6 3.4 3.2 3.0 2.8 2.6 ; do
@@ -186,12 +185,13 @@ case "${UNAME}" in
       done
       ;;
    Darwin)
-      GIMP_CONSOLE="$(command -v gimp-console || command -v /Applications/GIMP.app/Contents/MacOS/gimp-console-3 || true)"
+      GIMP_CONSOLE="$(command -v gimp-console || command -v /Applications/GIMP.app/Contents/MacOS/gimp-console-3 || command -v /Applications/GIMP.app/Contents/MacOS/gimp-console || true)"
       ;;
    *)
       GIMP_CONSOLE="$(command -v gimp-console || true)"
+      ;;
 esac
-if [ "${GIMP_CONSOLE}" = "" ] ; then
+if [ -z "${GIMP_CONSOLE}" ] ; then
    echo >&2 "ERROR: GIMP is not installed! Try:"
    echo >&2 " * Ubuntu/Debian: sudo apt install -y gimp"
    echo >&2 " * Fedora:        sudo dnf install -y gimp"
@@ -200,30 +200,26 @@ if [ "${GIMP_CONSOLE}" = "" ] ; then
    echo >&2 " * FreeBSD:       sudo pkg install -y gimp3-app"
    echo >&2 " * NetBSD:        sudo pkgin -y install gimp"
    echo >&2 " * OpenBSD:       sudo pkg_add \"\$(pkg_info -z \"gimp->=3\")\""
-   echo >&2 " * Solaris        sudo pkg install gimp"
+   echo >&2 " * Solaris:       sudo pkg install gimp"
    echo >&2 " * Apple:         brew install gimp"
    exit 1
 fi
-GIMP_VERSION="$(LC_ALL=C.UTF-8 "${GIMP_CONSOLE}" --version | sed -e 's/GNU Image Manipulation Program version //')"
+GIMP_VERSION="$(LC_ALL=C "${GIMP_CONSOLE}" --version | sed -e 's/GNU Image Manipulation Program version //')"
 if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
    # GIMP 2.x:
-   GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+   GIMP_OPTIONS=(--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -)
 else
    # GIMP 3.x:
-   GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
+   GIMP_OPTIONS=(--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -)
 fi
 
 
 # ====== Try to start GIMP ==================================================
-# shellcheck disable=SC2086
-( cat <<EOF
-(gimp-quit TRUE)
-EOF
-) | env LC_ALL=C.UTF-8 HOME=/tmp "${GIMP_CONSOLE}" ${GIMP_OPTIONS} 2>&1 | \
+env LC_ALL=C.UTF-8 HOME=/tmp "${GIMP_CONSOLE}" "${GIMP_OPTIONS[@]}" <<< "(gimp-quit TRUE)" 2>&1 | \
 (
-   if [ ${VERBOSE} -ne 0 ] ; then
+   if [ "${VERBOSE}" -ne 0 ] ; then
       cat
    else
-      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|^gimp_color_transform_new: using babl|scriptfu-WARNING|-WARNING|^Warning: Unknown input_id|^Failed to parse tag cache|^Please use named arguments:|^script quit with code:|^GIMP is started|^$" || true
+      grep -vE "^ts>|^\(#t\)$|^#t$|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|^gimp_color_transform_new: using babl|-WARNING|^Warning: Unknown input_id|^Failed to parse tag cache|^Please use named arguments:|^script quit with code:|^GIMP is started|^$" || true
    fi
 )
